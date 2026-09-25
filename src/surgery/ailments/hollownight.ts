@@ -74,11 +74,11 @@ export class VocalFold extends Entity {
     const w = sing ? 1 + 0.2 * Math.sin(op.elapsed * 30) : 1;
     g.ellipse(x - 8, y, 6 * w, 18, 0.1, hex('#e0a0a8'), hex('#a05060'));
     g.ellipse(x + 8, y, 6 * w, 18, -0.1, hex('#e0a0a8'), hex('#a05060'));
-    if (sing) g.glow(x, y, 40, hex('#b060ff', 0.25));
+    if (sing) g.glow(x, y, 40, hex('#b060ff', 0.25)); // curse-violet: Choir vocal fold
     // Visual metronome: how far through the verse or the rest.
     const cyc = this.verse + this.rest;
     const c = this.t % cyc;
-    g.arc(x, y, 26, 3, hex(sing ? '#b060ff' : '#9fd3a8', 0.8), sing ? c / this.verse : (c - this.verse) / this.rest);
+    g.arc(x, y, 26, 3, hex(sing ? '#b060ff' : '#9fd3a8', 0.8), sing ? c / this.verse : (c - this.verse) / this.rest); // curse-violet: Choir vocal fold
   }
 }
 

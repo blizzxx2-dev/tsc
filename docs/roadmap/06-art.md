@@ -33,17 +33,17 @@ Cross-refs: ENG (texture loading, atlases, shader inputs), UX (layouts and widge
 
 ### Art bible
 - [ ] ART-0009 · M0 · P0 · M · Art bible v1 (PDF + `docs/art/bible/`): the pillars, a public-domain reference board per pillar (Dürer, Bruegel, Bosch, Holbein, Gersdorff), and do/don't pairs — signed off by the art director
-- [ ] ART-0010 · M0 · P0 · S · IP-avoidance checklist in the bible: no GW iconography (twin-tailed comet, skull-and-eagle, eight-pointed star, horned rat), a list of banned silhouettes and symbols, and a checked box on every asset review
-- [ ] ART-0011 · M0 · P0 · M · Master palette: 32 swatches (tallow, soot, oxblood, verdigris, bile, bone, gilt, curse-violet) as `.ase` + `src/render/palette.ts`, and every UI colour mapped to a swatch
-- [ ] ART-0012 · M0 · P0 · S · Curse-violet (#b060ff family) reserved exclusively for Malison and Hollow Choir content — rule in the bible and a lint in art QA
-- [ ] ART-0013 · M0 · P1 · M · Line and hatching language: 3 hatch densities (light/mid/shadow), stroke weights at 1080p, and a woodcut line-break rule — exemplar sheet
+- [x] ART-0010 · M0 · P0 · S · IP-avoidance checklist in the bible: no GW iconography (twin-tailed comet, skull-and-eagle, eight-pointed star, horned rat), a list of banned silhouettes and symbols, and a checked box on every asset review
+- [x] ART-0011 · M0 · P0 · M · Master palette: 32 swatches (tallow, soot, oxblood, verdigris, bile, bone, gilt, curse-violet) as `.ase` + `src/render/palette.ts`, and every UI colour mapped to a swatch
+- [x] ART-0012 · M0 · P0 · S · Curse-violet (#b060ff family) reserved exclusively for Malison and Hollow Choir content — rule in the bible and a lint in art QA
+- [x] ART-0013 · M0 · P1 · M · Line and hatching language: 3 hatch densities (light/mid/shadow), stroke weights at 1080p, and a woodcut line-break rule — exemplar sheet
 - [ ] ART-0014 · M0 · P1 · S · Value-structure rule: every story background passes a 5-value greyscale thumbnail test with the character zone at least 2 value steps from the background
 - [ ] ART-0015 · M0 · P1 · M · Costume guide: Landsknecht slashed doublets, mercy-order habits, Pyre inquisitors, Watch halberdiers, guild surgeons, the Hollow Choir — 1 turnaround sheet per faction
 - [ ] ART-0016 · M0 · P1 · M · Material library sheet: brass, pewter, tallow, waxed linen, gut thread, leech skin, vellum, stained glass — painted swatch + lighting notes each
-- [ ] ART-0017 · M0 · P1 · S · Gore-tone rule sheet: what is shown (open tissue, pus, grubs) versus implied (faces in agony, children's wounds), aligned with the PEGI 16 / ESRB M target
+- [x] ART-0017 · M0 · P1 · S · Gore-tone rule sheet: what is shown (open tissue, pus, grubs) versus implied (faces in agony, children's wounds), aligned with the PEGI 16 / ESRB M target
 - [ ] ART-0018 · Demo · P1 · S · Kessendorf heraldry and signage set (city arms, 6 guild marks, hospice of Saint Ildra seal) designed from scratch, IP-checked
 - [ ] ART-0019 · Demo · P2 · S · Faith iconography for Saint Ildra and the Merciful Order (sun-in-palm, dove-and-lancet), with glyph variants for UI use
-- [ ] ART-0020 · Alpha · P2 · M · Art bible v2 covering Chapters 3–5 regions, factions and the six remaining Malison Hours
+- [x] ART-0020 · Alpha · P2 · M · Art bible v2 covering Chapters 3–5 regions, factions and the six remaining Malison Hours
 
 ### Style frames
 - [ ] ART-0021 · M0 · P0 · L · Style frame 1: operation screen at 1920×1080 (painted flesh field, a lodged barbed arrow, the brass tool tray, the vitals meter) — the target every in-game op is measured against
@@ -55,8 +55,8 @@ Cross-refs: ENG (texture loading, atlases, shader inputs), UX (layouts and widge
 - [ ] ART-0027 · Alpha · P2 · M · Style frames for Chapters 3, 4 and 5 (one each) before any Chapter 3–5 production starts
 
 ### Direction & reviews
-- [ ] ART-0028 · M0 · P0 · S · Weekly art review cadence with a template (asset, stage, feedback, owner, due) in `docs/art/reviews/`
-- [ ] ART-0029 · M0 · P1 · S · Approval stages defined for every asset class: thumbnail → rough → line → colour → in-engine; no stage skipped without director sign-off
+- [x] ART-0028 · M0 · P0 · S · Weekly art review cadence with a template (asset, stage, feedback, owner, due) in `docs/art/reviews/`
+- [x] ART-0029 · M0 · P1 · S · Approval stages defined for every asset class: thumbnail → rough → line → colour → in-engine; no stage skipped without director sign-off
 - [ ] ART-0030 · Demo · P1 · S · Demo art-lock date set, with the list of assets still placeholder at lock reviewed weekly until empty
 
 ---
@@ -64,14 +64,14 @@ Cross-refs: ENG (texture loading, atlases, shader inputs), UX (layouts and widge
 ## ART-C · Art pipeline & tooling
 
 ### Source, formats & naming
-- [ ] ART-0031 · M0 · P0 · S · Naming convention `cat_subject_variant_state@scale.ext` (e.g. `por_ilse_worried@2x.webp`) documented, with a CI script that fails on any non-conforming file in `assets/`
-- [ ] ART-0032 · M0 · P0 · S · Source-art storage: layered PSD/Krita/Blender sources in Git LFS (`art-src/`), with exports only in `assets/` and an `.gitattributes` LFS rule for each source type
-- [ ] ART-0033 · M0 · P0 · S · Export spec: WebP lossless for UI, WebP q90 for backgrounds, KTX2/Basis for flesh textures, PNG for masters — table in the bible
-- [ ] ART-0034 · M0 · P0 · M · Authoring resolution standard: backgrounds at 3840×2160 master, 1920×1080 ship; portraits at 2048 px tall master, 1024 px ship; UI at 2× the 1280×720 virtual space
+- [x] ART-0031 · M0 · P0 · S · Naming convention `cat_subject_variant_state@scale.ext` (e.g. `por_ilse_worried@2x.webp`) documented, with a CI script that fails on any non-conforming file in `assets/`
+- [x] ART-0032 · M0 · P0 · S · Source-art storage: layered PSD/Krita/Blender sources in Git LFS (`art-src/`), with exports only in `assets/` and an `.gitattributes` LFS rule for each source type
+- [x] ART-0033 · M0 · P0 · S · Export spec: WebP lossless for UI, WebP q90 for backgrounds, KTX2/Basis for flesh textures, PNG for masters — table in the bible
+- [x] ART-0034 · M0 · P0 · M · Authoring resolution standard: backgrounds at 3840×2160 master, 1920×1080 ship; portraits at 2048 px tall master, 1024 px ship; UI at 2× the 1280×720 virtual space
 - [ ] ART-0035 · Demo · P0 · M · `npm run art:export` batch script: source → resized, trimmed, compressed exports with a manifest JSON (`assets/manifest.json`) of size, hash and atlas page
-- [ ] ART-0036 · Demo · P0 · M · Texture-atlas packer (`tools/pack-atlas.ts`) for UI, icons, ailments and VFX: 2048² pages, 2 px extrude, max-rects packing, a JSON frame map consumed by `gfx.ts`
+- [x] ART-0036 · Demo · P0 · M · Texture-atlas packer (`tools/pack-atlas.ts`) for UI, icons, ailments and VFX: 2048² pages, 2 px extrude, max-rects packing, a JSON frame map consumed by `gfx.ts`
 - [ ] ART-0037 · Demo · P0 · S · Premultiplied-alpha export for all atlased sprites; no dark halos when drawn on parchment and on flesh (visual test page)
-- [ ] ART-0038 · Demo · P1 · S · Spritesheet and flipbook convention (row-major, fixed cell, `fps` in the manifest) for ailment and VFX animation
+- [x] ART-0038 · Demo · P1 · S · Spritesheet and flipbook convention (row-major, fixed cell, `fps` in the manifest) for ailment and VFX animation
 - [ ] ART-0039 · Demo · P1 · M · Hot-reload of `assets/` in the Vite dev server: changing an exported PNG updates the running game within 2 s without restart
 - [ ] ART-0040 · Demo · P1 · S · Art viewer debug scene (`?scene=artview`) listing every manifest entry, with zoom, frame-stepping and a background swatch toggle
 - [ ] ART-0041 · Demo · P1 · M · Placeholder-tracking: every asset in the manifest tagged `placeholder|wip|final`, with a build report counting each; the demo build fails if any demo asset is `placeholder`

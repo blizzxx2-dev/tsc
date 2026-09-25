@@ -1204,7 +1204,7 @@ export class Burn extends Entity {
       g.ellipse(f.x - 3, f.y - 3, 4, 2, rot, hex('#6a5040', 0.6));
     }
     if (this.ember) {
-      g.glow(this.ember.x, this.ember.y, 18, hex('#c060ff', 0.5 + 0.3 * Math.sin(op.elapsed * 9)));
+      g.glow(this.ember.x, this.ember.y, 18, hex('#c060ff', 0.5 + 0.3 * Math.sin(op.elapsed * 9))); // curse-violet: hexfire is Malison-born
       g.circle(this.ember.x, this.ember.y, 4, hex('#f0c0ff'));
     }
     drawCoverage(g, this.cov, this.radiusNow);
@@ -1533,7 +1533,7 @@ export class Venom extends Entity {
       if (m.s >= this.veinLen) {
         m.alive = false;
         op.hurt(V.moteHurt, Venom.heart());
-        op.popup('It reached the heart!', Venom.heart(), '#c890ff');
+        op.popup('It reached the heart!', Venom.heart(), '#e0b040');
       }
     }
     this.motes = this.motes.filter((m) => m.alive);
@@ -1601,7 +1601,7 @@ export class Venom extends Entity {
       const p = pointAlong(this.vein, this.ligature);
       g.circle(p.x, p.y, 5, hex('#efe6c4'));
     }
-    const moteCol = this.color === 'green' ? '#90e060' : '#c890ff';
+    const moteCol = this.color === 'green' ? '#90e060' : '#e0b040';
     for (const m of this.motes) {
       const p = this.motePos(m);
       g.glow(p.x, p.y, 14, hex(moteCol, 0.5));
@@ -1857,7 +1857,7 @@ export class Sigil extends Entity {
     if (this.lashT >= this.lashEvery) {
       this.lashT = 0;
       op.hurt(S.lashHurt, this.pos);
-      op.popup('The curse lashes out!', { x: this.pos.x, y: this.pos.y - this.size - LABEL_GAP }, '#c890ff');
+      op.popup('The curse lashes out!', { x: this.pos.x, y: this.pos.y - this.size - LABEL_GAP }, '#c890ff'); // curse-violet: curse sigil
     }
     // Half-traced curses knit themselves back together.
     if (this.idleT >= S.regressEvery && this.progress > 0) {
@@ -1873,7 +1873,7 @@ export class Sigil extends Entity {
     if (target < 0) return;
     for (const s of this.segs) if (s.stroke === target) s.burned.fill(false);
     this.ignited[target] = false;
-    op.popup('The sigil knits back!', { x: this.pos.x, y: this.pos.y - this.size }, '#c890ff');
+    op.popup('The sigil knits back!', { x: this.pos.x, y: this.pos.y - this.size }, '#c890ff'); // curse-violet: curse sigil
     op.sayOnce('sigil-regress', 'Don’t stop half-way — the curse heals what you leave!');
   }
 
@@ -1946,7 +1946,7 @@ export class Sigil extends Entity {
 
   draw(g: Gfx, op: Operation): void {
     const glow = 0.6 + 0.4 * Math.sin(op.elapsed * 3 + this.id);
-    g.glow(this.pos.x, this.pos.y, this.size * 1.4, hex('#b060ff', 0.12 * glow));
+    g.glow(this.pos.x, this.pos.y, this.size * 1.4, hex('#b060ff', 0.12 * glow)); // curse-violet: curse sigil
     const cur = this.current;
     for (const s of this.segs) {
       const n = s.burned.length;
@@ -1956,8 +1956,8 @@ export class Sigil extends Entity {
         const p1 = { x: s.a.x + ((s.b.x - s.a.x) * (i + 1)) / n, y: s.a.y + ((s.b.y - s.a.y) * (i + 1)) / n };
         if (s.burned[i]) g.line(p0, p1, 5, hex('#2a1a14'));
         else {
-          g.line(p0, p1, 9, hex('#9040ff', 0.25 * glow * (later ? 0.5 : 1)));
-          g.line(p0, p1, 4, hex('#d0a0ff', glow * (later ? 0.55 : 1)));
+          g.line(p0, p1, 9, hex('#9040ff', 0.25 * glow * (later ? 0.5 : 1))); // curse-violet: curse sigil
+          g.line(p0, p1, 4, hex('#d0a0ff', glow * (later ? 0.55 : 1))); // curse-violet: curse sigil
         }
       }
     }
@@ -1970,7 +1970,7 @@ export class Sigil extends Entity {
       if (op.guides) g.text(String(i + 1), nd.x, nd.y + 5, { size: 13, color: hex('#20082a'), align: 'center', shadow: false });
       if (next && this.nodeT > 0) g.arc(nd.x, nd.y, 13, 3, hex('#ff9040'), this.nodeT / 1);
     });
-    g.arc(this.pos.x, this.pos.y, this.size * 0.25, 3, hex('#c88cff', 0.5), this.lashT / this.lashEvery);
+    g.arc(this.pos.x, this.pos.y, this.size * 0.25, 3, hex('#c88cff', 0.5), this.lashT / this.lashEvery); // curse-violet: curse sigil
   }
 }
 

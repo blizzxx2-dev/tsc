@@ -43,8 +43,27 @@ const entries: Record<string, Entry> = {};
 const hash = (b: Buffer | string) => createHash('sha256').update(b).digest('hex').slice(0, 10);
 const posix = (p: string) => p.split(sep).join('/');
 const bundleFor = (id: string) => rules.rules.find((r) => new RegExp(r.match).test(id))?.bundle ?? rules.default;
-const TYPE_BY_DIR: Record<string, string> = { fonts: 'font', luts: 'lut', shaders: 'shader', audio: 'audio', particles: 'json', backdrops: 'image', portraits: 'image' };
-const TYPE_BY_EXT: Record<string, string> = { '.png': 'image', '.jpg': 'image', '.webp': 'image', '.woff2': 'font', '.json': 'json', '.glsl': 'shader', '.ogg': 'audio', '.mp3': 'audio', '.wav': 'audio', '.txt': 'text' };
+const TYPE_BY_DIR: Record<string, string> = {
+  fonts: 'font',
+  luts: 'lut',
+  shaders: 'shader',
+  audio: 'audio',
+  particles: 'json',
+  backdrops: 'image',
+  portraits: 'image',
+};
+const TYPE_BY_EXT: Record<string, string> = {
+  '.png': 'image',
+  '.jpg': 'image',
+  '.webp': 'image',
+  '.woff2': 'font',
+  '.json': 'json',
+  '.glsl': 'shader',
+  '.ogg': 'audio',
+  '.mp3': 'audio',
+  '.wav': 'audio',
+  '.txt': 'text',
+};
 
 function emit(id: string, ext: string, data: Buffer): { url: string; h: string } {
   const h = hash(data);
@@ -86,6 +105,15 @@ if (existsSync(spriteRoot))
     entries[id] = { type: 'sheet', url, bytes: body.length + pages.reduce((n, p) => n + p.png.length, 0), bundle: bundleFor(id), hash: h, pages: pageUrls };
   }
 
+// ---- naming (ART-0031, docs/art/pipeline.md): lowercase kebab-case subject-variant-state, an optional
+// @2x scale suffix; metadata files start with '_' and licence texts are exempt.
+const NAME = /^[a-z0-9]+(-[a-z0-9]+)*(@[1-4]x)?\.[a-z0-9]+$/;
+for (const p of walk(SRC)) {
+  const base = p.split(sep).pop()!;
+  if (base.startsWith('.') || base.startsWith('_') || /^(README|OFL|LICENSE)/i.test(base) || base === 'bundles.json') continue;
+  if (!NAME.test(base)) errors.push(`${posix(relative(SRC, p))}: name must be lowercase kebab-case (subject-variant-state[@2x].ext)`);
+}
+
 // ---- everything else: copied with a content hash.
 for (const p of walk(SRC)) {
   const rel = posix(relative(SRC, p));
@@ -122,11 +150,13 @@ const srcText = walk(join(ROOT, 'src'))
   .map((f) => readFileSync(f, 'utf8'))
   .join('\n');
 for (const m of srcText.matchAll(/\.sprite\(\s*'([^']+)'/g)) if (!frameIds.has(m[1])) errors.push(`src references missing sprite frame '${m[1]}'`);
-for (const m of srcText.matchAll(/(?:assetUrl|assets\.load|assets\.get)\(\s*'([^']+)'/g)) if (!entries[m[1]]) errors.push(`src references missing asset '${m[1]}'`);
+for (const m of srcText.matchAll(/(?:assetUrl|assets\.load|assets\.get)\(\s*'([^']+)'/g))
+  if (!entries[m[1]]) errors.push(`src references missing asset '${m[1]}'`);
 for (const [id, e] of Object.entries(entries)) {
   if (!rules.bundles.includes(e.bundle)) errors.push(`${id}: unknown bundle '${e.bundle}'`);
   const autoUsed = e.type === 'font' || e.type === 'lut' || e.type === 'sheet';
-  if (!autoUsed && e.bytes > UNUSED_LIMIT && !srcText.includes(`'${id}'`)) errors.push(`${id}: ${Math.round(e.bytes / 1024)} KB and never referenced from src/`);
+  if (!autoUsed && e.bytes > UNUSED_LIMIT && !srcText.includes(`'${id}'`))
+    errors.push(`${id}: ${Math.round(e.bytes / 1024)} KB and never referenced from src/`);
 }
 
 // ---- size report + install budget (ENG-0207/0217).
@@ -160,7 +190,8 @@ if (CHECK) {
 }
 
 console.log(`assets: ${ids.length} ids, ${files.size} files, ${(total / 1024).toFixed(0)} KB`);
-for (const b of rules.bundles) console.log(`  ${b.padEnd(13)} ${((perBundle.get(b) ?? 0) / 1024).toFixed(1).padStart(8)} KB  (${ids.filter((i) => entries[i].bundle === b).length} assets)`);
+for (const b of rules.bundles)
+  console.log(`  ${b.padEnd(13)} ${((perBundle.get(b) ?? 0) / 1024).toFixed(1).padStart(8)} KB  (${ids.filter((i) => entries[i].bundle === b).length} assets)`);
 if (errors.length) {
   console.error('asset validation failed:\n  ' + errors.join('\n  '));
   process.exit(1);

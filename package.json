@@ -58,7 +58,8 @@
     "hooks:install": "simple-git-hooks",
     "telemetry:schema": "vite-node scripts/qa/telemetry-schema.ts",
     "test:mutation": "stryker run",
-    "balance": "vitest run tests/sweep.test.ts"
+    "balance": "vitest run tests/sweep.test.ts",
+    "art:palette": "node scripts/art/palette-export.mjs"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.3",

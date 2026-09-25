@@ -1,0 +1,8 @@
+# Source art (ART-0032): layered masters are stored with Git LFS.
+art-src/**/*.psd filter=lfs diff=lfs merge=lfs -text
+art-src/**/*.kra filter=lfs diff=lfs merge=lfs -text
+art-src/**/*.blend filter=lfs diff=lfs merge=lfs -text
+art-src/**/*.aseprite filter=lfs diff=lfs merge=lfs -text
+art-src/**/*.tif filter=lfs diff=lfs merge=lfs -text
+art-src/**/*.tiff filter=lfs diff=lfs merge=lfs -text
+art-src/**/*.png filter=lfs diff=lfs merge=lfs -text

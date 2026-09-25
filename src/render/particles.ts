@@ -97,7 +97,7 @@ export class Particles {
       if (p.kind === 'spark') {
         g.line({ x: p.x, y: p.y }, { x: p.x - p.vx * 0.03, y: p.y - p.vy * 0.03 }, p.size, hex('#ffc070', t));
         g.circleGrad(p.x, p.y, 6, hex('#ff8030', 0.4 * t), hex('#ff8030', 0));
-      } else if (p.kind === 'mote') g.circleGrad(p.x, p.y, p.size * 3, hex('#c080ff', 0.7 * Math.sin(t * Math.PI)), hex('#c080ff', 0));
+      } else if (p.kind === 'mote') g.circleGrad(p.x, p.y, p.size * 3, hex('#c080ff', 0.7 * Math.sin(t * Math.PI)), hex('#c080ff', 0)); // curse-violet: curse motes
       else if (p.kind === 'gold') g.circleGrad(p.x, p.y, p.size * 3, hex('#ffe090', 0.9 * t), hex('#ffe090', 0));
       else if (p.kind === 'dust') g.circleGrad(p.x, p.y, p.size * 3, hex('#fff0c0', 0.35 * Math.sin(t * Math.PI)), hex('#fff0c0', 0));
     }
