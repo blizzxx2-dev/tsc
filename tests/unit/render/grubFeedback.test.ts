@@ -7,7 +7,7 @@ import { RECIPES } from '../../../src/audio/sfx';
 import type { FxEvent } from '../../../src/render/particles';
 import { CURL_SECONDS, KNOT_SECONDS, Particles } from '../../../src/render/particles';
 import type { Gfx } from '../../../src/render/gfx';
-import { Grub, Laceration } from '../../../src/surgery/entities';
+import { BloodPool, Grub, Laceration, LEECH_DROPS } from '../../../src/surgery/entities';
 import { at, Hand, start } from '../../harness';
 
 describe('GAM-0031 the tongs’ clack and grip', () => {
@@ -24,6 +24,31 @@ describe('GAM-0031 the tongs’ clack and grip', () => {
     };
     expect(tips(false)).toBeGreaterThan(12);
     expect(tips(true)).toBeLessThan(4);
+  });
+});
+
+describe('GAM-0035 Leech-Pipe feedback', () => {
+  it('suction droplets and the gurgle scale linearly with the current draw', () => {
+    const drops = (offset: number) => {
+      let pool!: BloodPool;
+      const op = start(() => [(pool = new BloodPool(at(0, 0), 60)), new Laceration(at(300, 100), 0, 30, 0.1)]);
+      let n = 0;
+      let flow = 0;
+      op.events.on('fx', (e) => {
+        if (e.kind !== 'suck') return;
+        n += e.n;
+        flow = pool.flow;
+      });
+      new Hand(op).hold('leech', at(offset, 0), 0.5);
+      return { n: n * 2, flow };
+    };
+    const centre = drops(0);
+    const rim = drops(60);
+    expect(centre.flow).toBeGreaterThan(rim.flow);
+    expect(centre.n).toBeGreaterThan(rim.n);
+    // Linear: droplets per second track LEECH_DROPS × flow.
+    expect(centre.n).toBeGreaterThanOrEqual(Math.floor(LEECH_DROPS * centre.flow) - 2);
+    expect(centre.n).toBeLessThanOrEqual(Math.ceil(LEECH_DROPS * centre.flow) + 1);
   });
 });
 

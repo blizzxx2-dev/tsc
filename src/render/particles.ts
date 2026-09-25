@@ -2,7 +2,7 @@ import type { Vec } from '../core/math';
 import { hex } from './color';
 import type { Gfx } from './gfx';
 
-export type FxKind = 'blood' | 'pus' | 'spark' | 'smoke' | 'mote' | 'gold' | 'dust' | 'curl' | 'knot';
+export type FxKind = 'blood' | 'pus' | 'spark' | 'smoke' | 'mote' | 'gold' | 'dust' | 'curl' | 'knot' | 'suck';
 
 /** Seconds of the knot-tie flourish when a stitch line is finished (GAM-0039). */
 export const KNOT_SECONDS = 0.6;
@@ -52,6 +52,7 @@ export class Particles {
       dust: { speed: 20, life: 3, size: 1.5, spread: 3.14 },
       curl: { speed: 0, life: CURL_SECONDS, size: 9, spread: 0 },
       knot: { speed: 0, life: KNOT_SECONDS, size: 8, spread: 0 },
+      suck: { speed: 60, life: 0.3, size: 1.8, spread: 0.25 },
     };
     const b = base[e.kind];
     if (e.kind === 'curl' || e.kind === 'knot') {
@@ -105,6 +106,10 @@ export class Particles {
           break;
         case 'knot':
           drawKnot(g, p.x, p.y, p.seed, 1 - t);
+          break;
+        case 'suck':
+          // Blood drawn up the Leech-Pipe (GAM-0035): a droplet streaking toward the pipe's mouth.
+          g.line({ x: p.x, y: p.y }, { x: p.x - p.vx * 0.04, y: p.y - p.vy * 0.04 }, p.size, hex('#7a0a10', 0.85 * t));
           break;
         default:
           break;

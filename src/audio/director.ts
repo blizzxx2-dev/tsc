@@ -501,7 +501,8 @@ export class OperationAudio {
     const ichor = pool ? (pool.ichor === 'blood' ? 0 : pool.ichor === 'pus' ? 1 : 2) : 0;
     if (pool && this.loops.get('leech') && this.leechIchor !== ichor) this.loop('leech', 'loop.leech.suck', false);
     this.leechIchor = ichor;
-    this.loop('leech', 'loop.leech.suck', !!pool, pool ? { intensity: Math.min(1, pool.r / 60), ichor } : {}, pan, 40);
+    // The gurgle follows the draw itself (GAM-0035): louder the harder the pipe is pulling.
+    this.loop('leech', 'loop.leech.suck', !!pool, pool ? { intensity: Math.min(1, pool.flow), ichor } : {}, pan, 40);
 
     // Salve: smear while brushing a salvable wound.
     const salving = running && op.tool === 'salve' && input.down && op.entities.some((e) => (e instanceof Rot || e instanceof Burn || (e instanceof Bubo && e.lanced) || (e instanceof Laceration && e.small)) && dist(e.pos, pos) < 70);

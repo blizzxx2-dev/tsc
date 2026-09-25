@@ -64,7 +64,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0032 · Demo · P0 · S · Drain rate 1 pool-unit per 0.9 s at centre, falloff to 40 % at rim — pools < 10 % auto-clear as GOOD
 - [x] GAM-0033 · Demo · P1 · S · Pool rating by speed — cleared within 1.5 s of first contact COOL, 3 s GOOD
 - [x] GAM-0034 · Demo · P1 · S · Blood refill rule — pools over an open laceration refill at the laceration's bleed rate; teaches stitch-first (tutorial callout on third refill)
-- [ ] GAM-0035 · Demo · P2 · S · Leech-Pipe audio/visual feedback — gurgle loop volume and suction particle count scale linearly with current drain rate
+- [x] GAM-0035 · Demo · P2 · S · Leech-Pipe audio/visual feedback — gurgle loop volume and suction particle count scale linearly with current drain rate
 
 ### Gut Thread
 - [x] GAM-0036 · Demo · P0 · M · Zig-zag stitch detection — each crossing of the wound axis counts one stitch; stitch spacing 10–28 px COOL, 6–40 px GOOD; sparse lines leave "gaps" that keep bleeding at 30 % (test)

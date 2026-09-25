@@ -402,12 +402,19 @@ export class StitchLine {
 
 // ============================================================ blood
 
+/** Suction droplets per second at the Leech-Pipe's full draw (GAM-0035). */
+export const LEECH_DROPS = 30;
+
 export class BloodPool extends Entity {
   private startR: number;
   private contactT = -1;
   private touched = false;
   /** The wound that feeds this pool (a wound's refills only pay once). */
   sourceId = 0;
+  /** How hard the Leech-Pipe is drawing on it right now, 0–1 of the best possible rate (presentation: GAM-0035). */
+  flow = 0;
+  private suckAcc = 0;
+  private swept = false;
   noun = 'the pooled blood';
   constructor(
     pos: Vec,
@@ -456,6 +463,16 @@ export class BloodPool extends Entity {
     const falloff = 1 - (1 - B.rimFactor) * clamp(d / (this.r + B.reach), 0, 1);
     const mult = op.upgrades.has('deep-leech') ? 1.2 : 1;
     this.r -= rate * falloff * mult * dt;
+    // Suction feedback scales linearly with the draw: droplets stream up the pipe at up to LEECH_DROPS/s.
+    this.flow = (falloff * mult) / 1.2;
+    this.swept = true;
+    this.suckAcc += LEECH_DROPS * this.flow * dt;
+    const n = Math.floor(this.suckAcc);
+    if (n > 0) {
+      this.suckAcc -= n;
+      const a = Math.atan2(ptr.pos.y - this.pos.y, ptr.pos.x - this.pos.x);
+      op.emit('suck', { x: this.pos.x + Math.cos(a) * this.r * 0.6, y: this.pos.y + Math.sin(a) * this.r * 0.6 }, n, a, 0.25, 40 + d * 2);
+    }
     if (this.r < Math.max(3, this.startR * B.autoClear)) {
       this.kill();
       op.flags.add('drained-any');
@@ -466,6 +483,12 @@ export class BloodPool extends Entity {
       if (this.startR >= B.minRated && took <= B.goodTime) op.rate(took <= B.coolTime ? 'cool' : 'good', this.pos, 'Drained', this.sourceId === 0);
       if (this.ichor === 'blood') op.stain(this.pos, this.startR * 0.9, 0.35);
     }
+  }
+
+  override update(_op: Operation, _dt: number): void {
+    // The draw lasts only while the pipe is on the pool.
+    if (!this.swept) this.flow = 0;
+    this.swept = false;
   }
 
   override drawFluid(g: Gfx, op: Operation): void {
