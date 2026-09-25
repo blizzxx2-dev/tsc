@@ -59,6 +59,7 @@ import { speciesOf, tintBlood } from '../surgery/species';
 import { setVfxBlood } from '../art/vfx';
 import { SalveFilm } from '../render/salveFilm';
 import { RuneScars } from '../render/runeScars';
+import { drawInterpolated } from '../render/interp';
 import { addTray, HudLayer, inRect, trayFrame, traySide, traySlot } from '../input/hud';
 import { drawGraspOutline } from '../input/hover';
 import { HoldToRetry } from '../input/retry';
@@ -648,7 +649,7 @@ export class OperationScene implements Scene {
     return traySlot(i);
   }
 
-  render(g: Gfx, game: Game): void {
+  render(g: Gfx, game: Game, alpha = 1): void {
     const op = this.op;
     presentation.creatureFilter = settings.creatureFilter;
     op.calloutPace = localeInfo(getLocale())?.reading ?? 1;
@@ -742,7 +743,8 @@ export class OperationScene implements Scene {
     // Closed wounds: the sutured scar (ART-0188) over the carved channel; it also appears on the results card.
     for (const sc of op.scars) scarArt(g, sc, 4, 0, presentation.gore === 2 ? 0.5 : 1);
     pushWarp(g, FIELD.cx, FIELD.cy, warp);
-    for (const e of ents) e.draw(g, op);
+    // Between ticks, entities are drawn where they are in between (ENG-0054).
+    drawInterpolated(ents, settings.reduceMotion ? 1 : alpha, (e) => e.draw(g, op));
     // High contrast: a 2 px ring around everything that takes an instrument.
     if (highContrast()) for (const e of ents) if (e.required) g.arc(e.pos.x, e.pos.y, 28, 2, hex('#ffffff', 0.85), 1);
     // Tongs in hand: outline the graspable the next press would seize (INP-0042).

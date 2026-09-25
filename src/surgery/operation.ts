@@ -1244,6 +1244,11 @@ export class Operation {
     this.cues.endFrame();
     this.log?.push(['u', dt]);
     if (this.paused) return;
+    // Render interpolation (ENG-0054): each entity remembers where this tick started.
+    for (const e of this.entities) {
+      e.prevPos.x = e.pos.x;
+      e.prevPos.y = e.pos.y;
+    }
     dt *= this.assists.gameSpeed;
     const T = this.tuning;
     // Presentation timers run in real time.

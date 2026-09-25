@@ -89,7 +89,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 
 ### Frame loop & clocks
 - [x] ENG-0053 · Demo · P0 · M · Fixed-step simulation: 120 Hz accumulator calling `update(FIXED_DT)` up to 8×/frame, then `render(alpha)`; excess time dropped (no spiral of death) — op outcomes identical at 30/60/144 fps render rates (test)
-- [ ] ENG-0054 · Demo · P1 · M · Render interpolation — entities keep `prevPos`/`prevAngle`, views lerp by `alpha`; helper for interpolated scalars (tool heat, Malison orbit)
+- [x] ENG-0054 · Demo · P1 · M · Render interpolation — entities keep `prevPos`/`prevAngle`, views lerp by `alpha`; helper for interpolated scalars (tool heat, Malison orbit)
 - [x] ENG-0055 · Demo · P1 · S · Sub-step input distribution — `Input.path` samples spread across a frame's fixed steps by timestamp, so lancet strokes sample identically at any frame rate (test at 30/60/144)
 - [x] ENG-0056 · Demo · P0 · M · Single `Clock` service — `real`, `sim` (stops on pause/hitstop) and `world` (Litany-scaled) times replace `gfx.time += dt` and scene-local timers
 - [x] ENG-0057 · Demo · P1 · S · Pause semantics: sim and world clocks stop, UI animation and audio ducking continue — unit test that vitals/time do not change across a 10 s pause

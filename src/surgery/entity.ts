@@ -59,7 +59,12 @@ export abstract class Entity {
     return Infinity;
   }
 
-  constructor(public pos: Vec) {}
+  constructor(public pos: Vec) {
+    this.prevPos = { x: pos.x, y: pos.y };
+  }
+
+  /** Where it was at the start of the last tick (render interpolation, ENG-0054). */
+  prevPos: Vec;
 
   /** Vitals lost per second while this entity is alive. */
   drain(_op: Operation): number {
