@@ -365,9 +365,9 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [ ] ART-0229 · Demo · P1 · S · Boss health "thread spool" HUD art that unwinds as the Malison is damaged
 
 ### Matins (Chapter 1 — demo)
-- [ ] ART-0230 · Demo · P0 · M · Matins concept: a shrouded vigil-mass of candle-wax cloth with one great lidded eye — callout sheet with closed/opening/open states
-- [ ] ART-0231 · Demo · P0 · L · Matins sprites: shroud body (idle breathing 12-frame loop), eye open/close flipbook (10 frames), hurt flash and 3 phase-degradation states, replacing the vector `Malison`
-- [ ] ART-0232 · Demo · P0 · M · Matins shader VFX spec: shroud cloth distortion (vertex wobble), eye iris glow ramp and a darkness-vignette pulse on the "watching" rhythm
+- [x] ART-0230 · Demo · P0 · M · Matins concept: a shrouded vigil-mass of candle-wax cloth with one great lidded eye — callout sheet with closed/opening/open states
+- [x] ART-0231 · Demo · P0 · L · Matins sprites: shroud body (idle breathing 12-frame loop), eye open/close flipbook (10 frames), hurt flash and 3 phase-degradation states, replacing the vector `Malison`
+- [x] ART-0232 · Demo · P0 · M · Matins shader VFX spec: shroud cloth distortion (vertex wobble), eye iris glow ramp and a darkness-vignette pulse on the "watching" rhythm
 - [ ] ART-0233 · Demo · P0 · M · Matins death sequence: the shroud unravels into threads and motes (24 frames) with a final eye-close
 - [ ] ART-0234 · Demo · P1 · S · Matins Book-of-Hours card and a boss-intro splash (night vigil miniature)
 
