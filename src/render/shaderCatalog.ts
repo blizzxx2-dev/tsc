@@ -1,0 +1,83 @@
+/**
+ * Every shader program the game can build, variant by variant (ENG-0083): the base programs, the
+ * mediump flesh fallback, each story-scene KIND and the lazily compiled UI programs. `compileCatalog`
+ * compiles and links them all in a throwaway WebGL2 context, so CI can fail on a broken variant by
+ * name before a player's GPU ever sees it.
+ */
+import { BRIGHT_FS, CREATURE_FS, DOWN_FS, FLESH_FS, FLUID_FS, FULL_VS, IMAGE_FS, IMAGE_VS, PORTRAIT_FS, POST_FS, RECT_VS, SCENE_FS, UP_FS } from './shaders';
+import { BATCH_FS, BATCH_VS, FALLBACK_VS, FXAA_FS } from './batch-shaders';
+import { toMediump } from './caps';
+import { UI_ART_FS } from '../art/uiShader';
+import { PLATE_FS } from './shaders/plate';
+import { UPSAMPLE_FS } from './gfx';
+import { PBR_FS, PBR_VS, SHADOW_FS, SHADOW_VS } from './renderer3d';
+
+export interface ShaderVariant {
+  name: string;
+  vs: string;
+  fs: string;
+}
+
+/** Story-scene KINDs (src/scenes/backdrop.ts SCENE_KIND). */
+export const SCENE_KINDS = 16;
+
+export function shaderCatalog(): ShaderVariant[] {
+  const list: ShaderVariant[] = [
+    { name: 'batch', vs: BATCH_VS, fs: BATCH_FS },
+    { name: 'flesh', vs: FULL_VS, fs: FLESH_FS },
+    { name: 'flesh (mediump)', vs: FULL_VS, fs: toMediump(FLESH_FS) },
+    { name: 'bright', vs: FULL_VS, fs: BRIGHT_FS },
+    { name: 'post', vs: FULL_VS, fs: POST_FS },
+    { name: 'fxaa', vs: FALLBACK_VS, fs: FXAA_FS },
+    { name: 'fluid', vs: FULL_VS, fs: FLUID_FS },
+    { name: 'image', vs: IMAGE_VS, fs: IMAGE_FS },
+    { name: 'portrait', vs: RECT_VS, fs: PORTRAIT_FS },
+    { name: 'creature', vs: RECT_VS, fs: CREATURE_FS },
+    { name: 'bloom-down', vs: FULL_VS, fs: DOWN_FS },
+    { name: 'bloom-up', vs: FULL_VS, fs: UP_FS },
+    { name: 'ui-art', vs: RECT_VS, fs: UI_ART_FS },
+    { name: 'ui-plate', vs: RECT_VS, fs: PLATE_FS },
+    { name: 'scene-upsample', vs: FULL_VS, fs: UPSAMPLE_FS },
+    { name: 'pbr', vs: PBR_VS, fs: PBR_FS },
+    { name: 'pbr-shadow', vs: SHADOW_VS, fs: SHADOW_FS },
+  ];
+  for (let k = 0; k < SCENE_KINDS; k++) list.push({ name: `scene KIND ${k}`, vs: FULL_VS, fs: k === 0 ? SCENE_FS : SCENE_FS.replace('#version 300 es', `#version 300 es\n#define KIND ${k}`) });
+  return list;
+}
+
+export interface ShaderFailure {
+  name: string;
+  stage: 'vertex' | 'fragment' | 'link';
+  log: string;
+}
+
+/** Compile and link every variant; returns the failures (empty when all build). */
+export function compileCatalog(gl: WebGL2RenderingContext, variants = shaderCatalog()): ShaderFailure[] {
+  const fails: ShaderFailure[] = [];
+  const compile = (type: number, src: string): WebGLShader | string => {
+    const s = gl.createShader(type)!;
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    if (gl.getShaderParameter(s, gl.COMPILE_STATUS)) return s;
+    const log = gl.getShaderInfoLog(s) ?? 'unknown error';
+    gl.deleteShader(s);
+    return log;
+  };
+  for (const v of variants) {
+    const vs = compile(gl.VERTEX_SHADER, v.vs);
+    const fs = compile(gl.FRAGMENT_SHADER, v.fs);
+    if (typeof vs === 'string') fails.push({ name: v.name, stage: 'vertex', log: vs });
+    if (typeof fs === 'string') fails.push({ name: v.name, stage: 'fragment', log: fs });
+    if (typeof vs !== 'string' && typeof fs !== 'string') {
+      const p = gl.createProgram()!;
+      gl.attachShader(p, vs);
+      gl.attachShader(p, fs);
+      gl.linkProgram(p);
+      if (!gl.getProgramParameter(p, gl.LINK_STATUS)) fails.push({ name: v.name, stage: 'link', log: gl.getProgramInfoLog(p) ?? 'unknown error' });
+      gl.deleteProgram(p);
+    }
+    if (typeof vs !== 'string') gl.deleteShader(vs);
+    if (typeof fs !== 'string') gl.deleteShader(fs);
+  }
+  return fails;
+}

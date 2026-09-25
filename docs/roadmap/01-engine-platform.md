@@ -126,7 +126,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0080 · Demo · P2 · S · Cavity depth cues — Fresnel rim toward the opening edge plus ambient-occlusion falloff under the retractor rim
 - [ ] ENG-0081 · Demo · P0 · M · Bake static fbm/voronoi into 512² tiling noise textures at load; `FLESH_FS` samples textures instead of evaluating 5-octave fbm up to 6× per pixel — flesh pass ≤1.5 ms at 1080p on Intel UHD 620 (GPU timer)
 - [ ] ENG-0082 · Demo · P1 · M · Shader quality tiers High/Medium/Low (octaves, SSS, spec AA, baked vs live noise) chosen by GPU tier and overridable in settings — Low renders the field at 0.75× internal resolution
-- [ ] ENG-0083 · Demo · P0 · S · CI shader compile check — every shader variant × tier compiled and linked in headless Chromium (SwiftShader) during `npm test`; any error fails the build with the variant name
+- [x] ENG-0083 · Demo · P0 · S · CI shader compile check — every shader variant × tier compiled and linked in headless Chromium (SwiftShader) during `npm test`; any error fails the build with the variant name
 - [x] ENG-0084 · Demo · P1 · M · Light rig — up to 3 lights (surgeon's lamp, 2 candles) with colour, radius and flicker uniforms shared by flesh, lit sprites, particles and backdrops
 
 ### Organs, species & anatomy variants

@@ -17,7 +17,7 @@ import { SPECIES_PROFILES, type SpeciesLook } from '../surgery/species';
 import { Renderer3D, type Scene3D } from './renderer3d';
 
 /** Bilinear upsample of a reduced-resolution layer. */
-const UPSAMPLE_FS = `#version 300 es
+export const UPSAMPLE_FS = `#version 300 es
 precision mediump float;
 in vec2 v_uv;
 uniform sampler2D u_tex;

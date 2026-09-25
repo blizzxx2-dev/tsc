@@ -5,6 +5,7 @@
  * Only bundled in dev and QA builds (see ./hooks.ts); `vite build` (production) strips it.
  */
 import { OPTION_TABS, optionRows } from '../scenes/options';
+import { compileCatalog, shaderCatalog, type ShaderFailure } from '../render/shaderCatalog';
 import { LoadingScene } from '../scenes/loading';
 import type { Transition } from '../ui/transition';
 import { CAMPAIGN, allOperations } from '../content/campaign';
@@ -172,6 +173,16 @@ export class DebugApi {
   thaw(): void {
     this.frozen = false;
     if (this.game.transition) this.game.transition.instant = false;
+  }
+
+  /** Compile and link every shader variant in a fresh WebGL2 context (ENG-0083); returns the failures. */
+  compileShaders(): { variants: number; failures: ShaderFailure[] } {
+    const gl = document.createElement('canvas').getContext('webgl2');
+    if (!gl) return { variants: 0, failures: [{ name: 'webgl2', stage: 'link', log: 'no WebGL2 context' }] };
+    const variants = shaderCatalog();
+    const failures = compileCatalog(gl, variants);
+    gl.getExtension('WEBGL_lose_context')?.loseContext();
+    return { variants: variants.length, failures };
   }
 
   /** Which options tab and row index own a settings key (for UI automation that clicks the real screen). */
