@@ -1,4 +1,5 @@
 /** GLSL ES 3.00 sources: post. */
+import { POST_PASSES, postPassDefines, type PostPassDef } from '../postPasses';
 
 export const BRIGHT_FS = /* glsl */ `#version 300 es
 precision mediump float;
@@ -63,7 +64,14 @@ void main() {
   o = vec4(c, 1.0);
 }`;
 
-export const POST_FS = /* glsl */ `#version 300 es
+
+/**
+ * The composite (ENG-0146): one full-screen program whose stages are gated by the pass list in
+ * ../postPasses.ts. `P_<ID>` macros read the `u_pass[]` enable flags, so every pass can be switched
+ * off at runtime (debug overlay/console) without a recompile.
+ */
+export function postShaderSource(passes: readonly PostPassDef[] = POST_PASSES): string {
+  return /* glsl */ `#version 300 es
 precision highp float;
 in vec2 v_uv;
 uniform sampler2D u_scene;
@@ -90,9 +98,13 @@ uniform float u_curse;   // Malison presence 0..1: ink creeping from the edges
 uniform vec2 u_outcome;  // x: flatline 0..1 (desaturate, burn, fade), y: victory 0..1 (warm swell)
 uniform float u_hdr;     // 1 when the scene target is floating point
 uniform vec4 u_prefs;    // player display options (UIX-0105): x grain, y vignette, z brightness gamma, w reduced motion
+uniform float u_flash;   // Reduce Flashing (ENG-0164): 1 full pulses/flashes, 0 held steady
 uniform float u_defocus; // menu depth of field: disc blur radius in px (0 = sharp)
 uniform vec4 u_spot;     // operating lamp: xy centre (0..1, y up), zw radii (0..1); off when z = 0
 uniform float u_spotK;   // how dark the surround falls
+// Per-pass enable flags, in pass-list order (src/render/postPasses.ts).
+uniform float u_pass[${passes.length}];
+${postPassDefines(passes)}
 out vec4 o;
 // Soft shoulder: identity below the knee, gently compresses HDR highlights above it.
 vec3 shoulder(vec3 c) {
@@ -123,44 +135,47 @@ float starShape(vec2 p) {
   return r * (0.75 + 0.35 * abs(m) / (seg * 0.5));
 }
 void main() {
-  vec2 uv = v_uv + u_shake;
+  vec2 uv = v_uv + u_shake * P_SHAKE;
   float aspect = u_res.x / max(u_res.y, 1.0);
+  float litany = u_litany * P_LITANY;
   // Litany: a star-shaped ripple radiates from where the sign was drawn; the world holds still.
   float lring = 0.0;
   // Reduced Motion (UIX-0152): the Litany keeps its sepia tint but the ripple and wobble stop.
-  if (u_litany > 0.0 && u_prefs.w < 0.5) {
+  if (litany > 0.0 && u_prefs.w < 0.5) {
     vec2 lp = (uv - u_litanyCenter) * vec2(aspect, 1.0);
     float sd = starShape(lp);
     float front = u_litanyAge * 0.9;
     lring = exp(-pow((sd - front) * 14.0, 2.0)) * exp(-u_litanyAge * 1.2);
     uv += normalize(lp + 1e-4) / vec2(aspect, 1.0) * lring * 0.012;
-    uv += (uv - u_litanyCenter) * sin(sd * 40.0 - u_time * 3.0) * 0.002 * u_litany;
+    uv += (uv - u_litanyCenter) * sin(sd * 40.0 - u_time * 3.0) * 0.002 * litany;
   }
   // Scrying Lens: a magnifying glass disc with barrel distortion and a fringe at the rim.
   float lensMask = 0.0;
   vec2 lensD = vec2(0.0);
-  if (u_lens.w > 0.0) {
+  float lensW = u_lens.w * P_LENS;
+  if (lensW > 0.0) {
     lensD = (uv - u_lens.xy) * vec2(aspect, 1.0);
     float lr = length(lensD) / u_lens.z;
-    lensMask = (1.0 - smoothstep(0.96, 1.0, lr)) * u_lens.w;
+    lensMask = (1.0 - smoothstep(0.96, 1.0, lr)) * lensW;
     uv = mix(uv, u_lens.xy + (uv - u_lens.xy) * (0.72 + 0.2 * lr * lr), lensMask);
   }
   vec3 c;
   // Chromatic aberration grows toward the frame edge (curses, trauma).
-  float ca = u_chroma * 0.006 + 0.0006;
+  float ca = (u_chroma * 0.006 + 0.0006) * P_CHROMA;
   vec2 dir = (uv - 0.5) * ca;
   c.r = texture(u_scene, uv + dir).r;
   c.g = texture(u_scene, uv).g;
   c.b = texture(u_scene, uv - dir).b;
   // Depth of field for menu backdrops: a 32-tap golden-angle disc; bright taps weigh more, so
   // lights open into soft bokeh discs instead of smearing.
-  if (u_defocus > 0.0) {
+  float defocus = u_defocus * P_DEFOCUS;
+  if (defocus > 0.0) {
     vec3 acc = vec3(0.0);
     float wsum = 0.0;
     vec2 px = 1.0 / u_res;
     for (int i = 0; i < 32; i++) {
       float fi = float(i) + 0.5;
-      float r = sqrt(fi / 32.0) * u_defocus;
+      float r = sqrt(fi / 32.0) * defocus;
       float a = fi * 2.39996323;
       vec3 s = texture(u_scene, uv + vec2(cos(a), sin(a)) * r * px).rgb;
       float w = 1.0 + 4.0 * smoothstep(0.55, 1.2, dot(s, vec3(0.333)));
@@ -169,17 +184,17 @@ void main() {
     }
     c = acc / wsum;
   }
-  c += texture(u_bloom, uv).rgb * u_bloomAmt * (1.0 + u_outcome.y * 1.2);
+  c += texture(u_bloom, uv).rgb * u_bloomAmt * P_BLOOM * (1.0 + u_outcome.y * 1.2);
   if (u_hdr > 0.5) c = shoulder(c);
   // Operating lamp: a soft pool of light on the field; the drape and table fall into shadow.
-  if (u_spot.z > 0.0) {
+  if (u_spot.z > 0.0 && P_SPOT > 0.5) {
     vec2 q = (v_uv - u_spot.xy) / u_spot.zw;
     float r = length(q);
     float lit = 1.0 - smoothstep(0.92, 1.55, r);
     c *= mix(1.0 - u_spotK, 1.06, lit);
   }
   // Per-chapter grade.
-  c = c * u_tint + u_lift;
+  if (P_GRADE > 0.5) c = c * u_tint + u_lift;
 
   if (lensMask > 0.0) {
     float lr = length(lensD) / u_lens.z;
@@ -190,63 +205,72 @@ void main() {
     float sweep = pow(max(0.0, cos(ang - u_time * 2.5)), 24.0) * (1.0 - lr) * 0.35;
     c = mix(c, scry + vec3(0.5, 0.75, 1.0) * sweep, lensMask * 0.75);
     float rim = smoothstep(0.86, 0.97, lr) * (1.0 - smoothstep(0.97, 1.02, lr));
-    c += vec3(0.9, 0.7, 0.35) * rim * u_lens.w * 0.8;
+    c += vec3(0.9, 0.7, 0.35) * rim * lensW * 0.8;
     c.r += smoothstep(0.8, 1.0, lr) * lensMask * 0.12;
     c.b += smoothstep(0.7, 0.95, lr) * lensMask * 0.1;
   }
   // LUT grade, crossfading between two looks.
-  c = mix(lut(u_lutA, c), lut(u_lutB, c), u_lutMix);
+  if (P_LUT > 0.5) c = mix(lut(u_lutA, c), lut(u_lutB, c), u_lutMix);
   float l = dot(c, vec3(0.299, 0.587, 0.114));
-  c *= 1.0 - u_flicker * 0.05;
+  c *= 1.0 - u_flicker * 0.05 * P_FLICKER;
 
-  if (u_litany > 0.0) {
+  if (litany > 0.0) {
     // Sepia, but gold highlights survive — the Litany gilds what it touches.
     vec3 sepia = vec3(l * 1.1, l * 0.95, l * 0.7) + vec3(0.06, 0.04, 0.0);
     float keep = smoothstep(0.55, 0.9, l);
     vec3 gilded = mix(sepia, c * vec3(1.15, 0.95, 0.55), keep);
-    c = mix(c, gilded, u_litany * 0.75);
+    c = mix(c, gilded, litany * 0.75);
     c += vec3(1.0, 0.8, 0.4) * lring * 0.6;
   }
 
   vec2 vq = v_uv - 0.5;
   // Aspect-aware vignette: measured in height units so ultrawide edges aren't crushed.
   float vig = rsmooth(0.85, 0.25, length(vq * vec2(min(aspect / (16.0 / 9.0), 1.0), 0.8)));
-  c *= mix(mix(0.35, 1.0, vig), 1.0 - (1.0 - vig) * 0.25, 1.0 - u_prefs.y);
+  c *= mix(mix(0.35, 1.0, vig), 1.0 - (1.0 - vig) * 0.25, 1.0 - u_prefs.y * P_VIGNETTE);
   // Failing vitals: progressive desaturation and an edge pulse on each heartbeat.
+  // Reduce Flashing holds the pulse at its mean instead of beating.
+  float danger = u_danger * P_DANGER;
   float lumD = dot(c, vec3(0.299, 0.587, 0.114));
-  c = mix(c, vec3(lumD), u_danger * 0.45);
-  c = mix(c, vec3(0.5, 0.0, 0.02), (1.0 - vig) * u_danger * (0.25 + 0.75 * u_beat));
+  c = mix(c, vec3(lumD), danger * 0.45);
+  float beatK = mix(0.5, 0.25 + 0.75 * u_beat, u_flash);
+  c = mix(c, vec3(0.5, 0.0, 0.02), (1.0 - vig) * danger * beatK);
   // A Malison's presence: ink tendrils creep in from the frame edges.
-  if (u_curse > 0.0) {
+  float curse = u_curse * P_CURSE;
+  if (curse > 0.0) {
     float edgeDist = min(min(v_uv.x, 1.0 - v_uv.x) * aspect, min(v_uv.y, 1.0 - v_uv.y));
     float n = 0.0, a = 0.5; vec2 np = v_uv * vec2(aspect, 1.0) * 5.0 + vec2(u_time * 0.05, -u_time * 0.03);
     for (int i = 0; i < 4; i++) { n += a * (0.5 + 0.5 * sin(np.x + sin(np.y * 1.3))) ; np = mat2(1.6, 1.2, -1.2, 1.6) * np; a *= 0.5; }
-    float reach = u_curse * 0.22;
+    float reach = curse * 0.22;
     float ink = rsmooth(reach, reach - 0.08, edgeDist + (n - 0.5) * 0.16);
     c = mix(c, vec3(0.03, 0.0, 0.05), ink * 0.85);
   }
   // Outcomes: the flatline drains colour, burns the film at the edges and fades to black.
-  if (u_outcome.x > 0.0) {
+  vec2 outcome = u_outcome * P_OUTCOME;
+  if (outcome.x > 0.0) {
     float lo = dot(c, vec3(0.299, 0.587, 0.114));
-    c = mix(c, vec3(lo * 0.9, lo * 0.85, lo * 0.8), min(1.0, u_outcome.x * 1.5));
-    float burn = rsmooth(0.9 - u_outcome.x * 0.5, 0.5 - u_outcome.x * 0.5, length(vq) * 1.4 + (ign(v_uv * u_res * 0.05) - 0.5) * 0.1);
-    c = mix(c, vec3(0.35, 0.12, 0.03), (1.0 - burn) * 0.6 * u_outcome.x);
-    c *= 1.0 - smoothstep(0.5, 1.0, u_outcome.x) * 0.9;
+    c = mix(c, vec3(lo * 0.9, lo * 0.85, lo * 0.8), min(1.0, outcome.x * 1.5));
+    float burn = rsmooth(0.9 - outcome.x * 0.5, 0.5 - outcome.x * 0.5, length(vq) * 1.4 + (ign(v_uv * u_res * 0.05) - 0.5) * 0.1);
+    c = mix(c, vec3(0.35, 0.12, 0.03), (1.0 - burn) * 0.6 * outcome.x);
+    c *= 1.0 - smoothstep(0.5, 1.0, outcome.x) * 0.9;
   }
   // Victory: warmth swells.
-  c = mix(c, c * vec3(1.12, 1.02, 0.85), u_outcome.y * 0.6);
-  // Damage: a red flash from the edge nearest the wound.
-  if (u_hurt.z > 0.0) {
+  c = mix(c, c * vec3(1.12, 1.02, 0.85), outcome.y * 0.6);
+  // Damage: a red flash from the edge nearest the wound (halved under Reduce Flashing).
+  float hurt = u_hurt.z * P_DAMAGE * mix(0.5, 1.0, u_flash);
+  if (hurt > 0.0) {
     vec2 hd = normalize(u_hurt.xy + 1e-4);
     float side = max(dot(normalize(vq * vec2(aspect, 1.0) + 1e-4), hd), 0.0);
     float edgeW = smoothstep(0.25, 0.75, length(vq * vec2(1.0, 0.8)));
-    c = mix(c, vec3(0.6, 0.02, 0.03), clamp(u_hurt.z, 0.0, 1.0) * edgeW * (0.35 + 0.65 * side) * 0.8);
+    c = mix(c, vec3(0.6, 0.02, 0.03), clamp(hurt, 0.0, 1.0) * edgeW * (0.35 + 0.65 * side) * 0.8);
   }
 
   // Film grain (animated interleaved-gradient noise), then ±0.5 LSB dither against banding.
   vec2 fc = gl_FragCoord.xy;
-  c += (ign(fc + floor(u_time * 24.0) * 5.588) - 0.5) * 0.03 * u_prefs.x;
-  c = pow(max(c, vec3(0.0)), vec3(1.0 / u_prefs.z));
-  c += (ign(fc + 17.0) - 0.5) / 255.0;
+  c += (ign(fc + floor(u_time * 24.0) * 5.588) - 0.5) * 0.03 * u_prefs.x * P_GRAIN;
+  c = pow(max(c, vec3(0.0)), vec3(1.0 / mix(1.0, u_prefs.z, P_GAMMA)));
+  c += (ign(fc + 17.0) - 0.5) / 255.0 * P_DITHER;
   o = vec4(c, 1.0);
 }`;
+}
+
+export const POST_FS = postShaderSource();

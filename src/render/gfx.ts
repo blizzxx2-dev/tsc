@@ -6,6 +6,7 @@ import { BRIGHT_FS, CREATURE_FS, DOWN_FS, FLESH_FS, FLUID_FS, FULL_VS, IMAGE_FS,
 import { BATCH_FS, BATCH_UNITS, BATCH_VS, FALLBACK_VS, FXAA_FS } from './batch-shaders';
 import { fallbackPlan, FULL_CAPS, probeCaps, toMediump, type FallbackPlan, type GpuCaps } from './caps';
 import { emptyStats, GpuTimer, type FlushReason, type FrameStats } from './profiler';
+import { PostPipeline } from './postPasses';
 import { GlRegistry } from './registry';
 import { SpriteBank, type SpriteOpts } from './sprites';
 import { RenderTargetPool, type Target } from './targets';
@@ -184,7 +185,9 @@ export class Gfx {
   /** Every GL object, for leak counts, VRAM budget and context restore (ENG-0198). */
   readonly registry: GlRegistry;
   /** Player display options as renderer multipliers (UIX-0105); the shell refreshes it every frame. */
-  readonly displayPrefs: DisplayPrefs = { bloom: 1, grain: 1, vignette: 1, gamma: 1, flicker: 1, chroma: 1, still: 0 };
+  readonly displayPrefs: DisplayPrefs = { bloom: 1, grain: 1, vignette: 1, gamma: 1, flicker: 1, chroma: 1, still: 0, flash: 1 };
+  /** The post-process pass list with its runtime enable flags (ENG-0146); the debug console toggles passes here. */
+  readonly postChain = new PostPipeline();
   readonly caps: GpuCaps;
   readonly plan: FallbackPlan;
   readonly targets: RenderTargetPool;
@@ -553,33 +556,38 @@ export class Gfx {
     const world = this.antialiasWorld();
 
     // Bloom v2: soft-knee bright pass into mip 0, box downsample to 1/32, tent upsample back up.
+    // Skipped entirely when the pass is off or the player set bloom to 0 % (ENG-0146/0164).
     const m = this.mips;
-    this.bindTarget(m[0]);
-    gl.useProgram(this.bright);
-    this.bindTex(world, 0);
-    gl.uniform1i(this.u(this.bright, 'u_tex'), 0);
-    gl.uniform1f(this.u(this.bright, 'u_threshold'), p.bloomThreshold ?? 0.78);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
-    gl.useProgram(this.downProg);
-    gl.uniform1i(this.u(this.downProg, 'u_tex'), 0);
-    for (let i = 1; i < m.length; i++) {
-      this.bindTarget(m[i]);
-      this.bindTex(m[i - 1].tex, 0);
-      gl.uniform2f(this.u(this.downProg, 'u_texel'), 1 / m[i - 1].w, 1 / m[i - 1].h);
+    const bloomAmt = p.bloom * 0.35 * this.displayPrefs.bloom;
+    const bloomOn = bloomAmt > 0 && this.postChain.enabled('bloom');
+    if (bloomOn) {
+      this.bindTarget(m[0]);
+      gl.useProgram(this.bright);
+      this.bindTex(world, 0);
+      gl.uniform1i(this.u(this.bright, 'u_tex'), 0);
+      gl.uniform1f(this.u(this.bright, 'u_threshold'), p.bloomThreshold ?? 0.78);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
+      gl.useProgram(this.downProg);
+      gl.uniform1i(this.u(this.downProg, 'u_tex'), 0);
+      for (let i = 1; i < m.length; i++) {
+        this.bindTarget(m[i]);
+        this.bindTex(m[i - 1].tex, 0);
+        gl.uniform2f(this.u(this.downProg, 'u_texel'), 1 / m[i - 1].w, 1 / m[i - 1].h);
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+      }
+      gl.useProgram(this.upProg);
+      gl.uniform1i(this.u(this.upProg, 'u_tex'), 0);
+      gl.uniform1f(this.u(this.upProg, 'u_radius'), 1.0);
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.ONE, gl.ONE);
+      for (let i = m.length - 1; i > 0; i--) {
+        this.bindTarget(m[i - 1]);
+        this.bindTex(m[i].tex, 0);
+        gl.uniform2f(this.u(this.upProg, 'u_texel'), 1 / m[i].w, 1 / m[i].h);
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+      }
+      gl.disable(gl.BLEND);
     }
-    gl.useProgram(this.upProg);
-    gl.uniform1i(this.u(this.upProg, 'u_tex'), 0);
-    gl.uniform1f(this.u(this.upProg, 'u_radius'), 1.0);
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.ONE, gl.ONE);
-    for (let i = m.length - 1; i > 0; i--) {
-      this.bindTarget(m[i - 1]);
-      this.bindTex(m[i].tex, 0);
-      gl.uniform2f(this.u(this.upProg, 'u_texel'), 1 / m[i].w, 1 / m[i].h);
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
-    }
-    gl.disable(gl.BLEND);
 
     // Composite.
     this.bindTarget(null);
@@ -588,13 +596,15 @@ export class Gfx {
     this.bindTex(m[0].tex, 1);
     gl.uniform1i(this.u(this.post, 'u_scene'), 0);
     gl.uniform1i(this.u(this.post, 'u_bloom'), 1);
+    gl.uniform1fv(this.u(this.post, 'u_pass[0]'), this.postChain.flags());
     gl.uniform1f(this.u(this.post, 'u_time'), this.time);
     gl.uniform1f(this.u(this.post, 'u_litany'), p.litany);
     gl.uniform1f(this.u(this.post, 'u_danger'), p.danger);
     // Mip-chain bloom sums five levels; scale so `bloom` keeps its old meaning.
-    gl.uniform1f(this.u(this.post, 'u_bloomAmt'), p.bloom * 0.35 * this.displayPrefs.bloom);
+    gl.uniform1f(this.u(this.post, 'u_bloomAmt'), bloomOn ? bloomAmt : 0);
     const dp = this.displayPrefs;
     gl.uniform4f(this.u(this.post, 'u_prefs'), dp.grain, dp.vignette, dp.gamma, dp.still);
+    gl.uniform1f(this.u(this.post, 'u_flash'), dp.flash ?? 1);
     gl.uniform1f(this.u(this.post, 'u_beat'), p.beat ?? 0);
     gl.uniform1f(this.u(this.post, 'u_curse'), p.curse ?? 0);
     gl.uniform2fv(this.u(this.post, 'u_outcome'), p.outcome ?? [0, 0]);

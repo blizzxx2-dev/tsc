@@ -135,6 +135,11 @@ export interface Settings {
   // privacy
   crashReports: Consent;
   telemetry: Consent;
+  // post-process amounts (ENG-0164): 0–100 % behind the matching toggle
+  bloomAmount: number;
+  grainAmount: number;
+  chromaAmount: number;
+  flickerAmount: number;
 }
 
 interface Base<K extends keyof Settings> {
@@ -213,6 +218,10 @@ export const SETTINGS_SCHEMA: readonly SettingDef[] = [
   d('language', 'language', 'choice', { type: 'enum', options: ['auto', ...SHIPPED_LANGUAGES] }),
   d('crashReports', 'privacy', 'choice', { type: 'enum', options: ['ask', 'on', 'off'] }),
   d('telemetry', 'privacy', 'choice', { type: 'enum', options: ['ask', 'on', 'off'] }),
+  d('bloomAmount', 'graphics', 'slider', { type: 'number', min: 0, max: 100, step: 5 }),
+  d('grainAmount', 'graphics', 'slider', { type: 'number', min: 0, max: 100, step: 5 }),
+  d('chromaAmount', 'graphics', 'slider', { type: 'number', min: 0, max: 100, step: 5 }),
+  d('flickerAmount', 'graphics', 'slider', { type: 'number', min: 0, max: 100, step: 5 }),
 ];
 
 export const DEFAULT_SETTINGS: Readonly<Settings> = Object.freeze({
@@ -271,6 +280,10 @@ export const DEFAULT_SETTINGS: Readonly<Settings> = Object.freeze({
   language: 'auto',
   crashReports: 'ask',
   telemetry: 'ask',
+  bloomAmount: 100,
+  grainAmount: 100,
+  chromaAmount: 100,
+  flickerAmount: 100,
 });
 
 /** Graphics preset contents (PLT-0098). Safe mode uses `low` (PLT-0021). */

@@ -91,6 +91,21 @@ export function buildCommands(api: DebugApi, hooks: ConsoleHooks = {}): CommandR
     { name: 'thaw', help: 'resume normal updates', run: (a) => (a.thaw(), 'running') },
     { name: 'step', usage: '[frames]', help: 'run whole frames while frozen', run: (a, [n]) => (a.step(n ? intArg(n, 'frames') : 1), brief(a)) },
     { name: 'hash', help: 'state hash of the running operation', run: (a) => a.hash() },
+    // Rendering (ENG-0146)
+    {
+      name: 'post',
+      usage: '[pass|all] [on|off]',
+      help: 'list the post-process passes, or enable/disable/toggle one ("post bloom off", "post grain", "post all on")',
+      run: (a, [id, v]) => {
+        if (id === undefined)
+          return a
+            .postPasses()
+            .map((p) => `${p.enabled ? '[x]' : '[ ]'} ${p.id.padEnd(9)} ${p.label}`)
+            .join('\n');
+        const on = a.postPass(id, v === undefined ? undefined : boolArg(v));
+        return `post ${id} ${on ? 'on' : 'off'}`;
+      },
+    },
   );
   if (hooks.telemetry) {
     const t = hooks.telemetry;

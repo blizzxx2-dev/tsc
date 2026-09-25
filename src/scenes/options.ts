@@ -195,10 +195,14 @@ export function optionRows(tabId: OptionsTab): OptionRow[] {
         slider('brightness', 'brightness', 0.7, 1.3, 0.05, (v) => pct(v)),
         { id: 'calibrate', label: 'ui.options.calibrate', kind: 'action', run: (g) => g.push?.(new CalibrateScene(() => g.pop!())) },
         toggle('bloom', 'bloom'),
+        slider('bloom_amount', 'bloomAmount', 0, 100, 5, (v) => `${v}%`),
         toggle('grain', 'grain'),
+        slider('grain_amount', 'grainAmount', 0, 100, 5, (v) => `${v}%`),
         toggle('vignette', 'vignette'),
         toggle('flicker', 'flicker'),
+        slider('flicker_amount', 'flickerAmount', 0, 100, 5, (v) => `${v}%`),
         toggle('chroma', 'chromaticAberration'),
+        slider('chroma_amount', 'chromaAmount', 0, 100, 5, (v) => `${v}%`),
         choice('shake', 'shake', [0, 0.5, 1] as const, () => [t('ui.options.shake_off'), t('ui.options.shake_gentle'), t('ui.options.shake_full')], 'ui.options.shake'),
       ];
     case 'audio':

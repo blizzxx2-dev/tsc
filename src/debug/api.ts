@@ -185,6 +185,24 @@ export class DebugApi {
     return { variants: variants.length, failures };
   }
 
+  /** The post-process pass list with its enable flags (ENG-0146), for the console and overlay. */
+  postPasses(): { id: string; label: string; enabled: boolean; uniforms: readonly string[] }[] {
+    const chain = this.game.gfx.postChain;
+    return chain.passes.map((p) => ({ id: p.id, label: p.label, enabled: chain.enabled(p.id), uniforms: p.uniforms }));
+  }
+
+  /** Enable, disable or (with `on` omitted) toggle one post pass, or `all`. Returns the new state; throws on an unknown id. */
+  postPass(id: string, on?: boolean): boolean {
+    const chain = this.game.gfx.postChain;
+    if (id === 'all') {
+      chain.setAll(on ?? true);
+      return on ?? true;
+    }
+    const ok = on === undefined ? chain.toggle(id) : chain.setEnabled(id, on);
+    if (!ok) throw new Error(`unknown post pass "${id}" (${chain.passes.map((p) => p.id).join(', ')})`);
+    return chain.enabled(id);
+  }
+
   /** Which options tab and row index own a settings key (for UI automation that clicks the real screen). */
   optionLocate(key: string): { tab: string; index: number } | null {
     for (const tab of OPTION_TABS) {

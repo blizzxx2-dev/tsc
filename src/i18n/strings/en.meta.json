@@ -3871,6 +3871,70 @@
     "context": "Options row description.",
     "screenshot": "docs/loc/screens/options.png"
   },
+  "ui.options.bloom_amount": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.bloom_amount_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.grain_amount": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.grain_amount_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.flicker_amount": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.flicker_amount_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.chroma_amount": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.chroma_amount_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
   "ui.options.shake_note": {
     "scene": "options",
     "font": "italic",
