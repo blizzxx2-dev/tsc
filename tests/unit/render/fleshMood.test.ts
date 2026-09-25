@@ -37,3 +37,14 @@ describe('frost presentation (GAM-0103)', () => {
     expect(coldTint(base, 0.5)[2]).toBeLessThan(cold[2]);
   });
 });
+
+describe('muscle and skin organ kinds (ENG-0093)', () => {
+  it('map to their own shader kinds and palettes', async () => {
+    const { organPalette } = await import('../../../src/render/organs');
+    const m = organPalette({ organ: 'muscle' });
+    const s = organPalette({ organ: 'skin' });
+    expect([m.kind, s.kind]).toEqual([7, 8]);
+    expect(m.base[0]).toBeGreaterThan(m.base[2]);
+    expect(s.rough).toBeGreaterThan(m.rough);
+  });
+});

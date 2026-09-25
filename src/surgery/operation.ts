@@ -18,12 +18,12 @@ import { FIRST_HINTS, TUTORIALS, type TutorialStep } from './tutorial';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 
-export type OrganKind = 'flesh' | 'heart' | 'lung' | 'gut' | 'liver' | 'brain' | 'bone';
+export type OrganKind = 'flesh' | 'heart' | 'lung' | 'gut' | 'liver' | 'brain' | 'bone' | 'muscle' | 'skin';
 
 /** Vitals lost to one mistake at or above which the sim announces an `impact` (hitstop, ENG-0058). */
 export const IMPACT_HARM = 5;
 /** Per-organ multiplier on the harm done by mistakes (stray cuts, slips, tears). */
-export const ORGAN_SENSITIVITY: Record<OrganKind, number> = { flesh: 1, heart: 2, lung: 1.5, gut: 1.2, liver: 1.4, brain: 2, bone: 0.8 };
+export const ORGAN_SENSITIVITY: Record<OrganKind, number> = { flesh: 1, heart: 2, lung: 1.5, gut: 1.2, liver: 1.4, brain: 2, bone: 0.8, muscle: 1.1, skin: 0.9 };
 
 /** An organ region on a multi-organ field (elliptical, virtual screen space). */
 export interface OrganRegion {
@@ -89,6 +89,8 @@ export interface OperationDef {
   drape?: 'linen' | 'silk' | 'sackcloth' | 'canvas';
   /** Where it happens (ENG-0272/0274): the hospice by default, a field-triage tent, or the forensic slab. */
   venue?: 'hospice' | 'field' | 'forensic';
+  /** Muscle fibre direction in radians (ENG-0093; the `muscle` organ's striations run along it). */
+  fiber?: number;
   /** Multi-organ fields: regions with their own sensitivity; with two or more, the camera frames one at a time (GAM-0247). */
   regions?: readonly OrganRegion[];
   events?: readonly ScriptedEvent[];

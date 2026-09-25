@@ -138,7 +138,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0090 · Demo · P2 · S · Liver surface — glossy capsule, lobular pattern, optional bile-stain tint uniform
 - [x] ENG-0091 · Demo · P2 · S · Brain surface — gyri/sulci from warped ridged noise, translucent meningeal veil layer, faint pulse
 - [x] ENG-0092 · Demo · P2 · S · Bone surface — cortical/cancellous texture, periosteum film, dry low specular
-- [ ] ENG-0093 · Demo · P1 · M · New organ kinds for Ch1–2 briefs — `muscle` (striated fibres along a direction uniform) and `skin` (pores, fine hair, sweat sheen) wired through `OrganKind`/`organPalette`
+- [x] ENG-0093 · Demo · P1 · M · New organ kinds for Ch1–2 briefs — `muscle` (striated fibres along a direction uniform) and `skin` (pores, fine hair, sweat sheen) wired through `OrganKind`/`organPalette`
 - [x] ENG-0094 · Demo · P1 · M · Data-driven `SpeciesProfile` (human, dwarf, elf, halfling, orc): base/deep/vein tints, fat ratio, surface scale, spec gain — replaces `RACE_TINT`, which currently never tints veins
 - [ ] ENG-0095 · Demo · P2 · M · Species details: orc thick green-grey dermis and dark blood, dwarf dense fibrous tissue with higher gloss, elf pale translucent vessels — art sign-off in shader lab
 - [x] ENG-0096 · Demo · P1 · S · Species blood colour source of truth — one table consumed by BloodPool, particles and decal maps (no hard-coded reds left; grep check)

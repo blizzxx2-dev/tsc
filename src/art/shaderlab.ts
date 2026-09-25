@@ -16,7 +16,7 @@ import { VIEW_H, VIEW_W } from '../ui/layout';
 import { caps, INK } from '../ui/hudKit';
 import { reticle } from '../ui/widgets';
 
-const ORGANS: OrganKind[] = ['flesh', 'heart', 'lung', 'gut', 'liver', 'brain', 'bone'];
+const ORGANS: OrganKind[] = ['flesh', 'heart', 'lung', 'gut', 'liver', 'brain', 'bone', 'muscle', 'skin'];
 const GRADES = ['candle', 'dawn', 'curse', 'failing', 'neutral'];
 
 const GRID = { x: 110, y: 58, w: VIEW_W - 130, h: VIEW_H - 96 };

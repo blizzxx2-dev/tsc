@@ -16,7 +16,7 @@ import { VIEW_H, VIEW_W } from '../ui/layout';
 import { giltText, oakPanel, UI } from '../ui/ornaments';
 import { brassSlider, inRect, reticle } from '../ui/widgets';
 
-const ORGANS: OrganKind[] = ['flesh', 'heart', 'lung', 'gut', 'liver', 'brain', 'bone'];
+const ORGANS: OrganKind[] = ['flesh', 'heart', 'lung', 'gut', 'liver', 'brain', 'bone', 'muscle', 'skin'];
 type Species = NonNullable<OperationDef['race']>;
 const SPECIES: Species[] = ['human', 'dwarf', 'elf', 'orc', 'hornfolk', 'giant'];
 const GRADES = ['candle', 'dawn', 'curse', 'failing', 'neutral'];

@@ -137,6 +137,8 @@ export interface FleshParams {
   curseMap?: { tex: WebGLTexture; xf: Float32Array } | null;
   /** Venue (ENG-0272/0274): 0 hospice, 1 field triage, 2 forensic slab. */
   venue?: number;
+  /** Muscle fibre direction, radians (ENG-0093). */
+  fiber?: number;
   /** The Hour's corruption palette (src/art/curse.ts): vein glow and secondary (necrosis/scar) colour. */
   curse?: { vein: readonly [number, number, number]; accent: readonly [number, number, number] };
 }
@@ -1474,6 +1476,7 @@ export class Gfx {
     gl.uniform1f(this.u(pr, 'u_time'), this.time);
     gl.uniform1i(this.u(pr, 'u_kind'), f.kind);
     gl.uniform1i(this.u(pr, 'u_venue'), f.venue ?? 0);
+    gl.uniform2f(this.u(pr, 'u_fiber'), Math.cos(f.fiber ?? 0), Math.sin(f.fiber ?? 0));
     gl.uniform3fv(this.u(pr, 'u_base'), f.base);
     gl.uniform3fv(this.u(pr, 'u_deep'), f.deep);
     gl.uniform3fv(this.u(pr, 'u_vein'), f.vein);

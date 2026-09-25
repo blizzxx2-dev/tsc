@@ -91,6 +91,8 @@ uniform float u_time;
 uniform int u_kind;
 // Venue (ENG-0272/0274): 0 hospice, 1 field triage, 2 forensic slab.
 uniform int u_venue;
+// Muscle fibre direction (ENG-0093), unit vector in view space (y down).
+uniform vec2 u_fiber;
 uniform vec3 u_base;
 uniform vec3 u_deep;
 uniform vec3 u_vein;
@@ -233,6 +235,36 @@ void main() {
     col = mix(col, vec3(0.86, 0.82, 0.7), 0.6) * (0.78 + 0.3 * c);
     col *= 1.0 - (1.0 - smoothstep(0.0, 0.12, cells(uv * 9.0))) * 0.25;
     col = mix(col, vec3(0.8, 0.45, 0.4), 0.12);
+  } else if (u_kind == 7) {
+    // Muscle (ENG-0093): striated fibres along u_fiber, bundled into fascicles with pale
+    // perimysium between them, and a silky sheen that runs along the grain.
+    vec2 fd = normalize(u_fiber + vec2(1e-4, 0.0));
+    vec2 fp = vec2(-fd.y, fd.x);
+    vec2 fq2 = vec2(dot(q, fd), dot(q, fp)) * 4.0;
+    float wobble = fbm(vec2(fq2.x * 0.3, fq2.y * 1.5)) * 0.8;
+    float fibre = 0.5 + 0.5 * sin((fq2.y + wobble) * 55.0);
+    float fascicle = 1.0 - abs(fract((fq2.y + wobble) * 3.2) - 0.5) * 2.0;
+    c = fibre;
+    col *= 0.78 + 0.22 * fibre;
+    col = mix(col, vec3(0.86, 0.72, 0.68), rsmooth(0.12, 0.03, fascicle) * 0.35);
+    col *= 0.92 + 0.12 * sin(fq2.x * 2.0 + fbm(fq2) * 3.0);
+  } else if (u_kind == 8) {
+    // Skin (ENG-0093): pores, fine hair laid one way, and a sweat sheen of tiny beads.
+    vec2 pc = floor(uv * 18.0);
+    vec2 pf = fract(uv * 18.0) - 0.5 - (vec2(hash(pc), hash(pc + 4.1)) - 0.5) * 0.6;
+    float pore = rsmooth(0.1, 0.03, length(pf)) * step(0.3, hash(pc + 2.2));
+    c = 1.0 - pore;
+    col = mix(col, col * 0.68, pore * 0.55);
+    vec2 hp2 = floor(uv * 26.0);
+    vec2 hf = fract(uv * 26.0) - 0.5;
+    float hairOn = step(0.82, hash(hp2 + 3.0));
+    float hair = rsmooth(0.05, 0.0, abs(hf.x * 0.8 + hf.y * 0.6 - (hash(hp2) - 0.5) * 0.2)) * rsmooth(0.45, 0.3, length(hf));
+    col = mix(col, col * 0.45, hair * hairOn * 0.6);
+    col *= 0.94 + 0.08 * fbm(uv * 3.0);
+    // Sweat: scattered beads that catch the lamp.
+    vec2 bp = floor(uv * 14.0);
+    float bead = rsmooth(0.09, 0.0, length(fract(uv * 14.0) - 0.5 - (vec2(hash(bp), hash(bp + 1.7)) - 0.5) * 0.5)) * step(0.88, hash(bp + 9.1));
+    col += vec3(1.0, 0.97, 0.92) * bead * 0.3;
   } else if (u_kind == 1) {
     // Heart: coronary vessels along warped ridges, epicardial fat streaks, darker in diastole.
     vec2 w = uv * 0.8 + vec2(fbm(uv * 0.5), fbm(uv * 0.5 + 3.0)) * 1.8;
@@ -248,7 +280,8 @@ void main() {
   // Veins: ridged noise.
   float v = 1.0 - abs(fbm(uv * 0.7 + 10.0) * 2.0 - 1.0);
   v = pow(v, 14.0);
-  col = mix(col, u_vein, v * u_veinAmt);
+  // Skin hides its veins (ENG-0093): only a faint tracery shows through.
+  col = mix(col, u_vein, v * u_veinAmt * (u_kind == 8 ? 0.3 : 1.0));
 
   // Wet specular from a smooth, low-frequency height field (finite differences, not dFdx,
   // so the highlight rolls over broad swells instead of sparkling on every noise texel).

@@ -795,6 +795,7 @@ export class OperationScene implements Scene {
       // The dead have no pulse (ENG-0274).
       pulse: venue === 'forensic' ? 0 : this.pulse,
       venue: VENUE_ID[venue],
+      fiber: op.def.fiber,
       warp,
       light: vc(light),
       corrupt: this.fleshCurse,

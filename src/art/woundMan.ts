@@ -45,7 +45,7 @@ const WORDS: [RegExp, Site][] = [
   [/\b(leg|shin|knee|calf)\b/i, 'leg'],
   [/\b(foot|ankle)\b/i, 'foot'],
 ];
-const ORGAN_SITE: Record<OrganKind, Site> = { flesh: 'chest', heart: 'heart', lung: 'chest', gut: 'belly', liver: 'belly', brain: 'head', bone: 'leg' };
+const ORGAN_SITE: Record<OrganKind, Site> = { flesh: 'chest', heart: 'heart', lung: 'chest', gut: 'belly', liver: 'belly', brain: 'head', bone: 'leg', muscle: 'leg', skin: 'chest' };
 
 export interface Pin {
   site: Site;

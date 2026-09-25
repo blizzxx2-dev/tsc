@@ -4,7 +4,7 @@ import { speciesOf, tintBlood, type SpeciesLook } from '../surgery/species';
 
 type RGB = [number, number, number];
 
-const KIND_INDEX: Record<OrganKind, number> = { flesh: 0, heart: 1, lung: 2, gut: 3, liver: 4, brain: 5, bone: 6 };
+const KIND_INDEX: Record<OrganKind, number> = { flesh: 0, heart: 1, lung: 2, gut: 3, liver: 4, brain: 5, bone: 6, muscle: 7, skin: 8 };
 
 const ORGAN: Record<OrganKind, { base: string; deep: string; vein: string }> = {
   flesh: { base: '#c46a5c', deep: '#7a2a28', vein: '#4a1030' },
@@ -14,12 +14,15 @@ const ORGAN: Record<OrganKind, { base: string; deep: string; vein: string }> = {
   liver: { base: '#8a2a2a', deep: '#40080c', vein: '#200410' },
   brain: { base: '#d8a8a0', deep: '#9a6a70', vein: '#8a2030' },
   bone: { base: '#c89880', deep: '#6a3a30', vein: '#5a1a20' },
+  // ENG-0093: deep red striated muscle; pale skin with pores and fine hair.
+  muscle: { base: '#a8323a', deep: '#5a1016', vein: '#3a0a20' },
+  skin: { base: '#d8a088', deep: '#a86a58', vein: '#7a4050' },
 };
 
 /** Membrane edge softness per organ: crisp alveoli, softer fat lobules. */
-const CELL_SOFT: Record<OrganKind, number> = { flesh: 0.1, heart: 0.08, lung: 0.05, gut: 0.09, liver: 0.07, brain: 0.08, bone: 0.12 };
+const CELL_SOFT: Record<OrganKind, number> = { flesh: 0.1, heart: 0.08, lung: 0.05, gut: 0.09, liver: 0.07, brain: 0.08, bone: 0.12, muscle: 0.08, skin: 0.1 };
 /** Base roughness per organ: glossy serosa and heart, matte skin and bone. */
-const ROUGH: Record<OrganKind, number> = { flesh: 0.55, heart: 0.38, lung: 0.45, gut: 0.35, liver: 0.4, brain: 0.5, bone: 0.6 };
+const ROUGH: Record<OrganKind, number> = { flesh: 0.55, heart: 0.38, lung: 0.45, gut: 0.35, liver: 0.4, brain: 0.5, bone: 0.6, muscle: 0.42, skin: 0.62 };
 
 /** Organ colours shifted by the patient's people, and that people's full look for the shader. */
 export function organPalette(def: Pick<OperationDef, 'organ' | 'race'>): { kind: number; base: RGB; deep: RGB; vein: RGB; cellSoft: number; rough: number; species: SpeciesLook } {
