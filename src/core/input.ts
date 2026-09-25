@@ -53,6 +53,10 @@ export interface FrameSource {
 
 /** Mouse travel (px) needed to switch prompts back from gamepad to mouse, so resting hands don't flicker. */
 export const DEVICE_SWITCH_MOUSE_PX = 4;
+/** Precision modifier (INP-0067): pointer travel is scaled by this while `op.precision` is held. */
+export const PRECISION_SCALE = 0.5;
+/** Once the modifier is released the cursor eases back onto the OS pointer: the offset shrinks by this per sample. */
+const PRECISION_EASE = 0.85;
 const MAX_PATH = 64;
 const MAX_QUEUE = 4096;
 
@@ -113,6 +117,9 @@ export class Input {
   private queue: InputEvent[] = [];
   private lastT = 0;
   private mouseTravel = 0;
+  /** Precision modifier state: the last raw mouse sample and the cursor's offset from it. */
+  private rawPos: Vec | null = null;
+  private precOff: Vec = { x: 0, y: 0 };
   private rect: ClientRect | null = null;
   private suppressed = false;
   /** Frame-level accumulation of per-tick edges, shown to render. */
@@ -229,8 +236,9 @@ export class Input {
     let cur = this.pos;
     for (const e of events) if (e.type === 'move') cur = { x: e.x, y: e.y };
     const step = dt ?? Math.min(0.05, Math.max(0, now - t0) / 1000);
-    // The virtual cursor moves from wherever the pointer is now.
-    const moved = this.cursor.step(cur, sticks, step, { speed: prefs.cursorSpeed, slow: this.cursorSlow(cur), nudge: this.nudge });
+    // The virtual cursor moves from wherever the pointer is now; the precision modifier halves its speed (INP-0067).
+    const precise = this.actions.down('op.precision') ? PRECISION_SCALE : 1;
+    const moved = this.cursor.step(cur, sticks, step, { speed: prefs.cursorSpeed * precise, slow: this.cursorSlow(cur), nudge: this.nudge });
     if (moved.x !== cur.x || moved.y !== cur.y) events.push({ t: now, type: 'move', x: moved.x, y: moved.y, src: 'pad' });
     for (const e of events) e.t = Math.min(now, Math.max(t0, e.t));
     const device = this.trackDevice(events, sticks);
@@ -280,9 +288,14 @@ export class Input {
     this.rightPressed = false;
     this.wheel = 0;
     this.pos = { ...frame.start };
-    for (const ev of frame.events) {
+    for (let ev of frame.events) {
       let edges: Edge[];
       if (ev.type === 'move') {
+        // Mouse samples pass through the precision modifier; the recorded frame keeps the raw sample.
+        if (ev.src === 'kbm') {
+          const p = this.precise(ev);
+          if (p.x !== ev.x || p.y !== ev.y) ev = { ...ev, x: p.x, y: p.y };
+        }
         this.pos = { x: ev.x, y: ev.y };
         if (this.path.length < MAX_PATH) this.path.push(this.pos);
         edges = [];
@@ -316,6 +329,25 @@ export class Input {
     a.released ||= this.released;
     a.rightPressed ||= this.rightPressed;
     a.wheel += this.wheel;
+  }
+
+  /**
+   * Precision modifier (INP-0067): while held, the cursor moves by `PRECISION_SCALE` of the mouse's
+   * travel, drifting away from the OS pointer; once released the drift eases out over the next samples.
+   */
+  private precise(raw: Vec): Vec {
+    const prev = this.rawPos ?? raw;
+    this.rawPos = { x: raw.x, y: raw.y };
+    const off = this.precOff;
+    if (this.actions.down('op.precision')) {
+      off.x += (prev.x - raw.x) * (1 - PRECISION_SCALE);
+      off.y += (prev.y - raw.y) * (1 - PRECISION_SCALE);
+    } else if (off.x || off.y) {
+      off.x *= PRECISION_EASE;
+      off.y *= PRECISION_EASE;
+      if (Math.hypot(off.x, off.y) < 0.5) off.x = off.y = 0;
+    }
+    return { x: raw.x + off.x, y: raw.y + off.y };
   }
 
   private noteEdge(e: Edge): void {

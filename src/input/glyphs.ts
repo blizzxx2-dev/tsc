@@ -118,17 +118,16 @@ export const glyphContext = (): GlyphContext => context;
 
 /** The label for an action on the current (or given) device: its first binding for that device. */
 export function glyphFor(action: ActionId, device: Device = context.device, b: Bindings = defaultBindings): string {
-  const set = b.get(action);
+  // `shown` applies the layout preferences (Nintendo face buttons, left-handed mouse) slot by slot.
+  const set = b.shown(action);
   const list = device === 'pad' && set.pad.length ? set.pad : set.kbm.length ? set.kbm : set.pad;
   if (!list.length) return '—';
-  let code = list[0];
-  if (device === 'pad' && b.prefs.nintendoLayout) code = code === 'pad:0' ? 'pad:1' : code === 'pad:1' ? 'pad:0' : code;
-  return codeLabel(code, device === 'pad' ? context.glyphs : 'xbox');
+  return codeLabel(list[0], device === 'pad' ? context.glyphs : 'xbox');
 }
 
 /** A "hold and drag" prompt, e.g. "Right-drag" or "Hold LT". */
 export function dragGlyphFor(action: ActionId, device: Device = context.device, b: Bindings = defaultBindings): string {
-  const set = b.get(action);
+  const set = b.shown(action);
   const code = device === 'pad' && set.pad.length ? set.pad[0] : set.kbm[0];
   if (!code) return '—';
   if (code.startsWith('mouse:')) return MOUSE_DRAG[Number(code.slice(6))] ?? `${codeLabel(code)} drag`;

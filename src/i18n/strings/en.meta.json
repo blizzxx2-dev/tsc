@@ -6226,5 +6226,194 @@
     "maxPx": 260,
     "context": "Beside the cursor over a target the instrument in hand cannot treat; {tool} is the instrument it needs.",
     "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.not_in_kit": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 360,
+    "context": "Floating popup over the field when a hotkey names an instrument the kit lacks."
+  },
+  "action.op.precision": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned."
+  },
+  "action.op.retry": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned."
+  },
+  "ctl.pref.grab": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned."
+  },
+  "ctl.pref.grab_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description."
+  },
+  "ctl.pref.auto_tool": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned."
+  },
+  "ctl.pref.auto_tool_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description."
+  },
+  "ctl.pref.left_handed": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned."
+  },
+  "ctl.pref.left_handed_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description."
+  },
+  "ctl.tab.presets": {
+    "scene": "options",
+    "font": "display",
+    "size": 12,
+    "maxPx": 146,
+    "context": "Controls screen tab label, upper-case."
+  },
+  "ctl.preset.default": {
+    "scene": "options",
+    "font": "body",
+    "size": 18,
+    "maxPx": 360,
+    "context": "Binding preset name."
+  },
+  "ctl.preset.left": {
+    "scene": "options",
+    "font": "body",
+    "size": 18,
+    "maxPx": 360,
+    "context": "Binding preset name."
+  },
+  "ctl.preset.trackpad": {
+    "scene": "options",
+    "font": "body",
+    "size": 18,
+    "maxPx": 360,
+    "context": "Binding preset name."
+  },
+  "ctl.preset.default_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 820,
+    "context": "Binding preset description."
+  },
+  "ctl.preset.left_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 820,
+    "context": "Binding preset description."
+  },
+  "ctl.preset.trackpad_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 820,
+    "context": "Binding preset description."
+  },
+  "ctl.preset.preview": {
+    "scene": "options",
+    "font": "body",
+    "size": 13,
+    "maxPx": 200,
+    "context": "Heading over the preset preview list."
+  },
+  "ctl.preset.no_changes": {
+    "scene": "options",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 820,
+    "context": "Preset preview when nothing differs."
+  },
+  "ctl.preset.change": {
+    "scene": "options",
+    "font": "body",
+    "size": 15,
+    "maxPx": 440,
+    "context": "One line of the preset preview: what a binding or option changes from and to."
+  },
+  "ctl.preset.apply": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 200,
+    "context": "Footer button on the presets tab."
+  },
+  "ctl.preset.applied": {
+    "scene": "options",
+    "font": "body",
+    "size": 17,
+    "maxPx": 600,
+    "context": "Confirmation line after a preset is applied."
+  },
+  "ui.options.grab_mode": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned."
+  },
+  "ui.options.grab_mode_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description."
+  },
+  "ui.options.auto_tool": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned."
+  },
+  "ui.options.auto_tool_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description."
+  },
+  "ui.options.left_handed": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned."
+  },
+  "ui.options.left_handed_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description."
   }
 }

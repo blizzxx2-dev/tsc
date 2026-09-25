@@ -123,6 +123,22 @@ export function magnet(p: Vec, zones: readonly Zone[], scale: number, kinds: rea
   return { p: { x: best.q.x + (p.x - best.q.x) * k, y: best.q.y + (p.y - best.q.y) * k }, zone: best.z };
 }
 
+/**
+ * Grab snapping (INP-0042): the graspable the Tongs would seize from `p` — the nearest
+ * grab zone within its radius × Target Size — so the scene can outline it under the hand.
+ */
+export function hoveredGraspable(op: Operation, p: Vec, scale = 1): Zone | null {
+  let best: { z: Zone; ratio: number } | null = null;
+  for (const z of zonesFor(op, 'tongs')) {
+    if (z.kind !== 'press') continue;
+    const { d } = z.closest(p);
+    if (d > z.r * scale) continue;
+    const ratio = d / z.r;
+    if (!best || ratio < best.ratio) best = { z, ratio };
+  }
+  return best?.z ?? null;
+}
+
 /** Brush-tool widening: extra zero-time samples on a ring so the Salve covers `26 × scale` px. */
 export const SALVE_BRUSH = 26;
 export function brushRing(p: Vec, scale: number): Vec[] {

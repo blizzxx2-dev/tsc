@@ -21,6 +21,7 @@ import type { JournalEvent } from '../src/surgery/events';
 import type { Input } from '../src/core/input';
 import type { Game } from '../src/core/scene';
 import { OperationScene } from '../src/scenes/operation';
+import { CHATTER_MS, CHATTER_PX } from '../src/input/opinput';
 import { planLater } from './bot-later';
 import type { TinctureColor } from '../src/surgery/progress';
 import { botPlanAlpha, isAlphaEntity } from './botAlpha';
@@ -540,6 +541,9 @@ export function playWithBotThroughInput(def: OperationDef, input: Input, opts: B
   let prev: Vec = { x: FIELD.cx, y: FIELD.cy };
   let wasDown = false;
   let frames = 0;
+  // The bot ends one hold and starts the next in the same instant. A real re-click at the same spot is slower
+  // than a switch bounce, so a press that would otherwise read as chatter (INP-0034) waits the window out.
+  let lastUp: { t: number; pos: Vec } | null = null;
   const TOOLS: ToolId[] = ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture', 'brand', 'lens'];
   while ((op.status === 'intro' || op.status === 'running') && frames < maxSeconds * 60) {
     frames++;
@@ -555,8 +559,14 @@ export function playWithBotThroughInput(def: OperationDef, input: Input, opts: B
         if (ev.tincture) for (let i = 0; i < 4 && op.tinctureColor !== ev.tincture; i++) op.cycleTincture();
         const p = ev.ptr.pos;
         if (p.x !== prev.x || p.y !== prev.y) input.push({ t: t + 3, type: 'move', x: p.x, y: p.y, src: 'kbm' });
-        if (ev.ptr.down && !wasDown) input.push({ t: t + 4, type: 'down', code: 'mouse:0' });
-        if (!ev.ptr.down && wasDown) input.push({ t: t + 4, type: 'up', code: 'mouse:0' });
+        if (ev.ptr.down && !wasDown) {
+          const bounce = lastUp && t + 4 - lastUp.t <= CHATTER_MS && Math.hypot(p.x - lastUp.pos.x, p.y - lastUp.pos.y) <= CHATTER_PX;
+          input.push({ t: bounce ? lastUp!.t + CHATTER_MS + 2 : t + 4, type: 'down', code: 'mouse:0' });
+        }
+        if (!ev.ptr.down && wasDown) {
+          input.push({ t: t + 4, type: 'up', code: 'mouse:0' });
+          lastUp = { t: t + 4, pos: p };
+        }
         if (ev.wheel) op.wheel(ev.wheel);
         wasDown = ev.ptr.down;
         prev = p;

@@ -17,9 +17,20 @@ import type { InputEvent } from './types';
 
 /** Tools whose action is "hold the button": the Toggle-hold option and the hold key apply to these. */
 export const HOLD_TOOLS: readonly ToolId[] = ['leech', 'salve', 'tincture', 'brand'];
+/**
+ * Tools whose release carries no judgement of its own, so it can be held back for the
+ * chatter window (INP-0034) without adding latency to anything that is judged on release
+ * (an extraction, an incision stroke). Chatter on these would otherwise reset an
+ * injection or a searing, or split one stitching stroke into two.
+ */
+export const DEBOUNCED_TOOLS: readonly ToolId[] = [...HOLD_TOOLS, 'thread'];
 /** A pointer jump larger than this in one sample breaks the stroke instead of drawing a giant segment. */
 export const TELEPORT_PX = 200;
 const MAX_TRAIL = 4000;
+/** Button chatter (INP-0034): a release followed by a press within this many ms, with the pointer still, is one hold. */
+export const CHATTER_MS = 60;
+/** …"still" means the pointer moved no more than this many px between the release and the press. */
+export const CHATTER_PX = 3;
 
 /** HUD hit-test: return a tool to select it, 'consume' to swallow the press, or null to let it through. */
 export type HudHit = (p: Vec) => ToolId | 'consume' | null;
@@ -45,6 +56,10 @@ export class OperationInput {
   disconnectNotice = false;
   /** Toggle-hold: a hold tool is running without the button held. */
   latched = false;
+  /** Click-to-toggle grab (INP-0044): the Tongs hold something without the button held. */
+  grabLatched = false;
+  /** Tray shake (0..1) after a hotkey for an instrument the kit lacks (INP-0048); presentation only. */
+  trayShake = 0;
   /** View → world mapping (the operation camera). Input, HUD and the radial live in view space; entities in world space. */
   toWorld: (p: Vec) => Vec = (p) => p;
   toView: (p: Vec) => Vec = (p) => p;
@@ -63,6 +78,14 @@ export class OperationInput {
   private strokeZone: Zone | null = null;
   private stitch = new StitchAssist();
   private pad = false;
+  /**
+   * A primary release held back for the chatter window (INP-0034): if the button
+   * comes straight back down without the pointer moving, the release never happened.
+   * `owed` is hold time accrued while waiting, paid to the sim if the hold resumes.
+   */
+  private pending: { t: number; pos: Vec; owed: number } | null = null;
+  private lastRelease: { t: number; pos: Vec } = { t: -Infinity, pos: { x: 0, y: 0 } };
+  private kitWarned = false;
 
   constructor(private b: Bindings = defaultBindings) {}
 
@@ -77,6 +100,7 @@ export class OperationInput {
 
   /** The operation is paused: end any stroke (grabs return to origin), drop the star and the radial. */
   suspend(op: Operation): void {
+    this.pending = null;
     if (this.opDown) this.cancelStroke(op);
     this.latched = false;
     this.holdKeyActive = false;
@@ -104,7 +128,8 @@ export class OperationInput {
     }
     for (const e of input.tailEdges) this.edge(op, input, e, null, hud);
     this.flush(op, f.t);
-    if (noSpan) this.send(op, 'hold', this.cursor, dt);
+    if (noSpan && !this.pending) this.send(op, 'hold', this.cursor, dt);
+    this.trayShake = Math.max(0, this.trayShake - dt * 4);
 
     this.radial.update(this.cursor, f.sticks, dt);
     // Aim assist and the right-stick nudge for the next frame's virtual cursor.
@@ -116,6 +141,8 @@ export class OperationInput {
 
   private move(op: Operation, t: number, p: Vec): void {
     if (this.drawing && this.starTrail.length < MAX_TRAIL) this.starTrail.push(p);
+    // A held-back release is delivered as soon as the pointer travels or the chatter window closes.
+    if (this.pending && (dist(this.pending.pos, p) > CHATTER_PX || t > this.pending.t + CHATTER_MS)) this.commitRelease(op);
     if (this.opDown && dist(this.cursor, p) > TELEPORT_PX) {
       // Focus regained, cursor warped, pen re-entered: break the stroke where it was.
       this.flush(op, t);
@@ -129,7 +156,8 @@ export class OperationInput {
     const d = Math.max(0, t - this.lastT) * this.k;
     this.lastT = Math.max(this.lastT, t);
     this.cursor = p;
-    this.send(op, 'hold', p, d);
+    if (this.pending) this.pending.owed += d;
+    else this.send(op, 'hold', p, d);
   }
 
   private edge(op: Operation, input: Input, e: Edge, ev: InputEvent | null, hud?: HudHit): void {
@@ -137,6 +165,7 @@ export class OperationInput {
     const a: ActionId = e.action;
     if (a === 'primary') return press ? this.primaryPress(op, input, e.t, hud) : this.primaryRelease(op, e.t, ev?.type === 'up' && !!ev.cancel);
     if (a === 'tool.hold') {
+      if (press) this.commitRelease(op);
       if (press && HOLD_TOOLS.includes(op.tool) && !this.opDown && !this.drawing) {
         this.flush(op, e.t);
         this.holdKeyActive = true;
@@ -165,13 +194,16 @@ export class OperationInput {
     if (a.startsWith('tool.select.')) {
       const n = Number(a.slice('tool.select.'.length)) as (typeof TOOL_SLOTS)[number];
       const tool = TOOL_INFO[n - 1]?.id;
+      if (!tool) return;
+      if (!op.def.tools.includes(tool)) return this.unavailable(op);
       // Pressing the tincture's slot again cycles the tincture colour.
       if (tool === 'tincture' && op.tool === 'tincture') op.cycleTincture();
-      else if (tool) this.setTool(op, e.t, tool);
+      else this.setTool(op, e.t, tool);
       return;
     }
     if (a === 'tool.next' || a === 'tool.prev') return this.cycle(op, e.t, a === 'tool.next' ? 1 : -1);
     if (a === 'tool.quickSwap') {
+      this.commitRelease(op);
       this.flush(op, e.t);
       this.unlatch(op);
       op.quickSwap();
@@ -181,6 +213,8 @@ export class OperationInput {
   }
 
   private setTool(op: Operation, t: number, tool: ToolId): void {
+    // A release held back for the chatter window belongs to the old instrument: deliver it first.
+    if (tool !== op.tool) this.commitRelease(op);
     this.flush(op, t);
     if (tool !== op.tool) this.unlatch(op);
     op.setTool(tool);
@@ -194,12 +228,36 @@ export class OperationInput {
   }
 
   private unlatch(op: Operation): void {
-    if (!this.latched) return;
+    if (!this.latched && !this.grabLatched) return;
     this.latched = false;
     this.release(op);
   }
 
+  /** A hotkey for an instrument this operation's kit lacks (INP-0048): shake the tray, say so once, no `select` cue. */
+  private unavailable(op: Operation): void {
+    this.trayShake = 1;
+    if (this.kitWarned) return;
+    this.kitWarned = true;
+    op.popup(t('popup.not_in_kit'), this.cursor, PALETTE.inkDim);
+  }
+
+  /** Is a press at `t` the bounce of the last release (same spot, within the chatter window)? */
+  private isChatter(t: number, since: { t: number; pos: Vec }): boolean {
+    return t - since.t <= CHATTER_MS && dist(since.pos, this.cursor) <= CHATTER_PX;
+  }
+
   private primaryPress(op: Operation, input: Input, t: number, hud?: HudHit): void {
+    // Chatter (INP-0034): the button bounced back down before its release was delivered — the hold never ended.
+    if (this.pending) {
+      if (this.isChatter(t, this.pending)) {
+        const owed = this.pending.owed;
+        this.pending = null;
+        this.flush(op, t);
+        if (owed > 0) this.send(op, 'hold', this.cursor, owed);
+        return;
+      }
+      this.commitRelease(op);
+    }
     this.flush(op, t);
     if (this.drawing) {
       this.suppressed = true;
@@ -211,8 +269,16 @@ export class OperationInput {
       this.suppressed = true;
       return;
     }
-    if (this.b.prefs.holdMode === 'toggle' && HOLD_TOOLS.includes(op.tool)) {
+    const prefs = this.b.prefs;
+    // Suggest tool on press (INP-0052): the target under the pointer picks the instrument before the press lands.
+    if (prefs.autoTool && !this.opDown) {
+      const want = op.suggestTool(this.toWorld(this.cursor));
+      if (want && want !== op.tool) this.setTool(op, t, want);
+    }
+    if (prefs.holdMode === 'toggle' && HOLD_TOOLS.includes(op.tool)) {
       this.ignoreRelease = true;
+      // A bounced click must not toggle the hold straight back off.
+      if (this.isChatter(t, this.lastRelease)) return;
       if (this.latched) {
         this.latched = false;
         this.release(op);
@@ -222,11 +288,23 @@ export class OperationInput {
       }
       return;
     }
+    if (prefs.grabMode === 'toggle' && op.tool === 'tongs') {
+      this.ignoreRelease = true;
+      if (this.isChatter(t, this.lastRelease)) return;
+      if (this.grabLatched) return this.release(op);
+      if (this.opDown) return;
+      this.press(op, input);
+      // Seized something: keep holding until the next click. Empty air: let go at once (no lingering MISS).
+      if (op.held) this.grabLatched = true;
+      else this.release(op);
+      return;
+    }
     if (this.opDown) this.release(op);
     this.press(op, input);
   }
 
   private primaryRelease(op: Operation, t: number, cancel: boolean): void {
+    this.lastRelease = { t, pos: { ...this.cursor } };
     if (this.suppressed) {
       this.suppressed = false;
       return;
@@ -237,8 +315,21 @@ export class OperationInput {
     }
     if (!this.opDown || this.holdKeyActive) return;
     this.flush(op, t);
-    if (cancel) this.cancelStroke(op);
+    if (cancel) return this.cancelStroke(op);
+    // Hold the release back for the chatter window; it is delivered (at this time and place) unless the button bounces.
+    if (DEBOUNCED_TOOLS.includes(op.tool)) this.pending = { t, pos: { ...this.cursor }, owed: 0 };
     else this.release(op);
+  }
+
+  /** Deliver a held-back release where and when it happened. */
+  private commitRelease(op: Operation): void {
+    const p = this.pending;
+    if (!p) return;
+    this.pending = null;
+    const cur = this.cursor;
+    this.cursor = p.pos;
+    this.release(op);
+    this.cursor = cur;
   }
 
   // ------------------------------------------------------------------ strokes
@@ -265,6 +356,8 @@ export class OperationInput {
   }
 
   private release(op: Operation): void {
+    this.grabLatched = false;
+    this.pending = null;
     if (!this.opDown) return;
     this.opDown = false;
     this.send(op, 'release', this.cursor, 0);
@@ -283,10 +376,12 @@ export class OperationInput {
 
   /** Give the time since the last step to the current pointer state. */
   private flush(op: Operation, t: number): void {
+    if (this.pending && t > this.pending.t + CHATTER_MS) this.commitRelease(op);
     if (t <= this.lastT) return;
     const d = (t - this.lastT) * this.k;
     this.lastT = t;
-    this.send(op, 'hold', this.cursor, d);
+    if (this.pending) this.pending.owed += d;
+    else this.send(op, 'hold', this.cursor, d);
   }
 
   /** Build the `Pointer` the Operation sees, with assists applied, and dispatch it. */
@@ -334,6 +429,7 @@ export class OperationInput {
 
   private beginStar(op: Operation, t: number): void {
     if (litanyMode(this.b) === 'key' && !this.pad) return;
+    this.commitRelease(op);
     this.flush(op, t);
     // Starting the sign while holding something puts it back (the star still records).
     if (this.opDown) {

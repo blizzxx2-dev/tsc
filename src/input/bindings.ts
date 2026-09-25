@@ -37,6 +37,12 @@ export interface InputPrefs {
   invertWheel: boolean;
   wrapWheel: boolean;
   glyphs: GlyphSet;
+  /** Tongs: hold the button while pulling, or click once to seize and again to let go (INP-0044). */
+  grabMode: HoldMode;
+  /** Suggest tool on press: pressing on a target with the wrong instrument switches to the one it needs (INP-0052). */
+  autoTool: boolean;
+  /** Left-handed mode: tray mirrored to the right, tool on the right mouse button and the star on the left (INP-0069). */
+  leftHanded: boolean;
 }
 
 export const DEFAULT_PREFS: InputPrefs = {
@@ -51,7 +57,13 @@ export const DEFAULT_PREFS: InputPrefs = {
   invertWheel: false,
   wrapWheel: true,
   glyphs: 'auto',
+  grabMode: 'hold',
+  autoTool: false,
+  leftHanded: false,
 };
+
+/** Left-handed mode trades the two mouse buttons (the instrument moves to the right button, the star to the left). */
+export const swapMouse = (c: InputCode): InputCode => (c === 'mouse:0' ? 'mouse:2' : c === 'mouse:2' ? 'mouse:0' : c);
 
 export interface StoredInputV2 {
   version: 2;
@@ -154,12 +166,18 @@ export class Bindings {
     return { kbm: [...(o?.kbm ?? d.kbm)], pad: [...(o?.pad ?? d.pad)] };
   }
 
-  /** Bindings as used at runtime (Nintendo layout swaps the confirm/back face buttons). */
+  /** Bindings as used at runtime (Nintendo layout swaps the confirm/back face buttons; left-handed mode swaps the mouse buttons). */
   effective(id: ActionId): InputCode[] {
+    const set = this.shown(id);
+    return [...set.kbm, ...set.pad];
+  }
+
+  /** The bindings with the layout preferences applied, slot by slot (what the Controls screen shows). */
+  shown(id: ActionId): BindingSet {
     const set = this.get(id);
-    let pad = set.pad;
-    if (this.prefs.nintendoLayout) pad = pad.map((c) => (c === 'pad:0' ? 'pad:1' : c === 'pad:1' ? 'pad:0' : c));
-    return [...set.kbm, ...pad];
+    if (this.prefs.nintendoLayout) set.pad = set.pad.map((c) => (c === 'pad:0' ? 'pad:1' : c === 'pad:1' ? 'pad:0' : c));
+    if (this.prefs.leftHanded) set.kbm = set.kbm.map(swapMouse);
+    return set;
   }
 
   isDefault(id: ActionId): boolean {
@@ -242,6 +260,11 @@ export class Bindings {
   resetAll(): void {
     this.overrides = {};
     this.revision++;
+  }
+
+  /** Install a set of trusted overrides at once (a binding preset); reserved and unbindable rules are not consulted. */
+  applyOverrides(o: Partial<Record<ActionId, BindingSet>>): void {
+    for (const [id, set] of Object.entries(o)) if (isActionId(id) && set) this.put(id, { kbm: set.kbm.slice(0, MAX_KBM), pad: set.pad.slice(0, MAX_PAD) });
   }
 
   /** Every action with its current bindings (for the Controls screen and for glyphs). */
