@@ -7,6 +7,9 @@ import type { Gfx } from './gfx';
 import type { Quality } from './quality';
 import { PARTICLE_SHAPES, PARTICLE_SIZE_RANGE } from './shaders/particle';
 
+/** Emitters that spray the patient's blood, tinted per species (ENG-0096). */
+export const BLOOD_EMITTERS = ['blood', 'arterial', 'arterialMist', 'spatter'] as const;
+
 /** Built-in effect kinds the simulation emits (`op.emit`); every one is an entry in fx/emitters.json. */
 export type FxKind = 'blood' | 'pus' | 'spark' | 'smoke' | 'mote' | 'gold' | 'dust' | 'curl' | 'knot' | 'suck' | 'leaf' | 'ember';
 
@@ -105,6 +108,26 @@ export class Particles {
     seed = 1,
   ) {
     this.seed(seed);
+  }
+
+  /** The patient's blood colour for hand-drawn blood (the leech-suction streaks), ENG-0096. */
+  blood = '#7a0a10';
+
+  /**
+   * Tint every blood emitter by the patient's species (ENG-0096): `tint` maps an authored human
+   * blood colour to this patient's. Call before the first particle is drawn.
+   */
+  setBloodTint(tint: (authored: string) => string): void {
+    const defs = { ...this.defs };
+    for (const id of BLOOD_EMITTERS) {
+      const d = defs[id];
+      if (!d) continue;
+      const color = typeof d.color === 'string' ? tint(d.color) : (d.color.map(([t, c, a]) => [t, tint(c), a]) as EmitterDef['color']);
+      defs[id] = { ...d, color };
+    }
+    this.defs = defs;
+    this.rows.clear();
+    this.blood = tint('#7a0a10');
   }
 
   /** Re-seed every emitter stream from the operation seed (ENG-0131). */
@@ -300,7 +323,7 @@ export class Particles {
         if (p.kind === 'curl') drawCurl(g, p.x, p.y, p.seed, k);
         else if (p.kind === 'knot') drawKnot(g, p.x, p.y, p.seed, k);
         // Blood drawn up the Leech-Pipe (GAM-0035): a droplet streaking toward the pipe's mouth.
-        else g.line({ x: p.x, y: p.y }, { x: p.x - p.vx * 0.04, y: p.y - p.vy * 0.04 }, p.size, hex('#7a0a10', 0.85 * (1 - k)));
+        else g.line({ x: p.x, y: p.y }, { x: p.x - p.vx * 0.04, y: p.y - p.vy * 0.04 }, p.size, hex(this.blood, 0.85 * (1 - k)));
       }
     for (const blend of ['alpha', 'add'] as const) {
       const { data, count } = this.instances(blend, layer);

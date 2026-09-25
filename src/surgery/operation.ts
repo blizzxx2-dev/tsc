@@ -1,3 +1,4 @@
+import { bloodOf } from './species';
 import { seedFx } from './fxRandom';
 import { clamp, dist, pointSegment, Rng, side, type Vec } from '../core/math';
 import { EventBus } from '../core/events';
@@ -1750,8 +1751,8 @@ export class Reopened extends Entity {
       op.rate('good', this.pos, 'Restitched');
     }
   }
-  draw(g: Gfx): void {
-    g.line(this.a, this.b, 3, hex('#7a0a10', 0.9));
+  draw(g: Gfx, op: Operation): void {
+    g.line(this.a, this.b, 3, hex(bloodOf(op.def.race), 0.9));
     for (const m of this.marks) g.rect(m.x - 2, m.y - 2, 4, 4, hex('#efe6c4'));
   }
 }

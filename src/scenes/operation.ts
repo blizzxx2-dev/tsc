@@ -55,6 +55,8 @@ import { litanyMode, OperationInput } from '../input/opinput';
 import { formatSplit, ghostAt, GHOST_STEP, recordTimeAttack, TimeAttackClock, timeAttackBest, type TimeAttackRun } from '../surgery/timeAttack';
 import { anaemia, coldTint, drawBreathFog, frostArea, paleFlesh, paleRough } from '../render/fleshMood';
 import { fitText } from '../ui/text';
+import { speciesOf, tintBlood } from '../surgery/species';
+import { setVfxBlood } from '../art/vfx';
 import { addTray, HudLayer, inRect, trayFrame, traySide, traySlot } from '../input/hud';
 import { drawGraspOutline } from '../input/hover';
 import { HoldToRetry } from '../input/retry';
@@ -231,6 +233,7 @@ export class OperationScene implements Scene {
     this.presRng = new Rng(def.seed ?? 1);
     // Emitter streams seeded from the operation seed (ENG-0131).
     this.particles.seed(this.runOpts.seed ?? this.def.seed ?? 1);
+    this.applyBlood();
     this.listen(this.op);
   }
 
@@ -387,6 +390,7 @@ export class OperationScene implements Scene {
     this.listen(this.op);
     this.camera.reset();
     this.particles = new Particles(undefined, this.runOpts.seed ?? this.def.seed ?? 1);
+    this.applyBlood();
     this.decals?.reset();
     this.snapped = false;
     this.ctl = new OperationInput();
@@ -1171,6 +1175,13 @@ export class OperationScene implements Scene {
     live.push({ x: X(ta.time), y: Y(op.vitals / op.maxVitals) });
     if (live.length > 1) g.polyline(live, 2, hex('#e04040', 0.95));
     if (this.taBest) caps(g, tr('hud.timeattack.new_best'), r.x + r.w / 2, r.y + r.h + 20, 14, hex(INK.goldHi), 'center');
+  }
+
+  /** One blood colour for the patient's species across particles and drawn effects (ENG-0096). */
+  private applyBlood(): void {
+    const look = speciesOf(this.def.race).look;
+    this.particles.setBloodTint((c) => tintBlood(c, look));
+    setVfxBlood(tintBlood('#6a0208', look));
   }
 
   /** Lay salve gloss where the Salve is being spread, and let spots older than SALVE_GLOSS_S go. */

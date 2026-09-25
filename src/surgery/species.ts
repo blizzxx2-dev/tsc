@@ -156,6 +156,25 @@ export const SPECIES_PROFILES: Record<Species, SpeciesProfile> = {
 
 export const speciesOf = (race: Species | undefined): SpeciesProfile => SPECIES_PROFILES[race ?? 'human'];
 
+/** The human blood colour every authored blood tint is expressed against (ENG-0096). */
+export const HUMAN_BLOOD = '#7a0a10';
+
+/**
+ * Species blood colour source of truth (ENG-0096): a colour authored for human blood, mapped to a
+ * species by the ratio of its look.blood to human's. Pools, particles, decals and every drawn stain
+ * go through this, so an elf's blood is an elf's blood everywhere.
+ */
+export function tintBlood(authored: string, look: SpeciesLook): string {
+  const human = SPECIES_PROFILES.human.look.blood;
+  const h = authored.replace('#', '');
+  const c = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+  const out = c.map((v, i) => Math.max(0, Math.min(1, v * (look.blood[i] / Math.max(0.01, human[i])))));
+  return `#${out.map((v) => Math.round(v * 255).toString(16).padStart(2, '0')).join('')}`;
+}
+
+/** The blood colour of this op's patient, from an authored human tint. */
+export const bloodOf = (race: Species | undefined, authored: string = HUMAN_BLOOD): string => tintBlood(authored, speciesOf(race).look);
+
 /** Scale a merged tuning by the patient's body (applied after operation and upgrade overrides). */
 export function applySpecies(t: Tuning, race: Species | undefined): Tuning {
   const b = speciesOf(race).body;

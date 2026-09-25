@@ -141,7 +141,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0093 · Demo · P1 · M · New organ kinds for Ch1–2 briefs — `muscle` (striated fibres along a direction uniform) and `skin` (pores, fine hair, sweat sheen) wired through `OrganKind`/`organPalette`
 - [x] ENG-0094 · Demo · P1 · M · Data-driven `SpeciesProfile` (human, dwarf, elf, halfling, orc): base/deep/vein tints, fat ratio, surface scale, spec gain — replaces `RACE_TINT`, which currently never tints veins
 - [ ] ENG-0095 · Demo · P2 · M · Species details: orc thick green-grey dermis and dark blood, dwarf dense fibrous tissue with higher gloss, elf pale translucent vessels — art sign-off in shader lab
-- [ ] ENG-0096 · Demo · P1 · S · Species blood colour source of truth — one table consumed by BloodPool, particles and decal maps (no hard-coded reds left; grep check)
+- [x] ENG-0096 · Demo · P1 · S · Species blood colour source of truth — one table consumed by BloodPool, particles and decal maps (no hard-coded reds left; grep check)
 - [ ] ENG-0097 · Demo · P1 · M · Drape as its own pass — linen weave texture, fold normal map, blood soak from the decal map (moved out of `FLESH_FS`), species-independent
 - [ ] ENG-0098 · Demo · P1 · M · Opening shape from a mask texture instead of the fixed `FIELD` ellipse, with retractor/clamp sprites around the rim — supports irregular openings per operation def
 

@@ -1,3 +1,4 @@
+import { bloodOf } from '../species';
 import { drawDrape } from '../../art/drape';
 import { dist, pointSegment, type Vec } from '../../core/math';
 import { hex } from '../../render/color';
@@ -269,7 +270,7 @@ export class Amputation extends Entity {
       g.arc(this.pos.x, this.pos.y, 18, 3, hex('#ffebbe'), this.strokes / GANGRENE.strokes);
       return;
     }
-    g.line(this.sawA, this.sawB, 18, hex('#7a1a1a'));
+    g.line(this.sawA, this.sawB, 18, hex(bloodOf(op.def.race, '#7a1a1a')));
     for (const v of this.vessels) g.line(v.a, v.b, 4, hex(v.tied ? '#efe6c4' : '#c02030'));
     if (this.sealT <= GANGRENE.ligatureWindow) g.arc(this.pos.x, this.pos.y, 60, 2, hex('#efe6c4', 0.5), 1 - this.sealT / GANGRENE.ligatureWindow);
   }

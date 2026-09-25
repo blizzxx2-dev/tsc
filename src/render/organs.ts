@@ -1,6 +1,6 @@
 import type { OperationDef, OrganKind } from '../surgery/operation';
 import { vec3 } from './color';
-import { SPECIES_PROFILES, speciesOf, type SpeciesLook } from '../surgery/species';
+import { speciesOf, tintBlood, type SpeciesLook } from '../surgery/species';
 
 type RGB = [number, number, number];
 
@@ -38,10 +38,7 @@ export function organPalette(def: Pick<OperationDef, 'organ' | 'race'>): { kind:
  * by the ratio of the species' blood to human blood — elves brighter, dwarves darker, orcs near black.
  */
 export function speciesBlood(paletteBlood: string, look: SpeciesLook): string {
-  const human = SPECIES_PROFILES.human.look.blood;
-  const c = vec3(paletteBlood);
-  const out = c.map((v, i) => Math.max(0, Math.min(1, v * (look.blood[i] / Math.max(0.01, human[i])))));
-  return `#${out.map((v) => Math.round(v * 255).toString(16).padStart(2, '0')).join('')}`;
+  return tintBlood(paletteBlood, look);
 }
 
 /** Each organ set's base vein colour (for the colour-blind pass, ART-0357). */

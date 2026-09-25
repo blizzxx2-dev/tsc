@@ -1,3 +1,4 @@
+import { bloodOf } from '../species';
 import { dist, type Vec } from '../../core/math';
 import { hex } from '../../render/color';
 import type { Gfx } from '../../render/gfx';
@@ -140,8 +141,8 @@ export class DonorBowl extends Entity {
     if (this.volume <= 0) op.rate('good', this.pos, 'Transfused');
   }
 
-  draw(g: Gfx): void {
+  draw(g: Gfx, op: Operation): void {
     g.circleGrad(this.pos.x, this.pos.y, 34, hex('#c0b090'), hex('#6a5a40'));
-    g.circle(this.pos.x, this.pos.y, 26 * (this.volume / BITE.bowlVolume), hex('#8a0a10', 0.9));
+    g.circle(this.pos.x, this.pos.y, 26 * (this.volume / BITE.bowlVolume), hex(bloodOf(op.def.race, '#8a0a10'), 0.9));
   }
 }

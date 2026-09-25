@@ -125,6 +125,12 @@ export interface VfxFrame {
   gore: number;
 }
 
+/** The patient's blood colour for the drawn blood effects (ENG-0096); set per operation. */
+let vfxBlood = '#6a0208';
+export function setVfxBlood(hexColor: string): void {
+  vfxBlood = hexColor;
+}
+
 export class VfxLayer {
   private fx: Fx[] = [];
   private lastPointer: Vec = { x: 0, y: 0 };
@@ -500,7 +506,7 @@ function spray(g: Gfx, f: Fx): void {
   for (let i = 0; i < 7; i++) {
     const a = f.a + (i - 3) * 0.12;
     const r0 = 6 + 40 * EASE.outCubic(k) * (0.6 + (i % 3) * 0.2);
-    g.line({ x: f.x + Math.cos(a) * r0 * 0.5, y: f.y + Math.sin(a) * r0 * 0.5 }, { x: f.x + Math.cos(a) * r0, y: f.y + Math.sin(a) * r0 }, 2.2 * (1 - k) + 0.6, hex('#6a0208', 0.9 * (1 - k)));
+    g.line({ x: f.x + Math.cos(a) * r0 * 0.5, y: f.y + Math.sin(a) * r0 * 0.5 }, { x: f.x + Math.cos(a) * r0, y: f.y + Math.sin(a) * r0 }, 2.2 * (1 - k) + 0.6, hex(vfxBlood, 0.9 * (1 - k)));
   }
 }
 
@@ -513,7 +519,7 @@ function suctionSwirl(g: Gfx, p: Vec, k: number, t: number): void {
       const a = arm * (TAU / 3) - t * 7 + u * 4;
       pts.push({ x: p.x + Math.cos(a) * r, y: p.y + Math.sin(a) * r * 0.8 });
     }
-    g.polyline(pts, 2.4, hex('#6a0208', 0.55 * k));
+    g.polyline(pts, 2.4, hex(vfxBlood, 0.55 * k));
   }
   g.circleGrad(p.x, p.y, 16, hex(SWATCHES.gore, 0.5 * k), hex(SWATCHES.gore, 0));
 }
