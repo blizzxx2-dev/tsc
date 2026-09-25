@@ -1,1 +1,6 @@
 - CON-0183 — an obstetrician or midwife must approve op5-4 visuals and text before Beta; checklist and questions in docs/handoff/CON/obstetric-signoff-op5-4.md
+- CON-0026 — Two external playtest rounds with ≥8 players
+- CON-0028 — Retune from ≥30 playtesters' telemetry
+- CON-0083 — Commission the woodcut briefing plates
+- CON-0254 — The producer declares content freeze
+- CON-0255 — Verify carry-over with saves from real shipped demo builds

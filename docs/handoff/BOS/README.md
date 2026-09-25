@@ -35,3 +35,14 @@ Still failing before it can merge. These are balance and bot-tuning issues, not 
    - the audio-director and offline-replay tests;
    - telemetry.
 4. **i18n:** key the new `sayOnce`/`say` lines (`npm run i18n:check`). Also run the IP-name scan.
+- BOS-0025 — 5-player Matins playtest gate
+- BOS-0045 — 5-player Lauds playtest gate
+- BOS-0060 — Prime playtest and retune once final art/audio arrive
+- BOS-0074 — Terce playtest and retune once final art/audio arrive
+- BOS-0088 — Torpor-perception playtest survey
+- BOS-0103 — None frustration playtest
+- BOS-0116 — Measure the lighting-mask GPU time on min-spec hardware
+- BOS-0117 — Vespers playtest and final retune
+- BOS-0132 — Compline playtest and final tuning
+- BOS-0145 — Office ≥70 % clear-rate playtest
+- BOS-0180 — Tune from live Steam telemetry after launch

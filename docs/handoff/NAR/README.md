@@ -5,3 +5,7 @@
 - NAR-0022 — trademark search for the title "Suture & Steel" and the subtitle word "Malison" (genre collision with Devolver's *Malison: The Cursed City*) and a subtitle decision; material in docs/handoff/NAR/ip-and-trademark.md
 - NAR-0026 — counsel freezes and signs docs/narrative/names.csv at release (reviewer + date per row); instructions in docs/handoff/NAR/ip-and-trademark.md
 - NAR-0028 — an external sensitivity reader reviews Chapters I–II against docs/narrative/sensitivity-brief.md and logs each note (id · line · note · accept/decline · reason) in a tracked sheet; scene list in docs/narrative/beat-sheets.md
+- NAR-0025 — Per-language reviewers check translated names against the avoid-list
+- NAR-0176 — Record a table read of Ch1–2
+- NAR-0191 — LQA reviewers per language
+- NAR-0195 — Legal IP terms for player-submitted verses
