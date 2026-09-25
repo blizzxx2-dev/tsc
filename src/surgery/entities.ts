@@ -436,6 +436,9 @@ export class BloodPool extends Entity {
   private touched = false;
   /** The wound that feeds this pool (a wound's refills only pay once). */
   sourceId = 0;
+  /** When and from where the leech-pipe last drew on it (the pool is pulled toward the pipe as it shrinks). */
+  private drawnAt = -1;
+  private drawFrom: Vec | null = null;
   noun = 'the pooled blood';
   constructor(
     pos: Vec,
@@ -480,6 +483,8 @@ export class BloodPool extends Entity {
     if (tool !== 'leech' || op.leechReverse || d > this.r + B.reach + op.hitPad) return;
     if (this.contactT < 0) this.contactT = op.elapsed;
     this.touched = true;
+    this.drawnAt = op.elapsed;
+    this.drawFrom = { ...ptr.pos };
     const rate = B.unitPx / B.unitTime;
     const falloff = 1 - (1 - B.rimFactor) * clamp(d / (this.r + B.reach), 0, 1);
     const mult = op.upgrades.has('deep-leech') ? 1.2 : 1;
@@ -496,16 +501,48 @@ export class BloodPool extends Entity {
     }
   }
 
+  /**
+   * The pool as metaball lobes (ART-0190): four shapes (round with satellites, a gravity run, a splash,
+   * a pair), sized by the pool; a new pool spreads out over 8 frames, and one under the leech-pipe is
+   * drawn toward the pipe as it shrinks. The fluid pass shades the lobes wet, per fluid (ART-0191).
+   */
   override drawFluid(g: Gfx, op: Operation): void {
     if (this.ichor === 'bonedust') return;
     const c = this.ichor === 'blood' ? rgba(255, 0, 0, 1) : this.ichor === 'pus' ? rgba(0, 255, 0, 1) : rgba(0, 0, 255, 1);
     const z = rgba(0, 0, 0, 0);
-    g.circleGrad(this.pos.x, this.pos.y, this.r * 1.9, c, z);
-    // Satellite lobes keep the edge organic.
-    for (let i = 0; i < 3; i++) {
-      const a = this.id * 1.7 + i * 2.1 + Math.sin(op.elapsed * 0.7 + i) * 0.3;
-      const rr = this.r * 0.55;
-      g.circleGrad(this.pos.x + Math.cos(a) * rr, this.pos.y + Math.sin(a) * rr * 0.8, this.r * 1.1, c, z);
+    const spread = Math.min(1, Math.floor(this.age * 16 + 1) / 8);
+    const r = this.r * (0.35 + 0.65 * spread);
+    let px = 0;
+    let py = 0;
+    if (this.drawFrom && op.elapsed - this.drawnAt < 0.25) {
+      const d = Math.max(1, dist(this.drawFrom, this.pos));
+      px = ((this.drawFrom.x - this.pos.x) / d) * r * 0.35;
+      py = ((this.drawFrom.y - this.pos.y) / d) * r * 0.35;
+    }
+    const lobe = (dx: number, dy: number, rad: number, pull: number) => g.circleGrad(this.pos.x + dx + px * pull, this.pos.y + dy + py * pull, rad, c, z);
+    lobe(0, 0, r * 1.9, 0.3);
+    const wob = (i: number) => Math.sin(op.elapsed * 0.7 + i) * 0.3;
+    switch (this.id % 4) {
+      case 0: // round, with satellites
+        for (let i = 0; i < 3; i++) {
+          const a = this.id * 1.7 + i * 2.1 + wob(i);
+          lobe(Math.cos(a) * r * 0.55, Math.sin(a) * r * 0.44, r * 1.1, 1);
+        }
+        break;
+      case 1: // a run: the pool has crept downhill
+        for (let i = 1; i <= 3; i++) lobe(Math.sin(this.id + i) * r * 0.15, i * r * 0.45, r * (1.2 - i * 0.2), 1);
+        break;
+      case 2: // a splash: many small droplets round the rim
+        for (let i = 0; i < 6; i++) {
+          const a = this.id * 0.9 + i * 1.05 + wob(i) * 0.5;
+          lobe(Math.cos(a) * r * (1 + 0.25 * Math.sin(i * 2.3 + this.id)), Math.sin(a) * r * 0.85, r * 0.34, 1.2);
+        }
+        break;
+      default: {
+        // a pair of pools that have met
+        const a = this.id * 2.3;
+        lobe(Math.cos(a) * r * 0.75, Math.sin(a) * r * 0.6, r * 1.45, 1);
+      }
     }
   }
 

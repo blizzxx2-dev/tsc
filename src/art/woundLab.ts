@@ -1,7 +1,7 @@
 /**
  * Wound and ailment look-dev board (`?scene=woundlab`): every AILMENT_FS piece and state painted on
  * live flesh, four pages (1 lodged objects, 2 burns and disease, 3 vermin, wounds and closure, 4 the Matins
- * callout sheet, 5 the Book-of-Hours card template).
+ * callout sheet, 5 the Book-of-Hours card template, 6 premultiplied sprite edges).
  * `?page=2&t=1.5` opens a page with time frozen, for screenshots; ←/→ step one frame at 12 fps,
  * Space toggles playback. A QA tool: each ailment should be checked here before it ships.
  */
@@ -155,6 +155,29 @@ const PAGES: { title: string; cells: Cell[]; custom?: (g: Gfx, t: number) => voi
         ['compline', 'Compline', 'Ad Completorium'],
       ];
       names.forEach(([hour, title, sub], i) => bookOfHoursCard(g, { x: 30 + (i % 4) * 310, y: 62 + Math.floor(i / 4) * 330, w: 214, h: 320 }, hour, { title, sub }));
+    },
+  },
+  {
+    // Premultiplied-alpha check (ART-0037): every atlased sprite on parchment and on flesh, at three
+    // scales (so several mip levels are sampled). Edges must blend clean, with no dark halo.
+    title: 'Sprite edges (premultiplied)',
+    cells: [],
+    custom: (g) => {
+      const ids = [...g.sprites.ids()].filter((id) => id.startsWith('fx/')).sort();
+      const grounds: [string, string][] = [
+        ['#e6d6ae', 'parchment'],
+        ['#9a3a30', 'flesh'],
+      ];
+      grounds.forEach(([col, name], gi) => {
+        const x0 = gi * (VIEW_W / 2);
+        g.rect(x0, 52, VIEW_W / 2, VIEW_H - 52, hex(col));
+        g.text(name, x0 + 16, 80, { size: 18, color: hex(gi ? '#fff0e0' : '#2a1a10'), shadow: false });
+        ids.forEach((id, i) => {
+          const cx = x0 + 60 + (i % 5) * 120;
+          const cy = 150 + Math.floor(i / 5) * 270;
+          [1, 0.5, 0.25].forEach((sc, k) => g.sprite(id, cx, cy + k * 80, { scale: sc * 1.4, tint: hex(gi ? '#f4e8d0' : '#b02020') }));
+        });
+      });
     },
   },
 ];

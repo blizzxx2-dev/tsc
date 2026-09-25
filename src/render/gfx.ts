@@ -1313,6 +1313,12 @@ export class Gfx {
     this.slots[0] = this.atlas.texture;
     for (let i = BATCH_UNITS - 1; i >= 0; i--) this.bindTex(this.slots[i] ?? this.atlas.texture, i);
     gl.uniform1iv(this.u(pr, 'u_tex'), UNITS);
+    let pm = 0;
+    for (let i = 1; i < BATCH_UNITS; i++) {
+      const t = this.slots[i];
+      if (t && this.premultipliedTex.has(t)) pm |= 1 << i;
+    }
+    gl.uniform1i(this.u(pr, 'u_pm'), pm);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.f32, 0, this.n * STRIDE);
     gl.drawArrays(gl.TRIANGLES, 0, this.n);
@@ -1322,6 +1328,14 @@ export class Gfx {
   }
 
   /** Batch unit for `tex`, flushing when all 8 units are taken (ENG-0031). */
+  /** Textures holding premultiplied-alpha pixels (atlas pages exported premultiplied, ART-0037). */
+  private premultipliedTex = new WeakSet<WebGLTexture>();
+
+  /** Mark a texture as premultiplied: the batch filters it premultiplied (no dark fringes) and un-premultiplies. */
+  markPremultiplied(tex: WebGLTexture): void {
+    this.premultipliedTex.add(tex);
+  }
+
   private unitFor(tex: WebGLTexture): number {
     for (let i = 1; i < this.slotCount; i++) if (this.slots[i] === tex) return i;
     if (this.slotCount >= BATCH_UNITS) this.flush('texture');

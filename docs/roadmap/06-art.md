@@ -68,14 +68,14 @@ Cross-refs: ENG (texture loading, atlases, shader inputs), UX (layouts and widge
 - [x] ART-0032 · M0 · P0 · S · Source-art storage: layered PSD/Krita/Blender sources in Git LFS (`art-src/`), with exports only in `assets/` and an `.gitattributes` LFS rule for each source type
 - [x] ART-0033 · M0 · P0 · S · Export spec: WebP lossless for UI, WebP q90 for backgrounds, KTX2/Basis for flesh textures, PNG for masters — table in the bible
 - [x] ART-0034 · M0 · P0 · M · Authoring resolution standard: backgrounds at 3840×2160 master, 1920×1080 ship; portraits at 2048 px tall master, 1024 px ship; UI at 2× the 1280×720 virtual space
-- [ ] ART-0035 · Demo · P0 · M · `npm run art:export` batch script: source → resized, trimmed, compressed exports with a manifest JSON (`assets/manifest.json`) of size, hash and atlas page
+- [x] ART-0035 · Demo · P0 · M · `npm run art:export` batch script: source → resized, trimmed, compressed exports with a manifest JSON (`assets/manifest.json`) of size, hash and atlas page
 - [x] ART-0036 · Demo · P0 · M · Texture-atlas packer (`tools/pack-atlas.ts`) for UI, icons, ailments and VFX: 2048² pages, 2 px extrude, max-rects packing, a JSON frame map consumed by `gfx.ts`
-- [ ] ART-0037 · Demo · P0 · S · Premultiplied-alpha export for all atlased sprites; no dark halos when drawn on parchment and on flesh (visual test page)
+- [x] ART-0037 · Demo · P0 · S · Premultiplied-alpha export for all atlased sprites; no dark halos when drawn on parchment and on flesh (visual test page)
 - [x] ART-0038 · Demo · P1 · S · Spritesheet and flipbook convention (row-major, fixed cell, `fps` in the manifest) for ailment and VFX animation
 - [x] ART-0039 · Demo · P1 · M · Hot-reload of `assets/` in the Vite dev server: changing an exported PNG updates the running game within 2 s without restart
 - [x] ART-0040 · Demo · P1 · S · Art viewer debug scene (`?scene=artview`) listing every manifest entry, with zoom, frame-stepping and a background swatch toggle
 - [x] ART-0041 · Demo · P1 · M · Placeholder-tracking: every asset in the manifest tagged `placeholder|wip|final`, with a build report counting each; the demo build fails if any demo asset is `placeholder`
-- [ ] ART-0042 · Demo · P2 · S · Photoshop/Krita export actions shared in `art-src/tools/` so every artist exports identically
+- [x] ART-0042 · Demo · P2 · S · Photoshop/Krita export actions shared in `art-src/tools/` so every artist exports identically
 - [x] ART-0043 · Alpha · P2 · M · Per-chapter asset bundles (lazy-loaded atlas pages per chapter) with the manifest split so Chapter 3–5 art doesn't load in the demo
 
 ### Engine integration (with ENG)
@@ -303,8 +303,8 @@ Ailment standard: painted sprite(s) in the woodcut-over-paint style at 2× virtu
 - [ ] ART-0189 · Alpha · P2 · S · Surgical-flap art (retracted skin with a pin clamp) for deep-organ ops in Chapters 3–5
 
 ### Fluids
-- [ ] ART-0190 · Demo · P0 · M · Blood pool sprites: 4 shapes × 3 sizes with a wet-map channel, a spreading flipbook (8 frames) and a Leech-Pipe draining shrink
-- [ ] ART-0191 · Demo · P0 · S · Pus and black-bile variants of the pool set (colour, opacity, viscosity highlight) for `BloodPool` kinds
+- [x] ART-0190 · Demo · P0 · M · Blood pool sprites: 4 shapes × 3 sizes with a wet-map channel, a spreading flipbook (8 frames) and a Leech-Pipe draining shrink
+- [x] ART-0191 · Demo · P0 · S · Pus and black-bile variants of the pool set (colour, opacity, viscosity highlight) for `BloodPool` kinds
 - [x] ART-0192 · Demo · P1 · S · Arterial spurt flipbook (6 frames, 3 directions) for severed-vessel events
 - [x] ART-0193 · Demo · P1 · S · Salve (Saint's Salve) coverage decal: pale-gold paste with a glisten, fading over 1.5 s once absorbed
 - [ ] ART-0194 · Alpha · P2 · S · Tallow-clot sprites (for Vespers) with a melt animation under the Brand

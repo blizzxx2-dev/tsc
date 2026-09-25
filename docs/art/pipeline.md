@@ -60,6 +60,27 @@ Backgrounds are painted at 3840×2160 and shipped at 1920×1080. Portraits are p
 and shipped at 1024 px. UI art is drawn at 2× the 1280×720 virtual space (2560×1440), and HUD
 elements are checked at 1280×800 (Steam Deck).
 
+## Export tools and `npm run art:export` (ART-0035, ART-0037, ART-0042)
+
+Every artist exports the same way: the shared scripts in `art-src/tools/`
+(`krita_export.py` for Krita's Scripter, `photoshop-export.jsx` for File ▸ Scripts) write a flattened
+8-bit sRGB PNG at master resolution into `art-src/export/<category>/…` — documents are named
+`<category>--<name>` (sprites `sprites-<sheet>--<name>`), and top-level layers named `frame: <name>`
+export as separate sprite frames.
+
+`npm run art:export` (`scripts/art/export.ts`) then makes the ship files in `assets/`: resized to the
+ship resolution (backdrops, portraits and sprites ×0.5 from their 2× masters; UI and LUTs as
+authored), transparent borders trimmed (portraits, sprites, UI), compressed per the export spec
+(WebP q90 backdrops, lossless WebP portraits, PNG otherwise), and recorded in
+`assets/manifest.json` with size, byte count, content hash, trim box and each sprite's atlas page.
+It never upscales and refuses an export smaller than the one it would replace (a master below
+spec). `npm run art:export -- --check` fails when an export is stale.
+
+Atlas pages are written **premultiplied** (ART-0037): colour is scaled by coverage, the page JSON
+says `"premultiplied": true`, and the batch shader filters those pages premultiplied and
+un-premultiplies, so no dark (or bright) fringe appears at any mip level. Check edges on
+parchment and on flesh at `?scene=woundlab&page=6`.
+
 ## Atlases and flipbooks (ART-0036/0038)
 
 `scripts/pack-atlas.ts` packs every `assets/sprites/<sheet>/` folder (MaxRects, pages ≤ 2048²,

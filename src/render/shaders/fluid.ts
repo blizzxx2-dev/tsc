@@ -46,6 +46,16 @@ void main() {
   float edge = 1.0 - smoothstep(0.45, 0.65, d);
   vec3 col = base * (0.55 + 0.6 * diff) * (1.0 - edge * 0.45);
   float gloss = u_gore > 1.5 ? 0.0 : 1.0;
-  col += (vec3(1.0, 0.92, 0.9) * spec * 1.3 + vec3(0.6, 0.2, 0.2) * spec2 * 0.15) * gloss;
-  o = vec4(col, a * 0.97);
+  // Viscosity highlights per fluid (ART-0191): blood a glassy pin glint; pus thick and creamy, a broad
+  // soft sheen with a milky rim; black bile oily, a sharp glint over a thin-film rainbow.
+  vec3 hiBlood = vec3(1.0, 0.92, 0.9) * spec * 1.3 + vec3(0.6, 0.2, 0.2) * spec2 * 0.15;
+  vec3 hiPus = vec3(1.0, 0.97, 0.85) * pow(max(dot(reflect(-L, n), vec3(0.0, 0.0, 1.0)), 0.0), 24.0) * 0.5 + vec3(0.95, 0.9, 0.7) * edge * 0.25;
+  float film = dot(n.xy, vec2(0.7, 0.7)) * 6.0 + d * 4.0;
+  vec3 rainbow = 0.5 + 0.5 * cos(film + vec3(0.0, 2.1, 4.2));
+  vec3 hiBile = vec3(1.0) * spec * 1.6 + rainbow * spec2 * 0.35;
+  col += (hiBlood * w.r + hiPus * w.g + hiBile * w.b) * gloss;
+  // Opacity: pus is semi-opaque at thin edges, bile fully opaque, blood nearly so.
+  float op = mix(0.97, mix(0.8, 0.97, deep), w.g * (1.0 - w.r));
+  op = mix(op, 1.0, w.b);
+  o = vec4(col, a * op);
 }`;

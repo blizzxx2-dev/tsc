@@ -127,12 +127,12 @@ export const MANIFEST: Record<AssetId, AssetEntry> = {
   },
   "sprites/fx": {
     "type": "sheet",
-    "url": "assets/sprites_fx.b1133c6138.json",
-    "bytes": 21484,
+    "url": "assets/sprites_fx.8cbf769be1.json",
+    "bytes": 18853,
     "bundle": "ops-common",
-    "hash": "b1133c6138",
+    "hash": "8cbf769be1",
     "pages": [
-      "assets/sprites_fx-0.353e239b33.png"
+      "assets/sprites_fx-0.12ffa0751d.png"
     ],
     "status": "final"
   }
