@@ -79,10 +79,14 @@ describe('later Hours: tells', () => {
   it('Compline: a one-second hush tell and a [silence] flag precede every mute', () => {
     const op = start((o) => [new ComplineMalison(at(0, 0), o)]);
     const ev = record(op);
+    hudFlag(op, 'silence'); // the HUD subscribes on its first frame
     wait(op, 21.5);
     expect(hudFlag(op, 'silence')).toBe(true);
     expect(ev.some(({ e }) => e.kind === 'sound' && e.sound === 'hush')).toBe(true);
-    for (const g of tellGaps(ev)) expect(g).toBeGreaterThanOrEqual(1 - 2 * DT);
+    // Only the hush: the echoes it wears keep their own Hours' leads.
+    const hush = tellGaps(ev.filter(({ e }) => (e.kind === 'tell' || e.kind === 'attack') && e.boss === 'compline' && e.attack === 'silence'));
+    expect(hush.length).toBeGreaterThan(0);
+    for (const g of hush) expect(g).toBeGreaterThanOrEqual(1 - 2 * DT);
   });
 
   it('Sext: False Noon flattens the ECG; the reduced-lag assist caps torpor at 120 ms', () => {

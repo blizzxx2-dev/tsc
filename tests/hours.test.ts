@@ -8,7 +8,7 @@ import { bossBarRect, veiledBelow } from '../src/surgery/bosses/hud';
 import { Malison, MalisonShard, MATINS_DEFAULT, MATINS_PHASES } from '../src/surgery/malison';
 import { ChoirVoice, EggSac, LaudsBody, LaudsMalison, LAUDS_DEFAULT, LightThread, SPIDERLING_CAP, SpiderlingGrub, VOICE_SIGIL } from '../src/surgery/lauds';
 import { CantorKnot, EggCluster, FangNest, HERALD_BONUS, MatinsHerald } from '../src/surgery/bosses/elites';
-import { FIELD, onBody, type Operation, type OperationDef } from '../src/surgery/operation';
+import { FIELD, onBody, TRAY_DISH, type Operation, type OperationDef } from '../src/surgery/operation';
 import { all, at, DT, Hand, start, wait } from './harness';
 
 const events = (op: Operation): BossEvent[] => {
@@ -50,6 +50,8 @@ describe('MalisonBase framework', () => {
     const op = start((o) => [(m = new Malison(at(0, 0), o))], boss({ skipCinematics: true }));
     const ev = events(op);
     wait(op, 0.1);
+    expect(ev.find((e) => e.kind === 'music')).toMatchObject({ intensity: 1 }); // the encounter opens on phase 1
+    ev.length = 0;
     m.damage(op, 45);
     m.damage(op, 40);
     m.damage(op, 100);
@@ -213,17 +215,19 @@ describe('Matins — the Night Vigil', () => {
   it('crawling shards make for the nearest wound and feed on it', () => {
     let s!: MalisonShard;
     const op = start((o) => [new Laceration(at(120, 0), 0, 40, 0), (s = new MalisonShard(at(0, 0), o, 'crawler'))]);
-    const v = op.vitals;
+    let harm = 0;
+    op.events.on('hurt', ({ amount }) => (harm += amount));
     wait(op, 12);
     expect(s.alive).toBe(false);
     expect(op.counts.miss).toBe(1);
-    expect(v - op.vitals).toBeGreaterThanOrEqual(4);
+    expect(harm).toBeGreaterThanOrEqual(4); // net vitals also include passive recovery
   });
 
   it('The Eye: only the third beat bites, for double damage; off-beat brands rend', () => {
     let m!: Malison;
     const op = start((o) => [(m = new Malison(at(0, 0), o))], boss({ skipCinematics: true }));
-    m.damage(op, 80);
+    m.damage(op, 45); // Vigil → Watchfire (one phase per blow)
+    m.damage(op, 40); // → The Eye
     expect(m.phase.key).toBe('eye');
     // Beat 1: off the beat.
     const lacs = all(op, Laceration).length;
@@ -242,14 +246,16 @@ describe('Matins — the Night Vigil', () => {
     for (const dodge of [true, false]) {
       let m!: Malison;
       const op = start((o) => [(m = new Malison(at(0, 0), o, 'matins', 100, { gazeEvery: 1 }))], boss({ skipCinematics: true }));
-      m.damage(op, 80);
+      m.damage(op, 45); // Vigil → Watchfire (one phase per blow)
+    m.damage(op, 40); // → The Eye
       const h = new Hand(op);
       const aim = { x: m.pos.x + 150, y: m.pos.y };
       // Rest the hand on the flesh beside the eye until the gaze locks.
       for (let i = 0; !m.gaze && i < 60 * 30; i++) h.hover(aim);
       const lacs = all(op, Laceration).length;
       const off = { x: aim.x, y: aim.y + 90 };
-      for (let t = 0; t < 1.2; t += DT) h.hover(dodge ? off : { x: m.pos.x + m.gaze!.dir.x * 150, y: m.pos.y + m.gaze!.dir.y * 150 });
+      const dir = m.gaze!.dir; // the line is locked; the gaze clears once it lashes
+      for (let t = 0; t < 1.2; t += DT) h.hover(dodge ? off : { x: m.pos.x + dir.x * 150, y: m.pos.y + dir.y * 150 });
       expect(all(op, Laceration).length, `dodge=${dodge}`).toBe(dodge ? lacs : lacs + 1);
     }
   });
@@ -338,7 +344,8 @@ describe('Lauds — the Antiphon', () => {
   it('Dawn: the flare blinds the Lens for 2 s after a 1 s horizon-glow tell', () => {
     let l!: LaudsMalison;
     const op = start((o) => [(l = new LaudsMalison(at(0, 0), o))], boss({ skipCinematics: true }));
-    l.damage(op, 71);
+    l.damage(op, 36); // Call → Response (one phase per blow)
+    l.damage(op, 35); // → Dawn
     expect(l.phase.key).toBe('dawn');
     expect(l.submerged).toBe(true);
     wait(op, LAUDS_DEFAULT.flareEvery - 1 + 0.05);
@@ -369,7 +376,8 @@ describe('Lauds — the Antiphon', () => {
   it('submerged rot trail stays at 3 patches and scores as a boss add', () => {
     let l!: LaudsMalison;
     const op = start((o) => [(l = new LaudsMalison(at(0, 0), o))], boss({ skipCinematics: true }));
-    l.damage(op, 71);
+    l.damage(op, 36); // Call → Response (one phase per blow)
+    l.damage(op, 35); // → Dawn
     let most = 0;
     for (let i = 0; i < 60; i++) {
       wait(op, 1);
@@ -402,9 +410,11 @@ describe('Brood-Mother sacs', () => {
     const op = start((o) => [new EggSac(at(-100, 0), 5), new EggSac(at(100, 0), 5), new Laceration(at(0, 120), 0, 40, 0), o && new SpiderlingGrub(at(0, 0), o)].filter(Boolean) as Entity[]);
     const sac = all(op, EggSac)[0];
     wait(op, 7.5);
+    expect(sac.swell).toBeGreaterThan(0.1); // the swell starts 3 s out
+    wait(op, 1.7);
     expect(sac.swell).toBeGreaterThan(0.7);
     expect(sac.alive).toBe(true);
-    wait(op, 2.6);
+    wait(op, 0.9);
     expect(sac.alive).toBe(false);
     expect(all(op, SpiderlingGrub).length).toBeLessThanOrEqual(SPIDERLING_CAP);
   });
@@ -442,6 +452,8 @@ describe('Demo elites', () => {
     let k!: CantorKnot;
     const op = start((o) => (k = new CantorKnot(at(0, -100), o, 5)).all);
     const seg = k.sigil.segs[0];
+    // Catch the first stroke at its node, then burn along it.
+    new Hand(op).hold('brand', k.sigil.nodes[0], op.tuning.brand.sigilNode + 0.1);
     new Hand(op).drag('brand', [seg.a, seg.b], 200);
     expect(seg.burned.some(Boolean)).toBe(true);
     for (let i = 0; !k.humming && i < 60 * 30; i++) wait(op, DT);
@@ -457,7 +469,8 @@ describe('Demo elites', () => {
     const grip = { x: f.origin.x + (f.handle.x - f.origin.x) * 0.7, y: f.origin.y + (f.handle.y - f.origin.y) * 0.7 };
     const d = { x: f.handle.x - f.origin.x, y: f.handle.y - f.origin.y };
     const l = Math.hypot(d.x, d.y);
-    new Hand(op).drag('tongs', [grip, { x: grip.x + (d.x / l) * 110, y: grip.y + (d.y / l) * 110 }], 500);
+    // Pull out along the axis, then carry it off the body into the dish.
+    new Hand(op).drag('tongs', [grip, { x: grip.x + (d.x / l) * 40, y: grip.y + (d.y / l) * 40 }, TRAY_DISH], 400);
     wait(op, 0.1);
     expect(f.alive).toBe(false);
     expect(n.spreads).toBe(1);
@@ -466,7 +479,8 @@ describe('Demo elites', () => {
 
   it('the Matins herald flees the lens and pays 300 when seared', () => {
     let h!: MatinsHerald;
-    const op = start((o) => [(h = new MatinsHerald(at(0, 0), o))]);
+    // A wound keeps the operation running: the herald alone is optional.
+    const op = start((o) => [(h = new MatinsHerald(at(0, 0), o)), new Laceration(at(180, 90), 0, 40, 0)]);
     const hand = new Hand(op);
     op.setTool('lens');
     const p0 = { ...h.pos };

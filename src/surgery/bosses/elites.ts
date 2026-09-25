@@ -196,9 +196,12 @@ export class CantorKnot extends MalisonBase {
       op.sayOnce('cantor-hum', 'Hear that hum? Each time he sings, the knot re-ties a stroke. Burn it between the verses!');
     }
     if (ev === 'attack') {
-      const seg = this.sigil.segs.find((s) => s.burned.some(Boolean));
-      if (seg) {
-        seg.burned.fill(false);
+      // Re-tie the latest stroke touched: every segment of it, and it must be caught at its node again.
+      const touched = this.sigil.segs.filter((s) => s.burned.some(Boolean)).map((s) => s.stroke);
+      if (touched.length) {
+        const stroke = Math.max(...touched);
+        for (const s of this.sigil.segs) if (s.stroke === stroke) s.burned.fill(false);
+        this.sigil.ignited[stroke] = false;
         this.redrawn++;
         attack(op, 'cantor', 'hum', this.pos);
         op.popup('The knot re-ties', { x: this.pos.x, y: this.pos.y - 60 }, '#d0a0ff');

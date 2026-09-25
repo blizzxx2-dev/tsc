@@ -225,7 +225,7 @@ export class OfficeMalison extends Entity {
     if (this.finalLitany) return;
     // Ilse takes up the prayer: a second star within 3 s joins hers.
     this.prayerT = 3;
-    op.litanyUsed = false;
+    op.grantLitany();
     op.sayOnce('office-prayer', 'Again, Doctor — draw it again, and I’ll pray it with you!');
   }
 
@@ -273,7 +273,8 @@ export class OfficeMalison extends Entity {
     }
     if (this.prayerT > 0) {
       this.prayerT = Math.max(0, this.prayerT - dt / Math.max(op.timeScale, 1e-6));
-      if (this.prayerT === 0 && !this.finalLitany) op.litanyUsed = true;
+      // The prayer lapses: the extra star goes unanswered.
+      if (this.prayerT === 0 && !this.finalLitany && op.litanyUses < op.litanyAllowed) op.litanyAllowed--;
     }
     if (this.stage === 3) {
       if (this.heartSigil && !this.heartSigil.alive) this.die(op);

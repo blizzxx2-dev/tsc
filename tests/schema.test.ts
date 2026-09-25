@@ -1,6 +1,7 @@
 import { SPECIES } from '../src/surgery/species';
 import { describe, expect, it } from 'vitest';
 import { allCampaignOperations, FULL_CAMPAIGN } from '../src/content/campaign';
+import { CantorKnot, EggCluster, FangNest, MatinsHerald } from '../src/surgery/bosses/elites';
 import { ENTITY_REGISTRY, makeEntity, opData, spawnAll, validateOp, validateSpec, type EntitySpec, type OperationData } from '../src/content/schema';
 import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, Sigil, Venom } from '../src/surgery/entities';
 import { ChoirVoice, EggSac, LaudsMalison, SpiderlingGrub } from '../src/surgery/lauds';
@@ -41,12 +42,24 @@ describe('entity registry (CON-0002)', () => {
     [{ e: 'eggsac', at: [0, 0] }, EggSac],
     [{ e: 'malison-matins', at: [0, 0] }, Malison],
     [{ e: 'malison-lauds', at: [0, 0] }, LaudsMalison],
+    [{ e: 'elite-broodcluster', at: [0, 0] }, EggCluster],
+    [{ e: 'elite-cantor', at: [0, -60] }, CantorKnot],
+    [{ e: 'elite-fangnest', path: [[-40, 0], [0, 0], [40, 0]], angles: [0.9, 1.2, 0.6] }, FangNest],
+    [{ e: 'herald', at: [0, 0] }, MatinsHerald],
   ];
 
   it('maps every string id to its constructor', () => {
     expect(Object.keys(ENTITY_REGISTRY).sort()).toEqual(samples.map(([s]) => s.e).sort());
     const op = start();
     for (const [spec, cls] of samples) expect(makeEntity(spec, op), spec.e).toBeInstanceOf(cls);
+  });
+
+  it('an elite spec spawns its core followed by the wounds it binds', () => {
+    const op = start();
+    const nest = spawnAll([{ e: 'elite-fangnest', path: [[-40, 0], [0, 0], [40, 0]], angles: [0.9, 1.2, 0.6] }], op);
+    expect(nest[0]).toBeInstanceOf(FangNest);
+    expect(nest.slice(1).map((e) => e.constructor.name)).toEqual(['Embedded', 'Embedded', 'Embedded']);
+    expect(validateSpec({ e: 'elite-fangnest', path: [[0, 0], [10, 0]], angles: 'x' }, ['tongs'], 'p')).toEqual(['p (elite-fangnest): "angles" must be a list of numbers']);
   });
 
   it('applies the common hidden/required parameters', () => {

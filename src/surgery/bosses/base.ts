@@ -153,11 +153,16 @@ export abstract class MalisonBase extends Entity {
   }
 
   /** Current vitals drain of the boss and all its living adds. */
+  /**
+   * The drain this fight puts on the table: the boss plus each live add at no more than it drained
+   * when spawned. A neglected wound that worsens later is the surgeon's to tend, not the boss's budget.
+   */
   drainTotal(op: Operation): number {
     let d = this.hidden ? 0 : this.drain(op);
-    for (const e of this.adds) if (e.alive && !e.hidden) d += e.drain(op);
+    for (const e of this.adds) if (e.alive && !e.hidden) d += Math.min(e.drain(op), this.spawnDrain.get(e) ?? Infinity);
     return d;
   }
+  private spawnDrain = new WeakMap<Entity, number>();
 
   /**
    * Spawn an add (or a wound) on the boss's behalf. Refused — nothing spawns —
@@ -166,6 +171,7 @@ export abstract class MalisonBase extends Entity {
   spawnAdd(op: Operation, e: Entity): boolean {
     if (this.drainTotal(op) + e.drain(op) > DRAIN_BUDGET[difficultyOf(op)] + 1e-9) return false;
     adds.add(e);
+    this.spawnDrain.set(e, e.drain(op));
     for (let i = this.adds.length - 1; i >= 0; i--) if (!this.adds[i].alive) this.adds.splice(i, 1);
     this.adds.push(e);
     op.spawn(e);
@@ -216,7 +222,7 @@ export abstract class MalisonBase extends Entity {
     if (next !== this.phaseIx) {
       // One phase at a time: a huge hit stops at the threshold of the next.
       next = this.phaseIx + 1;
-      this.hp = Math.min(this.hp, this.maxHp * this.phases[next].from);
+      this.hp = Math.max(this.hp, this.maxHp * this.phases[next].from);
       this.enterPhase(op, next);
     }
     return before - this.hp;
