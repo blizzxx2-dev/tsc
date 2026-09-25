@@ -81,6 +81,8 @@ export const DEFAULT_TUNING = {
     tremorTime: 5,
     tremorPx: 4,
     antivenomHold: 0.9,
+    /** Stabilising doses that pay points (later ones still count for the combo). */
+    paidDoses: 1,
   },
   miss: {
     /** A tool held on nothing for this long is a MISS (plain clicks never are). */
@@ -126,8 +128,8 @@ export const DEFAULT_TUNING = {
     salveCoverage: 0.85,
   },
   blood: {
-    baseDrain: 0.08,
-    drainPerPx: 0.002,
+    baseDrain: 0.03,
+    drainPerPx: 0.003,
     ichorDrain: 0.05,
     /** One "pool unit" is this many px of radius; drawn off in `unitTime` s at the centre. */
     unitPx: 25,

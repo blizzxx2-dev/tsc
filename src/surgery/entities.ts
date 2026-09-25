@@ -374,6 +374,8 @@ export class BloodPool extends Entity {
   private startR: number;
   private contactT = -1;
   private touched = false;
+  /** The wound that feeds this pool (a wound's refills only pay once). */
+  sourceId = 0;
   noun = 'the pooled blood';
   constructor(
     pos: Vec,
@@ -426,7 +428,13 @@ export class BloodPool extends Entity {
       this.kill();
       op.cues.push('squelch');
       const took = op.elapsed - this.contactT;
-      if (this.startR >= B.minRated && took <= B.goodTime) op.rate(took <= B.coolTime ? 'cool' : 'good', this.pos, 'Drained');
+      // Refills from the same wound pay only once — no farming an unstitched cut.
+      const key = `pool-paid-${this.sourceId}`;
+      const paid = this.sourceId > 0 && op.flags.has(key);
+      if (this.startR >= B.minRated && took <= B.goodTime && !paid) {
+        if (this.sourceId > 0) op.flags.add(key);
+        op.rate(took <= B.coolTime ? 'cool' : 'good', this.pos, 'Drained');
+      }
       if (this.ichor === 'blood') op.stain(this.pos, this.startR * 0.9, 0.35);
     }
   }
@@ -452,7 +460,11 @@ export class BloodPool extends Entity {
 export function feedPool(op: Operation, at: Vec, amount: number): void {
   const pool = op.entities.find((e): e is BloodPool => e instanceof BloodPool && e.alive && e.ichor === 'blood' && dist(e.pos, at) < e.r + 16);
   if (pool) pool.grow(amount, undefined, op);
-  else op.spawn(new BloodPool({ x: at.x + op.rng.range(-6, 6), y: at.y + op.rng.range(-6, 6) }, 8));
+  else {
+    const p = new BloodPool({ x: at.x + op.rng.range(-6, 6), y: at.y + op.rng.range(-6, 6) }, 8);
+    p.sourceId = op.actor?.id ?? 0;
+    op.spawn(p);
+  }
 }
 
 // ============================================================ lacerations
@@ -709,7 +721,8 @@ export class Embedded extends Entity {
       this.corruptT = 0;
       const a = op.rng.range(0, TAU);
       const p = { x: this.origin.x + Math.cos(a) * T.hexCorruptDist, y: this.origin.y + Math.sin(a) * T.hexCorruptDist * T.hexCorruptAspect };
-      if (onBody(p)) op.spawn(new Rot(p, T.hexCorruptRot));
+      // The patient's rot is the surgeon's delay: it pays nothing.
+      if (onBody(p)) op.spawnPenalty(new Rot(p, T.hexCorruptRot));
       op.sayOnce('hexstone', 'The hexstone is corrupting the flesh around it — get it out!');
     }
   }

@@ -8,6 +8,8 @@ import { AUTO_LENS_AFTER, combineMods, DIFFICULTIES, NO_ASSISTS, NO_MODS, SLOW_T
 import type { LitanyVariant } from './litany';
 import type { SimEvent } from './events';
 import { rankThresholds } from './ranks';
+import { upgradeTuning } from './progress';
+import { OP_TUNING } from './optuning';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 
@@ -249,6 +251,7 @@ export class Operation {
   injectT = 0;
   injectCooldown = 0;
   private doses: number[] = [];
+  private paidDoses = 0;
   tremorT = 0;
   private captured: Entity | null = null;
   /** Entity whose code is running (for tagging spawns and ratings). */
@@ -291,6 +294,7 @@ export class Operation {
   /** Brand heat (s of continuous use) and lock-out. */
   brandHeat = 0;
   brandLock = 0;
+  private brandHeld = false;
   private fleshBrandT = 0;
   private emptyHoldT = 0;
   private emptyMissed = false;
@@ -323,6 +327,9 @@ export class Operation {
   readonly log: LogOp[] | null;
   private telemetryData = { phaseTimes: [] as number[], tools: new Set<ToolId>(), litanyAt: [] as number[] };
   private hiddenT = new Map<Entity, number>();
+  /** Vitals sampled every 0.25 s over the last second (for the HUD drain arrow). */
+  private trend: number[] = [];
+  private trendT = 0;
 
   constructor(
     readonly def: OperationDef,
@@ -333,8 +340,8 @@ export class Operation {
     this.difficulty = opts.difficulty ?? 'surgeon';
     this.assists = { ...NO_ASSISTS, ...(opts.challenge ? {} : opts.assists) };
     this.mods = combineMods(NO_MODS, opts.mods ?? {});
-    this.tuning = mergeTuning(def.tuning, this.mods.tuning);
     this.upgrades = new Set(opts.challenge ? [] : (opts.upgrades ?? []));
+    this.tuning = mergeTuning(OP_TUNING[def.id], def.tuning, this.mods.tuning, upgradeTuning(this.upgrades));
     this.litanyVariant = opts.litanyVariant ?? 'stillness';
     this.maxVitals = Math.round(this.tuning.vitals.max * (def.constitution === 'frail' ? 0.8 : 1));
     this.vitalsCap = this.maxVitals;
@@ -416,7 +423,8 @@ export class Operation {
 
   // ------------------------------------------------------------------ scoring
 
-  rate(r: Rating, pos: Vec, label?: string): void {
+  /** Rate an action. `pay = false` counts the rating (and combo) but awards no points. */
+  rate(r: Rating, pos: Vec, label?: string, pay = true): void {
     const T = this.tuning.scoring;
     const origin: Origin = this.actor?.spawnedBy ?? 'content';
     this.counts[r]++;
@@ -440,7 +448,7 @@ export class Operation {
     this.comboIdle = 0;
     let pts = Math.round(T[r] * (1 + Math.min(this.combo, T.comboCap) * T.comboStep));
     let capped = false;
-    if (origin === 'penalty') pts = 0;
+    if (origin === 'penalty' || !pay) pts = 0;
     else if (origin === 'boss') {
       pts = Math.round(pts * T.addPointsFactor);
       const cap = Math.round(this.ranks.S * T.addScoreCapFrac);
@@ -504,8 +512,10 @@ export class Operation {
     this.event({ kind: 'hint', key: flag, text: line });
   }
 
+  /** Lose vitals. Every loss (drain, lashes, bursts) is scaled by the difficulty multiplier. */
   hurt(amount: number, pos?: Vec): void {
     if (this.status !== 'running') return;
+    amount *= this.drainMult;
     this.vitals = Math.max(this.assists.noFail ? 1 : 0, this.vitals - amount);
     this.minVitals = Math.min(this.minVitals, this.vitals);
     this.shake = Math.min(12, this.shake + amount * 1.5);
@@ -591,6 +601,24 @@ export class Operation {
     // A rite invoked while a boss is on the table is "at the peak" (XS stays possible).
     if (this.entities.some((e) => e.alive && e.boss)) this.flags.add('litany-peak');
     return true;
+  }
+
+  /** Vitals lost over the last second (positive = falling). */
+  get drainRate(): number {
+    return this.trend.length < 2 ? 0 : (this.trend[0] - this.trend[this.trend.length - 1]) / ((this.trend.length - 1) * 0.25);
+  }
+
+  /** HUD drain arrow: 0 none, 1 slow (↓), 2 fast (↓↓). */
+  drainArrow(): 0 | 1 | 2 {
+    const r = this.drainRate;
+    return r >= 1.5 ? 2 : r >= 0.3 ? 1 : 0;
+  }
+
+  /** What the vitals readout shows: Sext feeds it a false calm unless the lens is held over the heart. */
+  displayVitals(): number {
+    if (!this.def.fakeVitals) return this.vitals;
+    const heart = { x: FIELD.cx, y: FIELD.cy - FIELD.ry * 0.55 };
+    return this.tool === 'lens' && dist(this.cursor, heart) < 60 ? this.vitals : this.shownVitals;
   }
 
   /** Mercy: drain frozen; Wrath: brand doubled. */
@@ -730,6 +758,7 @@ export class Operation {
       for (const e of this.entities) if (e.alive && e.hidden) this.as(e, () => e.onReveal(this, ptr.pos, dt));
     }
 
+    this.brandHeld = tool === 'brand' && ptr.down;
     if (tool === 'brand') {
       if (ptr.down) {
         this.brandHeat += dt;
@@ -844,8 +873,12 @@ export class Operation {
     this.heal(T.heal);
     this.cues.push('inject');
     this.popup(`+${T.heal}`, p, '#9fd3a8');
-    if (before < T.coolBelow) this.rate('cool', p, 'Stabilised');
-    else if (before < T.goodBelow) this.rate('good', p, 'Stabilised');
+    // Only the first few doses pay: letting him fade to earn a COOL is no strategy.
+    const pay = this.paidDoses < T.paidDoses;
+    if (before < T.goodBelow) {
+      if (pay) this.paidDoses++;
+      this.rate(before < T.coolBelow ? 'cool' : 'good', p, 'Stabilised', pay);
+    }
     else if (before > T.badAbove) {
       this.rate('bad', p, 'Wasteful');
       this.sayOnce('inject-waste', 'He didn’t need that, Doctor. Save the tincture.');
@@ -900,7 +933,7 @@ export class Operation {
     this.injectCooldown = Math.max(0, this.injectCooldown - dt);
     this.tremorT = Math.max(0, this.tremorT - dt);
     this.brandLock = Math.max(0, this.brandLock - dt);
-    if (this.tool !== 'brand' || this.brandLock > 0) this.brandHeat = Math.max(0, this.brandHeat - dt * T.brand.coolRate);
+    if (!this.brandHeld || this.brandLock > 0) this.brandHeat = Math.max(0, this.brandHeat - dt * T.brand.coolRate);
     for (const [t, s] of this.disabled) {
       if (s - dt <= 0) this.disabled.delete(t);
       else this.disabled.set(t, s - dt);
@@ -957,12 +990,18 @@ export class Operation {
     }
     const frozen = this.inBreather || this.mercy || this.graceT > 0;
     if (!frozen) {
-      const total = (drain + (this.def.baseDrain ?? 0)) * this.drainMult;
+      const total = drain + (this.def.baseDrain ?? 0);
       if (drain === 0) this.heal(T.vitals.passiveRecovery * wdt);
       this.hurt(total * wdt);
     }
     this.entities = this.entities.filter((e) => e.alive);
     this.minVitals = Math.min(this.minVitals, this.vitals);
+    this.trendT += dt;
+    if (this.trendT >= 0.25) {
+      this.trendT = 0;
+      this.trend.push(this.vitals);
+      if (this.trend.length > 5) this.trend.shift();
+    }
     this.shownVitals = this.def.fakeVitals ? this.shownVitals + (Math.max(this.vitals, 55) - this.shownVitals) * Math.min(1, dt * 0.5) : this.vitals;
     this.runScripted();
 

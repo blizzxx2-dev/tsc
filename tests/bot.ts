@@ -17,6 +17,7 @@ import { ChoirVoice, EggSac, LaudsMalison, SpiderlingGrub } from '../src/surgery
 import { Malison, MalisonShard } from '../src/surgery/malison';
 import { FIELD, LEAD_DISH, Operation, Reopened, SimpleBurn, TRAY_DISH, type OperationDef, type OperationOptions } from '../src/surgery/operation';
 import type { Pointer, ToolId } from '../src/surgery/types';
+import type { SimEvent } from '../src/surgery/events';
 import { botPlanAlpha, isAlphaEntity } from './botAlpha';
 
 export const DT = 1 / 60;
@@ -218,9 +219,10 @@ function plan(ctx: BotContext): Action | null {
   if (bosses.length && ctx.bossSeen < 0) ctx.bossSeen = op.elapsed;
   const stalling = ctx.farm > 0 && ctx.bossSeen >= 0 && op.elapsed - ctx.bossSeen < ctx.farm;
 
-  // A player invokes the Litany when a Malison shows itself (an expert waits for the worst moment).
+  // A player invokes the Litany when the Malison lays itself open (an expert waits for the worst moment too).
   if (op.canInvokeLitany() && bosses.length && !stalling) {
-    if (!ctx.expert || op.entities.filter((e) => e.alive && !e.hidden).length >= 4 || op.vitals < 60) op.invokeLitany();
+    const opening = bosses.some((b) => (b instanceof Malison && b.open) || (b instanceof LaudsMalison && b.livingVoices.length <= 2));
+    if (opening && (!ctx.expert || op.entities.filter((e) => e.alive && !e.hidden).length >= 4 || op.vitals < 70)) op.invokeLitany();
   }
 
   const shard = find(MalisonShard);
@@ -295,8 +297,10 @@ function plan(ctx: BotContext): Action | null {
       const node = ctx.jitter(sigil.nodes[cur]);
       return hold('brand', () => (sigil.alive && !sigil.ignited[cur] ? node : null), 1.3);
     }
-    const seg = sigil.segs.find((s) => s.stroke === cur && s.burned.some((b) => !b));
-    if (seg) return drag('brand', [seg.a, seg.b], 300);
+    // Trace the rest of the stroke in one motion.
+    const segs = sigil.segs.filter((s) => s.stroke === cur);
+    const from = segs.findIndex((s) => s.burned.some((b) => !b));
+    if (from >= 0) return drag('brand', [segs[from].a, ...segs.slice(from).map((s) => s.b)], 300);
   }
 
   const rot = find(Rot);
@@ -305,6 +309,10 @@ function plan(ctx: BotContext): Action | null {
   const inc = find(Incision, (i) => i.state === 'mark' || i.state === 'closing');
   if (inc?.state === 'mark') return drag('lancet', [inc.pointAt(inc.progress), ...inc.points.filter((_, i) => i > 0)], 350);
   if (inc?.state === 'closing' && inc.stitch) return drag('thread', zigzag(inc.points, Math.max(1, inc.stitch.needed - inc.stitch.count) + 1), 380);
+
+  // Tidy up the smaller pools while there's a moment.
+  const small = find(BloodPool, (p) => p.r > 14);
+  if (small) return hold('leech', alive(small), 2);
 
   // Anything left is hidden: sweep the lens over it.
   const hidden = ents.find((e) => e.hidden && !(e instanceof LaudsMalison));
@@ -332,6 +340,10 @@ export interface BotOptions extends OperationOptions {
   profile?: Profile;
   /** Seed for the bot's own aim noise and mistakes. */
   botSeed?: number;
+  /** Receives every simulation event (the bot otherwise discards them). */
+  collect?: (e: SimEvent) => void;
+  /** Called after every simulated frame. */
+  onFrame?: (op: Operation) => void;
 }
 
 /** Idle frames at the current pointer (pointer up). */
@@ -392,6 +404,8 @@ export function playWithBot(def: OperationDef, opts: BotOptions = {}): BotResult
     }
     op.update(DT);
     op.cues.length = 0;
+    if (opts.collect) for (const e of op.events) opts.collect(e);
+    opts.onFrame?.(op);
     op.events.length = 0;
   }
   return { op, frames };
