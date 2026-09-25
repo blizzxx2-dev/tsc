@@ -8,11 +8,12 @@ import { attachBarkDirector } from '../content/barkDirector';
 import { hex, withAlpha } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { organPalette } from '../render/organs';
-import { Bubo, Sigil, surfDisc, surfLine } from '../surgery/entities';
+import { BloodPool, Bubo, Sigil, surfDisc, surfLine } from '../surgery/entities';
 import { EggSac } from '../surgery/lauds';
 import { Particles } from '../render/particles';
 import { OperationVfx } from './opVfx';
 import { drawOrder } from '../render/layers';
+import { DecalMaps } from '../render/decals';
 import { contentHash } from '../core/replayCodec';
 import { rememberReplay, setLiveReplay } from '../platform/lastReplay';
 import { BUILD } from '../platform/build';
@@ -86,6 +87,10 @@ export class OperationScene implements Scene {
   /** Phase banner (ART-0078 / UIX-0061): a ribbon that slides in at each phase start. */
   private banner: { phase: number; t: number; boss: boolean | null } | null = null;
   private particles = new Particles();
+  /** Persistent field-space decal maps (ENG-0108–0121): blood that stays, dries and is drained away. */
+  private decals: DecalMaps | null = null;
+  /** Radius at which each pool last stained the field. */
+  private poolStains = new WeakMap<object, number>();
   /** HUD particles (ENG-0144): COOL sparkle, chain-milestone flare; real time, UI layer. */
   private uiFx = new Particles();
   /** Emitters driven by the operation's state and events (ENG-0133–0142). */
@@ -247,6 +252,9 @@ export class OperationScene implements Scene {
     this.unbindHitstop = null;
     this.bossAudio.dispose();
     this.op.events.clear();
+    // Decal maps belong to this operation: free them so VRAM returns to baseline (ENG-0121).
+    this.decals?.release();
+    this.decals = null;
   }
 
   exit(game: Game): void {
@@ -273,6 +281,7 @@ export class OperationScene implements Scene {
     this.listen(this.op);
     this.camera.reset();
     this.particles = new Particles(undefined, this.runOpts.seed ?? this.def.seed ?? 1);
+    this.decals?.reset();
     this.ctl = new OperationInput();
     this.paused = false;
     this.resumeT = 0;
@@ -402,7 +411,10 @@ export class OperationScene implements Scene {
     // Visual effects arrive as `fx` events; landed droplets become stains. Particles run on world time.
     this.particles.update(dt * op.timeScale, (p, kind, size) => {
       if (kind === 'blood' && onBody(p)) op.stain(p, size * 2.6, 0.3);
+      // Landed droplets stamp persistent blood (ENG-0114).
+      if (kind === 'blood') this.decals?.stamp({ map: 'blood', brush: 'splat', x: p.x, y: p.y, r: size * 2.4, rot: this.presRng.next() * 6.28, value: [0.7, 1, 0], mode: 'add', t: op.elapsed, seed: this.presRng.next() });
     });
+    this.stampFluids(op, game);
     this.uiFx.update(dt, () => {});
     this.vfx.update(op, dt * op.timeScale, { beat: this.beatPhase, pointer: game.input.pos, down: game.input.down, light: { x: FIELD.cx - 220, y: 60 }, starTrail: this.ctl.starTrail, gore: bloodScale(presentation.gore) });
 
@@ -418,6 +430,33 @@ export class OperationScene implements Scene {
     if (op.status === 'won' || op.status === 'lost') {
       this.endT += dt;
       if (this.endT > 2.2) this.onEnd({ op, won: op.status === 'won' });
+    }
+  }
+
+  /**
+   * Pools soak into the field beneath them; the Leech-Pipe erases the blood map under the pipe while
+   * it draws a pool off, so the field visibly cleans as the sim removes the blood (ENG-0115).
+   */
+  private stampFluids(op: Operation, game: Game): void {
+    // Created with the first GL frame or tick (headless sims have no renderer and skip decals).
+    if (!this.decals && game.gfx?.targets) this.decals = new DecalMaps(game.gfx, game.gfx.shaderQuality);
+    const d = this.decals;
+    if (!d) return;
+    const draining = op.tool === 'leech' && game.input.down && op.status === 'running';
+    for (const e of op.entities) {
+      if (!(e instanceof BloodPool) || !e.alive || e.ichor !== 'blood') continue;
+      // A pool stains the field once as it spreads (each 6 px of growth), not every frame.
+      const stained = this.poolStains.get(e) ?? 0;
+      if (e.r > stained + 6) {
+        this.poolStains.set(e, e.r);
+        d.stamp({ map: 'blood', brush: 'soft', x: e.pos.x, y: e.pos.y, r: e.r, value: [0.45, 0.8, 0], mode: 'add', t: op.elapsed });
+      }
+      // The pipe draws the pool off: its stain fades with it, strongest under the pipe.
+      if (draining && dist(e.pos, game.input.pos) < e.r + 12) {
+        d.stamp({ map: 'blood', brush: 'soft', x: e.pos.x, y: e.pos.y, r: e.r * 1.15, value: [0.05, 0, 0], mode: 'erase', t: op.elapsed });
+        d.stamp({ map: 'blood', brush: 'soft', x: game.input.pos.x, y: game.input.pos.y, r: 34, value: [0.12, 0, 0], mode: 'erase', t: op.elapsed });
+        this.poolStains.set(e, Math.min(stained, e.r));
+      }
     }
   }
 
@@ -441,6 +480,9 @@ export class OperationScene implements Scene {
     // ---------------------------------------------------------------- data layers
     // Entities layer order (ENG-0042): by layer, then spawn order.
     const ents = drawOrder(op.visibleEntities());
+    this.decals ??= new DecalMaps(g, g.shaderQuality);
+    this.decals.setQuality(g.shaderQuality);
+    this.decals.flush();
     const light = { x: FIELD.cx - 220 + Math.sin(t * 0.7) * 30, y: 60 + Math.sin(t * 1.3) * 10 };
     g.beginLayer('surface');
     for (const sc of op.scars) {
@@ -479,6 +521,7 @@ export class OperationScene implements Scene {
       ],
     });
     const colours = palette();
+    this.decals.drawBlood(op.elapsed, { fresh: vec3(speciesBlood(colours.blood, pal.species)), light: { x: (light.x - FIELD.cx) / FIELD.rx, y: -(light.y - FIELD.cy) / FIELD.ry } });
     g.fluidComposite(light, { blood: speciesBlood(colours.blood, pal.species), pus: colours.pus, bile: colours.bile, gore: presentation.gore });
     // Entities, particles and world FX go through the world camera (ENG-0045); endWorld resets it.
     g.setCamera(this.camera.isIdentity ? null : this.camera.matrix());

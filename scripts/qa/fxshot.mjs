@@ -41,8 +41,8 @@ try {
     const p = scene.particles;
     fx.forEach(([id, n], i) => p.burst(id, { x: 420 + i * 110, y: 380 }, Number(n)));
   }, fx);
-  await page.evaluate((n) => window.__game.debug.step(n, { render: 'all' }), Number(frames));
-  await page.screenshot({ path: out });
+  await page.evaluate((n) => window.__game.debug.step(n, { render: 'last' }), Number(frames));
+  await page.screenshot({ path: out, timeout: 120000 });
   console.log('shot', out);
 } finally {
   if (errors.length) console.log('page errors:\n' + errors.join('\n'));

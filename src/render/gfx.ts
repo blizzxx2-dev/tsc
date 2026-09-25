@@ -441,6 +441,17 @@ export class Gfx {
     x[8] = 1;
   }
 
+  /** The view transform uploaded as `u_xf` (safe-area origin × camera), for custom world-space passes. */
+  viewTransform(): Float32Array {
+    return this.xf;
+  }
+
+  /** Re-apply the batch blend state after a pass changed GL blending directly. */
+  resyncBlend(): void {
+    this.gl.enable(this.gl.BLEND);
+    this.applyBlend();
+  }
+
   /** Current tessellation scale: on-screen pixels per virtual unit including camera zoom (ENG-0050). */
   private lodScale(): number {
     const zoom = this.camera ? Math.hypot(this.camera[0], this.camera[1]) : 1;

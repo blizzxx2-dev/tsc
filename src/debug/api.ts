@@ -35,6 +35,7 @@ import { isPresetName, PRESET_NAMES, presetSave } from './presets';
 import { opView, stateHash, type OpView } from './state';
 import { checkpoint, describeDesync, firstDesync, HASH_EVERY, replayHashes, type Checkpoint } from './desync';
 import { takeLog } from '../surgery/replay';
+import { mapUVToField } from '../render/decals';
 
 export const DEBUG_API_VERSION = 1;
 
@@ -447,6 +448,31 @@ export class DebugApi {
     if (target < op.phase) throw new Error(`already past phase ${n} (at ${op.phase + 1}); restart with "seed" or "op"`);
     for (let i = 0; i < 50 && (op.status === 'intro' || (op.status === 'running' && op.phase < target)); i++) this.skipPhase();
     return this.state();
+  }
+
+  /** Decal map coverage (ENG-0116): fraction of the field-space map above a density threshold, from a 64×36 GPU readback. */
+  decalCoverage(map: 'blood' | 'scorch' = 'blood', threshold = 0.1): number {
+    const s = this.game.scene as unknown as { decals?: { coverage(m: string, t: number): number } | null };
+    if (!(this.game.scene instanceof OperationScene)) throw new Error(`no operation is running (scene: ${this.scene})`);
+    return s.decals ? s.decals.coverage(map, threshold) : 0;
+  }
+
+  /** Mean blood-map density (0..1) within `r` of a field point, from the 64×36 readback (ENG-0116). */
+  decalDensity(x: number, y: number, r: number, map: 'blood' | 'scorch' = 'blood'): number {
+    const s = this.game.scene as unknown as { decals?: { readDensity(m: string, w: number, h: number): Float32Array } | null };
+    if (!(this.game.scene instanceof OperationScene)) throw new Error(`no operation is running (scene: ${this.scene})`);
+    if (!s.decals) return 0;
+    const d = s.decals.readDensity(map, 64, 36);
+    let sum = 0;
+    let n = 0;
+    for (let j = 0; j < 36; j++)
+      for (let i = 0; i < 64; i++) {
+        const p = mapUVToField((i + 0.5) / 64, 1 - (j + 0.5) / 36);
+        if (Math.hypot(p.x - x, p.y - y) > r) continue;
+        sum += d[j * 64 + i];
+        n++;
+      }
+    return n ? sum / n : 0;
   }
 
   /** Toggle (or set) god mode; returns the new state. */
