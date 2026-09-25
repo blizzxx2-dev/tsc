@@ -20,6 +20,8 @@ export interface Settings {
   frameCap: number;
   /** Disables hitstop and other motion-heavy effects. */
   reduceMotion: boolean;
+  /** Interface language (BCP 47, see src/i18n/locales.ts); '' follows the system language. */
+  language: string;
 }
 
 const KEY = 'suture-and-steel.settings';
@@ -35,6 +37,7 @@ export const DEFAULT_SETTINGS: Settings = {
   gpuTier: 'auto',
   frameCap: 0,
   reduceMotion: false,
+  language: '',
 };
 
 function load(): Settings {

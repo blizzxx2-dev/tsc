@@ -1,4 +1,5 @@
 import type { Game, Scene } from '../core/scene';
+import { t } from '../i18n';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { CAST } from '../content/characters';
@@ -77,8 +78,13 @@ export class StoryScene implements Scene {
       font: narr ? 'italic' : 'body',
       color: hex(narr ? PALETTE.inkDim : PALETTE.ink),
     });
-    if (this.shown >= line.text.length) g.text('▼', box.x + box.w - 36, box.y + box.h - 18 + Math.sin(g.time * 5) * 3, { size: 16, color: hex(PALETTE.gold) });
-    g.text('Click / Space: advance    Ctrl: fast    Esc: skip scene', VIEW_W - 30, VIEW_H - 8, { size: 13, color: hex(PALETTE.inkDim, 0.6), align: 'right', shadow: false });
+    if (this.shown >= line.text.length) {
+      // Advance marker drawn as a shape: ▼ is not in the bundled fonts (npm run i18n:glyphs).
+      const ax = box.x + box.w - 30;
+      const ay = box.y + box.h - 30 + Math.sin(g.time * 5) * 3;
+      g.tri(ax - 6, ay - 5, ax + 6, ay - 5, ax, ay + 5, hex(PALETTE.gold));
+    }
+    g.text(t('ui.story.controls'), VIEW_W - 30, VIEW_H - 8, { size: 13, color: hex(PALETTE.inkDim, 0.6), align: 'right', shadow: false });
     reticle(g, game.input.pos);
     g.endFrame();
   }

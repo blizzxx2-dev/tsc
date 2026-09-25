@@ -1,0 +1,945 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file original="ui" source-language="en" datatype="plaintext">
+  <header><note>Suture &amp; Steel: The Malison Hours — ui strings. ICU MessageFormat: keep {placeholders} and plural/select keywords unchanged. Style guide: docs/loc/style-guide.md. Keys: docs/loc/keys.md.</note></header>
+  <body>
+    <group id="global/ui" resname="global/ui">
+      <trans-unit id="ui.game.title" resname="ui.game.title" maxwidth="900" size-unit="pixel">
+        <source>Suture &amp; Steel</source>
+        <note from="context">Game title on the title screen.</note>
+        <note from="translator">Brand name: do not translate (see docs/loc/style-guide.md, proper-name policy).</note>
+        <note from="layout">font=display; size=116px; max=900px; DO NOT TRANSLATE</note>
+        <note from="screenshot">docs/loc/screens/title.png</note>
+      </trans-unit>
+      <trans-unit id="ui.game.subtitle" resname="ui.game.subtitle" maxwidth="600" size-unit="pixel">
+        <source>The Malison Hours</source>
+        <note from="context">Subtitle under the logo.</note>
+        <note from="translator">Subtitle may be translated only if marketing approves a localised logo; default keep English.</note>
+        <note from="layout">font=italic; size=30px; max=600px</note>
+        <note from="screenshot">docs/loc/screens/title.png</note>
+      </trans-unit>
+      <trans-unit id="ui.common.back" resname="ui.common.back" maxwidth="300" size-unit="pixel">
+        <source>Back</source>
+        <note from="context">Generic button / toggle value.</note>
+        <note from="layout">font=body; size=28px; max=300px</note>
+        <note from="screenshot">docs/loc/screens/common.png</note>
+      </trans-unit>
+      <trans-unit id="ui.common.on" resname="ui.common.on" maxwidth="300" size-unit="pixel">
+        <source>On</source>
+        <note from="context">Generic button / toggle value.</note>
+        <note from="layout">font=body; size=28px; max=300px</note>
+        <note from="screenshot">docs/loc/screens/common.png</note>
+      </trans-unit>
+      <trans-unit id="ui.common.off" resname="ui.common.off" maxwidth="300" size-unit="pixel">
+        <source>Off</source>
+        <note from="context">Generic button / toggle value.</note>
+        <note from="layout">font=body; size=28px; max=300px</note>
+        <note from="screenshot">docs/loc/screens/common.png</note>
+      </trans-unit>
+      <trans-unit id="ui.title.confirm_new" resname="ui.title.confirm_new" maxwidth="440" size-unit="pixel">
+        <source>Forswear your progress and take the oath anew?</source>
+        <note from="context">Confirmation question before wiping campaign progress.</note>
+        <note from="translator">&quot;Oath&quot; = the surgeon's oath of the hospice; archaic register.</note>
+        <note from="layout">font=body; size=26px; max=440px</note>
+        <note from="screenshot">docs/loc/screens/title.png</note>
+      </trans-unit>
+      <trans-unit id="ui.title.confirm_yes" resname="ui.title.confirm_yes" maxwidth="380" size-unit="pixel">
+        <source>Yes, begin again</source>
+        <note from="context">Title-menu button.</note>
+        <note from="layout">font=body; size=30px; max=380px</note>
+        <note from="screenshot">docs/loc/screens/title.png</note>
+      </trans-unit>
+      <trans-unit id="ui.title.confirm_no" resname="ui.title.confirm_no" maxwidth="380" size-unit="pixel">
+        <source>No</source>
+        <note from="context">Title-menu button.</note>
+        <note from="layout">font=body; size=30px; max=380px</note>
+        <note from="screenshot">docs/loc/screens/title.png</note>
+      </trans-unit>
+      <trans-unit id="ui.title.continue" resname="ui.title.continue" maxwidth="380" size-unit="pixel">
+        <source>Continue</source>
+        <note from="context">Title-menu button.</note>
+        <note from="layout">font=body; size=30px; max=380px</note>
+        <note from="screenshot">docs/loc/screens/title.png</note>
+      </trans-unit>
+      <trans-unit id="ui.title.new_game" resname="ui.title.new_game" maxwidth="380" size-unit="pixel">
+        <source>Take the Oath</source>
+        <note from="context">Title-menu button.</note>
+        <note from="layout">font=body; size=30px; max=380px</note>
+        <note from="screenshot">docs/loc/screens/title.png</note>
+      </trans-unit>
+      <trans-unit id="ui.title.new_game_again" resname="ui.title.new_game_again" maxwidth="380" size-unit="pixel">
+        <source>Take the Oath Anew</source>
+        <note from="context">Title-menu button.</note>
+        <note from="layout">font=body; size=30px; max=380px</note>
+        <note from="screenshot">docs/loc/screens/title.png</note>
+      </trans-unit>
+      <trans-unit id="ui.title.theatre" resname="ui.title.theatre" maxwidth="380" size-unit="pixel">
+        <source>Operating Theatre</source>
+        <note from="context">Title-menu button.</note>
+        <note from="layout">font=body; size=30px; max=380px</note>
+        <note from="screenshot">docs/loc/screens/title.png</note>
+      </trans-unit>
+      <trans-unit id="ui.title.options" resname="ui.title.options" maxwidth="380" size-unit="pixel">
+        <source>Options</source>
+        <note from="context">Title-menu button.</note>
+        <note from="layout">font=body; size=30px; max=380px</note>
+        <note from="screenshot">docs/loc/screens/title.png</note>
+      </trans-unit>
+      <trans-unit id="ui.title.demo_complete" resname="ui.title.demo_complete" maxwidth="1180" size-unit="pixel">
+        <source>The demo is complete — thank you for playing. The Hours continue in the full game.</source>
+        <note from="context">Footer shown once the demo campaign is finished.</note>
+        <note from="layout">font=italic; size=20px; max=1180px</note>
+        <note from="screenshot">docs/loc/screens/title.png</note>
+      </trans-unit>
+      <trans-unit id="ui.title.fullscreen_hint" resname="ui.title.fullscreen_hint" maxwidth="400" size-unit="pixel">
+        <source>F11: fullscreen</source>
+        <note from="context">Small footer text.</note>
+        <note from="layout">font=body; size=14px; max=400px</note>
+        <note from="screenshot">docs/loc/screens/title.png</note>
+      </trans-unit>
+      <trans-unit id="ui.title.version" resname="ui.title.version" maxwidth="400" size-unit="pixel">
+        <source>v{version} prototype</source>
+        <note from="context">Small footer text.</note>
+        <note from="layout">font=body; size=14px; max=400px</note>
+        <note from="screenshot">docs/loc/screens/title.png</note>
+      </trans-unit>
+      <trans-unit id="ui.options.title" resname="ui.options.title" maxwidth="700" size-unit="pixel">
+        <source>Options</source>
+        <note from="context">Options screen heading.</note>
+        <note from="layout">font=display; size=52px; max=700px</note>
+        <note from="screenshot">docs/loc/screens/options.png</note>
+      </trans-unit>
+      <trans-unit id="ui.options.volume" resname="ui.options.volume" maxwidth="360" size-unit="pixel">
+        <source>Volume</source>
+        <note from="context">Options row label, left-aligned.</note>
+        <note from="layout">font=body; size=24px; max=360px</note>
+        <note from="screenshot">docs/loc/screens/options.png</note>
+      </trans-unit>
+      <trans-unit id="ui.options.volume_value" resname="ui.options.volume_value" maxwidth="280" size-unit="pixel">
+        <source>{value, number, percent}</source>
+        <note from="context">Value of an options row, drawn right-aligned between ‹ ›.</note>
+        <note from="layout">font=body; size=24px; max=280px</note>
+        <note from="screenshot">docs/loc/screens/options.png</note>
+      </trans-unit>
+      <trans-unit id="ui.options.sound" resname="ui.options.sound" maxwidth="360" size-unit="pixel">
+        <source>Sound</source>
+        <note from="context">Options row label, left-aligned.</note>
+        <note from="layout">font=body; size=24px; max=360px</note>
+        <note from="screenshot">docs/loc/screens/options.png</note>
+      </trans-unit>
+      <trans-unit id="ui.options.shake" resname="ui.options.shake" maxwidth="360" size-unit="pixel">
+        <source>Screen shake</source>
+        <note from="context">Options row label, left-aligned.</note>
+        <note from="layout">font=body; size=24px; max=360px</note>
+        <note from="screenshot">docs/loc/screens/options.png</note>
+      </trans-unit>
+      <trans-unit id="ui.options.shake_off" resname="ui.options.shake_off" maxwidth="280" size-unit="pixel">
+        <source>Off</source>
+        <note from="context">Value of an options row, drawn right-aligned between ‹ ›.</note>
+        <note from="layout">font=body; size=24px; max=280px</note>
+        <note from="screenshot">docs/loc/screens/options.png</note>
+      </trans-unit>
+      <trans-unit id="ui.options.shake_gentle" resname="ui.options.shake_gentle" maxwidth="280" size-unit="pixel">
+        <source>Gentle</source>
+        <note from="context">Value of an options row, drawn right-aligned between ‹ ›.</note>
+        <note from="layout">font=body; size=24px; max=280px</note>
+        <note from="screenshot">docs/loc/screens/options.png</note>
+      </trans-unit>
+      <trans-unit id="ui.options.shake_full" resname="ui.options.shake_full" maxwidth="280" size-unit="pixel">
+        <source>Full</source>
+        <note from="context">Value of an options row, drawn right-aligned between ‹ ›.</note>
+        <note from="layout">font=body; size=24px; max=280px</note>
+        <note from="screenshot">docs/loc/screens/options.png</note>
+      </trans-unit>
+      <trans-unit id="ui.options.reduce_flashing" resname="ui.options.reduce_flashing" maxwidth="360" size-unit="pixel">
+        <source>Reduce flashing</source>
+        <note from="context">Options row label, left-aligned.</note>
+        <note from="layout">font=body; size=24px; max=360px</note>
+        <note from="screenshot">docs/loc/screens/options.png</note>
+      </trans-unit>
+      <trans-unit id="ui.options.reduce_flashing_note" resname="ui.options.reduce_flashing_note" maxwidth="720" size-unit="pixel">
+        <source>Softens the failing-vitals pulse and the Litany ripple.</source>
+        <note from="context">Explanation shown under the options list while the row is hovered.</note>
+        <note from="layout">font=italic; size=18px; max=720px; lines=1</note>
+        <note from="screenshot">docs/loc/screens/options.png</note>
+      </trans-unit>
+      <trans-unit id="ui.options.timer_assist" resname="ui.options.timer_assist" maxwidth="360" size-unit="pixel">
+        <source>Assist: time allowed</source>
+        <note from="context">Options row label, left-aligned.</note>
+        <note from="layout">font=body; size=24px; max=360px</note>
+        <note from="screenshot">docs/loc/screens/options.png</note>
+      </trans-unit>
+      <trans-unit id="ui.options.timer_standard" resname="ui.options.timer_standard" maxwidth="280" size-unit="pixel">
+        <source>Standard</source>
+        <note from="context">Value of an options row, drawn right-aligned between ‹ ›.</note>
+        <note from="layout">font=body; size=24px; max=280px</note>
+        <note from="screenshot">docs/loc/screens/options.png</note>
+      </trans-unit>
+      <trans-unit id="ui.options.timer_generous" resname="ui.options.timer_generous" maxwidth="280" size-unit="pixel">
+        <source>Generous (×1.5)</source>
+        <note from="context">Value of an options row, drawn right-aligned between ‹ ›.</note>
+        <note from="layout">font=body; size=24px; max=280px</note>
+        <note from="screenshot">docs/loc/screens/options.png</note>
+      </trans-unit>
+      <trans-unit id="ui.options.timer_relaxed" resname="ui.options.timer_relaxed" maxwidth="280" size-unit="pixel">
+        <source>Relaxed (×2)</source>
+        <note from="context">Value of an options row, drawn right-aligned between ‹ ›.</note>
+        <note from="layout">font=body; size=24px; max=280px</note>
+        <note from="screenshot">docs/loc/screens/options.png</note>
+      </trans-unit>
+      <trans-unit id="ui.options.timer_assist_note" resname="ui.options.timer_assist_note" maxwidth="720" size-unit="pixel">
+        <source>Assisted results are marked on the rank screen.</source>
+        <note from="context">Explanation shown under the options list while the row is hovered.</note>
+        <note from="layout">font=italic; size=18px; max=720px; lines=1</note>
+        <note from="screenshot">docs/loc/screens/options.png</note>
+      </trans-unit>
+      <trans-unit id="ui.options.litany_key" resname="ui.options.litany_key" maxwidth="360" size-unit="pixel">
+        <source>Assist: Litany on Space</source>
+        <note from="context">Options row label, left-aligned.</note>
+        <note from="layout">font=body; size=24px; max=360px</note>
+        <note from="screenshot">docs/loc/screens/options.png</note>
+      </trans-unit>
+      <trans-unit id="ui.options.litany_key_note" resname="ui.options.litany_key_note" maxwidth="720" size-unit="pixel">
+        <source>Press Space instead of drawing the five-pointed star.</source>
+        <note from="context">Explanation shown under the options list while the row is hovered.</note>
+        <note from="layout">font=italic; size=18px; max=720px; lines=1</note>
+        <note from="screenshot">docs/loc/screens/options.png</note>
+      </trans-unit>
+      <trans-unit id="ui.options.fullscreen" resname="ui.options.fullscreen" maxwidth="360" size-unit="pixel">
+        <source>Fullscreen</source>
+        <note from="context">Options row label, left-aligned.</note>
+        <note from="layout">font=body; size=24px; max=360px</note>
+        <note from="screenshot">docs/loc/screens/options.png</note>
+      </trans-unit>
+      <trans-unit id="ui.options.language" resname="ui.options.language" maxwidth="360" size-unit="pixel">
+        <source>Language</source>
+        <note from="context">Options row label, left-aligned.</note>
+        <note from="layout">font=body; size=24px; max=360px</note>
+        <note from="screenshot">docs/loc/screens/options.png</note>
+      </trans-unit>
+      <trans-unit id="ui.options.language_note" resname="ui.options.language_note" maxwidth="720" size-unit="pixel">
+        <source>Menus and the operating theatre. Story scenes remain in English for now.</source>
+        <note from="context">Explanation shown under the options list while the row is hovered.</note>
+        <note from="layout">font=italic; size=18px; max=720px; lines=1</note>
+        <note from="screenshot">docs/loc/screens/options.png</note>
+      </trans-unit>
+      <trans-unit id="ui.briefing.title" resname="ui.briefing.title" maxwidth="700" size-unit="pixel">
+        <source>Patient Chart</source>
+        <note from="context">Heading of the pre-operation patient chart.</note>
+        <note from="layout">font=display; size=46px; max=700px</note>
+        <note from="screenshot">docs/loc/screens/briefing.png</note>
+      </trans-unit>
+      <trans-unit id="ui.briefing.patient" resname="ui.briefing.patient" maxwidth="130" size-unit="pixel">
+        <source>Patient:</source>
+        <note from="context">Field label on the patient chart; the value starts 140 px to the right.</note>
+        <note from="layout">font=body; size=22px; max=130px</note>
+        <note from="screenshot">docs/loc/screens/briefing.png</note>
+      </trans-unit>
+      <trans-unit id="ui.briefing.findings" resname="ui.briefing.findings" maxwidth="130" size-unit="pixel">
+        <source>Findings:</source>
+        <note from="context">Field label on the patient chart; the value starts 140 px to the right.</note>
+        <note from="layout">font=body; size=22px; max=130px</note>
+        <note from="screenshot">docs/loc/screens/briefing.png</note>
+      </trans-unit>
+      <trans-unit id="ui.briefing.time_allowed" resname="ui.briefing.time_allowed" maxwidth="150" size-unit="pixel">
+        <source>Time allowed:</source>
+        <note from="context">Label before the time limit.</note>
+        <note from="layout">font=body; size=22px; max=150px</note>
+        <note from="screenshot">docs/loc/screens/briefing.png</note>
+      </trans-unit>
+      <trans-unit id="ui.briefing.best" resname="ui.briefing.best" maxwidth="60" size-unit="pixel">
+        <source>Best:</source>
+        <note from="context">Label before the best rank/score.</note>
+        <note from="translator">Very tight: the value starts 70 px to the right.</note>
+        <note from="layout">font=body; size=22px; max=60px</note>
+        <note from="screenshot">docs/loc/screens/briefing.png</note>
+      </trans-unit>
+      <trans-unit id="ui.briefing.best_value" resname="ui.briefing.best_value" maxwidth="250" size-unit="pixel">
+        <source>{rank}  ({score, number})</source>
+        <note from="context">Best rank and score. {rank} is a Latin rank letter (XS/S/A/B/C) — never translated.</note>
+        <note from="layout">font=body; size=22px; max=250px</note>
+        <note from="screenshot">docs/loc/screens/briefing.png</note>
+      </trans-unit>
+      <trans-unit id="ui.briefing.instruments" resname="ui.briefing.instruments" maxwidth="130" size-unit="pixel">
+        <source>Instruments:</source>
+        <note from="context">Field label on the patient chart; the value starts 140 px to the right.</note>
+        <note from="layout">font=body; size=22px; max=130px</note>
+        <note from="screenshot">docs/loc/screens/briefing.png</note>
+      </trans-unit>
+      <trans-unit id="ui.briefing.begin" resname="ui.briefing.begin" maxwidth="300" size-unit="pixel">
+        <source>Scrub In</source>
+        <note from="context">Primary button: start the operation. &quot;Scrub in&quot; = surgeon washing before surgery.</note>
+        <note from="layout">font=body; size=34px; max=300px</note>
+        <note from="screenshot">docs/loc/screens/briefing.png</note>
+      </trans-unit>
+      <trans-unit id="ui.results.title" resname="ui.results.title" maxwidth="600" size-unit="pixel">
+        <source>Case Record</source>
+        <note from="context">Heading of the results ledger page.</note>
+        <note from="layout">font=display; size=46px; max=600px</note>
+        <note from="screenshot">docs/loc/screens/results.png</note>
+      </trans-unit>
+      <trans-unit id="ui.results.subtitle" resname="ui.results.subtitle" maxwidth="640" size-unit="pixel">
+        <source>{title} — {patient}</source>
+        <note from="context">Operation title and patient name.</note>
+        <note from="layout">font=italic; size=21px; max=640px</note>
+        <note from="screenshot">docs/loc/screens/results.png</note>
+      </trans-unit>
+      <trans-unit id="ui.results.won" resname="ui.results.won" maxwidth="600" size-unit="pixel">
+        <source>The patient lives.</source>
+        <note from="context">Outcome line on the results page.</note>
+        <note from="layout">font=body; size=26px; max=600px</note>
+        <note from="screenshot">docs/loc/screens/results.png</note>
+      </trans-unit>
+      <trans-unit id="ui.results.lost" resname="ui.results.lost" maxwidth="600" size-unit="pixel">
+        <source>The patient was lost.</source>
+        <note from="context">Outcome line on the results page.</note>
+        <note from="layout">font=body; size=26px; max=600px</note>
+        <note from="screenshot">docs/loc/screens/results.png</note>
+      </trans-unit>
+      <trans-unit id="ui.results.longest_chain" resname="ui.results.longest_chain" maxwidth="250" size-unit="pixel">
+        <source>Longest chain</source>
+        <note from="context">Ledger row label, followed by a dotted leader and a number.</note>
+        <note from="layout">font=body; size=22px; max=250px</note>
+        <note from="screenshot">docs/loc/screens/results.png</note>
+      </trans-unit>
+      <trans-unit id="ui.results.vitals_remaining" resname="ui.results.vitals_remaining" maxwidth="250" size-unit="pixel">
+        <source>Vitals remaining</source>
+        <note from="context">Ledger row label, followed by a dotted leader and a number.</note>
+        <note from="layout">font=body; size=22px; max=250px</note>
+        <note from="screenshot">docs/loc/screens/results.png</note>
+      </trans-unit>
+      <trans-unit id="ui.results.time_remaining" resname="ui.results.time_remaining" maxwidth="250" size-unit="pixel">
+        <source>Time remaining</source>
+        <note from="context">Ledger row label, followed by a dotted leader and a number.</note>
+        <note from="layout">font=body; size=22px; max=250px</note>
+        <note from="screenshot">docs/loc/screens/results.png</note>
+      </trans-unit>
+      <trans-unit id="ui.results.score" resname="ui.results.score" maxwidth="250" size-unit="pixel">
+        <source>Score</source>
+        <note from="context">Ledger row label, followed by a dotted leader and a number.</note>
+        <note from="layout">font=body; size=22px; max=250px</note>
+        <note from="screenshot">docs/loc/screens/results.png</note>
+      </trans-unit>
+      <trans-unit id="ui.results.rank" resname="ui.results.rank" maxwidth="200" size-unit="pixel">
+        <source>Rank</source>
+        <note from="context">Caption around the wax rank seal.</note>
+        <note from="layout">font=italic; size=22px; max=200px</note>
+        <note from="screenshot">docs/loc/screens/results.png</note>
+      </trans-unit>
+      <trans-unit id="ui.results.new_best" resname="ui.results.new_best" maxwidth="200" size-unit="pixel">
+        <source>A new best!</source>
+        <note from="context">Caption around the wax rank seal.</note>
+        <note from="layout">font=italic; size=22px; max=200px</note>
+        <note from="screenshot">docs/loc/screens/results.png</note>
+      </trans-unit>
+      <trans-unit id="ui.results.assisted" resname="ui.results.assisted" maxwidth="200" size-unit="pixel">
+        <source>(assisted)</source>
+        <note from="context">Caption around the wax rank seal.</note>
+        <note from="layout">font=italic; size=22px; max=200px</note>
+        <note from="screenshot">docs/loc/screens/results.png</note>
+      </trans-unit>
+      <trans-unit id="ui.results.continue" resname="ui.results.continue" maxwidth="260" size-unit="pixel">
+        <source>Continue</source>
+        <note from="context">Results button.</note>
+        <note from="layout">font=body; size=30px; max=260px</note>
+        <note from="screenshot">docs/loc/screens/results.png</note>
+      </trans-unit>
+      <trans-unit id="ui.results.operate_again" resname="ui.results.operate_again" maxwidth="260" size-unit="pixel">
+        <source>Operate Again</source>
+        <note from="context">Results button.</note>
+        <note from="layout">font=body; size=30px; max=260px</note>
+        <note from="screenshot">docs/loc/screens/results.png</note>
+      </trans-unit>
+      <trans-unit id="ui.results.try_again" resname="ui.results.try_again" maxwidth="260" size-unit="pixel">
+        <source>Try Again</source>
+        <note from="context">Results button.</note>
+        <note from="layout">font=body; size=30px; max=260px</note>
+        <note from="screenshot">docs/loc/screens/results.png</note>
+      </trans-unit>
+      <trans-unit id="ui.results.leave" resname="ui.results.leave" maxwidth="260" size-unit="pixel">
+        <source>Leave</source>
+        <note from="context">Results button.</note>
+        <note from="layout">font=body; size=30px; max=260px</note>
+        <note from="screenshot">docs/loc/screens/results.png</note>
+      </trans-unit>
+      <trans-unit id="ui.demoend.thanks" resname="ui.demoend.thanks" maxwidth="700" size-unit="pixel">
+        <source>Thank you for playing the demo.</source>
+        <note from="context">Demo thank-you / wishlist screen.</note>
+        <note from="layout">font=body; size=24px; max=700px</note>
+        <note from="screenshot">docs/loc/screens/demoend.png</note>
+      </trans-unit>
+      <trans-unit id="ui.demoend.teaser" resname="ui.demoend.teaser" maxwidth="700" size-unit="pixel">
+        <source>Six more Hours remain. Prime is already being sung.</source>
+        <note from="context">Demo thank-you / wishlist screen.</note>
+        <note from="layout">font=body; size=24px; max=700px</note>
+        <note from="screenshot">docs/loc/screens/demoend.png</note>
+      </trans-unit>
+      <trans-unit id="ui.demoend.ledger" resname="ui.demoend.ledger" maxwidth="700" size-unit="pixel">
+        <source>Your case ledger</source>
+        <note from="context">Demo thank-you / wishlist screen.</note>
+        <note from="layout">font=body; size=24px; max=700px</note>
+        <note from="screenshot">docs/loc/screens/demoend.png</note>
+      </trans-unit>
+      <trans-unit id="ui.demoend.ledger_entry" resname="ui.demoend.ledger_entry" maxwidth="300" size-unit="pixel">
+        <source>{chapter}-{index}  {title}</source>
+        <note from="context">Demo thank-you / wishlist screen.</note>
+        <note from="layout">font=body; size=24px; max=300px</note>
+        <note from="screenshot">docs/loc/screens/demoend.png</note>
+      </trans-unit>
+      <trans-unit id="ui.demoend.wishlist" resname="ui.demoend.wishlist" maxwidth="700" size-unit="pixel">
+        <source>Wishlist on Steam</source>
+        <note from="context">Demo thank-you / wishlist screen.</note>
+        <note from="layout">font=body; size=24px; max=700px</note>
+        <note from="screenshot">docs/loc/screens/demoend.png</note>
+      </trans-unit>
+      <trans-unit id="ui.demoend.return" resname="ui.demoend.return" maxwidth="700" size-unit="pixel">
+        <source>Return to the Title</source>
+        <note from="context">Demo thank-you / wishlist screen.</note>
+        <note from="layout">font=body; size=24px; max=700px</note>
+        <note from="screenshot">docs/loc/screens/demoend.png</note>
+      </trans-unit>
+      <trans-unit id="ui.theatre.title" resname="ui.theatre.title" maxwidth="700" size-unit="pixel">
+        <source>The Operating Theatre</source>
+        <note from="context">Operation replay list.</note>
+        <note from="layout">font=body; size=26px; max=700px</note>
+        <note from="screenshot">docs/loc/screens/theatre.png</note>
+      </trans-unit>
+      <trans-unit id="ui.theatre.entry" resname="ui.theatre.entry" maxwidth="140" size-unit="pixel">
+        <source>{chapter}-{index}</source>
+        <note from="context">Operation replay list.</note>
+        <note from="layout">font=body; size=26px; max=140px</note>
+        <note from="screenshot">docs/loc/screens/theatre.png</note>
+      </trans-unit>
+      <trans-unit id="ui.theatre.best" resname="ui.theatre.best" maxwidth="140" size-unit="pixel">
+        <source>{rank}   {score, number}</source>
+        <note from="context">Operation replay list.</note>
+        <note from="layout">font=body; size=26px; max=140px</note>
+        <note from="screenshot">docs/loc/screens/theatre.png</note>
+      </trans-unit>
+      <trans-unit id="ui.story.controls" resname="ui.story.controls" maxwidth="700" size-unit="pixel">
+        <source>Click / Space: advance    Ctrl: fast    Esc: skip scene</source>
+        <note from="context">Control hint in the story-scene corner.</note>
+        <note from="layout">font=body; size=13px; max=700px</note>
+        <note from="screenshot">docs/loc/screens/story.png</note>
+      </trans-unit>
+      <trans-unit id="hud.vitals" resname="hud.vitals" maxwidth="110" size-unit="pixel">
+        <source>VITALS</source>
+        <note from="context">HUD label above the vitals number.</note>
+        <note from="layout">font=body; size=13px; max=110px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="hud.combo" resname="hud.combo" maxwidth="60" size-unit="pixel">
+        <source>×{combo, number}</source>
+        <note from="context">Combo counter on the wax seal in the HUD.</note>
+        <note from="translator">Keep × (U+00D7) unless the language has a native multiplication sign convention.</note>
+        <note from="layout">font=italic; size=22px; max=60px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="hud.chain" resname="hud.chain" maxwidth="60" size-unit="pixel">
+        <source>chain</source>
+        <note from="context">Combo counter on the wax seal in the HUD.</note>
+        <note from="translator">Keep × (U+00D7) unless the language has a native multiplication sign convention.</note>
+        <note from="layout">font=italic; size=12px; max=60px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="hud.chain_combo" resname="hud.chain_combo" maxwidth="220" size-unit="pixel">
+        <source>chain ×{combo, number}</source>
+        <note from="context">Under a rating popup: current combo chain.</note>
+        <note from="layout">font=body; size=15px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="hud.op_complete" resname="hud.op_complete" maxwidth="560" size-unit="pixel">
+        <source>Operation Complete</source>
+        <note from="context">Banner at the end of an operation.</note>
+        <note from="layout">font=display; size=56px; max=560px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="hud.patient_lost" resname="hud.patient_lost" maxwidth="560" size-unit="pixel">
+        <source>The Patient Is Lost</source>
+        <note from="context">Banner at the end of an operation.</note>
+        <note from="layout">font=display; size=56px; max=560px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="hud.litany.ready_key" resname="hud.litany.ready_key" maxwidth="150" size-unit="pixel">
+        <source>Space</source>
+        <note from="context">Label beside the Litany medallion.</note>
+        <note from="translator">The Litany of Stillness is a termbase term.</note>
+        <note from="layout">font=italic; size=14px; max=150px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="hud.litany.ready_gesture" resname="hud.litany.ready_gesture" maxwidth="150" size-unit="pixel">
+        <source>Right-drag ★</source>
+        <note from="context">Label beside the Litany medallion.</note>
+        <note from="translator">The Litany of Stillness is a termbase term.</note>
+        <note from="layout">font=italic; size=14px; max=150px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="hud.litany.active" resname="hud.litany.active" maxwidth="150" size-unit="pixel">
+        <source>Stillness</source>
+        <note from="context">Label beside the Litany medallion.</note>
+        <note from="translator">The Litany of Stillness is a termbase term.</note>
+        <note from="layout">font=italic; size=14px; max=150px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="hud.litany.spent" resname="hud.litany.spent" maxwidth="150" size-unit="pixel">
+        <source>Spent</source>
+        <note from="context">Label beside the Litany medallion.</note>
+        <note from="translator">The Litany of Stillness is a termbase term.</note>
+        <note from="layout">font=italic; size=14px; max=150px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="hud.pause.title" resname="hud.pause.title" maxwidth="360" size-unit="pixel">
+        <source>Respite</source>
+        <note from="context">Pause menu.</note>
+        <note from="layout">font=display; size=50px; max=360px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="hud.pause.resume" resname="hud.pause.resume" maxwidth="360" size-unit="pixel">
+        <source>Resume</source>
+        <note from="context">Pause menu.</note>
+        <note from="layout">font=body; size=30px; max=360px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="hud.pause.restart" resname="hud.pause.restart" maxwidth="360" size-unit="pixel">
+        <source>Begin Again</source>
+        <note from="context">Pause menu.</note>
+        <note from="layout">font=body; size=30px; max=360px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="hud.pause.options" resname="hud.pause.options" maxwidth="360" size-unit="pixel">
+        <source>Options</source>
+        <note from="context">Pause menu.</note>
+        <note from="layout">font=body; size=30px; max=360px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="hud.pause.abandon" resname="hud.pause.abandon" maxwidth="360" size-unit="pixel">
+        <source>Abandon the Patient</source>
+        <note from="context">Pause menu.</note>
+        <note from="layout">font=body; size=30px; max=360px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="rating.cool" resname="rating.cool" maxwidth="220" size-unit="pixel">
+        <source>Cool</source>
+        <note from="context">Rating popup word (also results rows).</note>
+        <note from="translator">Follow the OPS rating-word decision and the termbase; ≤ 6 characters where possible (LOC-0037).</note>
+        <note from="layout">font=display; size=34px; max=220px; chars=6</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="rating.good" resname="rating.good" maxwidth="220" size-unit="pixel">
+        <source>Good</source>
+        <note from="context">Rating popup word (also results rows).</note>
+        <note from="translator">Follow the OPS rating-word decision and the termbase; ≤ 6 characters where possible (LOC-0037).</note>
+        <note from="layout">font=display; size=34px; max=220px; chars=6</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="rating.bad" resname="rating.bad" maxwidth="220" size-unit="pixel">
+        <source>Bad</source>
+        <note from="context">Rating popup word (also results rows).</note>
+        <note from="translator">Follow the OPS rating-word decision and the termbase; ≤ 6 characters where possible (LOC-0037).</note>
+        <note from="layout">font=display; size=34px; max=220px; chars=6</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="rating.miss" resname="rating.miss" maxwidth="220" size-unit="pixel">
+        <source>Miss</source>
+        <note from="context">Rating popup word (also results rows).</note>
+        <note from="translator">Follow the OPS rating-word decision and the termbase; ≤ 6 characters where possible (LOC-0037).</note>
+        <note from="layout">font=display; size=34px; max=220px; chars=6</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="tool.lancet.name" resname="tool.lancet.name" maxwidth="230" size-unit="pixel">
+        <source>Lancet</source>
+        <note from="context">Instrument name in the tool tooltip.</note>
+        <note from="translator">Period instrument name from the termbase; one line.</note>
+        <note from="layout">font=body; size=17px; max=230px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="tool.lancet.hint" resname="tool.lancet.hint" maxwidth="230" size-unit="pixel">
+        <source>Trace incision lines, lance buboes and egg sacs, nick barbed arrows free.</source>
+        <note from="context">Instrument tooltip hint.</note>
+        <note from="layout">font=body; size=13px; max=230px; lines=2</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="tool.tongs.name" resname="tool.tongs.name" maxwidth="230" size-unit="pixel">
+        <source>Tongs</source>
+        <note from="context">Instrument name in the tool tooltip.</note>
+        <note from="translator">Period instrument name from the termbase; one line.</note>
+        <note from="layout">font=body; size=17px; max=230px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="tool.tongs.hint" resname="tool.tongs.hint" maxwidth="230" size-unit="pixel">
+        <source>Seize shards and grubs, and drag them off the body.</source>
+        <note from="context">Instrument tooltip hint.</note>
+        <note from="layout">font=body; size=13px; max=230px; lines=2</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="tool.leech.name" resname="tool.leech.name" maxwidth="230" size-unit="pixel">
+        <source>Leech-Pipe</source>
+        <note from="context">Instrument name in the tool tooltip.</note>
+        <note from="translator">Period instrument name from the termbase; one line.</note>
+        <note from="layout">font=body; size=17px; max=230px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="tool.leech.hint" resname="tool.leech.hint" maxwidth="230" size-unit="pixel">
+        <source>Hold over pooled blood to draw it off.</source>
+        <note from="context">Instrument tooltip hint.</note>
+        <note from="layout">font=body; size=13px; max=230px; lines=2</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="tool.thread.name" resname="tool.thread.name" maxwidth="230" size-unit="pixel">
+        <source>Gut Thread</source>
+        <note from="context">Instrument name in the tool tooltip.</note>
+        <note from="translator">Period instrument name from the termbase; one line.</note>
+        <note from="layout">font=body; size=17px; max=230px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="tool.thread.hint" resname="tool.thread.hint" maxwidth="230" size-unit="pixel">
+        <source>Zig-zag across a wound to stitch it closed.</source>
+        <note from="context">Instrument tooltip hint.</note>
+        <note from="layout">font=body; size=13px; max=230px; lines=2</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="tool.salve.name" resname="tool.salve.name" maxwidth="230" size-unit="pixel">
+        <source>Saint’s Salve</source>
+        <note from="context">Instrument name in the tool tooltip.</note>
+        <note from="translator">Period instrument name from the termbase; one line.</note>
+        <note from="layout">font=body; size=17px; max=230px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="tool.salve.hint" resname="tool.salve.hint" maxwidth="230" size-unit="pixel">
+        <source>Brush over rot and small nicks to seal them.</source>
+        <note from="context">Instrument tooltip hint.</note>
+        <note from="layout">font=body; size=13px; max=230px; lines=2</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="tool.tincture.name" resname="tool.tincture.name" maxwidth="230" size-unit="pixel">
+        <source>Tincture</source>
+        <note from="context">Instrument name in the tool tooltip.</note>
+        <note from="translator">Period instrument name from the termbase; one line.</note>
+        <note from="layout">font=body; size=17px; max=230px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="tool.tincture.hint" resname="tool.tincture.hint" maxwidth="230" size-unit="pixel">
+        <source>Hold on the body to inject. Restores vitals.</source>
+        <note from="context">Instrument tooltip hint.</note>
+        <note from="layout">font=body; size=13px; max=230px; lines=2</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="tool.brand.name" resname="tool.brand.name" maxwidth="230" size-unit="pixel">
+        <source>Cautery Brand</source>
+        <note from="context">Instrument name in the tool tooltip.</note>
+        <note from="translator">Period instrument name from the termbase; one line.</note>
+        <note from="layout">font=body; size=17px; max=230px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="tool.brand.hint" resname="tool.brand.hint" maxwidth="230" size-unit="pixel">
+        <source>Hold on grubs, curse-sigils and exposed Malison flesh to sear them.</source>
+        <note from="context">Instrument tooltip hint.</note>
+        <note from="layout">font=body; size=13px; max=230px; lines=2</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="tool.lens.name" resname="tool.lens.name" maxwidth="230" size-unit="pixel">
+        <source>Scrying Lens</source>
+        <note from="context">Instrument name in the tool tooltip.</note>
+        <note from="translator">Period instrument name from the termbase; one line.</note>
+        <note from="layout">font=body; size=17px; max=230px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="tool.lens.hint" resname="tool.lens.hint" maxwidth="230" size-unit="pixel">
+        <source>Hover to reveal what hides beneath the flesh.</source>
+        <note from="context">Instrument tooltip hint.</note>
+        <note from="layout">font=body; size=13px; max=230px; lines=2</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="popup.litany_spent" resname="popup.litany_spent" maxwidth="300" size-unit="pixel">
+        <source>The Litany is spent.</source>
+        <note from="context">Floating popup over the operating field.</note>
+        <note from="layout">font=body; size=20px; max=300px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="popup.not_now" resname="popup.not_now" maxwidth="300" size-unit="pixel">
+        <source>Not now.</source>
+        <note from="context">Floating popup over the operating field.</note>
+        <note from="layout">font=body; size=20px; max=300px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="popup.sign_falters" resname="popup.sign_falters" maxwidth="300" size-unit="pixel">
+        <source>The sign falters…</source>
+        <note from="context">Floating popup over the operating field.</note>
+        <note from="layout">font=body; size=20px; max=300px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="popup.litany" resname="popup.litany" maxwidth="300" size-unit="pixel">
+        <source>THE LITANY OF STILLNESS</source>
+        <note from="context">Floating popup over the operating field.</note>
+        <note from="layout">font=body; size=20px; max=300px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="popup.burst" resname="popup.burst" maxwidth="300" size-unit="pixel">
+        <source>It burst!</source>
+        <note from="context">Floating popup over the operating field.</note>
+        <note from="layout">font=body; size=20px; max=300px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="popup.curse_lashes" resname="popup.curse_lashes" maxwidth="300" size-unit="pixel">
+        <source>The curse lashes out!</source>
+        <note from="context">Floating popup over the operating field.</note>
+        <note from="layout">font=body; size=20px; max=300px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="popup.found_it" resname="popup.found_it" maxwidth="300" size-unit="pixel">
+        <source>Found it!</source>
+        <note from="context">Floating popup over the operating field.</note>
+        <note from="layout">font=body; size=20px; max=300px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="popup.found" resname="popup.found" maxwidth="300" size-unit="pixel">
+        <source>Found!</source>
+        <note from="context">Floating popup over the operating field.</note>
+        <note from="layout">font=body; size=20px; max=300px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="popup.vitals_loss" resname="popup.vitals_loss" maxwidth="300" size-unit="pixel">
+        <source>-{n, number}</source>
+        <note from="context">Floating popup over the operating field.</note>
+        <note from="layout">font=body; size=20px; max=300px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="popup.vitals_gain" resname="popup.vitals_gain" maxwidth="300" size-unit="pixel">
+        <source>+{n, number}</source>
+        <note from="context">Floating popup over the operating field.</note>
+        <note from="layout">font=body; size=20px; max=300px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="loss.died" resname="loss.died" maxwidth="600" size-unit="pixel">
+        <source>The patient has died.</source>
+        <note from="context">Reason shown under &quot;The Patient Is Lost&quot;.</note>
+        <note from="layout">font=italic; size=24px; max=600px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="loss.timeout" resname="loss.timeout" maxwidth="600" size-unit="pixel">
+        <source>Time has run out.</source>
+        <note from="context">Reason shown under &quot;The Patient Is Lost&quot;.</note>
+        <note from="layout">font=italic; size=24px; max=600px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.incision.cut" resname="label.incision.cut" maxwidth="220" size-unit="pixel">
+        <source>Incision</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.incision.off_line" resname="label.incision.off_line" maxwidth="220" size-unit="pixel">
+        <source>Off the line</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.incision.closed" resname="label.incision.closed" maxwidth="220" size-unit="pixel">
+        <source>Closed</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.blood.drained" resname="label.blood.drained" maxwidth="220" size-unit="pixel">
+        <source>Drained</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.laceration.stitched" resname="label.laceration.stitched" maxwidth="220" size-unit="pixel">
+        <source>Stitched</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.laceration.sealed" resname="label.laceration.sealed" maxwidth="220" size-unit="pixel">
+        <source>Sealed</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.barb.nick" resname="label.barb.nick" maxwidth="220" size-unit="pixel">
+        <source>Nick</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.barb.freed" resname="label.barb.freed" maxwidth="220" size-unit="pixel">
+        <source>Barbs freed</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.barb.torn" resname="label.barb.torn" maxwidth="220" size-unit="pixel">
+        <source>Torn</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.embedded.arrow" resname="label.embedded.arrow" maxwidth="220" size-unit="pixel">
+        <source>Arrow</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.embedded.bolt" resname="label.embedded.bolt" maxwidth="220" size-unit="pixel">
+        <source>Bolt</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.embedded.shot" resname="label.embedded.shot" maxwidth="220" size-unit="pixel">
+        <source>Lead shot</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.embedded.tooth" resname="label.embedded.tooth" maxwidth="220" size-unit="pixel">
+        <source>Fang</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.embedded.shard" resname="label.embedded.shard" maxwidth="220" size-unit="pixel">
+        <source>Shard</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.embedded.glass" resname="label.embedded.glass" maxwidth="220" size-unit="pixel">
+        <source>Glass</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.embedded.hexstone" resname="label.embedded.hexstone" maxwidth="220" size-unit="pixel">
+        <source>Hexstone</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.burn.debrided" resname="label.burn.debrided" maxwidth="220" size-unit="pixel">
+        <source>Debrided</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.burn.dressed" resname="label.burn.dressed" maxwidth="220" size-unit="pixel">
+        <source>Burn dressed</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.bubo.lanced" resname="label.bubo.lanced" maxwidth="220" size-unit="pixel">
+        <source>Lanced</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.bubo.cleansed" resname="label.bubo.cleansed" maxwidth="220" size-unit="pixel">
+        <source>Cleansed</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.rot.purged" resname="label.rot.purged" maxwidth="220" size-unit="pixel">
+        <source>Rot purged</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.venom.antidote" resname="label.venom.antidote" maxwidth="220" size-unit="pixel">
+        <source>Antidote</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.grub.seared" resname="label.grub.seared" maxwidth="220" size-unit="pixel">
+        <source>Seared</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.grub.plucked" resname="label.grub.plucked" maxwidth="220" size-unit="pixel">
+        <source>Plucked</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.sigil.broken" resname="label.sigil.broken" maxwidth="220" size-unit="pixel">
+        <source>Curse broken</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.malison.wounded" resname="label.malison.wounded" maxwidth="220" size-unit="pixel">
+        <source>Wounded</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.malison.unmade" resname="label.malison.unmade" maxwidth="220" size-unit="pixel">
+        <source>Malison unmade</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.malison.rejoined" resname="label.malison.rejoined" maxwidth="220" size-unit="pixel">
+        <source>It rejoined</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.malison.cast_out" resname="label.malison.cast_out" maxwidth="220" size-unit="pixel">
+        <source>Cast out</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.eggsac.silenced" resname="label.eggsac.silenced" maxwidth="220" size-unit="pixel">
+        <source>Silenced</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.eggsac.hatched" resname="label.eggsac.hatched" maxwidth="220" size-unit="pixel">
+        <source>Hatched</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+    </group>
+  </body>
+  </file>
+</xliff>

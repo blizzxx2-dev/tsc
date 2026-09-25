@@ -1,4 +1,6 @@
 import type { Cue } from '../core/audio';
+import { t as tr, tSource } from '../i18n';
+import { formatClock, formatNumber, formatVitals } from '../i18n/format';
 import { dist, Rng, type Vec } from '../core/math';
 import { Camera2D } from '../render/camera';
 import type { Game, Scene } from '../core/scene';
@@ -151,7 +153,7 @@ export class OperationScene implements Scene {
 
     // Litany: draw a star with the right mouse button (or press Space with the assist on).
     if (settings.litanyKey && input.keyPressed('Space')) {
-      if (!op.invokeLitany() && op.def.litany !== false) op.popup(op.litanyUsed ? 'The Litany is spent.' : 'Not now.', input.pos, PALETTE.inkDim);
+      if (!op.invokeLitany() && op.def.litany !== false) op.popup(op.litanyUsed ? tr('popup.litany_spent') : tr('popup.not_now'), input.pos, PALETTE.inkDim);
     }
     if (input.rightDown) this.starTrail.push({ ...input.pos });
     else if (this.starTrail.length) {
@@ -159,8 +161,8 @@ export class OperationScene implements Scene {
         const cx = this.starTrail.reduce((a, p) => a + p.x, 0) / this.starTrail.length;
         const cy = this.starTrail.reduce((a, p) => a + p.y, 0) / this.starTrail.length;
         this.litanyCenter = [cx / VIEW_W, 1 - cy / 720];
-        if (!op.invokeLitany()) op.popup(op.litanyUsed ? 'The Litany is spent.' : 'Not now.', input.pos, PALETTE.inkDim);
-      } else if (this.starTrail.length > 8) op.popup('The sign falters…', input.pos, PALETTE.inkDim);
+        if (!op.invokeLitany()) op.popup(op.litanyUsed ? tr('popup.litany_spent') : tr('popup.not_now'), input.pos, PALETTE.inkDim);
+      } else if (this.starTrail.length > 8) op.popup(tr('popup.sign_falters'), input.pos, PALETTE.inkDim);
       this.starTrail = [];
     }
 
@@ -347,12 +349,12 @@ export class OperationScene implements Scene {
     }
     if (op.status === 'won') {
       banner(g, VIEW_W / 2, 310, 620, 76);
-      giltText(g, 'Operation Complete', VIEW_W / 2, 364, { size: 56, align: 'center' });
+      giltText(g, tr('hud.op_complete'), VIEW_W / 2, 364, { size: 56, align: 'center' });
     }
     if (op.status === 'lost') {
       banner(g, VIEW_W / 2, 300, 620, 76, '#1a0a0a');
-      g.text('The Patient Is Lost', VIEW_W / 2, 354, { size: 54, font: 'display', color: hex('#e04848'), color2: hex('#7a0c10'), align: 'center' });
-      g.text(op.lostReason, VIEW_W / 2, 410, { size: 24, font: 'italic', color: hex(UI.parch), align: 'center' });
+      g.text(tr('hud.patient_lost'), VIEW_W / 2, 354, { size: 54, font: 'display', color: hex('#e04848'), color2: hex('#7a0c10'), align: 'center' });
+      g.text(tSource(op.lostReason), VIEW_W / 2, 410, { size: 24, font: 'italic', color: hex(UI.parch), align: 'center' });
     }
 
     if (this.paused) this.drawPause(g, game);
@@ -376,8 +378,8 @@ export class OperationScene implements Scene {
     medallion(g, 52, 46, 27, hex('#240608'));
     heart(g, 52, 48, 14 * beat, hex(op.vitals > 30 ? '#c0182a' : '#ff3030'));
     g.glow(52, 48, 30 * beat, hex('#ff2030', 0.15 + this.pulse * 0.25));
-    g.text('VITALS', 92, 30, { size: 13, color: hex(UI.brass), shadow: false });
-    g.text(String(Math.ceil(op.vitals)).padStart(2, '0'), 92, 64, { size: 38, font: 'body', color: hex('#ffffff'), color2: hex(vcol), shadow: hex('#000000', 0.9) });
+    g.text(tr('hud.vitals'), 92, 30, { size: 13, color: hex(UI.brass), shadow: false });
+    g.text(formatVitals(op.vitals), 92, 64, { size: 38, font: 'body', color: hex('#ffffff'), color2: hex(vcol), shadow: hex('#000000', 0.9) });
     // Blood tube.
     const tube = { x: 92, y: 71, w: 52, h: 5 };
     g.rect(tube.x, tube.y, tube.w, tube.h, hex('#000000', 0.7));
@@ -403,11 +405,9 @@ export class OperationScene implements Scene {
     const pl = { x: VIEW_W / 2 - 78, y: 40, w: 156, h: 40 };
     plaque(g, pl);
     hourglass(g, pl.x + 26, pl.y + 20, 26, op.timeLeft / op.def.timeLimit, t);
-    const mm = Math.floor(op.timeLeft / 60);
-    const ss = Math.floor(op.timeLeft % 60);
     const low = op.timeLeft < 20 && op.status === 'running';
     const tcol = op.litanyTime > 0 ? UI.gilt : low ? (Math.sin(t * 8) > 0 ? '#ff5040' : '#a02018') : UI.parch;
-    g.text(`${mm}:${String(ss).padStart(2, '0')}`, pl.x + 98, pl.y + 31, { size: 28, color: hex(tcol), align: 'center' });
+    g.text(formatClock(op.timeLeft), pl.x + 98, pl.y + 31, { size: 28, color: hex(tcol), align: 'center' });
     for (let i = 0; i < op.phaseCount; i++) {
       const bx = VIEW_W / 2 - ((op.phaseCount - 1) * 16) / 2 + i * 16;
       const done = i < op.phase;
@@ -419,12 +419,12 @@ export class OperationScene implements Scene {
     // ---- Score and chain.
     leatherPanel(g, { x: VIEW_W - 280, y: 10, w: 266, h: 72 }, { corners: false });
     g.text(op.def.patient, VIEW_W - 30, 30, { size: 15, font: 'italic', color: hex(UI.parchLo), align: 'right', shadow: false });
-    giltText(g, String(op.score), VIEW_W - 30, 68, { size: 34, font: 'body', align: 'right' });
+    giltText(g, formatNumber(op.score), VIEW_W - 30, 68, { size: 34, font: 'body', align: 'right' });
     if (op.combo > 1) {
       const pop = 1 + Math.max(0, 0.3 - (this.comboT ?? 0)) * 1.2;
       waxSeal(g, VIEW_W - 238, 46, 24 * pop, UI.wax);
-      g.text(`×${op.combo}`, VIEW_W - 238, 54, { size: 22 * pop, color: hex('#ffe0c0'), align: 'center', shadow: hex('#3a0406', 0.8) });
-      g.text('chain', VIEW_W - 238, 80, { size: 12, font: 'italic', color: hex(UI.brass), align: 'center', shadow: false });
+      g.text(tr('hud.combo', { combo: op.combo }), VIEW_W - 238, 54, { size: 22 * pop, color: hex('#ffe0c0'), align: 'center', shadow: hex('#3a0406', 0.8) });
+      g.text(tr('hud.chain'), VIEW_W - 238, 80, { size: 12, font: 'italic', color: hex(UI.brass), align: 'center', shadow: false });
     }
   }
 
@@ -462,8 +462,8 @@ export class OperationScene implements Scene {
       g.rect(tip.x + 3, tip.y + 4, tip.w, tip.h, hex('#000000', 0.4 * a));
       g.rectGrad(tip.x, tip.y, tip.w, tip.h, hex('#ecdcb4', 0.95 * a), hex('#cdb688', 0.95 * a));
       g.tri(tip.x, tip.y + tip.h / 2 - 7, tip.x, tip.y + tip.h / 2 + 7, tip.x - 8, tip.y + tip.h / 2, hex('#ddc9a0', 0.95 * a));
-      g.text(info.name, tip.x + 10, tip.y + 19, { size: 17, color: hex('#6a0a10', a), shadow: false });
-      g.textBlock(info.hint, tip.x + 10, tip.y + 35, tip.w - 20, { size: 13, color: hex(UI.inkDark, a), shadow: false }, 1.15);
+      g.text(tr(`tool.${info.id}.name`), tip.x + 10, tip.y + 19, { size: 17, color: hex('#6a0a10', a), shadow: false });
+      g.textBlock(tr(`tool.${info.id}.hint`), tip.x + 10, tip.y + 35, tip.w - 20, { size: 13, color: hex(UI.inkDark, a), shadow: false }, 1.15);
     }
 
     // Litany medallion (only once the rite has been learned).
@@ -478,7 +478,7 @@ export class OperationScene implements Scene {
       g.glow(lx, ly, 60, hex(UI.gilt, 0.35));
       g.arc(lx, ly, 34, 4, hex(UI.gilt), op.litanyTime / LITANY_DURATION);
     }
-    const label = ready ? (settings.litanyKey ? 'Space' : 'Right-drag ★') : op.litanyTime > 0 ? 'Stillness' : 'Spent';
+    const label = tr(ready ? (settings.litanyKey ? 'hud.litany.ready_key' : 'hud.litany.ready_gesture') : op.litanyTime > 0 ? 'hud.litany.active' : 'hud.litany.spent');
     g.text(label, lx + 42, ly + 6, { size: 14, font: 'italic', color: hex(ready ? UI.gilt : UI.parchLo, 0.9) });
   }
 
@@ -512,11 +512,11 @@ export class OperationScene implements Scene {
       const x = p.pos.x;
       const y = p.pos.y - 26 - rise;
       if (!p.rating) {
-        g.text(p.text, x, y, { size: 20, color: withAlpha(hex(p.color), a), align: 'center' });
+        g.text(tSource(p.text), x, y, { size: 20, color: withAlpha(hex(p.color), a), align: 'center' });
         continue;
       }
       const pop = 1 + Math.max(0, 0.22 - p.t) * 2.2;
-      const word = { cool: 'Cool', good: 'Good', bad: 'Bad', miss: 'Miss' }[p.rating];
+      const word = tr(`rating.${p.rating}`);
       const [c1, c2] = {
         cool: [UI.gilt, UI.giltLo],
         good: ['#e8f0f0', '#8aa0a8'],
@@ -531,8 +531,8 @@ export class OperationScene implements Scene {
         }
       }
       g.text(word, x, y, { size: 34 * pop, font: 'display', color: hex(c1, a), color2: hex(c2, a), align: 'center', shadow: hex('#0a0402', 0.85 * a) });
-      if (p.label) g.text(p.label, x, y - 36 * pop, { size: 16, font: 'italic', color: hex(UI.parch, a * 0.9), align: 'center' });
-      if (p.combo && p.combo > 1 && (p.rating === 'cool' || p.rating === 'good')) g.text(`chain ×${p.combo}`, x, y + 20, { size: 15, color: hex(UI.gilt, a * 0.9), align: 'center' });
+      if (p.label) g.text(tSource(p.label), x, y - 36 * pop, { size: 16, font: 'italic', color: hex(UI.parch, a * 0.9), align: 'center' });
+      if (p.combo && p.combo > 1 && (p.rating === 'cool' || p.rating === 'good')) g.text(tr('hud.chain_combo', { combo: p.combo }), x, y + 20, { size: 15, color: hex(UI.gilt, a * 0.9), align: 'center' });
     }
   }
 
@@ -540,16 +540,16 @@ export class OperationScene implements Scene {
     const vr = viewRect();
     g.rect(vr.x, vr.y, vr.w, vr.h, hex('#000000', 0.6));
     leatherPanel(g, { x: 430, y: 150, w: 420, h: 400 });
-    giltText(g, 'Respite', VIEW_W / 2, 222, { size: 50, align: 'center' });
+    giltText(g, tr('hud.pause.title'), VIEW_W / 2, 222, { size: 50, align: 'center' });
     divider(g, VIEW_W / 2, 248, 260);
-    if (button(g, game.input, 'Resume', VIEW_W / 2, 310)) this.paused = false;
-    if (button(g, game.input, 'Begin Again', VIEW_W / 2, 370)) this.restart();
-    if (button(g, game.input, 'Options', VIEW_W / 2, 430)) {
+    if (button(g, game.input, tr('hud.pause.resume'), VIEW_W / 2, 310)) this.paused = false;
+    if (button(g, game.input, tr('hud.pause.restart'), VIEW_W / 2, 370)) this.restart();
+    if (button(g, game.input, tr('hud.pause.options'), VIEW_W / 2, 430)) {
       // Options is an overlay over the live (paused) operation (ENG-0063).
       if (game.push && game.pop) game.push(new OptionsScene(() => game.pop!(), 'overlay'));
       else game.go(new OptionsScene(() => game.go(this)));
     }
-    if (button(g, game.input, 'Abandon the Patient', VIEW_W / 2, 490)) this.onQuit();
+    if (button(g, game.input, tr('hud.pause.abandon'), VIEW_W / 2, 490)) this.onQuit();
   }
 }
 

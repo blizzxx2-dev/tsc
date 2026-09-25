@@ -1,4 +1,6 @@
 import { assisted } from '../core/settings';
+import { t } from '../i18n';
+import { formatNumber } from '../i18n/format';
 import type { Game, Scene } from '../core/scene';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
@@ -44,10 +46,10 @@ export class ResultsScene implements Scene {
     parchmentSheet(g, r, 7);
     const ink = hex(UI.inkDark);
     const faded = hex('#6a5030');
-    g.text('Case Record', VIEW_W / 2, r.y + 62, { size: 46, font: 'display', color: hex('#6a0a10'), align: 'center', shadow: false });
-    g.text(`${op.def.title} — ${op.def.patient}`, VIEW_W / 2, r.y + 98, { size: 21, font: 'italic', color: faded, align: 'center', shadow: false });
+    g.text(t('ui.results.title'), VIEW_W / 2, r.y + 62, { size: 46, font: 'display', color: hex('#6a0a10'), align: 'center', shadow: false });
+    g.text(t('ui.results.subtitle', { title: op.def.title, patient: op.def.patient }), VIEW_W / 2, r.y + 98, { size: 21, font: 'italic', color: faded, align: 'center', shadow: false });
     divider(g, VIEW_W / 2, r.y + 118, 440, hex('#6a4a22'));
-    g.text(this.won ? 'The patient lives.' : 'The patient was lost.', VIEW_W / 2, r.y + 154, {
+    g.text(this.won ? t('ui.results.won') : t('ui.results.lost'), VIEW_W / 2, r.y + 154, {
       size: 26,
       color: hex(this.won ? '#2a4a1a' : '#7a0a10'),
       align: 'center',
@@ -55,13 +57,13 @@ export class ResultsScene implements Scene {
     });
 
     const rows: [string, string][] = [
-      ['Cool', String(op.counts.cool)],
-      ['Good', String(op.counts.good)],
-      ['Bad', String(op.counts.bad)],
-      ['Miss', String(op.counts.miss)],
-      ['Longest chain', String(op.maxCombo)],
-      ['Vitals remaining', String(op.bonus.vitals)],
-      ['Time remaining', String(op.bonus.time)],
+      [t('rating.cool'), formatNumber(op.counts.cool)],
+      [t('rating.good'), formatNumber(op.counts.good)],
+      [t('rating.bad'), formatNumber(op.counts.bad)],
+      [t('rating.miss'), formatNumber(op.counts.miss)],
+      [t('ui.results.longest_chain'), formatNumber(op.maxCombo)],
+      [t('ui.results.vitals_remaining'), formatNumber(op.bonus.vitals)],
+      [t('ui.results.time_remaining'), formatNumber(op.bonus.time)],
     ];
     const shown = Math.min(rows.length, Math.floor(this.t * 7));
     rows.slice(0, shown).forEach(([k, v], i) => {
@@ -73,8 +75,8 @@ export class ResultsScene implements Scene {
     });
     if (this.t > 1.2) {
       g.line({ x: r.x + 60, y: r.y + 452 }, { x: r.x + 370, y: r.y + 452 }, 1.5, hex('#6a4a22'));
-      g.text('Score', r.x + 60, r.y + 490, { size: 30, color: ink, shadow: false });
-      g.text(String(op.score), r.x + 370, r.y + 490, { size: 30, color: hex('#6a0a10'), align: 'right', shadow: false });
+      g.text(t('ui.results.score'), r.x + 60, r.y + 490, { size: 30, color: ink, shadow: false });
+      g.text(formatNumber(op.score), r.x + 370, r.y + 490, { size: 30, color: hex('#6a0a10'), align: 'right', shadow: false });
     }
 
     // The rank seal slams down.
@@ -87,18 +89,18 @@ export class ResultsScene implements Scene {
       waxSeal(g, sx, sy, 78 * s, RANK_WAX[rank]);
       g.text(rank, sx, sy + 30 * s, { size: (rank === 'XS' ? 72 : 88) * s, font: 'display', color: hex('#ffe8c0', 0.95), color2: hex('#f0b070', 0.95), align: 'center', shadow: hex('#2a0204', 0.8) });
       if (k >= 1) {
-        g.text('Rank', sx, sy - 100, { size: 22, font: 'italic', color: faded, align: 'center', shadow: false });
-        if (this.newBest) g.text('A new best!', sx, sy + 118, { size: 22, color: hex('#6a0a10'), align: 'center', shadow: false });
-        if (assisted()) g.text('(assisted)', sx, sy + 144, { size: 16, font: 'italic', color: faded, align: 'center', shadow: false });
+        g.text(t('ui.results.rank'), sx, sy - 100, { size: 22, font: 'italic', color: faded, align: 'center', shadow: false });
+        if (this.newBest) g.text(t('ui.results.new_best'), sx, sy + 118, { size: 22, color: hex('#6a0a10'), align: 'center', shadow: false });
+        if (assisted()) g.text(t('ui.results.assisted'), sx, sy + 144, { size: 16, font: 'italic', color: faded, align: 'center', shadow: false });
       }
     } else if (!this.won) {
       waxSeal(g, sx, sy, 70, '#2a2420', '†', 80);
     }
 
     if (this.t > 1) {
-      if (this.actions.next && button(g, game.input, 'Continue', VIEW_W / 2 + 200, 660)) this.actions.next();
-      if (button(g, game.input, this.won ? 'Operate Again' : 'Try Again', VIEW_W / 2 - (this.actions.next ? 0 : 110), 660)) this.actions.retry();
-      if (button(g, game.input, 'Leave', VIEW_W / 2 - 220, 660, 26)) this.actions.quit();
+      if (this.actions.next && button(g, game.input, t('ui.results.continue'), VIEW_W / 2 + 200, 660)) this.actions.next();
+      if (button(g, game.input, this.won ? t('ui.results.operate_again') : t('ui.results.try_again'), VIEW_W / 2 - (this.actions.next ? 0 : 110), 660)) this.actions.retry();
+      if (button(g, game.input, t('ui.results.leave'), VIEW_W / 2 - 220, 660, 26)) this.actions.quit();
     }
     reticle(g, game.input.pos);
     g.endFrame();

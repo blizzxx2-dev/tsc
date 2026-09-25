@@ -4,3 +4,5 @@ dist/
 .DS_Store
 scripts/.*.mjs
 .claude/
+loc/pseudo/
+archive/

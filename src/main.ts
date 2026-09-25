@@ -23,6 +23,7 @@ import { StoryScene } from './scenes/story';
 import type { Backdrop } from './content/story';
 import type { CharacterId } from './content/characters';
 import { VIEW, VIEW_H, VIEW_W } from './ui/layout';
+import { initLocale } from './i18n/boot';
 
 /** Dev/QA tooling ships in dev and QA builds; `vite build --mode release` strips it (ENG-0237). */
 const DEV_TOOLS = import.meta.env.DEV || import.meta.env.MODE !== 'release';
@@ -246,6 +247,7 @@ class Main implements Game {
 async function boot(): Promise<void> {
   const t0 = performance.now();
   const canvas = document.getElementById('game') as HTMLCanvasElement;
+  await initLocale();
   let game: Main;
   try {
     splashProgress(0.1, 'Lighting the lamps…');

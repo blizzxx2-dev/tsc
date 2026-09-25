@@ -1,0 +1,8 @@
+{
+  "M0": { "date": "2026-10-09", "name": "M0 prototype gate" },
+  "Demo": { "date": "2027-02-05", "name": "Final demo build (Next Fest press preview 2027-02-08)" },
+  "Alpha": { "date": "2027-07-02", "name": "Alpha gate" },
+  "Beta": { "date": "2027-08-27", "name": "Beta gate" },
+  "Release": { "date": "2027-10-08", "name": "Gold master (launch 2027-10-21)" },
+  "Post": { "date": null, "name": "Post-launch" }
+}
