@@ -609,7 +609,6 @@ export class ChoirMagus extends MalisonBase {
   /** Where stone `s` is now (mid-swap stones travel along the chord between their slots). */
   stonePos(s: number): Vec {
     const angOf = (slot: number) => this.slots[slot] + this.spin;
-    let a = angOf(this.at[s]);
     if (this.swap && (s === this.swap.a || s === this.swap.b)) {
       const other = s === this.swap.a ? this.swap.b : this.swap.a;
       const k = this.swap.t / MAGUS.swapFor;
@@ -620,7 +619,7 @@ export class ChoirMagus extends MalisonBase {
       const p1 = { x: Math.cos(to), y: Math.sin(to) };
       return { x: this.pos.x + (p0.x + (p1.x - p0.x) * k) * MAGUS.orbit, y: this.pos.y + (p0.y + (p1.y - p0.y) * k) * MAGUS.orbit * 0.8 };
     }
-    a = angOf(this.at[s]);
+    const a = angOf(this.at[s]);
     return { x: this.pos.x + Math.cos(a) * MAGUS.orbit, y: this.pos.y + Math.sin(a) * MAGUS.orbit * 0.8 };
   }
 
