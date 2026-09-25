@@ -26,6 +26,7 @@ import { bindUiAudio } from './audio/ui-hooks';
 import { Input } from './core/input';
 import { FIXED_DT, FixedStep, FrameLimiter, RefreshEstimator, stepEndTimes } from './core/loop';
 import { DevTime } from './core/devTime';
+import { frameVecs } from './core/vecPool';
 import { precompileCatalog, shaderCatalog } from './render/shaderCatalog';
 import { effectiveCap, idleCap } from './core/idle';
 import { OverlayHost } from './ui/overlayHost';
@@ -304,6 +305,7 @@ class Main implements Game {
   private tick(now: number, dt: number): void {
     const p = this.profiler;
     const t0 = performance.now();
+    frameVecs.reset(); // scratch vectors for view code are recycled every frame (ENG-0226)
     const steps = this.fixed.advance(this.devTime.frameTime(dt)) + this.devTime.takeSteps();
     const ends = stepEndTimes(now, steps, FIXED_DT, this.fixed.pending);
     this.clock.frame(Math.min(dt, 0.25));

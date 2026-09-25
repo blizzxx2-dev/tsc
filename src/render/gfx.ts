@@ -1536,7 +1536,10 @@ export class Gfx {
   }
   restore(): void {
     if (this.depth === 0) {
-      this.tf = [1, 0, 0, 1, 0, 0];
+      // Unbalanced restore: back to identity, in place (no allocation, ENG-0226).
+      const t = this.tf;
+      t[0] = t[3] = 1;
+      t[1] = t[2] = t[4] = t[5] = 0;
       return;
     }
     const e = this.stack[--this.depth];

@@ -324,7 +324,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 
 ### CPU & memory
 - [x] ENG-0225 · Demo · P0 · M · Remove per-frame allocations in hot paths: `entities.filter` in `Operation.update`, `visibleEntities().sort` per pointer event, `{...pos}` copies in `Input`, `tf.slice()` in `save()`, point arrays in `quadCurve`/`dashed` — steady-state allocation <50 KB/s in a Chrome allocation profile
-- [ ] ENG-0226 · Demo · P1 · S · Scratch-vector pool — in-place math variants for draw code; zero `Vec` allocations in `Gfx` shape calls (allocation profile)
+- [x] ENG-0226 · Demo · P1 · S · Scratch-vector pool — in-place math variants for draw code; zero `Vec` allocations in `Gfx` shape calls (allocation profile)
 - [x] ENG-0227 · Demo · P0 · S · Memory budgets — VRAM ≤384 MB (Low) / ≤768 MB (High), JS heap ≤300 MB, tracked live by the resource registry; exceeding budget logs a warning with the top 10 consumers
 - [ ] ENG-0228 · Demo · P1 · M · Soak test — 2-hour automated loop through all Ch1–2 operations with JS heap growth <5% and GL object count stable
 - [x] ENG-0229 · Demo · P1 · S · Idle throttling — menus and paused states drop to 30 fps when nothing animates; resumes instantly on input (laptop/Deck battery)
