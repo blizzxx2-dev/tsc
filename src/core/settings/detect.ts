@@ -60,7 +60,7 @@ export function gpuTier(renderer: string | null): Quality {
   const r = renderer.toLowerCase();
   if (/swiftshader|llvmpipe|softpipe|microsoft basic render|software/.test(r)) return 'low';
   if (/geforce (gtx|rtx)|rtx \d|quadro|radeon (rx|pro)|rx \d{3,4}|arc a\d|apple m\d (pro|max|ultra)|apple m[3-9]/.test(r)) return 'high';
-  if (/iris xe|apple m\d|radeon graphics|vega|custom gpu|van gogh|adreno 7|arc/.test(r)) return 'medium';
+  if (/iris(\(r\))? xe|apple m\d|radeon graphics|vega|custom gpu|van ?gogh|adreno 7|\barc\b/.test(r)) return 'medium';
   if (/intel|hd graphics|uhd graphics|mali|adreno|powervr/.test(r)) return 'low';
   return 'medium';
 }
