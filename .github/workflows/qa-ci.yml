@@ -59,7 +59,7 @@ jobs:
       - name: Test summary (slow unit tests > 2 s are flagged)
         if: always()
         run: node scripts/qa/test-summary.mjs reports/unit
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: unit-reports
@@ -83,7 +83,7 @@ jobs:
           SIM_REPORT_FILE: reports/sim/sim-report.json
       - if: always()
         run: node scripts/qa/test-summary.mjs reports/sim
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: sim-reports
@@ -105,7 +105,7 @@ jobs:
         run: node scripts/qa/check-debug-stripped.mjs dist
       - name: QA build (debug API, console, cheat menu)
         run: npm run build:qa
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dist-qa
           path: dist-qa
@@ -129,7 +129,7 @@ jobs:
           path: dist-qa
       - name: Smoke (exits 1 on page errors or after 90 s)
         run: node scripts/smoke.mjs shots/smoke
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: smoke-shots
@@ -161,13 +161,13 @@ jobs:
         env:
           JUNIT_FILE: reports/e2e/junit-${{ matrix.shard }}.xml
           QA_SUMMARY_FILE: reports/e2e/qa-summary-${{ matrix.shard }}.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: e2e-blob-${{ matrix.shard }}
           path: .vitest-reports
           include-hidden-files: true
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: e2e-reports-${{ matrix.shard }}
@@ -202,7 +202,7 @@ jobs:
           merge-multiple: true
       - name: One merged HTML report
         run: npx vitest --merge-reports --reporter=html --outputFile.html=reports/e2e-html/index.html || true
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: e2e-html-report
           path: reports/e2e-html

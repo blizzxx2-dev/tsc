@@ -130,7 +130,7 @@ jobs:
         run: |
           (cd "${{ steps.out.outputs.dir }}/.." && find "$(basename "${{ steps.out.outputs.dir }}")" -type f -print0 | LC_ALL=C sort -z | xargs -0 shasum -a 256) > "${{ matrix.edition }}-${{ runner.os }}.sha256"
           tail -n 3 "${{ matrix.edition }}-${{ runner.os }}.sha256"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.edition }}-${{ runner.os }}
           path: |
