@@ -1,0 +1,4 @@
+contract_id,party,role,credit_wording,placement,logo_required,store_page_mention,source_clause,status,verified_in_build
+TEMPLATE,<Name / company>,<role>,"<exact wording, e.g. Original music by Name>",<in-game credits section / order>,no,no,<SOW §x.y>,draft,
+FONT-01,IM Fell English (Igino Marini; distributed by Google Fonts),Font,"IM Fell English — the Fell Types digitally reproduced by Igino Marini (SIL Open Font License 1.1)",Third-party notices + credits: Fonts,no,no,OFL 1.1,in use,
+FONT-02,UnifrakturMaguntia (j. mach wust; Peter Wiegel),Font,"UnifrakturMaguntia © 2010 j. mach wust, © 2009 Peter Wiegel (SIL Open Font License 1.1)",Third-party notices + credits: Fonts,no,no,OFL 1.1,in use,

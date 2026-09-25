@@ -1,0 +1,76 @@
+phase,category,item,basis,qty,unit_usd,amount_usd,owner,source
+Demo,Art,"Character portraits (6 cast, 3 expressions each)",ART vendor estimate per portrait,18,1000,18000,ART lead,ART-0350
+Demo,Art,Story backgrounds,per background,6,600,3600,ART lead,ART-0350
+Demo,Art,"Flesh sets, ailments, Matins + Lauds boss art",lump sum,1,9000,9000,ART lead,ART-0350
+Demo,Art,UI art polish,lump sum,1,3000,3000,ART lead,ART-0350
+Demo,Art,"Store/marketing art (capsules, key art, library assets)",lump sum,1,4500,4500,ART lead,ART-0350
+Demo,Audio,Composer: demo music,per finished minute,12,700,8400,AUD lead,AUD plan / OPS-0042
+Demo,Audio,"Composer test cues (5 shortlisted, 60 s each)",per test,5,150,750,Producer,OPS-0042
+Demo,Audio,SFX library licences (stream-safe),lump sum,1,600,600,AUD lead,OPS-0071
+Demo,Audio,"English barks VO (1 actor, 1 session + edit)",lump sum,1,1500,1500,AUD lead,AUD VO plan
+Demo,Writing,Narrative editor: prologue sample + Ch1-2 proofread/continuity,lump sum,1,1200,1200,Producer,OPS-0043
+Demo,Localisation,"de game text (UI, Ch1-2 story, callouts, barks) + store",per word (translation+review),3436,0.14,481.04,Loc lead,OPS-0035
+Demo,Localisation,de legal text (legal translator),per word,3200,0.2,640.0,Loc lead,LOC-0075
+Demo,Localisation,"fr game text (UI, Ch1-2 story, callouts, barks) + store",per word (translation+review),3436,0.14,481.04,Loc lead,OPS-0035
+Demo,Localisation,fr legal text (legal translator),per word,3200,0.2,640.0,Loc lead,LOC-0075
+Demo,Localisation,"es-ES game text (UI, Ch1-2 story, callouts, barks) + store",per word (translation+review),3436,0.13,446.68,Loc lead,OPS-0035
+Demo,Localisation,es-ES legal text (legal translator),per word,3200,0.2,640.0,Loc lead,LOC-0075
+Demo,Localisation,"pl game text (UI, Ch1-2 story, callouts, barks) + store",per word (translation+review),3436,0.11,377.96,Loc lead,OPS-0035
+Demo,Localisation,pl legal text (legal translator),per word,3200,0.2,640.0,Loc lead,LOC-0075
+Demo,Localisation,"pt-BR game text (UI, Ch1-2 story, callouts, barks) + store",per word (translation+review),3436,0.11,377.96,Loc lead,OPS-0035
+Demo,Localisation,pt-BR legal text (legal translator),per word,3200,0.2,640.0,Loc lead,LOC-0075
+Demo,Localisation,Vendor test translations (3 LSPs x 5 languages x 500 words),per word,7500,0.14,1050.0,Loc lead,LOC-0045
+Demo,Localisation,TMS subscription (5 months),per month,5,150,750,Loc lead,LOC-0046
+Demo,Legal,"Games-IP counsel: clearance opinion, trade-dress memo, contract template, EULA/privacy review",retainer estimate,1,12000,12000,Owner,OPS-0048
+Demo,Legal,"EUIPO word mark, classes 9 + 41 (+28)",official fees approx.,1,1150,1150,Owner,OPS-0060
+Demo,Legal,"USPTO word mark, 2 classes",per class,2,350,700,Owner,OPS-0060
+Demo,Legal,Counsel filing work,lump sum,1,1500,1500,Owner,OPS-0060
+Demo,Ratings,"USK rating for Germany (only if required, see ratings/territories.md)",provisional,1,2000,2000,Producer,OPS-0077
+Demo,Marketing,Trailer editor: announce trailer,quote estimate,1,3000,3000,Marketing lead,OPS-0044
+Demo,Marketing,Trailer editor: Next Fest demo trailer,quote estimate,1,2500,2500,Marketing lead,OPS-0044
+Demo,Marketing,"Freelance PR: Next Fest campaign (if hired, OPS-0045)",quote estimate,1,6000,6000,Marketing lead,OPS-0045
+Demo,Marketing,Creator key platform (Keymailer/Lurkit/Woovit),per month,4,300,1200,Marketing lead,OPS-0121
+Demo,Marketing,Showcase/festival application fees,lump sum,1,500,500,Marketing lead,OPS-0099
+Demo,Marketing,"Domains, website hosting",per year,1,300,300,Marketing lead,OPS-0061
+Demo,QA,Compatibility lab / freelance testers for the demo matrix,quote estimate,1,4000,4000,QA lead,OPS-0046
+Demo,Hardware,Steam Deck LCD,unit,1,399,399,Producer,OPS-0037
+Demo,Hardware,Steam Deck OLED,unit,1,549,549,Producer,OPS-0037
+Demo,Hardware,Intel UHD 620 laptop (refurbished),unit,1,350,350,Producer,OPS-0037
+Demo,Hardware,Hybrid-graphics laptop (iGPU + dGPU),unit,1,900,900,Producer,OPS-0037
+Demo,Hardware,"Older NVIDIA GTX card (GTX 1060 class, used)",unit,1,120,120,Producer,OPS-0037
+Demo,Hardware,AMD RDNA card (RX 6600 class),unit,1,220,220,Producer,OPS-0037
+Demo,Software,Password manager (6 seats x 5 months),per seat-month,30,8,240,Owner,OPS-0013
+Demo,Software,"Crash reporting (team plan, 5 months)",per month,5,26,130,Owner,PLT
+Demo,Platform,Steam Direct fee (full-game app; demo app is free),per app,1,100,100,Owner,OPS-0065
+1.0,Art,"Chapters III-V art (portraits, backgrounds, 6 bosses, ailments)",estimate; ART-0348 replaces,1,70000,70000,ART lead,ART-0348
+1.0,Art,"Launch marketing art, sale capsules",lump sum,1,4000,4000,ART lead,ART
+1.0,Audio,Composer: full-game music,per finished minute,25,700,17500,AUD lead,AUD plan
+1.0,Audio,English VO (barks + key scenes),lump sum,1,6000,6000,AUD lead,AUD VO plan
+1.0,Audio,Additional SFX licences,lump sum,1,1000,1000,AUD lead,AUD
+1.0,Writing,Narrative editor Ch3-5,lump sum,1,4000,4000,Producer,OPS-0043
+1.0,Localisation,de Ch3-5 + new UI (words beyond the demo),per word,17264,0.14,2416.96,Loc lead,LOC-0078..0093
+1.0,Localisation,fr Ch3-5 + new UI (words beyond the demo),per word,17264,0.14,2416.96,Loc lead,LOC-0078..0093
+1.0,Localisation,es-ES Ch3-5 + new UI (words beyond the demo),per word,17264,0.13,2244.32,Loc lead,LOC-0078..0093
+1.0,Localisation,pl Ch3-5 + new UI (words beyond the demo),per word,17264,0.11,1899.04,Loc lead,LOC-0078..0093
+1.0,Localisation,pt-BR Ch3-5 + new UI (words beyond the demo),per word,17264,0.11,1899.04,Loc lead,LOC-0078..0093
+1.0,Localisation,ru Ch3-5 + new UI (words beyond the demo),per word,17264,0.1,1726.4,Loc lead,LOC-0078..0093
+1.0,Localisation,zh-Hans Ch3-5 + new UI (words beyond the demo),per word,17264,0.13,2244.32,Loc lead,LOC-0078..0093
+1.0,Localisation,it full game + store,per word,20700,0.13,2691.0,Loc lead,LOC-0088..0097
+1.0,Localisation,it legal text,per word,3200,0.2,640.0,Loc lead,LOC-0075
+1.0,Localisation,ja full game + store,per word,20700,0.16,3312.0,Loc lead,LOC-0088..0097
+1.0,Localisation,ja legal text,per word,3200,0.2,640.0,Loc lead,LOC-0075
+1.0,Localisation,ko full game + store,per word,20700,0.15,3105.0,Loc lead,LOC-0088..0097
+1.0,Localisation,ko legal text,per word,3200,0.2,640.0,Loc lead,LOC-0075
+1.0,Localisation,ru Ch1-2 + store + legal (if not in the demo),per word,3436,0.1,343.6,Loc lead,LOC-0066..0069
+1.0,Localisation,zh-Hans Ch1-2 + store + legal (if not in the demo),per word,3436,0.13,446.68,Loc lead,LOC-0066..0069
+1.0,Localisation,TMS subscription (8 months),per month,8,150,1200,Loc lead,LOC-0046
+1.0,Legal,"Counsel: 1.0 sign-off letter, store copy, contracts",estimate,1,10000,10000,Owner,OPS-0073
+1.0,Ratings,Rating updates (IARC re-answer; USK/GRAC if required),provisional,1,3000,3000,Producer,OPS-0079/0080
+1.0,Marketing,Launch trailer,quote estimate,1,4000,4000,Marketing lead,OPS-0102
+1.0,Marketing,PR: launch campaign,quote estimate,1,8000,8000,Marketing lead,OPS-0135
+1.0,Marketing,"Showcases, ads tests, creator programme",lump sum,1,5000,5000,Marketing lead,OPS-0099
+1.0,Marketing,"Key platform, website, newsletter (8 months)",per month,8,350,2800,Marketing lead,OPS-0094/0095/0121
+1.0,QA,"Compatibility lab + freelance testers (full game, Playtest waves)",quote estimate,1,12000,12000,QA lead,OPS-0047
+1.0,Software,"Password manager, crash reporting (8 months)",per month,8,74,592,Owner,OPS-0013
+Demo,Contingency,15 % contingency on the phase subtotal,15 %,1,14335.9,14335.9,Owner,OPS-0034
+1.0,Contingency,15 % contingency on the phase subtotal,15 %,1,26363.6,26363.6,Owner,OPS-0034
