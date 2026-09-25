@@ -21,18 +21,25 @@ const GL_COUNTER = `
   window.__glLive = live;
 })();`;
 
-const RESULTS = { continue: { x: 840, y: 650 }, retry: (hasNext: boolean) => ({ x: hasNext ? 640 : 530, y: 650 }), leave: { x: 420, y: 652 } };
+/** The results ledger draws immediate-mode buttons (no UI tree): centres from src/scenes/results.ts. */
+const RESULTS = { continue: { x: 860, y: 664 }, retry: (hasNext: boolean) => ({ x: hasNext ? 600 : 530, y: 664 }), leave: { x: 390, y: 664 } };
 
 describe('new game flow', () => {
   const game = useGame();
 
-  it('title → prologue → op1-1 won with real mouse gestures → results → s1-2, saving progress at each step', async () => {
+  it('title → New Game → slot 1 → prologue → op1-1 won with real mouse gestures → results → s1-2, saving progress at each step', async () => {
     const g = game();
     let s = await g.boot();
     expect(s.scene).toBe('title');
     expect(s.save.progress).toEqual({ chapter: 0, step: 0 });
 
-    s = await g.click(640, 390); // Take the Oath
+    // New Game opens the save-slot picker (UIX-0092); an empty slot begins the campaign at once.
+    // A fresh profile is asked whether it has operated before (GAM-0208); "Teach me" keeps the tutorials.
+    s = await g.clickNode('new');
+    expect(s.scene).toBe('confirm');
+    s = await g.clickNode('no');
+    expect(s.scene).toBe('slots');
+    s = await g.clickNode('slot1');
     expect(s.scene).toBe('story');
     expect(s.story?.id).toBe('prologue');
     expect(s.save.progress).toEqual({ chapter: 0, step: 0 });
@@ -75,7 +82,7 @@ describe('continue / resume', () => {
     s = await g.reload();
     expect(s.scene).toBe('title');
     expect(s.save.progress).toEqual(saved);
-    s = await g.click(640, 390); // Continue (first button when a campaign is in progress)
+    s = await g.clickNode('continue');
     expect(s.scene).toBe('briefing');
     expect(s.save.progress).toEqual(saved);
     s = await g.key('Enter');
@@ -85,11 +92,11 @@ describe('continue / resume', () => {
   it('a reload during a story resumes that story step', async () => {
     const g = game();
     await g.boot('?preset=ch2-start');
-    let s = await g.click(640, 390);
+    let s = await g.clickNode('continue');
     expect(s.scene).toBe('story');
     const story = s.story?.id;
     await g.reload();
-    s = await g.click(640, 390);
+    s = await g.clickNode('continue');
     expect(s.scene).toBe('story');
     expect(s.story?.id).toBe(story);
   });
@@ -97,17 +104,19 @@ describe('continue / resume', () => {
   it('quitting mid-operation resumes at that operation’s briefing', async () => {
     const g = game();
     await g.boot('?preset=pre-matins');
-    let s = await g.click(640, 390);
+    let s = await g.clickNode('continue');
     expect(s.scene).toBe('briefing');
     s = await g.key('Enter');
     expect(s.op?.id).toBe('op1-5');
     await g.until('surgery', (st) => st.op?.status === 'running', 600);
     s = await g.key('Escape');
     expect(s.paused).toBe(true);
-    s = await g.click(640, 490); // Abandon the Patient
+    s = await g.clickNode('abandon'); // Abandon the Patient → confirm (settings.confirmAbandon)
+    expect(s.scene).toBe('confirm');
+    s = await g.clickNode('yes');
     expect(s.scene).toBe('title');
     await g.reload();
-    s = await g.click(640, 390); // Continue
+    s = await g.clickNode('continue');
     expect(s.scene).toBe('briefing');
     s = await g.key('Enter');
     expect(s.op?.id).toBe('op1-5');
@@ -140,14 +149,12 @@ describe('retry and quit', () => {
     const g = game();
     await g.boot('?preset=mid-ch1');
     const loop = async () => {
-      let s = await g.click(640, 390); // Continue → op1-3 briefing
+      let s = await g.clickNode('continue'); // → op1-3 briefing
       expect(s.scene).toBe('briefing');
       s = await g.key('Enter');
       expect(s.scene).toBe('operation');
       await g.until('surgery', (st) => st.op?.status === 'running', 600);
-      s = await g.key('Escape');
-      expect(s.paused).toBe(true);
-      s = await g.click(640, 490); // Abandon the Patient
+      s = await g.abandon();
       expect(s.scene).toBe('title');
       await g.step(2, 'all');
     };
@@ -169,7 +176,7 @@ describe('options persistence', () => {
     const g = game();
     let s = await g.boot();
     const before = s.settings;
-    s = await g.click(640, 390 + 60 * 2); // Options (fresh save: Take the Oath, Operating Theatre, Options)
+    s = await g.clickNode('options');
     expect(s.scene).toBe('options');
     // The options screen is tabbed: find the tab and row that own each setting, click the tab,
     // point at the row (hover moves focus) and step it forward with the keyboard, as a player would.
@@ -184,6 +191,8 @@ describe('options persistence', () => {
       await g.page.mouse.move(rect.x + rect.w / 2, rect.y + rect.h / 2);
       await g.step(1, 'all');
       s = await g.key('ArrowRight');
+      // A slider already at its maximum (shake defaults to 1) steps the other way instead.
+      if (s.settings[key] === before[key]) s = await g.key('ArrowLeft');
     }
     const changed = s.settings;
     for (const k of ['volume', 'muted', 'shake', 'reduceFlashing', 'timerAssist', 'litanyKey']) expect(changed[k], k).not.toEqual(before[k]);
