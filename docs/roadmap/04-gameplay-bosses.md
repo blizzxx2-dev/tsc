@@ -40,7 +40,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0016 · Demo · P1 · S · Event bus for sim → presentation (`op.events` — rated, spawned, phaseStart, vitalsWarn, litany…) replacing `op.cues` string array
 - [x] GAM-0017 · Demo · P1 · S · Operation telemetry summary — per op: time per phase, ratings histogram, vitals minimum, tools used, Litany timing; written to results scene and debug log
 - [x] GAM-0018 · Demo · P2 · S · Debug overlay (F3) — entity hitboxes, drain per entity, vitals delta/s, active timers, combo state
-- [ ] GAM-0019 · Demo · P2 · S · Debug cheats (dev builds only) — skip phase, set vitals, freeze drain, spawn any entity at cursor
+- [x] GAM-0019 · Demo · P2 · S · Debug cheats (dev builds only) — skip phase, set vitals, freeze drain, spawn any entity at cursor
 - [x] GAM-0020 · Alpha · P1 · M · Data-driven ailment schema — ailments declared in content files (`{kind, pos, params}`) validated by a zod-style schema at load; bad content fails CI
 
 ## GAM-C · Tool feel & tuning (Demo)

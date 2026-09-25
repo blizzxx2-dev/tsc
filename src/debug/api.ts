@@ -33,6 +33,7 @@ import { MAX_VITALS, Operation, type OperationDef, type Status } from '../surger
 import { TOOL_INFO, type Pointer, type Rank, type ToolId } from '../surgery/types';
 import { isPresetName, PRESET_NAMES, presetSave } from './presets';
 import { opView, stateHash, type OpView } from './state';
+import { freezeDrain, spawnAt } from './cheats';
 
 export const DEBUG_API_VERSION = 1;
 
@@ -407,6 +408,18 @@ export class DebugApi {
     const op = this.requireOp();
     if (op.status === 'intro') this.skipPhase();
     op.lose(reason);
+    return this.state();
+  }
+
+  /** Freeze all vitals drain (or release it) — GAM-0019. */
+  freezeDrain(on: boolean): DebugState {
+    freezeDrain(this.requireOp(), on);
+    return this.state();
+  }
+
+  /** Spawn a content entity (schema id) at the cursor — GAM-0019. */
+  spawn(id: string): DebugState {
+    spawnAt(this.requireOp(), id);
     return this.state();
   }
 

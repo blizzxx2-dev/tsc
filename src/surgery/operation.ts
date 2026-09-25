@@ -1459,6 +1459,11 @@ export class Operation {
     this.graceT = Math.max(this.graceT, seconds);
   }
 
+  /** End any drain-free grace at once (the dev "freeze drain" cheat switched off). */
+  endGrace(): void {
+    this.graceT = 0;
+  }
+
   /** Advance the dialogue insert; resumes with a short drain-free grace. */
   advanceDialogue(): void {
     this.dialogue.shift();
