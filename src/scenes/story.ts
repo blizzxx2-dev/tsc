@@ -1,3 +1,4 @@
+import { gradeFor } from '../render/lut';
 import type { Game, Scene } from '../core/scene';
 import { t } from '../i18n';
 import { hex } from '../render/color';
@@ -385,7 +386,7 @@ export class StoryScene implements Scene {
       for (const e of this.stage.entries()) drawPortrait(g, CAST[e.who], SLOT_X[e.slot] + e.dx, SLOT_Y, g.time, e.speaking, false, e.pose);
     }
     const trauma = this.shake > 0 && !settings.reduceMotion ? Math.min(1, this.shake * settings.shake) : undefined;
-    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, trauma, bloom: 'story' });
+    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, trauma, bloom: 'story', lutA: gradeFor(this.cg ?? this.story.backdrop) });
 
     const vr = g.viewRect();
     if (this.cg) {

@@ -89,6 +89,8 @@ export interface OperationDef {
   drape?: 'linen' | 'silk' | 'sackcloth' | 'canvas';
   /** Where it happens (ENG-0272/0274): the hospice by default, a field-triage tent, or the forensic slab. */
   venue?: 'hospice' | 'field' | 'forensic';
+  /** Colour grade (a `GRADES` name, ENG-0153); defaults by venue and chapter. */
+  grade?: 'candle' | 'dawn' | 'theatre' | 'street' | 'chapel' | 'night';
   /** Muscle fibre direction in radians (ENG-0093; the `muscle` organ's striations run along it). */
   fiber?: number;
   /** Multi-organ fields: regions with their own sensitivity; with two or more, the camera frames one at a time (GAM-0247). */

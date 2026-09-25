@@ -873,7 +873,8 @@ export class OperationScene implements Scene {
       // Bloom preset (ENG-0149): the Malison fights glow harder than ordinary cases.
       bloom: this.corrupt > 0.5 ? 'malison' : 'operation',
       chroma: (this.corrupt * 1.2 + danger * 0.8 + Math.min(1, op.shake / 10) * 0.6) * soften,
-      lutA: ch2 ? 'dawn' : 'candle',
+      // Per-location grade (ENG-0153): the op's own, else its venue's, else the chapter's.
+      lutA: op.def.grade ?? (op.def.venue === 'field' ? 'night' : op.def.venue === 'forensic' ? 'street' : ch2 ? 'dawn' : 'candle'),
       lutB: danger > 0.5 ? 'failing' : 'curse',
       lutMix: Math.max(this.corrupt * 0.8, danger > 0.5 ? (danger - 0.5) * 1.2 : 0),
       beat: this.pulse,

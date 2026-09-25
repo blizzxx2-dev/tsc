@@ -42,12 +42,55 @@ export const GRADES: Record<string, Grade> = {
     const sh = 1 - sm(0.05, 0.5, l);
     return [c[0] * (1 + sh * 0.08), c[1] * (0.9 - sh * 0.1), c[2] * (1 + sh * 0.25)];
   },
+  /** Anatomy theatre (ENG-0153): amber lamplight, deeper blacks, a harder S-curve. */
+  theatre: (r, g, b) => {
+    const c: [number, number, number] = [r * 1.08, g * 0.98, b * 0.82];
+    return c.map((v) => v + (sm(0, 1, v) - v) * 0.5) as [number, number, number];
+  },
+  /** City street by day: overcast, grey-green, flat and a little desaturated. */
+  street: (r, g, b) => {
+    const c = sat([r, g, b], 0.72);
+    return [c[0] * 0.96, c[1] * 1.0, c[2] * 0.97].map((v) => 0.03 + v * 0.95) as [number, number, number];
+  },
+  /** Chapel: cool stone shadows, gold where the candles and glass fall. */
+  chapel: (r, g, b) => {
+    const l = lum(r, g, b);
+    const hi = sm(0.45, 0.9, l);
+    return [r * (0.95 + 0.1 * hi), g * (0.97 + 0.04 * hi), b * (1.08 - 0.16 * hi)];
+  },
+  /** Night: moonlit blue, low saturation, lifted blacks. */
+  night: (r, g, b) => {
+    const c = sat([r, g, b], 0.55);
+    return [0.02 + c[0] * 0.86, 0.03 + c[1] * 0.92, 0.05 + c[2] * 1.08];
+  },
   /** Failing patient: drained, cold. */
   failing: (r, g, b) => {
     const c = sat([r, g, b], 0.45);
     return [c[0] * 0.95, c[1] * 0.97, c[2] * 1.05];
   },
 };
+
+/** Per-location grade for story backdrops (ENG-0153); unlisted places keep the candle grade. */
+export const LOCATION_GRADE: Record<string, string> = {
+  hospice: 'candle',
+  apothecary: 'candle',
+  guildhall: 'candle',
+  theatre: 'theatre',
+  street: 'street',
+  alley: 'street',
+  chapel: 'chapel',
+  abbey: 'chapel',
+  graveyard: 'night',
+  night: 'night',
+  forest: 'night',
+  camp: 'dawn',
+  tent: 'dawn',
+  orecamp: 'dawn',
+  dawn: 'dawn',
+};
+
+/** The grade for a place (story backdrop or operation venue). */
+export const gradeFor = (place: string): string => LOCATION_GRADE[place] ?? 'candle';
 
 /** Bake a grade into RGBA8 texel data (1024×32). */
 export function bakeLut(grade: Grade): Uint8Array {
