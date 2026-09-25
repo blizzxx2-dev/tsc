@@ -465,7 +465,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] PLT-0030 · Demo · P0 · M · Linux build runs inside the Steam Linux Runtime (sniper) container on Ubuntu, Fedora and SteamOS — X11 and Wayland (`ozone-platform-hint=auto`) tested
 - [ ] PLT-0031 · Demo · P1 · S · Windows — per-monitor-v2 DPI awareness, Windows 10 1809+ minimum, no external redistributables required (clean VM test)
 - [x] PLT-0032 · Demo · P1 · S · Reproducible builds: pinned Node (`.nvmrc`), lockfile installs, deterministic archive ordering — two CI builds of one commit produce identical app archive hashes
-- [ ] PLT-0033 · Release · P1 · M · DRM-free installers for GOG/itch — Windows NSIS (Start-menu shortcut, uninstaller that keeps saves), macOS signed `.dmg`, Linux `.tar.gz` + AppImage
+- [x] PLT-0033 · Release · P1 · M · DRM-free installers for GOG/itch — Windows NSIS (Start-menu shortcut, uninstaller that keeps saves), macOS signed `.dmg`, Linux `.tar.gz` + AppImage
 
 ## PLT-E · Code signing & notarisation (Demo)
 
@@ -474,7 +474,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] PLT-0036 · Demo · P0 · S · Sign native add-ons and `libsteam_api.dylib` inside the bundle — Gatekeeper passes on a clean Mac downloaded via Steam
 - [ ] PLT-0037 · Demo · P0 · S · Signing credentials stored only in the CI secret store (or cloud HSM) — documented rotation and revocation procedure; no keys on developer machines
 - [ ] PLT-0038 · Demo · P0 · S · Post-build verification in CI — `signtool verify /pa /v`, `codesign --verify --deep --strict`, `spctl -a -t exec`; failure blocks upload
-- [ ] PLT-0039 · Release · P2 · S · DRM-free checksums — SHA-256 with detached GPG signatures published for every download
+- [x] PLT-0039 · Release · P2 · S · DRM-free checksums — SHA-256 with detached GPG signatures published for every download
 
 ## PLT-F · Steamworks core integration (Demo)
 
@@ -512,7 +512,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 
 ### End of demo & wishlist
 - [x] PLT-0062 · Demo · P0 · M · End-of-demo scene after the Chapter 2 finale — thank-you, teaser, "Wishlist on Steam" button opening the full game's store page in the overlay (`ActivateGameOverlayToStore`), browser fallback outside Steam
-- [ ] PLT-0063 · Demo · P1 · S · Wishlist entry points — demo title screen and pause menu, compliant with Steam guidelines (no forced interruptions)
+- [x] PLT-0063 · Demo · P1 · S · Wishlist entry points — demo title screen and pause menu, compliant with Steam guidelines (no forced interruptions)
 - [x] PLT-0064 · Demo · P2 · S · Owned-full-game notice — if `BIsSubscribedApp(fullAppId)`, the demo title says "The full game is in your library" instead of the wishlist prompt
 
 ### Demo → full-game carry-over

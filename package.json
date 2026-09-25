@@ -61,7 +61,8 @@
     "balance": "vitest run tests/sweep.test.ts",
     "art:palette": "node scripts/art/palette-export.mjs",
     "art:models": "node scripts/art/build-models.mjs",
-    "predev": "node scripts/art/check-models.mjs"
+    "predev": "node scripts/art/check-models.mjs",
+    "release:checksums": "node scripts/release-checksums.mjs"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.3",

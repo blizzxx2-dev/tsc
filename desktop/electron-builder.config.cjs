@@ -8,6 +8,9 @@ const { readFileSync } = require('node:fs');
 
 const edition = process.env.VITE_EDITION === 'full' ? 'full' : 'demo';
 const noSteam = process.env.VITE_PLATFORM === 'none';
+// DRM-free installers for GOG/itch (PLT-0033): SS_INSTALLERS=1 (or any no-Steam build) adds NSIS, a
+// signed .dmg and tar.gz + AppImage beside the unpacked folders. Steam depots stay 'dir'.
+const installers = noSteam || process.env.SS_INSTALLERS === '1';
 const src = readFileSync(`${__dirname}/../src/platform/editions.ts`, 'utf8');
 // Pull the edition block's identifiers out of the TS source (single source of truth, no TS loader needed in CJS).
 function field(name) {
@@ -64,7 +67,7 @@ module.exports = {
   },
   afterPack: 'desktop/build/afterPack.cjs',
   win: {
-    target: [{ target: 'dir', arch: ['x64'] }],
+    target: [{ target: 'dir', arch: ['x64'] }, ...(installers ? [{ target: 'nsis', arch: ['x64'] }] : [])],
     icon: 'desktop/build/icons/icon.ico',
     requestedExecutionLevel: 'asInvoker',
     signAndEditExecutable: true,
@@ -83,7 +86,7 @@ module.exports = {
       : {}),
   },
   mac: {
-    target: [{ target: 'dir', arch: ['universal'] }],
+    target: [{ target: 'dir', arch: ['universal'] }, ...(installers ? [{ target: 'dmg', arch: ['universal'] }] : [])],
     icon: 'desktop/build/icons/icon.icns',
     category: 'public.app-category.role-playing-games',
     hardenedRuntime: true,
@@ -97,11 +100,40 @@ module.exports = {
     extendInfo: { LSApplicationCategoryType: 'public.app-category.role-playing-games', NSHighResolutionCapable: true },
   },
   linux: {
-    target: [{ target: 'dir', arch: ['x64'] }],
+    target: [
+      { target: 'dir', arch: ['x64'] },
+      ...(installers
+        ? [
+            { target: 'tar.gz', arch: ['x64'] },
+            { target: 'AppImage', arch: ['x64'] },
+          ]
+        : []),
+    ],
     icon: 'desktop/build/icons',
     category: 'Game',
     executableName,
     synopsis: 'A grimdark surgery-action game.',
   },
+  // Installer behaviour: per-user install with a Start-menu and desktop shortcut; the uninstaller
+  // never touches the save folder (saves live under the OS app-data root, PLT-0132).
+  nsis: {
+    oneClick: false,
+    perMachine: false,
+    allowToChangeInstallationDirectory: true,
+    createDesktopShortcut: true,
+    createStartMenuShortcut: true,
+    deleteAppDataOnUninstall: false,
+    artifactName: '${productName}-${version}-setup.${ext}',
+    shortcutName: productName,
+  },
+  dmg: {
+    artifactName: '${productName}-${version}.${ext}',
+    sign: !!process.env.CSC_LINK,
+    contents: [
+      { x: 130, y: 220 },
+      { x: 410, y: 220, type: 'link', path: '/Applications' },
+    ],
+  },
+  appImage: { artifactName: '${productName}-${version}.${ext}' },
   publish: null,
 };

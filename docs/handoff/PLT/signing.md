@@ -48,3 +48,7 @@ electron-builder's `win.signtoolOptions.sign` hook with the vendor's CLI; never 
 - Revocation (suspected leak): Azure → revoke the certificate profile / delete the client secret; Apple → revoke the
   Developer ID certificate and API key (notarised builds already shipped remain valid unless Apple revokes the
   ticket); rotate secrets; rebuild and re-upload; post-mortem.
+
+## DRM-free checksums (PLT-0039)
+
+`npm run release:checksums` writes `release/SHA256SUMS` for every installer and archive and, when `RELEASE_GPG_KEY` names a key in the runner's keyring, a detached signature `SHA256SUMS.asc`. A person must generate the release signing key (ed25519, 2-year expiry), publish its public key on the website and keyservers, and store the private key only in the CI secret store. Installers come from `SS_INSTALLERS=1 node scripts/desktop.mjs pack` (NSIS, .dmg, tar.gz + AppImage; PLT-0033).
