@@ -285,3 +285,16 @@ export function phaseSeal(g: Gfx, x: number, y: number, r: number, state: 'done'
   g.arc(x, y, r, 1, hex('#000000', 0.6));
   diamond(g, x, y, r * 0.45, hex('#2a1a08', 0.8));
 }
+
+/** Ledger tally marks: four strokes and a bar through them per five. */
+export function tallyMarks(g: Gfx, x: number, y: number, n: number, c: RGBA): void {
+  let cx = x;
+  for (let i = 0; i < n; i++) {
+    const k = i % 5;
+    if (k < 4) g.line({ x: cx + k * 5, y }, { x: cx + k * 5 + 1.5, y: y + 14 }, 1.5, c);
+    else {
+      g.line({ x: cx - 3, y: y + 11 }, { x: cx + 19, y: y + 3 }, 1.5, c);
+      cx += 26;
+    }
+  }
+}

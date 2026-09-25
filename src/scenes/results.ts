@@ -1,12 +1,12 @@
 import { assisted } from '../core/settings';
 import { t, tSource } from '../i18n';
-import { formatNumber } from '../i18n/format';
+import { formatClock, formatNumber } from '../i18n/format';
 import type { Game, Scene } from '../core/scene';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import type { Operation } from '../surgery/operation';
 import { VIEW_W } from '../ui/layout';
-import { caps, glass, heading, INK, numerals } from '../ui/hudKit';
+import { caps, glass, heading, INK, numerals, tallyMarks } from '../ui/hudKit';
 import { failSeal, rankSeal } from '../art/kit';
 import { button, reticle } from '../ui/widgets';
 import { drawBackdrop } from './backdrop';
@@ -28,8 +28,13 @@ export class ResultsScene implements Scene {
     private summary?: RunSummary,
   ) {}
 
+  /** When the tally has finished writing itself up (rows, score, seal). */
+  private static readonly TALLY_DONE = 2.0;
+
   enter(game: Game): void {
     if (this.won) game.audio.play('bell');
+    // XS (UIX-0118): a second peal for a flawless case.
+    if (this.won && this.op.rank() === 'XS') setTimeout(() => game.audio.play('bell'), 350);
   }
 
   update(dt: number, game: Game): void {
@@ -38,7 +43,26 @@ export class ResultsScene implements Scene {
       this.stamped = true;
       game.audio.play('squelch');
     }
-    if (game.input.actPressed('ui.confirm') && this.t > 0.5) (this.actions.next ?? this.actions.retry)();
+    // Results skip (UIX-0117): the first press completes the tally, the second continues.
+    if (game.input.actPressed('ui.confirm') || (game.input.pressed && this.t < ResultsScene.TALLY_DONE)) {
+      if (this.t < ResultsScene.TALLY_DONE) this.t = ResultsScene.TALLY_DONE;
+      else if (game.input.actPressed('ui.confirm')) (this.actions.next ?? this.actions.retry)();
+    }
+  }
+
+  /** Per-action breakdown (UIX-0114): how many of each labelled action, and the costliest category (UIX-0115). */
+  private breakdownRows(): { actions: [string, number][]; costly: string | null } {
+    const by = new Map<string, number>();
+    const bad = new Map<string, number>();
+    for (const e of this.op.journal) {
+      if (e.kind !== 'rated' || !e.label) continue;
+      const k = tSource(e.label);
+      by.set(k, (by.get(k) ?? 0) + 1);
+      if (e.rating === 'bad' || e.rating === 'miss') bad.set(k, (bad.get(k) ?? 0) + 1);
+    }
+    const actions = [...by.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+    const worst = [...bad.entries()].sort((a, b) => b[1] - a[1])[0];
+    return { actions, costly: worst ? t('ui.results.costly', { n: worst[1], label: worst[0] }) : null };
   }
 
   render(g: Gfx, game: Game): void {
@@ -69,22 +93,36 @@ export class ResultsScene implements Scene {
     const bd = op.breakdown();
     if (bd.closureBonus) rows.push(['Clean closure', String(bd.closureBonus)]);
     if (bd.penalties) rows.push(['Penalties', `-${bd.penalties}`]);
+    rows.push([t('ui.results.time_taken'), formatClock(op.timeLimit - op.timeLeft)]);
+    rows.push([t('ui.results.litany_used'), t(op.litanyUsed ? 'ui.common.yes' : 'ui.common.no')]);
     const lx = r.x + 56;
     const lw = 320;
-    // Rows ease in one after another, like entries being written up.
+    // Rows ease in one after another, like entries being written up. Ratings carry tally marks (UIX-0114).
+    const counts = [op.counts.cool, op.counts.good, op.counts.bad, op.counts.miss];
     rows.forEach(([k, v], i) => {
-      const ra = Math.max(0, Math.min(1, (this.t - 0.25 - i * 0.12) * 5));
+      const ra = Math.max(0, Math.min(1, (this.t - 0.25 - i * 0.1) * 5));
       if (ra <= 0) return;
-      const y = r.y + 196 + i * 32 + (1 - ra) * 6;
+      const y = r.y + 186 + i * 27 + (1 - ra) * 6;
       caps(g, k, lx, y, 12, hex(INK.dim, ra));
+      if (i < 4) tallyMarks(g, lx + 120, y - 9, Math.min(25, counts[i]), hex(i < 2 ? INK.gold : '#c05040', 0.85 * ra));
       numerals(g, v, lx + lw, y + 2, 20, '#ffffff', '#d8ccb4', 'right', ra);
       g.rect(lx, y + 12, lw, 1, hex(INK.gilt, 0.14 * ra));
     });
+    // The per-action breakdown, in a small column beside the seal.
+    const br = this.breakdownRows();
+    if (this.t > 1.4 && br.actions.length) {
+      const ba = Math.min(1, (this.t - 1.4) * 4);
+      caps(g, t('ui.results.actions'), r.x + 420, r.y + 186, 11, hex(INK.dim, ba));
+      br.actions.forEach(([k, n], i) => {
+        g.text(k, r.x + 420, r.y + 210 + i * 20, { size: 16, color: hex(INK.text, 0.85 * ba), shadow: false });
+        numerals(g, String(n), r.x + 640, r.y + 211 + i * 20, 16, '#ffffff', '#d8ccb4', 'right', ba);
+      });
+    }
     if (this.t > 1.2) {
       const sa = Math.min(1, (this.t - 1.2) * 4);
-      g.rect(lx, r.y + 470, lw, 1.5, hex(INK.gilt, 0.7 * sa));
-      caps(g, t('ui.results.score'), lx, r.y + 506, 15, hex(INK.gold, sa));
-      numerals(g, formatNumber(op.score), lx + lw, r.y + 510, 36, INK.goldHi, INK.gold, 'right', sa);
+      g.rect(lx, r.y + 476, lw, 1.5, hex(INK.gilt, 0.7 * sa));
+      caps(g, t('ui.results.score'), lx, r.y + 512, 15, hex(INK.gold, sa));
+      numerals(g, formatNumber(op.score), lx + lw, r.y + 516, 36, INK.goldHi, INK.gold, 'right', sa);
     }
 
     // The rank seal presses down.
@@ -93,11 +131,14 @@ export class ResultsScene implements Scene {
     if (this.won && this.t > 1.6) {
       const rank = op.rank();
       const k = Math.min(1, (this.t - 1.6) / 0.3);
-      g.glow(sx, sy, 150, hex(INK.gold, 0.12 * k));
+      // XS: gold leaf — a brighter halo and a slow glint round the seal (UIX-0118).
+      g.glow(sx, sy, 150, hex(INK.gold, (rank === 'XS' ? 0.3 : 0.12) * k));
+      if (rank === 'XS') g.arc(sx, sy, 92, 1.5, hex('#fff4d0', 0.5 + 0.3 * Math.sin(g.time * 2)));
       rankSeal(g, sx, sy, 74, rank, this.t - 1.6);
       if (k >= 1) {
         caps(g, t('ui.results.rank'), sx, sy - 104, 13, hex(INK.dim), 'center');
-        if (this.newBest) caps(g, t('ui.results.new_best'), sx, sy + 116, 14, hex(INK.goldHi), 'center');
+        if (rank === 'XS') g.text(t('ui.results.xs_subtitle'), sx, sy + 100, { size: 17, font: 'italic', color: hex('#fff4d0'), align: 'center', shadow: hex('#000000', 0.8), soft: true });
+        if (this.newBest) caps(g, t('ui.results.new_best'), sx, sy + (rank === 'XS' ? 128 : 116), 14, hex(INK.goldHi), 'center');
         if (assisted() || op.resultFlags().length) g.text(t('ui.results.assisted'), sx, sy + 142, { size: 16, font: 'italic', color: hex(INK.dim), align: 'center', shadow: false });
       }
     } else if (!this.won) {
@@ -112,6 +153,7 @@ export class ResultsScene implements Scene {
         const why = op.xsBlockers();
         if (why.length) notes.push(`XS needs: no ${why.join(', no ')}`.replace('no a Bad', 'not a Bad'));
       }
+      if (br.costly) notes.push(br.costly);
       if (bd.flags.length) notes.push(`(${bd.flags.join(', ')})`);
       if (this.summary?.fee) notes.push(`Fee paid: ${this.summary.fee} crowns`);
       for (const a2 of this.summary?.achievements ?? []) notes.push(`✦ ${ACHIEVEMENTS[a2]}`);

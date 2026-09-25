@@ -295,17 +295,17 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ### Patient chart (briefing)
 - [x] UIX-0109 · M0 · P0 · S · Briefing parchment — title, patient, findings, time allowed, previous best, instrument icons with hotkeys, Scrub In / Back
-- [ ] UIX-0110 · Demo · P0 · M · Chart v2 — patient woodcut portrait, anatomical sketch with ailment markers, instrument row with binding glyphs and "NEW" ribbon for first-time tools, Sister Ilse's handwritten note (tip) and target ranks
+- [x] UIX-0110 · Demo · P0 · M · Chart v2 — patient woodcut portrait, anatomical sketch with ailment markers, instrument row with binding glyphs and "NEW" ribbon for first-time tools, Sister Ilse's handwritten note (tip) and target ranks
 - [ ] UIX-0111 · Demo · P1 · M · New-instrument card — when an operation introduces a tool for the first time (Ch1: Lancet/Tongs, Tincture, Brand; Ch2: Scrying Lens), a card shows its illustration, a looping ghost-hand gesture and its binding before Scrub In
-- [ ] UIX-0112 · Demo · P2 · S · Chart ink-writing animation — findings text writes in as quill ink (instant with Reduced Motion or on click)
+- [x] UIX-0112 · Demo · P2 · S · Chart ink-writing animation — findings text writes in as quill ink (instant with Reduced Motion or on click)
 
 ### Results & rank
 - [x] UIX-0113 · M0 · P0 · S · Results — rating counts, longest chain, vitals and time bonuses, score, animated rank reveal, "A new best!", Continue / Operate Again / Leave
-- [ ] UIX-0114 · Demo · P0 · M · Chirurgical report — parchment report with tally marks per rating, per-action breakdown (incisions, sutures, extractions, burns dressed…), time taken, vitals remaining, Litany used; rank stamped as a wax seal with bell
-- [ ] UIX-0115 · Demo · P1 · S · Next-rank hint — "S at 1500 — 120 short" and the most costly rating category ("4 BAD sutures")
+- [x] UIX-0114 · Demo · P0 · M · Chirurgical report — parchment report with tally marks per rating, per-action breakdown (incisions, sutures, extractions, burns dressed…), time taken, vitals remaining, Litany used; rank stamped as a wax seal with bell
+- [x] UIX-0115 · Demo · P1 · S · Next-rank hint — "S at 1500 — 120 short" and the most costly rating category ("4 BAD sutures")
 - [x] UIX-0116 · Demo · P0 · S · Failure report — cause of death, targeted tip derived from the run ("Blood pooled for 40 s — drain with the Leech-Pipe"), Try Again / Back to chapter; shown for both vitals and time-out losses
-- [ ] UIX-0117 · Demo · P1 · S · Results skip — first press completes the tally animation, second press continues; Enter keeps working (existing)
-- [ ] UIX-0118 · Demo · P1 · S · XS rank celebration — gold-leaf seal, choir sting hook, and "Without a single slip" subtitle
+- [x] UIX-0117 · Demo · P1 · S · Results skip — first press completes the tally animation, second press continues; Enter keeps working (existing)
+- [x] UIX-0118 · Demo · P1 · S · XS rank celebration — gold-leaf seal, choir sting hook, and "Without a single slip" subtitle
 - [ ] UIX-0119 · Demo · P2 · S · Assisted badge — runs with any assist enabled show a small "Assisted" ribbon on the report and in the Operating Theatre (ranks still recorded)
 
 ## Epic UIX-D · Story / visual-novel UI (Demo)
