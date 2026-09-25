@@ -59,3 +59,38 @@ export class Clock {
     return this.hitstopLeft > 0;
   }
 }
+
+/** Hitstop lengths per impact (ENG-0058), in ms: 40–60 on heavy blows, capped by `HITSTOP_CAP_MS`. */
+export const HITSTOP_MS = { malison: 60, harm: 50, extract: 40 } as const;
+/** A Malison lashes every tick; one hitstop per this many real seconds. */
+export const MALISON_HITSTOP_COOLDOWN = 0.6;
+
+/** The subset of the sim's event bus the hitstop needs (src/surgery/events.ts). */
+export interface HitstopEvents {
+  impact: { kind: 'harm'; amount: number };
+  malisonHit: { damage: number };
+  extract: unknown;
+}
+interface HitstopBus<E extends HitstopEvents> {
+  on<K extends keyof E>(type: K, fn: (payload: E[K]) => void): () => void;
+}
+
+/**
+ * Wire an operation's events to the clock's hitstop: heavy mistakes (`impact`, ≥5 vitals),
+ * Malison lashes (rate-limited, since it emits every tick) and instrument extractions freeze
+ * world time for 40–60 ms. Reduced Motion is honoured inside `clock.hitstop`. Returns the
+ * unsubscribe for the scene's dispose.
+ */
+export function bindHitstop<E extends HitstopEvents>(clock: Clock, events: HitstopBus<E>): () => void {
+  let lastMalison = -Infinity;
+  const offs = [
+    events.on('impact', () => clock.hitstop(HITSTOP_MS.harm)),
+    events.on('extract', () => clock.hitstop(HITSTOP_MS.extract)),
+    events.on('malisonHit', () => {
+      if (clock.real - lastMalison < MALISON_HITSTOP_COOLDOWN) return;
+      lastMalison = clock.real;
+      clock.hitstop(HITSTOP_MS.malison);
+    }),
+  ];
+  return () => offs.forEach((off) => off());
+}

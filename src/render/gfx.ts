@@ -10,6 +10,7 @@ import { PostPipeline } from './postPasses';
 import { bakedNoise } from './noiseBake';
 import { fleshVariantKey, isQuality, SHADER_TIERS, type Quality } from './quality';
 import { fleshShaderSource } from './shaders/flesh';
+import { shakeOffset } from './shake';
 import { GlRegistry } from './registry';
 import { SpriteBank, type SpriteOpts } from './sprites';
 import { RenderTargetPool, type Target } from './targets';
@@ -125,7 +126,14 @@ export interface FleshParams {
 export interface PostParams {
   litany: number;
   danger: number;
+  /** Screen offset in virtual px; ignored when `trauma` is given. */
   shake: Vec;
+  /**
+   * Trauma-based shake (ENG-0051): the sim's decaying `op.shake` (0–12) already multiplied by the
+   * player's screen-shake setting. The renderer derives a smooth-noise offset from it and
+   * presentation time, so the scene passes no random jitter and the sim stays pure.
+   */
+  trauma?: number;
   bloom: number;
   /** Chromatic aberration strength (curses, damage). */
   chroma?: number;
@@ -626,7 +634,8 @@ export class Gfx {
     gl.uniform1f(this.u(this.post, 'u_curse'), p.curse ?? 0);
     gl.uniform2fv(this.u(this.post, 'u_outcome'), p.outcome ?? [0, 0]);
     gl.uniform1f(this.u(this.post, 'u_hdr'), this.floatTargets ? 1 : 0);
-    gl.uniform2f(this.u(this.post, 'u_shake'), p.shake.x / this.vw, -p.shake.y / this.vh);
+    const shake = p.trauma !== undefined ? shakeOffset(p.trauma, this.time, { scale: dp.still ? 0 : 1 }) : p.shake;
+    gl.uniform2f(this.u(this.post, 'u_shake'), shake.x / this.vw, -shake.y / this.vh);
     gl.uniform1f(this.u(this.post, 'u_flicker'), Math.sin(this.time * 9.1) * Math.sin(this.time * 3.7) * this.displayPrefs.flicker);
     gl.uniform1f(this.u(this.post, 'u_chroma'), (p.chroma ?? 0) * this.displayPrefs.chroma);
     gl.uniform3fv(this.u(this.post, 'u_tint'), p.tint ?? [1, 1, 1]);

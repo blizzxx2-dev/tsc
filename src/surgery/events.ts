@@ -30,6 +30,8 @@ export interface SimEvents {
   spawn: { entity: Entity };
   death: { entity: Entity };
   malisonHit: { pos: Vec; damage: number };
+  /** A heavy blow worth a hitstop (ENG-0058): a mistake costing ≥5 vitals (barb tears, stray cuts, bursts). */
+  impact: { kind: 'harm'; amount: number; pos: Vec };
   win: { score: number; vitals: number; timeLeft: number };
   lose: { reason: string };
 }
