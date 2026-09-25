@@ -25,20 +25,20 @@
    "status": "lost",
    "lostCause": "time",
    "lostReason": "Time has run out.",
-   "score": 477,
-   "vitals": 93384,
+   "score": 402,
+   "vitals": 94996,
    "timeLeft": 0,
    "elapsed": 13017,
    "frames": 781,
    "phase": 2,
    "counts": {
     "cool": 3,
-    "good": 2,
+    "good": 1,
     "bad": 0,
     "miss": 0
    },
    "litanyUses": 0,
-   "maxCombo": 5
+   "maxCombo": 4
   }
  },
  "op1-2": {

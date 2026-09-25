@@ -303,8 +303,8 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0190 · Alpha · P1 · M · Bot extensions for Alpha mechanics — fracture alignment, stone chipping order, frost tap-thaw, amputation saw rhythm, antidote colour matching
 
 ### Per-operation tuning (demo)
-- [ ] GAM-0191 · Demo · P0 · S · op1-1 A Tavern Knife tuning — first-op pass: novice-bot min vitals ≥ 60, steady time used ≤ 50 %; 2 lacerations + 1 pool; no hidden entities
-- [ ] GAM-0192 · Demo · P0 · S · op1-2 The Barbed Shaft tuning — barb-nick taught; sloppy bot (no nick) still wins at C/B; ranks recalibrated
+- [x] GAM-0191 · Demo · P0 · S · op1-1 A Tavern Knife tuning — first-op pass: novice-bot min vitals ≥ 60, steady time used ≤ 50 %; 2 lacerations + 1 pool; no hidden entities
+- [x] GAM-0192 · Demo · P0 · S · op1-2 The Barbed Shaft tuning — barb-nick taught; sloppy bot (no nick) still wins at C/B; ranks recalibrated
 - [x] GAM-0193 · Demo · P0 · S · op1-3 Powder Burns tuning — shot + wadding + fire burns; steady ≤ 70 % time; wadding-miss fever phase survivable by novice
 - [x] GAM-0194 · Demo · P0 · S · op1-4 Pestilent Humours tuning — bubo swell timers ≥ 30 s so novice lances all before bursts on at least 18/20 seeds
 - [ ] GAM-0195 · Demo · P0 · S · op2-1 Gravehound tuning — fang angles readable; claw lacerations total ≤ 5; steady rank B–A

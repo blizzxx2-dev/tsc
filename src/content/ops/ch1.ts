@@ -31,8 +31,9 @@ export const OP_1_1 = defineOp({
     {
       objective: 'Draw off the blood',
 
-      callout: ['Blood’s pooling. Hold the Leech-Pipe over it to draw it off.', 'You can’t stitch through a pool of blood — drain first.'],
-      spawn: [{ e: 'laceration', at: [0, 20], angle: 1.2, len: 110, bleed: 0.9 }],
+      callout: ['Blood’s pooled from the cuts. Hold the Leech-Pipe over it to draw it off.', 'Next time, drain first — you can’t stitch through a pool of blood.'],
+      // GAM-0191: the first op is two cuts and one pool, all in plain sight.
+      spawn: [{ e: 'pool', at: [0, 20], r: 34, required: true }],
     },
     {
       objective: 'Salve the nicks',
