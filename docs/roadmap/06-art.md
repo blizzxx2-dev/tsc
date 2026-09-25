@@ -585,7 +585,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [ ] ART-0359 · Demo · P1 · S · Gore-level review against the rating target, with the flagged assets listed and resolved before the ratings submission
 - [x] ART-0360 · Demo · P1 · S · Localisation art pass: no baked-in text in any image except the logo; stamps and seals with text use a runtime text layer
 - [x] ART-0361 · Demo · P1 · S · Placeholder sweep: the build report shows 0 `placeholder` assets in Chapters 1–2 (from the manifest tags)
-- [ ] ART-0362 · Demo · P2 · S · Z-order and overlap audit: ailment sprites never draw under blood pools unless intended; HUD never overlaps a Malison weak point at 16:10
+- [x] ART-0362 · Demo · P2 · S · Z-order and overlap audit: ailment sprites never draw under blood pools unless intended; HUD never overlaps a Malison weak point at 16:10
 - [ ] ART-0363 · Beta · P0 · M · Full-game art QA pass of Chapters 3–5 with the same checklist, suite and matrices
 - [ ] ART-0364 · Release · P1 · S · Final IP audit of every shipped asset (Games Workshop and other third-party look-alike check) signed off by the producer
 
