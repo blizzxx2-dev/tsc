@@ -312,9 +312,9 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [ ] GAM-0197 · Demo · P0 · S · op2-3 Brood-Mother's Kiss tuning — venom mote count and grub spawn cadence set so drain peaks ≤ 1.2/s steady
 - [x] GAM-0198 · Demo · P0 · S · op2-4 The Silenced Cantor tuning — sigil stroke counts 4–7; regress timer 4 s verified fair for novice
 - [ ] GAM-0199 · Demo · P1 · S · Difficulty curve check — steady-bot median min-vitals decreases monotonically op1-1 → op2-5 except post-boss breather op2-1 (documented chart in balance report)
-- [ ] GAM-0200 · Alpha · P1 · S · Ch3 op tuning — every Ch3 op passes 20-seed steady/novice sweep and has committed thresholds
-- [ ] GAM-0201 · Alpha · P1 · S · Ch4 op tuning — every Ch4 op passes 20-seed steady/novice sweep and has committed thresholds
-- [ ] GAM-0202 · Beta · P1 · S · Ch5 op tuning — every Ch5 op passes 20-seed steady/novice sweep and has committed thresholds
+- [x] GAM-0200 · Alpha · P1 · S · Ch3 op tuning — every Ch3 op passes 20-seed steady/novice sweep and has committed thresholds
+- [x] GAM-0201 · Alpha · P1 · S · Ch4 op tuning — every Ch4 op passes 20-seed steady/novice sweep and has committed thresholds
+- [x] GAM-0202 · Beta · P1 · S · Ch5 op tuning — every Ch5 op passes 20-seed steady/novice sweep and has committed thresholds
 - [ ] GAM-0203 · Beta · P1 · M · Human telemetry balance pass — opt-in beta telemetry (fail rate per op); any op with > 35 % first-attempt fail on Surgeon gets a tuning task
 
 ## GAM-K · Tutorialisation (Demo)
