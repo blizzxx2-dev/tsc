@@ -218,9 +218,13 @@ export class Operation {
     this.injectT = 0;
   }
 
+  /** Optional distortion of the surgeon's input (a boss's torpor or heat-haze); null = none. */
+  inputFilter: ((ptr: Pointer, dt: number) => Pointer) | null = null;
+
   /** Player input: uses real time so the Litany does not slow the surgeon. */
   handlePointer(ptr: Pointer, dt: number): void {
     if (this.status !== 'running') return;
+    if (this.inputFilter) ptr = this.inputFilter(ptr, dt);
     const tool = this.tool;
     const live = this.visibleEntities().sort((a, b) => b.layer - a.layer);
 
