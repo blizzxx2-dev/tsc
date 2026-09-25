@@ -1,0 +1,125 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`BloodPool > a pool that grew past 20 counts as big 1`] = `
+"2.02 initial BloodPool ichor=blood r=10 optional @(660,410)
+2.80 cue squelch
+2.80 rate COOL "Drained" +105 combo=1
+"
+`;
+
+exports[`BloodPool > a pool that started below r 20 drains without a rating 1`] = `
+"2.02 initial BloodPool ichor=blood r=15 optional @(660,410)
+2.43 cue squelch
+3.03 -- after leech: status=running vitals=99 score=0 combo=0 counts=0/0/0/0 live=[]
+"
+`;
+
+exports[`BloodPool > the leech drains blackbile and rates COOL "Drained" (within 1.5 s) for a pool that started at r ≥ 20 1`] = `
+"2.02 initial BloodPool ichor=blackbile r=30 optional @(660,410)
+2.98 cue squelch
+2.98 rate COOL "Drained" +105 combo=1
+3.43 -- after leech: status=running vitals=99 score=105 combo=1 counts=1/0/0/0 live=[] stains=0
+"
+`;
+
+exports[`BloodPool > the leech drains blood and rates COOL "Drained" (within 1.5 s) for a pool that started at r ≥ 20 1`] = `
+"2.02 initial BloodPool ichor=blood r=30 optional @(660,410)
+2.98 cue squelch
+2.98 rate COOL "Drained" +105 combo=1
+3.43 -- after leech: status=running vitals=99 score=105 combo=1 counts=1/0/0/0 live=[] stains=1
+"
+`;
+
+exports[`BloodPool > the leech drains pus and rates COOL "Drained" (within 1.5 s) for a pool that started at r ≥ 20 1`] = `
+"2.02 initial BloodPool ichor=pus r=30 optional @(660,410)
+2.98 cue squelch
+2.98 rate COOL "Drained" +105 combo=1
+3.43 -- after leech: status=running vitals=99 score=105 combo=1 counts=1/0/0/0 live=[] stains=0
+"
+`;
+
+exports[`Laceration > a one-stroke stitch rates COOL "Stitched" and leaves a scar 1`] = `
+"2.02 initial Laceration source=blade length=120 bleed=0 @(660,410)
+2.10 cue stitch
+2.25 cue stitch
+2.40 cue stitch
+2.55 cue stitch
+2.70 cue stitch
+2.85 cue stitch
+2.85 rate COOL "Stitched" +105 combo=1
+2.95 -- after stitching: status=running vitals=99 score=105 combo=1 counts=1/0/0/0 live=[]
+"
+`;
+
+exports[`Laceration > a two-stroke stitch rates GOOD "Stitched" 1`] = `
+"2.02 initial Laceration source=blade length=120 bleed=0 @(660,410)
+2.10 cue stitch
+2.23 cue stitch
+2.35 cue stitch
+2.53 cue stitch
+2.65 cue stitch
+2.80 cue stitch
+2.80 flag stitch-gap
+2.80 say "There’s a gap in the suture — it’s still bleeding. Close it up."
+2.80 say "instruction"
+2.92 cue stitch
+3.07 cue stitch
+3.18 cue stitch
+3.18 rate GOOD "Stitched" +63 combo=1
+3.68 -- after two strokes: status=running vitals=99 score=63 combo=1 counts=0/1/0/0 live=[]
+"
+`;
+
+exports[`Laceration > bleeding feeds a pool at the wound over time 1`] = `
+"2.02 initial Laceration source=blade length=100 bleed=1 @(660,410)
+6.03 spawn BloodPool ichor=blood r=8 optional @(654,405)
+12.02 -- after 10 s: status=running vitals=88.1 score=0 combo=0 counts=0/0/0/0 live=[Laceration,BloodPool] pools=1 r=[18]
+"
+`;
+
+exports[`Laceration > nicks up to SALVE_MAX (46) are sealed by salve: GOOD "Sealed" 1`] = `
+"2.02 initial Laceration source=blade length=46 bleed=0 @(660,410)
+2.02 initial Laceration source=blade length=47 bleed=0 @(460,410)
+2.23 rate GOOD "Sealed" +63 combo=1
+2.42 popup "The Saint’s Salve won’t help with the wound — try the Gut Thread."
+2.42 flag salve-big
+2.42 say "Salve won’t hold a wound that size. Stitch it first."
+2.42 say "instruction"
+2.82 -- after salving both: status=running vitals=99 score=63 combo=1 counts=0/1/0/0 live=[Laceration]
+"
+`;
+
+exports[`Laceration > op2-1 claw rakes: three parallel lacerations, each stitched in one stroke 1`] = `
+"2.02 initial Laceration source=blade length=86 bleed=0.8 @(758,407)
+2.02 initial Laceration source=blade length=100 bleed=0.8 @(770,430)
+2.02 initial Laceration source=blade length=86 bleed=0.8 @(782,453)
+2.10 cue stitch
+2.25 cue stitch
+2.32 cue stitch
+2.40 cue stitch
+2.55 cue stitch
+2.55 rate COOL "Stitched" +105 combo=1
+2.62 cue stitch
+2.73 cue stitch
+2.88 cue stitch
+3.18 cue stitch
+3.18 rate GOOD "Stitched" +66 combo=2
+3.52 cue stitch
+3.67 cue stitch
+3.82 cue stitch
+3.97 cue stitch
+3.97 rate COOL "Stitched" +115 combo=3
+4.07 -- after the rakes: status=running vitals=96.2 score=286 combo=3 counts=2/1/0/0 live=[]
+"
+`;
+
+exports[`Laceration > stitching while flooded says "flooded" and makes no progress 1`] = `
+"2.02 initial Laceration source=blade length=100 bleed=0 @(660,410)
+2.02 initial BloodPool ichor=blood r=45 optional @(660,410)
+2.02 popup "The Gut Thread won’t help with the pooled blood — try the Leech-Pipe."
+2.02 flag flooded
+2.02 say "Too much blood — draw it off with the leech-pipe before you stitch!"
+2.02 say "instruction"
+2.80 -- after stitching into the pool: status=running vitals=98.9 score=0 combo=0 counts=0/0/0/0 live=[Laceration,BloodPool] count=0
+"
+`;

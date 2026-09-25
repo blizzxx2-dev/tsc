@@ -12,9 +12,14 @@ import { localeInfo, type Script } from './locales';
  * glyph check reports them as "not bundled" rather than silently passing.
  */
 export type FaceId =
-  | 'fell'
-  | 'fell-italic'
-  | 'fraktur'
+  | 'garamond'
+  | 'garamond-italic'
+  | 'garamond-ext'
+  | 'garamond-italic-ext'
+  | 'cinzel'
+  | 'cinzel-ext'
+  | 'atkinson'
+  | 'atkinson-italic'
   | 'grenze-gotisch'
   | 'old-standard'
   | 'old-standard-italic'
@@ -36,9 +41,16 @@ export interface Face {
 }
 
 export const FACES: Record<FaceId, Face> = {
-  fell: { family: 'IM Fell English', style: 'normal', file: '@fontsource/im-fell-english/files/im-fell-english-latin-400-normal.woff', shipped: true, licence: 'OFL-1.1', scripts: ['latin', 'pseudo'] },
-  'fell-italic': { family: 'IM Fell English', style: 'italic', file: '@fontsource/im-fell-english/files/im-fell-english-latin-400-italic.woff', shipped: true, licence: 'OFL-1.1', scripts: ['latin', 'pseudo'] },
-  fraktur: { family: 'UnifrakturMaguntia', style: 'normal', file: '@fontsource/unifrakturmaguntia/files/unifrakturmaguntia-latin-400-normal.woff', shipped: true, licence: 'OFL-1.1', scripts: ['latin', 'pseudo'] },
+  garamond: { family: 'EB Garamond', style: 'normal', file: '@fontsource/eb-garamond/files/eb-garamond-latin-500-normal.woff', shipped: true, licence: 'OFL-1.1', scripts: ['latin', 'pseudo'] },
+  'garamond-italic': { family: 'EB Garamond', style: 'italic', file: '@fontsource/eb-garamond/files/eb-garamond-latin-500-italic.woff', shipped: true, licence: 'OFL-1.1', scripts: ['latin', 'pseudo'] },
+  // Latin Extended subsets load alongside (unicode-range), covering PL/CS/HU and the pseudo-locale.
+  'garamond-ext': { family: 'EB Garamond', style: 'normal', file: '@fontsource/eb-garamond/files/eb-garamond-latin-ext-500-normal.woff', shipped: true, licence: 'OFL-1.1', scripts: ['latin', 'pseudo'] },
+  'garamond-italic-ext': { family: 'EB Garamond', style: 'italic', file: '@fontsource/eb-garamond/files/eb-garamond-latin-ext-500-italic.woff', shipped: true, licence: 'OFL-1.1', scripts: ['latin', 'pseudo'] },
+  cinzel: { family: 'Cinzel', style: 'normal', file: '@fontsource/cinzel/files/cinzel-latin-600-normal.woff', shipped: true, licence: 'OFL-1.1', scripts: ['latin', 'pseudo'] },
+  'cinzel-ext': { family: 'Cinzel', style: 'normal', file: '@fontsource/cinzel/files/cinzel-latin-ext-600-normal.woff', shipped: true, licence: 'OFL-1.1', scripts: ['latin', 'pseudo'] },
+  // Readable-font option (UIX-0150): replaces body and italic text when enabled.
+  atkinson: { family: 'Atkinson Hyperlegible', style: 'normal', file: '@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-400-normal.woff', shipped: true, licence: 'OFL-1.1', scripts: ['latin', 'pseudo'] },
+  'atkinson-italic': { family: 'Atkinson Hyperlegible', style: 'italic', file: '@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-400-italic.woff', shipped: true, licence: 'OFL-1.1', scripts: ['latin', 'pseudo'] },
   // Latin Extended-A blackletter candidate for PL display titles (ART approval pending).
   'grenze-gotisch': { family: 'Grenze Gotisch', style: 'normal', shipped: false, licence: 'OFL-1.1', scripts: ['latin', 'pseudo'] },
   'old-standard': { family: 'Old Standard TT', style: 'normal', shipped: false, licence: 'OFL-1.1', scripts: ['latin', 'cyrillic'] },
@@ -55,8 +67,8 @@ export const FACES: Record<FaceId, Face> = {
 type RoleMap = Record<FontId, FaceId[]>;
 
 const BY_SCRIPT: Record<Script, RoleMap> = {
-  latin: { body: ['fell'], italic: ['fell-italic'], display: ['fraktur', 'fell'] },
-  pseudo: { body: ['fell'], italic: ['fell-italic'], display: ['fraktur', 'fell'] },
+  latin: { body: ['garamond', 'garamond-ext'], italic: ['garamond-italic', 'garamond-italic-ext'], display: ['cinzel', 'cinzel-ext', 'garamond'] },
+  pseudo: { body: ['garamond', 'garamond-ext'], italic: ['garamond-italic', 'garamond-italic-ext'], display: ['cinzel', 'cinzel-ext', 'garamond'] },
   cyrillic: { body: ['old-standard'], italic: ['old-standard-italic'], display: ['old-standard'] },
   han: { body: ['noto-serif-sc'], italic: ['lxgw-wenkai'], display: ['noto-serif-sc'] },
   kana: { body: ['noto-serif-jp'], italic: ['klee-one'], display: ['noto-serif-jp'] },
@@ -64,10 +76,7 @@ const BY_SCRIPT: Record<Script, RoleMap> = {
 };
 
 /** Per-locale overrides on top of the script defaults. */
-const OVERRIDES: Record<string, Partial<RoleMap>> = {
-  // UnifrakturMaguntia's Latin subset lacks ą ć ę ł ń ś ź ż: Polish titles use a Latin-extended blackletter.
-  pl: { display: ['grenze-gotisch', 'fell'], body: ['fell', 'old-standard'], italic: ['fell-italic', 'old-standard-italic'] },
-};
+const OVERRIDES: Record<string, Partial<RoleMap>> = {};
 
 /** Ordered faces for every role of a locale. Unknown locales use the Latin map. */
 export function fontRoles(code: string): RoleMap {

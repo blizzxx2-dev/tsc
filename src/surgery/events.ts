@@ -90,3 +90,28 @@ export class CueSink {
     this.published = n;
   }
 }
+
+/**
+ * The gameplay journal (`op.journal`): a bounded, ordered record of what happened
+ * for telemetry, achievements, hints and replays. Every cue is also journalled.
+ */
+export type JournalEvent =
+  | { kind: 'rated'; rating: Rating; label?: string; points: number; pos: Vec; combo: number; add: 'content' | 'boss' | 'penalty' | 'self' }
+  | { kind: 'spawned'; entity: string; id: number; origin: string }
+  | { kind: 'phaseStart'; phase: number }
+  | { kind: 'breather'; phase: number }
+  | { kind: 'vitalsWarn'; level: 'warn' | 'critical'; vitals: number }
+  | { kind: 'litany'; variant: string; use: number }
+  | { kind: 'whisper'; total: number }
+  | { kind: 'comboMilestone'; combo: number }
+  | { kind: 'comboLapsed'; combo: number }
+  | { kind: 'toolChanged'; tool: ToolId }
+  | { kind: 'toolDisabled'; tool: ToolId; seconds: number }
+  | { kind: 'hint'; key: string; text: string }
+  | { kind: 'storyFlag'; flag: string }
+  | { kind: 'checkpoint'; phase: number }
+  | { kind: 'cue'; cue: Cue }
+  | { kind: 'won'; score: number }
+  | { kind: 'lost'; reason: string; cause: string };
+
+export type JournalEventKind = JournalEvent['kind'];

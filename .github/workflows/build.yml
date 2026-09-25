@@ -96,6 +96,9 @@ jobs:
 
       - name: Package
         shell: bash
+        # Release packages must carry the 3D models (built locally: npm run art:models); test builds may skip them.
+        env:
+          SS_ALLOW_NO_MODELS: ${{ !inputs.release && '1' || '' }}
         run: node scripts/desktop.mjs pack --edition=${{ matrix.edition }} ${{ inputs.release && '--release' || '' }}
 
       - name: Locate package

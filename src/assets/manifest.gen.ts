@@ -2,49 +2,128 @@
 import type { AssetEntry } from './types';
 
 export type AssetId =
-  | 'fonts/im-fell-english-latin-400-italic'
-  | 'fonts/im-fell-english-latin-400-normal'
-  | 'fonts/unifrakturmaguntia-latin-400-normal'
+  | 'fonts/atkinson-hyperlegible-latin-400-italic'
+  | 'fonts/atkinson-hyperlegible-latin-400-normal'
+  | 'fonts/cinzel-latin-600-normal'
+  | 'fonts/cinzel-latin-ext-600-normal'
+  | 'fonts/eb-garamond-latin-500-italic'
+  | 'fonts/eb-garamond-latin-500-normal'
+  | 'fonts/eb-garamond-latin-ext-500-italic'
+  | 'fonts/eb-garamond-latin-ext-500-normal'
   | 'sprites/fx';
 
-export type BundleId = 'boot' | 'title' | 'story-common' | 'ops-common' | 'chapter1' | 'chapter2';
+export type BundleId = 'boot' | 'title' | 'story-common' | 'ops-common' | 'chapter1' | 'chapter2' | 'chapter3' | 'chapter4' | 'chapter5';
 
 export const MANIFEST: Record<AssetId, AssetEntry> = {
-  "fonts/im-fell-english-latin-400-italic": {
+  "fonts/atkinson-hyperlegible-latin-400-italic": {
     "type": "font",
-    "url": "assets/fonts_im-fell-english-latin-400-italic.8fc678575e.woff2",
-    "bytes": 57808,
+    "url": "assets/fonts_atkinson-hyperlegible-latin-400-italic.bc8825fd43.woff2",
+    "bytes": 18292,
     "bundle": "boot",
-    "hash": "8fc678575e",
+    "hash": "bc8825fd43",
     "font": {
-      "family": "IM Fell English",
+      "family": "Atkinson Hyperlegible",
       "style": "italic",
       "weight": "400"
-    }
+    },
+    "status": "final"
   },
-  "fonts/im-fell-english-latin-400-normal": {
+  "fonts/atkinson-hyperlegible-latin-400-normal": {
     "type": "font",
-    "url": "assets/fonts_im-fell-english-latin-400-normal.248300df16.woff2",
-    "bytes": 59880,
+    "url": "assets/fonts_atkinson-hyperlegible-latin-400-normal.d64ba838ef.woff2",
+    "bytes": 17208,
     "bundle": "boot",
-    "hash": "248300df16",
+    "hash": "d64ba838ef",
     "font": {
-      "family": "IM Fell English",
+      "family": "Atkinson Hyperlegible",
       "style": "normal",
       "weight": "400"
-    }
+    },
+    "status": "final"
   },
-  "fonts/unifrakturmaguntia-latin-400-normal": {
+  "fonts/cinzel-latin-600-normal": {
     "type": "font",
-    "url": "assets/fonts_unifrakturmaguntia-latin-400-normal.a467466874.woff2",
-    "bytes": 26512,
+    "url": "assets/fonts_cinzel-latin-600-normal.61efc27ceb.woff2",
+    "bytes": 15204,
     "bundle": "boot",
-    "hash": "a467466874",
+    "hash": "61efc27ceb",
     "font": {
-      "family": "UnifrakturMaguntia",
+      "family": "Cinzel",
       "style": "normal",
-      "weight": "400"
-    }
+      "weight": "600",
+      "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+    },
+    "status": "final"
+  },
+  "fonts/cinzel-latin-ext-600-normal": {
+    "type": "font",
+    "url": "assets/fonts_cinzel-latin-ext-600-normal.a5779eb98b.woff2",
+    "bytes": 8352,
+    "bundle": "boot",
+    "hash": "a5779eb98b",
+    "font": {
+      "family": "Cinzel",
+      "style": "normal",
+      "weight": "600",
+      "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+    },
+    "status": "final"
+  },
+  "fonts/eb-garamond-latin-500-italic": {
+    "type": "font",
+    "url": "assets/fonts_eb-garamond-latin-500-italic.b2698d7de0.woff2",
+    "bytes": 26952,
+    "bundle": "boot",
+    "hash": "b2698d7de0",
+    "font": {
+      "family": "EB Garamond",
+      "style": "italic",
+      "weight": "500",
+      "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+    },
+    "status": "final"
+  },
+  "fonts/eb-garamond-latin-500-normal": {
+    "type": "font",
+    "url": "assets/fonts_eb-garamond-latin-500-normal.7b252686ba.woff2",
+    "bytes": 25264,
+    "bundle": "boot",
+    "hash": "7b252686ba",
+    "font": {
+      "family": "EB Garamond",
+      "style": "normal",
+      "weight": "500",
+      "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+    },
+    "status": "final"
+  },
+  "fonts/eb-garamond-latin-ext-500-italic": {
+    "type": "font",
+    "url": "assets/fonts_eb-garamond-latin-ext-500-italic.5bf2d44c78.woff2",
+    "bytes": 49256,
+    "bundle": "boot",
+    "hash": "5bf2d44c78",
+    "font": {
+      "family": "EB Garamond",
+      "style": "italic",
+      "weight": "500",
+      "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+    },
+    "status": "final"
+  },
+  "fonts/eb-garamond-latin-ext-500-normal": {
+    "type": "font",
+    "url": "assets/fonts_eb-garamond-latin-ext-500-normal.6ba629125d.woff2",
+    "bytes": 64076,
+    "bundle": "boot",
+    "hash": "6ba629125d",
+    "font": {
+      "family": "EB Garamond",
+      "style": "normal",
+      "weight": "500",
+      "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+    },
+    "status": "final"
   },
   "sprites/fx": {
     "type": "sheet",
@@ -54,15 +133,21 @@ export const MANIFEST: Record<AssetId, AssetEntry> = {
     "hash": "b1133c6138",
     "pages": [
       "assets/sprites_fx-0.353e239b33.png"
-    ]
+    ],
+    "status": "final"
   }
 };
 
 export const BUNDLES: Record<BundleId, readonly AssetId[]> = {
   "boot": [
-    "fonts/im-fell-english-latin-400-italic",
-    "fonts/im-fell-english-latin-400-normal",
-    "fonts/unifrakturmaguntia-latin-400-normal"
+    "fonts/atkinson-hyperlegible-latin-400-italic",
+    "fonts/atkinson-hyperlegible-latin-400-normal",
+    "fonts/cinzel-latin-600-normal",
+    "fonts/cinzel-latin-ext-600-normal",
+    "fonts/eb-garamond-latin-500-italic",
+    "fonts/eb-garamond-latin-500-normal",
+    "fonts/eb-garamond-latin-ext-500-italic",
+    "fonts/eb-garamond-latin-ext-500-normal"
   ],
   "title": [],
   "story-common": [],
@@ -70,7 +155,10 @@ export const BUNDLES: Record<BundleId, readonly AssetId[]> = {
     "sprites/fx"
   ],
   "chapter1": [],
-  "chapter2": []
+  "chapter2": [],
+  "chapter3": [],
+  "chapter4": [],
+  "chapter5": []
 };
 
 /** Sprite frame ids across every sheet. */

@@ -8,7 +8,7 @@ import { hex } from '../../render/color';
 import type { Gfx } from '../../render/gfx';
 import { Entity } from '../entity';
 import { BloodPool, Embedded, Laceration, surfDisc } from '../entities';
-import { FIELD, onBody, type Operation } from '../operation';
+import { LEAD_DISH, onBody, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
 import { Muffler } from '../bosses/common';
 
@@ -74,11 +74,11 @@ export class VocalFold extends Entity {
     const w = sing ? 1 + 0.2 * Math.sin(op.elapsed * 30) : 1;
     g.ellipse(x - 8, y, 6 * w, 18, 0.1, hex('#e0a0a8'), hex('#a05060'));
     g.ellipse(x + 8, y, 6 * w, 18, -0.1, hex('#e0a0a8'), hex('#a05060'));
-    if (sing) g.glow(x, y, 40, hex('#b060ff', 0.25));
+    if (sing) g.glow(x, y, 40, hex('#b060ff', 0.25)); // curse-violet: Choir vocal fold
     // Visual metronome: how far through the verse or the rest.
     const cyc = this.verse + this.rest;
     const c = this.t % cyc;
-    g.arc(x, y, 26, 3, hex(sing ? '#b060ff' : '#9fd3a8', 0.8), sing ? c / this.verse : (c - this.verse) / this.rest);
+    g.arc(x, y, 26, 3, hex(sing ? '#b060ff' : '#9fd3a8', 0.8), sing ? c / this.verse : (c - this.verse) / this.rest); // curse-violet: Choir vocal fold
   }
 }
 
@@ -371,8 +371,8 @@ export class Infant extends Entity {
 
 // ============================================================ hexstone shot
 
-/** The lead-lined dish at the table's edge: the only safe place for hexstone. */
-export const LEAD_DISH: Vec = { x: FIELD.cx + FIELD.rx + 80, y: FIELD.cy - 120 };
+/** The lead-lined dish at the table's edge: the only safe place for hexstone (shared with embedded hexstone). */
+export { LEAD_DISH };
 
 /** Whisper marks: each time an instrument other than the tongs touches hexstone, the stone "whispers" (evidence). */
 const whispers = new WeakMap<Operation, number>();

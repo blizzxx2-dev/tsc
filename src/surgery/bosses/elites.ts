@@ -25,7 +25,7 @@ const ONE: readonly BossPhase[] = [{ key: 'main', from: 1, music: 1 }];
  * each ripening on its own time (BOS-0147).
  */
 export class EggCluster extends MalisonBase {
-  readonly boss = 'broodmother';
+  readonly bossId = 'broodmother';
   readonly phases = ONE;
   readonly sacs: EggSac[] = [];
   /** Angular bins the current lancet stroke has swept around the cluster. */
@@ -157,7 +157,7 @@ export class EggCluster extends MalisonBase {
  * be traced out with the brand between the hums (BOS-0148).
  */
 export class CantorKnot extends MalisonBase {
-  readonly boss = 'cantor';
+  readonly bossId = 'cantor';
   readonly phases = ONE;
   readonly sigil: Sigil;
   private song: Cadence;
@@ -224,7 +224,7 @@ export class CantorKnot extends MalisonBase {
  * shows which — or tearing one out early spreads the rot 30 px (BOS-0149).
  */
 export class FangNest extends MalisonBase {
-  readonly boss = 'gravehound';
+  readonly bossId = 'gravehound';
   readonly phases = ONE;
   readonly fangs: Embedded[];
   next = 0;

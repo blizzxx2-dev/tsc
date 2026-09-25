@@ -225,7 +225,7 @@ export function planHours(op: Operation, k: BotKit): Action | null {
   if (herald && op.def.tools.includes('brand')) return k.hold('brand', () => (herald.alive ? herald.pos : null), 1.2);
   const b =activeBoss(op) ?? bossesOf(op).find((x) => x.alive) ?? null;
   if (!b) return null;
-  return BOT_STRATEGIES[b.boss]?.(op, k, b) ?? null;
+  return BOT_STRATEGIES[b.bossId]?.(op, k, b) ?? null;
 }
 
 export const SIDE_REST: Vec = { x: FIELD.cx + 330, y: FIELD.cy + 20 };

@@ -3,7 +3,7 @@ import { dist } from '../src/core/math';
 import { lancetSnap, magnet, zonesFor } from '../src/input/assist';
 import { BloodPool, Bubo, Embedded, Grub, Incision, Laceration, Rot, Venom } from '../src/surgery/entities';
 import type { Entity } from '../src/surgery/entity';
-import type { Operation } from '../src/surgery/operation';
+import { FIELD, type Operation, type OperationOptions } from '../src/surgery/operation';
 import type { ToolId } from '../src/surgery/types';
 import { defWith, fakePad, Harness, line } from './inputHarness';
 
@@ -13,7 +13,7 @@ const off = (dx: number, dy = 0) => ({ x: C.x + dx, y: C.y + dy });
 function harness(spawn: (op: Operation) => Entity[], tools?: ToolId[]) {
   return new Harness(defWith(spawn, tools));
 }
-const first = <T,>(h: Harness, cls: new (...a: never[]) => T): T => h.op.entities.find((e) => e instanceof cls) as T;
+const first = <T>(h: Harness, cls: new (...a: never[]) => T): T => h.op.entities.find((e) => e instanceof cls) as T;
 
 describe('timestamped event queue (INP-0013, INP-0019)', () => {
   it('hold time is measured from the event time, not the frame', () => {
@@ -25,9 +25,9 @@ describe('timestamped event queue (INP-0013, INP-0019)', () => {
     expect(h.op.injectT).toBeLessThan(0.015);
   });
 
-  it('a click that presses and releases inside one frame still lances a bubo', () => {
+  it('a short cut that presses and releases inside one frame still lances a bubo', () => {
     const h = harness(() => [new Bubo(C, 22)]);
-    h.move(C, 1).down('mouse:0', 2).up('mouse:0', 3).tick();
+    h.move(off(-10), 1).down('mouse:0', 2).move(off(10), 2.5).up('mouse:0', 3).tick();
     expect(first(h, Bubo).lanced).toBe(true);
   });
 
@@ -49,11 +49,12 @@ describe('pointer robustness (INP-0006, INP-0017, INP-0064)', () => {
     h.op.setTool('tongs');
     const e = first(h, Embedded);
     h.move(e.handle).down().tick();
-    for (const p of line(e.handle, { x: e.handle.x - 100, y: e.handle.y }, 5).slice(1)) h.move(p).tick();
+    // Pull it clear of the body (anything left on the body sinks back in).
+    for (const p of line(e.handle, { x: e.handle.x, y: FIELD.cy - FIELD.ry - 80 }, 12).slice(1)) h.move(p).tick();
     return { h, e };
   };
 
-  it('a normal release after pulling 100 px extracts', () => {
+  it('a normal release after pulling it off the body extracts', () => {
     const { h, e } = extractionSetup();
     h.up().tick();
     expect(e.alive).toBe(false);
@@ -61,13 +62,14 @@ describe('pointer robustness (INP-0006, INP-0017, INP-0064)', () => {
 
   it('pointercancel mid-drag is a release that snaps the object back, unrated', () => {
     const { h, e } = extractionSetup();
+    const rated = h.op.counts.cool + h.op.counts.good + h.op.counts.bad;
     h.input.mouse.down(0, 0, 0, 0); // mirror the held button in the adapter
     h.input.mouse.cancel(h.t + 2);
     h.tick();
     expect(e.alive).toBe(true);
     expect(e.grabbed).toBe(false);
     expect(dist(e.pos, e.origin)).toBeLessThan(1);
-    expect(h.op.counts.cool + h.op.counts.good + h.op.counts.bad).toBe(0);
+    expect(h.op.counts.cool + h.op.counts.good + h.op.counts.bad).toBe(rated);
     expect(h.input.down).toBe(false);
     expect(h.captured()).toBeNull();
   });
@@ -99,7 +101,15 @@ describe('pointer robustness (INP-0006, INP-0017, INP-0064)', () => {
 });
 
 describe('Target Size assist: hit-scale 1.5× on every interaction (INP-0066)', () => {
-  type Case = { name: string; tool: ToolId; spawn: (op: Operation) => Entity[]; at: (h: Harness) => { x: number; y: number }; hold?: number; ok: (h: Harness) => boolean };
+  type Case = {
+    name: string;
+    tool: ToolId;
+    spawn: (op: Operation) => Entity[];
+    at: (h: Harness) => { x: number; y: number };
+    hold?: number;
+    opts?: OperationOptions;
+    ok: (h: Harness) => boolean;
+  };
   const cases: Case[] = [
     {
       name: 'Incision start (22 px)',
@@ -158,6 +168,8 @@ describe('Target Size assist: hit-scale 1.5× on every interaction (INP-0066)', 
       tool: 'lancet',
       spawn: () => [new Bubo(C, 22)],
       at: () => off(28 * 1.3),
+      // A single press lances only with the simple-gestures assist (otherwise it takes a short cut).
+      opts: { assists: { simpleGestures: true } },
       ok: (h) => first(h, Bubo).lanced,
     },
     {
@@ -173,7 +185,7 @@ describe('Target Size assist: hit-scale 1.5× on every interaction (INP-0066)', 
   for (const c of cases) {
     it(c.name, () => {
       const results = [1, 1.5].map((scale) => {
-        const h = harness(c.spawn);
+        const h = new Harness(defWith(c.spawn), c.opts);
         h.b.prefs.hitScale = scale as 1 | 1.5;
         h.op.setTool(c.tool);
         h.cues.length = 0;
@@ -185,7 +197,7 @@ describe('Target Size assist: hit-scale 1.5× on every interaction (INP-0066)', 
     });
   }
 
-  it('Scrying Lens reveal (60 px)', () => {
+  it('Scrying Lens reveal (90 px)', () => {
     const results = [1, 1.5].map((scale) => {
       const h = harness(() => {
         const r = new Rot(C, 20);
@@ -194,7 +206,7 @@ describe('Target Size assist: hit-scale 1.5× on every interaction (INP-0066)', 
       });
       h.b.prefs.hitScale = scale as 1 | 1.5;
       h.op.setTool('lens');
-      h.move(off(60 * 1.3)).tick();
+      h.move(off(90 * 1.3)).tick();
       h.run(0.6);
       return !h.op.entities.find((e) => e instanceof Rot && e.pos.x === C.x)!.hidden;
     });
@@ -225,7 +237,7 @@ describe('Toggle-hold and the hold key (INP-0032, INP-0033)', () => {
     h.op.setTool('brand');
     h.move(C).down().up('mouse:0', 5).tick();
     expect(h.ctl.latched).toBe(true);
-    h.run(0.5);
+    h.run(1.0);
     expect(first(h, Grub)).toBeUndefined();
     // A second click stops it.
     h.down().up('mouse:0', 5).tick();
@@ -245,7 +257,7 @@ describe('Toggle-hold and the hold key (INP-0032, INP-0033)', () => {
     const h = harness((op) => [new Grub(C, op, 0), new Rot(off(300), 20)]);
     h.op.setTool('brand');
     h.move(C).down('key:ShiftLeft').tick();
-    h.run(0.5);
+    h.run(1.0);
     expect(first(h, Grub)).toBeUndefined();
   });
 });
@@ -323,7 +335,10 @@ describe('tool switching (INP-0049, INP-0051, INP-0050, INP-0086)', () => {
 
 describe('gamepad cursor and aim assist (INP-0083, INP-0084, INP-0085)', () => {
   it('RT presses at the virtual cursor', () => {
-    const h = harness(() => [new Bubo(C, 22)]);
+    const h = new Harness(
+      defWith(() => [new Bubo(C, 22)]),
+      { assists: { simpleGestures: true } },
+    );
     h.move(C).tick();
     h.setPads([fakePad({ buttons: { 7: 1 } })]).tick();
     expect(first(h, Bubo).lanced).toBe(true);

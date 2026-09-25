@@ -58,6 +58,9 @@ jobs:
           key: electron-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
       - run: npm ci
       - name: Package Linux demo (unsigned)
+        # CI cannot run the Blender model pipeline: smoke-pack without the 3D models.
+        env:
+          SS_ALLOW_NO_MODELS: '1'
         run: node scripts/desktop.mjs pack --os=linux --edition=demo
       - name: Inspect package (fuses, no maps, size)
         run: node scripts/check-package.mjs release/demo/linux-unpacked

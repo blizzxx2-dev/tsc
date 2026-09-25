@@ -19,7 +19,13 @@ const valid = (_n: string, t: string) => decode(t, 'profile').ok;
 
 describe('OS paths', () => {
   it('Windows: roaming saves, local logs/cache, no Documents', () => {
-    const p = resolvePaths('windows', { APPDATA: 'C:\\Users\\Jürgen Ünïcødé\\AppData\\Roaming', LOCALAPPDATA: 'C:\\Users\\Jürgen Ünïcødé\\AppData\\Local' }, 'C:\\Users\\Jürgen Ünïcødé', 'demo', 'local');
+    const p = resolvePaths(
+      'windows',
+      { APPDATA: 'C:\\Users\\Jürgen Ünïcødé\\AppData\\Roaming', LOCALAPPDATA: 'C:\\Users\\Jürgen Ünïcødé\\AppData\\Local' },
+      'C:\\Users\\Jürgen Ünïcødé',
+      'demo',
+      'local',
+    );
     expect(p.saves).toBe('C:\\Users\\Jürgen Ünïcødé\\AppData\\Roaming\\suture-and-steel\\demo\\local');
     expect(p.settings).toBe(p.saves);
     expect(p.logs).toBe('C:\\Users\\Jürgen Ünïcødé\\AppData\\Local\\suture-and-steel\\logs\\demo');
@@ -56,8 +62,30 @@ describe('OS paths', () => {
 
 describe('command line', () => {
   it('parses the documented flags and ignores the rest', () => {
-    const a = parseArgs(['--fullscreen', '--windowed', '--safe-mode', '--reset-settings', '--log-level=debug', '--gl-backend=d3d11', '--flag=watermark=1', '--kiosk', '-psn_0_123', 'C:\\x', '--gl-backend=evil']);
-    expect(a).toMatchObject({ windowed: true, fullscreen: false, safeMode: true, resetSettings: true, kiosk: true, logLevel: 'debug', glBackend: 'd3d11', flags: { watermark: '1' }, dev: false });
+    const a = parseArgs([
+      '--fullscreen',
+      '--windowed',
+      '--safe-mode',
+      '--reset-settings',
+      '--log-level=debug',
+      '--gl-backend=d3d11',
+      '--flag=watermark=1',
+      '--kiosk',
+      '-psn_0_123',
+      'C:\\x',
+      '--gl-backend=evil',
+    ]);
+    expect(a).toMatchObject({
+      windowed: true,
+      fullscreen: false,
+      safeMode: true,
+      resetSettings: true,
+      kiosk: true,
+      logLevel: 'debug',
+      glBackend: 'd3d11',
+      flags: { watermark: '1' },
+      dev: false,
+    });
     expect(parseArgs(['--log-level=loud']).logLevel).toBeNull();
   });
 });
@@ -123,7 +151,7 @@ describe('app:// protocol and CSP', () => {
     expect(csp.startsWith("default-src 'self'")).toBe(true);
     expect(csp).toContain("connect-src 'self' https://o1.ingest.sentry.io");
     expect(csp).toContain("object-src 'none'");
-    expect(csp).not.toContain('unsafe-eval');
+    expect(csp).not.toContain("'unsafe-eval'"); // only 'wasm-unsafe-eval' (the KTX2 transcoder)
   });
 });
 

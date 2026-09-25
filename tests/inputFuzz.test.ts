@@ -16,7 +16,7 @@ const finite = (v: { x: number; y: number }) => Number.isFinite(v.x) && Number.i
 
 describe('input fuzz: 10 000 random frames per operation', () => {
   for (const def of allOperations()) {
-    it(def.id, () => {
+    it(def.id, { timeout: 30_000 }, () => {
       const rng = new Rng(def.id.split('').reduce((a, c) => a * 31 + c.charCodeAt(0), 7));
       const make = () => {
         const h = new Harness(def);

@@ -42,9 +42,8 @@ prefetches the next chapter during story scenes and unloads chapters left behind
 - a `gfx.sprite('…')` / `assets.load('…')` literal that names a missing frame or asset;
 - an asset over 50 KB that nothing in `src/` references (fonts, LUTs and sheets are consumed automatically);
 - a font without a face entry, or an unknown bundle;
-- total assets over the 150 MB demo install budget (`budgetMB`).
 
-The script prints a per-bundle size report on every run.
+The script prints a per-bundle size report on every run. There is no size budget: assets ship at full authored quality.
 
 ## Atlases
 

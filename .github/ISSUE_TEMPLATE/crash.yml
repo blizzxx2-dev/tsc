@@ -1,0 +1,54 @@
+name: Crash or freeze
+description: The game closed, froze, showed the fatal screen or a black window.
+labels: [bug, S1]
+body:
+  - type: markdown
+    attributes:
+      value: Crashes are S1 until triage says otherwise. The crash dialog / F8 bundle carries the log — please attach it.
+  - type: input
+    id: build
+    attributes:
+      label: Build id
+      placeholder: 0.3.1+a1b2c3d4 demo
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What happened?
+      options: [Closed to desktop, Froze (had to kill it), Fatal "needs WebGL2" / GPU screen, Black or white window, Crashed on launch]
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: OS
+    validations:
+      required: true
+  - type: input
+    id: gpu
+    attributes:
+      label: GPU and driver
+    validations:
+      required: true
+  - type: textarea
+    id: when
+    attributes:
+      label: What were you doing?
+      description: Screen (title, story, operation id + phase, results…), last action, alt-tab/overlay/sleep just before?
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Crash report / F8 bundle / log
+      description: Attach the file, or paste the crash id shown in the dialog.
+    validations:
+      required: true
+  - type: dropdown
+    id: repro
+    attributes:
+      label: Does it happen again?
+      options: [Every time, Sometimes, Once]
+    validations:
+      required: true

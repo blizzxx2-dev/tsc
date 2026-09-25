@@ -111,7 +111,7 @@ export const STORY_3_6B: StoryDef = {
   place: 'The quarantine ward — the Penny Stair, night',
   backdrop: 'night',
   lines: [
-    n('The plague ward fills. Mother Agathe of the Grey Beguines is carried in with six buboes and a voice like a bell.'),
+    n('The plague ward fills. Mother Agathe of the Grey Beguines, elf-born and older than the ward, is carried in with six buboes.'),
     say('patient', 'Clean lancet, boy. And don’t let the pus touch your cuts, or you’ll be on this table after me.', 'Mother Agathe'),
     n('Past midnight, a brotherhood of flagellants marches by the Penny Stair, scourging each other bloody for the city’s sins.'),
     say('mauer', 'One of them fell in the gutter. Brother Ansgar. His back is a field of nails, and he won’t lie still.'),
@@ -210,7 +210,7 @@ export const OP_3_1: OperationDef = {
   organ: 'flesh',
   timeLimit: 300,
   tools: ALL,
-  ranks: { S: 5300, A: 4250, B: 3200 },
+  ranks: { S: 5240, A: 4190, B: 3140 },
   litany: true,
   seed: 31,
   phases: [
@@ -238,7 +238,7 @@ export const OP_3_2: OperationDef = {
   timeLimit: 330,
   baseDrain: 0.12,
   tools: ALL,
-  ranks: { S: 5900, A: 4700, B: 3550 },
+  ranks: { S: 6200, A: 4960, B: 3720 },
   litany: true,
   seed: 32,
   phases: [
@@ -268,7 +268,7 @@ export const OP_3_4: OperationDef = {
   timeLimit: 420,
   baseDrain: 0.1,
   tools: ALL,
-  ranks: { S: 7650, A: 6100, B: 4600 },
+  ranks: { S: 7670, A: 6140, B: 4600 },
   litany: true,
   seed: 34,
   phases: [
@@ -299,7 +299,7 @@ export const OP_3_3: OperationDef = {
   timeLimit: 300,
   baseDrain: 0.15,
   tools: ALL,
-  ranks: { S: 5250, A: 4200, B: 3150 },
+  ranks: { S: 5350, A: 4280, B: 3210 },
   litany: true,
   seed: 33,
   phases: [
@@ -328,7 +328,7 @@ export const OP_3_5: OperationDef = {
   baseDrain: 0.2,
   vitals: 85,
   tools: ALL,
-  ranks: { S: 5000, A: 4000, B: 3000 },
+  ranks: { S: 5070, A: 4060, B: 3040 },
   litany: true,
   seed: 35,
   phases: [
@@ -356,7 +356,7 @@ export const OP_3_6: OperationDef = {
   timeLimit: 300,
   baseDrain: 0.1,
   tools: ALL,
-  ranks: { S: 5150, A: 4100, B: 3100 },
+  ranks: { S: 5220, A: 4180, B: 3130 },
   litany: true,
   seed: 36,
   phases: [
@@ -378,13 +378,14 @@ export const OP_3_6: OperationDef = {
 export const OP_3_7: OperationDef = {
   id: 'op3-7',
   title: 'Lance the Buboes',
-  patient: 'Mother Agathe, Grey Beguine',
+  patient: 'Mother Agathe, elf of the Grey Beguines',
+  race: 'elf',
   diagnosis: 'Plague of the quarantine: six buboes, spreading rot. Candle-light only in the requisitioned ward.',
   organ: 'flesh',
   timeLimit: 330,
   baseDrain: 0.2,
   tools: ALL,
-  ranks: { S: 6450, A: 5150, B: 3850 },
+  ranks: { S: 6590, A: 5270, B: 3950 },
   litany: true,
   seed: 37,
   phases: [
@@ -408,7 +409,7 @@ export const OP_3_8: OperationDef = {
   timeLimit: 330,
   baseDrain: 0.1,
   tools: ALL,
-  ranks: { S: 5950, A: 4750, B: 3550 },
+  ranks: { S: 5950, A: 4760, B: 3570 },
   litany: true,
   seed: 38,
   phases: [
@@ -438,7 +439,7 @@ export const OP_3_10: OperationDef = {
   timeLimit: 420,
   baseDrain: 0.05,
   tools: ALL,
-  ranks: { S: 8750, A: 7000, B: 5250 },
+  ranks: { S: 8640, A: 6910, B: 5180 },
   litany: true,
   seed: 310,
   phases: [
@@ -466,7 +467,7 @@ export const OP_3_9: OperationDef = {
   organ: 'flesh',
   timeLimit: 240,
   tools: ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture'],
-  ranks: { S: 4550, A: 3650, B: 2750 },
+  ranks: { S: 4540, A: 3630, B: 2720 },
   litany: true,
   seed: 39,
   phases: [
@@ -494,7 +495,7 @@ export const OP_3_11: OperationDef = {
   timeLimit: 420,
   baseDrain: 0.1,
   tools: ALL,
-  ranks: { S: 8650, A: 6900, B: 5200 },
+  ranks: { S: 9130, A: 7300, B: 5480 },
   litany: true,
   seed: 311,
   phases: [

@@ -1,0 +1,288 @@
+id,bus,loop,variations,voice_limit,priority,caption,ducks,gameplay,triggered_in,status
+cool,hud,,4,4,50,,,,audio/director.ts; scenes/operation.ts; surgery/entities.ts; surgery/lauds.ts; surgery/malison.ts; surgery/operation.ts; surgery/types.ts,alias → sfx.rate.cool
+good,hud,,4,4,50,,,,audio/director.ts; scenes/operation.ts; surgery/entities.ts; surgery/entity.ts; surgery/lauds.ts; surgery/malison.ts; surgery/operation.ts; surgery/types.ts,alias → sfx.rate.good
+bad,hud,,4,4,50,,,,audio/director.ts; surgery/entities.ts; surgery/types.ts,alias → sfx.rate.bad
+miss,hud,,4,4,50,,,,audio/director.ts; surgery/lauds.ts; surgery/malison.ts; surgery/operation.ts; surgery/types.ts,alias → sfx.rate.miss
+cut,world,,4,4,50,,,,audio/director.ts; audio/music/player.ts; audio/music/state.ts; surgery/entities.ts; surgery/malison.ts; surgery/operation.ts,alias → sfx.lancet.cut
+stitch,world,,4,4,50,,,,audio/director.ts; surgery/entities.ts,alias → sfx.thread.pierce
+squelch,world,,4,4,50,,,,audio/director.ts; audio/system.ts; scenes/results.ts; surgery/entities.ts; surgery/lauds.ts,alias → sfx.lancet.open
+pluck,world,,4,4,50,,,,audio/director.ts; surgery/entities.ts; surgery/malison.ts,alias → sfx.tongs.grabFlesh
+burn,world,,4,4,50,,,,audio/director.ts; surgery/entities.ts; surgery/lauds.ts; surgery/malison.ts,alias → sfx.burn.crack
+inject,world,,4,4,50,,,,audio/director.ts; surgery/entities.ts; surgery/operation.ts,alias → sfx.tincture.done
+heartbeat,world,,4,4,50,,,,audio/director.ts,alias → sfx.heart.beat
+flatline,hud,,4,4,50,,,,audio/director.ts; surgery/operation.ts,alias → sfx.death.knell
+litany,hud,,4,4,50,,,,audio/director.ts; audio/mixer.ts; surgery/operation.ts,alias → sfx.litany.invoke
+bell,hud,,4,4,50,,,,audio/director.ts; audio/music/instruments.ts; audio/music/player.ts; audio/music/themes.ts; audio/system.ts; scenes/results.ts; surgery/operation.ts,alias → sfx.malison.unmade
+select,ui,,4,4,50,,,,audio/director.ts; audio/system.ts; scenes/story.ts; surgery/operation.ts,alias → ui.tab
+alarm,hud,,4,4,50,,,,audio/director.ts,alias → sfx.vitals.warn30
+sfx.lancet.touch,world,,4,2,30,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.lancet.cut,world,,4,3,50,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.lancet.open,world,,4,2,60,[Flesh parts wetly],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.lancet.slip,world,,4,2,55,[The lancet slips],,yes,audio/director.ts; audio/sfx.ts,synthesised
+sfx.lancet.air,world,,4,2,40,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.lancet.nick,world,,4,2,55,,,,audio/director.ts; audio/sfx.ts,synthesised
+loop.lancet.cut,world,yes,,8,45,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.tongs.click,world,,4,2,20,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.tongs.grabFlesh,world,,4,2,45,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.tongs.grabHard,world,,4,2,45,,,,audio/director.ts; audio/sfx.ts,synthesised
+loop.tongs.strain,world,yes,,8,40,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.extract.arrow,world,,4,2,70,[Arrow wrenched free],,,audio/director.ts; audio/options-scene.ts; audio/sfx.ts,synthesised
+sfx.extract.bolt,world,,4,2,70,[Bolt wrenched free],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.extract.shot,world,,4,2,70,[Lead shot pops free],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.extract.tooth,world,,4,2,70,[Fang scrapes free],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.extract.glass,world,,4,2,70,[Glass tinkles free],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.extract.shard,world,,4,2,70,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.extract.hexstone,world,,4,2,75,[Hexstone chimes as it tears free],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.tongs.dish,world,,4,2,30,,,,audio/director.ts; audio/sfx.ts,synthesised
+loop.leech.suck,world,yes,,8,45,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.leech.slurp,world,,4,3,50,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.thread.pierce,world,,4,4,50,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.thread.zip,world,,4,3,30,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.thread.knot,world,,4,2,60,[Thread knotted],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.salve.lid,world,,4,1,20,,,,audio/director.ts; audio/sfx.ts,synthesised
+loop.salve.smear,world,yes,,8,35,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.salve.seal,world,,4,2,55,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.tincture.clink,world,,4,1,20,,,,audio/director.ts; audio/sfx.ts,synthesised
+loop.tincture.plunge,world,yes,,8,45,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.tincture.done,world,,4,2,65,[Tincture takes hold],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.tincture.ready,hud,,4,1,25,[Tincture ready],,yes,audio/director.ts; audio/sfx.ts,synthesised
+loop.brand.ember,world,yes,,8,20,,,,audio/director.ts; audio/sfx.ts,synthesised
+loop.brand.sizzle,world,yes,,8,50,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.brand.quench,world,,4,2,35,,,,audio/director.ts; audio/sfx.ts,synthesised
+loop.lens.hum,world,yes,,8,30,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.lens.found,world,,4,2,70,[Something revealed],,yes,audio/director.ts; audio/sfx.ts,synthesised
+sfx.tool.lancet,ui,,4,1,40,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.tool.tongs,ui,,4,1,40,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.tool.leech,ui,,4,1,40,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.tool.thread,ui,,4,1,40,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.tool.salve,ui,,4,1,40,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.tool.tincture,ui,,4,1,40,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.tool.brand,ui,,4,1,40,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.tool.lens,ui,,4,1,40,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.tool.deny,ui,,4,1,40,,,,audio/director.ts; audio/sfx.ts,synthesised
+loop.bleed.trickle,world,yes,,8,25,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.blood.drip,world,,4,3,10,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.blood.flooded,world,,4,1,55,[Blood floods the wound],,yes,audio/director.ts; audio/sfx.ts,synthesised
+sfx.hexstone.pulse,world,,4,2,45,[The hexstone whispers],,yes,audio/director.ts; audio/sfx.ts,synthesised
+sfx.barb.tear,world,,4,1,80,[Barbs tear the flesh],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.burn.crack,world,,4,3,45,,,,audio/director.ts; audio/sfx.ts,synthesised
+loop.burn.bed,world,yes,,8,20,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.burn.dressed,world,,4,2,55,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.bubo.creak,world,,4,2,35,"[A bubo swells, creaking]",,yes,audio/director.ts; audio/sfx.ts,synthesised
+sfx.bubo.lance,world,,4,2,65,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.bubo.burst,world,,4,1,80,[A bubo bursts],,,audio/director.ts; audio/sfx.ts,synthesised
+loop.rot.creep,world,yes,,8,20,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.rot.purged,world,,4,2,55,,,,audio/director.ts; audio/sfx.ts,synthesised
+loop.venom.hiss,world,yes,,8,30,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.venom.neutralise,world,,4,2,65,"[Venom fizzes, neutralised]",,,audio/director.ts; audio/sfx.ts,synthesised
+loop.grub.chitter,world,yes,,3,30,[Grub chitters beneath the skin],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.grub.burrow,world,,4,2,30,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.grub.seared,world,,4,3,60,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.grub.plucked,world,,4,3,55,,,,audio/director.ts; audio/sfx.ts,synthesised
+loop.spider.skitter,world,yes,,4,30,[Spiderlings skitter],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.spider.seared,world,,4,3,55,,,,audio/director.ts; audio/sfx.ts,synthesised
+loop.sigil.whisper,world,yes,,8,30,[A curse-sigil chants in whispers],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.sigil.crack,world,,4,2,55,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.sigil.broken,world,,4,1,80,[The curse shatters],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.sigil.lash,world,,4,2,60,[The curse lashes out],,yes,audio/director.ts; audio/sfx.ts,synthesised
+loop.eggsac.pulse,world,yes,,8,40,[An egg sac throbs],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.eggsac.lance,world,,4,2,65,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.eggsac.hatch,world,,4,1,80,[The egg sac hatches],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.patient.moan,world,,4,1,35,,,,audio/director.ts; audio/options-scene.ts; audio/sfx.ts,synthesised
+sfx.patient.pain,world,,4,1,60,[The patient cries out],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.patient.relief,world,,4,1,50,,,,audio/director.ts; audio/options-scene.ts; audio/sfx.ts,synthesised
+sfx.patient.death,world,,4,1,90,,,,audio/director.ts; audio/sfx.ts,synthesised
+loop.matins.drone,world,yes,,8,70,[The Malison drones],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.matins.shroud,world,,4,1,85,[The shroud parts — a choir swells],,yes,audio/director.ts; audio/sfx.ts,synthesised
+sfx.malison.rend,world,,4,2,80,[The Malison rends flesh],boss,yes,audio/director.ts; audio/sfx.ts,synthesised
+sfx.matins.shriek,world,,4,1,75,[The Malison shrieks],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.matins.shed,world,,4,1,80,[Hexlings are shed],,yes,audio/director.ts; audio/sfx.ts,synthesised
+sfx.matins.split,world,,4,1,90,[The Malison splits apart],boss,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.matins.rejoinWarn,world,,4,1,90,[The shard whispers — it will rejoin],,yes,audio/director.ts; audio/sfx.ts,synthesised
+sfx.matins.rejoin,world,,4,1,90,[The shards rejoin],boss,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.malison.unmade,world,,4,1,95,[The Malison is unmade — a bell tolls],boss,,audio/director.ts; audio/sfx.ts,synthesised
+loop.lauds.voice,world,yes,,6,60,[The Voices sing],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.lauds.silenced,world,,4,2,80,[A Voice is silenced],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.lauds.recall,world,,4,1,85,[It calls its Voices back],,yes,audio/director.ts; audio/sfx.ts,synthesised
+sfx.lauds.hymn,world,,4,1,90,[The Hymn rises — a verse is coming],,yes,audio/director.ts; audio/sfx.ts; surgery/lauds.ts,synthesised
+sfx.lauds.hymnBlast,world,,4,1,85,[The verse tears the flesh],boss,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.lauds.submerge,world,,4,1,85,[It sinks beneath the skin],,yes,audio/director.ts; audio/sfx.ts,synthesised
+sfx.lauds.surface,world,,4,1,85,[It surfaces],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.lauds.shatter,world,,4,1,95,[It shatters into hexstone],boss,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.lauds.death,world,,4,1,95,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.bell.matins,hud,,4,1,90,[Bell tolls for Matins],,,audio/sfx.ts,synthesised
+sfx.bell.lauds,hud,,4,1,90,[Bells peal for Lauds],,,audio/sfx.ts,synthesised
+sfx.bell.prime,hud,,4,1,90,[Bell rings Prime],,,audio/sfx.ts,synthesised
+sfx.bell.terce,hud,,4,1,90,[Bell rings Terce],,,audio/sfx.ts,synthesised
+sfx.bell.sext,hud,,4,1,90,[Bells ring Sext],,,audio/sfx.ts,synthesised
+sfx.bell.none,hud,,4,1,90,[The death-bell tolls None],,,audio/sfx.ts,synthesised
+sfx.bell.vespers,hud,,4,1,90,[Bells ring Vespers],,,audio/sfx.ts,synthesised
+sfx.bell.compline,hud,,4,1,90,[A deep bell tolls Compline],,,audio/sfx.ts,synthesised
+sfx.rate.cool,hud,,4,2,65,,sting,,audio/options-scene.ts; audio/sfx.ts,synthesised
+sfx.rate.good,hud,,4,2,60,,sting,,audio/sfx.ts,synthesised
+sfx.rate.bad,hud,,4,2,60,,sting,,audio/sfx.ts,synthesised
+sfx.rate.miss,hud,,4,2,65,,sting,,audio/sfx.ts,synthesised
+sfx.combo.tier,hud,,4,1,60,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.combo.break,hud,,4,1,55,[A string snaps — chain broken],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.vitals.warn60,hud,,4,1,85,[Hand-bell: vitals weakening],,yes,audio/director.ts; audio/sfx.ts,synthesised
+sfx.vitals.warn30,hud,,4,1,90,[Hand-bell: vitals failing],,yes,audio/director.ts; audio/sfx.ts,synthesised
+sfx.vitals.warn15,hud,,4,1,95,[Frantic bell: death is near],,yes,audio/director.ts; audio/sfx.ts,synthesised
+sfx.death.knell,hud,,4,1,100,[A death knell],knell,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.timer.tick,hud,,2,2,50,,,yes,audio/director.ts; audio/options-scene.ts; audio/sfx.ts,synthesised
+sfx.timer.up,hud,,4,1,95,[Time is up],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.phase.clear,hud,,4,1,60,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.vitals.heal,hud,,4,1,50,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.vitals.hurt,world,,4,2,50,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.heart.beat,world,,1,2,70,[Heartbeat quickens],,yes,audio/director.ts; audio/options-scene.ts; audio/sfx.ts,synthesised
+sfx.heart.pulseTick,hud,,1,2,30,,,,audio/director.ts; audio/options-scene.ts; audio/sfx.ts,synthesised
+loop.tinnitus,hud,yes,,8,10,,,,audio/director.ts; audio/sfx.ts,synthesised
+loop.litany.trail,hud,yes,,8,60,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.litany.vertex,hud,,1,3,60,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.litany.fizzle,hud,,4,1,60,[The sign falters],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.litany.spent,hud,,4,1,60,,,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.litany.invoke,hud,,4,1,95,[“Be still…” — a choir swells],,,audio/director.ts; audio/sfx.ts,synthesised
+sfx.litany.endWarn,hud,,4,1,90,[Stillness is ending],,yes,audio/director.ts; audio/sfx.ts,synthesised
+sfx.litany.exhale,hud,,4,1,80,,,,audio/director.ts; audio/sfx.ts,synthesised
+ui.hover,ui,,4,2,5,,,,audio/sfx.ts; audio/ui-hooks.ts,synthesised
+ui.confirm,ui,,4,2,40,,,,audio/options-scene.ts; audio/sfx.ts; audio/ui-hooks.ts,synthesised
+ui.back,ui,,4,1,35,,,,audio/sfx.ts; audio/ui-hooks.ts,synthesised
+ui.tab,ui,,4,2,30,,,,audio/options-scene.ts; audio/sfx.ts; audio/system.ts,synthesised
+ui.slider,ui,,4,2,20,,,,audio/options-scene.ts; audio/sfx.ts; audio/system.ts,synthesised
+ui.toggle,ui,,4,1,30,,,,audio/options-scene.ts; audio/sfx.ts,synthesised
+ui.error,ui,,4,1,40,,,,audio/options-scene.ts; audio/sfx.ts,synthesised
+ui.pauseOpen,ui,,4,1,50,,,,audio/director.ts; audio/sfx.ts,synthesised
+ui.pauseClose,ui,,4,1,50,,,,audio/director.ts; audio/sfx.ts,synthesised
+ui.save,ui,,4,1,30,,,,audio/scenes.ts; audio/sfx.ts,synthesised
+ui.vn.advance,ui,,4,1,20,,,,audio/sfx.ts; audio/system.ts,synthesised
+ui.vn.blip,ui,,1,2,5,,,,audio/options-scene.ts; audio/scenes.ts; audio/sfx.ts,synthesised
+ui.vn.pageTurn,ui,,4,1,40,,,,audio/scenes.ts; audio/sfx.ts,synthesised
+ui.vn.whoosh,ui,,4,1,35,,,,audio/scenes.ts; audio/sfx.ts,synthesised
+ui.vn.portrait,ui,,4,1,20,,,,audio/scenes.ts; audio/sfx.ts,synthesised
+ui.results.tally,ui,,4,2,30,,,,audio/scenes.ts; audio/sfx.ts,synthesised
+loop.results.roll,ui,yes,,8,30,,,,audio/scenes.ts; audio/sfx.ts,synthesised
+ui.results.seal,ui,,1,1,70,,,,audio/scenes.ts; audio/sfx.ts,synthesised
+ui.results.best,ui,,4,1,70,[A flourish: a new best],,,audio/scenes.ts; audio/sfx.ts,synthesised
+ui.brief.unroll,ui,,4,1,40,,,,audio/scenes.ts; audio/sfx.ts,synthesised
+loop.brief.quill,ui,yes,,8,20,,,,audio/scenes.ts; audio/sfx.ts,synthesised
+ui.brief.scrubIn,ui,,4,1,60,[Hands scrubbed; instruments rattle],,,audio/scenes.ts; audio/sfx.ts,synthesised
+loop.curse.bed,ambience,yes,,8,30,,,,audio/ambience.ts; audio/sfx.ts,synthesised
+loop.amb.hospice,ambience,yes,,8,15,,,,audio/beds.ts,synthesised
+loop.amb.street,ambience,yes,,8,15,,,,audio/beds.ts,synthesised
+loop.amb.theatre,ambience,yes,,8,15,,,,audio/beds.ts,synthesised
+loop.amb.chapel,ambience,yes,,8,15,,,,audio/beds.ts,synthesised
+loop.amb.night,ambience,yes,,8,15,,,,audio/beds.ts,synthesised
+loop.amb.camp,ambience,yes,,8,15,,,,audio/beds.ts,synthesised
+amb.bell,ambience,,4,1,10,[A distant church bell],,,audio/ambience.ts; audio/options-scene.ts; audio/sfx.ts,synthesised
+amb.dog,ambience,,4,1,10,,,,audio/ambience.ts; audio/options-scene.ts; audio/sfx.ts,synthesised
+amb.crow,ambience,,4,1,10,,,,audio/ambience.ts; audio/sfx.ts,synthesised
+amb.cough,ambience,,4,1,10,[Distant coughing],,,audio/ambience.ts; audio/sfx.ts,synthesised
+amb.watchman,ambience,,4,1,10,[A watchman calls the hour],,,audio/ambience.ts; audio/sfx.ts,synthesised
+amb.drunk,ambience,,4,1,10,"[Drunken singing, far off]",,,audio/ambience.ts; audio/sfx.ts,synthesised
+amb.cart,ambience,,4,1,10,,,,audio/ambience.ts; audio/sfx.ts,synthesised
+amb.owl,ambience,,4,1,10,,,,audio/ambience.ts; audio/sfx.ts,synthesised
+amb.drip,ambience,,4,2,5,,,,audio/ambience.ts; audio/sfx.ts,synthesised
+amb.armour,ambience,,4,1,10,,,,audio/ambience.ts; audio/sfx.ts,synthesised
+amb.horse,ambience,,4,1,10,,,,audio/ambience.ts; audio/sfx.ts,synthesised
+amb.choirHum,ambience,,4,1,10,,,,audio/ambience.ts; audio/sfx.ts,synthesised
+loop.burn.dragon,world,yes,,8,25,[Dragon-fire embers roar],,,audio/sfx-later.ts,synthesised
+sfx.burn.blister,world,,4,3,45,,,,audio/sfx-later.ts,synthesised
+loop.gangrene,world,yes,,8,25,[Gangrene crackles wetly],,,audio/sfx-later.ts,synthesised
+sfx.gangrene.debride,world,,4,2,55,,,,audio/sfx-later.ts,synthesised
+loop.saw.bone,world,yes,,8,60,[A bone saw rasps],,,audio/sfx-later.ts,synthesised
+loop.growth.encircle,world,yes,,8,45,,,,audio/sfx-later.ts,synthesised
+sfx.growth.severed,world,,4,2,65,,,,audio/sfx-later.ts,synthesised
+sfx.growth.remove,world,,4,2,65,,,,audio/sfx-later.ts,synthesised
+loop.stone.creep,world,yes,,8,35,[Stone creeps over the flesh],,yes,audio/sfx-later.ts,synthesised
+sfx.stone.chip,world,,4,3,55,,,,audio/sfx-later.ts,synthesised
+sfx.stone.crumble,world,,4,1,70,[The stone crust crumbles],,,audio/sfx-later.ts,synthesised
+sfx.stone.reveal,world,,4,2,55,,,,audio/sfx-later.ts,synthesised
+sfx.fang.grind,world,,4,2,60,,,,audio/sfx-later.ts,synthesised
+sfx.claw.rake,world,,4,2,70,[Claws rake the flesh],,,audio/sfx-later.ts,synthesised
+loop.larvae.swarm,world,yes,,8,35,[Larvae swarm],,yes,audio/sfx-later.ts,synthesised
+sfx.larva.pop,world,,4,4,45,,,,audio/sfx-later.ts,synthesised
+sfx.triage.tag,hud,,4,2,50,,,,audio/sfx-later.ts,synthesised
+loop.eartrumpet,world,yes,,8,60,,,,audio/sfx-later.ts,synthesised
+sfx.bone.crepitus,world,,4,2,55,[Bone grates],,,audio/sfx-later.ts,synthesised
+sfx.bone.snap,world,,4,2,70,[The bone snaps into place],,,audio/sfx-later.ts,synthesised
+loop.amb.pyre,ambience,yes,,8,15,,,,audio/sfx-later.ts,synthesised
+loop.amb.cathedral,ambience,yes,,8,15,,,,audio/sfx-later.ts,synthesised
+loop.amb.catacombs,ambience,yes,,8,15,,,,audio/sfx-later.ts,synthesised
+loop.amb.armycamp,ambience,yes,,8,15,,,,audio/sfx-later.ts,synthesised
+loop.amb.flooded,ambience,yes,,8,15,,,,audio/sfx-later.ts,synthesised
+amb.battle,ambience,,4,1,10,[Distant gunfire],,,audio/ambience.ts; audio/sfx-later.ts,synthesised
+amb.rats,ambience,,4,1,10,,,,audio/ambience.ts; audio/sfx-later.ts,synthesised
+amb.slosh,ambience,,4,2,10,,,,audio/ambience.ts; audio/sfx-later.ts,synthesised
+amb.crowd,ambience,,4,1,10,[A crowd murmurs],,,audio/ambience.ts; audio/sfx-later.ts,synthesised
+amb.sentry,ambience,,4,1,10,[A sentry calls out],,,audio/ambience.ts; audio/sfx-later.ts,synthesised
+sfx.hour.prime.intro,world,,4,1,95,[The Malison of Prime: a choir swells as it wakes],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.prime.telegraph,world,,4,1,92,[The Malison of Prime: it gathers itself — a blow is coming],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.prime.attack,world,,4,1,88,[The Malison of Prime: it strikes],boss,,audio/sfx-later.ts (template),synthesised
+sfx.hour.prime.hit,world,,4,1,75,[The Malison of Prime: it shrieks],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.prime.phase,world,,4,1,90,[The Malison of Prime: it changes],boss,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.prime.summon,world,,4,1,85,[The Malison of Prime: it sheds its brood],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.prime.shield,world,,4,1,85,[The Malison of Prime: a ward rises],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.prime.shieldBreak,world,,4,1,85,[The Malison of Prime: the ward shatters],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.prime.submerge,world,,4,1,85,[The Malison of Prime: it sinks beneath the skin],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.prime.weaken,world,,4,1,80,[The Malison of Prime: it weakens],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.prime.death,world,,4,1,95,[The Malison of Prime: it is unmade],boss,,audio/sfx-later.ts (template),synthesised
+loop.hour.prime,world,yes,,8,70,,,,audio/sfx-later.ts (template),synthesised
+sfx.hour.terce.intro,world,,4,1,95,[The Malison of Terce: a choir swells as it wakes],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.terce.telegraph,world,,4,1,92,[The Malison of Terce: it gathers itself — a blow is coming],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.terce.attack,world,,4,1,88,[The Malison of Terce: it strikes],boss,,audio/sfx-later.ts (template),synthesised
+sfx.hour.terce.hit,world,,4,1,75,[The Malison of Terce: it shrieks],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.terce.phase,world,,4,1,90,[The Malison of Terce: it changes],boss,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.terce.summon,world,,4,1,85,[The Malison of Terce: it sheds its brood],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.terce.shield,world,,4,1,85,[The Malison of Terce: a ward rises],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.terce.shieldBreak,world,,4,1,85,[The Malison of Terce: the ward shatters],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.terce.submerge,world,,4,1,85,[The Malison of Terce: it sinks beneath the skin],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.terce.weaken,world,,4,1,80,[The Malison of Terce: it weakens],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.terce.death,world,,4,1,95,[The Malison of Terce: it is unmade],boss,,audio/sfx-later.ts (template),synthesised
+loop.hour.terce,world,yes,,8,70,,,,audio/sfx-later.ts (template),synthesised
+sfx.hour.sext.intro,world,,4,1,95,[The Malison of Sext: a choir swells as it wakes],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.sext.telegraph,world,,4,1,92,[The Malison of Sext: it gathers itself — a blow is coming],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.sext.attack,world,,4,1,88,[The Malison of Sext: it strikes],boss,,audio/sfx-later.ts (template),synthesised
+sfx.hour.sext.hit,world,,4,1,75,[The Malison of Sext: it shrieks],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.sext.phase,world,,4,1,90,[The Malison of Sext: it changes],boss,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.sext.summon,world,,4,1,85,[The Malison of Sext: it sheds its brood],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.sext.shield,world,,4,1,85,[The Malison of Sext: a ward rises],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.sext.shieldBreak,world,,4,1,85,[The Malison of Sext: the ward shatters],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.sext.submerge,world,,4,1,85,[The Malison of Sext: it sinks beneath the skin],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.sext.weaken,world,,4,1,80,[The Malison of Sext: it weakens],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.sext.death,world,,4,1,95,[The Malison of Sext: it is unmade],boss,,audio/sfx-later.ts (template),synthesised
+loop.hour.sext,world,yes,,8,70,,,,audio/sfx-later.ts (template),synthesised
+sfx.hour.none.intro,world,,4,1,95,[The Malison of None: a choir swells as it wakes],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.none.telegraph,world,,4,1,92,[The Malison of None: it gathers itself — a blow is coming],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.none.attack,world,,4,1,88,[The Malison of None: it strikes],boss,,audio/sfx-later.ts (template),synthesised
+sfx.hour.none.hit,world,,4,1,75,[The Malison of None: it shrieks],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.none.phase,world,,4,1,90,[The Malison of None: it changes],boss,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.none.summon,world,,4,1,85,[The Malison of None: it sheds its brood],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.none.shield,world,,4,1,85,[The Malison of None: a ward rises],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.none.shieldBreak,world,,4,1,85,[The Malison of None: the ward shatters],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.none.submerge,world,,4,1,85,[The Malison of None: it sinks beneath the skin],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.none.weaken,world,,4,1,80,[The Malison of None: it weakens],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.none.death,world,,4,1,95,[The Malison of None: it is unmade],boss,,audio/sfx-later.ts (template),synthesised
+loop.hour.none,world,yes,,8,70,,,,audio/sfx-later.ts (template),synthesised
+sfx.hour.vespers.intro,world,,4,1,95,[The Malison of Vespers: a choir swells as it wakes],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.vespers.telegraph,world,,4,1,92,[The Malison of Vespers: it gathers itself — a blow is coming],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.vespers.attack,world,,4,1,88,[The Malison of Vespers: it strikes],boss,,audio/sfx-later.ts (template),synthesised
+sfx.hour.vespers.hit,world,,4,1,75,[The Malison of Vespers: it shrieks],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.vespers.phase,world,,4,1,90,[The Malison of Vespers: it changes],boss,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.vespers.summon,world,,4,1,85,[The Malison of Vespers: it sheds its brood],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.vespers.shield,world,,4,1,85,[The Malison of Vespers: a ward rises],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.vespers.shieldBreak,world,,4,1,85,[The Malison of Vespers: the ward shatters],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.vespers.submerge,world,,4,1,85,[The Malison of Vespers: it sinks beneath the skin],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.vespers.weaken,world,,4,1,80,[The Malison of Vespers: it weakens],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.vespers.death,world,,4,1,95,[The Malison of Vespers: it is unmade],boss,,audio/sfx-later.ts (template),synthesised
+loop.hour.vespers,world,yes,,8,70,,,,audio/sfx-later.ts (template),synthesised
+sfx.hour.compline.intro,world,,4,1,95,[The Malison of Compline: a choir swells as it wakes],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.compline.telegraph,world,,4,1,92,[The Malison of Compline: it gathers itself — a blow is coming],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.compline.attack,world,,4,1,88,[The Malison of Compline: it strikes],boss,,audio/sfx-later.ts (template),synthesised
+sfx.hour.compline.hit,world,,4,1,75,[The Malison of Compline: it shrieks],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.compline.phase,world,,4,1,90,[The Malison of Compline: it changes],boss,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.compline.summon,world,,4,1,85,[The Malison of Compline: it sheds its brood],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.compline.shield,world,,4,1,85,[The Malison of Compline: a ward rises],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.compline.shieldBreak,world,,4,1,85,[The Malison of Compline: the ward shatters],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.compline.submerge,world,,4,1,85,[The Malison of Compline: it sinks beneath the skin],,yes,audio/sfx-later.ts (template),synthesised
+sfx.hour.compline.weaken,world,,4,1,80,[The Malison of Compline: it weakens],,,audio/sfx-later.ts (template),synthesised
+sfx.hour.compline.death,world,,4,1,95,[The Malison of Compline: it is unmade],boss,,audio/sfx-later.ts (template),synthesised
+loop.hour.compline,world,yes,,8,70,,,,audio/sfx-later.ts (template),synthesised

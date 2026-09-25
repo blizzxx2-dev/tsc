@@ -3,108 +3,120 @@ import type { Gfx } from '../render/gfx';
 import type { Backdrop } from '../content/story';
 import type { Character } from '../content/characters';
 import { VIEW_H, VIEW_W } from '../ui/layout';
+import type { Vec } from '../core/math';
+import { MANIFEST } from '../assets/manifest.gen';
+import { setFor, setScene } from './sets';
+import type { AssetEntry } from '../assets/types';
+
+/** Painted backdrop layers for a key, far to near (manifest `layer` + `parallax`, ART-0045). */
+export function backdropLayers(key: string, manifest: Record<string, AssetEntry> = MANIFEST): AssetEntry[] {
+  return Object.values(manifest)
+    .filter((e) => e.layer === key && e.type === 'image')
+    .sort((a, b) => (a.parallax ?? 0) - (b.parallax ?? 0));
+}
+
+/** SCENE_FS program per location (see src/render/shaders/scene.ts). */
+export const SCENE_KIND: Record<Backdrop | 'title', number> = {
+  hospice: 0,
+  street: 1,
+  theatre: 2,
+  chapel: 3,
+  night: 4,
+  camp: 5,
+  apothecary: 6,
+  alley: 7,
+  guildhall: 8,
+  tent: 9,
+  graveyard: 10,
+  orecamp: 11,
+  forest: 12,
+  abbey: 13,
+  dawn: 14,
+  title: 15,
+};
+
+export type Lighting = 'day' | 'dusk' | 'night';
+const LIGHT: Record<Lighting, number> = { night: 0, dusk: 1, day: 2 };
+
+/** Default lighting per location, as the Chapter 1–2 scripts stage them. */
+export const DEFAULT_LIGHT: Record<Backdrop | 'title', Lighting> = {
+  hospice: 'night',
+  street: 'dusk',
+  theatre: 'night',
+  chapel: 'night',
+  night: 'night',
+  camp: 'dusk',
+  apothecary: 'day',
+  alley: 'dusk',
+  guildhall: 'night',
+  tent: 'dusk',
+  graveyard: 'night',
+  orecamp: 'dusk',
+  forest: 'night',
+  abbey: 'night',
+  dawn: 'day',
+  title: 'night',
+};
+
+/** Locations lit by open flame get drifting embers in front of the set. */
+const EMBERS = new Set<string>(['camp', 'tent', 'orecamp', 'hospice', 'theatre', 'guildhall']);
+
+// Dev preview overrides: ?light=day|dusk|night, ?variant=1 (burned ward / rain), ?sceneScale=0.5.
+const params = typeof location !== 'undefined' ? new URLSearchParams(location.search) : null;
+const PREVIEW_LIGHT = params?.get('light') as Lighting | null | undefined;
+const PREVIEW_VARIANT = Number(params?.get('variant') ?? 0);
+const PREVIEW_SCALE = Number(params?.get('sceneScale') ?? 0);
+
+/** Art quality tiers: backdrop render scale and ember density (Low for integrated GPUs). */
+export type ArtQuality = 'low' | 'medium' | 'high';
+export const QUALITY: Record<ArtQuality, { sceneScale: number; embers: number }> = {
+  low: { sceneScale: 0.5, embers: 12 },
+  medium: { sceneScale: 0.75, embers: 20 },
+  high: { sceneScale: 1, embers: 30 },
+};
+let quality: ArtQuality = 'high';
+export function setArtQuality(q: ArtQuality): void {
+  quality = q;
+}
+
+export interface BackdropOpts {
+  lighting?: Lighting;
+  /** Pointer position in virtual pixels, for a 2% parallax shift. */
+  pointer?: Vec;
+  /** 1 = the ward burned (late story) or rain at night. */
+  variant?: number;
+}
 
 /**
- * Story scenery. Uses period artwork when available (slow Ken Burns drift, candle-lit
- * grading), otherwise procedural placeholder scenery. Drawn in the world layer.
+ * Story scenery: a shader-rendered location (raymarched interiors, layered 2.5D exteriors),
+ * with its lighting variant, pointer parallax and a front layer of embers where fire burns.
+ * Drawn in the world layer.
  */
-export function drawBackdrop(g: Gfx, kind: Backdrop | 'title' | 'results', t: number): void {
-  if (kind === 'title' || kind === 'results') kind = kind === 'title' ? 'night' : 'chapel';
-  const KIND: Record<Backdrop, number> = { hospice: 0, street: 1, theatre: 2, chapel: 3, night: 4, camp: 5 };
-  g.sceneField(KIND[kind]);
-  // Drifting embers and dust motes over the environment.
+export function drawBackdrop(g: Gfx, kind: Backdrop | 'title' | 'results', t: number, opts: BackdropOpts = {}): void {
+  const key: Backdrop | 'title' = kind === 'results' ? 'chapel' : kind;
+  const lighting = PREVIEW_LIGHT && PREVIEW_LIGHT in LIGHT ? PREVIEW_LIGHT : (opts.lighting ?? DEFAULT_LIGHT[key]);
+  const p = opts.pointer;
+  const parallax: [number, number] = p ? [Math.max(-1, Math.min(1, (p.x / VIEW_W) * 2 - 1)), Math.max(-1, Math.min(1, 1 - (p.y / VIEW_H) * 2))] : [0, 0];
+  const tier = QUALITY[quality];
+  // Painted layers (ART-0045) replace the procedural scene when the manifest has them for this key.
+  const layers = backdropLayers(key);
+  const set = setFor(key);
+  if (set) g.draw3D(setScene(set, t, parallax));
+  else if (layers.length) {
+    for (const l of layers) {
+      const img = g.image(import.meta.env.BASE_URL + l.url);
+      const k = l.parallax ?? 0;
+      // Overscan by the largest shift so parallax never reveals an edge.
+      const pad = 24 * k;
+      g.drawImage(img, -pad - parallax[0] * 24 * k, -pad + parallax[1] * 12 * k, VIEW_W + pad * 2, VIEW_H + pad * 2);
+    }
+  } else g.sceneField(SCENE_KIND[key] ?? 0, { light: LIGHT[lighting], parallax, variant: PREVIEW_VARIANT || opts.variant || 0, scale: PREVIEW_SCALE || tier.sceneScale });
+  if (!EMBERS.has(key)) return;
   g.setBlend('add');
-  for (let i = 0; i < 30; i++) {
-    const ex = (i * 97 + Math.sin(t * 0.5 + i) * 40) % VIEW_W;
+  for (let i = 0; i < tier.embers; i++) {
+    const ex = (i * 97 + Math.sin(t * 0.5 + i) * 40 - parallax[0] * 26) % VIEW_W;
     const ey = VIEW_H - ((t * (14 + (i % 5) * 7) + i * 53) % VIEW_H);
     g.circleGrad(ex, ey, 3, hex(i % 3 ? '#ffa050' : '#fff0d0', 0.35), hex('#ffa050', 0));
-  }
-  g.setBlend('alpha');
-}
-
-/** Legacy flat scenery, kept for low-end fallback. */
-export function drawFlatBackdrop(g: Gfx, kind: Backdrop, t: number): void {
-  drawProceduralBackdrop(g, kind, t);
-}
-
-function drawProceduralBackdrop(g: Gfx, kind: Backdrop, t: number): void {
-  const sky: Record<Backdrop, [string, string]> = {
-    hospice: ['#2a1c14', '#0c0806'],
-    street: ['#1a1e2a', '#080808'],
-    theatre: ['#2a1a14', '#0a0605'],
-    chapel: ['#1c1a24', '#080608'],
-    night: ['#0c1020', '#030306'],
-    camp: ['#2a1a10', '#080604'],
-  };
-  const [top, bottom] = sky[kind];
-  g.rectGrad(0, 0, VIEW_W, VIEW_H, hex(top), hex(bottom));
-
-  if (kind === 'hospice' || kind === 'theatre' || kind === 'chapel') {
-    // Stone arcade.
-    for (let i = 0; i < 5; i++) {
-      const x = 80 + i * 280;
-      g.rect(x - 30, 120, 60, 520, hex('#1a1410'));
-      g.rect(x - 34, 110, 68, 18, hex('#241c16'));
-      g.arc(x + 140, 260, 110, 22, hex('#1a1410'), 0.5, Math.PI);
-    }
-    if (kind === 'chapel') {
-      // Stained-glass window.
-      const wx = VIEW_W / 2;
-      g.glow(wx, 230, 260, hex('#6040a0', 0.25));
-      g.rect(wx - 70, 140, 140, 220, hex('#302050'));
-      for (let i = 0; i < 6; i++) g.rect(wx - 60 + (i % 3) * 42, 150 + Math.floor(i / 3) * 105, 36, 96, hex(['#8a2030', '#2a4a8a', '#c8a040'][i % 3], 0.7));
-      g.circle(wx, 140, 70, hex('#302050'));
-      g.circle(wx, 140, 58, hex('#c8a040', 0.5));
-    }
-    // Candles.
-    for (const [cx, cy] of [
-      [200, 520],
-      [640, 560],
-      [1080, 510],
-    ]) {
-      const f = 0.8 + 0.2 * Math.sin(t * 9 + cx) * Math.sin(t * 5.3 + cy);
-      g.rect(cx - 6, cy, 12, 50, hex('#d8d0b0'));
-      g.glow(cx, cy - 10, 160 * f, hex('#ffb050', 0.35));
-      g.ellipse(cx, cy - 10, 5, 12 * f, 0, hex('#fff0b0'), hex('#ff9030'));
-    }
-    g.rectGrad(0, 600, VIEW_W, 120, hex('#140e0a'), hex('#060403'));
-  } else if (kind === 'street' || kind === 'night') {
-    if (kind === 'night') {
-      g.glow(1000, 120, 200, hex('#a0b0d0', 0.2));
-      g.circle(1000, 120, 40, hex('#d8dce8'));
-    }
-    // Timber-framed gables.
-    for (let i = 0; i < 7; i++) {
-      const x = i * 200 - 20;
-      const h = 260 + ((i * 73) % 120);
-      const base = 620;
-      g.rect(x, base - h, 180, h, hex('#161210'));
-      g.tri(x - 10, base - h, x + 190, base - h, x + 90, base - h - 110, hex('#120e0c'));
-      for (let w = 0; w < 3; w++) {
-        const lit = (i + w) % 3 === 0;
-        g.rect(x + 20 + w * 55, base - h + 60, 30, 40, hex(lit ? '#e8a040' : '#0a0806', lit ? 0.85 : 1));
-        if (lit) g.glow(x + 35 + w * 55, base - h + 80, 50, hex('#ffa040', 0.25));
-      }
-      g.line({ x, y: base - h + 30 }, { x: x + 180, y: base - h + 130 }, 6, hex('#2a1e14'));
-    }
-    g.rectGrad(0, 620, VIEW_W, 100, hex('#0e0c0a'), hex('#040303'));
-    // Snow.
-    for (let i = 0; i < 60; i++) {
-      const sx = (i * 131 + t * 20 * (1 + (i % 3))) % VIEW_W;
-      const sy = (i * 71 + t * 40 * (1 + (i % 2))) % VIEW_H;
-      g.circle(sx, sy, 1.5 + (i % 3), hex('#e8e8f0', 0.6));
-    }
-  } else if (kind === 'camp') {
-    g.glow(640, 560, 300, hex('#ff8030', 0.3));
-    for (let i = 0; i < 4; i++) g.tri(100 + i * 330, 600, 260 + i * 330, 600, 180 + i * 330, 420, hex('#1a140e'));
-  }
-
-  // Drifting embers.
-  g.setBlend('add');
-  for (let i = 0; i < 24; i++) {
-    const ex = (i * 97 + Math.sin(t * 0.5 + i) * 40) % VIEW_W;
-    const ey = VIEW_H - ((t * (20 + (i % 5) * 8) + i * 53) % VIEW_H);
-    g.circle(ex, ey, 1.5, hex('#ffa050', 0.5));
   }
   g.setBlend('alpha');
 }

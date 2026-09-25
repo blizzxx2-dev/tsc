@@ -23,40 +23,40 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ## NAR · Epic 1 — Canon, tone and IP safety (Demo foundation)
 
 ### Story bible and style guide
-- [ ] NAR-0001 · Demo · P0 · M · Write `docs/narrative/style-guide.md` — six pillars (mercy, body-as-battlefield, every miracle is evidence, gallows humour at institutions, material honesty, institutions as antagonists) each with 2 do/2 don't example lines from the Ch1–2 script
-- [ ] NAR-0002 · Demo · P0 · S · Humour rule in style guide — "jokes target institutions and folk belief, never the patient's suffering"; every Ch1–2 joke line audited against it and listed with pass/fail
-- [ ] NAR-0003 · Demo · P1 · S · Diction rules — early-modern register without thee/thou; banned modern words list (okay, stress, germs, infection-as-germ-theory, adrenaline); lint script flags them in `src/content/*.ts`
-- [ ] NAR-0004 · Demo · P1 · S · Line-length rule — VN lines ≤ 140 chars, barks ≤ 60 chars, callouts ≤ 28 chars; Vitest content test fails on violations
-- [ ] NAR-0005 · Demo · P1 · M · Story bible `docs/narrative/bible.md` — Kessendorf (free city, Burgomaster, council of guild-houses), the Long Muster, Saint Ildra and the Merciful Order, the Ash Tribunal, the Hollow Choir, the eight Hours; one page each
-- [ ] NAR-0006 · Demo · P1 · S · Calendar and dating convention — "year N of the Long Muster", month names, Hollow Night date; used consistently in Prologue and codex
-- [ ] NAR-0007 · Demo · P1 · S · Timeline of Ch1–2 — day/hour of every scene (Prologue → s2-end) in a table; scene `place` strings match it
-- [ ] NAR-0008 · Demo · P1 · S · Medical-lore primer — humoral theory as the characters believe it vs what the mechanics do (drain, salve, brand, tincture); 1 page for writers
-- [ ] NAR-0009 · Demo · P2 · S · Map sketch of Kessendorf and environs — hospice, Tanners' Rows, gunsmiths' quarter, Gilded Goose, east-gate pyres, Timber Road, Grauwald, barrow-fields; referenced by codex entries
-- [ ] NAR-0010 · Alpha · P1 · M · Extend bible to Ch3–5 locations — Kilnrows foundry quarter, the Raised Bridges, Guildhall of Barber-Surgeons, Vennmark marches, Hollow Night processions, the Tribunal court
+- [x] NAR-0001 · Demo · P0 · M · Write `docs/narrative/style-guide.md` — six pillars (mercy, body-as-battlefield, every miracle is evidence, gallows humour at institutions, material honesty, institutions as antagonists) each with 2 do/2 don't example lines from the Ch1–2 script
+- [x] NAR-0002 · Demo · P0 · S · Humour rule in style guide — "jokes target institutions and folk belief, never the patient's suffering"; every Ch1–2 joke line audited against it and listed with pass/fail
+- [x] NAR-0003 · Demo · P1 · S · Diction rules — early-modern register without thee/thou; banned modern words list (okay, stress, germs, infection-as-germ-theory, adrenaline); lint script flags them in `src/content/*.ts`
+- [x] NAR-0004 · Demo · P1 · S · Line-length rule — VN lines ≤ 140 chars, barks ≤ 60 chars, callouts ≤ 28 chars; Vitest content test fails on violations
+- [x] NAR-0005 · Demo · P1 · M · Story bible `docs/narrative/bible.md` — Kessendorf (free city, Burgomaster, council of guild-houses), the Long Muster, Saint Ildra and the Merciful Order, the Ash Tribunal, the Hollow Choir, the eight Hours; one page each
+- [x] NAR-0006 · Demo · P1 · S · Calendar and dating convention — "year N of the Long Muster", month names, Hollow Night date; used consistently in Prologue and codex
+- [x] NAR-0007 · Demo · P1 · S · Timeline of Ch1–2 — day/hour of every scene (Prologue → s2-end) in a table; scene `place` strings match it
+- [x] NAR-0008 · Demo · P1 · S · Medical-lore primer — humoral theory as the characters believe it vs what the mechanics do (drain, salve, brand, tincture); 1 page for writers
+- [x] NAR-0009 · Demo · P2 · S · Map sketch of Kessendorf and environs — hospice, Tanners' Rows, gunsmiths' quarter, Gilded Goose, east-gate pyres, Timber Road, Grauwald, barrow-fields; referenced by codex entries
+- [x] NAR-0010 · Alpha · P1 · M · Extend bible to Ch3–5 locations — Kilnrows foundry quarter, the Raised Bridges, Guildhall of Barber-Surgeons, Vennmark marches, Hollow Night processions, the Tribunal court
 
 ### IP-safety review (every name)
-- [ ] NAR-0011 · Demo · P0 · S · Rename "Order of the Pyre" to "the Ash Tribunal" (Paizo Pathfinder collision) — update `characters.ts` title and STORY_1_4/STORY_1_5 lines ("The Tribunal does not distinguish between a prayer and a spell")
-- [ ] NAR-0012 · Demo · P0 · S · Remove green hexstone — STORY_2_2 "The rock went green" rewritten to "black as a wet eye, and it had a pulse"; art ticket raised for black-glass-with-heartbeat look
-- [ ] NAR-0013 · Demo · P0 · S · Rename `'warpshard'` embedded kind to `'hexshard'` in `chapter2.ts` and entities — no "warp-" coinages anywhere; grep test asserts zero matches for /warp/i in src
-- [ ] NAR-0014 · Demo · P0 · M · Name register `docs/narrative/names.csv` — every proper noun in Ch1–2 (people, places, orgs, items, diseases) with origin note, IP-check status and checker initials
-- [ ] NAR-0015 · Demo · P0 · S · Blocklist test — Vitest scans `src/content` and localisation strings against the §7 avoid-list (Sigmar, Shallya, Morrslieb, Skaven, turnskin, swain, Nurgle, Reikland, etc.) and fails on any hit
+- [x] NAR-0011 · Demo · P0 · S · Rename "Order of the Pyre" to "the Ash Tribunal" (Paizo Pathfinder collision) — update `characters.ts` title and STORY_1_4/STORY_1_5 lines ("The Tribunal does not distinguish between a prayer and a spell")
+- [x] NAR-0012 · Demo · P0 · S · Remove green hexstone — STORY_2_2 "The rock went green" rewritten to "black as a wet eye, and it had a pulse"; art ticket raised for black-glass-with-heartbeat look
+- [x] NAR-0013 · Demo · P0 · S · Rename `'warpshard'` embedded kind to `'hexshard'` in `chapter2.ts` and entities — no "warp-" coinages anywhere; grep test asserts zero matches for /warp/i in src
+- [x] NAR-0014 · Demo · P0 · M · Name register `docs/narrative/names.csv` — every proper noun in Ch1–2 (people, places, orgs, items, diseases) with origin note, IP-check status and checker initials
+- [x] NAR-0015 · Demo · P0 · S · Blocklist test — Vitest scans `src/content` and localisation strings against the §7 avoid-list (Sigmar, Shallya, Morrslieb, Skaven, turnskin, swain, Nurgle, Reikland, etc.) and fails on any hit
 - [ ] NAR-0016 · Demo · P0 · S · Review "beast-folk"/"horned raiders" (STORY_1_2) against GW "Beastmen" — replace with "horned folk" and give them one original cultural detail (antler-tallies) in codex
-- [ ] NAR-0017 · Demo · P1 · S · Review "dwarf" usage for Orsa (STORY_2_2) — keep generic word, strip any grudge/rune/slayer/beard-oath tropes; add original "debt-knots in the beard" detail
-- [ ] NAR-0018 · Demo · P1 · S · Review "Gravehound" and "corpse-eaters" (STORY_2_1) — confirm not GW unit names; document in names.csv
-- [ ] NAR-0019 · Demo · P1 · S · Collision check for place names Kessendorf, Weissburg, Grauwald, Tanners' Rows, Gilded Goose — search games/novels; rename any exact fantasy-IP hit
+- [x] NAR-0017 · Demo · P1 · S · Review "dwarf" usage for Orsa (STORY_2_2) — keep generic word, strip any grudge/rune/slayer/beard-oath tropes; add original "debt-knots in the beard" detail
+- [x] NAR-0018 · Demo · P1 · S · Review "Gravehound" and "corpse-eaters" (STORY_2_1) — confirm not GW unit names; document in names.csv
+- [x] NAR-0019 · Demo · P1 · S · Collision check for place names Kessendorf, Weissburg, Grauwald, Tanners' Rows, Gilded Goose — search games/novels; rename any exact fantasy-IP hit
 - [ ] NAR-0020 · Demo · P1 · S · Trademark search for "Hollow Choir" (novel + itch.io supplement noted) — decision recorded; fallback "the Unsung" pre-approved for a single find-and-replace
-- [ ] NAR-0021 · Demo · P1 · S · Trauma Center term sweep — no GUILT, Healing Touch, Caduceus, Delphi, strain names, "Angie" in any string or code comment shipped to players
+- [x] NAR-0021 · Demo · P1 · S · Trauma Center term sweep — no GUILT, Healing Touch, Caduceus, Delphi, strain names, "Angie" in any string or code comment shipped to players
 - [ ] NAR-0022 · Demo · P1 · S · Title/subtitle/tagline check — "Suture & Steel: The Malison Hours" and store tagline searched for trademark conflicts; no "Grim World of Perilous Adventure" echo
-- [ ] NAR-0023 · Demo · P2 · S · Saint names register — Saint Ildra plus any saint invoked in barks; emblem is a candle-and-key, never dove or bleeding heart
-- [ ] NAR-0024 · Alpha · P0 · M · IP review of all Ch3–5 names — Kilnrows, Vennmark, Precentor Aurel Vennholt, Registrar Tallert, etc.; logged in names.csv before VO recording
+- [x] NAR-0023 · Demo · P2 · S · Saint names register — Saint Ildra plus any saint invoked in barks; emblem is a candle-and-key, never dove or bleeding heart
+- [x] NAR-0024 · Alpha · P0 · M · IP review of all Ch3–5 names — Kilnrows, Vennmark, Precentor Aurel Vennholt, Registrar Tallert, etc.; logged in names.csv before VO recording
 - [ ] NAR-0025 · Beta · P0 · S · Final IP pass over localised strings (DE/FR/ES/PL/PT-BR) — translated names re-checked against the avoid-list in each language
 - [ ] NAR-0026 · Release · P0 · S · Legal sign-off record — names.csv frozen, reviewer and date recorded, attached to release checklist
 
 ### Sensitivity review
-- [ ] NAR-0027 · Demo · P1 · M · Sensitivity brief — rules for depicting plague, children in peril (Emmerich), religious persecution, torture (never shown on-screen, only implied), disability and amputation
+- [x] NAR-0027 · Demo · P1 · M · Sensitivity brief — rules for depicting plague, children in peril (Emmerich), religious persecution, torture (never shown on-screen, only implied), disability and amputation
 - [ ] NAR-0028 · Demo · P1 · S · Ch1–2 sensitivity read — external reader reviews all scenes; each note triaged (accept/decline + reason) in a tracked sheet
-- [ ] NAR-0029 · Demo · P1 · S · Content descriptor text for Steam page — blood/gore, body horror, religious persecution, implied torture; matches what the demo shows
-- [ ] NAR-0030 · Demo · P2 · S · Vagrant patient (op1-4) — give him a name and one line of dignity in STORY_1_4 instead of "Unknown vagrant"
+- [x] NAR-0029 · Demo · P1 · S · Content descriptor text for Steam page — blood/gore, body horror, religious persecution, implied torture; matches what the demo shows
+- [x] NAR-0030 · Demo · P2 · S · Vagrant patient (op1-4) — give him a name and one line of dignity in STORY_1_4 instead of "Unknown vagrant"
 - [ ] NAR-0031 · Alpha · P1 · M · Sensitivity read for Ch3 — flagellants and penitential self-harm treated without glamour; plague quarantine class politics
 - [ ] NAR-0032 · Alpha · P1 · M · Sensitivity read for Ch4 — war violence, the thirst/blood-debt courtesan (consent and agency in her choice)
 - [ ] NAR-0033 · Beta · P0 · M · Sensitivity read for Ch5 — obstetric operation (consult with a midwife/obstetrician), trial/witch-pricking scene, assisted-death themes of Compline
@@ -65,48 +65,48 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ## NAR · Epic 2 — Chapter I "The Hour of Matins": demo-quality rewrite
 
 ### Structure and pacing
-- [ ] NAR-0035 · Demo · P0 · S · Ch1 beat sheet — one-line purpose per scene (Prologue, s1-2…s1-end) and what each teaches, reveals, or sets up; gaps flagged
-- [ ] NAR-0036 · Demo · P1 · S · Scene length budget — Prologue ≤ 14 lines, mid-chapter scenes ≤ 10, s1-end ≤ 14; measured by content test
-- [ ] NAR-0037 · Demo · P1 · S · Add cold-open line before Prologue text — a 2-line woodcut caption (Wound Man motif) establishing "the body as battlefield" pillar
-- [ ] NAR-0038 · Demo · P1 · M · Add post-op aftermath micro-scenes after op1-1…op1-4 — 2–4 lines each so every op result is acknowledged before the next brief
-- [ ] NAR-0039 · Demo · P1 · S · Branch aftermath text on rank — XS/S vs C variants of Haller's comment after op1-1 ("simple work" callback)
-- [ ] NAR-0040 · Demo · P2 · S · Failure scene text for each Ch1 op — short retry framing (Haller/Ilse line) shown on patient death before the retry prompt
+- [x] NAR-0035 · Demo · P0 · S · Ch1 beat sheet — one-line purpose per scene (Prologue, s1-2…s1-end) and what each teaches, reveals, or sets up; gaps flagged
+- [x] NAR-0036 · Demo · P1 · S · Scene length budget — Prologue ≤ 14 lines, mid-chapter scenes ≤ 10, s1-end ≤ 14; measured by content test
+- [x] NAR-0037 · Demo · P1 · S · Add cold-open line before Prologue text — a 2-line woodcut caption (Wound Man motif) establishing "the body as battlefield" pillar
+- [x] NAR-0038 · Demo · P1 · M · Add post-op aftermath micro-scenes after op1-1…op1-4 — 2–4 lines each so every op result is acknowledged before the next brief
+- [x] NAR-0039 · Demo · P1 · S · Branch aftermath text on rank — XS/S vs C variants of Haller's comment after op1-1 ("simple work" callback)
+- [x] NAR-0040 · Demo · P2 · S · Failure scene text for each Ch1 op — short retry framing (Haller/Ilse line) shown on patient death before the retry prompt
 
 ### Prologue and s1-2 … s1-end passes
-- [ ] NAR-0041 · Demo · P0 · M · Prologue rewrite — establish Kreuzer's motive (why a sworn Weissburg surgeon takes a charity post) in ≤ 2 lines; keep "we do not lose patients to simple work"
-- [ ] NAR-0042 · Demo · P1 · S · Give Kreuzer a voice line in each Ch1 scene — currently silent in s1-2…s1-5; one characterising reply each
-- [ ] NAR-0043 · Demo · P1 · S · s1-2 rewrite — Mauer introduced with a character tic (counts his men aloud); barb tutorial lines split from story lines for the tutorial system
-- [ ] NAR-0044 · Demo · P1 · S · s1-3 rewrite — gunsmith guild's fee joke (institutional humour) and tincture tutorial line tightened to one instruction
-- [ ] NAR-0045 · Demo · P1 · S · s1-4 rewrite — Stroh's entrance: silence beat, then line; plague quarantine rumour planted for Ch3
-- [ ] NAR-0046 · Demo · P1 · S · s1-5 rewrite — Haller's Litany explanation cut to 3 lines; the "Do not do it where the Inquisitor can see" line kept as the chapter's hook
-- [ ] NAR-0047 · Demo · P1 · S · s1-end rewrite — Stroh's "time itself were obliging you" beat triggered only if the player used the Litany in op1-5; alternate line if not
+- [x] NAR-0041 · Demo · P0 · M · Prologue rewrite — establish Kreuzer's motive (why a sworn Weissburg surgeon takes a charity post) in ≤ 2 lines; keep "we do not lose patients to simple work"
+- [x] NAR-0042 · Demo · P1 · S · Give Kreuzer a voice line in each Ch1 scene — currently silent in s1-2…s1-5; one characterising reply each
+- [x] NAR-0043 · Demo · P1 · S · s1-2 rewrite — Mauer introduced with a character tic (counts his men aloud); barb tutorial lines split from story lines for the tutorial system
+- [x] NAR-0044 · Demo · P1 · S · s1-3 rewrite — gunsmith guild's fee joke (institutional humour) and tincture tutorial line tightened to one instruction
+- [x] NAR-0045 · Demo · P1 · S · s1-4 rewrite — Stroh's entrance: silence beat, then line; plague quarantine rumour planted for Ch3
+- [x] NAR-0046 · Demo · P1 · S · s1-5 rewrite — Haller's Litany explanation cut to 3 lines; the "Do not do it where the Inquisitor can see" line kept as the chapter's hook
+- [x] NAR-0047 · Demo · P1 · S · s1-end rewrite — Stroh's "time itself were obliging you" beat triggered only if the player used the Litany in op1-5; alternate line if not
 - [ ] NAR-0048 · Demo · P1 · S · Plant the crestless carriage — one line identifies its livery as absent on purpose; codex entry "The Carriage Without a Crest" unlocks (pays off in Ch4 patron betrayal)
-- [ ] NAR-0049 · Demo · P2 · S · Emmerich's sigil detail — describe one sigil shape in s1-end that reappears on the cantor in op2-4 (continuity hook)
-- [ ] NAR-0050 · Demo · P2 · S · Drover payment joke (turnips) extended into s1-3 opener callback — one line only
+- [x] NAR-0049 · Demo · P2 · S · Emmerich's sigil detail — describe one sigil shape in s1-end that reappears on the cantor in op2-4 (continuity hook)
+- [x] NAR-0050 · Demo · P2 · S · Drover payment joke (turnips) extended into s1-3 opener callback — one line only
 
 ### Tutorial dialogue split
-- [ ] NAR-0051 · Demo · P0 · M · Separate instructional lines from story lines in Ch1 — tutorial text moves to tutorial prompts keyed by tool; story lines keep flavour only
-- [ ] NAR-0052 · Demo · P1 · S · Control-agnostic tutorial wording — every instruction uses input-glyph tokens ({TOOL_LANCET}, {LITANY_GESTURE}) so mouse, pad and Deck show correct prompts
+- [x] NAR-0051 · Demo · P0 · M · Separate instructional lines from story lines in Ch1 — tutorial text moves to tutorial prompts keyed by tool; story lines keep flavour only
+- [x] NAR-0052 · Demo · P1 · S · Control-agnostic tutorial wording — every instruction uses input-glyph tokens ({TOOL_LANCET}, {LITANY_GESTURE}) so mouse, pad and Deck show correct prompts
 - [ ] NAR-0053 · Demo · P1 · S · Litany tutorial copy — star gesture explained in-fiction by Haller and in UI copy; ≤ 2 prompts; re-openable from pause "Remembered Teachings"
 
 ## NAR · Epic 3 — Chapter II "The Hour of Lauds": demo-quality rewrite
 
 ### Structure and pacing
-- [ ] NAR-0054 · Demo · P0 · S · Ch2 beat sheet — purpose per scene s2-1…s2-end; escalation from mundane (Ch1) to monsters and magic stated per scene
-- [ ] NAR-0055 · Demo · P0 · S · Fix count error in STORY_2_END — Ilse says "Seven more hours" but lists six; change to "Six more hours to the full Office"
-- [ ] NAR-0056 · Demo · P1 · M · Add post-op aftermath micro-scenes after op2-1…op2-4 — 2–4 lines each
+- [x] NAR-0054 · Demo · P0 · S · Ch2 beat sheet — purpose per scene s2-1…s2-end; escalation from mundane (Ch1) to monsters and magic stated per scene
+- [x] NAR-0055 · Demo · P0 · S · Fix count error in STORY_2_END — Ilse says "Seven more hours" but lists six; change to "Six more hours to the full Office"
+- [x] NAR-0056 · Demo · P1 · M · Add post-op aftermath micro-scenes after op2-1…op2-4 — 2–4 lines each
 - [ ] NAR-0057 · Demo · P1 · S · Chapter transition card — "a week later" interstitial between s1-end and s2-1 with requisition writ shown as a prop image
-- [ ] NAR-0058 · Demo · P2 · S · Failure scene text for each Ch2 op — retry framing with Ilse/Mauer lines
+- [x] NAR-0058 · Demo · P2 · S · Failure scene text for each Ch2 op — retry framing with Ilse/Mauer lines
 
 ### s2-1 … s2-end passes
-- [ ] NAR-0059 · Demo · P1 · S · s2-1 rewrite — Mauer/Ilse banter; the "requisitioned surgeon" writ; Stroh's influence on the Burgomaster made explicit in one line
-- [ ] NAR-0060 · Demo · P1 · M · s2-2 rewrite — Orsa Flintvein intro with original mountain-folk culture detail (debt-knots), hexstone description (black, pulsing), Scrying Lens handover
-- [ ] NAR-0061 · Demo · P1 · S · s2-3 rewrite — Orsa snoring gag kept; web-spinner "brood-mother" folk name and one camp superstition line
+- [x] NAR-0059 · Demo · P1 · S · s2-1 rewrite — Mauer/Ilse banter; the "requisitioned surgeon" writ; Stroh's influence on the Burgomaster made explicit in one line
+- [x] NAR-0060 · Demo · P1 · M · s2-2 rewrite — Orsa Flintvein intro with original mountain-folk culture detail (debt-knots), hexstone description (black, pulsing), Scrying Lens handover
+- [x] NAR-0061 · Demo · P1 · S · s2-3 rewrite — Orsa snoring gag kept; web-spinner "brood-mother" folk name and one camp superstition line
 - [ ] NAR-0062 · Demo · P0 · M · s2-4 rewrite — first moral pressure scene: Stroh demands the cantor live for interrogation; Kreuzer's reply choice (2 options) sets flag `cantorMercy` for Ch3
-- [ ] NAR-0063 · Demo · P1 · S · s2-5 rewrite — the dawn hymn: lyrics of the Lauds antiphon (original 4-line verse, two voices) shown as the hymn falters
-- [ ] NAR-0064 · Demo · P0 · M · s2-end rewrite — demo cliffhanger: the hymn is heard in the ward at dawn and Jorg's LAUDS sigil matches the Ch1 sigil shape from Emmerich; Stroh's "After Prime" line ends the demo
-- [ ] NAR-0065 · Demo · P1 · S · Stroh's candle beat in s2-end conditional on Litany use in op2-5 — alternate: he notes the Doctor's hands "shook, for once"
-- [ ] NAR-0066 · Demo · P1 · S · Lauds boss framing — lines establish the curse as an antiphonal pair (two voices answering) so the boss mechanic is foreshadowed in story
+- [x] NAR-0063 · Demo · P1 · S · s2-5 rewrite — the dawn hymn: lyrics of the Lauds antiphon (original 4-line verse, two voices) shown as the hymn falters
+- [x] NAR-0064 · Demo · P0 · M · s2-end rewrite — demo cliffhanger: the hymn is heard in the ward at dawn and Jorg's LAUDS sigil matches the Ch1 sigil shape from Emmerich; Stroh's "After Prime" line ends the demo
+- [x] NAR-0065 · Demo · P1 · S · Stroh's candle beat in s2-end conditional on Litany use in op2-5 — alternate: he notes the Doctor's hands "shook, for once"
+- [x] NAR-0066 · Demo · P1 · S · Lauds boss framing — lines establish the curse as an antiphonal pair (two voices answering) so the boss mechanic is foreshadowed in story
 
 ### Demo-exclusive framing
 - [ ] NAR-0067 · Demo · P0 · S · Demo end card copy — "The Office is not finished. Prime is sung next." + wishlist call to action (≤ 25 words)
@@ -178,7 +178,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] NAR-0109 · Alpha · P0 · M · Precentor arc doc — Aurel Vennholt, struck-off surgeon; motive: end all suffering with a perfect Compline; appears only as voice until Ch4, in person in Ch5
 - [ ] NAR-0110 · Alpha · P1 · S · Precentor's letters — 5 intercepted letters (one per chapter, Ch1–2 letters added to demo codex as locked stubs) building his case in his own voice
 - [x] NAR-0111 · Alpha · P1 · S · Precentor/Kreuzer mirror scene (Ch5) — both claim to stop pain; 20 lines; no villain monologue beyond 4 consecutive lines
-- [ ] NAR-0112 · Alpha · P2 · S · Hollow Choir hierarchy — Precentor, cantors, lay-cantors, acolytes; the hospice patron (Widow Aldegund Reiss) as secret acolyte; bible entry
+- [x] NAR-0112 · Alpha · P2 · S · Hollow Choir hierarchy — Precentor, cantors, lay-cantors, acolytes; the hospice patron (Widow Aldegund Reiss) as secret acolyte; bible entry
 
 ### Supporting cast
 - [ ] NAR-0113 · Alpha · P1 · S · Add cast entries to `characters.ts` — precentor, orsa, reiss, tallert, motherSuperior, burgomaster with colors and silhouettes
@@ -203,7 +203,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] NAR-0126 · Alpha · P0 · M · s3-9 Licence vote at the Barber-Surgeons' Guildhall — Haller defends Kreuzer; Kreuzer's backstory surfaces; vote outcome depends on Ch1–3 average rank
 - [x] NAR-0127 · Alpha · P0 · M · s3-10 Terce — the guildhall catches hexfire mid-vote; Haller is the host
 - [x] NAR-0128 · Alpha · P0 · M · s3-end — Haller's confession about Aurel Vennholt; the Precentor's name spoken for the first time; the council orders the companies east
-- [ ] NAR-0129 · Alpha · P1 · S · Ch3 aftermath micro-scenes for all 10 ops — 2–4 lines each
+- [x] NAR-0129 · Alpha · P1 · S · Ch3 aftermath micro-scenes for all 10 ops — 2–4 lines each
 
 ## NAR · Epic 7 — Chapter IV "Sext and None" (the Vennmark field)
 
@@ -306,11 +306,11 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ## CON · Epic 1 — Data-driven content pipeline (Demo foundation)
 
 ### Operation data format
-- [ ] CON-0001 · Demo · P0 · L · Serialisable operation schema — OperationDef phases expressed as JSON/TS data (entity type + params) instead of `spawn` closures; op1-1…op2-5 ported with identical seeded outcomes (golden test)
-- [ ] CON-0002 · Demo · P0 · M · Entity registry — string ids (laceration, incision, embedded, burn, bubo, rot, venom, grub, sigil, malison-matins, malison-lauds…) mapped to constructors with typed param validation
-- [ ] CON-0003 · Demo · P0 · S · Schema validation — Zod (or hand-rolled) validator rejects unknown entity ids, out-of-field positions, tools missing for required entities; runs in Vitest over all ops
-- [ ] CON-0004 · Demo · P1 · S · Tool-requirement check — test asserts every spawned entity is resolvable with the op's `tools` list (e.g. Embedded needs tongs, Grub needs brand)
-- [ ] CON-0005 · Demo · P1 · S · Remove non-setting `race` values `'elf' | 'halfling' | 'orc'` from OperationDef — replace with `'human' | 'mountainfolk' | 'hornfolk' | 'giant'` flesh tints
+- [x] CON-0001 · Demo · P0 · L · Serialisable operation schema — OperationDef phases expressed as JSON/TS data (entity type + params) instead of `spawn` closures; op1-1…op2-5 ported with identical seeded outcomes (golden test)
+- [x] CON-0002 · Demo · P0 · M · Entity registry — string ids (laceration, incision, embedded, burn, bubo, rot, venom, grub, sigil, malison-matins, malison-lauds…) mapped to constructors with typed param validation
+- [x] CON-0003 · Demo · P0 · S · Schema validation — Zod (or hand-rolled) validator rejects unknown entity ids, out-of-field positions, tools missing for required entities; runs in Vitest over all ops
+- [x] CON-0004 · Demo · P1 · S · Tool-requirement check — test asserts every spawned entity is resolvable with the op's `tools` list (e.g. Embedded needs tongs, Grub needs brand)
+- [x] CON-0005 · Demo · P1 · S · Remove non-setting `race` values `'elf' | 'halfling' | 'orc'` from OperationDef — replace with `'human' | 'mountainfolk' | 'hornfolk' | 'giant'` flesh tints
 - [ ] CON-0006 · Demo · P1 · S · Callout text moved to string keys — `callout` arrays reference loc keys; missing-key test
 - [ ] CON-0007 · Demo · P1 · M · Campaign graph data — chapters as ordered step lists with optional branch nodes (`if flag`), replacing the hard-coded `CAMPAIGN` array; demo graph = Ch1+Ch2 only
 - [ ] CON-0008 · Demo · P1 · S · Flag store — named boolean/int campaign flags (cantorMercy, litanySeenCount) persisted in save; unit tests for set/get/serialise

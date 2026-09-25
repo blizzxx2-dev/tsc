@@ -1,0 +1,42 @@
+name: Performance problem
+description: Low frame rate, stutter, long loads, high memory or battery drain.
+labels: [bug, area:perf]
+body:
+  - type: input
+    id: build
+    attributes:
+      label: Build id
+    validations:
+      required: true
+  - type: input
+    id: hardware
+    attributes:
+      label: CPU, GPU, RAM, display resolution and refresh rate
+      placeholder: Ryzen 5 3600, GTX 1060 6GB, 16 GB, 1920×1080 @ 144 Hz
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: OS and GPU driver
+    validations:
+      required: true
+  - type: textarea
+    id: settings
+    attributes:
+      label: Game settings
+      description: Display mode, render scale, frame cap, quality tier, any assists.
+    validations:
+      required: true
+  - type: textarea
+    id: where
+    attributes:
+      label: Where and how bad
+      description: Screen / operation id and phase; FPS you see (e.g. with the Steam overlay counter) vs what you expect; stutter pattern.
+    validations:
+      required: true
+  - type: textarea
+    id: capture
+    attributes:
+      label: F8 bundle or frame-time capture
+      description: The F8 bundle includes recent frame times. PresentMon / Steam Deck performance overlay screenshots help too.

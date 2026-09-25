@@ -44,7 +44,9 @@ module.exports = {
     ...(noSteam ? ['!node_modules/steamworks.js/**'] : []),
   ],
   asar: true,
-  asarUnpack: ['node_modules/steamworks.js/dist/**'],
+  // The generated 3D models (hundreds of MB, 4K KTX2 textures) stay outside the asar archive and
+  // are read straight from disk; Steam ships the unpacked folder (win target 'dir') at any size.
+  asarUnpack: ['node_modules/steamworks.js/dist/**', 'dist/assets/models_*', 'dist/assets/models.json'],
   electronLanguages: LOCALES,
   compression: 'normal',
   npmRebuild: false,

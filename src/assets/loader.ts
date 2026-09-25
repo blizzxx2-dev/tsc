@@ -26,6 +26,8 @@ export interface LoaderBackend {
   /** Load a sprite sheet: JSON frame table + its page images. */
   sheet(id: AssetId, json: unknown, pages: ArrayBuffer[], entry: AssetEntry): Promise<{ value: unknown; dispose?: () => void }>;
   font(id: AssetId, bytes: ArrayBuffer, entry: AssetEntry): Promise<{ value: unknown; dispose?: () => void }>;
+  /** Parse + upload a glTF binary (3D sets, props, busts). Optional: headless backends skip models. */
+  model?(id: AssetId, bytes: ArrayBuffer, entry: AssetEntry): Promise<{ value: unknown; dispose?: () => void }>;
   warn(msg: string): void;
 }
 
@@ -141,8 +143,49 @@ export class AssetLoader {
     return this.bundlesHeld.has(b) && ((this.bundles[b] ?? []) as AssetId[]).every((id) => this.loaded.has(id));
   }
 
+  /** Merge generated entries (the local 3D models manifest) into the manifest and their bundles. */
+  addEntries(entries: Record<string, AssetEntry>): void {
+    this.manifest = { ...this.manifest, ...entries };
+    const bundles: Record<string, string[]> = Object.fromEntries(Object.entries(this.bundles).map(([k, v]) => [k, [...v]]));
+    for (const [id, e] of Object.entries(entries)) (bundles[e.bundle] ??= []).includes(id) || bundles[e.bundle].push(id);
+    this.bundles = bundles;
+  }
+
+  has(id: string): boolean {
+    return id in this.manifest;
+  }
+
+  /** How many assets a bundle holds (0 for an empty or unknown bundle). */
+  bundleSize(b: BundleId): number {
+    return (this.bundles[b] ?? []).length;
+  }
+
   heldBundles(): BundleId[] {
     return [...this.bundlesHeld];
+  }
+
+  /**
+   * Dev hot reload (ART-0039): adopt a rebuilt manifest and re-fetch every resident asset whose
+   * content hash changed, swapping it in place so `get(id)` returns the new version. Reference
+   * counts and held bundles carry over. Resolves to the ids that were swapped.
+   */
+  async hotSwap(manifest: Record<string, AssetEntry>, bundles: Record<string, readonly string[]>): Promise<AssetId[]> {
+    const old = this.manifest;
+    this.manifest = manifest;
+    this.bundles = bundles;
+    const changed = [...this.loaded.keys()].filter((id) => manifest[id] && manifest[id].hash !== old[id]?.hash);
+    await Promise.all(
+      changed.map(async (id) => {
+        const fresh = await this.fetchAsset(id);
+        const prev = this.loaded.get(id);
+        if (!this.refs.get(id)) return fresh.dispose?.();
+        this.loaded.set(id, fresh);
+        prev?.dispose?.();
+      }),
+    );
+    // Bundles held before the swap pick up assets that were added to them.
+    for (const b of this.bundlesHeld) for (const id of (bundles[b] ?? []) as AssetId[]) if (!this.refs.has(id)) void this.load(id);
+    return changed;
   }
 
   private async fetchAsset(id: AssetId): Promise<LoadedAsset> {
@@ -167,6 +210,11 @@ export class AssetLoader {
         }
         case 'font': {
           const r = await be.font(id, await be.fetchBytes(this.url(id)), entry);
+          return { id, entry, fallback: false, ...r };
+        }
+        case 'model': {
+          if (!be.model) return { id, entry, fallback: true, value: null };
+          const r = await be.model(id, await be.fetchBytes(this.url(id)), entry);
           return { id, entry, fallback: false, ...r };
         }
         case 'json':

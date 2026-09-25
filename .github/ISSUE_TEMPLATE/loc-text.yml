@@ -1,0 +1,58 @@
+name: Text or localisation problem
+description: Typo, wrong or missing translation, clipped text, wrong font or missing glyph.
+labels: [bug, area:loc]
+body:
+  - type: input
+    id: build
+    attributes:
+      label: Build id
+    validations:
+      required: true
+  - type: input
+    id: language
+    attributes:
+      label: Language
+      placeholder: de, fr, pl, pt-BR, qps (pseudo-loc)…
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Problem
+      options:
+        [
+          Typo or grammar,
+          Wrong or misleading translation,
+          Untranslated / missing key,
+          Text clipped or overflowing,
+          Missing glyph or wrong font,
+          Tone or style,
+          Other,
+        ]
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: Where
+      description: Screen and, if you know it, the string key (shown with the pseudo-loc build / console).
+      placeholder: Results screen, "A new best!" / results.newBest
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Current text (paste or screenshot)
+    validations:
+      required: true
+  - type: textarea
+    id: suggested
+    attributes:
+      label: Suggested text
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options: [S2 — blocks understanding (e.g. tutorial instruction wrong), S3 — clearly visible, S4 — cosmetic]
+    validations:
+      required: true

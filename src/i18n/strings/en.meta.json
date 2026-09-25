@@ -2,8 +2,8 @@
   "ui.game.title": {
     "scene": "title",
     "font": "display",
-    "size": 116,
-    "maxPx": 900,
+    "size": 84,
+    "maxPx": 1180,
     "context": "Game title on the title screen.",
     "screenshot": "docs/loc/screens/title.png",
     "dnt": true,
@@ -131,14 +131,6 @@
     "context": "Options screen heading.",
     "screenshot": "docs/loc/screens/options.png"
   },
-  "ui.options.volume": {
-    "scene": "options",
-    "font": "body",
-    "size": 24,
-    "maxPx": 360,
-    "context": "Options row label, left-aligned.",
-    "screenshot": "docs/loc/screens/options.png"
-  },
   "ui.options.volume_value": {
     "scene": "options",
     "font": "body",
@@ -154,6 +146,23 @@
     "maxPx": 360,
     "context": "Options row label, left-aligned.",
     "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.sound_muted": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 280,
+    "context": "Value of an options row, drawn right-aligned between ‹ ›.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.sound_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
   },
   "ui.options.shake": {
     "scene": "options",
@@ -199,10 +208,9 @@
     "scene": "options",
     "font": "italic",
     "size": 18,
-    "maxPx": 720,
-    "context": "Explanation shown under the options list while the row is hovered.",
-    "screenshot": "docs/loc/screens/options.png",
-    "maxLines": 1
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
   },
   "ui.options.timer_assist": {
     "scene": "options",
@@ -240,10 +248,9 @@
     "scene": "options",
     "font": "italic",
     "size": 18,
-    "maxPx": 720,
-    "context": "Explanation shown under the options list while the row is hovered.",
-    "screenshot": "docs/loc/screens/options.png",
-    "maxLines": 1
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
   },
   "ui.options.fullscreen": {
     "scene": "options",
@@ -265,10 +272,9 @@
     "scene": "options",
     "font": "italic",
     "size": 18,
-    "maxPx": 720,
-    "context": "Explanation shown under the options list while the row is hovered.",
-    "screenshot": "docs/loc/screens/options.png",
-    "maxLines": 1
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
   },
   "ui.briefing.title": {
     "scene": "briefing",
@@ -535,15 +541,6 @@
     "context": "HUD label above the vitals number.",
     "screenshot": "docs/loc/screens/operation.png"
   },
-  "hud.combo": {
-    "scene": "operation",
-    "font": "italic",
-    "size": 22,
-    "maxPx": 60,
-    "context": "Combo counter on the wax seal in the HUD.",
-    "screenshot": "docs/loc/screens/operation.png",
-    "note": "Keep × (U+00D7) unless the language has a native multiplication sign convention."
-  },
   "hud.chain": {
     "scene": "operation",
     "font": "italic",
@@ -564,17 +561,17 @@
   "hud.op_complete": {
     "scene": "operation",
     "font": "display",
-    "size": 56,
-    "maxPx": 560,
-    "context": "Banner at the end of an operation.",
+    "size": 46,
+    "maxPx": 1000,
+    "context": "Title card across the operating field at the end of an operation (engraved capitals on a dark band).",
     "screenshot": "docs/loc/screens/operation.png"
   },
   "hud.patient_lost": {
     "scene": "operation",
     "font": "display",
-    "size": 56,
-    "maxPx": 560,
-    "context": "Banner at the end of an operation.",
+    "size": 46,
+    "maxPx": 1000,
+    "context": "Title card across the operating field at the end of an operation (engraved capitals on a dark band).",
     "screenshot": "docs/loc/screens/operation.png"
   },
   "hud.litany.active": {
@@ -1271,10 +1268,9 @@
     "scene": "options",
     "font": "italic",
     "size": 18,
-    "maxPx": 720,
-    "context": "Explanation shown under the options list while the row is hovered.",
-    "screenshot": "docs/loc/screens/options.png",
-    "maxLines": 1
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
   },
   "ui.title.owns_full": {
     "scene": "title",
@@ -2262,10 +2258,9 @@
     "scene": "options",
     "font": "italic",
     "size": 18,
-    "maxPx": 720,
-    "context": "Explanation shown under the options list while the row is hovered.",
-    "screenshot": "docs/loc/screens/options.png",
-    "maxLines": 1
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
   },
   "ui.options.controls": {
     "scene": "options",
@@ -2290,6 +2285,3743 @@
     "maxPx": 700,
     "context": "Story footer; placeholders are key labels.",
     "screenshot": "docs/loc/screens/story.png"
+  },
+  "label.acid_drawn": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.corroded": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.neutralised": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.poison_spent": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.matched": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.wrong_antidote": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.vented": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.pocket_opened": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.gassed": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.pin_order": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.set": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.misaligned": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.pinned": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.splinter": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.scalded": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.thawed": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.crystals_drawn": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.limb_saved": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.sawn_through": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.ligatures": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.stump_seared": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.ripped": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.tied_off": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.growth_lifted": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.excised": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.root_seared": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.line_halted": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.node_treated": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.spores_scattered": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.crust_excised": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.air_drawn": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.lung_sealed": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.dura_nicked": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.disc_cut": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.disc_lifted": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.mid_verse": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.fold_cut": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.tumbler_set": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.clogged": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.clot_drawn": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.artery_torn": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "popup.a_new_head": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.torn_worm": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.worm_drawn": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.antiparasitic": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "popup.it_re_stones": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.unstoned": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.off_the_crack": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.margin_salved": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "popup.it_knits_shut": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.reopened_lump": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.rim_seared": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.glass_cleared": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.snapped_splinter": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.perforated": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.ulcer_closed": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.spill_drained": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.channel_seared": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.transfused": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.festered": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.stilled": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.wrenched": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "popup.loosened": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.snapped": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.sliced": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.wadding": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "popup.it_rekindles": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.char_excised": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.ember_out": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.salve_on_acid": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.overcut": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "popup.it_reached_the_heart": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.caught": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.ligature": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.split": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "popup.the_sigil_knits_back": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "loss.inquisitor_stroh_saw_the_sign_the_operat": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 24,
+    "maxPx": 600,
+    "context": "Reason shown under \"The Patient Is Lost\".",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.the_words_falter_try_again": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.nothing_for_me_to_hold_doctor": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.ilse_assists_200": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.the_brand_is_white_hot_let_it_cool": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.reopened": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.into_the_wound": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.stabilised": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.wasteful": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "popup.antivenom": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.roused": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "popup.stimulant": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.fever_eased": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.soothed": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.restitched": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "ui.options.gameplay": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 520,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.gameplay_value": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 560,
+    "context": "Value of an options row, drawn right-aligned between ‹ ›.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.gameplay_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ui.results.from_malison": {
+    "scene": "results",
+    "font": "body",
+    "size": 30,
+    "maxPx": 440,
+    "context": "Results button.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "ui.results.retry_novice": {
+    "scene": "results",
+    "font": "body",
+    "size": 30,
+    "maxPx": 440,
+    "context": "Results button.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "ui.results.ilse_tip": {
+    "scene": "results",
+    "font": "body",
+    "size": 30,
+    "maxPx": 250,
+    "context": "Sister Ilse’s tip on the results card (wraps).",
+    "screenshot": "docs/loc/screens/results.png",
+    "maxLines": 4
+  },
+  "hud.blood": {
+    "scene": "operation",
+    "font": "body",
+    "size": 13,
+    "maxPx": 110,
+    "context": "Label of the blood-volume gauge beside the vitals.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "hud.practice.title": {
+    "scene": "options",
+    "font": "display",
+    "size": 52,
+    "maxPx": 1100,
+    "context": "Heading of the Litany practice overlay before a first boss.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "hud.practice.help": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Litany practice instructions; {draw} is the bound input.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "hud.practice.attempts": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "hud.practice.skip": {
+    "scene": "results",
+    "font": "body",
+    "size": 30,
+    "maxPx": 600,
+    "context": "Results button.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "hud.dialogue.continue": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ui.gameplay.title": {
+    "scene": "options",
+    "font": "display",
+    "size": 52,
+    "maxPx": 900,
+    "context": "Options screen heading.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.gameplay.fees": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "label.fascia": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.rushed": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.skin": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.stray_cut": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "ui.options.volume": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.common.yes": {
+    "scene": "common",
+    "font": "body",
+    "size": 26,
+    "maxPx": 170,
+    "context": "Confirm-dialog affirmative button.",
+    "screenshot": "docs/loc/screens/common.png"
+  },
+  "ui.common.no": {
+    "scene": "common",
+    "font": "body",
+    "size": 26,
+    "maxPx": 170,
+    "context": "Confirm-dialog negative button.",
+    "screenshot": "docs/loc/screens/common.png"
+  },
+  "ui.gallery.title": {
+    "scene": "gallery",
+    "font": "display",
+    "size": 30,
+    "maxPx": 400,
+    "context": "Developer widget gallery heading (dev builds only).",
+    "screenshot": "docs/loc/screens/gallery.png"
+  },
+  "ui.options.tab.gameplay": {
+    "scene": "options",
+    "font": "body",
+    "size": 22,
+    "maxPx": 130,
+    "context": "Options tab.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.tab.controls": {
+    "scene": "options",
+    "font": "body",
+    "size": 22,
+    "maxPx": 130,
+    "context": "Options tab.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.tab.display": {
+    "scene": "options",
+    "font": "body",
+    "size": 22,
+    "maxPx": 130,
+    "context": "Options tab.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.tab.audio": {
+    "scene": "options",
+    "font": "body",
+    "size": 22,
+    "maxPx": 130,
+    "context": "Options tab.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.tab.access": {
+    "scene": "options",
+    "font": "body",
+    "size": 22,
+    "maxPx": 130,
+    "context": "Options tab: Accessibility (short form; the tab is narrow).",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.tab.language": {
+    "scene": "options",
+    "font": "body",
+    "size": 22,
+    "maxPx": 130,
+    "context": "Options tab.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.card.title": {
+    "scene": "controls_card",
+    "font": "display",
+    "size": 42,
+    "maxPx": 700,
+    "context": "Heading of the controls reference card.",
+    "screenshot": "docs/loc/screens/controls_card.png"
+  },
+  "ui.card.litany": {
+    "scene": "controls_card",
+    "font": "body",
+    "size": 24,
+    "maxPx": 500,
+    "context": "Controls card: the time-slowing rite.",
+    "screenshot": "docs/loc/screens/controls_card.png"
+  },
+  "ui.card.litany_how": {
+    "scene": "controls_card",
+    "font": "body",
+    "size": 17,
+    "maxPx": 1000,
+    "context": "Controls card: how to invoke the Litany; {draw} and {key} are input names.",
+    "screenshot": "docs/loc/screens/controls_card.png",
+    "maxLines": 2
+  },
+  "ui.pause.confirm_restart": {
+    "scene": "pause",
+    "font": "body",
+    "size": 24,
+    "maxPx": 520,
+    "context": "Confirm dialog before restarting an operation.",
+    "screenshot": "docs/loc/screens/pause.png",
+    "maxLines": 3
+  },
+  "ui.pause.controls": {
+    "scene": "pause",
+    "font": "body",
+    "size": 26,
+    "maxPx": 340,
+    "context": "Pause menu entry opening the controls card.",
+    "screenshot": "docs/loc/screens/pause.png"
+  },
+  "ui.pause.case_notes": {
+    "scene": "pause",
+    "font": "display",
+    "size": 36,
+    "maxPx": 460,
+    "context": "Pause: heading of the operation info sheet; also menu entry returning to it.",
+    "screenshot": "docs/loc/screens/pause.png"
+  },
+  "ui.pause.callout_log": {
+    "scene": "pause",
+    "font": "display",
+    "size": 34,
+    "maxPx": 460,
+    "context": "Pause: heading/menu entry for the log of the assistant's recent callouts.",
+    "screenshot": "docs/loc/screens/pause.png"
+  },
+  "ui.pause.confirm_abandon": {
+    "scene": "pause",
+    "font": "body",
+    "size": 24,
+    "maxPx": 520,
+    "context": "Confirm dialog before abandoning an operation.",
+    "screenshot": "docs/loc/screens/pause.png",
+    "maxLines": 3
+  },
+  "ui.pause.quit_desktop": {
+    "scene": "pause",
+    "font": "body",
+    "size": 26,
+    "maxPx": 340,
+    "context": "Pause menu entry (desktop builds).",
+    "screenshot": "docs/loc/screens/pause.png"
+  },
+  "ui.pause.confirm_quit": {
+    "scene": "pause",
+    "font": "body",
+    "size": 24,
+    "maxPx": 520,
+    "context": "Confirm dialog before quitting to desktop.",
+    "screenshot": "docs/loc/screens/pause.png",
+    "maxLines": 3
+  },
+  "ui.pause.time_left": {
+    "scene": "pause",
+    "font": "body",
+    "size": 22,
+    "maxPx": 260,
+    "context": "Pause case notes row label.",
+    "screenshot": "docs/loc/screens/pause.png"
+  },
+  "ui.pause.vitals": {
+    "scene": "pause",
+    "font": "body",
+    "size": 22,
+    "maxPx": 260,
+    "context": "Pause case notes row label.",
+    "screenshot": "docs/loc/screens/pause.png"
+  },
+  "ui.pause.rank_pace": {
+    "scene": "pause",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 180,
+    "context": "Pause case notes: label above the current-rank seal.",
+    "screenshot": "docs/loc/screens/pause.png"
+  },
+  "ui.pause.tally": {
+    "scene": "pause",
+    "font": "body",
+    "size": 18,
+    "maxPx": 500,
+    "context": "Pause case notes: rating counts so far.",
+    "screenshot": "docs/loc/screens/pause.png"
+  },
+  "ui.pause.log_empty": {
+    "scene": "pause",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 480,
+    "context": "Pause: callout log is empty.",
+    "screenshot": "docs/loc/screens/pause.png"
+  },
+  "ui.options.defaults": {
+    "scene": "options",
+    "font": "body",
+    "size": 22,
+    "maxPx": 200,
+    "context": "Options: restore this tab's defaults.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.tool_hints": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.tool_hints_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.hints_always": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Tool-hint mode.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.hints_first": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Tool-hint mode.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.hints_off": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Tool-hint mode.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.damage_numbers": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.damage_numbers_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.minimal_hud": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.minimal_hud_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.confirm_abandon": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.confirm_abandon_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.skip_seen_tutorials": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.skip_seen_tutorials_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.invert_wheel": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.invert_wheel_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.wrap_wheel": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.wrap_wheel_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.pause_on_focus_loss": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.pause_on_focus_loss_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.rebind": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 560,
+    "context": "Options action row: opens the rebinding screen.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.rebind_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.card": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 560,
+    "context": "Options action row: opens the controls reference card.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.card_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.cursor_speed": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.cursor_speed_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.hold_mode": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.hold_mode_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.hold_hold": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Hold-mode value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.hold_toggle": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Hold-mode value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.target_size": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.target_size_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.aim_assist": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.aim_assist_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.display_mode": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.display_mode_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.mode_windowed": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Window mode value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.mode_borderless": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Window mode value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.mode_fullscreen": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Window mode value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.vsync": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.vsync_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.frame_limit_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.brightness": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.brightness_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.bloom": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.bloom_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.grain": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.grain_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.vignette": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.vignette_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.flicker": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.flicker_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.chroma": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.chroma_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.shake_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.volume_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.mute_unfocused": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.mute_unfocused_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.text_scale": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.text_scale_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.text_speed": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.text_speed_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.speed_slow": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Text speed value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.speed_normal": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Text speed value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.speed_fast": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Text speed value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.speed_instant": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Text speed value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.box_opacity": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.box_opacity_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.reduce_motion": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.reduce_motion_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.colour_filter": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.colour_filter_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 560,
+    "context": "Options row description (beside the swatches).",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.filter_none": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Colour filter value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.filter_deuteranopia": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Colour filter value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.filter_protanopia": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Colour filter value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.filter_tritanopia": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Colour filter value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.filter_highContrast": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Colour filter value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.cursor_size": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.cursor_size_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.cursor_colour": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.cursor_colour_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.cursor_brass": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Reticle colour value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.cursor_white": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Reticle colour value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.cursor_cyan": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Reticle colour value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.cursor_magenta": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Reticle colour value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.resume_countdown": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.resume_countdown_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.skip_unread": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.skip_unread_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.mixer": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.mixer_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ui.common.done": {
+    "scene": "common",
+    "font": "body",
+    "size": 28,
+    "maxPx": 300,
+    "context": "Generic button / toggle value.",
+    "screenshot": "docs/loc/screens/common.png"
+  },
+  "ui.calibrate.title": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 700,
+    "context": "Title of the brightness calibration screen.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.calibrate.help": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 2
+  },
+  "ui.calibrate.value": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 280,
+    "context": "Value of an options row, drawn right-aligned between ‹ ›.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.calibrate": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.calibrate_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "hud.fold.humming": {
+    "scene": "operation",
+    "font": "body",
+    "size": 13,
+    "maxPx": 300,
+    "context": "HUD label above the vitals number.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "hud.fold.silence": {
+    "scene": "operation",
+    "font": "body",
+    "size": 13,
+    "maxPx": 300,
+    "context": "HUD label above the vitals number.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "hud.tutorial.tool": {
+    "scene": "operation",
+    "font": "body",
+    "size": 13,
+    "maxPx": 300,
+    "context": "HUD label above the vitals number.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "ctl.tab.tools": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.tab.litany": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.tab.story": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.tab.menus": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.tab.handling": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.tab.deck": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.hold_actions": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.hold": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.toggle": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.toggle_click_once_to_start_the_l": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.pref.assist_target_size": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.every_grab_cut_and_brush_reaches": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.pref.assist_stitching": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.off": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.on": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.gamepad_only": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.hold_and_run_along_the_wound_sti": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.pref.litany_input": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.draw_the_star": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.litany_key": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.either": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.speaking_the_litany_with_a_key_i": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.pref.aim_assist_gamepad": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.slows_the_cursor_near_what_the_i": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.pref.cursor_speed_gamepad": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.applies_to_the_gamepad_cursor_th": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.pref.left_stick_deadzone": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.right_stick_deadzone": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.mouse_wheel": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.inverted": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.normal": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.wheel_wraps_around_the_tray": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.confirm_button": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.right_face_nintendo": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.bottom_face": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.button_prompts": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.automatic": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.xbox": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.playstation": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.nintendo": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.steam_deck": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.pref.generic": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.deck.0.input": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.deck.0.action": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.deck.1.input": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.deck.1.action": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.deck.2.input": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.deck.2.action": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.deck.3.input": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.deck.3.action": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.deck.4.input": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.deck.4.action": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.deck.5.input": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.deck.5.action": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.deck.6.input": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.deck.6.action": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.deck.7.input": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.deck.7.action": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.deck.8.input": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.deck.8.action": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.deck.9.input": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.deck.9.action": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.deck.10.input": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.deck.10.action": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.deck.11.input": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.deck.11.action": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.deck.title": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.col.kbm": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.col.pad": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.title": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.help": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 1100,
+    "context": "Full-width message line on the Controls screen.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.msg.reset_all": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 1100,
+    "context": "Full-width message line on the Controls screen.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.msg.no_key": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 1100,
+    "context": "Full-width message line on the Controls screen.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.foot.reset_these": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.foot.reset_row": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.foot.reset_all": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.prompt.swap_q": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.prompt.swap": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.prompt.cancel": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.capture_short": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.capture": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 1100,
+    "context": "Full-width message line on the Controls screen.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.capture_note": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.conflict": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 1100,
+    "context": "Full-width message line on the Controls screen.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "action.primary": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.tool.hold": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.tool.next": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.tool.prev": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.tool.radial": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.litany.draw": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.litany.key": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.op.assist": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.op.debug": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.pause": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.ui.confirm": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.ui.back": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.ui.up": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.ui.down": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.ui.left": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.ui.right": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.vn.advance": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.vn.fast": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.vn.auto": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.vn.log": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.vn.hide": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.tool.select.1": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.tool.select.2": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.tool.select.3": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.tool.select.4": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.tool.select.5": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.tool.select.6": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.tool.select.7": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.tool.select.8": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ctl.reserved.0": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 1100,
+    "context": "Full-width message line on the Controls screen.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.reserved.1": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 1100,
+    "context": "Full-width message line on the Controls screen.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.reserved.2": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 1100,
+    "context": "Full-width message line on the Controls screen.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ctl.reserved.3": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 1100,
+    "context": "Full-width message line on the Controls screen.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "snd.master": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.music": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.sound_effects": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.voice": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.sister_ilse_and_the_cast_when_vo": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.ambience": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.interface": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.sound": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.mono": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.folds_stereo_to_one_channel_posi": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "snd.balance": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.centre": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.dynamic_range": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.full": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.reduced": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.night": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.reduced_and_night_compress_loud_": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "snd.mute_when_unfocused": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.output_device": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.system_default": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.heartbeat": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.always": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.low_vitals_only": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.off": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.when_off_the_screen_edge_pulses_": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "snd.pulse_tick": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.patient_vocalisations": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.reduce_audio_stress": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.no_tinnitus_or_muffling_at_low_v": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "snd.clock_ticks": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.from_30_s": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.last_10_s": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.story_text_blips": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.sound_captions": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.describes_important_sounds_with_": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "snd.subtitles": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.subtitles_for_voiced_lines": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.text_size": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.background": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.balance_l": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.balance_r": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.output_n": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.title": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.tab.volume": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.tab.mix": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.tab.comfort": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "snd.tab.captions": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "hud.pad_disconnected": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 1100,
+    "context": "Full-width message line on the Controls screen.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ui.stamp.suspect": {
+    "scene": "operation",
+    "font": "body",
+    "size": 13,
+    "maxPx": 260,
+    "context": "HUD label above the vitals number.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "ui.stamp.approved": {
+    "scene": "operation",
+    "font": "body",
+    "size": 13,
+    "maxPx": 260,
+    "context": "HUD label above the vitals number.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "hud.banner.phase": {
+    "scene": "operation",
+    "font": "display",
+    "size": 28,
+    "maxPx": 380,
+    "context": "HUD label above the vitals number.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "hud.banner.malison": {
+    "scene": "operation",
+    "font": "display",
+    "size": 28,
+    "maxPx": 900,
+    "context": "HUD label above the vitals number.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.obj.stitch_the_deep_cuts": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.draw_off_the_blood": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.salve_the_nicks": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.free_the_barbed_arrow": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.pull_the_bolt_and_shard": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.steady_his_pulse": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.open_along_the_line": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.extract_the_shot": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.close_the_incision": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.lance_the_buboes": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.sear_the_grubs": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.salve_the_rot": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.break_the_sigils": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.open_the_incision": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.unmake_the_malison": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.tend_the_wounds": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.draw_out_the_venom": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.pull_the_fangs": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.stitch_the_claw_rakes": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.pull_the_splinters": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.find_the_hidden_shards": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.clean_the_spoiled_flesh": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.treat_the_bites": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.lance_the_egg_sacs": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.find_the_last_sac": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.counter_the_poison": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.sear_the_sigils": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.dress_the_hexfire_burns": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.brand_the_maggots": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.silence_the_choir": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "ui.briefing.prognosis": {
+    "scene": "briefing",
+    "font": "body",
+    "size": 20,
+    "maxPx": 220,
+    "context": "Label before three prognosis boxes on the patient chart; one box gets a red stamp.",
+    "screenshot": "docs/loc/screens/briefing.png"
+  },
+  "ui.briefing.prognosis.fair": {
+    "scene": "briefing",
+    "font": "body",
+    "size": 18,
+    "maxPx": 140,
+    "context": "A prognosis box on the patient chart (a surgeon's estimate of the outcome). Short adjective.",
+    "screenshot": "docs/loc/screens/briefing.png"
+  },
+  "ui.briefing.prognosis.guarded": {
+    "scene": "briefing",
+    "font": "body",
+    "size": 18,
+    "maxPx": 140,
+    "context": "A prognosis box on the patient chart (a surgeon's estimate of the outcome). Short adjective.",
+    "screenshot": "docs/loc/screens/briefing.png"
+  },
+  "ui.briefing.prognosis.grave": {
+    "scene": "briefing",
+    "font": "body",
+    "size": 18,
+    "maxPx": 140,
+    "context": "A prognosis box on the patient chart (a surgeon's estimate of the outcome). Short adjective.",
+    "screenshot": "docs/loc/screens/briefing.png"
+  },
+  "ui.demoend.plate": {
+    "scene": "demoend",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 410,
+    "context": "Caption under a woodcut picture teasing the next chapter (a district of glass kilns and forges) on the end-of-demo screen.",
+    "screenshot": "docs/loc/screens/demoend.png"
+  },
+  "ui.loading.label": {
+    "scene": "loading",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 600,
+    "context": "Shown under an hourglass while the next chapter loads.",
+    "screenshot": "docs/loc/screens/loading.png"
+  },
+  "ui.loading.wound_man": {
+    "scene": "loading",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 640,
+    "context": "Caption under a woodcut picture on the loading screen. Period tone, sentence fragment.",
+    "screenshot": "docs/loc/screens/loading.png"
+  },
+  "ui.loading.leech_jar": {
+    "scene": "loading",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 640,
+    "context": "Caption under a woodcut picture on the loading screen. Period tone, sentence fragment.",
+    "screenshot": "docs/loc/screens/loading.png"
+  },
+  "ui.loading.pyre": {
+    "scene": "loading",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 640,
+    "context": "Caption under a woodcut picture on the loading screen. Period tone, sentence fragment.",
+    "screenshot": "docs/loc/screens/loading.png"
+  },
+  "ui.loading.choir": {
+    "scene": "loading",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 640,
+    "context": "Caption under a woodcut picture on the loading screen. Period tone, sentence fragment.",
+    "screenshot": "docs/loc/screens/loading.png"
+  },
+  "hud.score": {
+    "scene": "operation",
+    "font": "display",
+    "size": 11,
+    "maxPx": 120,
+    "context": "Small engraved caps label above the score number in the operation HUD.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "hud.litany": {
+    "scene": "operation",
+    "font": "display",
+    "size": 11,
+    "maxPx": 120,
+    "context": "Small caps label beside the Litany (holy rite) medallion in the operation HUD.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "action.tool.quickSwap": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.op.leechReverse": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.ui.tabPrev": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.ui.tabNext": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
   },
   "label.matins.veiled": {
     "scene": "operation",

@@ -1,0 +1,20 @@
+# Prettier owns only code written after the formatter was introduced (QAT-0004/0006).
+# Existing engine/game code under src/ keeps its hand formatting; do not mass-reformat it.
+src/*
+!src/debug/
+!src/telemetry/
+dist/
+dist-*/
+reports/
+docs/
+package-lock.json
+*.md
+# Shared files other workstreams edit in parallel; formatting them would only cause merge conflicts.
+index.html
+scripts/roadmap-index.mjs
+scripts/shoot.mjs
+tests/bot.ts
+tests/balance.test.ts
+tests/gesture.test.ts
+public/vendor/
+art-src/.cache/

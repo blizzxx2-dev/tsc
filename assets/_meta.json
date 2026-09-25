@@ -1,0 +1,65 @@
+{
+  "$comment": "Per-asset art metadata (ART-0041/0045/0047/0048), merged in order onto every manifest id the regex matches. status: placeholder|wip|final (placeholder fails the build in demo bundles). nine: 9-slice margins [l,t,r,b] px. pivot: [x,y] 0..1. angle0: embed angle the sprite is drawn at (radians). layer + parallax: backdrop layer grouping and scroll factor. See docs/assets.md.",
+  "rules": [
+    {
+      "match": "^models/",
+      "status": "wip"
+    },
+    {
+      "match": "^ui/",
+      "status": "wip"
+    },
+    {
+      "match": "^fonts/",
+      "status": "final"
+    },
+    {
+      "match": "^luts/",
+      "status": "final"
+    },
+    {
+      "match": "^sprites/fx",
+      "status": "final"
+    },
+    {
+      "match": "^particles/",
+      "status": "final"
+    },
+    {
+      "match": "^shaders/",
+      "status": "final"
+    },
+    {
+      "match": "^audio/",
+      "status": "wip"
+    },
+    {
+      "match": "^(backdrops|portraits)/",
+      "status": "wip"
+    },
+    {
+      "match": "^backdrops/[^/]+-far$",
+      "parallax": 0.1
+    },
+    {
+      "match": "^backdrops/[^/]+-mid$",
+      "parallax": 0.35
+    },
+    {
+      "match": "^backdrops/[^/]+-near$",
+      "parallax": 0.7
+    },
+    {
+      "match": "^backdrops/[^/]+-fx$",
+      "parallax": 1
+    },
+    {
+      "match": "^ui/panel-oak$",
+      "nine": [48, 48, 48, 48]
+    },
+    {
+      "match": "^ui/parchment-frame$",
+      "nine": [64, 56, 64, 56]
+    }
+  ]
+}

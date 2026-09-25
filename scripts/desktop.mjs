@@ -9,10 +9,21 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const [cmd = 'build', ...rest] = process.argv.slice(2);
-const opt = Object.fromEntries(rest.filter((a) => a.startsWith('--')).map((a) => a.slice(2).split('=')).map(([k, v]) => [k, v ?? '1']));
+const opt = Object.fromEntries(
+  rest
+    .filter((a) => a.startsWith('--'))
+    .map((a) => a.slice(2).split('='))
+    .map(([k, v]) => [k, v ?? '1']),
+);
 const edition = opt.edition === 'full' ? 'full' : 'demo';
 const platform = opt.platform === 'none' ? 'none' : 'desktop';
-const env = { ...process.env, VITE_EDITION: edition, VITE_PLATFORM: platform, SS_RELEASE: opt.release ? '1' : process.env.SS_RELEASE ?? '', SS_SOURCEMAP: 'hidden' };
+const env = {
+  ...process.env,
+  VITE_EDITION: edition,
+  VITE_PLATFORM: platform,
+  SS_RELEASE: opt.release ? '1' : (process.env.SS_RELEASE ?? ''),
+  SS_SOURCEMAP: 'hidden',
+};
 const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx';
 
 function run(bin, args, extraEnv = {}) {
@@ -38,6 +49,8 @@ switch (cmd) {
   case 'pack':
     build();
     // Source maps stay in dist/ for symbol upload but are excluded from the package by the builder config.
+    // Packaged builds must carry the full-quality 3D models (npm run art:models); skip with SS_ALLOW_NO_MODELS=1.
+    if (!process.env.SS_ALLOW_NO_MODELS) run(process.execPath, ['scripts/art/check-models.mjs', '--require']);
     run(npx, ['electron-builder', '--config', 'desktop/electron-builder.config.cjs', osFlag, '--publish', 'never']);
     break;
   case 'dev':
@@ -55,7 +68,19 @@ switch (cmd) {
     const home = mkdtempSync(join(tmpdir(), 'ss-smoke-'));
     const out = join(home, 'smoke.json');
     const args = ['-a', '-s', '-screen 0 1280x800x24', exe, '--no-sandbox', '--windowed', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'];
-    const child = spawn('xvfb-run', args, { stdio: 'inherit', detached: true, env: { ...process.env, HOME: home, XDG_DATA_HOME: join(home, 'data'), XDG_CONFIG_HOME: join(home, 'config'), XDG_STATE_HOME: join(home, 'state'), XDG_CACHE_HOME: join(home, 'cache'), SS_SMOKE_OUT: out } });
+    const child = spawn('xvfb-run', args, {
+      stdio: 'inherit',
+      detached: true,
+      env: {
+        ...process.env,
+        HOME: home,
+        XDG_DATA_HOME: join(home, 'data'),
+        XDG_CONFIG_HOME: join(home, 'config'),
+        XDG_STATE_HOME: join(home, 'state'),
+        XDG_CACHE_HOME: join(home, 'cache'),
+        SS_SMOKE_OUT: out,
+      },
+    });
     const code = await new Promise((resolve) => {
       const t = setTimeout(() => {
         // Kill the whole process group (xvfb-run, Xvfb, Electron and its helpers).

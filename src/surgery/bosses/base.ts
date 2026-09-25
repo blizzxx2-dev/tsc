@@ -111,7 +111,7 @@ export abstract class MalisonBase extends Entity {
   elite = false;
   private met = false;
 
-  abstract readonly boss: string;
+  abstract readonly bossId: string;
   abstract readonly phases: readonly BossPhase[];
 
   constructor(pos: Vec, op: Operation, hp: number) {
@@ -181,8 +181,8 @@ export abstract class MalisonBase extends Entity {
     this.opDifficulty = difficultyOf(op);
     if (!this.met) {
       this.met = true;
-      op.events.emit('boss', { kind: 'encounter', boss: this.boss });
-      op.events.emit('boss', { kind: 'music', boss: this.boss, intensity: this.phase.music });
+      op.events.emit('boss', { kind: 'encounter', boss: this.bossId });
+      op.events.emit('boss', { kind: 'music', boss: this.bossId, intensity: this.phase.music });
     }
     this.branded = false;
     this.hurtFlash = Math.max(0, this.hurtFlash - dt * 3);
@@ -192,7 +192,7 @@ export abstract class MalisonBase extends Entity {
       drainAudit.worst = Math.max(drainAudit.worst, d);
       if (d > DRAIN_BUDGET[difficultyOf(op)] + 1e-6) {
         drainAudit.violations++;
-        console.error(`[boss] ${this.boss} drain ${d.toFixed(2)}/s exceeds budget`);
+        console.error(`[boss] ${this.bossId} drain ${d.toFixed(2)}/s exceeds budget`);
       }
     }
   }
@@ -227,12 +227,12 @@ export abstract class MalisonBase extends Entity {
     this.phaseIx = ix;
     this.exposedT = 0;
     const p = this.phases[ix];
-    op.events.emit('boss', { kind: 'phase', boss: this.boss, index: ix, count: this.phases.length, name: p.key });
-    op.events.emit('boss', { kind: 'music', boss: this.boss, intensity: p.music });
+    op.events.emit('boss', { kind: 'phase', boss: this.bossId, index: ix, count: this.phases.length, name: p.key });
+    op.events.emit('boss', { kind: 'music', boss: this.bossId, intensity: p.music });
     if (!this.elite && !(op.def as BossOpDef).skipCinematics) {
       op.freezeT = Math.max(op.freezeT, CINEMATIC_SECONDS);
       op.shake = Math.max(op.shake, 10);
-      op.events.emit('boss', { kind: 'cinematic', boss: this.boss, seconds: CINEMATIC_SECONDS });
+      op.events.emit('boss', { kind: 'cinematic', boss: this.bossId, seconds: CINEMATIC_SECONDS });
       bossSound(op, 'sting', this.pos);
     }
     this.onPhase(op, ix, from);
@@ -258,8 +258,8 @@ export abstract class MalisonBase extends Entity {
     op.spawn(new BossDeath({ ...this.pos }, this.deathLook(), withering.map((e) => ({ ...e.pos }))));
     op.shake = Math.max(op.shake, 14);
     op.emit('mote', this.pos, 60, undefined, undefined, 140);
-    op.events.emit('boss', { kind: 'death', boss: this.boss });
-    op.events.emit('boss', { kind: 'music', boss: this.boss, intensity: 0 });
+    op.events.emit('boss', { kind: 'death', boss: this.bossId });
+    op.events.emit('boss', { kind: 'music', boss: this.bossId, intensity: 0 });
     bossSound(op, 'withering', this.pos);
     this.onDeath(op);
   }

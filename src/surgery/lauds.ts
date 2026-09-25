@@ -1,4 +1,5 @@
 import { dist, pointSegment, segmentsIntersect, type Vec } from '../core/math';
+import { drawBlotch, presentation } from '../render/presentation';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { settings } from '../core/settings';
@@ -91,7 +92,8 @@ export const SPIDERLING_CAP = 6;
  * the Call and the Response. Unmade, it shatters into hexstone.
  */
 export class LaudsMalison extends MalisonBase {
-  readonly boss = 'lauds';
+  readonly bossId = 'lauds';
+  override boss = true;
   readonly phases: readonly BossPhase[];
   readonly tune: LaudsTuning;
   voices: ChoirVoice[] = [];
@@ -272,7 +274,7 @@ export class LaudsMalison extends MalisonBase {
         this.hymnR = 0;
         attack(op, 'lauds', 'hymn', this.pos);
         op.sayOnce('lauds-hymn', 'It’s singing — every verse tears him open! Stitch the cuts as they come!');
-        op.cues.push('bell');
+        op.cues.push('sfx.lauds.hymn');
       }
       return;
     }
@@ -777,6 +779,7 @@ export class EggSac extends Entity {
   draw(g: Gfx, op: Operation): void {
     const { x, y } = this.pos;
     const urgency = Math.max(0, 1 - this.hatchT / this.hatchIn);
+    if (presentation.creatureFilter) return drawBlotch(g, x, y, 22);
     const s = 1 + 0.25 * this.swell;
     const wob = 1 + Math.sin(op.elapsed * (4 + urgency * 14)) * 0.05 * (1 + urgency * 2 + this.swell * 2);
     g.ellipse(x, y, 24 * wob * s, (20 / wob) * s, 0.3, hex('#d8d0b8', 0.95), hex('#8a8068', 0.9));
@@ -843,6 +846,7 @@ export class SpiderlingGrub extends Entity {
 
   draw(g: Gfx, op: Operation): void {
     const { x, y } = this.pos;
+    if (presentation.creatureFilter) return drawBlotch(g, x, y, 9);
     for (let i = 0; i < 8; i++) {
       const a = (i / 8) * TAU + Math.sin(op.elapsed * 20 + i) * 0.2;
       g.line({ x, y }, { x: x + Math.cos(a) * 11, y: y + Math.sin(a) * 11 }, 1.5, hex('#1a1410'));

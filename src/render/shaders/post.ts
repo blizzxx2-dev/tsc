@@ -89,6 +89,10 @@ uniform float u_beat;    // heartbeat pulse 0..1 from the ECG clock
 uniform float u_curse;   // Malison presence 0..1: ink creeping from the edges
 uniform vec2 u_outcome;  // x: flatline 0..1 (desaturate, burn, fade), y: victory 0..1 (warm swell)
 uniform float u_hdr;     // 1 when the scene target is floating point
+uniform vec4 u_prefs;    // player display options (UIX-0105): x grain, y vignette, z brightness gamma, w reduced motion
+uniform float u_defocus; // menu depth of field: disc blur radius in px (0 = sharp)
+uniform vec4 u_spot;     // operating lamp: xy centre (0..1, y up), zw radii (0..1); off when z = 0
+uniform float u_spotK;   // how dark the surround falls
 out vec4 o;
 // Soft shoulder: identity below the knee, gently compresses HDR highlights above it.
 vec3 shoulder(vec3 c) {
@@ -123,7 +127,8 @@ void main() {
   float aspect = u_res.x / max(u_res.y, 1.0);
   // Litany: a star-shaped ripple radiates from where the sign was drawn; the world holds still.
   float lring = 0.0;
-  if (u_litany > 0.0) {
+  // Reduced Motion (UIX-0152): the Litany keeps its sepia tint but the ripple and wobble stop.
+  if (u_litany > 0.0 && u_prefs.w < 0.5) {
     vec2 lp = (uv - u_litanyCenter) * vec2(aspect, 1.0);
     float sd = starShape(lp);
     float front = u_litanyAge * 0.9;
@@ -147,8 +152,32 @@ void main() {
   c.r = texture(u_scene, uv + dir).r;
   c.g = texture(u_scene, uv).g;
   c.b = texture(u_scene, uv - dir).b;
+  // Depth of field for menu backdrops: a 32-tap golden-angle disc; bright taps weigh more, so
+  // lights open into soft bokeh discs instead of smearing.
+  if (u_defocus > 0.0) {
+    vec3 acc = vec3(0.0);
+    float wsum = 0.0;
+    vec2 px = 1.0 / u_res;
+    for (int i = 0; i < 32; i++) {
+      float fi = float(i) + 0.5;
+      float r = sqrt(fi / 32.0) * u_defocus;
+      float a = fi * 2.39996323;
+      vec3 s = texture(u_scene, uv + vec2(cos(a), sin(a)) * r * px).rgb;
+      float w = 1.0 + 4.0 * smoothstep(0.55, 1.2, dot(s, vec3(0.333)));
+      acc += s * w;
+      wsum += w;
+    }
+    c = acc / wsum;
+  }
   c += texture(u_bloom, uv).rgb * u_bloomAmt * (1.0 + u_outcome.y * 1.2);
   if (u_hdr > 0.5) c = shoulder(c);
+  // Operating lamp: a soft pool of light on the field; the drape and table fall into shadow.
+  if (u_spot.z > 0.0) {
+    vec2 q = (v_uv - u_spot.xy) / u_spot.zw;
+    float r = length(q);
+    float lit = 1.0 - smoothstep(0.92, 1.55, r);
+    c *= mix(1.0 - u_spotK, 1.06, lit);
+  }
   // Per-chapter grade.
   c = c * u_tint + u_lift;
 
@@ -182,7 +211,7 @@ void main() {
   vec2 vq = v_uv - 0.5;
   // Aspect-aware vignette: measured in height units so ultrawide edges aren't crushed.
   float vig = rsmooth(0.85, 0.25, length(vq * vec2(min(aspect / (16.0 / 9.0), 1.0), 0.8)));
-  c *= mix(0.35, 1.0, vig);
+  c *= mix(mix(0.35, 1.0, vig), 1.0 - (1.0 - vig) * 0.25, 1.0 - u_prefs.y);
   // Failing vitals: progressive desaturation and an edge pulse on each heartbeat.
   float lumD = dot(c, vec3(0.299, 0.587, 0.114));
   c = mix(c, vec3(lumD), u_danger * 0.45);
@@ -216,7 +245,8 @@ void main() {
 
   // Film grain (animated interleaved-gradient noise), then ±0.5 LSB dither against banding.
   vec2 fc = gl_FragCoord.xy;
-  c += (ign(fc + floor(u_time * 24.0) * 5.588) - 0.5) * 0.03;
+  c += (ign(fc + floor(u_time * 24.0) * 5.588) - 0.5) * 0.03 * u_prefs.x;
+  c = pow(max(c, vec3(0.0)), vec3(1.0 / u_prefs.z));
   c += (ign(fc + 17.0) - 0.5) / 255.0;
   o = vec4(c, 1.0);
 }`;

@@ -8,7 +8,15 @@ import { runRecording } from '../src/input/replayRunner';
 import { OperationScene } from '../src/scenes/operation';
 import { playWithBotThroughInput } from './bot';
 
-const snapshot = (op: OperationScene['op']) => ({ status: op.status, score: op.score, vitals: op.vitals, timeLeft: op.timeLeft, counts: { ...op.counts }, phase: op.phase, litanyUsed: op.litanyUsed });
+const snapshot = (op: OperationScene['op']) => ({
+  status: op.status,
+  score: op.score,
+  vitals: op.vitals,
+  timeLeft: op.timeLeft,
+  counts: { ...op.counts },
+  phase: op.phase,
+  litanyUsed: op.litanyUsed,
+});
 
 describe('the bot wins through the real input pipeline (device events → Input → OperationScene)', () => {
   for (const def of allOperations()) {
@@ -63,7 +71,8 @@ describe('focus-loss auto-pause (INP-0007)', () => {
       scene.update(1 / 60, game);
       input.endFrame();
     };
-    for (let i = 0; i < 120; i++) frame();
+    // Past the intro (flow.intro seconds) into the running operation.
+    for (let i = 0; i < 150; i++) frame();
     expect(scene.op.status).toBe('running');
     const before = scene.op.timeLeft;
     input.focusChange(true, t + 1); // visibilitychange → hidden

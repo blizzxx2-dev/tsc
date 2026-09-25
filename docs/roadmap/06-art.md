@@ -33,17 +33,17 @@ Cross-refs: ENG (texture loading, atlases, shader inputs), UX (layouts and widge
 
 ### Art bible
 - [ ] ART-0009 · M0 · P0 · M · Art bible v1 (PDF + `docs/art/bible/`): the pillars, a public-domain reference board per pillar (Dürer, Bruegel, Bosch, Holbein, Gersdorff), and do/don't pairs — signed off by the art director
-- [ ] ART-0010 · M0 · P0 · S · IP-avoidance checklist in the bible: no GW iconography (twin-tailed comet, skull-and-eagle, eight-pointed star, horned rat), a list of banned silhouettes and symbols, and a checked box on every asset review
-- [ ] ART-0011 · M0 · P0 · M · Master palette: 32 swatches (tallow, soot, oxblood, verdigris, bile, bone, gilt, curse-violet) as `.ase` + `src/render/palette.ts`, and every UI colour mapped to a swatch
-- [ ] ART-0012 · M0 · P0 · S · Curse-violet (#b060ff family) reserved exclusively for Malison and Hollow Choir content — rule in the bible and a lint in art QA
-- [ ] ART-0013 · M0 · P1 · M · Line and hatching language: 3 hatch densities (light/mid/shadow), stroke weights at 1080p, and a woodcut line-break rule — exemplar sheet
+- [x] ART-0010 · M0 · P0 · S · IP-avoidance checklist in the bible: no GW iconography (twin-tailed comet, skull-and-eagle, eight-pointed star, horned rat), a list of banned silhouettes and symbols, and a checked box on every asset review
+- [x] ART-0011 · M0 · P0 · M · Master palette: 32 swatches (tallow, soot, oxblood, verdigris, bile, bone, gilt, curse-violet) as `.ase` + `src/render/palette.ts`, and every UI colour mapped to a swatch
+- [x] ART-0012 · M0 · P0 · S · Curse-violet (#b060ff family) reserved exclusively for Malison and Hollow Choir content — rule in the bible and a lint in art QA
+- [x] ART-0013 · M0 · P1 · M · Line and hatching language: 3 hatch densities (light/mid/shadow), stroke weights at 1080p, and a woodcut line-break rule — exemplar sheet
 - [ ] ART-0014 · M0 · P1 · S · Value-structure rule: every story background passes a 5-value greyscale thumbnail test with the character zone at least 2 value steps from the background
 - [ ] ART-0015 · M0 · P1 · M · Costume guide: Landsknecht slashed doublets, mercy-order habits, Pyre inquisitors, Watch halberdiers, guild surgeons, the Hollow Choir — 1 turnaround sheet per faction
 - [ ] ART-0016 · M0 · P1 · M · Material library sheet: brass, pewter, tallow, waxed linen, gut thread, leech skin, vellum, stained glass — painted swatch + lighting notes each
-- [ ] ART-0017 · M0 · P1 · S · Gore-tone rule sheet: what is shown (open tissue, pus, grubs) versus implied (faces in agony, children's wounds), aligned with the PEGI 16 / ESRB M target
+- [x] ART-0017 · M0 · P1 · S · Gore-tone rule sheet: what is shown (open tissue, pus, grubs) versus implied (faces in agony, children's wounds), aligned with the PEGI 16 / ESRB M target
 - [ ] ART-0018 · Demo · P1 · S · Kessendorf heraldry and signage set (city arms, 6 guild marks, hospice of Saint Ildra seal) designed from scratch, IP-checked
 - [ ] ART-0019 · Demo · P2 · S · Faith iconography for Saint Ildra and the Merciful Order (sun-in-palm, dove-and-lancet), with glyph variants for UI use
-- [ ] ART-0020 · Alpha · P2 · M · Art bible v2 covering Chapters 3–5 regions, factions and the six remaining Malison Hours
+- [x] ART-0020 · Alpha · P2 · M · Art bible v2 covering Chapters 3–5 regions, factions and the six remaining Malison Hours
 
 ### Style frames
 - [ ] ART-0021 · M0 · P0 · L · Style frame 1: operation screen at 1920×1080 (painted flesh field, a lodged barbed arrow, the brass tool tray, the vitals meter) — the target every in-game op is measured against
@@ -55,8 +55,8 @@ Cross-refs: ENG (texture loading, atlases, shader inputs), UX (layouts and widge
 - [ ] ART-0027 · Alpha · P2 · M · Style frames for Chapters 3, 4 and 5 (one each) before any Chapter 3–5 production starts
 
 ### Direction & reviews
-- [ ] ART-0028 · M0 · P0 · S · Weekly art review cadence with a template (asset, stage, feedback, owner, due) in `docs/art/reviews/`
-- [ ] ART-0029 · M0 · P1 · S · Approval stages defined for every asset class: thumbnail → rough → line → colour → in-engine; no stage skipped without director sign-off
+- [x] ART-0028 · M0 · P0 · S · Weekly art review cadence with a template (asset, stage, feedback, owner, due) in `docs/art/reviews/`
+- [x] ART-0029 · M0 · P1 · S · Approval stages defined for every asset class: thumbnail → rough → line → colour → in-engine; no stage skipped without director sign-off
 - [ ] ART-0030 · Demo · P1 · S · Demo art-lock date set, with the list of assets still placeholder at lock reviewed weekly until empty
 
 ---
@@ -64,76 +64,76 @@ Cross-refs: ENG (texture loading, atlases, shader inputs), UX (layouts and widge
 ## ART-C · Art pipeline & tooling
 
 ### Source, formats & naming
-- [ ] ART-0031 · M0 · P0 · S · Naming convention `cat_subject_variant_state@scale.ext` (e.g. `por_ilse_worried@2x.webp`) documented, with a CI script that fails on any non-conforming file in `assets/`
-- [ ] ART-0032 · M0 · P0 · S · Source-art storage: layered PSD/Krita/Blender sources in Git LFS (`art-src/`), with exports only in `assets/` and an `.gitattributes` LFS rule for each source type
-- [ ] ART-0033 · M0 · P0 · S · Export spec: WebP lossless for UI, WebP q90 for backgrounds, KTX2/Basis for flesh textures, PNG for masters — table in the bible
-- [ ] ART-0034 · M0 · P0 · M · Authoring resolution standard: backgrounds at 3840×2160 master, 1920×1080 ship; portraits at 2048 px tall master, 1024 px ship; UI at 2× the 1280×720 virtual space
+- [x] ART-0031 · M0 · P0 · S · Naming convention `cat_subject_variant_state@scale.ext` (e.g. `por_ilse_worried@2x.webp`) documented, with a CI script that fails on any non-conforming file in `assets/`
+- [x] ART-0032 · M0 · P0 · S · Source-art storage: layered PSD/Krita/Blender sources in Git LFS (`art-src/`), with exports only in `assets/` and an `.gitattributes` LFS rule for each source type
+- [x] ART-0033 · M0 · P0 · S · Export spec: WebP lossless for UI, WebP q90 for backgrounds, KTX2/Basis for flesh textures, PNG for masters — table in the bible
+- [x] ART-0034 · M0 · P0 · M · Authoring resolution standard: backgrounds at 3840×2160 master, 1920×1080 ship; portraits at 2048 px tall master, 1024 px ship; UI at 2× the 1280×720 virtual space
 - [ ] ART-0035 · Demo · P0 · M · `npm run art:export` batch script: source → resized, trimmed, compressed exports with a manifest JSON (`assets/manifest.json`) of size, hash and atlas page
-- [ ] ART-0036 · Demo · P0 · M · Texture-atlas packer (`tools/pack-atlas.ts`) for UI, icons, ailments and VFX: 2048² pages, 2 px extrude, max-rects packing, a JSON frame map consumed by `gfx.ts`
+- [x] ART-0036 · Demo · P0 · M · Texture-atlas packer (`tools/pack-atlas.ts`) for UI, icons, ailments and VFX: 2048² pages, 2 px extrude, max-rects packing, a JSON frame map consumed by `gfx.ts`
 - [ ] ART-0037 · Demo · P0 · S · Premultiplied-alpha export for all atlased sprites; no dark halos when drawn on parchment and on flesh (visual test page)
-- [ ] ART-0038 · Demo · P1 · S · Spritesheet and flipbook convention (row-major, fixed cell, `fps` in the manifest) for ailment and VFX animation
-- [ ] ART-0039 · Demo · P1 · M · Hot-reload of `assets/` in the Vite dev server: changing an exported PNG updates the running game within 2 s without restart
-- [ ] ART-0040 · Demo · P1 · S · Art viewer debug scene (`?scene=artview`) listing every manifest entry, with zoom, frame-stepping and a background swatch toggle
-- [ ] ART-0041 · Demo · P1 · M · Placeholder-tracking: every asset in the manifest tagged `placeholder|wip|final`, with a build report counting each; the demo build fails if any demo asset is `placeholder`
+- [x] ART-0038 · Demo · P1 · S · Spritesheet and flipbook convention (row-major, fixed cell, `fps` in the manifest) for ailment and VFX animation
+- [x] ART-0039 · Demo · P1 · M · Hot-reload of `assets/` in the Vite dev server: changing an exported PNG updates the running game within 2 s without restart
+- [x] ART-0040 · Demo · P1 · S · Art viewer debug scene (`?scene=artview`) listing every manifest entry, with zoom, frame-stepping and a background swatch toggle
+- [x] ART-0041 · Demo · P1 · M · Placeholder-tracking: every asset in the manifest tagged `placeholder|wip|final`, with a build report counting each; the demo build fails if any demo asset is `placeholder`
 - [ ] ART-0042 · Demo · P2 · S · Photoshop/Krita export actions shared in `art-src/tools/` so every artist exports identically
-- [ ] ART-0043 · Alpha · P2 · M · Per-chapter asset bundles (lazy-loaded atlas pages per chapter) with the manifest split so Chapter 3–5 art doesn't load in the demo
+- [x] ART-0043 · Alpha · P2 · M · Per-chapter asset bundles (lazy-loaded atlas pages per chapter) with the manifest split so Chapter 3–5 art doesn't load in the demo
 
 ### Engine integration (with ENG)
 - [ ] ART-0044 · Demo · P0 · M · Portrait layer format: base body + expression overlay + blink + mouth frames as named layers, loaded by a `PortraitRig` in the story scene, replacing `drawPortrait()`
-- [ ] ART-0045 · Demo · P0 · M · Background layer format: far / mid / near / FX layers with parallax factors in the manifest, replacing `drawBackdrop()` per `Backdrop` key
-- [ ] ART-0046 · Demo · P0 · M · Flesh texture input spec agreed with ENG: albedo (sRGB), normal (tangent-space, OpenGL +Y), wet/spec mask (R), vein mask (G), cavity/AO (B) and height (A), 1024² tileable — `FLESH_FS` samples these on top of the procedural base
-- [ ] ART-0047 · Demo · P0 · S · Ailment sprite anchor convention: pivot at the wound centre, with the embed direction encoded in the manifest (`angle0`) so `Embedded` entities rotate correctly
-- [ ] ART-0048 · Demo · P1 · S · 9-slice metadata for every UI frame (margins in the manifest) consumed by `panel()` / `parchment()` replacements
-- [ ] ART-0049 · Demo · P1 · S · Colour-management rule: all authoring in sRGB, previews checked on a calibrated display (ΔE < 3), and flesh albedo validated through the candlelit grade LUT
+- [x] ART-0045 · Demo · P0 · M · Background layer format: far / mid / near / FX layers with parallax factors in the manifest, replacing `drawBackdrop()` per `Backdrop` key
+- [x] ART-0046 · Demo · P0 · M · Flesh texture input spec agreed with ENG: albedo (sRGB), normal (tangent-space, OpenGL +Y), wet/spec mask (R), vein mask (G), cavity/AO (B) and height (A), 1024² tileable — `FLESH_FS` samples these on top of the procedural base
+- [x] ART-0047 · Demo · P0 · S · Ailment sprite anchor convention: pivot at the wound centre, with the embed direction encoded in the manifest (`angle0`) so `Embedded` entities rotate correctly
+- [x] ART-0048 · Demo · P1 · S · 9-slice metadata for every UI frame (margins in the manifest) consumed by `panel()` / `parchment()` replacements
+- [x] ART-0049 · Demo · P1 · S · Colour-management rule: all authoring in sRGB, previews checked on a calibrated display (ΔE < 3), and flesh albedo validated through the candlelit grade LUT
 
 ---
 
 ## ART-D · UI art kit
 
 ### Parchment, panels & frames
-- [ ] ART-0050 · Demo · P0 · M · Parchment set: 3 tileable vellum textures (fresh, foxed, burnt-edge) at 1024², plus a 9-slice torn-edge frame, replacing the flat `parchment()` fill
-- [ ] ART-0051 · Demo · P0 · M · Woodcut border kit: 4 corner ornaments, 2 tiling edge strips and 3 divider rules in the Gersdorff/Holbein style, 9-slice-ready
-- [ ] ART-0052 · Demo · P0 · S · Dark panel (soot-stained oak with iron straps) 9-slice for the HUD and pause panels, replacing `panel()`
-- [ ] ART-0053 · Demo · P0 · M · Dialogue box: parchment scroll with a speaker name-plate cartouche (tinted per `CAST.color`), a continue-arrow quill glyph and an auto/skip indicator
-- [ ] ART-0054 · Demo · P1 · S · Choice-button art: 3 states (idle, hover and pressed wax-rub, disabled faded) for VN choices and menu buttons
-- [ ] ART-0055 · Demo · P1 · S · Tooltip frame (small vellum slip with a pin) and a keybind glyph plate for tutorial prompts
-- [ ] ART-0056 · Demo · P1 · M · Briefing screen art: a patient chart on vellum with a Wound-Man diagram and pin markers for ailment locations, plus stamped prognosis boxes
-- [ ] ART-0057 · Demo · P1 · M · Title-menu frame: an illuminated manuscript page with a rubricated initial and marginalia beasts
-- [ ] ART-0058 · Demo · P1 · M · Options menu art: tabbed ledger pages (Video, Audio, Controls, Accessibility, Language), with sliders drawn as a brass rule plus a wax bead
+- [x] ART-0050 · Demo · P0 · M · Parchment set: 3 tileable vellum textures (fresh, foxed, burnt-edge) at 1024², plus a 9-slice torn-edge frame, replacing the flat `parchment()` fill
+- [x] ART-0051 · Demo · P0 · M · Woodcut border kit: 4 corner ornaments, 2 tiling edge strips and 3 divider rules in the Gersdorff/Holbein style, 9-slice-ready
+- [x] ART-0052 · Demo · P0 · S · Dark panel (soot-stained oak with iron straps) 9-slice for the HUD and pause panels, replacing `panel()`
+- [x] ART-0053 · Demo · P0 · M · Dialogue box: parchment scroll with a speaker name-plate cartouche (tinted per `CAST.color`), a continue-arrow quill glyph and an auto/skip indicator
+- [x] ART-0054 · Demo · P1 · S · Choice-button art: 3 states (idle, hover and pressed wax-rub, disabled faded) for VN choices and menu buttons
+- [x] ART-0055 · Demo · P1 · S · Tooltip frame (small vellum slip with a pin) and a keybind glyph plate for tutorial prompts
+- [x] ART-0056 · Demo · P1 · M · Briefing screen art: a patient chart on vellum with a Wound-Man diagram and pin markers for ailment locations, plus stamped prognosis boxes
+- [x] ART-0057 · Demo · P1 · M · Title-menu frame: an illuminated manuscript page with a rubricated initial and marginalia beasts
+- [x] ART-0058 · Demo · P1 · M · Options menu art: tabbed ledger pages (Video, Audio, Controls, Accessibility, Language), with sliders drawn as a brass rule plus a wax bead
 - [ ] ART-0059 · Demo · P1 · S · Save/load slot cards: ledger entries with chapter vignette thumbnails (1 per chapter scene) and a date-stamp style
-- [ ] ART-0060 · Demo · P1 · M · End-of-demo wishlist screen: a woodcut plate of the Chapter 3 teaser with a "Wishlist on Steam" button in UI-kit style
-- [ ] ART-0061 · Demo · P2 · S · Loading-screen art: 4 woodcut vignettes (Wound Man, leech jar, Pyre, Choir mask) with an hourglass spinner
+- [x] ART-0060 · Demo · P1 · M · End-of-demo wishlist screen: a woodcut plate of the Chapter 3 teaser with a "Wishlist on Steam" button in UI-kit style
+- [x] ART-0061 · Demo · P2 · S · Loading-screen art: 4 woodcut vignettes (Wound Man, leech jar, Pyre, Choir mask) with an hourglass spinner
 - [ ] ART-0062 · Alpha · P2 · M · Challenge-mode board: a guild notice board with pinned bills per challenge, parchment variants and a rank-wax stamp
 - [ ] ART-0063 · Alpha · P2 · M · Discipline-select art for field triage, diagnosis, inquisition forensics and bone-setting — one illuminated tab each
 
 ### Wax seals, stamps & rank marks
-- [ ] ART-0064 · Demo · P0 · M · Rank seals XS / S / A / B / C in wax (gold-leaf XS, oxblood S, green A, brown B, cracked grey C), each with a press-in animation of 6 frames
-- [ ] ART-0065 · Demo · P0 · S · Action-rating stamps COOL / GOOD / BAD / MISS as ink-stamp sprites (blackletter), with a 4-frame stamp-hit flipbook each
-- [ ] ART-0066 · Demo · P1 · S · Combo counter art: a tally-mark ribbon (×2–×9 and ×10+ gilt variant)
-- [ ] ART-0067 · Demo · P1 · S · Chapter-complete seal and "Operation Failed" black-wax seal with a Holbein skeleton impression
-- [ ] ART-0068 · Demo · P2 · S · Inquisition "SUSPECT" stamp and Guild "APPROVED" stamp for story UI beats
+- [x] ART-0064 · Demo · P0 · M · Rank seals XS / S / A / B / C in wax (gold-leaf XS, oxblood S, green A, brown B, cracked grey C), each with a press-in animation of 6 frames
+- [x] ART-0065 · Demo · P0 · S · Action-rating stamps COOL / GOOD / BAD / MISS as ink-stamp sprites (blackletter), with a 4-frame stamp-hit flipbook each
+- [x] ART-0066 · Demo · P1 · S · Combo counter art: a tally-mark ribbon (×2–×9 and ×10+ gilt variant)
+- [x] ART-0067 · Demo · P1 · S · Chapter-complete seal and "Operation Failed" black-wax seal with a Holbein skeleton impression
+- [x] ART-0068 · Demo · P2 · S · Inquisition "SUSPECT" stamp and Guild "APPROVED" stamp for story UI beats
 - [ ] ART-0069 · Beta · P2 · S · Achievement icon set (Steam 64×64 + 256×256, colour and greyed) as wax medallions — one per achievement in the design list
 
 ### Brass instrument tray & HUD
-- [ ] ART-0070 · Demo · P0 · L · Brass instrument tray: an 8-slot tray on a leather roll along the screen edge, with engraved hotkey numerals 1–8, a selected-slot glow and an empty-slot state
-- [ ] ART-0071 · Demo · P0 · M · Vitals meter: a brass-and-glass apothecary gauge (0–99) with red tincture fill, low-vitals crack overlay and pulsing states
-- [ ] ART-0072 · Demo · P0 · S · Timer art: a sand-glass with an animated sand stream (8 frames) plus a numeric plate
-- [ ] ART-0073 · Demo · P0 · M · Litany gauge: a five-pointed-star reliquary that fills with gilt, with a "spent" tarnished state and a ready glint animation
-- [ ] ART-0074 · Demo · P1 · S · Tincture vial HUD element with 3 fill levels and an empty cork state
-- [ ] ART-0075 · Demo · P1 · S · ECG replacement: a pulse "quill trace" drawn on a vellum strip, with a flatline-warning ink blot
+- [x] ART-0070 · Demo · P0 · L · Brass instrument tray: an 8-slot tray on a leather roll along the screen edge, with engraved hotkey numerals 1–8, a selected-slot glow and an empty-slot state
+- [x] ART-0071 · Demo · P0 · M · Vitals meter: a brass-and-glass apothecary gauge (0–99) with red tincture fill, low-vitals crack overlay and pulsing states
+- [x] ART-0072 · Demo · P0 · S · Timer art: a sand-glass with an animated sand stream (8 frames) plus a numeric plate
+- [x] ART-0073 · Demo · P0 · M · Litany gauge: a five-pointed-star reliquary that fills with gilt, with a "spent" tarnished state and a ready glint animation
+- [x] ART-0074 · Demo · P1 · S · Tincture vial HUD element with 3 fill levels and an empty cork state
+- [x] ART-0075 · Demo · P1 · S · ECG replacement: a pulse "quill trace" drawn on a vellum strip, with a flatline-warning ink blot
 - [ ] ART-0076 · Demo · P1 · S · Sister Ilse callout portrait inset (circular brass locket frame) with 4 expressions for operation callouts
-- [ ] ART-0077 · Demo · P1 · S · Score and combo popup font treatment: gilt numerals with a dark outline, legible over red flesh at 18 px virtual
-- [ ] ART-0078 · Demo · P1 · S · Phase banner art ("Phase II", "The Malison Stirs") as a torn ribbon scroll with a slide-in animation
-- [ ] ART-0079 · Demo · P2 · S · Pause-screen overlay: a candle-snuffed vignette plus a hanging ledger menu
+- [x] ART-0077 · Demo · P1 · S · Score and combo popup font treatment: gilt numerals with a dark outline, legible over red flesh at 18 px virtual
+- [x] ART-0078 · Demo · P1 · S · Phase banner art ("Phase II", "The Malison Stirs") as a torn ribbon scroll with a slide-in animation
+- [x] ART-0079 · Demo · P2 · S · Pause-screen overlay: a candle-snuffed vignette plus a hanging ledger menu
 
 ### Typography
-- [ ] ART-0080 · Demo · P0 · S · Type hierarchy spec: UnifrakturMaguntia for titles and seals only (≥ 28 px virtual), IM Fell English for body (≥ 16 px virtual), IM Fell SC for labels — with a sizes table
-- [ ] ART-0081 · Demo · P0 · S · Readability check: all body text at 1280×720 passes WCAG AA contrast on parchment (4.5:1) — screenshots of every text style
-- [ ] ART-0082 · Demo · P1 · M · Rubricated drop-cap set A–Z (red and gilt) for story-scene openings and briefing titles
-- [ ] ART-0083 · Demo · P1 · S · Dyslexia/accessibility font option: art approval of a plain OFL serif fallback that keeps the parchment look
-- [ ] ART-0084 · Demo · P1 · S · Glyph coverage audit of both fonts for demo languages (EN/DE/FR/ES/PL/PT-BR) — missing glyphs listed and a fallback font chosen
+- [x] ART-0080 · Demo · P0 · S · Type hierarchy spec: UnifrakturMaguntia for titles and seals only (≥ 28 px virtual), IM Fell English for body (≥ 16 px virtual), IM Fell SC for labels — with a sizes table
+- [x] ART-0081 · Demo · P0 · S · Readability check: all body text at 1280×720 passes WCAG AA contrast on parchment (4.5:1) — screenshots of every text style
+- [x] ART-0082 · Demo · P1 · M · Rubricated drop-cap set A–Z (red and gilt) for story-scene openings and briefing titles
+- [x] ART-0083 · Demo · P1 · S · Dyslexia/accessibility font option: art approval of a plain OFL serif fallback that keeps the parchment look
+- [x] ART-0084 · Demo · P1 · S · Glyph coverage audit of both fonts for demo languages (EN/DE/FR/ES/PL/PT-BR) — missing glyphs listed and a fallback font chosen
 - [ ] ART-0085 · Beta · P1 · M · CJK and Cyrillic font pairing (OFL) styled to sit with IM Fell — sample sheets approved for each loc language
-- [ ] ART-0086 · Demo · P2 · S · Custom ligature and ornament glyphs (fleurons, manicules ☞, section marks) packed into the glyph atlas
+- [x] ART-0086 · Demo · P2 · S · Custom ligature and ornament glyphs (fleurons, manicules ☞, section marks) packed into the glyph atlas
 
 ---
 

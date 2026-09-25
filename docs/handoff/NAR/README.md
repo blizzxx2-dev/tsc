@@ -1,3 +1,7 @@
 - NAR-0031 — a sensitivity reader must review Chapter III (flagellants, plague, the child examination); brief in docs/handoff/NAR/sensitivity-ch3-5.md
 - NAR-0032 — a sensitivity reader must review Chapter IV (war violence, Margit's consent and agency); brief in docs/handoff/NAR/sensitivity-ch3-5.md
 - NAR-0033 — a sensitivity reader (with the obstetric consultant) must review Chapter V (obstetrics, the trial, assisted death); brief in docs/handoff/NAR/sensitivity-ch3-5.md
+- NAR-0020 — run a trademark search for "Hollow Choir" (classes 9/41) and confirm or switch to the pre-approved fallback "the Unsung"; material in docs/handoff/NAR/ip-and-trademark.md
+- NAR-0022 — trademark search for the title "Suture & Steel" and the subtitle word "Malison" (genre collision with Devolver's *Malison: The Cursed City*) and a subtitle decision; material in docs/handoff/NAR/ip-and-trademark.md
+- NAR-0026 — counsel freezes and signs docs/narrative/names.csv at release (reviewer + date per row); instructions in docs/handoff/NAR/ip-and-trademark.md
+- NAR-0028 — an external sensitivity reader reviews Chapters I–II against docs/narrative/sensitivity-brief.md and logs each note (id · line · note · accept/decline · reason) in a tracked sheet; scene list in docs/narrative/beat-sheets.md

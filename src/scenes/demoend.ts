@@ -5,6 +5,9 @@ import type { Gfx } from '../render/gfx';
 import { CAMPAIGN } from '../content/campaign';
 import { VIEW_W } from '../ui/layout';
 import { divider, leatherPanel, UI, waxSeal } from '../ui/ornaments';
+import { chapterSeal } from '../art/kit';
+import { settings } from '../core/settings';
+import { kilnRowsPlate } from '../art/plates';
 import { button, reticle } from '../ui/widgets';
 import { drawBackdrop } from './backdrop';
 import { save } from './flow';
@@ -26,31 +29,36 @@ export class DemoEndScene implements Scene {
   render(g: Gfx, game: Game): void {
     g.beginWorld();
     drawBackdrop(g, 'night', g.time);
-    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1.1 });
+    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1.1, defocus: 8 });
     const a = Math.min(1, this.t);
     {
       const vr = g.viewRect();
       g.rect(vr.x, vr.y, vr.w, vr.h, hex('#000000', 0.45));
     }
-    g.text(t('ui.game.title'), VIEW_W / 2, 100, { size: 72, font: 'display', color: hex('#fff0c0', a), color2: hex(UI.giltLo, a), align: 'center' });
+    g.text(t('ui.game.title').toUpperCase(), VIEW_W / 2, 96, { size: 56, font: 'display', color: hex('#fff4d0', a), color2: hex('#c8923c', a), align: 'center', tracking: 0.09, shadow: hex('#000000', 0.9 * a), soft: true });
     divider(g, VIEW_W / 2, 124, 420, hex(UI.brass, a));
     g.text(t('ui.demoend.thanks'), VIEW_W / 2, 166, { size: 28, font: 'italic', color: hex(UI.parch, a), align: 'center' });
     g.text(t('ui.demoend.teaser'), VIEW_W / 2, 200, { size: 22, color: hex('#c8b890', a), align: 'center' });
 
-    const panelR = { x: 250, y: 232, w: 780, h: 330 };
+    // A pressed seal for each chapter finished (ART-0067).
+    CAMPAIGN.forEach((c, i) => chapterSeal(g, VIEW_W / 2 + (i === 0 ? -330 : 330), 150, 38, c.numeral, this.t - 0.6 - i * 0.25));
+    const panelR = { x: 70, y: 232, w: 680, h: 330 };
     leatherPanel(g, panelR, { alpha: 0.94 * a });
-    g.text(t('ui.demoend.ledger'), VIEW_W / 2, panelR.y + 42, { size: 24, color: hex(UI.gilt), align: 'center' });
+    g.text(t('ui.demoend.ledger').toUpperCase(), panelR.x + panelR.w / 2, panelR.y + 44, { size: 18, font: 'display', color: hex('#e6c77a'), align: 'center', tracking: 0.16, shadow: hex('#000000', 0.8), soft: true });
     const ops = CAMPAIGN.flatMap((c) => c.steps.flatMap((s) => (s.kind === 'op' ? [{ ch: c.numeral, op: s.op }] : [])));
     ops.forEach(({ ch, op }, i) => {
       const col = i < 5 ? 0 : 1;
       const row = i % 5;
-      const x = panelR.x + 50 + col * 370;
+      const x = panelR.x + 36 + col * 322;
       const y = panelR.y + 90 + row * 48;
       const best = save.best[op.id];
       g.text(t('ui.demoend.ledger_entry', { chapter: ch, index: row + 1, title: op.title }), x, y, { size: 20, color: hex(UI.parch) });
-      if (best) waxSeal(g, x + 320, y - 7, 17, '#8a1016', best.rank, best.rank === 'XS' ? 14 : 20);
-      else g.text('—', x + 320, y, { size: 20, color: hex('#6a5a40'), align: 'center' });
+      if (best) waxSeal(g, x + 284, y - 7, 17, '#8a1016', best.rank, best.rank === 'XS' ? 14 : 20);
+      else g.text('—', x + 284, y, { size: 20, color: hex('#6a5a40'), align: 'center' });
     });
+
+    // A woodcut plate of what comes next (ART-0060).
+    kilnRowsPlate(g, { x: 780, y: 232, w: 430, h: 330 }, settings.reduceMotion ? 0 : this.t, t('ui.demoend.plate'), a);
 
     if (this.t > 0.8) {
       if (button(g, game.input, t('ui.demoend.wishlist'), VIEW_W / 2, 620, 32)) platform.steam.openStore(EDITIONS.full.steamAppId);

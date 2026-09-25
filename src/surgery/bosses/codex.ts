@@ -11,7 +11,7 @@ import type { Operation } from '../operation';
 export const CODEX_BOSSES = ['matins', 'lauds', 'prime', 'terce', 'sext', 'none', 'vespers', 'compline', 'office'] as const;
 export type CodexBoss = (typeof CODEX_BOSSES)[number];
 
-/** Elites with a codex entry of their own (ids match `MalisonBase.boss`). */
+/** Elites with a codex entry of their own (ids match `MalisonBase.bossId`). */
 export const CODEX_ELITES = ['broodmother', 'cantor', 'gravehound', 'herald'] as const;
 
 export type DebriefBand = 'high' | 'mid' | 'low';

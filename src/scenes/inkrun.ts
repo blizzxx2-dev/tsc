@@ -1,4 +1,5 @@
 import { t } from '../i18n';
+import { heading } from '../ui/hudKit';
 import type { CrashRecord } from '../core/boundary';
 import type { Game, Scene } from '../core/scene';
 import { hex } from '../render/color';
@@ -34,7 +35,7 @@ export class InkRunScene implements Scene {
       const ang = i * 2.4;
       g.circle(VIEW_W / 2 + Math.cos(ang) * 40 * a, 190 + Math.sin(ang) * 22 * a, (26 + (i % 3) * 9) * a, hex('#050303', 0.85));
     }
-    g.text(t('ui.inkrun.title'), VIEW_W / 2, 330, { size: 58, font: 'display', color: hex(PALETTE.ink), align: 'center' });
+    heading(g, t('ui.inkrun.title'), VIEW_W / 2, 330, 480, 1, 40);
     g.textBlock(
       t('ui.inkrun.body'),
       VIEW_W / 2 - 330,
@@ -42,8 +43,8 @@ export class InkRunScene implements Scene {
       660,
       { size: 22, font: 'italic', color: hex(PALETTE.inkDim) },
     );
-    g.text(t('ui.inkrun.debug', { scene: this.crash.scene, phase: this.crash.phase, frame: this.crash.frame }), VIEW_W / 2, 520, { size: 15, color: hex(PALETTE.inkDim, 0.7), align: 'center', shadow: false });
-    g.text(this.crash.message.slice(0, 110), VIEW_W / 2, 542, { size: 15, color: hex(PALETTE.bad, 0.8), align: 'center', shadow: false });
+    g.text(t('ui.inkrun.debug', { scene: this.crash.scene, phase: this.crash.phase, frame: this.crash.frame }), VIEW_W / 2, 520, { size: 16, color: hex(PALETTE.inkDim, 0.7), align: 'center', shadow: false });
+    g.text(this.crash.message.slice(0, 110), VIEW_W / 2, 542, { size: 16, color: hex(PALETTE.bad, 0.8), align: 'center', shadow: false });
     if (button(g, game.input, t('ui.inkrun.return'), VIEW_W / 2, 620, 28)) this.onTitle();
     reticle(g, game.input.pos);
     g.endFrame();

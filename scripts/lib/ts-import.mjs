@@ -10,7 +10,7 @@ export async function importTs(entry) {
     platform: 'node',
     write: false,
     logLevel: 'silent',
-    define: { 'import.meta.env': '{}' },
+    define: { 'import.meta.env': '{"DEV":false}' },
   });
   return import(`data:text/javascript;base64,${Buffer.from(r.outputFiles[0].text).toString('base64')}`);
 }

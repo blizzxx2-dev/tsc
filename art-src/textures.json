@@ -1,0 +1,17 @@
+{
+  "$comment": "CC0 source textures used by the Blender pipeline (art-src/blender). All from Poly Haven (https://polyhaven.com/license: CC0). Fetched into art-src/.cache/textures (not committed); the processed maps ship embedded in assets/models/*.glb.",
+  "source": "https://polyhaven.com",
+  "licence": "CC0-1.0",
+  "textures": [
+    "monastery_stone_floor",
+    "medieval_blocks_02",
+    "worn_plaster_wall",
+    "dark_wood",
+    "medieval_wood",
+    "wood_table_worn",
+    "rough_linen",
+    "brown_leather",
+    "rusty_metal_02",
+    "old_planks_02"
+  ]
+}

@@ -1,7 +1,21 @@
+import type { ToolId } from './surgery/types';
+import { registerToolModel, TOOL_MODEL } from './ui/toolIcons3d';
+import { registerSet, SETS } from './scenes/sets';
+import type { Model3D } from './render/renderer3d';
+import type { AssetId } from './assets/manifest.gen';
+import { CalibrateScene } from './scenes/calibrate';
+import { ControlsCardScene } from './scenes/controlsCard';
+import { AudioOptionsScene } from './audio/options-scene';
+import { ControlsScene } from './input/controlsScene';
+import { GameplayOptionsScene } from './scenes/gameplayOptions';
+import { OperationsScene } from './scenes/operations';
+import { DemoEndScene } from './scenes/demoend';
 import { Audio } from './core/audio';
 import { ErrorBoundary, type CrashRecord } from './core/boundary';
 import { Clock } from './core/clock';
 import { settings, saveSettings } from './core/settings';
+import { SceneAudio } from './audio/scenes';
+import { bindUiAudio } from './audio/ui-hooks';
 import { Input } from './core/input';
 import { FIXED_DT, FixedStep, FrameLimiter, RefreshEstimator, stepEndTimes } from './core/loop';
 import { SceneStack, sceneName, type Game, type Scene } from './core/scene';
@@ -30,15 +44,24 @@ import { OperationScene } from './scenes/operation';
 import { bindings } from './input/bindings';
 import { loadLayoutLabels } from './input/glyphs';
 import { downloadRecording, parseRecording, Recorder, Replayer } from './input/record';
+import { Transition } from './ui/transition';
+import { GalleryScene } from './scenes/gallery';
+import { displayPrefs } from './ui/display';
+import { setFallbackHighlight, setReadableFont } from './render/text';
+import { bindUiSounds } from './ui/events';
 
 /** Dev/QA tooling ships in dev and QA builds; `vite build --mode release` strips it (ENG-0237). */
 const DEV_TOOLS = import.meta.env.DEV || import.meta.env.MODE !== 'release';
 import { platform } from './platform';
 import { installPlatform, platformFrame, sceneChanged } from './platform/session';
+import { installTelemetry } from './telemetry';
+import { installQaHooks } from './debug/hooks';
+import { artDevScene } from './art/devScenes';
 
 class Main implements Game {
   input: Input;
   audio = new Audio();
+  private sceneAudio = new SceneAudio(this.audio);
   gfx: Gfx;
   clock = new Clock();
   assets: AssetLoader;
@@ -52,10 +75,13 @@ class Main implements Game {
   private contextLost = false;
   private hidden = false;
   private losses: number[] = [];
+  /** Scene transitions (UIX-0009): fade through black, input blocked, no double-trigger. */
+  readonly transition = new Transition();
 
   constructor(private canvas: HTMLCanvasElement) {
     this.audio.volume = settings.volume;
     this.audio.muted = settings.muted;
+    bindUiAudio(this.audio);
     this.gfx = new Gfx(canvas, VIEW_W, VIEW_H);
     console.info(describeCaps(this.gfx.caps));
     this.gfx.renderScale = settings.renderScale;
@@ -81,6 +107,7 @@ class Main implements Game {
         this.profiler.enabled = !this.profiler.enabled;
       }
       if (DEV_TOOLS && e.code === 'F4') this.dumpFrameCsv();
+      if (DEV_TOOLS && e.code === 'F6') this.sceneAudio.debug = !this.sceneAudio.debug;
     });
     // Hidden/minimised window: stop ticking and silence audio; resume with no dt spike (ENG-0059).
     document.addEventListener('visibilitychange', () => {
@@ -119,6 +146,7 @@ class Main implements Game {
       console.info('WebGL context restored');
     });
     this.resize();
+    bindUiSounds((c) => this.audio.play(c));
     installPlatform(this);
   }
 
@@ -150,6 +178,22 @@ class Main implements Game {
   private recording: OperationScene | null = null;
 
   go(scene: Scene): void {
+    if (this.instantGo) this.goNow(scene);
+    else this.transition.request(() => this.goNow(scene));
+  }
+
+  /** Dev/automation jumps (`?op=`, `?ui=`) change scene without a transition. */
+  instantGo = false;
+  instant(fn: () => void): void {
+    this.instantGo = true;
+    try {
+      fn();
+    } finally {
+      this.instantGo = false;
+    }
+  }
+
+  private goNow(scene: Scene): void {
     if (this.recorder) {
       const leaving = this.recording && scene !== this.recording && !(scene instanceof OptionsScene);
       if (leaving && this.recording) {
@@ -174,7 +218,8 @@ class Main implements Game {
   }
 
   start(first: Scene): void {
-    this.go(first);
+    this.goNow(first);
+    this.transition.fadeIn();
     this.last = performance.now();
     const frame = (now: number) => {
       if (this.boundary.halted) return;
@@ -203,22 +248,33 @@ class Main implements Game {
     platformFrame(Math.min(dt, 0.25));
     const clock = this.clock;
     this.gfx.renderScale = settings.renderScale;
+    Object.assign(this.gfx.displayPrefs, displayPrefs(settings));
+    setReadableFont(settings.readableFont);
+    this.clock.reduceMotion = settings.reduceMotion;
     this.gfx.gpuTimer.enabled = this.profiler.enabled && this.gfx.plan.gpuProfiler;
     this.limiter.cap = settings.frameCap;
     p.begin('sim');
     for (let i = 0; i < steps; i++) {
       this.input.beginStep(ends[i]);
       clock.tick(FIXED_DT);
+      this.transition.update(FIXED_DT);
+      if (this.transition.busy) continue;
       const top = this.scenes.top;
       if (!this.boundary.run('update', sceneName(top), clock.frames, clock.ticks, () => this.scenes.update(FIXED_DT))) break;
     }
     p.end('sim');
     this.input.beginRender();
-    p.begin('render');
     const top = this.scenes.top;
-    this.boundary.run('render', sceneName(top), clock.frames, clock.ticks, () => this.scenes.render(this.gfx, this.fixed.alpha));
+    p.begin('audio');
+    this.sceneAudio.frame(top, Math.min(dt, 0.25), this.input);
+    p.end('audio');
+    p.begin('render');
+    const renderScenes = () => this.scenes.render(this.gfx, this.fixed.alpha);
+    this.boundary.run('render', sceneName(top), clock.frames, clock.ticks, () => (this.transition.busy ? this.input.suppress(renderScenes) : renderScenes()));
+    this.sceneAudio.overlay(this.gfx);
     p.end('render');
     this.gfx.setCamera(null);
+    this.transition.draw(this.gfx);
     this.profiler.draw(this.gfx, this.gfx.stats, this.gfx.registry, this.gfx.plan.gpuProfiler ? this.gfx.gpuTimer : null);
     this.gfx.endFrame();
     this.gfx.gpuTimer.collect();
@@ -300,6 +356,23 @@ async function boot(): Promise<void> {
   game.detectTier();
   game.assets.prefetch('title');
   game.assets.prefetch('ops-common');
+  // 3D sets: registered with the backdrop as they arrive (the procedural scene shows until then).
+  // Generated 3D models have a local manifest (absent on fresh clones: then nothing loads).
+  try {
+    const r = await fetch(`${import.meta.env.BASE_URL}assets/models.json`);
+    if (r.ok) game.assets.addEntries((await r.json()).entries);
+  } catch {
+    // No models built: procedural backdrops and shader icons.
+  }
+  for (const [tool, id] of Object.entries(TOOL_MODEL).filter(([, id]) => game.assets!.has(id)))
+    void game.assets.load(id as AssetId).then((a) => {
+      if (a.value) registerToolModel(tool as ToolId, a.value as Model3D);
+    });
+  // Models are generated (npm run art:models) and absent from fresh clones: skip unbuilt sets.
+  for (const [key, id] of Object.entries(SETS).filter(([, id]) => game.assets!.has(id)))
+    void game.assets.load(id as AssetId).then((a) => {
+      if (a.value) registerSet(key, a.value as Model3D);
+    });
   splashProgress(1, 'Ready');
   void loadLayoutLabels();
   game.start(new TitleScene());
@@ -309,13 +382,14 @@ async function boot(): Promise<void> {
   if (!DEV_TOOLS) return;
   // Dev/QA hooks: ?op=<id> jumps straight into an operation; window.__game exposes the game for automation.
   (window as unknown as { __game: Main }).__game = game;
+  installQaHooks(game, { telemetry: installTelemetry(game) });
   const params = new URLSearchParams(location.search);
   const opId = params.get('op');
   const dev = [SHOWCASE, SHOWCASE_BOSS, showcaseOrgan((params.get('organ') ?? 'heart') as OperationDef['organ'])];
   const def = opId ? [...allOperations(), ...dev].find((o) => o.id === opId) : undefined;
   if (def) {
     const back = () => game.go(new TitleScene());
-    playOperation(game, def, back, back);
+    game.instant(() => playOperation(game, def, back, back));
   }
   // ?record=1 saves each operation's input stream as JSON when it ends; ?replay=<url> plays one back (INP-0016).
   if (params.get('record') === '1') {
@@ -340,9 +414,31 @@ async function boot(): Promise<void> {
       console.error('Replay failed', err);
     }
   }
+  // ?lqa=1 (dev/QA builds) tints glyphs drawn from a fallback face magenta (LOC-0025).
+  setFallbackHighlight(DEV_TOOLS && params.get('lqa') === '1');
+  // ?scene=artview|fleshlab opens an art dev page.
+  const artScene = DEV_TOOLS ? artDevScene(params.get('scene')) : null;
+  if (artScene) game.go(artScene);
+  // ?ui=<screen> opens a screen directly for art review (dev/QA builds).
+  if (DEV_TOOLS) {
+    const back = () => game.go(new TitleScene());
+    const screens: Record<string, () => Scene> = {
+      demoend: () => new DemoEndScene(),
+      theatre: () => new OperationsScene(),
+      gameplay: () => new GameplayOptionsScene(back),
+      controls: () => new ControlsScene(back),
+      audio: () => new AudioOptionsScene(back),
+      calibrate: () => new CalibrateScene(back),
+    };
+    const make = screens[params.get('ui') ?? ''];
+    if (make) game.instant(() => game.go(make()));
+    if (params.get('ui') === 'card') game.instant(() => game.push?.(new ControlsCardScene()));
+  }
+  // ?ui=gallery shows every widget for visual review (UIX-0006).
+  if (params.get('ui') === 'gallery') game.instant(() => game.go(new GalleryScene(() => game.go(new TitleScene()))));
   // ?story=<backdrop> previews a story environment.
   const storyBg = params.get('story');
-  if (storyBg) game.go(new StoryScene({ id: 'preview', place: 'Preview', backdrop: storyBg as Backdrop, lines: [{ who: (params.get('who') ?? 'narrator') as CharacterId, text: 'The Free City of Kessendorf. Winter, in the ninth year of the Long Muster.' }] }, () => game.go(new TitleScene())));
+  if (storyBg) game.instant(() => game.go(new StoryScene({ id: 'preview', place: 'Preview', backdrop: storyBg as Backdrop, lines: [{ who: (params.get('who') ?? 'narrator') as CharacterId, text: 'The Free City of Kessendorf. Winter, in the ninth year of the Long Muster.' }] }, () => game.go(new TitleScene()))));
 }
 
 void boot();

@@ -36,11 +36,11 @@ export function drawBossHud(g: Gfx, op: Operation): void {
   if (!b) return;
   const r = bossBarRect(b);
   const f = b.frac;
-  const name = t(`boss.${b.boss}.name`);
+  const name = t(`boss.${b.bossId}.name`);
   if (b.elite) g.text(name, r.x + r.w / 2, r.y - 4, { size: 15, font: 'italic', color: hex('#e8d8c0', 0.9), align: 'center' });
   else {
     g.text(name, r.x + r.w / 2, r.y - 6, { size: 24, font: 'display', color: hex('#e8d0ff'), color2: hex('#7a4aa8'), align: 'center', shadow: hex('#000000', 0.8) });
-    const phase = t(`boss.${b.boss}.phase.${b.phase.key}`);
+    const phase = t(`boss.${b.bossId}.phase.${b.phase.key}`);
     g.text(phase, r.x + r.w, r.y - 6, { size: 13, font: 'italic', color: hex('#c8b8a0', 0.85), align: 'right', shadow: false });
   }
   g.rect(r.x - 2, r.y - 2, r.w + 4, r.h + 4, hex('#000000', 0.65));

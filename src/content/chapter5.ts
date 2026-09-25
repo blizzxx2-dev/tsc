@@ -59,7 +59,7 @@ export const STORY_5_3: StoryDef = {
   lines: [
     say('patient', 'The court finds Doctor Kreuzer guilty. He will burn at the east gate on the morning after Hollow Night.', 'The Presiding Judge'),
     n('He is taken below, to a cell cut into the rock under the Tribunal court. The rock is very old. The wall is very thin.'),
-    n('At midnight the wall knocks. Twice, then once, then twice: mountain-folk courtesy.'),
+    n('At midnight the wall knocks. Twice, then once, then twice: dwarf courtesy.'),
     say('patient', 'Doctor! I have named this one the Kreuzer Tunnel. It is a very good tunnel. Mind your head.', 'Orsa Flintvein'),
     say('mauer', 'Thirty-five of mine at the other end, and not one of them saw a thing. Move, Doctor.'),
     say('kreuzer', 'Captain — you’ll hang for this.'),
@@ -226,7 +226,7 @@ export const STORY_5_END: StoryDef = {
     say('mauer', 'Thirty-five. All thirty-five, Doctor. I said the names at the gate this morning, the six and the thirty-five.'),
     say('patient', 'I have named a new mine for you. The Kreuzer Hope. It is a very good mine. It has not fallen in once.', 'Orsa Flintvein'),
     say('haller', 'I read your letter. Unsang it, you say. Well. I only ever taught you to sing it. The rest was your own.'),
-    say('ilse', 'Doctor. There’s a drover on the table. Somebody at the Gilded Goose disagreed with his dice.'),
+    say('ilse', 'Doctor. There’s a drover on the table. Somebody at the Crooked Goose disagreed with his dice.'),
     say('kreuzer', 'Knife wounds. Simple work.'),
     say('ilse', 'And in this hospice, we do not lose patients to simple work.'),
     n('THE END — THE QUIET NIGHT, AVERTED'),
@@ -244,7 +244,7 @@ export const OP_5_5: OperationDef = {
   timeLimit: 300,
   baseDrain: 0.1,
   tools: ALL,
-  ranks: { S: 5100, A: 4100, B: 3050 },
+  ranks: { S: 4900, A: 3920, B: 2940 },
   litany: true,
   seed: 55,
   phases: [
@@ -268,7 +268,7 @@ export const OP_5_1: OperationDef = {
   timeLimit: 270,
   baseDrain: 0.1,
   tools: ALL,
-  ranks: { S: 4850, A: 3900, B: 2900 },
+  ranks: { S: 5010, A: 4010, B: 3010 },
   litany: true,
   seed: 51,
   phases: [
@@ -293,7 +293,7 @@ export const OP_5_2: OperationDef = {
   timeLimit: 300,
   baseDrain: 0.1,
   tools: ALL,
-  ranks: { S: 5100, A: 4100, B: 3050 },
+  ranks: { S: 5090, A: 4070, B: 3050 },
   litany: true,
   seed: 52,
   phases: [
@@ -317,7 +317,7 @@ export const OP_5_3: OperationDef = {
   timeLimit: 270,
   baseDrain: 0.15,
   tools: ALL,
-  ranks: { S: 4850, A: 3900, B: 2900 },
+  ranks: { S: 4840, A: 3870, B: 2900 },
   litany: true,
   seed: 53,
   phases: [
@@ -341,7 +341,7 @@ export const OP_5_4: OperationDef = {
   timeLimit: 330,
   baseDrain: 0.1,
   tools: ALL,
-  ranks: { S: 5400, A: 4300, B: 3250 },
+  ranks: { S: 5630, A: 4500, B: 3380 },
   litany: true,
   seed: 54,
   phases: [
@@ -370,7 +370,7 @@ export const OP_5_6: OperationDef = {
   timeLimit: 420,
   baseDrain: 0.05,
   tools: ALL,
-  ranks: { S: 8650, A: 6900, B: 5200 },
+  ranks: { S: 9060, A: 7250, B: 5440 },
   litany: true,
   seed: 56,
   phases: [
@@ -394,7 +394,7 @@ export const OP_5_7: OperationDef = {
   timeLimit: 300,
   baseDrain: 0.05,
   tools: ALL,
-  ranks: { S: 9350, A: 7500, B: 5600 },
+  ranks: { S: 9380, A: 7500, B: 5630 },
   litany: true,
   seed: 57,
   phases: [
@@ -426,7 +426,7 @@ export const OP_5_8: OperationDef = {
   timeLimit: 480,
   baseDrain: 0.05,
   tools: ALL,
-  ranks: { S: 10300, A: 8250, B: 6200 },
+  ranks: { S: 8910, A: 7130, B: 5350 },
   litany: true,
   seed: 58,
   phases: [
@@ -450,7 +450,7 @@ export const OP_5_9: OperationDef = {
   timeLimit: 720,
   baseDrain: 0.05,
   tools: ALL,
-  ranks: { S: 18950, A: 15150, B: 11350 },
+  ranks: { S: 16240, A: 12990, B: 9740 },
   litany: true,
   seed: 59,
   phases: [

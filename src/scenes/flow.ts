@@ -1,4 +1,5 @@
 import type { BundleId } from '../assets/manifest.gen';
+import { LoadingScene } from './loading';
 import type { Game } from '../core/scene';
 import { advance, load, recordBest, store, type SaveData } from '../core/save';
 import { CAMPAIGN } from '../content/campaign';
@@ -11,39 +12,75 @@ import { TitleScene } from './title';
 import { DemoEndScene } from './demoend';
 import { emitGameEvent } from '../platform/events';
 import { assisted } from '../core/settings';
+import { finishChapter, finishOperation } from '../surgery/session';
+import type { OperationOptions } from '../surgery/operation';
+import { lastOutcome, noteOutcome, resolveStory } from '../content/conditions';
+import { aftermathFor, failureFor } from '../content/narrative';
 
 export const save: SaveData = load();
 
-/** Briefing → operation → results for one operation, then hand control back. */
-export function playOperation(game: Game, def: OperationDef, onWin: () => void, onLeave: () => void): void {
-  const begin = () =>
+/**
+ * Briefing → operation → results for one operation, then hand control back. In the campaign
+ * (`story`), a failure scene precedes the retry prompt and an aftermath scene follows a win (NAR).
+ */
+export function playOperation(game: Game, def: OperationDef, onWin: () => void, onLeave: () => void, story = false, runOpts: OperationOptions = {}): void {
+  const begin = (over: OperationOptions = runOpts) =>
     game.go(
       new OperationScene(
         def,
         ({ op, won }) => {
-          const best = won ? recordBest(save, def.id, op.rank(), op.score) : false;
+          const legacyBest = won && !op.opts.challenge ? recordBest(save, def.id, op.rank(), op.score) : false;
           store(save);
           emitGameEvent({ type: 'operation-end', opId: def.id, won, rank: won ? op.rank() : null, score: op.score, assisted: assisted(), litanyUsed: op.litanyUsed });
-          game.go(new ResultsScene(op, won, best, { next: won ? onWin : undefined, retry: begin, quit: onLeave }));
+          const summary = finishOperation(op);
+          const cp = op.checkpointPhase();
+          noteOutcome(def.id, won ? op.rank() : null, op.litanyUsed);
+          const after = story && won ? aftermathFor(def.id) : undefined;
+          const next = after ? () => game.go(new StoryScene(resolveStory(after, lastOutcome()), onWin)) : onWin;
+          const results = () =>
+            game.go(
+              new ResultsScene(
+                op,
+                won,
+                summary.newBest || legacyBest,
+                {
+                  next: won ? next : undefined,
+                  retry: () => begin(runOpts),
+                  quit: onLeave,
+                  // Retry at Novice for this op only; boss ops can resume at the Malison.
+                  retryNovice: op.opts.challenge || op.difficulty === 'novice' ? undefined : () => begin({ ...runOpts, difficulty: 'novice' }),
+                  retryCheckpoint: cp !== null ? () => begin({ ...runOpts, checkpoint: cp }) : undefined,
+                },
+                summary,
+              ),
+            );
+          const fail = story && !won ? failureFor(def.id) : undefined;
+          if (fail) game.go(new StoryScene(fail, results));
+          else results();
         },
         onLeave,
+        over,
       ),
     );
-  game.go(new BriefingScene(def, save.best[def.id], begin, onLeave));
+  game.go(new BriefingScene(def, save.best[def.id], () => begin(), onLeave));
 }
 
 /** Play the campaign from a given chapter/step, saving progress as it goes. */
-export function playStep(game: Game, chapter: number, step: number): void {
+export function playStep(game: Game, chapter: number, step: number, loaded = false): void {
   const ch = CAMPAIGN[chapter];
   // Past the last chapter of the demo: the thank-you / wishlist screen.
   if (!ch) {
     emitGameEvent({ type: 'edition-complete' });
     return game.go(new DemoEndScene());
   }
+  // A chapter whose art isn't resident yet shows the loading vignette first (ART-0061).
+  const bundle = `chapter${chapter + 1}` as BundleId;
+  if (!loaded && game.assets && game.assets.bundleSize(bundle) > 0 && !game.assets.isResident(bundle)) return game.go(new LoadingScene(bundle, chapter, () => playStep(game, chapter, step, true)));
   syncChapterBundles(game, chapter, step);
   const s = ch.steps[step];
   if (!s) {
     emitGameEvent({ type: 'chapter-complete', chapter });
+    finishChapter(chapter + 1);
     return playStep(game, chapter + 1, 0);
   }
   advance(save, chapter, step);
@@ -53,8 +90,8 @@ export function playStep(game: Game, chapter: number, step: number): void {
     store(save);
     playStep(game, chapter, step + 1);
   };
-  if (s.kind === 'story') game.go(new StoryScene(s.story, next));
-  else playOperation(game, s.op, next, () => game.go(new TitleScene()));
+  if (s.kind === 'story') game.go(new StoryScene(resolveStory(s.story, lastOutcome()), next));
+  else playOperation(game, s.op, next, () => game.go(new TitleScene()), true);
 }
 
 /**

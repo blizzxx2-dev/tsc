@@ -31,7 +31,17 @@ describe('action map (INP-0004)', () => {
       }
     };
     walk(join(__dirname, '..', 'src'));
-    const offenders = files.filter((f) => /\.(keyPressed|key)\(\s*['"`]/.test(readFileSync(f, 'utf8')) || (/['"](Key[A-Z]|Digit\d)['"]/.test(readFileSync(f, 'utf8')) && !f.endsWith(join('input', 'actions.ts')) && !f.endsWith(join('surgery', 'types.ts')) && !f.endsWith(join('settings', 'schema.ts'))));
+    // src/debug (F1 cheat menu, backquote console) and the art look-dev pages are dev/QA-only tooling.
+    const devOnly = (f: string) => f.includes(join('src', 'debug')) || f.endsWith(join('art', 'artview.ts')) || f.endsWith(join('art', 'fleshlab.ts'));
+    const offenders = files.filter(
+      (f) =>
+        !devOnly(f) &&
+        (/\.(keyPressed|key)\(\s*['"`]/.test(readFileSync(f, 'utf8')) ||
+          (/['"](Key[A-Z]|Digit\d)['"]/.test(readFileSync(f, 'utf8')) &&
+            !f.endsWith(join('input', 'actions.ts')) &&
+            !f.endsWith(join('surgery', 'types.ts')) &&
+            !f.endsWith(join('settings', 'schema.ts')))),
+    );
     expect(offenders).toEqual([]);
   });
 
@@ -274,7 +284,12 @@ describe('glyphs from bindings (INP-0074, INP-0009, INP-0080)', () => {
     expect(detectGlyphSet('Steam Deck Controller (Vendor: 28de)')).toBe('deck');
   });
   it('uses the keyboard layout map for key caps (AZERTY), falling back to US names', () => {
-    setLayoutLabels(new Map([['KeyQ', 'a'], ['Digit1', '&']]));
+    setLayoutLabels(
+      new Map([
+        ['KeyQ', 'a'],
+        ['Digit1', '&'],
+      ]),
+    );
     expect(keyLabel('KeyQ')).toBe('A');
     expect(keyLabel('Digit1')).toBe('&');
     setLayoutLabels(null);

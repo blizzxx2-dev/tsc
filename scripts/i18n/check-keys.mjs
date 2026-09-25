@@ -8,7 +8,7 @@
 //  - string literals equal to a key count as references (option-row tables, `t(c ? 'a' : 'b')`);
 //  - simulation text that the HUD resolves with tSource() (rate labels, popups, loss reasons in
 //    src/surgery) must have a key in the label./popup./loss. namespaces;
-//  - text-draw calls in src/scenes and src/ui (g.text, g.textBlock, giltText, button, op.popup) must
+//  - text-draw calls in src/scenes, src/ui, src/input and src/audio (g.text, g.textBlock, giltText, button, op.popup) must
 //    not receive English literals or template literals that assemble sentences.
 // Fails on missing keys, untranslatable simulation text and hard-coded draw text; reports unused
 // keys and non-literal keys (failing on those too with --strict).
@@ -47,11 +47,20 @@ export function scan() {
     const src = ts.createSourceFile(file, readFileSync(file, 'utf8'), ts.ScriptTarget.ES2022, true);
     const tNames = new Set();
     for (const st of src.statements) {
-      if (ts.isImportDeclaration(st) && /\/i18n(\/index)?['"]$/.test(st.moduleSpecifier.getText(src)) && st.importClause?.namedBindings && ts.isNamedImports(st.importClause.namedBindings)) {
+      if (
+        ts.isImportDeclaration(st) &&
+        /\/i18n(\/index)?['"]$/.test(st.moduleSpecifier.getText(src)) &&
+        st.importClause?.namedBindings &&
+        ts.isNamedImports(st.importClause.namedBindings)
+      ) {
         for (const el of st.importClause.namedBindings.elements) if ((el.propertyName ?? el.name).text === 't') tNames.add(el.name.text);
       }
     }
-    const isUi = rel.startsWith('src/scenes/') || rel.startsWith('src/ui/');
+    const isUi =
+      rel.startsWith('src/scenes/') ||
+      rel.startsWith('src/ui/') ||
+      rel.startsWith('src/input/') ||
+      (rel.startsWith('src/audio/') && !rel.endsWith('debug-overlay.ts'));
     const isSim = rel.startsWith('src/surgery/');
     const where = (n) => `${rel}:${src.getLineAndCharacterOfPosition(n.getStart()).line + 1}`;
     const literalsIn = (n, acc = []) => {
@@ -65,7 +74,8 @@ export function scan() {
     const visit = (node) => {
       if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
         if (keys.has(node.text)) used.add(node.text);
-        if (isSim && byText.has(node.text)) used.add(byText.get(node.text));
+        // Simulation and content text is matched to its key by value (tSource).
+        if ((isSim || rel.startsWith('src/content/')) && byText.has(node.text)) used.add(byText.get(node.text));
       }
       if (ts.isCallExpression(node)) {
         const callee = node.expression;
@@ -76,7 +86,9 @@ export function scan() {
           if (a && (ts.isStringLiteral(a) || ts.isNoSubstitutionTemplateLiteral(a))) {
             if (!keys.has(a.text)) missing.push(`${where(a)} "${a.text}"`);
           } else if (a && ts.isTemplateExpression(a)) {
-            const re = new RegExp(`^${[a.head.text, ...a.templateSpans.map((s) => s.literal.text)].map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('[^.]+')}$`);
+            const re = new RegExp(
+              `^${[a.head.text, ...a.templateSpans.map((s) => s.literal.text)].map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('[^.]+')}$`,
+            );
             const hits = [...keys].filter((k) => re.test(k));
             if (hits.length === 0) missing.push(`${where(a)} pattern ${re}`);
             hits.forEach((k) => used.add(k));
@@ -90,14 +102,16 @@ export function scan() {
         if (isSim && (fn === 'rate' || fn === 'popup' || fn === 'lose')) {
           const idx = fn === 'rate' ? 2 : 0;
           const a = node.arguments[idx];
-          if (a && (ts.isStringLiteral(a) || ts.isNoSubstitutionTemplateLiteral(a)) && hasWords(a.text) && !byText.has(a.text)) simUntranslatable.push(`${where(a)} "${a.text}"`);
+          if (a && (ts.isStringLiteral(a) || ts.isNoSubstitutionTemplateLiteral(a)) && hasWords(a.text) && !byText.has(a.text))
+            simUntranslatable.push(`${where(a)} "${a.text}"`);
         }
         // Hard-coded text reaching a draw call.
         const idx = isUi ? (ts.isPropertyAccessExpression(callee) ? DRAW[fn] : DRAW_FN[fn]) : undefined;
         if (idx !== undefined) {
           const a = node.arguments[idx];
           if (a && (ts.isStringLiteral(a) || ts.isNoSubstitutionTemplateLiteral(a)) && hasWords(a.text)) hardcoded.push(`${where(a)} "${a.text}"`);
-          if (a && ts.isTemplateExpression(a) && hasWords([a.head.text, ...a.templateSpans.map((s) => s.literal.text)].join(''))) hardcoded.push(`${where(a)} template ${a.getText(src).slice(0, 60)}`);
+          if (a && ts.isTemplateExpression(a) && hasWords([a.head.text, ...a.templateSpans.map((s) => s.literal.text)].join('')))
+            hardcoded.push(`${where(a)} template ${a.getText(src).slice(0, 60)}`);
         }
       }
       ts.forEachChild(node, visit);
@@ -106,6 +120,8 @@ export function scan() {
   }
   // Embedded-object labels live in a spec table rather than a call.
   for (const k of keys) if (/^label\.embedded\./.test(k)) used.add(k);
+  // Action names are looked up by action id (`action.${id}`), and ids contain dots.
+  for (const k of keys) if (/^action\./.test(k)) used.add(k);
   // Vitals popups ("-12", "+25") are matched by pattern in tSource().
   used.add('popup.vitals_loss');
   used.add('popup.vitals_gain');

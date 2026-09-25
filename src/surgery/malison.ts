@@ -71,7 +71,8 @@ const SINGLE_PHASE: readonly BossPhase[] = [{ key: 'vigil', from: 1, music: 1 }]
 export type EyeBeat = 1 | 2 | 3 | 0;
 
 export class Malison extends MalisonBase {
-  readonly boss = 'matins';
+  readonly bossId = 'matins';
+  override boss = true;
   readonly phases: readonly BossPhase[];
   readonly tune: MatinsTuning;
   open = false;
@@ -135,8 +136,24 @@ export class Malison extends MalisonBase {
     return this.open || (!!this.tune.eyeFromStart && this.beat === 3);
   }
 
-  private get openTime(): number {
+  private get openSpan(): number {
     return this.phase.key === 'watchfire' ? this.tune.open2 : this.tune.open1;
+  }
+
+  /** Shroud rhythm knobs for remixes (X1): seconds veiled, and seconds open in the Vigil (Watchfire scales with it). */
+  get veilTime(): number {
+    return this.tune.veil;
+  }
+  set veilTime(s: number) {
+    this.tune.veil = s;
+    this.opening.period = s;
+  }
+  get openTime(): number {
+    return this.tune.open1;
+  }
+  set openTime(s: number) {
+    this.tune.open2 *= s / this.tune.open1;
+    this.tune.open1 = s;
   }
 
   private pickTarget(op: Operation): Vec {
@@ -203,7 +220,7 @@ export class Malison extends MalisonBase {
         this.rend(op, { ...this.pos }, op.rng.range(0, TAU), op.rng.range(40, 60));
         op.sayOnce('malison-rend', 'It’s tearing the flesh as it moves! Stitch those wounds!');
       }
-    } else if (this.cycleT >= this.openTime) {
+    } else if (this.cycleT >= this.openSpan) {
       this.open = false;
       this.cycleT = 0;
       this.opening.reset();

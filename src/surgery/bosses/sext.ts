@@ -134,7 +134,7 @@ export class SextMalison extends Entity {
   private shown = 0;
   private truthT = 0;
   /** Last true reading the surgeon saw through the lens, and when. */
-  lastSeen = MAX_VITALS;
+  lastSeen: number = MAX_VITALS;
   lastSeenAt = 0;
   private falseT = 0;
   private cycleStart = 0;

@@ -1,7 +1,7 @@
 import type { Vec } from '../core/math';
-import { alphaOf, type RGBA } from './color';
+import { alphaOf, hex, withAlpha, type RGBA } from './color';
 import { bakeLut, GRADES, LUT_SIZE } from './lut';
-import { GlyphAtlas, type FontId } from './text';
+import { fallbackHighlight, GlyphAtlas, type FontId } from './text';
 import { BRIGHT_FS, CREATURE_FS, DOWN_FS, FLESH_FS, FLUID_FS, FULL_VS, IMAGE_FS, IMAGE_VS, PORTRAIT_FS, POST_FS, RECT_VS, SCENE_FS, UP_FS } from './shaders';
 import { BATCH_FS, BATCH_UNITS, BATCH_VS, FALLBACK_VS, FXAA_FS } from './batch-shaders';
 import { fallbackPlan, FULL_CAPS, probeCaps, toMediump, type FallbackPlan, type GpuCaps } from './caps';
@@ -11,8 +11,26 @@ import { SpriteBank, type SpriteOpts } from './sprites';
 import { RenderTargetPool, type Target } from './targets';
 import { checkerPixels, Texture } from './texture';
 import { scissorRect } from './viewport';
+import { UI_ART_FS } from '../art/uiShader';
+import { PLATE_FS } from './shaders/plate';
+import { SPECIES_PROFILES, type SpeciesLook } from '../surgery/species';
+import { Renderer3D, type Scene3D } from './renderer3d';
+
+/** Bilinear upsample of a reduced-resolution layer. */
+const UPSAMPLE_FS = `#version 300 es
+precision mediump float;
+in vec2 v_uv;
+uniform sampler2D u_tex;
+out vec4 o;
+void main() { o = vec4(texture(u_tex, v_uv).rgb, 1.0); }`;
+import type { DisplayPrefs } from '../ui/display';
 
 const TAU = Math.PI * 2;
+/** LQA fallback-glyph tint (LOC-0025). */
+const MAGENTA: RGBA = hex('#ff00ff');
+
+/** '#rrggbb' → [r, g, b] in 0..1. */
+const rgb01 = (h: string): [number, number, number] => [parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255];
 const MAX_VERTS = 60000;
 const STRIDE = 6; // x, y, u, v (f32) + rgba (u32) + texture unit (f32)
 const UNITS = Array.from({ length: BATCH_UNITS }, (_, i) => i);
@@ -32,6 +50,10 @@ export interface TextOpts {
   font?: FontId;
   shadow?: RGBA | false;
   maxWidth?: number;
+  /** Extra letter spacing in em (0.12 for engraved caps labels). */
+  tracking?: number;
+  /** Soft shadow: the shadow is drawn as a small blurred halo instead of one hard offset copy. */
+  soft?: boolean;
 }
 
 export interface ImageHandle {
@@ -39,6 +61,24 @@ export interface ImageHandle {
   w: number;
   h: number;
   ready: boolean;
+}
+
+export interface PlateOpts {
+  radius?: number;
+  chamfer?: boolean;
+  top?: RGBA;
+  bottom?: RGBA;
+  border?: RGBA;
+  borderW?: number;
+  inset?: RGBA;
+  insetD?: number;
+  bevel?: number;
+  /** [alpha, blur px, offset y px]; alpha 0 disables. */
+  shadow?: [number, number, number];
+  glow?: RGBA;
+  glowR?: number;
+  grain?: number;
+  alpha?: number;
 }
 
 export interface ImageOpts {
@@ -70,8 +110,12 @@ export interface FleshParams {
   cellSoft?: number;
   /** Base roughness per organ (0.35–0.6). */
   rough?: number;
+  /** Gore level (UIX-0155): 0 full, 1 reduced, 2 minimal. */
+  gore?: number;
   /** Up to 3 lights: position (virtual px), height, intensity, colour. */
   lights?: { x: number; y: number; h: number; i: number; col: [number, number, number] }[];
+  /** The patient's people: skin, hide depth, scattering and blood (src/surgery/species.ts). */
+  species?: SpeciesLook;
 }
 
 export interface PostParams {
@@ -103,6 +147,10 @@ export interface PostParams {
   lens?: [number, number, number, number];
   /** Damage flash: direction from screen centre (virtual px) and intensity 0..1. */
   hurt?: [number, number, number];
+  /** Depth-of-field blur for menu backdrops, in virtual px (0 = sharp). */
+  defocus?: number;
+  /** Operating lamp: ellipse centre and radii in virtual px, and how dark the surround falls (0..1). */
+  spot?: { cx: number; cy: number; rx: number; ry: number; k: number };
 }
 
 export interface GfxOptions {
@@ -135,6 +183,8 @@ export class Gfx {
   readonly gl: WebGL2RenderingContext;
   /** Every GL object, for leak counts, VRAM budget and context restore (ENG-0198). */
   readonly registry: GlRegistry;
+  /** Player display options as renderer multipliers (UIX-0105); the shell refreshes it every frame. */
+  readonly displayPrefs: DisplayPrefs = { bloom: 1, grain: 1, vignette: 1, gamma: 1, flicker: 1, chroma: 1, still: 0 };
   readonly caps: GpuCaps;
   readonly plan: FallbackPlan;
   readonly targets: RenderTargetPool;
@@ -242,6 +292,11 @@ export class Gfx {
     this.sceneProg = reg.createProgram('scene', FULL_VS, SCENE_FS);
     this.portraitProg = reg.createProgram('portrait', RECT_VS, PORTRAIT_FS);
     this.creatureProg = reg.createProgram('creature', RECT_VS, CREATURE_FS);
+    // Lazily compiled programs belong to the old context after a restore.
+    this.sceneProgs.clear();
+    this.uiArtProg = null;
+    this.plateProg = null;
+    this.upsampleProg = null;
     this.downProg = reg.createProgram('bloom-down', FULL_VS, DOWN_FS);
     this.upProg = reg.createProgram('bloom-up', FULL_VS, UP_FS);
     // LUT textures belong to the old context after a restore; they are rebaked lazily.
@@ -267,7 +322,7 @@ export class Gfx {
 
     this.n = 0;
     this.pw = this.ph = 0;
-    this.msaaFb = this.msaaRb = null;
+    this.msaaFb = this.msaaRb = this.msaaDepth = null;
     gl.enable(gl.BLEND);
     this.applyBlend();
   }
@@ -421,7 +476,7 @@ export class Gfx {
     if (w === this.pw && h === this.ph && this.scene && this.targets.get('scene') === this.scene) return;
     const P = this.targets;
     // HDR scene target when float render targets are available (ENG-0147).
-    this.scene = P.acquire('scene', w, h, { format: this.floatTargets ? 'rgba16f' : 'rgba8' });
+    this.scene = P.acquire('scene', w, h, { format: this.floatTargets ? 'rgba16f' : 'rgba8', depthStencil: true });
     this.mips = [];
     for (let i = 1; i <= 5; i++) this.mips.push(P.acquire(`bloom${i}`, Math.max(1, w >> i), Math.max(1, h >> i), { format: this.plan.bloomFormat }));
     const hw = Math.max(1, Math.round(w * 0.6));
@@ -432,8 +487,9 @@ export class Gfx {
     const gl = this.gl;
     const reg = this.registry;
     reg.release(this.msaaRb);
+    reg.release(this.msaaDepth);
     reg.release(this.msaaFb);
-    this.msaaFb = this.msaaRb = null;
+    this.msaaFb = this.msaaRb = this.msaaDepth = null;
     if (this.samples > 1) {
       this.msaaRb = reg.createRenderbuffer('msaa world');
       gl.bindRenderbuffer(gl.RENDERBUFFER, this.msaaRb);
@@ -443,6 +499,12 @@ export class Gfx {
       this.msaaFb = reg.createFramebuffer('msaa world');
       gl.bindFramebuffer(gl.FRAMEBUFFER, this.msaaFb);
       gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, this.msaaRb);
+      // Depth for the 3D layer.
+      this.msaaDepth = reg.createRenderbuffer('msaa world depth');
+      gl.bindRenderbuffer(gl.RENDERBUFFER, this.msaaDepth);
+      gl.renderbufferStorageMultisample(gl.RENDERBUFFER, this.samples, gl.DEPTH24_STENCIL8, w, h);
+      reg.setBytes(this.msaaDepth, w * h * 4 * this.samples);
+      gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.RENDERBUFFER, this.msaaDepth);
       if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) this.msaaFb = null;
     }
     this.pw = w;
@@ -530,14 +592,16 @@ export class Gfx {
     gl.uniform1f(this.u(this.post, 'u_litany'), p.litany);
     gl.uniform1f(this.u(this.post, 'u_danger'), p.danger);
     // Mip-chain bloom sums five levels; scale so `bloom` keeps its old meaning.
-    gl.uniform1f(this.u(this.post, 'u_bloomAmt'), p.bloom * 0.35);
+    gl.uniform1f(this.u(this.post, 'u_bloomAmt'), p.bloom * 0.35 * this.displayPrefs.bloom);
+    const dp = this.displayPrefs;
+    gl.uniform4f(this.u(this.post, 'u_prefs'), dp.grain, dp.vignette, dp.gamma, dp.still);
     gl.uniform1f(this.u(this.post, 'u_beat'), p.beat ?? 0);
     gl.uniform1f(this.u(this.post, 'u_curse'), p.curse ?? 0);
     gl.uniform2fv(this.u(this.post, 'u_outcome'), p.outcome ?? [0, 0]);
     gl.uniform1f(this.u(this.post, 'u_hdr'), this.floatTargets ? 1 : 0);
     gl.uniform2f(this.u(this.post, 'u_shake'), p.shake.x / this.vw, -p.shake.y / this.vh);
-    gl.uniform1f(this.u(this.post, 'u_flicker'), Math.sin(this.time * 9.1) * Math.sin(this.time * 3.7));
-    gl.uniform1f(this.u(this.post, 'u_chroma'), p.chroma ?? 0);
+    gl.uniform1f(this.u(this.post, 'u_flicker'), Math.sin(this.time * 9.1) * Math.sin(this.time * 3.7) * this.displayPrefs.flicker);
+    gl.uniform1f(this.u(this.post, 'u_chroma'), (p.chroma ?? 0) * this.displayPrefs.chroma);
     gl.uniform3fv(this.u(this.post, 'u_tint'), p.tint ?? [1, 1, 1]);
     gl.uniform3fv(this.u(this.post, 'u_lift'), p.lift ?? [0, 0, 0]);
     gl.uniform2f(this.u(this.post, 'u_res'), this.canvas.width, this.canvas.height);
@@ -549,6 +613,10 @@ export class Gfx {
     gl.uniform2fv(this.u(this.post, 'u_litanyCenter'), p.litanyCenter ?? [0.5, 0.5]);
     gl.uniform1f(this.u(this.post, 'u_litanyAge'), p.litanyAge ?? 10);
     gl.uniform3fv(this.u(this.post, 'u_hurt'), p.hurt ?? [0, 0, 0]);
+    gl.uniform1f(this.u(this.post, 'u_defocus'), (p.defocus ?? 0) * (this.canvas.width / this.vw));
+    const sp = p.spot;
+    gl.uniform4f(this.u(this.post, 'u_spot'), sp ? sp.cx / this.vw : 0, sp ? 1 - sp.cy / this.vh : 0, sp ? sp.rx / this.vw : 0, sp ? sp.ry / this.vh : 0);
+    gl.uniform1f(this.u(this.post, 'u_spotK'), sp?.k ?? 0);
     const ln = p.lens ?? [0, 0, 0, 0];
     gl.uniform4f(this.u(this.post, 'u_lens'), ln[0] / this.vw, 1 - ln[1] / this.vh, ln[2] / this.vh, ln[3]);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -616,7 +684,7 @@ export class Gfx {
 
   /** Load (once) and return an image handle; draws are skipped until it is ready. */
   image(url: string): ImageHandle {
-    let h = this.images.get(url);
+    const h = this.images.get(url);
     if (h) return h;
     const handle: ImageHandle = { tex: null, w: 0, h: 0, ready: false };
     this.images.set(url, handle);
@@ -731,7 +799,7 @@ export class Gfx {
   }
 
   /** Composite the liquid layer into the world as glossy, merging fluid. Call after beginWorld. */
-  fluidComposite(light: Vec): void {
+  fluidComposite(light: Vec, look: { blood?: string; pus?: string; bile?: string; gore?: number } = {}): void {
     this.flush('program');
     this.worldFb();
     this.stats.drawCalls++;
@@ -746,6 +814,10 @@ export class Gfx {
     gl.uniform2f(this.u(pr, 'u_view'), this.vw, this.vh);
     gl.uniform2f(this.u(pr, 'u_light'), light.x, light.y);
     gl.uniform1f(this.u(pr, 'u_time'), this.time);
+    gl.uniform3fv(this.u(pr, 'u_blood'), rgb01(look.blood ?? '#8c0510'));
+    gl.uniform3fv(this.u(pr, 'u_pus'), rgb01(look.pus ?? '#c7b24c'));
+    gl.uniform3fv(this.u(pr, 'u_bile'), rgb01(look.bile ?? '#0f0a0f'));
+    gl.uniform1f(this.u(pr, 'u_gore'), look.gore ?? 0);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     this.applyBlend();
   }
@@ -792,6 +864,123 @@ export class Gfx {
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   }
 
+  /** Restrict drawing to a rect in virtual units (null clears). Used for side-by-side look-dev views. */
+  clipRect(r: { x: number; y: number; w: number; h: number } | null): void {
+    // One look-dev clip at a time, on top of the scissor stack (ENG-0027).
+    if (this.lookDevClip) this.popClip();
+    this.lookDevClip = !!r;
+    if (r) this.pushClip(r);
+  }
+  private lookDevClip = false;
+
+  private uiArtProg: WebGLProgram | null = null;
+  private plateProg: WebGLProgram | null = null;
+  private msaaDepth: WebGLRenderbuffer | null = null;
+  private r3d: Renderer3D | null = null;
+
+  /**
+   * Procedural UI art (src/art/uiShader.ts) drawn into a rect, premultiplied. `mode` picks the
+   * piece (parchment, oak, wax seal, gauge, sand-glass, reliquary, tool icon…); `a` carries its
+   * state. `rot` turns the art inside the rect (make the rect large enough to hold it).
+   */
+  ornament(mode: number, x: number, y: number, w: number, h: number, p: { col?: [number, number, number]; col2?: [number, number, number]; a?: [number, number, number, number]; seed?: number; rot?: number; alpha?: number } = {}): void {
+    if (w <= 0 || h <= 0) return;
+    this.flush('program');
+    this.stats.drawCalls++;
+    const gl = this.gl;
+    const pr = (this.uiArtProg ??= this.registry.createProgram('ui-art', RECT_VS, UI_ART_FS));
+    gl.useProgram(pr);
+    this.rectQuad(x, y, w, h);
+    gl.uniform2f(this.u(pr, 'u_view'), this.vw, this.vh);
+    gl.uniform1i(this.u(pr, 'u_mode'), mode);
+    gl.uniform2f(this.u(pr, 'u_size'), w, h);
+    gl.uniform1f(this.u(pr, 'u_time'), this.time);
+    gl.uniform1f(this.u(pr, 'u_seed'), p.seed ?? 0);
+    gl.uniform1f(this.u(pr, 'u_rot'), p.rot ?? 0);
+    gl.uniform1f(this.u(pr, 'u_alpha'), p.alpha ?? 1);
+    gl.uniform3fv(this.u(pr, 'u_col'), p.col ?? [0.55, 0.06, 0.08]);
+    gl.uniform3fv(this.u(pr, 'u_col2'), p.col2 ?? [0.9, 0.8, 0.5]);
+    gl.uniform4fv(this.u(pr, 'u_a'), p.a ?? [0, 0, 0, 0]);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    this.applyBlend();
+  }
+
+  /**
+   * A UI plate (PLATE_FS): the material every HUD and menu surface is made of. Colours are
+   * straight-alpha RGBA numbers. Honours translate/uniform scale of the current transform.
+   */
+  plate(x: number, y: number, w: number, h: number, o: PlateOpts = {}): void {
+    if (w <= 0 || h <= 0) return;
+    const t = this.tf;
+    const k = Math.hypot(t[0], t[1]) || 1;
+    const X = t[0] * x + t[2] * y + t[4];
+    const Y = t[1] * x + t[3] * y + t[5];
+    const shadow = o.shadow ?? [0.55, 18, 6];
+    const pad = Math.ceil(Math.max(shadow[1] + Math.abs(shadow[2]), o.glow ? (o.glowR ?? 16) * 1.5 : 0, 2)) * k;
+    this.flush('program');
+    this.stats.drawCalls++;
+    const gl = this.gl;
+    const pr = (this.plateProg ??= this.registry.createProgram('ui-plate', RECT_VS, PLATE_FS));
+    gl.useProgram(pr);
+    this.rectQuad(X - pad, Y - pad, w * k + pad * 2, h * k + pad * 2);
+    const c4 = (c: RGBA | undefined, fallback: [number, number, number, number]): [number, number, number, number] =>
+      c === undefined ? fallback : [(c & 0xff) / 255, ((c >>> 8) & 0xff) / 255, ((c >>> 16) & 0xff) / 255, ((c >>> 24) & 0xff) / 255];
+    gl.uniform2f(this.u(pr, 'u_view'), this.vw, this.vh);
+    gl.uniform2f(this.u(pr, 'u_size'), w * k, h * k);
+    gl.uniform1f(this.u(pr, 'u_pad'), pad);
+    gl.uniform2f(this.u(pr, 'u_shape'), (o.radius ?? 4) * k, o.chamfer ? 1 : 0);
+    gl.uniform4fv(this.u(pr, 'u_top'), c4(o.top, [0.09, 0.07, 0.06, 0.92]));
+    gl.uniform4fv(this.u(pr, 'u_bot'), c4(o.bottom ?? o.top, [0.04, 0.03, 0.03, 0.94]));
+    gl.uniform4fv(this.u(pr, 'u_border'), c4(o.border, [0.72, 0.58, 0.32, 0.9]));
+    gl.uniform1f(this.u(pr, 'u_bw'), (o.borderW ?? 1.25) * k);
+    gl.uniform4fv(this.u(pr, 'u_inset'), c4(o.inset, [0, 0, 0, 0]));
+    gl.uniform1f(this.u(pr, 'u_insetD'), (o.insetD ?? 4) * k);
+    gl.uniform1f(this.u(pr, 'u_bevel'), o.bevel ?? 0.6);
+    gl.uniform4f(this.u(pr, 'u_shadow'), shadow[0], shadow[1] * k, shadow[2] * k, 0);
+    gl.uniform4fv(this.u(pr, 'u_glow'), c4(o.glow, [0, 0, 0, 0]));
+    gl.uniform1f(this.u(pr, 'u_glowR'), (o.glowR ?? 16) * k);
+    gl.uniform1f(this.u(pr, 'u_grain'), o.grain ?? 1);
+    gl.uniform1f(this.u(pr, 'u_alpha'), o.alpha ?? 1);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    this.applyBlend();
+  }
+
+  /** The 3D renderer (created on first use). */
+  get renderer3d(): Renderer3D {
+    return (this.r3d ??= new Renderer3D(this.gl, this.registry));
+  }
+
+  /**
+   * Draw a 3D scene into the world layer (call between beginWorld and endWorld, usually first so
+   * 2D world art lands on top). The 2D batch is flushed first and picks its state back up after.
+   */
+  draw3D(scene: Scene3D): void {
+    this.flush('program');
+    const fb = this.msaaFb ?? this.scene.fb;
+    this.renderer3d.render(scene, { fb, w: this.scene.w, h: this.scene.h });
+    this.stats.drawCalls += this.renderer3d.stats.draws;
+    this.gl.viewport(0, 0, this.outW, this.outH);
+    this.applyBlend();
+  }
+
+  /** Render a 3D scene into an offscreen RGBA target (icons, thumbnails); returns its texture. */
+  render3DToTexture(key: string, w: number, h: number, scene: Scene3D): WebGLTexture {
+    this.flush('program');
+    const t = this.targets.acquire(key, w, h, { depthStencil: true });
+    this.renderer3d.render({ ...scene, clearColor: scene.clearColor ?? [0, 0, 0, 0] }, { fb: t.fb, w, h });
+    const gl = this.gl;
+    // Mipmaps so the icon minifies cleanly to tray size.
+    gl.bindTexture(gl.TEXTURE_2D, t.tex);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    this.bindTarget(null);
+    this.applyBlend();
+    return t.tex;
+  }
+
   /** Shader-drawn creature/effect in a square around (x, y). Modes: 0 Matins, 1 Lauds, 2 hexfire, 3 hexstone glow. */
   creature(mode: number, x: number, y: number, size: number, p: { seed?: number; open?: number; health?: number; flash?: number; dissolve?: number; intensity?: number; blend?: Blend } = {}): void {
     this.flush();
@@ -815,20 +1004,46 @@ export class Gfx {
     this.applyBlend();
   }
 
-  /** Shader-rendered story environment (0 hospice … 5 camp) over the whole world target. */
-  sceneField(kind: number): void {
+  private sceneProgs = new Map<number, WebGLProgram>();
+  private upsampleProg: WebGLProgram | null = null;
+
+  /**
+   * Shader-rendered story environment over the whole world target. Each location compiles its
+   * own specialised program (SCENE_FS with `#define KIND n`) on first use. `light` picks the
+   * lighting variant (0 night, 1 dusk, 2 day); `parallax` is a small pointer offset (-1..1).
+   * `scale` < 1 renders at reduced resolution and upsamples bilinearly (quality tiers).
+   */
+  sceneField(kind: number, opts: { light?: number; parallax?: [number, number]; variant?: number; scale?: number } = {}): void {
     this.flush('program');
     this.worldFb();
     this.stats.drawCalls++;
     const gl = this.gl;
-    const pr = this.sceneProg;
+    let pr = kind === 0 ? this.sceneProg : this.sceneProgs.get(kind);
+    if (!pr) {
+      pr = this.registry.createProgram(`scene-${kind}`, FULL_VS, SCENE_FS.replace('#version 300 es', `#version 300 es\n#define KIND ${kind}`));
+      this.sceneProgs.set(kind, pr);
+    }
+    const scale = Math.max(0.25, Math.min(1, opts.scale ?? 1));
+    const low = scale < 0.99 ? this.targets.acquire('scene-low', this.outW * scale, this.outH * scale) : null;
+    if (low) this.bindTarget(low);
     gl.useProgram(pr);
     gl.bindVertexArray(this.emptyVao);
     gl.disable(gl.BLEND);
     gl.uniform2f(this.u(pr, 'u_view'), this.vw, this.vh);
     gl.uniform1f(this.u(pr, 'u_time'), this.time);
     gl.uniform1i(this.u(pr, 'u_kind'), kind);
+    gl.uniform1f(this.u(pr, 'u_light'), opts.light ?? 0);
+    gl.uniform1f(this.u(pr, 'u_variant'), opts.variant ?? 0);
+    gl.uniform2fv(this.u(pr, 'u_parallax'), opts.parallax ?? [0, 0]);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
+    if (low) {
+      this.worldFb();
+      const up = (this.upsampleProg ??= this.registry.createProgram('scene-upsample', FULL_VS, UPSAMPLE_FS));
+      gl.useProgram(up);
+      this.bindTex(low.tex, 0);
+      gl.uniform1i(this.u(up, 'u_tex'), 0);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
     gl.enable(gl.BLEND);
   }
 
@@ -860,6 +1075,16 @@ export class Gfx {
     gl.uniform1f(this.u(pr, 'u_corrupt'), f.corrupt);
     gl.uniform1f(this.u(pr, 'u_cellSoft'), f.cellSoft ?? 0.08);
     gl.uniform1f(this.u(pr, 'u_rough'), f.rough ?? 0.45);
+    gl.uniform1f(this.u(pr, 'u_gore'), f.gore ?? 0);
+    const sp = f.species ?? SPECIES_PROFILES.human.look;
+    gl.uniform3fv(this.u(pr, 'u_skin'), sp.skin);
+    gl.uniform2f(this.u(pr, 'u_layers'), sp.dermis, sp.fat);
+    gl.uniform4f(this.u(pr, 'u_sssCol'), sp.sss[0], sp.sss[1], sp.sss[2], sp.sssAmount);
+    gl.uniform2f(this.u(pr, 'u_hide'), sp.coarse, sp.scars);
+    gl.uniform1f(this.u(pr, 'u_veinAmt'), sp.veinAmount);
+    gl.uniform3fv(this.u(pr, 'u_blood'), sp.blood);
+    gl.uniform3fv(this.u(pr, 'u_bloodDeep'), sp.bloodDeep);
+    gl.uniform1f(this.u(pr, 'u_sheen'), sp.sheen);
     const lights = f.lights ?? [{ x: f.light.x, y: f.light.y, h: 0.9, i: 1.4, col: [1, 0.9, 0.78] }];
     const lp = new Float32Array(12);
     const lc = new Float32Array(9);
@@ -1214,6 +1439,22 @@ export class Gfx {
     this.restore();
   }
 
+  /** Draw a whole texture into a rect through the batch; `flipV` for render-target textures (GL origin bottom-left). */
+  texQuad(tex: WebGLTexture, x: number, y: number, w: number, h: number, tint: RGBA = 0xffffffff, flipV = false): void {
+    this.room(6);
+    const unit = this.unitFor(tex);
+    const v0 = flipV ? 1 : 0;
+    const v1 = flipV ? 0 : 1;
+    this.texUnit = unit;
+    this.vert(x, y, 0, v0, tint);
+    this.vert(x + w, y, 1, v0, tint);
+    this.vert(x + w, y + h, 1, v1, tint);
+    this.vert(x, y, 0, v0, tint);
+    this.vert(x + w, y + h, 1, v1, tint);
+    this.vert(x, y + h, 0, v1, tint);
+    this.texUnit = 0;
+  }
+
   /**
    * Nine-slice a frame into `r` (ENG-0035): corners keep their pixel size,
    * edges stretch along one axis, the centre stretches both. `insets` are in
@@ -1317,50 +1558,84 @@ export class Gfx {
 
   // ------------------------------------------------------------ text
 
-  measure(str: string, size = 20, font: FontId = 'body'): number {
-    return this.atlas.measure(str, font) * (size / this.atlas.baseSize);
+  measure(str: string, size = 20, font: FontId = 'body', tracking = 0): number {
+    const n = [...str].length;
+    return this.atlas.measure(str, font) * (size / this.atlas.baseSize) + (n > 1 ? (n - 1) * tracking * size : 0);
   }
 
   text(str: string, x: number, y: number, o: TextOpts = {}): void {
     const size = o.size ?? 20;
     const font = o.font ?? 'body';
     const color = o.color ?? 0xffc0dce8;
-    if (o.shadow !== false) this.textRaw(str, x + size * 0.06, y + size * 0.08, size, font, o.shadow ?? (0xb0000000 >>> 0), o.align ?? 'left');
-    this.textRaw(str, x, y, size, font, color, o.align ?? 'left', o.color2 ?? color);
+    const tr = o.tracking ?? 0;
+    const align = o.align ?? 'left';
+    if (o.shadow !== false) {
+      const sc = o.shadow ?? (0xb0000000 >>> 0);
+      if (o.soft) {
+        // Eight faint taps around a downward offset approximate a blurred drop shadow.
+        const r = Math.max(1, size * 0.06);
+        const a = ((sc >>> 24) & 255) / 255;
+        const faint = withAlpha(sc, a * 0.22);
+        for (let i = 0; i < 8; i++) {
+          const ang = (i / 8) * Math.PI * 2;
+          this.textRaw(str, x + Math.cos(ang) * r, y + size * 0.06 + Math.sin(ang) * r, size, font, faint, align, faint, tr);
+        }
+      } else this.textRaw(str, x + size * 0.06, y + size * 0.08, size, font, sc, align, sc, tr);
+    }
+    this.textRaw(str, x, y, size, font, color, align, o.color2 ?? color, tr);
   }
 
   /** Word-wrapped text; returns the height used. */
-  textBlock(str: string, x: number, y: number, width: number, o: TextOpts = {}, lineH = 1.35): number {
-    const size = o.size ?? 20;
+  /** Word-wrap `str` to `width` at `size`: the lines `textBlock` would draw. */
+  wrap(str: string, width: number, size = 20, font?: FontId): string[] {
     const lines: string[] = [];
     for (const para of str.split('\n')) {
       let cur = '';
       for (const word of para.split(' ')) {
         const tryLine = cur ? `${cur} ${word}` : word;
-        if (this.measure(tryLine, size, o.font) > width && cur) {
+        if (this.measure(tryLine, size, font) > width && cur) {
           lines.push(cur);
           cur = word;
         } else cur = tryLine;
       }
       lines.push(cur);
     }
+    return lines;
+  }
+
+  textBlock(str: string, x: number, y: number, width: number, o: TextOpts = {}, lineH = 1.35): number {
+    const size = o.size ?? 20;
+    const lines = this.wrap(str, width, size, o.font);
     lines.forEach((l, i) => this.text(l, x, y + i * size * lineH, o));
     return lines.length * size * lineH;
   }
 
-  private textRaw(str: string, x: number, y: number, size: number, font: FontId, c: RGBA, align: Align, c2: RGBA = c): void {
+  /** Output pixels per virtual pixel, including the current transform's scale. */
+  private pixelScale(): number {
+    const out = this.outW || this.canvas.width;
+    return (out / (this.vw || 1280)) * (Math.hypot(this.tf[0], this.tf[1]) || 1);
+  }
+
+  private textRaw(str: string, x: number, y: number, size: number, font: FontId, c: RGBA, align: Align, c2: RGBA = c, tracking = 0): void {
+    // Layout in base units (so measure() and drawing agree); glyph images from the raster tier
+    // nearest the on-screen size, so small text stays crisp and large text stays sharp.
     const s = size / this.atlas.baseSize;
-    const w = this.atlas.measure(str, font) * s;
+    const tier = this.atlas.tier(size * this.pixelScale());
+    const ts = size / tier;
+    const w = this.measure(str, size, font, tracking);
     let cx = align === 'center' ? x - w / 2 : align === 'right' ? x - w : x;
-    const top = y - this.atlas.ascent(font) * s;
+    const top = y - this.atlas.ascent(font, tier) * ts;
+    const lqa = fallbackHighlight();
     for (const ch of str) {
-      const g = this.atlas.glyph(ch, font);
+      const base = this.atlas.glyph(ch, font);
+      const g = tier === this.atlas.baseSize ? base : this.atlas.glyph(ch, font, tier);
       if (g.w > 0) {
+        if (lqa && g.fallback) c = c2 = MAGENTA;
         this.room(6);
-        const x0 = cx + g.ox * s;
-        const y0 = top + g.oy * s;
-        const x1 = x0 + g.w * s;
-        const y1 = y0 + g.h * s;
+        const x0 = cx + g.ox * ts;
+        const y0 = top + g.oy * ts;
+        const x1 = x0 + g.w * ts;
+        const y1 = y0 + g.h * ts;
         this.vert(x0, y0, g.u0, g.v0, c);
         this.vert(x1, y0, g.u1, g.v0, c);
         this.vert(x1, y1, g.u1, g.v1, c2);
@@ -1368,7 +1643,7 @@ export class Gfx {
         this.vert(x1, y1, g.u1, g.v1, c2);
         this.vert(x0, y1, g.u0, g.v1, c2);
       }
-      cx += g.adv * s;
+      cx += base.adv * s + tracking * size;
     }
   }
 }

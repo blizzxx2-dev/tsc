@@ -1,162 +1,420 @@
 import type { Game, Scene } from '../core/scene';
-import { saveSettings, settings } from '../core/settings';
+import { glass, heading, INK } from '../ui/hudKit';
+import { DEFAULT_SETTINGS, saveSettings, settings, type Settings } from '../core/settings';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
-import { PALETTE, VIEW_W } from '../ui/layout';
-import { button, inRect, panel, reticle } from '../ui/widgets';
+import { VIEW_W } from '../ui/layout';
+import { reticle } from '../ui/widgets';
 import { drawBackdrop } from './backdrop';
-import { getLocale, t } from '../i18n';
-import { cycleLanguage } from '../i18n/boot';
-import { localeInfo } from '../i18n/locales';
-import { bindings } from '../input/bindings';
+import { getLocale, menuLocales, t } from '../i18n';
+import { setLocale } from '../i18n';
+import { bindings, DEFAULT_PREFS } from '../input/bindings';
 import { ControlsScene } from '../input/controlsScene';
 import { glyphFor } from '../input/glyphs';
 import { litanyMode } from '../input/opinput';
+import { Ui, type UiNode } from '../ui/kit';
+import { drawTooltip, menuEntry, optionRow, sealButton, tab } from '../ui/controls';
+import { UI } from '../ui/ornaments';
+import { MOTION, tween } from '../ui/motion';
+import { ScrollList } from '../ui/scroll';
+import { fitBlock } from '../ui/text';
+import { uiEvents } from '../ui/events';
+import { palette, PALETTES, type PaletteId } from '../ui/theme';
+import { ChoiceScene } from './choice';
+import { ControlsCardScene } from './controlsCard';
+import { CalibrateScene } from './calibrate';
+import { AudioOptionsScene } from '../audio/options-scene';
+import { GameplayOptionsScene } from './gameplayOptions';
 
-interface Row {
-  /** String-table key of the row label (see src/i18n/strings/en.json). */
+export type OptionsTab = 'gameplay' | 'controls' | 'display' | 'audio' | 'access' | 'language';
+export const OPTION_TABS: readonly OptionsTab[] = ['gameplay', 'controls', 'display', 'audio', 'access', 'language'];
+
+/** One options row, declared as data (UIX-0104). */
+export interface OptionRow {
+  id: string;
+  /** String key of the label; `${label}_note` is its one-line description (UIX-0107). */
   label: string;
-  value: () => string;
-  /** dir: -1 for left/previous, +1 for right/next. */
-  change: (dir: number, game: Game) => void;
-  /** String-table key of the explanatory note. */
-  note?: string;
+  kind: 'toggle' | 'choice' | 'slider' | 'action';
+  /** Toggle state. */
+  on?: () => boolean;
+  /** Choices: localised labels and the current index. */
+  options?: () => string[];
+  index?: () => number;
+  /** Slider: current value 0..1 and its label. */
+  frac?: () => number;
+  step?: number;
+  set?: (v: number | boolean, game: Game) => void;
+  value?: () => string;
+  /** Action rows open something. */
+  run?: (game: Game) => void;
+  /** Settings keys this row owns (restored by the tab's Defaults). */
+  keys?: (keyof Settings)[];
+  /** Input prefs owned by this row (restored by Defaults). */
+  prefs?: (keyof typeof DEFAULT_PREFS)[];
+  /** Shows the colour-filter preview swatches next to the description. */
+  preview?: 'palette';
 }
 
+/** String key of a row's one-line description. */
+export const noteKey = (row: OptionRow): string => row.label + '_note';
+
+/** A row's label and note. Default labels are `ui.options.<id>`, spelled as templates so the key scanner sees them. */
+const rowLabel = (row: OptionRow): string => (row.label === `ui.options.${row.id}` ? t(`ui.options.${row.id}`) : t(row.label));
+const rowNote = (row: OptionRow): string => (row.label === `ui.options.${row.id}` ? t(`ui.options.${row.id}_note`) : t(noteKey(row)));
+
 const onOff = (on: boolean): string => t(on ? 'ui.common.on' : 'ui.common.off');
+const pct = (v: number) => t('ui.options.volume_value', { value: v });
 
-const cycle = <T,>(list: readonly T[], cur: T, dir: number): T => list[(list.indexOf(cur) + dir + list.length) % list.length];
+const toggle = (id: string, key: keyof Settings, label = `ui.options.${id}`): OptionRow => ({
+  id,
+  label,
+  kind: 'toggle',
+  on: () => !!settings[key],
+  set: (v) => ((settings as unknown as Record<string, unknown>)[key] = !!v),
+  keys: [key],
+});
 
+function choice<T>(id: string, key: keyof Settings, values: readonly T[], labels: () => string[], label = `ui.options.${id}`): OptionRow {
+  return {
+    id,
+    label,
+    kind: 'choice',
+    options: labels,
+    index: () => Math.max(0, values.indexOf(settings[key] as T)),
+    set: (i) => ((settings as unknown as Record<string, unknown>)[key] = values[i as number]),
+    keys: [key],
+  };
+}
+
+function slider(id: string, key: keyof Settings, min: number, max: number, step: number, fmt: (v: number) => string, label = `ui.options.${id}`): OptionRow {
+  return {
+    id,
+    label,
+    kind: 'slider',
+    step: step / (max - min),
+    frac: () => ((settings[key] as number) - min) / (max - min),
+    value: () => fmt(settings[key] as number),
+    set: (f) => ((settings as unknown as Record<string, unknown>)[key] = Math.round((min + (f as number) * (max - min)) / step) * step),
+    keys: [key],
+  };
+}
+
+const prefToggle = (id: string, pref: 'invertWheel' | 'wrapWheel' | 'aimAssist'): OptionRow => ({
+  id,
+  label: `ui.options.${id}`,
+  kind: 'toggle',
+  on: () => bindings.prefs[pref],
+  set: (v) => {
+    bindings.prefs[pref] = !!v;
+    bindings.save();
+  },
+  prefs: [pref],
+});
+
+/** The rows of each tab. Only options that change something in this build are listed. */
+export function optionRows(tabId: OptionsTab): OptionRow[] {
+  switch (tabId) {
+    case 'gameplay':
+      return [
+        { id: 'gameplay', label: 'ui.options.gameplay', kind: 'action', run: (g) => g.push?.(new GameplayOptionsScene(() => g.pop!())) },
+        choice('tool_hints', 'toolHints', ['always', 'first', 'off'] as const, () => [t('ui.options.hints_always'), t('ui.options.hints_first'), t('ui.options.hints_off')]),
+        toggle('damage_numbers', 'damageNumbers'),
+        toggle('minimal_hud', 'minimalHud'),
+        toggle('confirm_abandon', 'confirmAbandon'),
+        toggle('skip_seen_tutorials', 'skipSeenTutorials'),
+        choice('timer_assist', 'timerAssist', [1, 1.5, 2] as const, () => [t('ui.options.timer_standard'), t('ui.options.timer_generous'), t('ui.options.timer_relaxed')]),
+        {
+          id: 'litany_input',
+          label: 'ui.options.litany_input',
+          kind: 'choice',
+          options: () => [t('ui.options.litany_draw'), t('ui.options.litany_keyname', { key: glyphFor('litany.key', 'kbm') }), t('ui.options.litany_either')],
+          index: () => ['draw', 'key', 'both'].indexOf(litanyMode()),
+          set: (i) => {
+            bindings.prefs.litanyInput = (['draw', 'key', 'both'] as const)[i as number];
+            settings.litanyKey = bindings.prefs.litanyInput !== 'draw';
+            bindings.save();
+          },
+          keys: ['litanyKey'],
+          prefs: ['litanyInput'],
+        },
+        prefToggle('invert_wheel', 'invertWheel'),
+        prefToggle('wrap_wheel', 'wrapWheel'),
+        toggle('pause_on_focus_loss', 'pauseOnFocusLoss'),
+      ];
+    case 'controls':
+      return [
+        { id: 'rebind', label: 'ui.options.rebind', kind: 'action', run: (g) => (g.push ? g.push(new ControlsScene(() => g.pop!(), 'overlay')) : undefined) },
+        { id: 'card', label: 'ui.options.card', kind: 'action', run: (g) => g.push?.(new ControlsCardScene()) },
+        {
+          id: 'cursor_speed',
+          label: 'ui.options.cursor_speed',
+          kind: 'slider',
+          step: 0.1 / 1.5,
+          frac: () => (bindings.prefs.cursorSpeed - 0.5) / 1.5,
+          value: () => pct(bindings.prefs.cursorSpeed),
+          set: (f) => {
+            bindings.prefs.cursorSpeed = Math.round((0.5 + (f as number) * 1.5) * 10) / 10;
+            bindings.save();
+          },
+          prefs: ['cursorSpeed'],
+        },
+        {
+          id: 'hold_mode',
+          label: 'ui.options.hold_mode',
+          kind: 'choice',
+          options: () => [t('ui.options.hold_hold'), t('ui.options.hold_toggle')],
+          index: () => (bindings.prefs.holdMode === 'toggle' ? 1 : 0),
+          set: (i) => {
+            bindings.prefs.holdMode = i ? 'toggle' : 'hold';
+            settings.holdToToggle = !!i;
+            bindings.save();
+          },
+          keys: ['holdToToggle'],
+          prefs: ['holdMode'],
+        },
+        {
+          id: 'target_size',
+          label: 'ui.options.target_size',
+          kind: 'choice',
+          options: () => ['100%', '125%', '150%'],
+          index: () => [1, 1.25, 1.5].indexOf(bindings.prefs.hitScale),
+          set: (i) => {
+            bindings.prefs.hitScale = ([1, 1.25, 1.5] as const)[i as number];
+            bindings.save();
+          },
+          prefs: ['hitScale'],
+        },
+        prefToggle('aim_assist', 'aimAssist'),
+      ];
+    case 'display':
+      return [
+        choice('display_mode', 'displayMode', ['windowed', 'borderless', 'fullscreen'] as const, () => [t('ui.options.mode_windowed'), t('ui.options.mode_borderless'), t('ui.options.mode_fullscreen')]),
+        toggle('vsync', 'vsync'),
+        choice('frame_limit', 'frameCap', [0, 30, 60, 120, 144] as const, () => [t('ui.options.frame_display'), '30', '60', '120', '144'], 'ui.options.frame_limit'),
+        choice('render_scale', 'renderScale', [0.5, 0.75, 0.85, 1] as const, () => ['50%', '75%', '85%', t('ui.options.render_native')], 'ui.options.render_scale'),
+        slider('brightness', 'brightness', 0.7, 1.3, 0.05, (v) => pct(v)),
+        { id: 'calibrate', label: 'ui.options.calibrate', kind: 'action', run: (g) => g.push?.(new CalibrateScene(() => g.pop!())) },
+        toggle('bloom', 'bloom'),
+        toggle('grain', 'grain'),
+        toggle('vignette', 'vignette'),
+        toggle('flicker', 'flicker'),
+        toggle('chroma', 'chromaticAberration'),
+        choice('shake', 'shake', [0, 0.5, 1] as const, () => [t('ui.options.shake_off'), t('ui.options.shake_gentle'), t('ui.options.shake_full')], 'ui.options.shake'),
+      ];
+    case 'audio':
+      return [
+        // The full mixer (buses, heartbeat, comfort, captions and subtitles) lives on its own screen.
+        { id: 'mixer', label: 'ui.options.mixer', kind: 'action', run: (g) => g.push?.(new AudioOptionsScene(() => g.pop!(), true)) },
+        slider('volume', 'volume', 0, 1, 0.1, (v) => pct(v), 'ui.options.volume'),
+        { ...toggle('sound', 'muted', 'ui.options.sound'), on: () => !settings.muted, set: (v) => (settings.muted = !v) },
+        toggle('mute_unfocused', 'muteWhenUnfocused'),
+      ];
+    case 'access':
+      return [
+        choice('text_scale', 'textScale', [1, 1.25, 1.5, 1.75] as const, () => ['100%', '125%', '150%', '175%']),
+        choice('text_speed', 'textSpeed', [0.5, 1, 1.5, 3] as const, () => [t('ui.options.speed_slow'), t('ui.options.speed_normal'), t('ui.options.speed_fast'), t('ui.options.speed_instant')]),
+        slider('box_opacity', 'textBoxOpacity', 0.6, 1, 0.1, (v) => pct(v)),
+        toggle('reduce_motion', 'reduceMotion'),
+        toggle('reduce_flashing', 'reduceFlashing', 'ui.options.reduce_flashing'),
+        { ...choice('colour_filter', 'colorFilter', Object.keys(PALETTES) as PaletteId[], () => (Object.keys(PALETTES) as PaletteId[]).map((k) => t(`ui.options.filter_${k}`))), preview: 'palette' },
+        choice('cursor_size', 'cursorSize', [1, 1.25, 1.5, 2] as const, () => ['100%', '125%', '150%', '200%']),
+        choice('cursor_colour', 'cursorColor', ['brass', 'white', 'cyan', 'magenta'] as const, () => [t('ui.options.cursor_brass'), t('ui.options.cursor_white'), t('ui.options.cursor_cyan'), t('ui.options.cursor_magenta')]),
+        toggle('resume_countdown', 'resumeCountdown'),
+        toggle('skip_unread', 'skipUnread'),
+      ];
+    case 'language': {
+      const list = menuLocales();
+      return [
+        {
+          id: 'language',
+          label: 'ui.options.language',
+          kind: 'choice',
+          options: () => list.map((l) => l.name),
+          index: () => Math.max(0, list.findIndex((l) => l.code === getLocale())),
+          set: (i) => {
+            const code = list[i as number]?.code ?? 'en';
+            settings.language = code;
+            void setLocale(code);
+          },
+          keys: ['language'],
+        },
+      ];
+    }
+  }
+}
+
+/** Restore a tab's options to their defaults (UIX-0104 per-tab Defaults). */
+export function resetTab(tabId: OptionsTab): void {
+  for (const row of optionRows(tabId)) {
+    for (const k of row.keys ?? []) (settings as unknown as Record<string, unknown>)[k] = structuredClone(DEFAULT_SETTINGS[k]);
+    for (const p of row.prefs ?? []) (bindings.prefs as unknown as Record<string, unknown>)[p] = structuredClone(DEFAULT_PREFS[p]);
+  }
+  if (tabId === 'language') void setLocale(getLocale());
+  bindings.save();
+  saveSettings();
+}
+
+/**
+ * Options (UIX-0104–0107): tabs Gameplay / Controls / Display / Audio /
+ * Accessibility / Language, every row with a one-line description, live
+ * preview (each change applies and saves at once), per-tab Defaults, and
+ * Back. Reachable from the title and the pause menu (as an overlay).
+ */
 export class OptionsScene implements Scene {
-  private rows: Row[] = [
-    {
-      label: 'ui.options.volume',
-      value: () => t('ui.options.volume_value', { value: settings.volume }),
-      change: (d, g) => {
-        settings.volume = Math.max(0, Math.min(1, Math.round((settings.volume + d * 0.1) * 10) / 10));
-        g.audio.volume = settings.volume;
-        g.audio.play('select');
-      },
-    },
-    {
-      label: 'ui.options.sound',
-      value: () => onOff(!settings.muted),
-      change: (_d, g) => {
-        settings.muted = !settings.muted;
-        g.audio.muted = settings.muted;
-      },
-    },
-    {
-      label: 'ui.options.shake',
-      value: () => t(settings.shake === 0 ? 'ui.options.shake_off' : settings.shake < 1 ? 'ui.options.shake_gentle' : 'ui.options.shake_full'),
-      change: (d) => (settings.shake = cycle([0, 0.5, 1], settings.shake, d)),
-    },
-    {
-      label: 'ui.options.reduce_flashing',
-      value: () => onOff(settings.reduceFlashing),
-      change: () => (settings.reduceFlashing = !settings.reduceFlashing),
-      note: 'ui.options.reduce_flashing_note',
-    },
-    {
-      label: 'ui.options.timer_assist',
-      value: () => t({ 1: 'ui.options.timer_standard', 1.5: 'ui.options.timer_generous', 2: 'ui.options.timer_relaxed' }[settings.timerAssist]),
-      change: (d) => (settings.timerAssist = cycle([1, 1.5, 2] as const, settings.timerAssist, d)),
-      note: 'ui.options.timer_assist_note',
-    },
-    {
-      label: 'ui.options.litany_input',
-      value: () => ({ draw: t('ui.options.litany_draw'), key: t('ui.options.litany_keyname', { key: glyphFor('litany.key', 'kbm') }), both: t('ui.options.litany_either') })[litanyMode()],
-      change: (d) => {
-        bindings.prefs.litanyInput = cycle(['draw', 'key', 'both'] as const, litanyMode(), d);
-        settings.litanyKey = bindings.prefs.litanyInput !== 'draw';
-        bindings.save();
-      },
-      note: 'ui.options.litany_input_note',
-    },
-    {
-      label: 'ui.options.render_scale',
-      value: () => (settings.renderScale >= 1 ? t('ui.options.render_native') : `${Math.round(settings.renderScale * 100)}%`),
-      change: (d) => (settings.renderScale = cycle([0.5, 0.67, 0.75, 0.85, 1], settings.renderScale, d)),
-      note: 'ui.options.render_scale_note',
-    },
-    {
-      label: 'ui.options.frame_limit',
-      value: () => (settings.frameCap ? `${settings.frameCap} fps` : t('ui.options.frame_display')),
-      change: (d) => (settings.frameCap = cycle([0, 30, 40, 60, 90, 120, 144], settings.frameCap, d)),
-    },
-    {
-      label: 'ui.options.fullscreen',
-      value: () => onOff(!!document.fullscreenElement),
-      change: () => {
-        if (document.fullscreenElement) void document.exitFullscreen();
-        else void document.documentElement.requestFullscreen().catch(() => undefined);
-      },
-    },
-    {
-      label: 'ui.options.language',
-      value: () => localeInfo(getLocale())?.name ?? getLocale(),
-      change: (d) => void cycleLanguage(d, getLocale()),
-      note: 'ui.options.language_note',
-    },
-  ];
-  private hover = -1;
+  readonly ui = new Ui('options');
+  private tab: OptionsTab = 'gameplay';
+  private tabT = 0;
+  private t = 0;
+  private list = new ScrollList({ x: 214, y: 186, w: 852, h: 372 }, 46, 4);
+  private rows: OptionRow[] = optionRows('gameplay');
 
   constructor(
     private onBack: () => void,
     /** true: chapel backdrop; false: plain screen; 'overlay': drawn over the live scene beneath (scene stack). */
     private overWorld: boolean | 'overlay' = true,
+    initialTab: OptionsTab = 'gameplay',
   ) {
     this.overlay = overWorld === 'overlay';
+    this.setTab(initialTab);
   }
 
   readonly overlay: boolean;
 
-  private rowRect(i: number) {
-    return { x: 300, y: 140 + i * 50, w: 680, h: 44 };
+  private setTab(tabId: OptionsTab): void {
+    if (tabId === this.tab && this.rows.length) return;
+    this.tab = tabId;
+    this.rows = optionRows(tabId);
+    this.tabT = 0;
+    this.list.offset = this.list.target = 0;
+    uiEvents.emit('ui.tab', { id: `options/${tabId}`, index: OPTION_TABS.indexOf(tabId) });
   }
 
-  update(_dt: number, game: Game): void {
+  private change(row: OptionRow, v: number | boolean, game: Game): void {
+    row.set?.(v, game);
+    saveSettings();
+    game.audio.volume = settings.volume;
+    game.audio.muted = settings.muted;
+  }
+
+  private layout(game: Game): void {
+    const ui = this.ui;
+    ui.begin();
+    OPTION_TABS.forEach((id, i) => ui.add({ id: `tab.${id}`, kind: 'tab', rect: { x: 202 + i * 146, y: 128, w: 142, h: 42 }, label: t(`ui.options.tab.${id}`), on: id === this.tab, onActivate: () => this.setTab(id) }));
+    this.rows.forEach((row, i) => {
+      const rect = this.list.rowRect(i);
+      const base = { id: `row${i}`, rect, label: rowLabel(row), clip: this.list.view, tip: undefined };
+      if (row.kind === 'toggle') ui.add({ ...base, kind: 'toggle', on: row.on!(), value: onOff(row.on!()), onActivate: () => this.change(row, !row.on!(), game), onAdjust: () => this.change(row, !row.on!(), game) });
+      else if (row.kind === 'slider') {
+        const f = row.frac!();
+        const step = row.step ?? 0.1;
+        const snap = (x: number) => Math.max(0, Math.min(1, Math.round(x / step) * step));
+        ui.add({ ...base, kind: 'slider', frac: f, value: row.value?.(), onAdjust: (d) => this.change(row, snap(f + d * step), game), onDrag: (x) => this.change(row, snap(x), game) });
+      } else if (row.kind === 'choice') {
+        const opts = row.options!();
+        const idx = row.index!();
+        const n = opts.length;
+        ui.add({
+          ...base,
+          kind: 'dropdown',
+          value: opts[idx] ?? '',
+          onAdjust: (d) => this.change(row, (idx + d + n) % n, game),
+          onActivate: () => {
+            if (game.push) game.push(new ChoiceScene(rect, opts, idx, (i) => this.change(row, i, game)));
+            else this.change(row, (idx + 1) % n, game);
+          },
+        });
+      } else ui.add({ ...base, kind: 'button', style: 'action', onActivate: () => row.run?.(game) });
+    });
+    ui.button('defaults', { x: 230, y: 626, w: 220, h: 46 }, t('ui.options.defaults'), () => resetTab(this.tab));
+    ui.button('back', { x: VIEW_W / 2 + 190, y: 622, w: 240, h: 54 }, t('ui.common.back'), () => this.back(), { style: 'seal' });
+    if (!ui.focus) ui.focusFirst('row0');
+  }
+
+  update(dt: number, game: Game): void {
     const { input } = game;
-    this.hover = this.rows.findIndex((_, i) => inRect(input.pos, this.rowRect(i)));
-    if (input.pressed && this.hover >= 0) {
-      const r = this.rowRect(this.hover);
-      this.rows[this.hover].change(input.pos.x < r.x + r.w * 0.55 ? -1 : 1, game);
-      saveSettings();
+    this.t += dt;
+    this.tabT += dt;
+    if (this.list.update(input, this.rows.length, dt)) this.ui.cancelPress();
+    this.layout(game);
+    this.ui.update(input, dt);
+    this.list.follow(this.ui, 'row');
+    const ti = OPTION_TABS.indexOf(this.tab);
+    if (input.actPressed('ui.tabNext')) this.setTab(OPTION_TABS[(ti + 1) % OPTION_TABS.length]);
+    if (input.actPressed('ui.tabPrev')) this.setTab(OPTION_TABS[(ti + OPTION_TABS.length - 1) % OPTION_TABS.length]);
+    if (input.actPressed('ui.back')) {
+      uiEvents.emit('ui.back', { id: 'options' });
+      this.back();
     }
-    if (input.actPressed('ui.back')) this.back();
   }
 
   private back(): void {
     saveSettings();
+    bindings.save();
     this.onBack();
   }
 
   render(g: Gfx, game: Game): void {
+    const k = this.overlay ? tween(this.t, MOTION.panel) : 1;
     if (this.overlay) {
       const vr = g.viewRect();
-      g.rect(vr.x, vr.y, vr.w, vr.h, hex('#000000', 0.55));
+      g.rect(vr.x, vr.y, vr.w, vr.h, hex('#000000', 0.6 * k));
     } else if (this.overWorld) {
       g.beginWorld();
       drawBackdrop(g, 'chapel', g.time);
-      g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1 });
+      g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1, defocus: 8 });
     } else g.beginScreen();
-    panel(g, { x: 260, y: 50, w: 760, h: 630 });
-    g.text(t('ui.options.title'), VIEW_W / 2, 120, { size: 52, font: 'display', color: hex(PALETTE.ink), align: 'center' });
-    this.rows.forEach((row, i) => {
-      const r = this.rowRect(i);
-      const hover = i === this.hover;
-      if (hover) g.rect(r.x, r.y, r.w, r.h, hex(PALETTE.blood, 0.28));
-      g.text(t(row.label), r.x + 20, r.y + 31, { size: 24, color: hex(hover ? PALETTE.gold : PALETTE.ink) });
-      g.text(`‹  ${row.value()}  ›`, r.x + r.w - 20, r.y + 31, { size: 24, color: hex(PALETTE.gold), align: 'right' });
-    });
-    const note = this.hover >= 0 ? this.rows[this.hover].note : undefined;
-    if (note) g.text(t(note), VIEW_W / 2, 612, { size: 18, font: 'italic', color: hex(PALETTE.inkDim), align: 'center' });
-    if (button(g, game.input, t('ui.common.back'), VIEW_W / 2, 660, 28)) this.back();
-    if (button(g, game.input, t('ui.options.controls'), VIEW_W / 2 - 230, 660, 28)) {
-      if (game.push && game.pop) game.push(new ControlsScene(() => game.pop!(), 'overlay'));
-      else game.go(new ControlsScene(() => game.go(this), this.overWorld));
+    const pr = { x: 180, y: 34, w: 920, h: 656 };
+    glass(g, pr, { strength: 1.12, alpha: k });
+    heading(g, t('ui.options.title'), VIEW_W / 2, 92, 360, k, 30);
+    // Page under the tabs: a recessed well.
+    g.plate(pr.x + 18, 172, pr.w - 36, 400, { radius: 2, top: hex('#060504', 0.55), bottom: hex('#0c0907', 0.55), border: hex(INK.gilt, 0.22), borderW: 1, bevel: -0.4, shadow: [0, 0, 0], grain: 0.4 });
+    const t0 = g.time;
+    const fade = tween(this.tabT, MOTION.page);
+    g.pushClip(this.list.view);
+    for (const n of this.ui.nodes) {
+      if (!n.id.startsWith('row')) continue;
+      const s = this.ui.state(n.id);
+      const shifted: UiNode = fade < 1 ? { ...n, rect: { ...n.rect, x: n.rect.x + (1 - fade) * 24 } } : n;
+      if (n.kind === 'button') {
+        optionRow(g, { ...shifted, value: '' }, s, t0, { size: 23, split: 0.7 });
+        g.poly(
+          [
+            { x: n.rect.x + n.rect.w - 30, y: n.rect.y + 15 },
+            { x: n.rect.x + n.rect.w - 18, y: n.rect.y + 23 },
+            { x: n.rect.x + n.rect.w - 30, y: n.rect.y + 31 },
+          ],
+          hex(INK.gold),
+        );
+      } else optionRow(g, shifted, s, t0, { size: 23, split: 0.5 });
+      g.rect(n.rect.x + 12, n.rect.y + n.rect.h + 2, n.rect.w - 24, 1, hex(INK.gilt, 0.12));
     }
+    g.popClip();
+    this.list.drawBar(g, this.rows.length);
+    for (const n of this.ui.nodes) {
+      if (n.kind === 'tab') tab(g, n, this.ui.state(n.id), t0, !!n.on, 21);
+      else if (n.style === 'seal') sealButton(g, n, this.ui.state(n.id), t0, 26);
+      else if (n.id === 'defaults') menuEntry(g, n, this.ui.state(n.id), t0, 22);
+    }
+    // Description of the focused row (UIX-0107), with a live palette preview for the colour filter.
+    const fi = ScrollList.focusIndex(this.ui, 'row');
+    const row = fi >= 0 ? this.rows[fi] : undefined;
+    if (row) {
+      const noteW = row.preview ? 560 : 820;
+      fitBlock(g, `options.${row.id}.note`, rowNote(row), 230, 596, noteW, 1, { size: 17, font: 'italic', color: hex(INK.dim) });
+      if (row.preview === 'palette') paletteSwatches(g, 820, 574);
+    }
+    drawTooltip(g, this.ui);
     reticle(g, game.input.pos);
     g.endFrame();
   }
+}
+
+/** Sample chips for the active palette: vitals states, ratings, ichor, curse and Litany. */
+export function paletteSwatches(g: Gfx, x: number, y: number): void {
+  const p = palette();
+  const chips = [p.vitalsGood, p.vitalsWarn, p.vitalsDanger, p.cool[0], p.good[0], p.bad[0], p.miss[0], p.blood, p.pus, p.bile, p.curse, p.litany];
+  chips.forEach((c, i) => {
+    g.rect(x + i * 20, y, 16, 22, hex(c));
+    g.rectLine(x + i * 20, y, 16, 22, 1, hex(UI.brass, 0.7));
+  });
 }

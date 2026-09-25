@@ -4,6 +4,7 @@ import { AssetLoader, type LoaderBackend } from '../src/assets/loader';
 import { BUNDLES, MANIFEST } from '../src/assets/manifest.gen';
 import type { AssetEntry } from '../src/assets/types';
 import { AnimPlayer } from '../src/render/sprites';
+import { backdropLayers } from '../src/scenes/backdrop';
 import { buildAtlas, blank, decodePng, encodePng, type Img } from '../scripts/lib/atlas.ts';
 import { noOverlap, packRects } from '../scripts/lib/maxrects.ts';
 
@@ -79,7 +80,7 @@ describe('asset loader (ENG-0210/0211/0212)', () => {
   });
 
   it('the generated manifest covers the boot fonts and the fx sprite sheet', () => {
-    expect(BUNDLES.boot.filter((id) => MANIFEST[id].type === 'font').length).toBe(3);
+    expect(BUNDLES.boot.filter((id) => MANIFEST[id].type === 'font').length).toBe(8); // Cinzel ×2, EB Garamond ×4 (latin + latin-ext), Atkinson Hyperlegible ×2 (readable-font option, UIX-0150)
     expect(MANIFEST['sprites/fx'].pages!.length).toBeGreaterThan(0);
     for (const e of Object.values(MANIFEST) as AssetEntry[]) expect(e.url).toMatch(/^assets\/.+\.[0-9a-f]{10}\.\w+$/);
   });
@@ -90,6 +91,45 @@ function img(w: number, h: number, seed: number): Img {
   for (let i = 0; i < im.data.length; i++) im.data[i] = (i * 31 + seed * 17) & 255;
   return im;
 }
+
+describe('art pipeline metadata and hot reload (ART-0039/0041/0045)', () => {
+  it('hot-swaps only resident assets whose hash changed, keeping reference counts', async () => {
+    const { be, log } = backend();
+    const L = new AssetLoader(be, '/', man, bundles);
+    await L.loadBundle('chapter1' as never);
+    const before = L.get('backdrops/b' as never);
+    const next = {
+      ...man,
+      'backdrops/a': { ...man['backdrops/a'], url: 'assets/a2.png', hash: 'y' },
+      'backdrops/d': { type: 'image', url: 'assets/d.png', bytes: 1, bundle: 'chapter1', hash: 'z' } as AssetEntry,
+    };
+    const swapped = await L.hotSwap(next, { ...bundles, chapter1: [...bundles.chapter1, 'backdrops/d'] });
+    expect(swapped).toEqual(['backdrops/a']);
+    expect(log.fetches).toContain('/assets/a2.png');
+    expect(log.disposed).toEqual(['backdrops/a']);
+    expect(L.get('backdrops/b' as never)).toBe(before);
+    expect(L.refCount('backdrops/a' as never)).toBe(1);
+    await new Promise((r) => setTimeout(r, 5));
+    expect(L.get('backdrops/d' as never)).toBeDefined();
+  });
+
+  it('every shipped asset carries a status, and none in a demo bundle is a placeholder', () => {
+    for (const [id, e] of Object.entries(MANIFEST as Record<string, AssetEntry>)) {
+      expect(e.status, id).toMatch(/^(placeholder|wip|final)$/);
+      if (!/^chapter[3-5]$/.test(e.bundle)) expect(e.status, id).not.toBe('placeholder');
+    }
+  });
+
+  it('backdrop layers group by key and sort far to near', () => {
+    const m: Record<string, AssetEntry> = {
+      'backdrops/hospice-near': { type: 'image', url: 'n', bytes: 1, bundle: 'story-common', hash: '', layer: 'hospice', parallax: 0.7 },
+      'backdrops/hospice-far': { type: 'image', url: 'f', bytes: 1, bundle: 'story-common', hash: '', layer: 'hospice', parallax: 0.1 },
+      'backdrops/street-far': { type: 'image', url: 's', bytes: 1, bundle: 'story-common', hash: '', layer: 'street', parallax: 0.1 },
+    };
+    expect(backdropLayers('hospice', m).map((e) => e.url)).toEqual(['f', 'n']);
+    expect(backdropLayers('chapel', m)).toEqual([]);
+  });
+});
 
 describe('atlas packer (ENG-0033)', () => {
   it('MaxRects packs without overlap into multiple pages when needed', () => {
@@ -128,7 +168,8 @@ describe('atlas packer (ENG-0033)', () => {
   it('the checked-in fx sheet packs the ENG-0110 brushes', () => {
     const sheetFile = MANIFEST['sprites/fx'].url.replace(/^assets\//, 'public/assets/');
     const json = JSON.parse(readFileSync(sheetFile, 'utf8'));
-    for (const b of ['soft-round', 'splatter-1', 'splatter-2', 'splatter-3', 'splatter-4', 'drag-streak', 'scorch', 'stitch-mark', 'erase']) expect(json.frames[`fx/${b}`]).toBeDefined();
+    for (const b of ['soft-round', 'splatter-1', 'splatter-2', 'splatter-3', 'splatter-4', 'drag-streak', 'scorch', 'stitch-mark', 'erase'])
+      expect(json.frames[`fx/${b}`]).toBeDefined();
   });
 });
 
