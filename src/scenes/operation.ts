@@ -156,7 +156,7 @@ export class OperationScene implements Scene {
     // Visual effects requested by the simulation; landed droplets become stains.
     for (const e of op.fx) this.particles.spawn(e);
     op.fx.length = 0;
-    this.particles.update(dt, (p, kind, size) => {
+    this.particles.update(dt * op.timeScale, (p, kind, size) => {
       if (kind === 'blood' && onBody(p)) op.stain(p, size * 2.6, 0.3);
     });
     if (op.litanyTime > 0 && Math.random() < dt * 30) this.particles.spawn({ kind: 'dust', pos: { x: FIELD.cx + (Math.random() - 0.5) * FIELD.rx * 2, y: FIELD.cy + (Math.random() - 0.5) * FIELD.ry * 2 }, n: 1 });

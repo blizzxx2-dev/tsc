@@ -189,7 +189,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0127 · Demo · P1 · S · Curve/gradient utilities — baked 64-sample LUTs uploaded as a texture; unit tests for curve sampling
 - [ ] ENG-0128 · Demo · P0 · S · Particle budget per quality tier (High 16k, Medium 8k, Low 4k) with priority classes — gameplay-readable effects never culled before ambient ones
 - [x] ENG-0129 · Demo · P1 · M · Collision against the field — blood droplets that land stamp the blood decal map (splat size ∝ velocity); sparks bounce once off the field plane
-- [ ] ENG-0130 · Demo · P0 · S · Particles in world time slow to 0.15× during the Litany — UI particles run on real time (unit test on clock routing)
+- [x] ENG-0130 · Demo · P0 · S · Particles in world time slow to 0.15× during the Litany — UI particles run on real time (unit test on clock routing)
 - [ ] ENG-0131 · Demo · P1 · S · Deterministic spawn — emitter RNG seeded from operation seed + emitter id so replays and golden screenshots are reproducible
 - [ ] ENG-0132 · Demo · P2 · M · Dev particle panel — live-tweak emitter parameters on a running operation, preview in isolation, copy JSON to clipboard
 
@@ -198,7 +198,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0134 · Demo · P0 · S · Cut spatter — lancet strokes and barb tears emit a directional burst scaled by severity (MISS cut on healthy flesh is visibly worse)
 - [ ] ENG-0135 · Demo · P0 · M · Cautery — white-hot sparks, rising smoke wisps and ember glow while the Brand touches tissue; smoke drifts toward the light rig
 - [ ] ENG-0136 · Demo · P1 · M · Hexfire flames — violet/green flame and spark emitters, with curse motes drifting toward live Sigils
-- [ ] ENG-0137 · Demo · P0 · M · Malison motes and ash — dark motes orbit Matins/Lauds, bursts on hit, shard dissolve into ash on defeat
+- [x] ENG-0137 · Demo · P0 · M · Malison motes and ash — dark motes orbit Matins/Lauds, bursts on hit, shard dissolve into ash on defeat
 - [ ] ENG-0138 · Demo · P1 · S · Bubo lancing splash — pus or black-bile burst coloured from the pool type
 - [ ] ENG-0139 · Demo · P1 · S · Venom mist rising from `Venom` entities — stops when neutralised
 - [ ] ENG-0140 · Demo · P1 · S · Grub extraction gore — squish burst and twitching segment particles on extraction
