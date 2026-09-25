@@ -1,0 +1,120 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Bubo > a burst costs 10 vitals, pops "It burst!", spawns a pus pool and a 40 px laceration and counts a MISS 1`] = `
+"1.20 initial Bubo r=22 @(660,410)
+21.20 hurt 10
+21.20 popup "-10"
+21.20 popup "It burst!"
+21.20 spawn BloodPool ichor=pus r=40 optional @(660,410)
+21.20 spawn Laceration length=40 bleed=0.7 @(660,410)
+21.20 -- burst: status=running vitals=78.8 score=0 combo=0 counts=0/0/0/1 live=[Bubo,BloodPool,Laceration] r=40
+"
+`;
+
+exports[`Bubo > lancing a ripe bubo (≥ 75 % of max radius) is GOOD "Lanced" 1`] = `
+"1.20 initial Bubo r=22 @(660,410)
+10.10 -- ripe: status=running vitals=94.9 score=0 combo=0 counts=0/0/0/0 live=[Bubo] r=30.01
+10.10 cue squelch
+10.10 rate GOOD "Lanced" +63 combo=1
+10.10 spawn BloodPool ichor=pus r=33 optional @(660,416)
+"
+`;
+
+exports[`Bubo > lancing below 75 % of max radius is COOL "Lanced" and spills a pus pool; salving undrained pus says "pus"; drained + salved is GOOD "Cleansed" 1`] = `
+"1.20 initial Bubo r=22 @(660,410)
+1.20 cue squelch
+1.20 rate COOL "Lanced" +105 combo=1
+1.20 spawn BloodPool ichor=pus r=24.2 optional @(660,416)
+1.23 -- lanced: status=running vitals=99 score=105 combo=1 counts=1/0/0/0 live=[Bubo,BloodPool] r=22
+1.23 flag pus
+1.23 say "Draw off the pus before you salve it."
+2.07 cue squelch
+2.07 rate GOOD "Drained" +66 combo=2
+3.17 rate GOOD "Cleansed" +69 combo=3
+3.45 -- cleansed: status=running vitals=98.8 score=240 combo=3 counts=1/2/0/0 live=[]
+"
+`;
+
+exports[`Burn > acid: salve first says burn-eschar; each pluck GOOD "Debrided"; last flake says burn-salve; full salve COOL "Burn dressed" 1`] = `
+"1.20 initial Burn source=acid radius=44 @(660,410)
+1.20 flag burn-eschar
+1.20 say "Pluck away the charred eschar with the tongs first!"
+1.97 -- salve before debriding: status=running vitals=98.6 score=0 combo=0 counts=0/0/0/0 live=[Burn] fraction=0
+1.97 cue pluck
+1.97 rate GOOD "Debrided" +63 combo=1
+2.00 cue pluck
+2.00 rate GOOD "Debrided" +66 combo=2
+2.03 cue pluck
+2.03 rate GOOD "Debrided" +69 combo=3
+2.07 cue pluck
+2.07 rate GOOD "Debrided" +72 combo=4
+2.07 flag burn-salve
+2.07 say "The dead flesh is off. Now salve the raw burn."
+2.10 -- debrided: status=running vitals=98.5 score=270 combo=4 counts=0/4/0/0 live=[Burn]
+2.53 rate COOL "Burn dressed" +125 combo=5
+2.87 -- dressed: status=running vitals=98.4 score=395 combo=5 counts=1/4/0/0 live=[]
+"
+`;
+
+exports[`Burn > fire: salve first says burn-eschar; each pluck GOOD "Debrided"; last flake says burn-salve; full salve COOL "Burn dressed" 1`] = `
+"1.20 initial Burn source=fire radius=44 @(660,410)
+1.20 flag burn-eschar
+1.20 say "Pluck away the charred eschar with the tongs first!"
+1.97 -- salve before debriding: status=running vitals=98.6 score=0 combo=0 counts=0/0/0/0 live=[Burn] fraction=0
+1.97 cue pluck
+1.97 rate GOOD "Debrided" +63 combo=1
+2.00 cue pluck
+2.00 rate GOOD "Debrided" +66 combo=2
+2.03 cue pluck
+2.03 rate GOOD "Debrided" +69 combo=3
+2.07 cue pluck
+2.07 rate GOOD "Debrided" +72 combo=4
+2.07 flag burn-salve
+2.07 say "The dead flesh is off. Now salve the raw burn."
+2.10 -- debrided: status=running vitals=98.5 score=270 combo=4 counts=0/4/0/0 live=[Burn]
+2.53 rate COOL "Burn dressed" +125 combo=5
+2.87 -- dressed: status=running vitals=98.4 score=395 combo=5 counts=1/4/0/0 live=[]
+"
+`;
+
+exports[`Burn > hexfire: salve first says burn-eschar; each pluck GOOD "Debrided"; last flake says burn-salve; full salve COOL "Burn dressed" 1`] = `
+"1.20 initial Burn source=hexfire radius=44 @(660,410)
+1.20 flag burn-eschar
+1.20 say "Pluck away the charred eschar with the tongs first!"
+1.97 -- salve before debriding: status=running vitals=98.4 score=0 combo=0 counts=0/0/0/0 live=[Burn] fraction=0
+1.97 cue pluck
+1.97 rate GOOD "Debrided" +63 combo=1
+2.00 cue pluck
+2.00 rate GOOD "Debrided" +66 combo=2
+2.03 cue pluck
+2.03 rate GOOD "Debrided" +69 combo=3
+2.07 cue pluck
+2.07 rate GOOD "Debrided" +72 combo=4
+2.07 flag burn-salve
+2.07 say "The dead flesh is off. Now salve the raw burn."
+2.10 -- debrided: status=running vitals=98.4 score=270 combo=4 counts=0/4/0/0 live=[Burn]
+2.53 rate COOL "Burn dressed" +125 combo=5
+2.87 -- dressed: status=running vitals=98.1 score=395 combo=5 counts=1/4/0/0 live=[]
+"
+`;
+
+exports[`Rot & Coverage > partial salve regrows at the spread rate; a full salve purges: GOOD "Rot purged" 1`] = `
+"1.20 initial Rot r=50 @(660,410)
+1.52 -- partial salve: status=running vitals=98.9 score=0 combo=0 counts=0/0/0/0 live=[Rot] fraction=0.54
+11.52 -- 10 s later: status=running vitals=95.4 score=0 combo=0 counts=0/0/0/0 live=[Rot] fraction=0.38
+12.00 rate GOOD "Rot purged" +63 combo=1
+12.28 -- full salve: status=running vitals=95.2 score=63 combo=1 counts=0/1/0/0 live=[]
+"
+`;
+
+exports[`Venom > untreated drain rises monotonically at the op rate; tincture is COOL "Antidote" below spread 50, else GOOD 1`] = `
+"1.20 initial Venom @(560,410)
+1.20 initial Venom @(760,410)
+6.08 cue inject
+6.08 rate COOL "Antidote" +105 combo=1
+6.22 -- early antidote: status=running vitals=93.3 score=105 combo=1 counts=1/0/0/0 live=[Venom] spread=45.3
+7.75 cue inject
+7.75 rate GOOD "Antidote" +66 combo=2
+7.88 -- late antidote: status=running vitals=92.1 score=171 combo=2 counts=1/1/0/0 live=[] spread=55.3
+"
+`;

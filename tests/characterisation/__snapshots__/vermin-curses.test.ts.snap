@@ -1,0 +1,179 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`EggSac > hatching rates MISS "Hatched", costs 6 vitals, releases brood + 2 spiderlings; the 5 s warning is said once per sac 1`] = `
+"1.20 initial EggSac brood=3 @(560,410)
+1.20 initial EggSac brood=2 @(760,410)
+8.20 flag eggsac-39
+8.20 say "That sac is moving… it’s about to hatch!"
+10.20 flag eggsac-40
+10.20 say "That sac is moving… it’s about to hatch!"
+13.20 spawn SpiderlingGrub @(574,410)
+13.20 spawn SpiderlingGrub @(564,423)
+13.20 spawn SpiderlingGrub @(549,418)
+13.20 spawn SpiderlingGrub @(549,402)
+13.20 spawn SpiderlingGrub @(564,397)
+13.20 spawn Laceration length=38 bleed=0.6 @(560,410)
+13.20 rate MISS "Hatched" +0 combo=0
+13.20 hurt 6
+13.20 popup "-6"
+13.38 spawn BloodPool ichor=blood r=8 optional @(560,408)
+15.20 spawn SpiderlingGrub @(774,410)
+15.20 spawn SpiderlingGrub @(760,424)
+15.20 spawn SpiderlingGrub @(746,410)
+15.20 spawn SpiderlingGrub @(760,396)
+15.20 spawn Laceration length=38 bleed=0.6 @(760,410)
+15.20 rate MISS "Hatched" +0 combo=0
+15.20 hurt 6
+15.20 popup "-6"
+16.20 -- hatched: status=running vitals=74.8 score=0 combo=0 counts=0/0/0/2 live=[SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,Laceration,BloodPool,SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,Laceration]
+"
+`;
+
+exports[`EggSac > lancing with 8 s or less left is GOOD "Lanced" 1`] = `
+"1.20 initial EggSac brood=3 @(660,410)
+11.70 cue squelch
+11.70 rate GOOD "Lanced" +63 combo=1
+11.70 flag eggsac-lanced
+11.70 say "Spiderlings! Brand them before they scatter!"
+11.70 spawn SpiderlingGrub @(674,410)
+11.70 spawn SpiderlingGrub @(653,422)
+11.70 spawn SpiderlingGrub @(653,398)
+11.70 spawn Laceration length=38 bleed=0.6 @(660,410)
+"
+`;
+
+exports[`EggSac > lancing with more than 8 s before hatching is COOL "Lanced"; spiderlings spill out with a 38 px laceration 1`] = `
+"1.20 initial EggSac brood=3 @(660,410)
+1.20 cue squelch
+1.20 rate COOL "Lanced" +105 combo=1
+1.20 flag eggsac-lanced
+1.20 say "Spiderlings! Brand them before they scatter!"
+1.20 spawn SpiderlingGrub @(674,410)
+1.20 spawn SpiderlingGrub @(653,422)
+1.20 spawn SpiderlingGrub @(653,398)
+1.20 spawn Laceration length=38 bleed=0.6 @(660,410)
+1.23 -- lanced: status=running vitals=99 score=105 combo=1 counts=1/0/0/0 live=[SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,Laceration]
+"
+`;
+
+exports[`Grub & SpiderlingGrub > a brand hold sears a grub: COOL "Seared" 1`] = `
+"1.20 initial Grub speed=40 @(660,410)
+1.55 cue burn
+1.55 rate COOL "Seared" +105 combo=1
+1.55 flag brand-flesh
+1.55 say "Careful! The brand is searing healthy flesh!"
+1.58 -- after brand: status=running vitals=98.8 score=105 combo=1 counts=1/0/0/0 live=[]
+"
+`;
+
+exports[`Grub & SpiderlingGrub > a spiderling sears faster (0.25 s): COOL "Seared" 1`] = `
+"1.20 initial SpiderlingGrub @(660,410)
+1.45 cue burn
+1.45 rate COOL "Seared" +105 combo=1
+1.45 flag brand-flesh
+1.45 say "Careful! The brand is searing healthy flesh!"
+"
+`;
+
+exports[`Grub & SpiderlingGrub > the tongs pluck a grub off the body: GOOD "Plucked"; released on the body it stays 1`] = `
+"1.20 initial Grub speed=40 @(660,410)
+1.20 cue pluck
+1.33 cue pluck
+1.88 rate GOOD "Plucked" +63 combo=1
+1.90 -- after pluck: status=running vitals=98.8 score=63 combo=1 counts=0/1/0/0 live=[]
+"
+`;
+
+exports[`Sigil > breaking it more than 4 s after the first touch is GOOD 1`] = `
+"1.20 initial Sigil @(660,410)
+1.20 cue burn
+1.22 cue burn
+6.12 cue burn
+6.22 cue burn
+6.40 cue burn
+6.47 cue burn
+6.48 cue burn
+6.68 cue burn
+6.70 cue burn
+6.72 rate GOOD "Curse broken" +63 combo=1
+6.72 flag brand-flesh
+6.72 say "Careful! The brand is searing healthy flesh!"
+6.78 -- seared late: status=running vitals=96.6 score=63 combo=1 counts=0/1/0/0 live=[]
+"
+`;
+
+exports[`Sigil > crown: breaking it fast is COOL "Curse broken" 1`] = `
+"1.20 initial Sigil @(660,410)
+1.20 cue burn
+1.22 cue burn
+1.63 cue burn
+1.72 cue burn
+1.90 cue burn
+1.97 cue burn
+1.98 cue burn
+2.17 cue burn
+2.18 cue burn
+2.22 rate COOL "Curse broken" +105 combo=1
+2.22 flag brand-flesh
+2.22 say "Careful! The brand is searing healthy flesh!"
+2.28 -- seared: status=running vitals=98.4 score=105 combo=1 counts=1/0/0/0 live=[] segs=7
+"
+`;
+
+exports[`Sigil > eye: breaking it fast is COOL "Curse broken" 1`] = `
+"1.20 initial Sigil @(660,410)
+1.20 cue burn
+1.22 cue burn
+1.63 cue burn
+1.73 cue burn
+1.90 cue burn
+1.97 cue burn
+2.00 cue burn
+2.03 rate COOL "Curse broken" +105 combo=1
+2.03 flag brand-flesh
+2.03 say "Careful! The brand is searing healthy flesh!"
+2.10 -- seared: status=running vitals=98.5 score=105 combo=1 counts=1/0/0/0 live=[] segs=7
+"
+`;
+
+exports[`Sigil > hourglass: breaking it fast is COOL "Curse broken" 1`] = `
+"1.20 initial Sigil @(660,410)
+1.20 cue burn
+1.22 cue burn
+1.60 cue burn
+1.68 cue burn
+1.85 cue burn
+1.92 cue burn
+1.95 cue burn
+2.12 cue burn
+2.13 cue burn
+2.18 rate COOL "Curse broken" +105 combo=1
+2.18 flag brand-flesh
+2.18 say "Careful! The brand is searing healthy flesh!"
+2.27 -- seared: status=running vitals=98.3 score=105 combo=1 counts=1/0/0/0 live=[] segs=4
+"
+`;
+
+exports[`Sigil > lashes for 4 vitals every lashEvery seconds (5 by default, 4.5 in op2-4) with a popup 1`] = `
+"1.20 initial Sigil @(660,410)
+6.22 hurt 4
+6.22 popup "-4"
+6.22 popup "The curse lashes out!"
+11.23 hurt 4
+11.23 popup "-4"
+11.23 popup "The curse lashes out!"
+"
+`;
+
+exports[`Sigil > trident: breaking it fast is COOL "Curse broken" 1`] = `
+"1.20 initial Sigil @(660,410)
+1.20 cue burn
+1.22 cue burn
+1.62 cue burn
+1.70 cue burn
+1.83 rate COOL "Curse broken" +105 combo=1
+1.83 flag brand-flesh
+1.83 say "Careful! The brand is searing healthy flesh!"
+1.88 -- seared: status=running vitals=98.6 score=105 combo=1 counts=1/0/0/0 live=[] segs=4
+"
+`;

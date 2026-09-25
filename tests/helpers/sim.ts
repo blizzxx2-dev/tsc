@@ -4,7 +4,7 @@
  */
 import { dist, type Vec } from '../../src/core/math';
 import type { Entity } from '../../src/surgery/entity';
-import { Operation, type OperationDef, type PhaseDef } from '../../src/surgery/operation';
+import { FIELD, Operation, type OperationDef, type PhaseDef } from '../../src/surgery/operation';
 import { TOOL_INFO, type Pointer, type ToolId } from '../../src/surgery/types';
 
 /** The fixed simulation step every test uses (one 60 Hz frame). */
@@ -231,3 +231,30 @@ export function isolate<T extends Entity>(spawn: (op: Operation) => T[], overrid
 /** Live entities of a class. */
 export const live = <T extends Entity>(op: Operation, cls: abstract new (...a: never[]) => T): T[] =>
   op.entities.filter((e): e is T => e.alive && e instanceof cls);
+
+/** Hover (button up) following a moving target, e.g. hunting a submerged Malison with the lens. */
+export function hoverOn(op: Operation, tool: ToolId, target: () => Vec | null, seconds: number): void {
+  op.setTool(tool);
+  let prev = target();
+  if (!prev) return;
+  for (let t = 0; t < seconds - 1e-9; t += DT) {
+    const p = target();
+    if (!p) break;
+    op.handlePointer(hover(p, prev), DT);
+    op.update(DT);
+    prev = p;
+  }
+}
+
+/** Offset a polyline sideways by `d` px (perpendicular to each segment, averaged at joints). */
+export function offsetLine(points: Vec[], d: number): Vec[] {
+  return points.map((p, i) => {
+    const a = points[Math.max(0, i - 1)];
+    const b = points[Math.min(points.length - 1, i + 1)];
+    const l = dist(a, b) || 1;
+    return { x: p.x - ((b.y - a.y) / l) * d, y: p.y + ((b.x - a.x) / l) * d };
+  });
+}
+
+/** A point just above the operating field (off the body), where plucked things are dropped. */
+export const FIELD_OFF: Vec = { x: FIELD.cx, y: FIELD.cy - FIELD.ry - 60 };
