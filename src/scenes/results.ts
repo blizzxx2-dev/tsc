@@ -97,7 +97,7 @@ export class ResultsScene implements Scene {
     const op = this.op;
     g.beginWorld();
     drawBackdrop(g, 'results', g.time);
-    g.endWorld({ litany: 0, danger: this.won ? 0 : 0.4, shake: { x: 0, y: 0 }, bloom: 1, defocus: 8 });
+    g.endWorld({ litany: 0, danger: this.won ? 0 : 0.4, shake: { x: 0, y: 0 }, bloom: 'menu', defocus: 8 });
 
     const r = { x: 300, y: 36, w: 680, h: 580 };
     const a = Math.min(1, this.t * 3);

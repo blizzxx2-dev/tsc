@@ -430,6 +430,8 @@ export class OperationScene implements Scene {
       if (kind === 'blood') this.decals?.stamp({ map: 'blood', brush: 'splat', x: p.x, y: p.y, r: size * 2.4, rot: this.presRng.next() * 6.28, value: [0.7, 1, 0], mode: 'add', t: op.elapsed, seed: this.presRng.next() });
     });
     this.stampFluids(op, game);
+    // Particle quality setting (ENG-0145): budget and non-gameplay emission follow it.
+    this.particles.quality = this.uiFx.quality = settings.particleQuality;
     this.uiFx.update(dt, () => {});
     this.vfx.update(op, dt * op.timeScale, { beat: this.beatPhase, pointer: game.input.pos, down: game.input.down, light: { x: FIELD.cx - 220, y: 60 }, starTrail: this.ctl.starTrail, gore: bloodScale(presentation.gore) });
 
@@ -595,7 +597,8 @@ export class OperationScene implements Scene {
       litany,
       danger,
       shake,
-      bloom: 0.7,
+      // Bloom preset (ENG-0149): the Malison fights glow harder than ordinary cases.
+      bloom: this.corrupt > 0.5 ? 'malison' : 'operation',
       chroma: (this.corrupt * 1.2 + danger * 0.8 + Math.min(1, op.shake / 10) * 0.6) * soften,
       lutA: ch2 ? 'dawn' : 'candle',
       lutB: danger > 0.5 ? 'failing' : 'curse',

@@ -40,7 +40,7 @@ export class CalibrateScene implements Scene {
     // Near-black, dark and mid woodcut stars: 2 %, 6 % and 18 % grey.
     const greys = ['#050505', '#0f0f0f', '#2e2e2e'];
     greys.forEach((c, i) => star(g, VIEW_W / 2 + (i - 1) * 220, 330, 70, hex(c)));
-    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 0 });
+    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 'none' });
 
     giltText(g, t('ui.calibrate.title'), VIEW_W / 2, 110, { size: 44, align: 'center' });
     divider(g, VIEW_W / 2, 132, 320);

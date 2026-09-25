@@ -1,0 +1,8 @@
+{
+  "operation": { "intensity": 0.7, "threshold": 0.78, "radius": 1.0 },
+  "malison": { "intensity": 0.85, "threshold": 0.66, "radius": 1.35 },
+  "story": { "intensity": 1.0, "threshold": 0.74, "radius": 1.15 },
+  "menu": { "intensity": 1.0, "threshold": 0.78, "radius": 1.0 },
+  "title": { "intensity": 1.3, "threshold": 0.74, "radius": 1.2 },
+  "none": { "intensity": 0, "threshold": 1, "radius": 1.0 }
+}

@@ -380,7 +380,7 @@ export class StoryScene implements Scene {
       for (const e of this.stage.entries()) drawPortrait(g, CAST[e.who], SLOT_X[e.slot] + e.dx, SLOT_Y, g.time, e.speaking, false, e.pose);
     }
     const trauma = this.shake > 0 && !settings.reduceMotion ? Math.min(1, this.shake * settings.shake) : undefined;
-    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, trauma, bloom: 1 });
+    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, trauma, bloom: 'story' });
 
     const vr = g.viewRect();
     if (this.cg) {

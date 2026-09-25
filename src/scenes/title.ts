@@ -105,7 +105,7 @@ export class TitleScene implements Scene {
   render(g: Gfx, game: Game): void {
     g.beginWorld();
     drawBackdrop(g, 'title', g.time, { pointer: settings.reduceMotion ? undefined : game.input.pos });
-    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1.3, defocus: 7 });
+    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 'title', defocus: 7 });
     const a = Math.min(1, this.t);
     const vr = g.viewRect();
     // Grade the backdrop down so the type carries the screen: a heavy vignette and a dark

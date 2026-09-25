@@ -233,7 +233,6 @@ export class Particles {
 
   /** Visible particles (world layer, after entities): one instanced draw per blend. */
   draw(g: Gfx, layer: EmitterDef['layer'] = 'Particles'): void {
-    this.quality = g.shaderQuality;
     for (const blend of ['alpha', 'add'] as const) {
       const { data, count } = this.instances(blend, layer);
       if (count) g.drawParticles(data, count, blend, this.curves);

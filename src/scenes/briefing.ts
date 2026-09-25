@@ -80,7 +80,7 @@ export class BriefingScene implements Scene {
     const d = this.def;
     g.beginWorld();
     drawBackdrop(g, 'theatre', g.time);
-    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1, defocus: 8 });
+    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 'menu', defocus: 8 });
 
     const r = { x: 240, y: 60, w: 800, h: 600 };
     glass(g, r, { strength: 1.12 });

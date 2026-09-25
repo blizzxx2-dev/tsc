@@ -214,7 +214,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0146 · Demo · P0 · M · Post pipeline as an ordered pass list (bloom, CA, Litany, damage, LUT, vignette, grain, dither) with per-pass enable flags and uniforms, replacing the monolithic `POST_FS` — toggleable from the debug overlay
 - [x] ENG-0147 · Demo · P1 · M · HDR scene target (RGBA16F via `EXT_color_buffer_float`) with a filmic tonemap — RGBA8 fallback path keeps visual parity within tolerance
 - [x] ENG-0148 · Demo · P1 · M · Bloom v2: 5-level downsample/upsample mip-chain bloom with soft-knee threshold (replacing 2× 5-tap quarter-res blur and the hard-coded threshold in `endWorld`) — no bloom shimmer on small highlights in a static scene
-- [ ] ENG-0149 · Demo · P1 · S · Bloom presets per scene type (operation, story, menu, Malison) as data — `PostParams.bloom` becomes a preset id + intensity override
+- [x] ENG-0149 · Demo · P1 · S · Bloom presets per scene type (operation, story, menu, Malison) as data — `PostParams.bloom` becomes a preset id + intensity override
 - [x] ENG-0150 · Demo · P1 · S · Dither at final output (blue-noise ±0.5 LSB) — gradient test capture shows no visible banding in the dark vignette
 
 ### Grading & look

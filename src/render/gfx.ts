@@ -22,6 +22,7 @@ import { PLATE_FS } from './shaders/plate';
 import { SPECIES_PROFILES, type SpeciesLook } from '../surgery/species';
 import { Renderer3D, type Scene3D } from './renderer3d';
 import type { CurveAtlas } from './curves';
+import { resolveBloom, type BloomSpec } from './bloom';
 import { PARTICLE_FS, PARTICLE_SIZE_RANGE, PARTICLE_VS } from './shaders/particle';
 
 /** Bilinear upsample of a reduced-resolution layer. */
@@ -137,7 +138,8 @@ export interface PostParams {
    * presentation time, so the scene passes no random jitter and the sim stays pure.
    */
   trauma?: number;
-  bloom: number;
+  /** Bloom preset per scene type, with an optional intensity override (ENG-0149); a number is a menu-preset intensity. */
+  bloom: BloomSpec;
   /** Chromatic aberration strength (curses, damage). */
   chroma?: number;
   /** Colour grade: multiplicative tint and lift, per chapter/location. */
@@ -701,14 +703,15 @@ export class Gfx {
     // Bloom v2: soft-knee bright pass into mip 0, box downsample to 1/32, tent upsample back up.
     // Skipped entirely when the pass is off or the player set bloom to 0 % (ENG-0146/0164).
     const m = this.mips;
-    const bloomAmt = p.bloom * 0.35 * this.displayPrefs.bloom;
+    const bp = resolveBloom(p.bloom);
+    const bloomAmt = bp.intensity * 0.35 * this.displayPrefs.bloom;
     const bloomOn = bloomAmt > 0 && this.postChain.enabled('bloom');
     if (bloomOn) {
       this.bindTarget(m[0]);
       gl.useProgram(this.bright);
       this.bindTex(world, 0);
       gl.uniform1i(this.u(this.bright, 'u_tex'), 0);
-      gl.uniform1f(this.u(this.bright, 'u_threshold'), p.bloomThreshold ?? 0.78);
+      gl.uniform1f(this.u(this.bright, 'u_threshold'), p.bloomThreshold ?? bp.threshold);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       gl.useProgram(this.downProg);
       gl.uniform1i(this.u(this.downProg, 'u_tex'), 0);
@@ -720,7 +723,7 @@ export class Gfx {
       }
       gl.useProgram(this.upProg);
       gl.uniform1i(this.u(this.upProg, 'u_tex'), 0);
-      gl.uniform1f(this.u(this.upProg, 'u_radius'), 1.0);
+      gl.uniform1f(this.u(this.upProg, 'u_radius'), bp.radius);
       gl.enable(gl.BLEND);
       gl.blendFunc(gl.ONE, gl.ONE);
       for (let i = m.length - 1; i > 0; i--) {

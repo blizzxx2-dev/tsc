@@ -41,7 +41,7 @@ export class CodexScene implements Scene {
   render(g: Gfx, game: Game): void {
     g.beginWorld();
     drawBackdrop(g, 'chapel', g.time);
-    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1, defocus: 10 });
+    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 'menu', defocus: 10 });
     const L = { x: 140, y: 60, w: 330, h: 580 };
     const R = { x: 500, y: 60, w: 640, h: 580 };
     glass(g, L, { strength: 1.1 });
