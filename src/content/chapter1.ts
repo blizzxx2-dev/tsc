@@ -1,6 +1,6 @@
-import { Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, Sigil, SIGILS } from '../surgery/entities';
-import { Malison } from '../surgery/malison';
-import { FIELD, type Operation, type OperationDef } from '../surgery/operation';
+import { Incision } from '../surgery/entities';
+import { FIELD, type Operation } from '../surgery/operation';
+import { OP_1_1, OP_1_2, OP_1_3, OP_1_4, OP_1_5 } from './ops/ch1';
 import type { Vec } from '../core/math';
 import { n, say, type StoryDef } from './story';
 
@@ -116,149 +116,9 @@ export const STORY_1_END: StoryDef = {
 };
 
 // ====================================================================== operations
+// Written as data (CON-0001): src/content/ops/ch1.ts.
 
-const ALL_BUT_LENS = ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture', 'brand'] as const;
-
-export const OP_1_1: OperationDef = {
-  id: 'op1-1',
-  title: 'A Tavern Knife',
-  patient: 'Jost, drover',
-  diagnosis: 'Knife wounds to the forearm and flank after a dice dispute. Moderate bleeding.',
-  organ: 'flesh',
-  timeLimit: 180,
-  tools: ['thread', 'leech', 'salve'],
-  ranks: { S: 3950, A: 3150, B: 2350 },
-  litany: false,
-  seed: 11,
-  phases: [
-    {
-      callout: ['Two deep cuts. Take the gut thread and zig-zag across each wound to stitch it.', 'Cross the wound again and again, moving along it. One smooth stroke earns the best marks.'],
-      spawn: () => [new Laceration(at(-140, -40), 0.3, 120, 0.5), new Laceration(at(130, 50), -0.4, 100, 0.5)],
-    },
-    {
-      callout: ['Blood’s pooling. Hold the leech-pipe over it to draw it off.', 'You can’t stitch through a pool of blood — drain first.'],
-      spawn: () => [new Laceration(at(0, 20), 1.2, 110, 0.9)],
-    },
-    {
-      callout: ['Just nicks left. Brush Saint’s Salve over the small ones — no need for thread.'],
-      spawn: () => [new Laceration(at(-200, 80), 0.9, 36, 0.3), new Laceration(at(190, -90), 2.1, 40, 0.3), new Laceration(at(40, -120), 0.1, 32, 0.3)],
-    },
-  ],
-};
-
-export const OP_1_2: OperationDef = {
-  id: 'op1-2',
-  title: 'The Barbed Shaft',
-  patient: 'Pieter, militiaman',
-  diagnosis: 'Barbed arrow lodged in the left flank; crossbow bolt in the thigh. Raider ambush.',
-  organ: 'flesh',
-  timeLimit: 200,
-  tools: ['lancet', 'tongs', 'leech', 'thread', 'salve'],
-  ranks: { S: 4450, A: 3550, B: 2650 },
-  litany: false,
-  seed: 12,
-  phases: [
-    {
-      callout: ['The arrow’s barbed. Lancet first — two nicks at the entry wound. Then seize it with the tongs and pull it well clear.', 'Then drain and stitch the wound it leaves.'],
-      spawn: () => [new Embedded(at(-60, 0), 'arrow', -0.5)],
-    },
-    {
-      callout: ['The bolt in his thigh has no barbs. Tongs, and pull it straight out.', 'Quick, clean pulls earn the best marks.'],
-      spawn: () => [new Embedded(at(150, 60), 'bolt', 0.4, false), new Embedded(at(-180, -70), 'shard', 2.2, false)],
-    },
-  ],
-};
-
-export const OP_1_3: OperationDef = {
-  id: 'op1-3',
-  title: 'Powder Burns',
-  patient: 'Anno, gunsmith’s apprentice',
-  diagnosis: 'Burst-barrel injury: powder burns across the chest, lead fragments embedded beneath the skin.',
-  organ: 'flesh',
-  timeLimit: 240,
-  baseDrain: 0.25,
-  vitals: 70,
-  tools: ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture'],
-  ranks: { S: 4750, A: 3800, B: 2850 },
-  litany: false,
-  seed: 13,
-  phases: [
-    {
-      callout: ['His pulse is weak already. Hold the tincture to the flesh to steady him if you need it.', 'Burns first. Pluck the black eschar away with the tongs, then salve the raw flesh.'],
-      spawn: (op) => [new Burn(at(-170, -60), 48, op), new Burn(at(180, -80), 40, op)],
-    },
-    {
-      callout: ['Now open him along the inked line with the lancet. Keep to the line — start at the glowing end.'],
-      spawn: () => [new Incision([at(-150, 60), at(-50, 40), at(60, 50), at(160, 30)])],
-    },
-    {
-      callout: ['There — the shot. Pull each ball out with the tongs.'],
-      spawn: () => [new Embedded(at(-80, 40), 'shot'), new Embedded(at(30, 70), 'shot'), new Embedded(at(120, 20), 'shot')],
-    },
-    closeIncision(),
-  ],
-};
-
-export const OP_1_4: OperationDef = {
-  id: 'op1-4',
-  title: 'Pestilent Humours',
-  patient: 'Unknown vagrant, Tanners’ Rows',
-  diagnosis: 'Plague buboes, spreading rot and an infested sore. High fever.',
-  organ: 'flesh',
-  timeLimit: 240,
-  baseDrain: 0.15,
-  tools: ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture', 'brand'],
-  ranks: { S: 5250, A: 4200, B: 3150 },
-  litany: false,
-  seed: 14,
-  phases: [
-    {
-      callout: ['Lance each bubo with a single touch of the lancet before it bursts. Then drain the pus and salve it.'],
-      spawn: () => [new Bubo(at(-160, -40), 22), new Bubo(at(40, -100), 20), new Bubo(at(170, 60), 24)],
-    },
-    {
-      callout: ['Grubs in the sore! The cautery brand — hold it on each one until it stops moving.', 'Don’t linger on bare flesh with the brand.'],
-      spawn: (op) => [new Grub(at(-40, 40), op, 35), new Grub(at(60, 60), op, 35), new Grub(at(10, -10), op, 35), new Rot(at(20, 40), 60, 0.3)],
-    },
-    {
-      callout: ['The rot’s spreading. Salve every patch — quickly, it creeps back.'],
-      spawn: () => [new Rot(at(-180, 70), 50, 0.6), new Rot(at(180, -60), 55, 0.6)],
-    },
-  ],
-};
-
-export const OP_1_5: OperationDef = {
-  id: 'op1-5',
-  title: 'The Hour of Matins',
-  patient: 'Emmerich, page-boy',
-  diagnosis: 'Unknown. Moving marks on the chest. Delirium. “The choir is singing in me.”',
-  organ: 'flesh',
-  timeLimit: 330,
-  baseDrain: 0.1,
-  tools: ALL_BUT_LENS,
-  ranks: { S: 6950, A: 5550, B: 4150 },
-  litany: true,
-  seed: 15,
-  phases: [
-    {
-      callout: ['Those sigils are draining him. Trace every stroke of each one with the brand to sear it out.'],
-      spawn: () => [new Sigil(at(-170, -30), SIGILS.eye, 70), new Sigil(at(170, 20), SIGILS.trident, 60)],
-    },
-    {
-      callout: ['Something is moving beneath the skin. We have to open him. The lancet — along the line.'],
-      spawn: () => [new Incision([at(-180, 0), at(-60, -20), at(60, -10), at(180, 10)])],
-    },
-    {
-      callout: ['Saints preserve us… what is that?', 'Doctor — if ever there were a time for the Litany, it is now. Draw the star with the right hand.'],
-      spawn: (op) => [new Malison(at(0, 40), op, 'matins', 100)],
-    },
-    {
-      callout: ['It’s gone. Tend the wounds it left.'],
-      spawn: (op) => [new Laceration(at(-90, 90), 0.4, 60, 0.8), new Rot(at(110, -60), 40, 0.4), new Grub(at(0, 0), op, 40)],
-    },
-    closeIncision(),
-  ],
-};
+export { OP_1_1, OP_1_2, OP_1_3, OP_1_4, OP_1_5 };
 
 export const CHAPTER_1 = {
   id: 'ch1',

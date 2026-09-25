@@ -15,13 +15,12 @@ const ORGAN: Record<OrganKind, { base: string; deep: string; vein: string }> = {
   bone: { base: '#c89880', deep: '#6a3a30', vein: '#5a1a20' },
 };
 
-/** Species shift the flesh: dwarfs ruddy and dense, elves pale, orcs green-grey, halflings rosy. */
+/** Folk shift the flesh: mountain-folk ruddy and dense, horn-folk dun and weathered, giants sallow and coarse. */
 const RACE_TINT: Record<NonNullable<OperationDef['race']>, RGB> = {
   human: [1, 1, 1],
-  dwarf: [1.08, 0.92, 0.85],
-  elf: [1.05, 1.02, 1.08],
-  halfling: [1.1, 0.98, 0.95],
-  orc: [0.78, 1.05, 0.72],
+  mountainfolk: [1.08, 0.92, 0.85],
+  hornfolk: [0.96, 0.9, 0.8],
+  giant: [1.02, 0.97, 0.88],
 };
 
 /** Membrane edge softness per organ: crisp alveoli, softer fat lobules. */
