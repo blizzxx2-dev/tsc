@@ -68,14 +68,14 @@ Cross-refs: ENG (texture loading, atlases, shader inputs), UX (layouts and widge
 - [x] ART-0032 · M0 · P0 · S · Source-art storage: layered PSD/Krita/Blender sources in Git LFS (`art-src/`), with exports only in `assets/` and an `.gitattributes` LFS rule for each source type
 - [x] ART-0033 · M0 · P0 · S · Export spec: WebP lossless for UI, WebP q90 for backgrounds, KTX2/Basis for flesh textures, PNG for masters — table in the bible
 - [x] ART-0034 · M0 · P0 · M · Authoring resolution standard: backgrounds at 3840×2160 master, 1920×1080 ship; portraits at 2048 px tall master, 1024 px ship; UI at 2× the 1280×720 virtual space
-- [ ] ART-0035 · Demo · P0 · M · `npm run art:export` batch script: source → resized, trimmed, compressed exports with a manifest JSON (`assets/manifest.json`) of size, hash and atlas page
+- [x] ART-0035 · Demo · P0 · M · `npm run art:export` batch script: source → resized, trimmed, compressed exports with a manifest JSON (`assets/manifest.json`) of size, hash and atlas page
 - [x] ART-0036 · Demo · P0 · M · Texture-atlas packer (`tools/pack-atlas.ts`) for UI, icons, ailments and VFX: 2048² pages, 2 px extrude, max-rects packing, a JSON frame map consumed by `gfx.ts`
-- [ ] ART-0037 · Demo · P0 · S · Premultiplied-alpha export for all atlased sprites; no dark halos when drawn on parchment and on flesh (visual test page)
+- [x] ART-0037 · Demo · P0 · S · Premultiplied-alpha export for all atlased sprites; no dark halos when drawn on parchment and on flesh (visual test page)
 - [x] ART-0038 · Demo · P1 · S · Spritesheet and flipbook convention (row-major, fixed cell, `fps` in the manifest) for ailment and VFX animation
 - [x] ART-0039 · Demo · P1 · M · Hot-reload of `assets/` in the Vite dev server: changing an exported PNG updates the running game within 2 s without restart
 - [x] ART-0040 · Demo · P1 · S · Art viewer debug scene (`?scene=artview`) listing every manifest entry, with zoom, frame-stepping and a background swatch toggle
 - [x] ART-0041 · Demo · P1 · M · Placeholder-tracking: every asset in the manifest tagged `placeholder|wip|final`, with a build report counting each; the demo build fails if any demo asset is `placeholder`
-- [ ] ART-0042 · Demo · P2 · S · Photoshop/Krita export actions shared in `art-src/tools/` so every artist exports identically
+- [x] ART-0042 · Demo · P2 · S · Photoshop/Krita export actions shared in `art-src/tools/` so every artist exports identically
 - [x] ART-0043 · Alpha · P2 · M · Per-chapter asset bundles (lazy-loaded atlas pages per chapter) with the manifest split so Chapter 3–5 art doesn't load in the demo
 
 ### Engine integration (with ENG)
@@ -100,7 +100,7 @@ Cross-refs: ENG (texture loading, atlases, shader inputs), UX (layouts and widge
 - [x] ART-0056 · Demo · P1 · M · Briefing screen art: a patient chart on vellum with a Wound-Man diagram and pin markers for ailment locations, plus stamped prognosis boxes
 - [x] ART-0057 · Demo · P1 · M · Title-menu frame: an illuminated manuscript page with a rubricated initial and marginalia beasts
 - [x] ART-0058 · Demo · P1 · M · Options menu art: tabbed ledger pages (Video, Audio, Controls, Accessibility, Language), with sliders drawn as a brass rule plus a wax bead
-- [ ] ART-0059 · Demo · P1 · S · Save/load slot cards: ledger entries with chapter vignette thumbnails (1 per chapter scene) and a date-stamp style
+- [x] ART-0059 · Demo · P1 · S · Save/load slot cards: ledger entries with chapter vignette thumbnails (1 per chapter scene) and a date-stamp style
 - [x] ART-0060 · Demo · P1 · M · End-of-demo wishlist screen: a woodcut plate of the Chapter 3 teaser with a "Wishlist on Steam" button in UI-kit style
 - [x] ART-0061 · Demo · P2 · S · Loading-screen art: 4 woodcut vignettes (Wound Man, leech jar, Pyre, Choir mask) with an hourglass spinner
 - [ ] ART-0062 · Alpha · P2 · M · Challenge-mode board: a guild notice board with pinned bills per challenge, parchment variants and a rank-wax stamp
@@ -257,15 +257,15 @@ Texture-set standard: each set = **albedo** (painted, sRGB, 1024² tileable) + *
 
 ### Test harness & look-dev
 - [x] ART-0159 · Demo · P0 · M · Flesh look-dev page (`?scene=fleshlab`): pick organ × species × texture set, sliders for `u_light`, `u_pulse` and `u_corrupt`, side-by-side with the procedural baseline
-- [ ] ART-0160 · Demo · P0 · S · Tileability check script: each albedo and normal is offset by half a tile and diffed for seams (fails above threshold)
+- [x] ART-0160 · Demo · P0 · S · Tileability check script: each albedo and normal is offset by half a tile and diffed for seams (fails above threshold)
 - [ ] ART-0161 · Demo · P0 · M · Painted-flesh style guide: how far from photoreal (no photo textures; woodcut hatching in the cavity channel), 6 approved swatches
-- [ ] ART-0162 · Demo · P1 · S · Wet-map authoring guide: specular response per organ (heart glossy, liver satin, bone dry) with target roughness values
+- [x] ART-0162 · Demo · P1 · S · Wet-map authoring guide: specular response per organ (heart glossy, liver satin, bone dry) with target roughness values
 
 ### Human organ sets
 - [ ] ART-0163 · Demo · P0 · L · Skin/subcutaneous `flesh` set: epidermis, fat lobules and muscle-fibre direction layers — used by all ten demo ops
 - [ ] ART-0164 · Demo · P0 · M · Muscle-fascia detail variant of `flesh` (fibre-aligned normals) for deep laceration and arrow sites
-- [ ] ART-0165 · Demo · P1 · M · Burned-skin overlay set (charred, blistered, weeping) blended by burn severity for `Burn` entities
-- [ ] ART-0166 · Demo · P1 · M · Plague/rot overlay set (necrotic black-green, pus-slick wet map) blended by `Rot` spread
+- [x] ART-0165 · Demo · P1 · M · Burned-skin overlay set (charred, blistered, weeping) blended by burn severity for `Burn` entities
+- [x] ART-0166 · Demo · P1 · M · Plague/rot overlay set (necrotic black-green, pus-slick wet map) blended by `Rot` spread
 - [ ] ART-0167 · Alpha · P1 · L · `heart` set: myocardium striation, coronary vein mask and high-gloss wet map
 - [ ] ART-0168 · Alpha · P1 · L · `lung` set: alveolar sponge albedo, pleural sheen and soot-speckle variant for smoke/powder victims
 - [ ] ART-0169 · Alpha · P1 · L · `gut` set: serosa, peristalsis-ready normal and mesentery vein mask
@@ -284,9 +284,9 @@ Texture-set standard: each set = **albedo** (painted, sRGB, 1024² tileable) + *
 - [ ] ART-0180 · Beta · P2 · M · Monster anatomy set for inquisition forensics (gravehound and brood-spider tissue)
 
 ### Corruption & Malison tissue
-- [ ] ART-0181 · Demo · P0 · M · Curse-corruption texture (violet veining, bruise-black necrosis, woodcut-hatched sigil scarring) driven by `u_corrupt` 0–1, replacing the procedural tint
-- [ ] ART-0182 · Demo · P1 · S · Curse-corruption flow map so violet veins crawl toward the Malison position
-- [ ] ART-0183 · Alpha · P2 · M · Per-Hour corruption palette variants (8), each keyed to its Malison's colour story
+- [x] ART-0181 · Demo · P0 · M · Curse-corruption texture (violet veining, bruise-black necrosis, woodcut-hatched sigil scarring) driven by `u_corrupt` 0–1, replacing the procedural tint
+- [x] ART-0182 · Demo · P1 · S · Curse-corruption flow map so violet veins crawl toward the Malison position
+- [x] ART-0183 · Alpha · P2 · M · Per-Hour corruption palette variants (8), each keyed to its Malison's colour story
 
 ---
 
@@ -295,55 +295,55 @@ Texture-set standard: each set = **albedo** (painted, sRGB, 1024² tileable) + *
 Ailment standard: painted sprite(s) in the woodcut-over-paint style at 2× virtual resolution, with **idle, being-treated and resolved** states, atlased, each replacing the entity's vector `draw()`; readability test: identifiable at 100% zoom on every organ texture set within 0.5 s (hallway test, 5 testers).
 
 ### Incisions, lacerations & sutures
-- [ ] ART-0184 · Demo · P0 · M · Incision art: a tileable cut-edge strip sprite (skin lips, fat layer, bleeding edge) drawn along the `Incision` polyline, with an opening animation over 6 frames
-- [ ] ART-0185 · Demo · P0 · M · Laceration set: 3 widths × 2 edge types (clean blade, ragged claw), tileable along the path, with a pulse-bleed overlay
-- [ ] ART-0186 · Demo · P0 · S · Gut Thread suture art: stitch sprite per crossing (gut-coloured, knotted) plus a tightening pull frame for `StitchLine`
+- [x] ART-0184 · Demo · P0 · M · Incision art: a tileable cut-edge strip sprite (skin lips, fat layer, bleeding edge) drawn along the `Incision` polyline, with an opening animation over 6 frames
+- [x] ART-0185 · Demo · P0 · M · Laceration set: 3 widths × 2 edge types (clean blade, ragged claw), tileable along the path, with a pulse-bleed overlay
+- [x] ART-0186 · Demo · P0 · S · Gut Thread suture art: stitch sprite per crossing (gut-coloured, knotted) plus a tightening pull frame for `StitchLine`
 - [ ] ART-0187 · Demo · P1 · S · Claw-rake variant: 3–4 parallel lacerations as one grouped decal for monster ops (op2-1)
-- [ ] ART-0188 · Demo · P1 · S · Closed-wound state: a sutured scar sprite that persists to the results screen
+- [x] ART-0188 · Demo · P1 · S · Closed-wound state: a sutured scar sprite that persists to the results screen
 - [ ] ART-0189 · Alpha · P2 · S · Surgical-flap art (retracted skin with a pin clamp) for deep-organ ops in Chapters 3–5
 
 ### Fluids
-- [ ] ART-0190 · Demo · P0 · M · Blood pool sprites: 4 shapes × 3 sizes with a wet-map channel, a spreading flipbook (8 frames) and a Leech-Pipe draining shrink
-- [ ] ART-0191 · Demo · P0 · S · Pus and black-bile variants of the pool set (colour, opacity, viscosity highlight) for `BloodPool` kinds
-- [ ] ART-0192 · Demo · P1 · S · Arterial spurt flipbook (6 frames, 3 directions) for severed-vessel events
-- [ ] ART-0193 · Demo · P1 · S · Salve (Saint's Salve) coverage decal: pale-gold paste with a glisten, fading over 1.5 s once absorbed
+- [x] ART-0190 · Demo · P0 · M · Blood pool sprites: 4 shapes × 3 sizes with a wet-map channel, a spreading flipbook (8 frames) and a Leech-Pipe draining shrink
+- [x] ART-0191 · Demo · P0 · S · Pus and black-bile variants of the pool set (colour, opacity, viscosity highlight) for `BloodPool` kinds
+- [x] ART-0192 · Demo · P1 · S · Arterial spurt flipbook (6 frames, 3 directions) for severed-vessel events
+- [x] ART-0193 · Demo · P1 · S · Salve (Saint's Salve) coverage decal: pale-gold paste with a glisten, fading over 1.5 s once absorbed
 - [ ] ART-0194 · Alpha · P2 · S · Tallow-clot sprites (for Vespers) with a melt animation under the Brand
 
 ### Embedded objects
-- [ ] ART-0195 · Demo · P0 · M · Arrow: a painted goose-fletched shaft with a broadhead, the embedded end masked into the tissue, plus a wobble-on-grab 4-frame loop
-- [ ] ART-0196 · Demo · P0 · M · Barbed arrow: a visible barb silhouette, a "nicked" state after Lancet release and a torn-out bad state (flesh chunk on the barb)
-- [ ] ART-0197 · Demo · P0 · S · Crossbow bolt: a short, heavy quarrel with square head and a leather-vaned variant
-- [ ] ART-0198 · Demo · P0 · S · Lead shot: 3 ball sizes, a flattened deformed variant and a powder-tattoo ring decal around the entry wound
-- [ ] ART-0199 · Demo · P0 · S · Lodged fang/tooth: gravehound canine and brood-spider fang, with a venom-stained root
-- [ ] ART-0200 · Demo · P1 · S · Glass shards: 5 shapes with a refraction highlight (rim-lit via the additive pass)
-- [ ] ART-0201 · Demo · P0 · M · Hexstone shard: black-violet crystal with pulsing inner light (6-frame loop), a crackle on grab and a dissolve on removal
-- [ ] ART-0202 · Demo · P1 · S · Extraction-tray art: removed objects dropped into a pewter kidney dish at screen edge (one sprite per object type)
+- [x] ART-0195 · Demo · P0 · M · Arrow: a painted goose-fletched shaft with a broadhead, the embedded end masked into the tissue, plus a wobble-on-grab 4-frame loop
+- [x] ART-0196 · Demo · P0 · M · Barbed arrow: a visible barb silhouette, a "nicked" state after Lancet release and a torn-out bad state (flesh chunk on the barb)
+- [x] ART-0197 · Demo · P0 · S · Crossbow bolt: a short, heavy quarrel with square head and a leather-vaned variant
+- [x] ART-0198 · Demo · P0 · S · Lead shot: 3 ball sizes, a flattened deformed variant and a powder-tattoo ring decal around the entry wound
+- [x] ART-0199 · Demo · P0 · S · Lodged fang/tooth: gravehound canine and brood-spider fang, with a venom-stained root
+- [x] ART-0200 · Demo · P1 · S · Glass shards: 5 shapes with a refraction highlight (rim-lit via the additive pass)
+- [x] ART-0201 · Demo · P0 · M · Hexstone shard: black-violet crystal with pulsing inner light (6-frame loop), a crackle on grab and a dissolve on removal
+- [x] ART-0202 · Demo · P1 · S · Extraction-tray art: removed objects dropped into a pewter kidney dish at screen edge (one sprite per object type)
 - [ ] ART-0203 · Alpha · P2 · S · Splinter and shrapnel set (wood, iron nail, gun-barrel fragment) for Chapter 3 siege ops
 
 ### Burns
-- [ ] ART-0204 · Demo · P0 · M · Fire burn: 3 severity decals (reddened, blistered, charred), with a cooling transition when salved
-- [ ] ART-0205 · Demo · P0 · S · Acid burn: yellow-green etched decal with a bubbling 6-frame loop and a neutralised state
-- [ ] ART-0206 · Demo · P0 · M · Hexfire burn: violet-cored flame-edge decal with licking flame flipbook (8 frames) that reignites if untreated
+- [x] ART-0204 · Demo · P0 · M · Fire burn: 3 severity decals (reddened, blistered, charred), with a cooling transition when salved
+- [x] ART-0205 · Demo · P0 · S · Acid burn: yellow-green etched decal with a bubbling 6-frame loop and a neutralised state
+- [x] ART-0206 · Demo · P0 · M · Hexfire burn: violet-cored flame-edge decal with licking flame flipbook (8 frames) that reignites if untreated
 - [ ] ART-0207 · Demo · P1 · S · Powder burn with embedded black grains (op1-3), with grains as pickable sub-sprites
 - [ ] ART-0208 · Beta · P1 · M · Dragon-breath burn: deep crater with a glassy fused-edge normal and an ember-glow loop
 
 ### Plague & disease
-- [ ] ART-0209 · Demo · P0 · M · Bubo: swelling sprite in 3 sizes with a tension-shine wet map, a lance-open burst flipbook (6 frames) and a drained, deflated state
-- [ ] ART-0210 · Demo · P0 · M · Rot/gangrene: spreading necrotic decal (4 growth stages) with a crusted edge and a debrided clean state
+- [x] ART-0209 · Demo · P0 · M · Bubo: swelling sprite in 3 sizes with a tension-shine wet map, a lance-open burst flipbook (6 frames) and a drained, deflated state
+- [x] ART-0210 · Demo · P0 · M · Rot/gangrene: spreading necrotic decal (4 growth stages) with a crusted edge and a debrided clean state
 - [ ] ART-0211 · Demo · P1 · S · Pox pustule cluster decal (small, many) for Symptom Loom reuse
 - [ ] ART-0212 · Alpha · P2 · S · Flux/fever flush overlay (full-field tint map) and a sweat-bead sparkle loop
 - [ ] ART-0213 · Alpha · P2 · M · Symptom Loom module icons (12 symptom modules) as woodcut roundels for challenge-mode briefings
 
 ### Venom & creatures
-- [ ] ART-0214 · Demo · P0 · M · Venom: a spreading vein-web decal (green-black) with a tincture-neutralised fade, driven by the `Venom` entity's spread value
-- [ ] ART-0215 · Demo · P0 · M · Grub: a segmented larva sprite with an 8-frame crawl cycle, a burrow-in/burrow-out pair and a squirm-in-tongs loop
-- [ ] ART-0216 · Demo · P0 · M · Egg sac: translucent cluster with visible embryos (3 sizes), a pulsing loop, a hatch flipbook (grubs emerge) and a Tongs-removal state — op2-3
+- [x] ART-0214 · Demo · P0 · M · Venom: a spreading vein-web decal (green-black) with a tincture-neutralised fade, driven by the `Venom` entity's spread value
+- [x] ART-0215 · Demo · P0 · M · Grub: a segmented larva sprite with an 8-frame crawl cycle, a burrow-in/burrow-out pair and a squirm-in-tongs loop
+- [x] ART-0216 · Demo · P0 · M · Egg sac: translucent cluster with visible embryos (3 sizes), a pulsing loop, a hatch flipbook (grubs emerge) and a Tongs-removal state — op2-3
 - [ ] ART-0217 · Demo · P1 · S · Brood silk strands (tileable web decal) that must be cut with the Lancet
 - [ ] ART-0218 · Alpha · P2 · M · Parasite worm (long, whip-like) with a 12-frame ripple for Chapter 3 marsh ops
 
 ### Curses & sigils
-- [ ] ART-0219 · Demo · P0 · M · Curse-sigil set: 8 original sigil glyphs (IP-checked, no eight-pointed stars), each with stroke-order data for trace-to-erase and a searing-out animation
-- [ ] ART-0220 · Demo · P0 · S · Sigil glow states: dormant (faint), draining (pulsing violet) and seared (charred gold)
+- [x] ART-0219 · Demo · P0 · M · Curse-sigil set: 8 original sigil glyphs (IP-checked, no eight-pointed stars), each with stroke-order data for trace-to-erase and a searing-out animation
+- [x] ART-0220 · Demo · P0 · S · Sigil glow states: dormant (faint), draining (pulsing violet) and seared (charred gold)
 - [ ] ART-0221 · Beta · P1 · M · Petrification: creeping stone-crust decal (4 stages) and a crack-apart flipbook for the Tongs
 - [ ] ART-0222 · Beta · P2 · S · Name-sigils (for Prime): blackletter names written stroke by stroke as a 20-frame write-on effect
 
@@ -359,15 +359,15 @@ Ailment standard: painted sprite(s) in the woodcut-over-paint style at 2× virtu
 Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase sprite/flipbook set → shader VFX spec handed to ENG → in-engine review in a boss sandbox, plus a **Book-of-Hours title card** (an illuminated miniature of the Hour, used on the intro and on the results screen). Bosch hybrid-grotesque language; curse-violet is the shared thread, and each Hour gets its own secondary colour.
 
 ### Shared Malison language
-- [ ] ART-0226 · Demo · P0 · M · Malison design language sheet: common anatomy (woven-thread body, liturgical fragments, an eye motif), shared violet and per-Hour secondary colours, with 8 silhouettes side by side for distinctness
-- [ ] ART-0227 · Demo · P0 · S · Book-of-Hours card template: an illuminated miniature frame with the Hour's name in blackletter and a clock-face marginal border
-- [ ] ART-0228 · Demo · P1 · M · Malison shard (`MalisonShard`) art: 3 thread-knot shapes, a drift loop and a burst-on-kill flipbook
-- [ ] ART-0229 · Demo · P1 · S · Boss health "thread spool" HUD art that unwinds as the Malison is damaged
+- [x] ART-0226 · Demo · P0 · M · Malison design language sheet: common anatomy (woven-thread body, liturgical fragments, an eye motif), shared violet and per-Hour secondary colours, with 8 silhouettes side by side for distinctness
+- [x] ART-0227 · Demo · P0 · S · Book-of-Hours card template: an illuminated miniature frame with the Hour's name in blackletter and a clock-face marginal border
+- [x] ART-0228 · Demo · P1 · M · Malison shard (`MalisonShard`) art: 3 thread-knot shapes, a drift loop and a burst-on-kill flipbook
+- [x] ART-0229 · Demo · P1 · S · Boss health "thread spool" HUD art that unwinds as the Malison is damaged
 
 ### Matins (Chapter 1 — demo)
-- [ ] ART-0230 · Demo · P0 · M · Matins concept: a shrouded vigil-mass of candle-wax cloth with one great lidded eye — callout sheet with closed/opening/open states
-- [ ] ART-0231 · Demo · P0 · L · Matins sprites: shroud body (idle breathing 12-frame loop), eye open/close flipbook (10 frames), hurt flash and 3 phase-degradation states, replacing the vector `Malison`
-- [ ] ART-0232 · Demo · P0 · M · Matins shader VFX spec: shroud cloth distortion (vertex wobble), eye iris glow ramp and a darkness-vignette pulse on the "watching" rhythm
+- [x] ART-0230 · Demo · P0 · M · Matins concept: a shrouded vigil-mass of candle-wax cloth with one great lidded eye — callout sheet with closed/opening/open states
+- [x] ART-0231 · Demo · P0 · L · Matins sprites: shroud body (idle breathing 12-frame loop), eye open/close flipbook (10 frames), hurt flash and 3 phase-degradation states, replacing the vector `Malison`
+- [x] ART-0232 · Demo · P0 · M · Matins shader VFX spec: shroud cloth distortion (vertex wobble), eye iris glow ramp and a darkness-vignette pulse on the "watching" rhythm
 - [ ] ART-0233 · Demo · P0 · M · Matins death sequence: the shroud unravels into threads and motes (24 frames) with a final eye-close
 - [ ] ART-0234 · Demo · P1 · S · Matins Book-of-Hours card and a boss-intro splash (night vigil miniature)
 

@@ -1,3 +1,4 @@
+import { spoolArt } from '../../art/ailmentArt';
 import { t } from '../../i18n';
 import { hex } from '../../render/color';
 import type { Gfx } from '../../render/gfx';
@@ -55,6 +56,12 @@ export function drawBossHud(g: Gfx, op: Operation): void {
     }
   }
   g.rectLine(r.x - 2, r.y - 2, r.w + 4, r.h + 4, 1, hex('#c8a050', 0.7));
+  // The thread spool (ART-0229): the Malison's life as curse-thread on a bobbin at the bar's head.
+  // The winding thins and its turns scroll as the thread unwinds; the bar is the thread paid out.
+  if (!b.elite) {
+    for (let x = r.x + 3; x < r.x + r.w * f - 2; x += 6) g.line({ x, y: r.y + r.h - 1 }, { x: x + 4, y: r.y + 1 }, 1, hex('#2a0a3a', 0.45));
+    spoolArt(g, r.x - 24, r.y + r.h / 2, 46, f, b.hurtFlash, (1 - f) * 6);
+  }
 }
 
 const hudFlags = new WeakMap<Operation, Set<string>>();

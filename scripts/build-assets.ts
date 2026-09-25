@@ -133,7 +133,7 @@ if (existsSync(spriteRoot))
 const NAME = /^[a-z0-9]+(-[a-z0-9]+)*(@[1-4]x)?\.[a-z0-9]+$/;
 for (const p of walk(SRC)) {
   const base = p.split(sep).pop()!;
-  if (base.startsWith('.') || base.startsWith('_') || /^(README|OFL|LICENSE)/i.test(base) || base === 'bundles.json') continue;
+  if (base.startsWith('.') || base.startsWith('_') || /^(README|OFL|LICENSE)/i.test(base) || base === 'bundles.json' || base === 'manifest.json') continue;
   if (!NAME.test(base)) errors.push(`${posix(relative(SRC, p))}: name must be lowercase kebab-case (subject-variant-state[@2x].ext)`);
 }
 
@@ -141,7 +141,8 @@ for (const p of walk(SRC)) {
 for (const p of walk(SRC)) {
   const rel = posix(relative(SRC, p));
   const base = rel.split('/').pop()!;
-  if (rel === 'bundles.json' || rel.startsWith('sprites/') || base.startsWith('.') || base.startsWith('_') || /^(README|OFL|LICENSE)/i.test(base)) continue;
+  // assets/manifest.json is the art-export record (ART-0035), not a shipped asset.
+  if (rel === 'bundles.json' || rel === 'manifest.json' || rel.startsWith('sprites/') || base.startsWith('.') || base.startsWith('_') || /^(README|OFL|LICENSE)/i.test(base)) continue;
   const ext = extname(rel).toLowerCase();
   const id = rel.slice(0, rel.length - ext.length);
   const dir = rel.split('/')[0];

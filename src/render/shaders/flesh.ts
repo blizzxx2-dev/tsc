@@ -112,6 +112,10 @@ uniform float u_veinAmt;
 uniform vec3 u_blood;
 uniform vec3 u_bloodDeep;
 uniform float u_sheen;
+// Curse corruption (ART-0181–0183): where it flows to, and the Hour's vein and necrosis colours.
+uniform vec2 u_corruptAt;
+uniform vec3 u_curseVein;
+uniform vec3 u_curseAccent;
 out vec4 o;
 // smoothstep with edge0 > edge1 is undefined in GLSL; this is the portable falling edge.
 float rsmooth(float hi, float lo, float x) { return 1.0 - smoothstep(lo, hi, x); }
@@ -321,9 +325,47 @@ void main() {
   float glintFoot = 1.0 - smoothstep(0.02, 0.12, fwidth(uv.x * 7.0));
   col += vec3(1.0, 0.96, 0.92) * glint * spec * wet * 0.5 * glintFoot;
 
-  // Curse corruption: purple-black bruising that creeps in from the rim.
+  // Curse corruption (ART-0181): bruising creeps in from the rim; violet veins, bruise-black
+  // necrosis and woodcut-hatched sigil scars spread from the Malison, driven by u_corrupt 0..1.
   float cor = u_corrupt * smoothstep(0.3, 1.0, r + fbm(uv * 1.7 + u_time * 0.1) * 0.4);
-  col = mix(col, vec3(0.16, 0.05, 0.2), cor * 0.7);
+  col = mix(col, mix(vec3(0.16, 0.05, 0.2), u_curseAccent, 0.5), cor * 0.4);
+  if (u_corrupt > 0.001) {
+    vec2 toM = u_corruptAt - px;
+    float dM = length(toM);
+    vec2 dirM = toM / max(dM, 1.0);
+    // Reach: the corruption spreads out from the Malison as it grows.
+    float reach = u_corrupt * u_corrupt * 700.0;
+    float cm = rsmooth(reach, reach * 0.35, dM + (fbm(q * 2.3 + 5.0) - 0.5) * 160.0);
+    // Flow map (ART-0182): two-phase advection so the veins crawl toward the Malison without stretching.
+    float ft = u_time * 0.4;
+    float ph0 = fract(ft);
+    float ph1 = fract(ft + 0.5);
+    vec2 cuv = px * 0.012;
+    vec2 flow = dirM * 1.6;
+    float va = 1.0 - abs(fbm(cuv - flow * ph0) * 2.0 - 1.0);
+    float vb = 1.0 - abs(fbm(cuv - flow * ph1 + 3.7) * 2.0 - 1.0);
+    float wa = 1.0 - abs(ph0 * 2.0 - 1.0);
+    float ridge = mix(vb, va, wa);
+    float cveins = smoothstep(0.86, 0.97, ridge);
+    // Fine capillary branching off the main veins.
+    float fine = smoothstep(0.9, 0.98, 1.0 - abs(fbm(cuv * 2.7 - flow * ph0 * 2.0 + 9.0) * 2.0 - 1.0)) * 0.6;
+    float vk = max(cveins, fine) * cm;
+    // Bruise-black necrosis in blotches nearest the Malison.
+    float nec = smoothstep(0.58, 0.72, fbm(px * 0.006 + 13.0) + (1.0 - dM / max(reach, 1.0)) * 0.25) * cm * u_corrupt;
+    col = mix(col, u_curseAccent * 0.35 + vec3(0.02, 0.01, 0.02), nec * 0.6);
+    // Woodcut-hatched sigil scarring: raised scar patches cut by parallel hatch strokes.
+    // Scar patches are narrow welts (ridges of low-frequency noise); the hatching follows the lamp
+    // side of each welt and breaks up like a cut woodblock line.
+    float welt = 1.0 - abs(fbm(px * 0.0045 + 21.0) * 2.0 - 1.0);
+    float scarM = smoothstep(0.9, 0.96, welt) * cm * smoothstep(0.35, 0.8, u_corrupt);
+    float hatch = rsmooth(0.18, 0.04, abs(fract((px.x - px.y * 0.6) * 0.2) - 0.5)) * step(0.35, noise(px * 0.05));
+    col = mix(col, mix(u_skin * 0.9, u_curseAccent, 0.3), scarM * 0.5);
+    col = mix(col, u_curseAccent * 0.2, scarM * hatch * 0.7);
+    // The veins glow faintly with the curse's pulse.
+    float cpulse = 0.75 + 0.25 * sin(u_time * 2.2 - dM * 0.02);
+    col = mix(col, u_curseVein * 0.55 * cpulse, vk * 0.7);
+    col += u_curseVein * vk * 0.18 * cpulse;
+  }
 
   // Cavity depth: occlusion under the retractor rim and a Fresnel sheen where tissue curves away.
   float cavity = smoothstep(0.7, 1.0, edge);

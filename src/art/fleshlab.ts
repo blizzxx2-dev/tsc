@@ -6,6 +6,7 @@
  * readability can be judged on every tissue.
  */
 import type { Game, Scene } from '../core/scene';
+import { HOUR_CURSE, type Hour } from './curse';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { organPalette } from '../render/organs';
@@ -32,6 +33,8 @@ export class FleshLabScene implements Scene {
   litany = false;
   compare = false;
   marks = true;
+  /** `?curse=terce`: preview that Malison Hour's corruption palette (ART-0183). */
+  hour: Hour = 'matins';
   private beat = 0;
 
   constructor() {
@@ -43,6 +46,8 @@ export class FleshLabScene implements Scene {
     if (q.get('compare')) this.compare = true;
     if (q.get('marks')) this.marks = true;
     if (q.get('corrupt')) this.corrupt = Number(q.get('corrupt'));
+    const h = q.get('curse') as Hour | null;
+    if (h && h in HOUR_CURSE) this.hour = h;
     this.soft = organPalette({ organ: this.organ, race: this.species } as OperationDef).cellSoft;
   }
 
@@ -68,6 +73,7 @@ export class FleshLabScene implements Scene {
       pulse: this.pulse,
       light: { x: FIELD.cx + Math.cos(a) * 420, y: FIELD.cy + Math.sin(a) * 260 },
       corrupt,
+      curse: HOUR_CURSE[this.hour],
       cellSoft: soft,
       species: pal.species,
     });

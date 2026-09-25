@@ -61,6 +61,8 @@
     "balance": "vitest run tests/sweep.test.ts",
     "art:palette": "node scripts/art/palette-export.mjs",
     "art:models": "node scripts/art/build-models.mjs",
+    "art:tileable": "node scripts/art/check-tileable.ts",
+    "art:export": "node scripts/art/export.ts",
     "predev": "node scripts/art/check-models.mjs",
     "release:checksums": "node scripts/release-checksums.mjs"
   },

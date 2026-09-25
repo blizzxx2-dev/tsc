@@ -16,6 +16,8 @@ export interface SheetMeta {
 
 export interface SheetJson {
   name: string;
+  /** Pages hold premultiplied alpha (ART-0037). */
+  premultiplied?: boolean;
   pages: { file: string; w: number; h: number }[];
   frames: Record<string, { page: number; x: number; y: number; w: number; h: number; px?: number; py?: number }>;
   anims?: SheetMeta['anims'];
@@ -62,7 +64,13 @@ export function blitExtruded(dst: Img, src: Img, x: number, y: number, e: number
  * borders (ENG-0033). Page files are named `<name>-<n>.png`. Output depends
  * only on the frame names and pixels, never on input order.
  */
-export function buildAtlas(name: string, frames: { id: string; img: Img }[], meta: SheetMeta = {}, pageSize = 2048, extrude = 2): { pages: Img[]; json: SheetJson } {
+export function buildAtlas(
+  name: string,
+  frames: { id: string; img: Img }[],
+  meta: SheetMeta = {},
+  pageSize = 2048,
+  extrude = 2,
+): { pages: Img[]; json: SheetJson } {
   const byId = new Map(frames.map((f) => [f.id, f.img]));
   const { placements, pages } = packRects(
     frames.map((f) => ({ id: f.id, w: f.img.w, h: f.img.h })),
@@ -76,7 +84,7 @@ export function buildAtlas(name: string, frames: { id: string; img: Img }[], met
     size[p.page].h = Math.max(size[p.page].h, p.y + p.h + extrude);
   }
   const imgs = size.map((s) => blank(pow2(s.w), pow2(s.h)));
-  const json: SheetJson = { name, pages: imgs.map((im, i) => ({ file: `${name}-${i}.png`, w: im.w, h: im.h })), frames: {} };
+  const json: SheetJson = { name, premultiplied: true, pages: imgs.map((im, i) => ({ file: `${name}-${i}.png`, w: im.w, h: im.h })), frames: {} };
   for (const p of placements) {
     blitExtruded(imgs[p.page], byId.get(p.id)!, p.x, p.y, extrude);
     const pv = meta.pivots?.[p.id];
@@ -86,5 +94,20 @@ export function buildAtlas(name: string, frames: { id: string; img: Img }[], met
     json.anims = {};
     for (const [id, a] of Object.entries(meta.anims)) json.anims[`${name}/${id}`] = { ...a, frames: a.frames.map((f) => `${name}/${f}`) };
   }
+  // Premultiplied export (ART-0037): colour is scaled by coverage, so transparent texels carry no
+  // stray colour and filtering at any mip level never pulls a dark (or bright) fringe into an edge.
+  for (const im of imgs) premultiply(im);
   return { pages: imgs, json };
+}
+
+/** Scale each texel's colour by its alpha, in place (rounded, so the inverse stays within ±1). */
+export function premultiply(img: Img): void {
+  const d = img.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const a = d[i + 3];
+    if (a === 255) continue;
+    d[i] = Math.round((d[i] * a) / 255);
+    d[i + 1] = Math.round((d[i + 1] * a) / 255);
+    d[i + 2] = Math.round((d[i + 2] * a) / 255);
+  }
 }

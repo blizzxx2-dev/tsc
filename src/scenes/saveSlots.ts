@@ -18,6 +18,8 @@ import { fitText } from '../ui/text';
 import { uiEvents } from '../ui/events';
 import { reticle } from '../ui/widgets';
 import { drawBackdrop } from './backdrop';
+import { chapterVignette } from '../art/vignettes';
+import { inkStamp } from '../art/kit';
 import { confirm } from './confirm';
 import { playStep, save } from './flow';
 import { chapterLabel, formatDate, formatPlaytime, sealCount, stepLabel } from './campaignState';
@@ -187,6 +189,9 @@ export class SaveSlotsScene implements Scene {
     well(g, tw, alpha);
     if (d?.meta.thumbnail) {
       g.drawImage(g.image(d.meta.thumbnail), tw.x + 1, tw.y + 1, tw.w - 2, tw.h - 2, { alpha, sepia: 0.35, vignette: 0.5 });
+    } else if (d) {
+      // No field snapshot: the chapter's woodcut vignette (ART-0059), one per chapter.
+      chapterVignette(g, d.progress.chapter, { x: tw.x + 1, y: tw.y + 1, w: tw.w - 2, h: tw.h - 2 }, g.time, alpha);
     } else {
       g.text(t(d ? 'ui.slots.no_thumbnail' : 'ui.slots.empty'), tw.x + tw.w / 2, tw.y + tw.h / 2 + 6, { size: 17, font: 'italic', color: hex(INK.faint, alpha), align: 'center', shadow: false });
     }
@@ -204,6 +209,9 @@ export class SaveSlotsScene implements Scene {
         fitText(g, `slots.${slot}.row${j}`, value, r.x + r.w - 24, y, 160, { size: 16, color: hex(INK.text, alpha), align: 'right', shadow: false });
         g.rect(r.x + 24, y + 8, r.w - 48, 1, hex(INK.gilt, 0.14 * alpha));
       });
+      // The ledger's date stamp (ART-0059): last played, struck in oxblood ink over the thumbnail's corner.
+      const date = formatDate(d.meta.savedAt);
+      if (date && alpha > 0.05) inkStamp(g, date, tw.x + tw.w - 70, tw.y + tw.h - 20, 16, '#6a1a14', 1, false, -0.12);
     } else {
       fitText(g, `slots.${slot}.empty`, t('ui.slots.empty_note'), r.x + r.w / 2, r.y + 300, r.w - 48, { size: 17, font: 'italic', color: hex(INK.dim, alpha), align: 'center', shadow: false });
     }

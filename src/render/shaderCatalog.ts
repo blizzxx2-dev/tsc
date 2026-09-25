@@ -9,6 +9,7 @@ import { BATCH_FS, BATCH_VS, FALLBACK_VS, FXAA_FS } from './batch-shaders';
 import { toMediump } from './caps';
 import { UI_ART_FS } from '../art/uiShader';
 import { PLATE_FS } from './shaders/plate';
+import { AILMENT_FS } from './shaders/ailment';
 import { UPSAMPLE_FS } from './gfx';
 import { PBR_FS, PBR_VS, SHADOW_FS, SHADOW_VS } from './renderer3d';
 import { fleshShaderSource } from './shaders/flesh';
@@ -42,6 +43,7 @@ export function shaderCatalog(): ShaderVariant[] {
     { name: 'bloom-up', vs: FULL_VS, fs: UP_FS },
     { name: 'ui-art', vs: RECT_VS, fs: UI_ART_FS },
     { name: 'ui-plate', vs: RECT_VS, fs: PLATE_FS },
+    { name: 'ailment', vs: RECT_VS, fs: AILMENT_FS },
     { name: 'scene-upsample', vs: FULL_VS, fs: UPSAMPLE_FS },
     { name: 'pbr', vs: PBR_VS, fs: PBR_FS },
     { name: 'pbr-shadow', vs: SHADOW_VS, fs: SHADOW_FS },

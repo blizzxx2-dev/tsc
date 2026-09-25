@@ -42,6 +42,8 @@ in vec2 v_uv;
 in vec4 v_col;
 flat in int v_tex;
 uniform sampler2D u_tex[${BATCH_UNITS}];
+/** Bit i set: unit i holds premultiplied-alpha pages (ART-0037); they are filtered premultiplied, then un-premultiplied. */
+uniform int u_pm;
 out vec4 o;
 void main() {
   vec2 dx = dFdx(v_uv);
@@ -58,6 +60,7 @@ void main() {
   else if (v_tex == 5) t = textureGrad(u_tex[5], v_uv, dx, dy);
   else if (v_tex == 6) t = textureGrad(u_tex[6], v_uv, dx, dy);
   else t = textureGrad(u_tex[7], v_uv, dx, dy);
+  if (((u_pm >> v_tex) & 1) != 0) t.rgb /= max(t.a, 1.0 / 255.0);
   o = t * v_col;
 }`;
 

@@ -21,6 +21,8 @@ export interface SheetJson {
   frames: Record<string, FrameDef>;
   /** Named animations: frame ids with per-frame durations in ms. */
   anims?: Record<string, { frames: string[]; ms: number[] | number; mode?: AnimMode }>;
+  /** Pages hold premultiplied alpha (ART-0037): the renderer filters them premultiplied. */
+  premultiplied?: boolean;
 }
 
 /** Texture-space info for drawing a frame. */
@@ -105,6 +107,11 @@ export class SpriteBank {
 
   has(id: string): boolean {
     return this.frames.has(id);
+  }
+
+  /** Every loaded frame id. */
+  ids(): IterableIterator<string> {
+    return this.frames.keys();
   }
 
   get size(): number {

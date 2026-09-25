@@ -1,4 +1,5 @@
 import { dist, pointSegment, segmentsIntersect, type Vec } from '../core/math';
+import { eggSacArt } from '../art/ailmentArt';
 import { drawBlotch, presentation } from '../render/presentation';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
@@ -801,17 +802,14 @@ export class EggSac extends Entity {
     surfDisc(g, this.pos, 34 + 8 * this.swell, 0, 0.1, 0, 0.8 + 0.2 * this.swell);
   }
 
-  draw(g: Gfx, op: Operation): void {
+  draw(g: Gfx): void {
     const { x, y } = this.pos;
     const urgency = Math.max(0, 1 - this.hatchT / this.hatchIn);
     if (presentation.creatureFilter) return drawBlotch(g, x, y, 22);
     const s = 1 + 0.25 * this.swell;
-    const wob = 1 + Math.sin(op.elapsed * (4 + urgency * 14)) * 0.05 * (1 + urgency * 2 + this.swell * 2);
-    g.ellipse(x, y, 24 * wob * s, (20 / wob) * s, 0.3, hex('#d8d0b8', 0.95), hex('#8a8068', 0.9));
-    for (let i = 0; i < this.brood + 2; i++) {
-      const a = (i / (this.brood + 2)) * TAU + op.elapsed * (0.5 + this.swell * 3);
-      g.circle(x + Math.cos(a) * 9 * s, y + Math.sin(a) * 7 * s, 3.5, hex('#3a3020', 0.6));
-    }
+    // Painted sac (ART-0216): translucent, embryos stirring, pulsing faster as it swells; the last
+    // 0.6 s before hatching plays the 8-frame hatch as the brood breaks through.
+    eggSacArt(g, this.pos, 22 * s, { swell: this.swell, hatch: Math.max(0, Math.min(1, 1 - this.hatchT / 0.6)), seed: this.id });
     g.arc(x, y, 30 * s, 2, hex('#e05040', 0.3 + 0.5 * urgency), Math.max(0, this.hatchT) / this.hatchIn);
   }
 }

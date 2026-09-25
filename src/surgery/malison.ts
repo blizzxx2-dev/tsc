@@ -4,6 +4,7 @@ import { hex } from '../render/color';
 import { presentation } from '../render/presentation';
 import type { Gfx } from '../render/gfx';
 import { Laceration, surfDisc } from './entities';
+import { threadKnotArt } from '../art/ailmentArt';
 import { FIELD, onBody, type Operation } from './operation';
 import type { Pointer, ToolId } from './types';
 import { BossWound, clampToField, MalisonBase, rateAdd, type BossPhase } from './bosses/base';
@@ -392,6 +393,17 @@ export class Malison extends MalisonBase {
     surfDisc(g, this.pos, this.radius * 1.8 + (1 - this.frac) * 140, 0.1, 0.4, 0.15, 0.6);
   }
 
+  /**
+   * The watching rhythm (ART-0232), 0..1: the room darkens in a pulse on each beat of the eye while
+   * it is out, holds dim while the shroud is open, and barely breathes otherwise. The operation
+   * scene feeds it to the lamp's surround darkness.
+   */
+  watching(elapsed: number): number {
+    if (this.eyeOut) return 0.35 + 0.65 * Math.exp(-(this.eyeT % this.tune.beat) * 5);
+    if (this.open) return 0.4;
+    return 0.1 * (0.5 + 0.5 * Math.sin(elapsed * 1.2));
+  }
+
   draw(g: Gfx, op: Operation): void {
     const r = this.radius;
     // Opening tell: the shroud trembles, and peels to an inner red glow.
@@ -560,14 +572,9 @@ export class MalisonShard extends Entity {
   draw(g: Gfx, op: Operation): void {
     const { x, y } = this.pos;
     const flick = 0.6 + 0.4 * Math.sin(op.elapsed * 15 + this.id);
-    g.glow(x, y, 40, hex(this.mode === 'crawler' ? '#ff5060' : '#b060ff', 0.4));
-    const pts: Vec[] = [];
-    for (let i = 0; i < 6; i++) {
-      const a = (i / 6) * TAU + op.elapsed * (this.mode === 'crawler' ? 3 : 1);
-      const rr = i % 2 ? 9 : 17;
-      pts.push({ x: x + Math.cos(a) * rr, y: y + Math.sin(a) * rr });
-    }
-    g.poly(pts, hex('#8c3cc8', flick), hex('#e0b0ff', flick));
+    g.glow(x, y, 40, hex(this.mode === 'crawler' ? '#ff5060' : '#b060ff', 0.3 + 0.1 * flick));
+    // A knot of curse-thread (ART-0228): three knot shapes, drifting; its burst plays in the scene's VanishFx.
+    threadKnotArt(g, this.pos, 14, { shape: this.id % 3, crawler: this.mode === 'crawler', seed: this.id });
     if (this.mode === 'fragment') g.arc(x, y, 24, 3, hex('#ffc878', 0.7), this.life / 9);
   }
 }

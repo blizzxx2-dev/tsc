@@ -28,9 +28,16 @@ export function browserBackend(gfx: Gfx): LoaderBackend {
       const sheet = json as SheetJson;
       const texs = await Promise.all(pages.map(async (b, i) => new Texture(gfx.registry, await decodeImage(new Blob([b])), { filter: 'trilinear', anisotropy: aniso, label: `${id}#${i}` })));
       const bind = () => texs.map((t) => ({ tex: t.tex, w: t.w, h: t.h }));
+      const mark = () => {
+        if (sheet.premultiplied) for (const t of texs) gfx.markPremultiplied(t.tex);
+      };
+      mark();
       gfx.sprites.add(sheet, bind());
       // Page textures are recreated on context restore; point the frames at the new handles.
-      const off = gfx.registry.onRestore(() => gfx.sprites.retexture(sheet.name, texs.map((t) => t.tex), sheet), 20);
+      const off = gfx.registry.onRestore(() => {
+        mark();
+        gfx.sprites.retexture(sheet.name, texs.map((t) => t.tex), sheet);
+      }, 20);
       return {
         value: sheet,
         dispose: () => {

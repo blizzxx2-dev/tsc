@@ -1,3 +1,7 @@
+import { curseSource } from '../art/curse';
+import { VanishFx } from '../art/vanishFx';
+import { ExtractionTray } from '../art/extractionTray';
+import { scarArt } from '../art/ailmentArt';
 import { t as tr, tSource } from '../i18n';
 import { formatClock, formatNumber, formatVitals } from '../i18n/format';
 import { dist, Rng } from '../core/math';
@@ -8,7 +12,7 @@ import { attachBarkDirector } from '../content/barkDirector';
 import { hex, withAlpha } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { organPalette } from '../render/organs';
-import { BloodPool, Bubo, Burn, Incision, Laceration, Sigil, surfDisc, surfLine } from '../surgery/entities';
+import { BloodPool, Bubo, Burn, Embedded, Incision, Laceration, Sigil, surfDisc, surfLine } from '../surgery/entities';
 import { EggSac } from '../surgery/lauds';
 import { Particles } from '../render/particles';
 import { brandMaterial, BrandSmoke } from '../render/brandSmoke';
@@ -90,6 +94,12 @@ export class OperationScene implements Scene {
   private beatPhase = 0;
   private pulse = 0;
   private corrupt = 0;
+  /** Flesh corruption under any Hour's Malison (ART-0183), smoothed like `corrupt`. */
+  private fleshCurse = 0;
+  /** Exit flipbooks for shards and hexstone (presentation only). */
+  private vanish = new VanishFx();
+  /** The kidney dish and lead dish with what has been extracted (presentation only). */
+  private tray = new ExtractionTray();
   private toolFlash = 0;
   private lastTool: ToolId | null = null;
   private entered = false;
@@ -448,6 +458,7 @@ export class OperationScene implements Scene {
 
     const cursed = op.entities.some((e) => e instanceof Malison || e instanceof MalisonShard) ? 0.7 : op.entities.some((e) => e instanceof Sigil) ? 0.25 : 0;
     this.corrupt += (cursed - this.corrupt) * Math.min(1, dt * 1.5);
+    this.fleshCurse += (Math.max(cursed, curseSource(op.entities) ? 0.55 : 0) - this.fleshCurse) * Math.min(1, dt * 1.5);
 
     // Visual effects arrive as `fx` events; landed droplets become stains. Particles run on world time.
     this.particles.update(dt * op.timeScale, (p, kind, size) => {
@@ -574,6 +585,7 @@ export class OperationScene implements Scene {
 
     // ---------------------------------------------------------------- world
     g.beginWorld();
+    const curse = curseSource(op.entities);
     g.fleshField({
       center: { x: FIELD.cx, y: FIELD.cy },
       radii: { x: FIELD.rx, y: FIELD.ry },
@@ -583,7 +595,9 @@ export class OperationScene implements Scene {
       vein: pal.vein,
       pulse: this.pulse,
       light,
-      corrupt: this.corrupt,
+      corrupt: this.fleshCurse,
+      corruptAt: curse?.at,
+      curse: curse?.look,
       cellSoft: pal.cellSoft,
       rough: pal.rough,
       gore: presentation.gore,
@@ -600,11 +614,17 @@ export class OperationScene implements Scene {
     g.fluidComposite(light, { blood: speciesBlood(colours.blood, pal.species), pus: colours.pus, bile: colours.bile, gore: presentation.gore });
     // Entities, particles and world FX go through the world camera (ENG-0045); endWorld resets it.
     g.setCamera(this.camera.isIdentity ? null : this.camera.matrix());
+    this.tray.update(op.entities, op.elapsed);
+    this.tray.draw(g, op.elapsed, { tray: op.def.tools.includes('tongs'), lead: op.entities.some((e) => e instanceof Embedded && e.kind === 'hexstone') });
+    // Closed wounds: the sutured scar (ART-0188) over the carved channel; it also appears on the results card.
+    for (const sc of op.scars) scarArt(g, sc, 4, 0, presentation.gore === 2 ? 0.5 : 1);
     for (const e of ents) e.draw(g, op);
     // High contrast: a 2 px ring around everything that takes an instrument.
     if (highContrast()) for (const e of ents) if (e.required) g.arc(e.pos.x, e.pos.y, 28, 2, hex('#ffffff', 0.85), 1);
     // Tongs in hand: outline the graspable the next press would seize (INP-0042).
     if (!this.paused) drawGraspOutline(g, op, this.ctl.toWorld(game.input.pos), bindings.prefs.hitScale, t);
+    this.vanish.update(op.entities, op.elapsed);
+    this.vanish.draw(g, op.elapsed);
     this.particles.draw(g);
     this.blade.draw(g);
 
@@ -630,7 +650,7 @@ export class OperationScene implements Scene {
     const ch2 = op.def.id.startsWith('op2');
     g.endWorld({
       trauma,
-      spot: { cx: FIELD.cx, cy: FIELD.cy, rx: FIELD.rx, ry: FIELD.ry, k: 0.62 },
+      spot: { cx: FIELD.cx, cy: FIELD.cy, rx: FIELD.rx, ry: FIELD.ry, k: 0.62 + 0.25 * soften * (op.entities.find((e): e is Malison => e instanceof Malison && e.alive)?.watching(op.elapsed) ?? 0) },
       litany,
       danger,
       shake,
