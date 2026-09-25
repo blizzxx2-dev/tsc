@@ -7131,6 +7131,13 @@
     "maxPx": 360,
     "context": "Binding preset name."
   },
+  "ctl.preset.onehand": {
+    "scene": "options",
+    "font": "body",
+    "size": 18,
+    "maxPx": 360,
+    "context": "Binding preset name."
+  },
   "ctl.preset.default_note": {
     "scene": "options",
     "font": "italic",
@@ -7146,6 +7153,13 @@
     "context": "Binding preset description."
   },
   "ctl.preset.trackpad_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 820,
+    "context": "Binding preset description."
+  },
+  "ctl.preset.onehand_note": {
     "scene": "options",
     "font": "italic",
     "size": 16,

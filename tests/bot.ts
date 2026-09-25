@@ -500,6 +500,8 @@ export interface BotOptions extends OperationOptions {
   splitRelease?: boolean;
   /** Mistakes this bot always makes. */
   mistakes?: readonly Mistake[];
+  /** Through the input pipeline: play one-handed (GAM-0241) — instruments by the side buttons, the Litany on the right button. */
+  oneHanded?: boolean;
 }
 
 /** Idle frames at the current pointer (pointer up). */
@@ -704,10 +706,23 @@ export function playWithBotThroughInput(def: OperationDef, input: Input, opts: B
   while ((op.status === 'intro' || op.status === 'running') && frames < maxSeconds * 60) {
     frames++;
     for (const ev of bot.tick()) {
-      if (ev.kind === 'litany') op.invokeLitany();
-      else if (ev.kind === 'advance') op.advanceDialogue();
+      if (ev.kind === 'litany') {
+        if (opts.oneHanded) {
+          input.push({ t: t + 1, type: 'down', code: 'mouse:2' });
+          input.push({ t: t + 1.5, type: 'up', code: 'mouse:2' });
+        } else op.invokeLitany();
+      } else if (ev.kind === 'advance') op.advanceDialogue();
       else {
-        if (ev.select && ev.tool !== op.tool) {
+        if (ev.select && ev.tool !== op.tool && opts.oneHanded) {
+          // Step round the kit with the forward/back side buttons, whichever way is shorter.
+          const kit = op.def.tools;
+          const fwd = (kit.indexOf(ev.tool) - kit.indexOf(op.tool) + kit.length) % kit.length;
+          const [code, n] = fwd <= kit.length - fwd ? ['mouse:4', fwd] : ['mouse:3', kit.length - fwd];
+          for (let i = 0; i < n; i++) {
+            input.push({ t: t + 0.2 + i * 0.2, type: 'down', code });
+            input.push({ t: t + 0.3 + i * 0.2, type: 'up', code });
+          }
+        } else if (ev.select && ev.tool !== op.tool) {
           const code = `key:Digit${TOOLS.indexOf(ev.tool) + 1}`;
           input.push({ t: t + 2, type: 'down', code });
           input.push({ t: t + 2.5, type: 'up', code });
