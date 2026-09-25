@@ -144,7 +144,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 ### Grub
 - [x] GAM-0083 · Demo · P0 · S · Grub behaviour — crawls toward nearest open wound, burrows after 6 s leaving a hidden grub (Lens); brand 0.8 s or tongs-drag off body
 - [x] GAM-0084 · Demo · P1 · S · Grub split — branding under 0.4 s then releasing splits it into two small grubs (BAD); tell: grub puffs up
-- [ ] GAM-0085 · Demo · P2 · S · Grub feedback — 3 squeal SFX variants (random by seeded RNG) and 0.4 s death-curl animation on brand kill
+- [x] GAM-0085 · Demo · P2 · S · Grub feedback — 3 squeal SFX variants (random by seeded RNG) and 0.4 s death-curl animation on brand kill
 
 ### Curse-sigil
 - [x] GAM-0086 · Demo · P0 · M · Sigil tracing — trace the glyph's strokes in order (numbered faint dots on Normal); wrong order snaps a stroke and spawns a laceration whip

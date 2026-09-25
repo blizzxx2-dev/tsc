@@ -167,6 +167,7 @@ const BASE_EVENTS = E({
   'loop.grub.chitter': { bus: 'world', loop: true, prio: 30, limit: 3, caption: '[Grub chitters beneath the skin]' },
   'sfx.grub.burrow': { bus: 'world', limit: 2, prio: 30, cents: 100 },
   'sfx.grub.seared': { bus: 'world', limit: 3, prio: 60, cents: 120 },
+  'sfx.grub.squeal': { bus: 'world', vars: 3, limit: 2, prio: 58, cents: 40 },
   'sfx.grub.plucked': { bus: 'world', limit: 3, prio: 55, cents: 120 },
   'loop.spider.skitter': { bus: 'world', loop: true, prio: 30, limit: 4, caption: '[Spiderlings skitter]' },
   'sfx.spider.seared': { bus: 'world', limit: 3, prio: 55, cents: 150 },

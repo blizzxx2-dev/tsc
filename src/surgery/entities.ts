@@ -1780,6 +1780,7 @@ export class Grub extends Entity {
     if (this.heat >= need) {
       this.kill();
       op.cues.push('burn');
+      op.emit('curl', this.pos, 1, this.heading);
       op.emit('spark', this.pos, 12);
       op.emit('smoke', this.pos, 4);
       op.stain(this.pos, 10, 0.3);

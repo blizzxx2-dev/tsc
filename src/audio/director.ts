@@ -5,7 +5,7 @@
  * the heartbeat, rings vitals alarms, ticks the clock, sets music layers and
  * boss sections, and applies the Litany, low-vitals and pause snapshots.
  */
-import { dist, type Vec } from '../core/math';
+import { dist, Rng, type Vec } from '../core/math';
 import { settings } from '../core/settings';
 import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, Sigil, Venom } from '../surgery/entities';
 import type { Entity } from '../surgery/entity';
@@ -95,6 +95,11 @@ const TOOL_SELECT: Record<ToolId, EventId> = {
 const TOOL_KEYS: Record<string, ToolId> = { Digit1: 'lancet', Digit2: 'tongs', Digit3: 'leech', Digit4: 'thread', Digit5: 'salve', Digit6: 'tincture', Digit7: 'brand', Digit8: 'lens' };
 
 const peek = <T>(o: object, k: string): T | undefined => (o as Record<string, unknown>)[k] as T | undefined;
+
+/** Which of the three grub squeals (0–2) a seared grub gives: seeded by the operation and the grub, so replays match. */
+export function squealVariant(seed: number, id: number): 0 | 1 | 2 {
+  return new Rng(seed * 7919 + id * 104729).int(0, 2) as 0 | 1 | 2;
+}
 
 export class OperationAudio {
   op: Operation | null = null;
@@ -390,6 +395,9 @@ export class OperationAudio {
         if (p.label === 'Seared') {
           const s = died.find((e) => e instanceof SpiderlingGrub);
           this.play(s ? 'sfx.spider.seared' : 'sfx.grub.seared', { pan });
+          // The grub's dying squeal: one of three, picked by the operation's seed and the grub (GAM-0085).
+          const grub = s ? null : died.find((e) => e instanceof Grub);
+          if (grub) this.play('sfx.grub.squeal', { pan, params: { variant: squealVariant(op.def.seed ?? 1, grub.id) } });
           covered.add('burn');
         } else if (p.label === 'Lanced') {
           this.play(died.some((e) => e instanceof EggSac) ? 'sfx.eggsac.lance' : 'sfx.bubo.lance', { pan });
