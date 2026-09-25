@@ -16,6 +16,10 @@ import { platform } from '../platform';
 import { buildLabel, IS_DEMO } from '../platform/build';
 import { EDITIONS } from '../platform/editions';
 import { flag } from '../platform/flags';
+import { pickEpigraph } from '../content/epigraphs';
+
+/** One epigraph per boot (NAR-0069); cosmetic, so Math.random. */
+const EPIGRAPH = pickEpigraph();
 
 export class TitleScene implements Scene {
   private t = 0;
@@ -49,6 +53,7 @@ export class TitleScene implements Scene {
     rule(g, VIEW_W / 2 + sw / 2 + 110, 240, 180, hex(INK.gilt, 0.8 * a));
     diamond(g, VIEW_W / 2 - sw / 2 - 18, 240.5, 3, hex(INK.gold, a));
     diamond(g, VIEW_W / 2 + sw / 2 + 18, 240.5, 3, hex(INK.gold, a));
+    g.text(`“${EPIGRAPH.text}”`, VIEW_W / 2, 300, { size: 18, font: 'italic', color: hex(INK.dim, 0.9 * a), align: 'center', shadow: hex('#000000', 0.8 * a), soft: true });
 
     const p = save.progress;
     const started = p.chapter > 0 || p.step > 0;
