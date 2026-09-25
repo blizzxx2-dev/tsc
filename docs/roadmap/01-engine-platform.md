@@ -266,8 +266,8 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0183 · Demo · P0 · S · 16:10 (Steam Deck 1280×800, MacBook) extends the view vertically with no letterbox bars — HUD anchors verified
 - [x] ENG-0184 · Demo · P0 · M · Anchor-based layout helpers (`anchor('top-left', offset)`, safe-area insets) replacing absolute coordinates in HUD/menus — layout verified at 16:9, 16:10, 21:9, 32:9, 4:3
 - [x] ENG-0185 · Demo · P0 · S · Pointer mapping correct under every aspect mode, letterbox and render scale — unit tests with synthetic bounding rects replace the plain `getBoundingClientRect` ratio in `Input.move`
-- [ ] ENG-0186 · Demo · P1 · S · `ResizeObserver` with `devicePixelContentBoxSize` for exact backbuffer sizing — re-evaluate DPR when the window moves between monitors of different scale
-- [ ] ENG-0187 · Demo · P1 · S · Minimum supported window 1024×576 — below that the UI scales down uniformly and remains usable (test at 800×450)
+- [x] ENG-0186 · Demo · P1 · S · `ResizeObserver` with `devicePixelContentBoxSize` for exact backbuffer sizing — re-evaluate DPR when the window moves between monitors of different scale
+- [x] ENG-0187 · Demo · P1 · S · Minimum supported window 1024×576 — below that the UI scales down uniformly and remains usable (test at 800×450)
 - [x] ENG-0188 · Demo · P1 · S · UI scale setting — 80–130% applied to HUD and menu panels within the safe area for large monitors and Steam Deck legibility
 - [ ] ENG-0189 · Demo · P1 · M · Multi-resolution screenshot regression — 1280×720, 1920×1080, 2560×1440, 3840×2160, 2560×1080, 3440×1440, 5120×1440, 1280×800 goldens in CI (SwiftShader)
 
@@ -278,7 +278,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0191 · Demo · P0 · M · GPU tier classification (Low/Medium/High) from caps plus a 2 s first-launch micro-benchmark of the flesh pass — stored in settings and user-overridable
 - [x] ENG-0192 · Demo · P1 · S · Driver quirks table — renderer regex → forced tier/workarounds shipped as JSON so fixes need no code change
 - [x] ENG-0193 · Demo · P0 · M · Fallback matrix implemented and tested — no float RT → RGBA8 bloom; no MSAA → FXAA; `MAX_TEXTURE_SIZE` 4096 → split atlas pages; no timer query → CPU-only profiler; mediump-only FS → simplified flesh variant
-- [ ] ENG-0194 · Demo · P1 · S · Software-rendering detection — SwiftShader/llvmpipe renderer strings force Low tier and show a one-time "hardware acceleration is off" notice with help link
+- [x] ENG-0194 · Demo · P1 · S · Software-rendering detection — SwiftShader/llvmpipe renderer strings force Low tier and show a one-time "hardware acceleration is off" notice with help link
 - [ ] ENG-0195 · Demo · P1 · S · Request the discrete GPU on hybrid laptops (`powerPreference: 'high-performance'` + desktop wrapper switch) — verified on an Optimus laptop via renderer string
 - [ ] ENG-0196 · Demo · P1 · M · ANGLE backend test matrix for the desktop build (D3D11 on Windows, Metal on macOS, GL/Vulkan on Linux/Deck) — documented defaults and a `--gl-backend` override for support
 - [ ] ENG-0197 · Demo · P1 · S · Desktop-build fatal screen when WebGL2 fails — GPU/driver info, "update your graphics driver" guidance, log folder button, safe-mode relaunch button

@@ -11,6 +11,7 @@ import type { Gfx } from '../render/gfx';
 import type { Operation } from '../surgery/operation';
 import { VIEW_W } from '../ui/layout';
 import { Particles } from '../render/particles';
+import { fitText } from '../ui/text';
 import { caps, glass, heading, INK, numerals, tallyMarks } from '../ui/hudKit';
 import { failSeal, rankSeal } from '../art/kit';
 import { button, reticle } from '../ui/widgets';
@@ -90,7 +91,7 @@ export class ResultsScene implements Scene {
     const y = 250;
     g.plate(x - 8, y - 8, w + 16, h + 44, { radius: 3, alpha: a, border: hex(INK.gilt, 0.7) });
     g.texQuad(snap.tex, x, y, w, h, hex('#ffffff', a), true);
-    g.text(t('ui.results.field'), x + w / 2, y + h + 26, { size: 16, font: 'italic', color: hex(INK.dim, a), align: 'center', shadow: false });
+    fitText(g, 'results.field', t('ui.results.field'), x + w / 2, y + h + 26, w, { size: 16, font: 'italic', color: hex(INK.dim, a), align: 'center', shadow: false });
   }
 
   render(g: Gfx, game: Game): void {

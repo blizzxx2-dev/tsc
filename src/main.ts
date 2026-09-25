@@ -33,7 +33,7 @@ import { classifyTier, describeCaps } from './render/caps';
 import { Profiler } from './render/profiler';
 import { loadDetectedTier, storeDetectedTier } from './render/tierCache';
 import { HEAP_BUDGET, VRAM_BUDGET } from './render/registry';
-import { computeView } from './render/viewport';
+import { backbufferSize, computeView, watchDevicePixelRatio, type ResizeEntryLike } from './render/viewport';
 import { createAssets, withTimeout } from './assets/browser';
 import type { AssetLoader } from './assets/loader';
 import { allOperations } from './content/campaign';
@@ -61,6 +61,9 @@ import { bindUiSounds } from './ui/events';
 /** Dev/QA tooling ships in dev and QA builds; `vite build --mode release` strips it (ENG-0237). */
 const DEV_TOOLS = import.meta.env.DEV || import.meta.env.MODE !== 'release';
 import { platform } from './platform';
+import { HWACCEL_HELP_URL, softwareRenderPlan, SOFTWARE_TIER } from './platform/hwaccel';
+import { prompt as platformPrompt } from './platform/ui';
+import { t as tr } from './i18n';
 import { installPlatform, platformFrame, sceneChanged } from './platform/session';
 import { buildStamp } from './platform/build';
 import { installTelemetry } from './telemetry';
@@ -106,6 +109,17 @@ class Main implements Game {
       (rec) => this.fatal(rec),
     );
     window.addEventListener('resize', () => this.resize());
+    // Exact device-pixel backbuffer (ENG-0186): the observer reports the canvas's physical pixel box,
+    // and a DPR watcher re-evaluates when the window moves to a monitor with another scale.
+    if (typeof ResizeObserver !== 'undefined') {
+      const ro = new ResizeObserver((entries) => this.fitBackbuffer(entries[0] as ResizeEntryLike));
+      try {
+        ro.observe(canvas, { box: 'device-pixel-content-box' });
+      } catch {
+        ro.observe(canvas);
+      }
+    }
+    watchDevicePixelRatio(() => this.resize());
     onSettingChange('uiScale', () => this.resize());
     canvas.addEventListener('pointerdown', () => this.audio.unlock());
     window.addEventListener('keydown', (e) => {
@@ -173,12 +187,25 @@ class Main implements Game {
     const dpr = window.devicePixelRatio || 1;
     this.canvas.style.width = `${cssW}px`;
     this.canvas.style.height = `${cssH}px`;
-    this.canvas.width = Math.max(1, Math.round(cssW * dpr));
-    this.canvas.height = Math.max(1, Math.round(cssH * dpr));
+    const bb = backbufferSize(this.lastBox, cssW, cssH, dpr);
+    this.canvas.width = bb.w;
+    this.canvas.height = bb.h;
     Object.assign(VIEW, { w: v.w, h: v.h, ox: v.ox, oy: v.oy });
     Object.assign(this.input.view, { w: v.w, h: v.h, ox: v.ox, oy: v.oy });
     this.input.resized();
     this.gfx.setView(v.w, v.h, v.ox, v.oy);
+  }
+
+  /** Last device-pixel content box the ResizeObserver reported (null until it fires). */
+  private lastBox: ResizeEntryLike | null = null;
+  private fitBackbuffer(e: ResizeEntryLike): void {
+    this.lastBox = e;
+    const css = { w: parseFloat(this.canvas.style.width) || this.canvas.clientWidth, h: parseFloat(this.canvas.style.height) || this.canvas.clientHeight };
+    const bb = backbufferSize(e, css.w, css.h, window.devicePixelRatio || 1);
+    if (bb.w !== this.canvas.width || bb.h !== this.canvas.height) {
+      this.canvas.width = bb.w;
+      this.canvas.height = bb.h;
+    }
   }
 
   /** The active (top) scene — kept as `scene` for tools that script the game (scripts/shoot.mjs). */
@@ -383,6 +410,26 @@ async function boot(): Promise<void> {
   game.gfx.atlas.warm();
   game.gfx.prewarm();
   game.detectTier();
+  // Software rasteriser (ENG-0194): Low tier for the session, and a one-time explanation with a help
+  // link. Automation (navigator.webdriver) keeps its configured tier so captures stay comparable.
+  if (!navigator.webdriver) {
+    let store: Storage | null = null;
+    try {
+      store = window.localStorage;
+    } catch {
+      store = null;
+    }
+    const sw = softwareRenderPlan(game.gfx.caps, store);
+    if (sw.forceLow) {
+      Object.assign(settings, SOFTWARE_TIER);
+      game.gfx.setShaderQuality('low');
+      console.warn(`[gpu] software renderer (${game.gfx.caps.renderer}): Low tier forced`);
+    }
+    if (sw.notify)
+      void platformPrompt({ title: tr('ui.hwaccel.title'), message: tr('ui.hwaccel.body'), buttons: [tr('ui.hwaccel.help'), tr('ui.common.done')] }).then((i) => {
+        if (i === 0) platform.open({ url: HWACCEL_HELP_URL });
+      });
+  }
   game.assets.prefetch('title');
   game.assets.prefetch('ops-common');
   // 3D sets: registered with the backdrop as they arrive (the procedural scene shows until then).
