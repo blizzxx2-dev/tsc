@@ -11,6 +11,7 @@ import { organPalette } from '../render/organs';
 import { Bubo, Sigil, surfDisc, surfLine } from '../surgery/entities';
 import { EggSac } from '../surgery/lauds';
 import { Particles } from '../render/particles';
+import { brandMaterial, BrandSmoke } from '../render/brandSmoke';
 import { FlashLimiter } from '../render/flashLimiter';
 import { Malison, MalisonShard } from '../surgery/malison';
 import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOWN, TINCTURE_TIME, type OperationDef, type Popup } from '../surgery/operation';
@@ -217,6 +218,8 @@ export class OperationScene implements Scene {
   }
   /** Boss sounds, ambience and adaptive-music hooks (BOS-0008/0017/0020). */
   private bossAudio = new BossAudio();
+  /** Cautery smoke and its veil (GAM-0051). */
+  private smoke = new BrandSmoke();
 
   private closePause(r: PauseResult): void {
     if (r === 'restart') return this.restart();
@@ -392,6 +395,10 @@ export class OperationScene implements Scene {
     this.particles.update(dt * op.timeScale, (p, kind, size) => {
       if (kind === 'blood' && onBody(p)) op.stain(p, size * 2.6, 0.3);
     });
+    // Cautery smoke by what is being seared, and the veil it leaves (GAM-0051, cosmetic).
+    const searing = op.status === 'running' && op.tool === 'brand' && op.holdingBrand && onBody(op.cursor) ? brandMaterial(op, op.cursor) : null;
+    const puffs = this.smoke.update(dt, searing);
+    if (puffs > 0) this.particles.spawn({ kind: 'smoke', pos: { ...op.cursor }, n: puffs, dir: -Math.PI / 2, spread: 0.8 });
     if (op.litanyTime > 0 && Math.random() < dt * 30) this.particles.spawn({ kind: 'dust', pos: { x: FIELD.cx + (Math.random() - 0.5) * FIELD.rx * 2, y: FIELD.cy + (Math.random() - 0.5) * FIELD.ry * 2 }, n: 1 });
 
     // op.cues are drained by the audio director (src/audio/director.ts) right after this update.
@@ -523,6 +530,8 @@ export class OperationScene implements Scene {
 
     // ---------------------------------------------------------------- UI
     drawFieldOverlays(g, op);
+    // Brand smoke hangs over the field for a moment after heavy searing (GAM-0051).
+    if (this.smoke.veil > 0.01) g.glow(op.cursor.x, op.cursor.y - 30, 260, hex('#9a9088', this.smoke.veil * 0.45));
     if (!settings.minimalHud) this.drawThreatRings(g);
     drawTutorial(g, op);
     this.drawPopups(g);

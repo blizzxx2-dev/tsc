@@ -88,7 +88,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0048 · Demo · P0 · S · Brand hold times — grub 0.8 s, sigil node 1.0 s, Malison flesh continuous DPS 18/s; values from tuning table
 - [x] GAM-0049 · Demo · P1 · S · Branding healthy flesh > 0.5 s creates a Burn(fire) and BAD — prevents holding brand everywhere
 - [x] GAM-0050 · Demo · P1 · S · Brand overheat meter — 6 s continuous use locks it for 2 s; shown as glowing tip colour
-- [ ] GAM-0051 · Demo · P2 · S · Sizzle SFX and smoke particles scale with target type — brand smoke obscures field briefly (cosmetic only)
+- [x] GAM-0051 · Demo · P2 · S · Sizzle SFX and smoke particles scale with target type — brand smoke obscures field briefly (cosmetic only)
 
 ### Scrying Lens
 - [x] GAM-0052 · Demo · P0 · S · Lens reveal radius 90 px — hidden entities become "found" after 0.4 s hover and stay visible (test)

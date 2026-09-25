@@ -17,6 +17,7 @@ import type { LoopHandle, PlayOpts } from './engine';
 import { isEventId, type EventId } from './events';
 import { countCorners, heartParams, HeartbeatScheduler } from './heartbeat';
 import { dbToGain } from './mixer';
+import { brandMaterial } from '../render/brandSmoke';
 import type { HourId } from './music/themes';
 import type { AudioSystem } from './system';
 
@@ -520,16 +521,8 @@ export class OperationAudio {
     // Cautery brand: ember hum in hand, sizzle on contact, quench on release.
     this.loop('ember', 'loop.brand.ember', running && op.tool === 'brand', {}, pan, 120);
     const branding = running && op.tool === 'brand' && input.down && onBody(pos);
-    let material = 0;
-    if (branding) {
-      for (const e of op.entities) {
-        if (!e.alive || e.hidden) continue;
-        if ((e instanceof Malison || e instanceof LaudsMalison) && dist(e.pos, pos) < e.radius) material = 3;
-        else if (e instanceof ChoirVoice && dist(e.pos, pos) < 22) material = 3;
-        else if (e instanceof Sigil && e.segs.some((s) => distToSeg(pos, s.a, s.b) < 14)) material = Math.max(material, 2);
-        else if (e instanceof Grub && dist(e.pos, pos) < 20) material = Math.max(material, 1);
-      }
-    }
+    // The sizzle follows the same material as the smoke (GAM-0051): flesh, grub, sigil, Malison.
+    const material = branding ? brandMaterial(op, pos) : 0;
     if (branding && this.loops.get('sizzle') && this.sizzleMat !== material) this.loop('sizzle', 'loop.brand.sizzle', false, {}, pan, 30);
     this.sizzleMat = material;
     const wasSizzling = !!this.loops.get('sizzle');
