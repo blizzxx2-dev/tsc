@@ -95,7 +95,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] NAR-0054 · Demo · P0 · S · Ch2 beat sheet — purpose per scene s2-1…s2-end; escalation from mundane (Ch1) to monsters and magic stated per scene
 - [x] NAR-0055 · Demo · P0 · S · Fix count error in STORY_2_END — Ilse says "Seven more hours" but lists six; change to "Six more hours to the full Office"
 - [x] NAR-0056 · Demo · P1 · M · Add post-op aftermath micro-scenes after op2-1…op2-4 — 2–4 lines each
-- [ ] NAR-0057 · Demo · P1 · S · Chapter transition card — "a week later" interstitial between s1-end and s2-1 with requisition writ shown as a prop image
+- [x] NAR-0057 · Demo · P1 · S · Chapter transition card — "a week later" interstitial between s1-end and s2-1 with requisition writ shown as a prop image
 - [x] NAR-0058 · Demo · P2 · S · Failure scene text for each Ch2 op — retry framing with Ilse/Mauer lines
 
 ### s2-1 … s2-end passes

@@ -33,6 +33,8 @@ export interface LineEffects {
   fade?: 'in' | 'out';
   /** Full-screen illustration (a backdrop key) shown in place of the staged scene until `cg: 'off'`. */
   cg?: Backdrop | 'off';
+  /** A document held up over the scene (NAR-0057) until `prop: 'off'`. */
+  prop?: 'writ' | 'off';
   /** Sound event to play (src/audio/events.ts ids, or a legacy cue name). */
   sfx?: string;
   /** Music mood to move to. */

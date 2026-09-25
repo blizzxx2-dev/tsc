@@ -1,3 +1,4 @@
+import { drawProp } from '../art/props';
 import { gradeFor } from '../render/lut';
 import type { Game, Scene } from '../core/scene';
 import { t } from '../i18n';
@@ -135,6 +136,11 @@ export class StoryScene implements Scene {
   private black = 0;
   private blackTarget = 0;
   private cg: StoryDef['backdrop'] | null = null;
+  /** The document held up over the scene (NAR-0057), and how long it has been up. */
+  private prop: 'writ' | null = null;
+  private propT = 0;
+  /** The line after the prop's: it lowers away. */
+  private propUntil = false;
   /** The speaker whose title the plate carries on this line (first appearance, UIX-0131). */
   private titled: CharacterId | null = null;
 
@@ -214,6 +220,13 @@ export class StoryScene implements Scene {
     }
     if (line.fade) this.blackTarget = line.fade === 'out' ? 1 : 0;
     if (line.cg) this.cg = line.cg === 'off' ? null : line.cg;
+    if (line.prop) {
+      this.prop = line.prop === 'off' ? null : line.prop;
+      this.propT = 0;
+    } else if (this.prop && !this.propUntil) {
+      this.propUntil = true;
+      this.propT = 0;
+    }
     if (line.sfx) game.audio.play(line.sfx);
     if (line.music) (game.audio as Partial<Game['audio']>).music?.setState(line.music === 'silent' ? 'silent' : `story-${line.music}`);
   }
@@ -410,6 +423,17 @@ export class StoryScene implements Scene {
       rule(g, 40 + pw / 2, 56, pw + 40, hex(INK.gilt, 0.6 * cap));
     }
     if (card > 0) this.drawCard(g, card);
+    if (this.prop) {
+      // Held for its line, lowered on the next.
+      this.propT = Math.min(1, this.propT + 1 / 30);
+      const k = this.propUntil ? Math.max(0, 1 - this.propT) : this.propT;
+      g.rect(vr.x, vr.y, vr.w, vr.h, hex('#000000', 0.45 * k));
+      drawProp(g, this.prop, VIEW_W / 2, 300, k);
+      if (this.propUntil && k <= 0) {
+        this.prop = null;
+        this.propUntil = false;
+      }
+    }
 
     if (this.hidden) {
       reticle(g, game.input.pos);

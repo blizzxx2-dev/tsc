@@ -48,11 +48,63 @@
         <source>Patient</source>
         <note from="context">Character name plate. Proper-name policy applies (docs/loc/style-guide.md).</note>
       </trans-unit>
+      <trans-unit id="char.precentor.name" resname="char.precentor.name">
+        <source>The Precentor</source>
+        <note from="context">Character name plate. Proper-name policy applies (docs/loc/style-guide.md).</note>
+      </trans-unit>
+      <trans-unit id="char.precentor.title" resname="char.precentor.title">
+        <source>Aurel Vennholt, struck from the Guild rolls</source>
+        <note from="context">Epithet of The Precentor.</note>
+      </trans-unit>
+      <trans-unit id="char.orsa.name" resname="char.orsa.name">
+        <source>Orsa Flintvein</source>
+        <note from="context">Character name plate. Proper-name policy applies (docs/loc/style-guide.md).</note>
+      </trans-unit>
+      <trans-unit id="char.orsa.title" resname="char.orsa.title">
+        <source>Foreman of the Flintvein delvers</source>
+        <note from="context">Epithet of Orsa Flintvein.</note>
+      </trans-unit>
+      <trans-unit id="char.reiss.name" resname="char.reiss.name">
+        <source>Widow Reiss</source>
+        <note from="context">Character name plate. Proper-name policy applies (docs/loc/style-guide.md).</note>
+      </trans-unit>
+      <trans-unit id="char.reiss.title" resname="char.reiss.title">
+        <source>Aldegund Reiss, the charity seat of the Council</source>
+        <note from="context">Epithet of Widow Reiss.</note>
+      </trans-unit>
+      <trans-unit id="char.tallert.name" resname="char.tallert.name">
+        <source>Registrar Tallert</source>
+        <note from="context">Character name plate. Proper-name policy applies (docs/loc/style-guide.md).</note>
+      </trans-unit>
+      <trans-unit id="char.tallert.title" resname="char.tallert.title">
+        <source>Oswin Tallert, Hall of Records</source>
+        <note from="context">Epithet of Registrar Tallert.</note>
+      </trans-unit>
+      <trans-unit id="char.motherSuperior.name" resname="char.motherSuperior.name">
+        <source>The Mother Superior</source>
+        <note from="context">Character name plate. Proper-name policy applies (docs/loc/style-guide.md).</note>
+      </trans-unit>
+      <trans-unit id="char.motherSuperior.title" resname="char.motherSuperior.title">
+        <source>Convent of the Merciful Order</source>
+        <note from="context">Epithet of The Mother Superior.</note>
+      </trans-unit>
+      <trans-unit id="char.burgomaster.name" resname="char.burgomaster.name">
+        <source>The Burgomaster</source>
+        <note from="context">Character name plate. Proper-name policy applies (docs/loc/style-guide.md).</note>
+      </trans-unit>
+      <trans-unit id="char.burgomaster.title" resname="char.burgomaster.title">
+        <source>Kessendorf, who signs things on Fridays</source>
+        <note from="context">Epithet of The Burgomaster.</note>
+      </trans-unit>
     </group>
     <group id="ch1/names" resname="ch1/names">
       <trans-unit id="chapter.ch1.title" resname="chapter.ch1.title">
         <source>The Hour of Matins</source>
         <note from="context">Title of Chapter I. Canonical-hour names follow the termbase.</note>
+      </trans-unit>
+      <trans-unit id="s1-4.003.as" resname="s1-4.003.as">
+        <source>Matthis Kolb</source>
+        <note from="context">Speaker name shown for s1-4.003.</note>
       </trans-unit>
       <trans-unit id="s1-5.002.as" resname="s1-5.002.as">
         <source>Page-boy Emmerich</source>
@@ -65,53 +117,73 @@
         <note from="context">Place and time caption at the top-left of the scene.</note>
       </trans-unit>
       <trans-unit id="prologue.001" resname="prologue.001">
-        <source>The Free City of Kessendorf. Winter, in the ninth year of the Long Muster.</source>
-        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 1 of 10.</note>
+        <source>An old surgeon’s woodcut hangs by the hospice door: a man stuck with every blade, bolt and fang in the world — and standing.</source>
+        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 1 of 14.</note>
         <note from="speaker">Narrator</note>
       </trans-unit>
       <trans-unit id="prologue.002" resname="prologue.002">
-        <source>The river has frozen twice. The pyres outside the east gate have not gone out since autumn.</source>
-        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 2 of 10.</note>
+        <source>Beneath it, in faded ink: “Here is the battlefield. Hold it.”</source>
+        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 2 of 14.</note>
         <note from="speaker">Narrator</note>
       </trans-unit>
       <trans-unit id="prologue.003" resname="prologue.003">
-        <source>So. You are the new sawbones the Guild sent me. Kreuzer, is it?</source>
-        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 3 of 10.</note>
-        <note from="speaker">Master Haller</note>
+        <source>The Free City of Kessendorf. Winter, in the ninth year of the Long Muster.</source>
+        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 3 of 14.</note>
+        <note from="speaker">Narrator</note>
       </trans-unit>
       <trans-unit id="prologue.004" resname="prologue.004">
-        <source>Apothecary-surgeon, sworn at Weissburg. I have my letters, Master Haller—</source>
-        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 4 of 10.</note>
-        <note from="speaker">Dr. Kreuzer</note>
+        <source>The river has frozen twice. The pyres outside the east gate have not gone out since autumn.</source>
+        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 4 of 14.</note>
+        <note from="speaker">Narrator</note>
       </trans-unit>
       <trans-unit id="prologue.005" resname="prologue.005">
-        <source>Letters. Letters don’t stop a man bleeding into the straw. Hands do. Show me your hands.</source>
-        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 5 of 10.</note>
+        <source>So. You are the new sawbones the Guild sent me. Kreuzer, is it?</source>
+        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 5 of 14.</note>
         <note from="speaker">Master Haller</note>
       </trans-unit>
       <trans-unit id="prologue.006" resname="prologue.006">
-        <source>…Steady enough. Sister! Our young doctor has arrived just in time for the Tuesday knife-fights.</source>
-        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 6 of 10.</note>
-        <note from="speaker">Master Haller</note>
+        <source>Apothecary-surgeon, sworn at Weissburg. I have my letters, Master Haller—</source>
+        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 6 of 14.</note>
+        <note from="speaker">Dr. Kreuzer</note>
       </trans-unit>
       <trans-unit id="prologue.007" resname="prologue.007">
-        <source>Sister Ilse, of the Merciful Order. I keep the instruments, the ledgers, and the Master’s temper.</source>
-        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 7 of 10.</note>
-        <note from="speaker">Sister Ilse</note>
-      </trans-unit>
-      <trans-unit id="prologue.008" resname="prologue.008">
-        <source>There’s a drover on the table already. Somebody at the Gilded Goose disagreed with his dice.</source>
-        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 8 of 10.</note>
-        <note from="speaker">Sister Ilse</note>
-      </trans-unit>
-      <trans-unit id="prologue.009" resname="prologue.009">
-        <source>Knife wounds. Simple work. Stitch him, drain him, salve him. I’ll watch.</source>
-        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 9 of 10.</note>
+        <source>Letters. Letters don’t stop a man bleeding into the straw. Hands do. Show me your hands.</source>
+        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 7 of 14.</note>
         <note from="speaker">Master Haller</note>
       </trans-unit>
+      <trans-unit id="prologue.008" resname="prologue.008">
+        <source>…Steady enough. Why would a sworn Weissburg man take a charity bed in a city that burns its sick?</source>
+        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 8 of 14.</note>
+        <note from="speaker">Master Haller</note>
+      </trans-unit>
+      <trans-unit id="prologue.009" resname="prologue.009">
+        <source>Weissburg taught me the rules, Master. I came somewhere too poor to afford them.</source>
+        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 9 of 14.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
       <trans-unit id="prologue.010" resname="prologue.010">
+        <source>Hm. Sister! Our young doctor has arrived just in time for the Tuesday knife-fights.</source>
+        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 10 of 14.</note>
+        <note from="speaker">Master Haller</note>
+      </trans-unit>
+      <trans-unit id="prologue.011" resname="prologue.011">
+        <source>Sister Ilse, of the Merciful Order. I keep the instruments, the ledgers, and the Master’s temper.</source>
+        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 11 of 14.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="prologue.012" resname="prologue.012">
+        <source>There’s a drover on the table already. Somebody at the Crooked Goose disagreed with his dice.</source>
+        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 12 of 14.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="prologue.013" resname="prologue.013">
+        <source>Knife wounds. Simple work. I’ll watch.</source>
+        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 13 of 14.</note>
+        <note from="speaker">Master Haller</note>
+      </trans-unit>
+      <trans-unit id="prologue.014" resname="prologue.014">
         <source>And Kreuzer — in this hospice we do not lose patients to simple work.</source>
-        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 10 of 10.</note>
+        <note from="context">Story scene &quot;prologue&quot; (Kessendorf — the Hospice of Saint Ildra the Merciful), line 14 of 14.</note>
         <note from="speaker">Master Haller</note>
       </trans-unit>
       <trans-unit id="s1-2.place" resname="s1-2.place">
@@ -119,67 +191,92 @@
         <note from="context">Place and time caption at the top-left of the scene.</note>
       </trans-unit>
       <trans-unit id="s1-2.001" resname="s1-2.001">
-        <source>The drover lived. He paid in turnips and a promise not to gamble again. He will break it by Friday.</source>
-        <note from="context">Story scene &quot;s1-2&quot; (The Hospice — the next morning), line 1 of 6.</note>
+        <source>The next morning the Watch arrives before the bread does.</source>
+        <note from="context">Story scene &quot;s1-2&quot; (The Hospice — the next morning), line 1 of 9.</note>
         <note from="speaker">Narrator</note>
       </trans-unit>
       <trans-unit id="s1-2.002" resname="s1-2.002">
         <source>Make way! Make way, damn you! Surgeon! Where’s the surgeon?</source>
-        <note from="context">Story scene &quot;s1-2&quot; (The Hospice — the next morning), line 2 of 6.</note>
+        <note from="context">Story scene &quot;s1-2&quot; (The Hospice — the next morning), line 2 of 9.</note>
         <note from="speaker">Captain Mauer</note>
       </trans-unit>
       <trans-unit id="s1-2.003" resname="s1-2.003">
         <source>Captain Mauer of the Watch. Lower your voice, Captain, this is a house of mercy.</source>
-        <note from="context">Story scene &quot;s1-2&quot; (The Hospice — the next morning), line 3 of 6.</note>
+        <note from="context">Story scene &quot;s1-2&quot; (The Hospice — the next morning), line 3 of 9.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="s1-2.004" resname="s1-2.004">
-        <source>Horned raiders hit the timber-road caravan at dawn. We drove them off, but young Pieter took a shaft in the side.</source>
-        <note from="context">Story scene &quot;s1-2&quot; (The Hospice — the next morning), line 4 of 6.</note>
+        <source>Twelve went out with the timber-road caravan. Twelve came back, eleven walking. Horned folk hit us at dawn.</source>
+        <note from="context">Story scene &quot;s1-2&quot; (The Hospice — the next morning), line 4 of 9.</note>
         <note from="speaker">Captain Mauer</note>
       </trans-unit>
       <trans-unit id="s1-2.005" resname="s1-2.005">
-        <source>Beast-folk fletch their arrows with barbed heads. Rip one straight out and you’ll tear half his side with it.</source>
-        <note from="context">Story scene &quot;s1-2&quot; (The Hospice — the next morning), line 5 of 6.</note>
-        <note from="speaker">Master Haller</note>
+        <source>Young Pieter took a shaft in the side. Twelve, Doctor. I’d like it to stay twelve.</source>
+        <note from="context">Story scene &quot;s1-2&quot; (The Hospice — the next morning), line 5 of 9.</note>
+        <note from="speaker">Captain Mauer</note>
       </trans-unit>
       <trans-unit id="s1-2.006" resname="s1-2.006">
-        <source>Nick the flesh at the entry with the lancet — twice — to free the barbs. Then pull. Cleanly.</source>
-        <note from="context">Story scene &quot;s1-2&quot; (The Hospice — the next morning), line 6 of 6.</note>
+        <source>Then put him down gently, Captain, and stop counting him among the dead.</source>
+        <note from="context">Story scene &quot;s1-2&quot; (The Hospice — the next morning), line 6 of 9.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
+      <trans-unit id="s1-2.007" resname="s1-2.007">
+        <source>Horned-folk heads are barbed like fish-hooks. They cut a notch in their antlers for every one that sticks in a man.</source>
+        <note from="context">Story scene &quot;s1-2&quot; (The Hospice — the next morning), line 7 of 9.</note>
         <note from="speaker">Master Haller</note>
+      </trans-unit>
+      <trans-unit id="s1-2.008" resname="s1-2.008">
+        <source>Rip it straight out and you’ll take half his side with it. Free the barbs first, then pull. Cleanly.</source>
+        <note from="context">Story scene &quot;s1-2&quot; (The Hospice — the next morning), line 8 of 9.</note>
+        <note from="speaker">Master Haller</note>
+      </trans-unit>
+      <trans-unit id="s1-2.009" resname="s1-2.009">
+        <source>Twelve. Say it with me, Doctor. Twelve.</source>
+        <note from="context">Story scene &quot;s1-2&quot; (The Hospice — the next morning), line 9 of 9.</note>
+        <note from="speaker">Captain Mauer</note>
       </trans-unit>
       <trans-unit id="s1-3.place" resname="s1-3.place">
         <source>The Hospice — noon</source>
         <note from="context">Place and time caption at the top-left of the scene.</note>
       </trans-unit>
       <trans-unit id="s1-3.001" resname="s1-3.001">
-        <source>Pieter will keep his side, and his opinion of beast-folk.</source>
-        <note from="context">Story scene &quot;s1-3&quot; (The Hospice — noon), line 1 of 6.</note>
+        <source>Noon. A second sack of turnips arrives at the gate. The drover has told his friends about us.</source>
+        <note from="context">Story scene &quot;s1-3&quot; (The Hospice — noon), line 1 of 8.</note>
         <note from="speaker">Narrator</note>
       </trans-unit>
       <trans-unit id="s1-3.002" resname="s1-3.002">
         <source>Doctor, the gunsmiths’ quarter. An apprentice was proving a new handgun barrel and it burst in his hands.</source>
-        <note from="context">Story scene &quot;s1-3&quot; (The Hospice — noon), line 2 of 6.</note>
+        <note from="context">Story scene &quot;s1-3&quot; (The Hospice — noon), line 2 of 8.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="s1-3.003" resname="s1-3.003">
-        <source>Burns across the chest and lead fragments driven under the skin.</source>
-        <note from="context">Story scene &quot;s1-3&quot; (The Hospice — noon), line 3 of 6.</note>
+        <source>Burns across the chest, lead driven under the skin — and a note from the Gunsmiths’ Guild pinned to his shirt.</source>
+        <note from="context">Story scene &quot;s1-3&quot; (The Hospice — noon), line 3 of 8.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="s1-3.004" resname="s1-3.004">
-        <source>Powder burns. The charred skin is dead — pluck the eschar away with tongs before you salve, or it festers.</source>
-        <note from="context">Story scene &quot;s1-3&quot; (The Hospice — noon), line 4 of 6.</note>
-        <note from="speaker">Master Haller</note>
+        <source>The Guild will pay for his care. Once we have paid the Guild’s fee for inspecting its own burst barrel.</source>
+        <note from="context">Story scene &quot;s1-3&quot; (The Hospice — noon), line 4 of 8.</note>
+        <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="s1-3.005" resname="s1-3.005">
-        <source>The shot is in deep. You’ll have to open him. Trace the line I’ve inked, and keep your hand true.</source>
-        <note from="context">Story scene &quot;s1-3&quot; (The Hospice — noon), line 5 of 6.</note>
+        <source>Naturally. In Kessendorf a man pays the Guild for the privilege of being shot by its work.</source>
+        <note from="context">Story scene &quot;s1-3&quot; (The Hospice — noon), line 5 of 8.</note>
         <note from="speaker">Master Haller</note>
       </trans-unit>
       <trans-unit id="s1-3.006" resname="s1-3.006">
-        <source>He’s lost blood already. If his pulse flags, the tincture — hold it to the flesh and let it take.</source>
-        <note from="context">Story scene &quot;s1-3&quot; (The Hospice — noon), line 6 of 6.</note>
+        <source>Then we send the Guild a bill for the lead we take out of him. Itemised, by the ounce.</source>
+        <note from="context">Story scene &quot;s1-3&quot; (The Hospice — noon), line 6 of 8.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
+      <trans-unit id="s1-3.007" resname="s1-3.007">
+        <source>Powder burns. The black crust is dead meat: off with it before any salve, or it festers underneath.</source>
+        <note from="context">Story scene &quot;s1-3&quot; (The Hospice — noon), line 7 of 8.</note>
+        <note from="speaker">Master Haller</note>
+      </trans-unit>
+      <trans-unit id="s1-3.008" resname="s1-3.008">
+        <source>The shot is deep. You’ll open him along the line I’ve inked. And if his pulse flags — the tincture.</source>
+        <note from="context">Story scene &quot;s1-3&quot; (The Hospice — noon), line 8 of 8.</note>
         <note from="speaker">Master Haller</note>
       </trans-unit>
       <trans-unit id="s1-4.place" resname="s1-4.place">
@@ -188,45 +285,60 @@
       </trans-unit>
       <trans-unit id="s1-4.001" resname="s1-4.001">
         <source>Word travels fast in Kessendorf. By dusk, there is a queue at the hospice door.</source>
-        <note from="context">Story scene &quot;s1-4&quot; (The Hospice — dusk), line 1 of 7.</note>
+        <note from="context">Story scene &quot;s1-4&quot; (The Hospice — dusk), line 1 of 10.</note>
         <note from="speaker">Narrator</note>
       </trans-unit>
       <trans-unit id="s1-4.002" resname="s1-4.002">
-        <source>Doctor… this one was found in the Tanners’ Rows. Swellings at the neck and groin. Fever. Maggots in a sore.</source>
-        <note from="context">Story scene &quot;s1-4&quot; (The Hospice — dusk), line 2 of 7.</note>
+        <source>This one was found in the Tanners’ Rows. Swellings at the neck and groin. Fever. Maggots in an old sore.</source>
+        <note from="context">Story scene &quot;s1-4&quot; (The Hospice — dusk), line 2 of 10.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="s1-4.003" resname="s1-4.003">
-        <source>Buboes. Lance them before they burst, draw off the pus, and salve the wound. Rot-patches creep back if you dawdle.</source>
-        <note from="context">Story scene &quot;s1-4&quot; (The Hospice — dusk), line 3 of 7.</note>
-        <note from="speaker">Master Haller</note>
+        <source>Matthis Kolb. Twenty years a tanner’s man. Write that, Sister, not “vagrant”. I had a trade before I had a fever.</source>
+        <note from="context">Story scene &quot;s1-4&quot; (The Hospice — dusk), line 3 of 10.</note>
+        <note from="speaker">Matthis Kolb</note>
       </trans-unit>
       <trans-unit id="s1-4.004" resname="s1-4.004">
-        <source>And the grubs — the cautery brand. Hold it on them until they stop wriggling. Mind you don’t sear good flesh.</source>
-        <note from="context">Story scene &quot;s1-4&quot; (The Hospice — dusk), line 4 of 7.</note>
-        <note from="speaker">Master Haller</note>
-      </trans-unit>
-      <trans-unit id="s1-4.005" resname="s1-4.005">
-        <source>A plague case. In the city. How very interesting.</source>
-        <note from="context">Story scene &quot;s1-4&quot; (The Hospice — dusk), line 5 of 7.</note>
-        <note from="speaker">Inquisitor Stroh</note>
-      </trans-unit>
-      <trans-unit id="s1-4.006" resname="s1-4.006">
-        <source>…Inquisitor Stroh. Of the Ash Tribunal.</source>
-        <note from="context">Story scene &quot;s1-4&quot; (The Hospice — dusk), line 6 of 7.</note>
+        <source>Matthis Kolb, tanner’s man. Written, and underlined.</source>
+        <note from="context">Story scene &quot;s1-4&quot; (The Hospice — dusk), line 4 of 10.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
+      <trans-unit id="s1-4.005" resname="s1-4.005">
+        <source>Buboes, and a rotting sore. He’s slept in the Rows among the hides. Burn the grubs, Kreuzer — not the man.</source>
+        <note from="context">Story scene &quot;s1-4&quot; (The Hospice — dusk), line 5 of 10.</note>
+        <note from="speaker">Master Haller</note>
+      </trans-unit>
+      <trans-unit id="s1-4.006" resname="s1-4.006">
+        <source>Nobody hears the door. There is simply a man in black standing in the ward, where a moment ago there was not.</source>
+        <note from="context">Story scene &quot;s1-4&quot; (The Hospice — dusk), line 6 of 10.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
       <trans-unit id="s1-4.007" resname="s1-4.007">
-        <source>Please, do carry on, Doctor. I only wish to watch. Pestilence so often has a sponsor.</source>
-        <note from="context">Story scene &quot;s1-4&quot; (The Hospice — dusk), line 7 of 7.</note>
+        <source>A plague case. In the city. How very interesting.</source>
+        <note from="context">Story scene &quot;s1-4&quot; (The Hospice — dusk), line 7 of 10.</note>
         <note from="speaker">Inquisitor Stroh</note>
+      </trans-unit>
+      <trans-unit id="s1-4.008" resname="s1-4.008">
+        <source>…Inquisitor Stroh. Of the Ash Tribunal.</source>
+        <note from="context">Story scene &quot;s1-4&quot; (The Hospice — dusk), line 8 of 10.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="s1-4.009" resname="s1-4.009">
+        <source>Carry on, Doctor. I only wish to watch. Pestilence so often has a sponsor — and I hear the Kilnrows are coughing too.</source>
+        <note from="context">Story scene &quot;s1-4&quot; (The Hospice — dusk), line 9 of 10.</note>
+        <note from="speaker">Inquisitor Stroh</note>
+      </trans-unit>
+      <trans-unit id="s1-4.010" resname="s1-4.010">
+        <source>Then stand back from the table, Inquisitor. Whoever sponsors it, it isn’t particular whom it takes.</source>
+        <note from="context">Story scene &quot;s1-4&quot; (The Hospice — dusk), line 10 of 10.</note>
+        <note from="speaker">Dr. Kreuzer</note>
       </trans-unit>
       <trans-unit id="s1-5.place" resname="s1-5.place">
         <source>The Hospice — the small hours</source>
         <note from="context">Place and time caption at the top-left of the scene.</note>
       </trans-unit>
       <trans-unit id="s1-5.001" resname="s1-5.001">
-        <source>Near midnight a carriage without a crest stops at the gate. A page-boy is carried in, raving.</source>
+        <source>Near midnight a carriage stops at the gate. Its door panel has been planed smooth where a crest should be — on purpose.</source>
         <note from="context">Story scene &quot;s1-5&quot; (The Hospice — the small hours), line 1 of 8.</note>
         <note from="speaker">Narrator</note>
       </trans-unit>
@@ -236,7 +348,7 @@
         <note from="speaker">Page-boy Emmerich</note>
       </trans-unit>
       <trans-unit id="s1-5.003" resname="s1-5.003">
-        <source>Doctor, look at his chest. Those marks — they’re moving.</source>
+        <source>Doctor, look at his chest. Those marks — they’re moving. That one is an eye, with a stroke drawn through it.</source>
         <note from="context">Story scene &quot;s1-5&quot; (The Hospice — the small hours), line 3 of 8.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
@@ -246,17 +358,17 @@
         <note from="speaker">Master Haller</note>
       </trans-unit>
       <trans-unit id="s1-5.005" resname="s1-5.005">
-        <source>Kreuzer. Listen to me carefully. Sear the sigils out with the brand — trace every stroke.</source>
+        <source>Then we unwrite him. The brand, Sister. And more light.</source>
         <note from="context">Story scene &quot;s1-5&quot; (The Hospice — the small hours), line 5 of 8.</note>
-        <note from="speaker">Master Haller</note>
+        <note from="speaker">Dr. Kreuzer</note>
       </trans-unit>
       <trans-unit id="s1-5.006" resname="s1-5.006">
-        <source>And if something… answers… when you do — there is an old apothecary’s rite. The Litany of Stillness.</source>
+        <source>If something answers when you do — there is an old apothecary’s rite. The Litany of Stillness.</source>
         <note from="context">Story scene &quot;s1-5&quot; (The Hospice — the small hours), line 6 of 8.</note>
         <note from="speaker">Master Haller</note>
       </trans-unit>
       <trans-unit id="s1-5.007" resname="s1-5.007">
-        <source>Trace the five-pointed star and still your heart. For a few breaths, the world will wait for you.</source>
+        <source>Draw the five-pointed star and still your heart. For a few breaths, the world will wait for you.</source>
         <note from="context">Story scene &quot;s1-5&quot; (The Hospice — the small hours), line 7 of 8.</note>
         <note from="speaker">Master Haller</note>
       </trans-unit>
@@ -271,53 +383,244 @@
       </trans-unit>
       <trans-unit id="s1-end.001" resname="s1-end.001">
         <source>The thing in the boy’s chest came apart like wet ash. The boy sleeps. He no longer hears singing.</source>
-        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 1 of 10.</note>
+        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 1 of 13.</note>
         <note from="speaker">Narrator</note>
       </trans-unit>
       <trans-unit id="s1-end.002" resname="s1-end.002">
-        <source>Doctor… after it broke, a word was left seared into the flesh. Matins.</source>
-        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 2 of 10.</note>
+        <source>Doctor… after it broke, a word was left seared into the flesh. Matins. And beside it, fading: the struck-through eye.</source>
+        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 2 of 13.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="s1-end.003" resname="s1-end.003">
         <source>The first of the canonical hours. The first prayer of the night.</source>
-        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 3 of 10.</note>
+        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 3 of 13.</note>
         <note from="speaker">Master Haller</note>
       </trans-unit>
       <trans-unit id="s1-end.004" resname="s1-end.004">
         <source>A curse that lives and fights like a beast, and signs itself like a psalm. A Malison.</source>
-        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 4 of 10.</note>
+        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 4 of 13.</note>
         <note from="speaker">Master Haller</note>
       </trans-unit>
       <trans-unit id="s1-end.005" resname="s1-end.005">
         <source>And if this was Matins… then somewhere, someone is already writing Lauds.</source>
-        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 5 of 10.</note>
+        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 5 of 13.</note>
         <note from="speaker">Master Haller</note>
       </trans-unit>
       <trans-unit id="s1-end.006" resname="s1-end.006">
-        <source>A remarkable recovery, Doctor. Remarkable.</source>
-        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 6 of 10.</note>
-        <note from="speaker">Inquisitor Stroh</note>
+        <source>In the yard, the carriage without a crest pulls away before anyone thinks to ask whose it is.</source>
+        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 6 of 13.</note>
+        <note from="speaker">Narrator</note>
       </trans-unit>
       <trans-unit id="s1-end.007" resname="s1-end.007">
-        <source>Tell me — at the end, your hands moved so very quickly. Almost as if time itself were… obliging you.</source>
-        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 7 of 10.</note>
+        <source>A remarkable recovery, Doctor. Remarkable.</source>
+        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 7 of 13.</note>
         <note from="speaker">Inquisitor Stroh</note>
       </trans-unit>
       <trans-unit id="s1-end.008" resname="s1-end.008">
-        <source>Practice, Inquisitor. And the grace of Saint Ildra.</source>
-        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 8 of 10.</note>
-        <note from="speaker">Dr. Kreuzer</note>
-      </trans-unit>
-      <trans-unit id="s1-end.009" resname="s1-end.009">
-        <source>Of course. The grace of the Saint. I shall pray on it.</source>
-        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 9 of 10.</note>
+        <source>Tell me — at the end, your hands moved so very quickly. Almost as if time itself were… obliging you.</source>
+        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 8 of 13. Variant line: shown only if the Litany was spoken in the preceding operation.</note>
         <note from="speaker">Inquisitor Stroh</note>
       </trans-unit>
+      <trans-unit id="s1-end.009" resname="s1-end.009">
+        <source>Practice, Inquisitor. And the grace of Saint Ildra.</source>
+        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 9 of 13. Variant line: shown only if the Litany was spoken in the preceding operation.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
       <trans-unit id="s1-end.010" resname="s1-end.010">
+        <source>Of course. The grace of the Saint. I shall pray on it.</source>
+        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 10 of 13. Variant line: shown only if the Litany was spoken in the preceding operation.</note>
+        <note from="speaker">Inquisitor Stroh</note>
+      </trans-unit>
+      <trans-unit id="s1-end.011" resname="s1-end.011">
+        <source>I watched every stroke. No tricks, no prayers. Only a surgeon, working. I find it almost disappointing.</source>
+        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 11 of 13. Variant line: shown only if the Litany was NOT spoken in the preceding operation.</note>
+        <note from="speaker">Inquisitor Stroh</note>
+      </trans-unit>
+      <trans-unit id="s1-end.012" resname="s1-end.012">
+        <source>Surgery usually is, Inquisitor. That is how you know it worked.</source>
+        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 12 of 13. Variant line: shown only if the Litany was NOT spoken in the preceding operation.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
+      <trans-unit id="s1-end.013" resname="s1-end.013">
         <source>END OF CHAPTER I — THE HOUR OF MATINS</source>
-        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 10 of 10.</note>
+        <note from="context">Story scene &quot;s1-end&quot; (The Hospice — before dawn), line 13 of 13.</note>
         <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="a1-1.place" resname="a1-1.place">
+        <source>The Hospice — after the knife-work</source>
+        <note from="context">Place caption of aftermath scene after op1-1 &quot;a1-1&quot;.</note>
+      </trans-unit>
+      <trans-unit id="a1-1.001" resname="a1-1.001">
+        <source>The drover lives. He pays in turnips and a promise not to gamble again. He will break it by Friday.</source>
+        <note from="context">Aftermath scene after op1-1 &quot;a1-1&quot; (The Hospice — after the knife-work), line 1 of 6.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="a1-1.002" resname="a1-1.002">
+        <source>Clean. Quick. Hm. Don’t let it go to your head, Kreuzer. It was simple work.</source>
+        <note from="context">Aftermath scene after op1-1 &quot;a1-1&quot; (The Hospice — after the knife-work), line 2 of 6. Variant line: shown only if the preceding operation's rank was high (high = XS/S, mid = A/B, low = C).</note>
+        <note from="speaker">Master Haller</note>
+      </trans-unit>
+      <trans-unit id="a1-1.003" resname="a1-1.003">
+        <source>Adequate. The Weissburg Guild would call that adequate. I call it Tuesday.</source>
+        <note from="context">Aftermath scene after op1-1 &quot;a1-1&quot; (The Hospice — after the knife-work), line 3 of 6. Variant line: shown only if the preceding operation's rank was mid (high = XS/S, mid = A/B, low = C).</note>
+        <note from="speaker">Master Haller</note>
+      </trans-unit>
+      <trans-unit id="a1-1.004" resname="a1-1.004">
+        <source>He’ll live. Eventually. I said simple work, Kreuzer. I did not say leisurely.</source>
+        <note from="context">Aftermath scene after op1-1 &quot;a1-1&quot; (The Hospice — after the knife-work), line 4 of 6. Variant line: shown only if the preceding operation's rank was low (high = XS/S, mid = A/B, low = C).</note>
+        <note from="speaker">Master Haller</note>
+      </trans-unit>
+      <trans-unit id="a1-1.005" resname="a1-1.005">
+        <source>Turnips, Sister?</source>
+        <note from="context">Aftermath scene after op1-1 &quot;a1-1&quot; (The Hospice — after the knife-work), line 5 of 6.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
+      <trans-unit id="a1-1.006" resname="a1-1.006">
+        <source>Under “fees, vegetable”. We have a column. It is the longest one in the ledger.</source>
+        <note from="context">Aftermath scene after op1-1 &quot;a1-1&quot; (The Hospice — after the knife-work), line 6 of 6.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="a1-2.place" resname="a1-2.place">
+        <source>The Hospice — after the barbed shaft</source>
+        <note from="context">Place caption of aftermath scene after op1-2 &quot;a1-2&quot;.</note>
+      </trans-unit>
+      <trans-unit id="a1-2.001" resname="a1-2.001">
+        <source>Pieter will keep his side, and his opinion of the horned folk.</source>
+        <note from="context">Aftermath scene after op1-2 &quot;a1-2&quot; (The Hospice — after the barbed shaft), line 1 of 4.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="a1-2.002" resname="a1-2.002">
+        <source>Twelve. Twelve walking. The Watch pays its debts, Doctor. Slowly, but it pays.</source>
+        <note from="context">Aftermath scene after op1-2 &quot;a1-2&quot; (The Hospice — after the barbed shaft), line 2 of 4.</note>
+        <note from="speaker">Captain Mauer</note>
+      </trans-unit>
+      <trans-unit id="a1-2.003" resname="a1-2.003">
+        <source>You nicked those barbs like a tailor. Where did Weissburg find the time to teach you that?</source>
+        <note from="context">Aftermath scene after op1-2 &quot;a1-2&quot; (The Hospice — after the barbed shaft), line 3 of 4. Variant line: shown only if the preceding operation's rank was high (high = XS/S, mid = A/B, low = C).</note>
+        <note from="speaker">Master Haller</note>
+      </trans-unit>
+      <trans-unit id="a1-2.004" resname="a1-2.004">
+        <source>You tore him on the second barb. He will heal. He will also remember you.</source>
+        <note from="context">Aftermath scene after op1-2 &quot;a1-2&quot; (The Hospice — after the barbed shaft), line 4 of 4. Variant line: shown only if the preceding operation's rank was low (high = XS/S, mid = A/B, low = C).</note>
+        <note from="speaker">Master Haller</note>
+      </trans-unit>
+      <trans-unit id="a1-3.place" resname="a1-3.place">
+        <source>The Hospice — after the burst barrel</source>
+        <note from="context">Place caption of aftermath scene after op1-3 &quot;a1-3&quot;.</note>
+      </trans-unit>
+      <trans-unit id="a1-3.001" resname="a1-3.001">
+        <source>Anno keeps both hands. The Guild keeps its fee. Nobody keeps the barrel.</source>
+        <note from="context">Aftermath scene after op1-3 &quot;a1-3&quot; (The Hospice — after the burst barrel), line 1 of 4.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="a1-3.002" resname="a1-3.002">
+        <source>His master called. He asked whether the lead we took out of the boy could be melted down again.</source>
+        <note from="context">Aftermath scene after op1-3 &quot;a1-3&quot; (The Hospice — after the burst barrel), line 2 of 4.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="a1-3.003" resname="a1-3.003">
+        <source>Tell him yes. Tell him it is the best-proven lead in Kessendorf.</source>
+        <note from="context">Aftermath scene after op1-3 &quot;a1-3&quot; (The Hospice — after the burst barrel), line 3 of 4.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
+      <trans-unit id="a1-3.004" resname="a1-3.004">
+        <source>The boy will scar. Burns remember every minute you wasted, Kreuzer. So do I.</source>
+        <note from="context">Aftermath scene after op1-3 &quot;a1-3&quot; (The Hospice — after the burst barrel), line 4 of 4. Variant line: shown only if the preceding operation's rank was low (high = XS/S, mid = A/B, low = C).</note>
+        <note from="speaker">Master Haller</note>
+      </trans-unit>
+      <trans-unit id="a1-4.place" resname="a1-4.place">
+        <source>The Hospice — after dark</source>
+        <note from="context">Place caption of aftermath scene after op1-4 &quot;a1-4&quot;.</note>
+      </trans-unit>
+      <trans-unit id="a1-4.001" resname="a1-4.001">
+        <source>Matthis Kolb sleeps in a clean bed for the first time in a year. He asks Ilse to read his name back to him, twice.</source>
+        <note from="context">Aftermath scene after op1-4 &quot;a1-4&quot; (The Hospice — after dark), line 1 of 4.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="a1-4.002" resname="a1-4.002">
+        <source>Buboes in winter. The pestilence is early this year, Doctor. Or it was invited.</source>
+        <note from="context">Aftermath scene after op1-4 &quot;a1-4&quot; (The Hospice — after dark), line 2 of 4.</note>
+        <note from="speaker">Inquisitor Stroh</note>
+      </trans-unit>
+      <trans-unit id="a1-4.003" resname="a1-4.003">
+        <source>Fevers don’t wait for invitations, Inquisitor.</source>
+        <note from="context">Aftermath scene after op1-4 &quot;a1-4&quot; (The Hospice — after dark), line 3 of 4.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
+      <trans-unit id="a1-4.004" resname="a1-4.004">
+        <source>In my experience, everything does.</source>
+        <note from="context">Aftermath scene after op1-4 &quot;a1-4&quot; (The Hospice — after dark), line 4 of 4.</note>
+        <note from="speaker">Inquisitor Stroh</note>
+      </trans-unit>
+      <trans-unit id="f1-1.place" resname="f1-1.place">
+        <source>The Hospice — the table goes still</source>
+        <note from="context">Place caption of failure scene when the patient of op1-1 dies, before the retry prompt &quot;f1-1&quot;.</note>
+      </trans-unit>
+      <trans-unit id="f1-1.001" resname="f1-1.001">
+        <source>Simple work, Kreuzer. Wash your hands. Look at the wounds again. Then do it properly.</source>
+        <note from="context">Failure scene when the patient of op1-1 dies, before the retry prompt &quot;f1-1&quot; (The Hospice — the table goes still), line 1 of 1.</note>
+        <note from="speaker">Master Haller</note>
+      </trans-unit>
+      <trans-unit id="f1-2.place" resname="f1-2.place">
+        <source>The Hospice — the table goes still</source>
+        <note from="context">Place caption of failure scene when the patient of op1-2 dies, before the retry prompt &quot;f1-2&quot;.</note>
+      </trans-unit>
+      <trans-unit id="f1-2.001" resname="f1-2.001">
+        <source>Eleven.</source>
+        <note from="context">Failure scene when the patient of op1-2 dies, before the retry prompt &quot;f1-2&quot; (The Hospice — the table goes still), line 1 of 2.</note>
+        <note from="speaker">Captain Mauer</note>
+      </trans-unit>
+      <trans-unit id="f1-2.002" resname="f1-2.002">
+        <source>Free the barbs before you pull, not after. Again, Kreuzer. He is not yet cold, and neither are you.</source>
+        <note from="context">Failure scene when the patient of op1-2 dies, before the retry prompt &quot;f1-2&quot; (The Hospice — the table goes still), line 2 of 2.</note>
+        <note from="speaker">Master Haller</note>
+      </trans-unit>
+      <trans-unit id="f1-3.place" resname="f1-3.place">
+        <source>The Hospice — the table goes still</source>
+        <note from="context">Place caption of failure scene when the patient of op1-3 dies, before the retry prompt &quot;f1-3&quot;.</note>
+      </trans-unit>
+      <trans-unit id="f1-3.001" resname="f1-3.001">
+        <source>His pulse was fading, Doctor, and we let it fade. The tincture is there to be used.</source>
+        <note from="context">Failure scene when the patient of op1-3 dies, before the retry prompt &quot;f1-3&quot; (The Hospice — the table goes still), line 1 of 1.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="f1-4.place" resname="f1-4.place">
+        <source>The Hospice — the table goes still</source>
+        <note from="context">Place caption of failure scene when the patient of op1-4 dies, before the retry prompt &quot;f1-4&quot;.</note>
+      </trans-unit>
+      <trans-unit id="f1-4.001" resname="f1-4.001">
+        <source>I wrote his name down. I will not write it in the other ledger. Not tonight. Again, Doctor.</source>
+        <note from="context">Failure scene when the patient of op1-4 dies, before the retry prompt &quot;f1-4&quot; (The Hospice — the table goes still), line 1 of 1.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="f1-5.place" resname="f1-5.place">
+        <source>The Hospice — the small hours</source>
+        <note from="context">Place caption of failure scene when the patient of op1-5 dies, before the retry prompt &quot;f1-5&quot;.</note>
+      </trans-unit>
+      <trans-unit id="f1-5.001" resname="f1-5.001">
+        <source>It fights, Kreuzer. It is meant to. Brand it only when it opens its eye — and remember the star.</source>
+        <note from="context">Failure scene when the patient of op1-5 dies, before the retry prompt &quot;f1-5&quot; (The Hospice — the small hours), line 1 of 1.</note>
+        <note from="speaker">Master Haller</note>
+      </trans-unit>
+      <trans-unit id="footnote.op1-1" resname="footnote.op1-1">
+        <source>Jost the drover swore off dice for good. He broke the promise by Friday, and the stitches held anyway.</source>
+        <note from="context">&quot;Where are they now&quot; line for the patient of op1-1, read after the chapter ends. Narration; wry, not cruel.</note>
+      </trans-unit>
+      <trans-unit id="footnote.op1-2" resname="footnote.op1-2">
+        <source>Pieter kept the arrowhead on a cord round his neck and told the militia it was from a duel.</source>
+        <note from="context">&quot;Where are they now&quot; line for the patient of op1-2, read after the chapter ends. Narration; wry, not cruel.</note>
+      </trans-unit>
+      <trans-unit id="footnote.op1-3" resname="footnote.op1-3">
+        <source>Anno went back to the gunsmith’s bench and now stands to the side of every barrel he proves.</source>
+        <note from="context">&quot;Where are they now&quot; line for the patient of op1-3, read after the chapter ends. Narration; wry, not cruel.</note>
+      </trans-unit>
+      <trans-unit id="footnote.op1-4" resname="footnote.op1-4">
+        <source>Matthis Kolb returned to the Tanners’ Rows, and would speak of the buboes to no one but the hospice cat.</source>
+        <note from="context">&quot;Where are they now&quot; line for the patient of op1-4, read after the chapter ends. Narration; wry, not cruel.</note>
+      </trans-unit>
+      <trans-unit id="footnote.op1-5" resname="footnote.op1-5">
+        <source>Emmerich no longer hears the singing. He sleeps with a candle lit, and nobody at the hospice has the heart to stop him.</source>
+        <note from="context">&quot;Where are they now&quot; line for the patient of op1-5, read after the chapter ends. Narration; wry, not cruel.</note>
       </trans-unit>
     </group>
     <group id="ch1/ops" resname="ch1/ops">
@@ -362,7 +665,7 @@
         <note from="context">Operation title (briefing, HUD banner, results, theatre list).</note>
       </trans-unit>
       <trans-unit id="op1-4.patient" resname="op1-4.patient">
-        <source>Unknown vagrant, Tanners’ Rows</source>
+        <source>Matthis Kolb, tanner’s man, Tanners’ Rows</source>
         <note from="context">Patient line on the chart and HUD.</note>
       </trans-unit>
       <trans-unit id="op1-4.diagnosis" resname="op1-4.diagnosis">
@@ -384,7 +687,7 @@
     </group>
     <group id="ch1/callouts" resname="ch1/callouts">
       <trans-unit id="op1-1.p0.1" resname="op1-1.p0.1">
-        <source>Two deep cuts. Take the gut thread and zig-zag across each wound to stitch it.</source>
+        <source>Two deep cuts. Take the Gut Thread and zig-zag across each wound to stitch it.</source>
         <note from="context">Assistant callout when phase 1 of 3 of &quot;A Tavern Knife&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
@@ -394,26 +697,31 @@
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op1-1.p1.1" resname="op1-1.p1.1">
-        <source>Blood’s pooling. Hold the leech-pipe over it to draw it off.</source>
+        <source>Blood’s pooled from the cuts. Hold the Leech-Pipe over it to draw it off.</source>
         <note from="context">Assistant callout when phase 2 of 3 of &quot;A Tavern Knife&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op1-1.p1.2" resname="op1-1.p1.2">
-        <source>You can’t stitch through a pool of blood — drain first.</source>
+        <source>Next time, drain first — you can’t stitch through a pool of blood.</source>
         <note from="context">Assistant callout when phase 2 of 3 of &quot;A Tavern Knife&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op1-1.p2.1" resname="op1-1.p2.1">
-        <source>Just nicks left. Brush Saint’s Salve over the small ones — no need for thread.</source>
+        <source>Just nicks left. Brush Saint’s Salve over the small ones — no need for Gut Thread.</source>
         <note from="context">Assistant callout when phase 3 of 3 of &quot;A Tavern Knife&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op1-2.p0.1" resname="op1-2.p0.1">
-        <source>The arrow’s barbed. Lancet first — two nicks at the entry wound. Then seize it with the tongs and pull it well clear.</source>
+        <source>The arrow’s barbed. Lancet first — two nicks at the entry wound.</source>
         <note from="context">Assistant callout when phase 1 of 2 of &quot;The Barbed Shaft&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op1-2.p0.2" resname="op1-2.p0.2">
+        <source>Then seize it with the Tongs and pull it well clear.</source>
+        <note from="context">Assistant callout when phase 1 of 2 of &quot;The Barbed Shaft&quot; begins.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="op1-2.p0.3" resname="op1-2.p0.3">
         <source>Then drain and stitch the wound it leaves.</source>
         <note from="context">Assistant callout when phase 1 of 2 of &quot;The Barbed Shaft&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
@@ -429,57 +737,62 @@
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op1-3.p0.1" resname="op1-3.p0.1">
-        <source>His pulse is weak already. Hold the tincture to the flesh to steady him if you need it.</source>
+        <source>His pulse is weak already. Hold the Tincture to the flesh to steady him if need be.</source>
         <note from="context">Assistant callout when phase 1 of 4 of &quot;Powder Burns&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op1-3.p0.2" resname="op1-3.p0.2">
-        <source>Burns first. Pluck the black eschar away with the tongs, then salve the raw flesh.</source>
+        <source>Burns first. Tongs to pluck the black eschar, then Saint’s Salve on the raw flesh.</source>
         <note from="context">Assistant callout when phase 1 of 4 of &quot;Powder Burns&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op1-3.p1.1" resname="op1-3.p1.1">
-        <source>Now open him along the inked line with the lancet. Keep to the line — start at the glowing end.</source>
+        <source>Now open him along the inked line with the Lancet. Start at the glowing end.</source>
         <note from="context">Assistant callout when phase 2 of 4 of &quot;Powder Burns&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op1-3.p2.1" resname="op1-3.p2.1">
-        <source>There — the shot. Pull each ball out with the tongs.</source>
+        <source>There — the shot. Pull each ball out with the Tongs.</source>
         <note from="context">Assistant callout when phase 3 of 4 of &quot;Powder Burns&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op1-3.p3.1" resname="op1-3.p3.1">
-        <source>Everything’s clear. Close the incision with the thread.</source>
+        <source>Everything’s clear. Close the incision with the Gut Thread.</source>
         <note from="context">Assistant callout when phase 4 of 4 of &quot;Powder Burns&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op1-4.p0.1" resname="op1-4.p0.1">
-        <source>Lance each bubo with a single touch of the lancet before it bursts. Then drain the pus and salve it.</source>
+        <source>Lance each bubo with a single touch of the Lancet before it bursts.</source>
+        <note from="context">Assistant callout when phase 1 of 3 of &quot;Pestilent Humours&quot; begins.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="op1-4.p0.2" resname="op1-4.p0.2">
+        <source>Then drain the pus and brush Saint’s Salve over it.</source>
         <note from="context">Assistant callout when phase 1 of 3 of &quot;Pestilent Humours&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op1-4.p1.1" resname="op1-4.p1.1">
-        <source>Grubs in the sore! The cautery brand — hold it on each one until it stops moving.</source>
+        <source>Grubs in the sore! The Cautery Brand — hold it on each one until it stops moving.</source>
         <note from="context">Assistant callout when phase 2 of 3 of &quot;Pestilent Humours&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op1-4.p1.2" resname="op1-4.p1.2">
-        <source>Don’t linger on bare flesh with the brand.</source>
+        <source>Don’t linger on bare flesh with the Cautery Brand.</source>
         <note from="context">Assistant callout when phase 2 of 3 of &quot;Pestilent Humours&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op1-4.p2.1" resname="op1-4.p2.1">
-        <source>The rot’s spreading. Salve every patch — quickly, it creeps back.</source>
+        <source>The rot’s spreading. Saint’s Salve on every patch — quickly, it creeps back.</source>
         <note from="context">Assistant callout when phase 3 of 3 of &quot;Pestilent Humours&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op1-5.p0.1" resname="op1-5.p0.1">
-        <source>Those sigils are draining him. Trace every stroke of each one with the brand to sear it out.</source>
+        <source>Those sigils are draining him. Trace every stroke with the Cautery Brand to sear them.</source>
         <note from="context">Assistant callout when phase 1 of 5 of &quot;The Hour of Matins&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op1-5.p1.1" resname="op1-5.p1.1">
-        <source>Something is moving beneath the skin. We have to open him. The lancet — along the line.</source>
+        <source>Something is moving beneath the skin. We have to open him. The Lancet — along the line.</source>
         <note from="context">Assistant callout when phase 2 of 5 of &quot;The Hour of Matins&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
@@ -489,7 +802,7 @@
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op1-5.p2.2" resname="op1-5.p2.2">
-        <source>Doctor — if ever there were a time for the Litany, it is now. Draw the star with the right hand.</source>
+        <source>Doctor — if ever there were a time for the Litany, it is now. Draw the star.</source>
         <note from="context">Assistant callout when phase 3 of 5 of &quot;The Hour of Matins&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
@@ -499,9 +812,69 @@
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op1-5.p4.1" resname="op1-5.p4.1">
-        <source>Everything’s clear. Close the incision with the thread.</source>
+        <source>Everything’s clear. Close the incision with the Gut Thread.</source>
         <note from="context">Assistant callout when phase 5 of 5 of &quot;The Hour of Matins&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="tutorial.thread" resname="tutorial.thread">
+        <source>Gut Thread {TOOL_THREAD}: {USE_DRAG} back and forth across the wound, moving along it.</source>
+        <note from="context">Tutorial prompt, first shown in op1-1. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction.</note>
+      </trans-unit>
+      <trans-unit id="tutorial.leech" resname="tutorial.leech">
+        <source>Leech-Pipe {TOOL_LEECH}: hold {USE} over pooled blood until it is drawn off.</source>
+        <note from="context">Tutorial prompt, first shown in op1-1. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction.</note>
+      </trans-unit>
+      <trans-unit id="tutorial.drain-first" resname="tutorial.drain-first">
+        <source>Blood in a wound? Drain it with the Leech-Pipe before you stitch.</source>
+        <note from="context">Tutorial prompt, first shown in op1-1. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction.</note>
+      </trans-unit>
+      <trans-unit id="tutorial.salve" resname="tutorial.salve">
+        <source>Saint’s Salve {TOOL_SALVE}: {USE_DRAG} over small nicks and rot to seal them.</source>
+        <note from="context">Tutorial prompt, first shown in op1-1. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction.</note>
+      </trans-unit>
+      <trans-unit id="tutorial.lancet" resname="tutorial.lancet">
+        <source>Lancet {TOOL_LANCET}: {USE_DRAG} along an inked line, or tap {USE} to nick or lance.</source>
+        <note from="context">Tutorial prompt, first shown in op1-2. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction.</note>
+      </trans-unit>
+      <trans-unit id="tutorial.barbs" resname="tutorial.barbs">
+        <source>Barbed head: nick the entry twice with the Lancet before you pull.</source>
+        <note from="context">Tutorial prompt, first shown in op1-2. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction.</note>
+      </trans-unit>
+      <trans-unit id="tutorial.tongs" resname="tutorial.tongs">
+        <source>Tongs {TOOL_TONGS}: hold {USE} on the object and drag it well clear of the body.</source>
+        <note from="context">Tutorial prompt, first shown in op1-2. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction.</note>
+      </trans-unit>
+      <trans-unit id="tutorial.eschar" resname="tutorial.eschar">
+        <source>Burns: pluck the black eschar away with the Tongs, then salve the raw flesh.</source>
+        <note from="context">Tutorial prompt, first shown in op1-3. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction.</note>
+      </trans-unit>
+      <trans-unit id="tutorial.incision" resname="tutorial.incision">
+        <source>Incision: start at the glowing end of the inked line and keep to it.</source>
+        <note from="context">Tutorial prompt, first shown in op1-3. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction.</note>
+      </trans-unit>
+      <trans-unit id="tutorial.tincture" resname="tutorial.tincture">
+        <source>Tincture {TOOL_TINCTURE}: hold {USE} on the body to steady a failing pulse.</source>
+        <note from="context">Tutorial prompt, first shown in op1-3. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction.</note>
+      </trans-unit>
+      <trans-unit id="tutorial.buboes" resname="tutorial.buboes">
+        <source>Buboes: one clean tap of the Lancet each, then drain the pus and salve.</source>
+        <note from="context">Tutorial prompt, first shown in op1-4. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction.</note>
+      </trans-unit>
+      <trans-unit id="tutorial.brand" resname="tutorial.brand">
+        <source>Cautery Brand {TOOL_BRAND}: hold {USE} on grubs and sigils. It sears healthy flesh too.</source>
+        <note from="context">Tutorial prompt, first shown in op1-4. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction.</note>
+      </trans-unit>
+      <trans-unit id="tutorial.sigils" resname="tutorial.sigils">
+        <source>Sigils: trace every stroke with the Brand, in order.</source>
+        <note from="context">Tutorial prompt, first shown in op1-5. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction.</note>
+      </trans-unit>
+      <trans-unit id="tutorial.matins" resname="tutorial.matins">
+        <source>The Malison: brand it only while its eye is open.</source>
+        <note from="context">Tutorial prompt, first shown in op1-5. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction.</note>
+      </trans-unit>
+      <trans-unit id="tutorial.litany" resname="tutorial.litany">
+        <source>The Litany of Stillness: {LITANY_GESTURE} to draw a five-pointed star, or {LITANY_KEY}. Once per operation.</source>
+        <note from="context">Tutorial prompt, first shown in op1-5. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction.</note>
       </trans-unit>
     </group>
     <group id="ch2/names" resname="ch2/names">
@@ -509,21 +882,57 @@
         <source>The Hour of Lauds</source>
         <note from="context">Title of Chapter II. Canonical-hour names follow the termbase.</note>
       </trans-unit>
-      <trans-unit id="s2-2.002.as" resname="s2-2.002.as">
+      <trans-unit id="s2-2.001.as" resname="s2-2.001.as">
         <source>Orsa Flintvein</source>
-        <note from="context">Speaker name shown for s2-2.002.</note>
+        <note from="context">Speaker name shown for s2-2.001.</note>
       </trans-unit>
-      <trans-unit id="s2-2.004.as" resname="s2-2.004.as">
+      <trans-unit id="s2-2.003.as" resname="s2-2.003.as">
         <source>Orsa Flintvein</source>
-        <note from="context">Speaker name shown for s2-2.004.</note>
+        <note from="context">Speaker name shown for s2-2.003.</note>
       </trans-unit>
-      <trans-unit id="s2-2.007.as" resname="s2-2.007.as">
+      <trans-unit id="s2-2.005.as" resname="s2-2.005.as">
         <source>Orsa Flintvein</source>
-        <note from="context">Speaker name shown for s2-2.007.</note>
+        <note from="context">Speaker name shown for s2-2.005.</note>
       </trans-unit>
-      <trans-unit id="s2-5.002.as" resname="s2-5.002.as">
+      <trans-unit id="s2-2.008.as" resname="s2-2.008.as">
+        <source>Orsa Flintvein</source>
+        <note from="context">Speaker name shown for s2-2.008.</note>
+      </trans-unit>
+      <trans-unit id="s2-3.003.as" resname="s2-3.003.as">
+        <source>Ilvaren</source>
+        <note from="context">Speaker name shown for s2-3.003.</note>
+      </trans-unit>
+      <trans-unit id="s2-5.001.as" resname="s2-5.001.as">
         <source>The cantor</source>
-        <note from="context">Speaker name shown for s2-5.002.</note>
+        <note from="context">Speaker name shown for s2-5.001.</note>
+      </trans-unit>
+      <trans-unit id="s2-5.004.as" resname="s2-5.004.as">
+        <source>The first voice</source>
+        <note from="context">Speaker name shown for s2-5.004.</note>
+      </trans-unit>
+      <trans-unit id="s2-5.005.as" resname="s2-5.005.as">
+        <source>The answering voice</source>
+        <note from="context">Speaker name shown for s2-5.005.</note>
+      </trans-unit>
+      <trans-unit id="s2-5.006.as" resname="s2-5.006.as">
+        <source>The first voice</source>
+        <note from="context">Speaker name shown for s2-5.006.</note>
+      </trans-unit>
+      <trans-unit id="s2-5.007.as" resname="s2-5.007.as">
+        <source>The answering voice</source>
+        <note from="context">Speaker name shown for s2-5.007.</note>
+      </trans-unit>
+      <trans-unit id="a2-2.001.as" resname="a2-2.001.as">
+        <source>Orsa Flintvein</source>
+        <note from="context">Speaker name shown for a2-2.001.</note>
+      </trans-unit>
+      <trans-unit id="a2-2.003.as" resname="a2-2.003.as">
+        <source>Orsa Flintvein</source>
+        <note from="context">Speaker name shown for a2-2.003.</note>
+      </trans-unit>
+      <trans-unit id="a2-2.004.as" resname="a2-2.004.as">
+        <source>Orsa Flintvein</source>
+        <note from="context">Speaker name shown for a2-2.004.</note>
       </trans-unit>
     </group>
     <group id="ch2/story" resname="ch2/story">
@@ -533,105 +942,150 @@
       </trans-unit>
       <trans-unit id="s2-1.001" resname="s2-1.001">
         <source>CHAPTER II — THE HOUR OF LAUDS</source>
-        <note from="context">Story scene &quot;s2-1&quot; (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 1 of 8.</note>
+        <note from="context">Story scene &quot;s2-1&quot; (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 1 of 11.</note>
         <note from="speaker">Narrator</note>
       </trans-unit>
       <trans-unit id="s2-1.002" resname="s2-1.002">
-        <source>A week after the page-boy, a writ arrives with the Watch’s seal: the hospice’s surgeon is requisitioned for the muster.</source>
-        <note from="context">Story scene &quot;s2-1&quot; (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 2 of 8.</note>
+        <source>A week later.</source>
+        <note from="context">Story scene &quot;s2-1&quot; (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 2 of 11.</note>
         <note from="speaker">Narrator</note>
       </trans-unit>
       <trans-unit id="s2-1.003" resname="s2-1.003">
-        <source>Don’t look at me like that, Doctor. I didn’t ask for you. The Inquisitor “suggested” it to the Burgomaster.</source>
-        <note from="context">Story scene &quot;s2-1&quot; (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 3 of 8.</note>
-        <note from="speaker">Captain Mauer</note>
+        <source>A week after the page-boy, a writ arrives under the Watch’s seal: the hospice’s surgeon is requisitioned for the muster.</source>
+        <note from="context">Story scene &quot;s2-1&quot; (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 3 of 11.</note>
+        <note from="speaker">Narrator</note>
       </trans-unit>
       <trans-unit id="s2-1.004" resname="s2-1.004">
-        <source>So he can watch you somewhere with fewer witnesses.</source>
-        <note from="context">Story scene &quot;s2-1&quot; (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 4 of 8.</note>
-        <note from="speaker">Sister Ilse</note>
-      </trans-unit>
-      <trans-unit id="s2-1.005" resname="s2-1.005">
-        <source>We’re clearing the Grauwald of raiders before the spring caravans. My lads need a surgeon more than a city needs rumours.</source>
-        <note from="context">Story scene &quot;s2-1&quot; (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 5 of 8.</note>
+        <source>Don’t look at me like that, Doctor. The Inquisitor dines with the Burgomaster on Thursdays. On Fridays, the Burgomaster signs things.</source>
+        <note from="context">Story scene &quot;s2-1&quot; (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 4 of 11.</note>
         <note from="speaker">Captain Mauer</note>
       </trans-unit>
+      <trans-unit id="s2-1.005" resname="s2-1.005">
+        <source>So Stroh can watch you somewhere with fewer witnesses.</source>
+        <note from="context">Story scene &quot;s2-1&quot; (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 5 of 11.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
       <trans-unit id="s2-1.006" resname="s2-1.006">
-        <source>Speaking of which — the scouts came back. Two of them. Something followed them out of the barrow-fields.</source>
-        <note from="context">Story scene &quot;s2-1&quot; (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 6 of 8.</note>
+        <source>Fewer? Forty men in this camp, Sister. Forty witnesses. Forty-one with the cook, and I don’t count the cook.</source>
+        <note from="context">Story scene &quot;s2-1&quot; (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 6 of 11.</note>
         <note from="speaker">Captain Mauer</note>
       </trans-unit>
       <trans-unit id="s2-1.007" resname="s2-1.007">
-        <source>Doctor, it’s a gravehound bite. Claw rakes across the back, and — look — it left its teeth in him.</source>
-        <note from="context">Story scene &quot;s2-1&quot; (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 7 of 8.</note>
+        <source>You count everyone, Captain. You counted the mules.</source>
+        <note from="context">Story scene &quot;s2-1&quot; (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 7 of 11.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="s2-1.008" resname="s2-1.008">
-        <source>Corpse-eaters carry a venom in their spit. Hold the tincture to the bite itself and it will draw the poison.</source>
-        <note from="context">Story scene &quot;s2-1&quot; (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 8 of 8.</note>
+        <source>The mules keep better order. We clear the Grauwald of raiders before the spring caravans. Two scouts came back from the barrow-fields.</source>
+        <note from="context">Story scene &quot;s2-1&quot; (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 8 of 11.</note>
+        <note from="speaker">Captain Mauer</note>
+      </trans-unit>
+      <trans-unit id="s2-1.009" resname="s2-1.009">
+        <source>Something followed them out.</source>
+        <note from="context">Story scene &quot;s2-1&quot; (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 9 of 11.</note>
+        <note from="speaker">Captain Mauer</note>
+      </trans-unit>
+      <trans-unit id="s2-1.010" resname="s2-1.010">
+        <source>A gravehound. Claw rakes across his back — and it has left its teeth in him.</source>
+        <note from="context">Story scene &quot;s2-1&quot; (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 10 of 11.</note>
         <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="s2-1.011" resname="s2-1.011">
+        <source>Corpse-eaters carry a venom in their spit. Tomas, isn’t it? Look at me, Tomas. You’ll keep the arm.</source>
+        <note from="context">Story scene &quot;s2-1&quot; (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 11 of 11.</note>
+        <note from="speaker">Dr. Kreuzer</note>
       </trans-unit>
       <trans-unit id="s2-2.place" resname="s2-2.place">
         <source>The muster camp — afternoon</source>
         <note from="context">Place and time caption at the top-left of the scene.</note>
       </trans-unit>
       <trans-unit id="s2-2.001" resname="s2-2.001">
-        <source>The scout will limp, but he will limp home.</source>
-        <note from="context">Story scene &quot;s2-2&quot; (The muster camp — afternoon), line 1 of 7.</note>
-        <note from="speaker">Narrator</note>
+        <source>Put me down, you long-legged oafs! I can walk! I can… mostly walk.</source>
+        <note from="context">Story scene &quot;s2-2&quot; (The muster camp — afternoon), line 1 of 9.</note>
+        <note from="speaker">Orsa Flintvein</note>
       </trans-unit>
       <trans-unit id="s2-2.002" resname="s2-2.002">
-        <source>Put me down, you long-legged oafs! I can walk! I can… mostly walk.</source>
-        <note from="context">Story scene &quot;s2-2&quot; (The muster camp — afternoon), line 2 of 7.</note>
-        <note from="speaker">Orsa Flintvein</note>
-      </trans-unit>
-      <trans-unit id="s2-2.003" resname="s2-2.003">
         <source>Dwarf prospector. Her crew was working a seam in the hills when it caved in.</source>
-        <note from="context">Story scene &quot;s2-2&quot; (The muster camp — afternoon), line 3 of 7.</note>
+        <note from="context">Story scene &quot;s2-2&quot; (The muster camp — afternoon), line 2 of 9.</note>
         <note from="speaker">Captain Mauer</note>
       </trans-unit>
-      <trans-unit id="s2-2.004" resname="s2-2.004">
-        <source>The rock went black, Doctor. Black and wrong, like a bruise in the stone. It sang when we struck it. Then it burst.</source>
-        <note from="context">Story scene &quot;s2-2&quot; (The muster camp — afternoon), line 4 of 7.</note>
+      <trans-unit id="s2-2.003" resname="s2-2.003">
+        <source>The rock went black, Doctor. Black as a wet eye, and it had a pulse. It sang when we struck it. Then it burst.</source>
+        <note from="context">Story scene &quot;s2-2&quot; (The muster camp — afternoon), line 3 of 9.</note>
         <note from="speaker">Orsa Flintvein</note>
       </trans-unit>
-      <trans-unit id="s2-2.005" resname="s2-2.005">
-        <source>There are shards under her skin that I can’t see — but the flesh around them is spoiling.</source>
-        <note from="context">Story scene &quot;s2-2&quot; (The muster camp — afternoon), line 5 of 7.</note>
+      <trans-unit id="s2-2.004" resname="s2-2.004">
+        <source>Mind her beard, Doctor. Every knot in it is tied for a debt.</source>
+        <note from="context">Story scene &quot;s2-2&quot; (The muster camp — afternoon), line 4 of 9.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
+      <trans-unit id="s2-2.005" resname="s2-2.005">
+        <source>Nineteen knots. Nine are owed to me, ten I owe. If I die owing ten, my sons pay them, and my sons are idle.</source>
+        <note from="context">Story scene &quot;s2-2&quot; (The muster camp — afternoon), line 5 of 9.</note>
+        <note from="speaker">Orsa Flintvein</note>
+      </trans-unit>
       <trans-unit id="s2-2.006" resname="s2-2.006">
-        <source>Master Haller sent this with me. His old Scrying Lens. Pass it slowly over the flesh and it shows what hides beneath.</source>
-        <note from="context">Story scene &quot;s2-2&quot; (The muster camp — afternoon), line 6 of 7.</note>
+        <source>There are shards under her skin I can’t see — but the flesh around them is spoiling.</source>
+        <note from="context">Story scene &quot;s2-2&quot; (The muster camp — afternoon), line 6 of 9.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="s2-2.007" resname="s2-2.007">
+        <source>Master Haller sent his old Scrying Lens with me. He says you are to break anything else of his first.</source>
+        <note from="context">Story scene &quot;s2-2&quot; (The muster camp — afternoon), line 7 of 9.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="s2-2.008" resname="s2-2.008">
         <source>Dwarf hide’s thicker than yours, lad. You’ll want a strong arm on that thread.</source>
-        <note from="context">Story scene &quot;s2-2&quot; (The muster camp — afternoon), line 7 of 7.</note>
+        <note from="context">Story scene &quot;s2-2&quot; (The muster camp — afternoon), line 8 of 9.</note>
         <note from="speaker">Orsa Flintvein</note>
+      </trans-unit>
+      <trans-unit id="s2-2.009" resname="s2-2.009">
+        <source>Hold still, Mistress Flintvein, and I’ll owe you a knot.</source>
+        <note from="context">Story scene &quot;s2-2&quot; (The muster camp — afternoon), line 9 of 9.</note>
+        <note from="speaker">Dr. Kreuzer</note>
       </trans-unit>
       <trans-unit id="s2-3.place" resname="s2-3.place">
         <source>The muster camp — night</source>
         <note from="context">Place and time caption at the top-left of the scene.</note>
       </trans-unit>
       <trans-unit id="s2-3.001" resname="s2-3.001">
-        <source>Orsa sleeps in the supply wagon, snoring like a bellows. She has promised to name a mine after the Doctor. It will probably be a bad one.</source>
-        <note from="context">Story scene &quot;s2-3&quot; (The muster camp — night), line 1 of 4.</note>
+        <source>Orsa sleeps in the supply wagon, snoring like a bellows. The sentries swear it keeps the wolves off.</source>
+        <note from="context">Story scene &quot;s2-3&quot; (The muster camp — night), line 1 of 8.</note>
         <note from="speaker">Narrator</note>
       </trans-unit>
       <trans-unit id="s2-3.002" resname="s2-3.002">
-        <source>Forager. Went to check his snares near the old web-trees. We found him wrapped up like a Martinmas ham.</source>
-        <note from="context">Story scene &quot;s2-3&quot; (The muster camp — night), line 2 of 4.</note>
+        <source>Elf forager. Went to check his snares by the old web-trees. We found him wrapped up like a midwinter ham.</source>
+        <note from="context">Story scene &quot;s2-3&quot; (The muster camp — night), line 2 of 8.</note>
         <note from="speaker">Captain Mauer</note>
       </trans-unit>
       <trans-unit id="s2-3.003" resname="s2-3.003">
-        <source>A web-spinner bite. Venom, spreading fast. And these lumps under the skin… Saints. She laid in him.</source>
-        <note from="context">Story scene &quot;s2-3&quot; (The muster camp — night), line 3 of 4.</note>
-        <note from="speaker">Sister Ilse</note>
+        <source>…the brood-mother… she kissed me… she was so gentle about it…</source>
+        <note from="context">Story scene &quot;s2-3&quot; (The muster camp — night), line 3 of 8.</note>
+        <note from="speaker">Ilvaren</note>
       </trans-unit>
       <trans-unit id="s2-3.004" resname="s2-3.004">
-        <source>Lance the sacs before they hatch, Doctor, and sear what spills out. If they hatch on their own, they’ll scatter.</source>
-        <note from="context">Story scene &quot;s2-3&quot; (The muster camp — night), line 4 of 4.</note>
+        <source>Elf skin, Doctor — thin as vellum. It cuts at a breath and bleeds like a spring.</source>
+        <note from="context">Story scene &quot;s2-3&quot; (The muster camp — night), line 4 of 8.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="s2-3.005" resname="s2-3.005">
+        <source>The foresters call the great web-spinners brood-mothers. Venom, spreading fast. And these lumps… Saints. She laid in him.</source>
+        <note from="context">Story scene &quot;s2-3&quot; (The muster camp — night), line 5 of 8.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="s2-3.006" resname="s2-3.006">
+        <source>My lads won’t fetch water past the web-trees now. They say a brood-mother remembers every face that has seen her.</source>
+        <note from="context">Story scene &quot;s2-3&quot; (The muster camp — night), line 6 of 8.</note>
+        <note from="speaker">Captain Mauer</note>
+      </trans-unit>
+      <trans-unit id="s2-3.007" resname="s2-3.007">
+        <source>Then fetch my water from somewhere she hasn’t looked, Captain. And more light.</source>
+        <note from="context">Story scene &quot;s2-3&quot; (The muster camp — night), line 7 of 8.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
+      <trans-unit id="s2-3.008" resname="s2-3.008">
+        <source>The sacs are swelling, Doctor. If they hatch on their own, they’ll scatter.</source>
+        <note from="context">Story scene &quot;s2-3&quot; (The muster camp — night), line 8 of 8.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="s2-4.place" resname="s2-4.place">
@@ -640,37 +1094,62 @@
       </trans-unit>
       <trans-unit id="s2-4.001" resname="s2-4.001">
         <source>Doctor. I have brought you a gift.</source>
-        <note from="context">Story scene &quot;s2-4&quot; (The muster camp — before midnight), line 1 of 7.</note>
+        <note from="context">Story scene &quot;s2-4&quot; (The muster camp — before midnight), line 1 of 10.</note>
         <note from="speaker">Inquisitor Stroh</note>
       </trans-unit>
       <trans-unit id="s2-4.002" resname="s2-4.002">
         <source>Two of the Inquisitor’s men drag a thin, grey-robed figure into the light. His chest is a lattice of glowing sigils.</source>
-        <note from="context">Story scene &quot;s2-4&quot; (The muster camp — before midnight), line 2 of 7.</note>
+        <note from="context">Story scene &quot;s2-4&quot; (The muster camp — before midnight), line 2 of 10.</note>
         <note from="speaker">Narrator</note>
       </trans-unit>
       <trans-unit id="s2-4.003" resname="s2-4.003">
-        <source>A lay-cantor of the Hollow Choir. We took him in the barrow-fields, singing to the dead.</source>
-        <note from="context">Story scene &quot;s2-4&quot; (The muster camp — before midnight), line 3 of 7.</note>
+        <source>A lay-cantor of the Hollow Choir. We took him in the barrow-fields, singing to the dead. Something in the barrows sang back.</source>
+        <note from="context">Story scene &quot;s2-4&quot; (The muster camp — before midnight), line 3 of 10.</note>
         <note from="speaker">Inquisitor Stroh</note>
       </trans-unit>
       <trans-unit id="s2-4.004" resname="s2-4.004">
-        <source>The moment he began to confess, those marks ignited. His masters would rather he burned than spoke.</source>
-        <note from="context">Story scene &quot;s2-4&quot; (The muster camp — before midnight), line 4 of 7.</note>
+        <source>The moment he began to confess, those marks ignited. He also swallowed something. His masters would rather he burned than spoke.</source>
+        <note from="context">Story scene &quot;s2-4&quot; (The muster camp — before midnight), line 4 of 10.</note>
         <note from="speaker">Inquisitor Stroh</note>
       </trans-unit>
       <trans-unit id="s2-4.005" resname="s2-4.005">
-        <source>He also swallowed something. You will keep him alive. I have questions, and the dead are poor at answering them.</source>
-        <note from="context">Story scene &quot;s2-4&quot; (The muster camp — before midnight), line 5 of 7.</note>
+        <source>You will keep him alive, Doctor — and awake. I have questions, and the dead are poor at answering them.</source>
+        <note from="context">Story scene &quot;s2-4&quot; (The muster camp — before midnight), line 5 of 10.</note>
         <note from="speaker">Inquisitor Stroh</note>
       </trans-unit>
       <trans-unit id="s2-4.006" resname="s2-4.006">
-        <source>…Doctor. Whatever he is, he’s a patient.</source>
-        <note from="context">Story scene &quot;s2-4&quot; (The muster camp — before midnight), line 6 of 7.</note>
+        <source>…He’s dying, Doctor. Whatever else he is, he’s a patient.</source>
+        <note from="context">Story scene &quot;s2-4&quot; (The muster camp — before midnight), line 6 of 10.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="s2-4.007" resname="s2-4.007">
+        <source>The cantor’s eyes find Kreuzer’s. Stroh waits, one glove already off.</source>
+        <note from="context">Story scene &quot;s2-4&quot; (The muster camp — before midnight), line 7 of 10. Choice prompt: the player then picks one of 2 replies (ids .o1–.o2).</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="s2-4.007.o1" resname="s2-4.007.o1">
+        <source>I treat the man on my table, Inquisitor, not your witness. If he needs poppy for the pain, he has poppy.</source>
+        <note from="context">Reply 1 of 2 to the choice at s2-4.007; shown as a menu option, then in the backlog as Kreuzer's line. Sets `cantorMercy` = true.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
+      <trans-unit id="s2-4.007.o2" resname="s2-4.007.o2">
+        <source>You’ll have him alive and awake, Inquisitor. Keep your men out of my light.</source>
+        <note from="context">Reply 2 of 2 to the choice at s2-4.007; shown as a menu option, then in the backlog as Kreuzer's line. Sets `cantorMercy` = false.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
+      <trans-unit id="s2-4.008" resname="s2-4.008">
+        <source>Poppy. So the Choir’s man sleeps soft while the city burns its sick. I shall remember whose mercy that was.</source>
+        <note from="context">Story scene &quot;s2-4&quot; (The muster camp — before midnight), line 8 of 10. Variant line: shown only if `cantorMercy` is set.</note>
+        <note from="speaker">Inquisitor Stroh</note>
+      </trans-unit>
+      <trans-unit id="s2-4.009" resname="s2-4.009">
+        <source>Alive and awake. Good. We understand each other, Doctor — a rarer thing than you know.</source>
+        <note from="context">Story scene &quot;s2-4&quot; (The muster camp — before midnight), line 9 of 10. Variant line: shown only if `cantorMercy` is false.</note>
+        <note from="speaker">Inquisitor Stroh</note>
+      </trans-unit>
+      <trans-unit id="s2-4.010" resname="s2-4.010">
         <source>On the table. Now.</source>
-        <note from="context">Story scene &quot;s2-4&quot; (The muster camp — before midnight), line 7 of 7.</note>
+        <note from="context">Story scene &quot;s2-4&quot; (The muster camp — before midnight), line 10 of 10.</note>
         <note from="speaker">Dr. Kreuzer</note>
       </trans-unit>
       <trans-unit id="s2-5.place" resname="s2-5.place">
@@ -678,33 +1157,53 @@
         <note from="context">Place and time caption at the top-left of the scene.</note>
       </trans-unit>
       <trans-unit id="s2-5.001" resname="s2-5.001">
-        <source>The cantor lived long enough to whisper one thing, before Stroh’s men took him away.</source>
-        <note from="context">Story scene &quot;s2-5&quot; (The muster camp — dawn), line 1 of 6.</note>
-        <note from="speaker">Narrator</note>
-      </trans-unit>
-      <trans-unit id="s2-5.002" resname="s2-5.002">
         <source>Lauds… is sung at dawn… with the muster… under the banner…</source>
-        <note from="context">Story scene &quot;s2-5&quot; (The muster camp — dawn), line 2 of 6.</note>
+        <note from="context">Story scene &quot;s2-5&quot; (The muster camp — dawn), line 1 of 10.</note>
         <note from="speaker">The cantor</note>
       </trans-unit>
-      <trans-unit id="s2-5.003" resname="s2-5.003">
-        <source>The dawn muster? That’s now — the whole company’s singing the morning hymn—</source>
-        <note from="context">Story scene &quot;s2-5&quot; (The muster camp — dawn), line 3 of 6.</note>
+      <trans-unit id="s2-5.002" resname="s2-5.002">
+        <source>The dawn muster? That’s now—</source>
+        <note from="context">Story scene &quot;s2-5&quot; (The muster camp — dawn), line 2 of 10.</note>
         <note from="speaker">Captain Mauer</note>
       </trans-unit>
-      <trans-unit id="s2-5.004" resname="s2-5.004">
-        <source>Across the camp, the hymn falters. The standard-bearer drops to his knees, the banner falling across him.</source>
-        <note from="context">Story scene &quot;s2-5&quot; (The muster camp — dawn), line 4 of 6.</note>
+      <trans-unit id="s2-5.003" resname="s2-5.003">
+        <source>Across the camp, forty voices sing up the dawn. Beneath them, two more voices begin: one calling, one answering.</source>
+        <note from="context">Story scene &quot;s2-5&quot; (The muster camp — dawn), line 3 of 10.</note>
         <note from="speaker">Narrator</note>
       </trans-unit>
+      <trans-unit id="s2-5.004" resname="s2-5.004">
+        <source>Who keeps the watch before the sun?</source>
+        <note from="context">Story scene &quot;s2-5&quot; (The muster camp — dawn), line 4 of 10.</note>
+        <note from="speaker">The first voice</note>
+      </trans-unit>
       <trans-unit id="s2-5.005" resname="s2-5.005">
-        <source>Doctor! It’s Jorg, the standard-bearer — his chest is moving… it’s singing back!</source>
-        <note from="context">Story scene &quot;s2-5&quot; (The muster camp — dawn), line 5 of 6.</note>
-        <note from="speaker">Sister Ilse</note>
+        <source>The one who wakes, and wakes alone.</source>
+        <note from="context">Story scene &quot;s2-5&quot; (The muster camp — dawn), line 5 of 10.</note>
+        <note from="speaker">The answering voice</note>
       </trans-unit>
       <trans-unit id="s2-5.006" resname="s2-5.006">
+        <source>Who sings the day when day is done?</source>
+        <note from="context">Story scene &quot;s2-5&quot; (The muster camp — dawn), line 6 of 10.</note>
+        <note from="speaker">The first voice</note>
+      </trans-unit>
+      <trans-unit id="s2-5.007" resname="s2-5.007">
+        <source>The one we answer, bone to bone.</source>
+        <note from="context">Story scene &quot;s2-5&quot; (The muster camp — dawn), line 7 of 10.</note>
+        <note from="speaker">The answering voice</note>
+      </trans-unit>
+      <trans-unit id="s2-5.008" resname="s2-5.008">
+        <source>The standard-bearer drops to his knees, the banner falling across him. The hymn falters. The two voices do not.</source>
+        <note from="context">Story scene &quot;s2-5&quot; (The muster camp — dawn), line 8 of 10.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="s2-5.009" resname="s2-5.009">
+        <source>Doctor! It’s Jorg — there are two of them in his chest, and each one answers the other!</source>
+        <note from="context">Story scene &quot;s2-5&quot; (The muster camp — dawn), line 9 of 10.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="s2-5.010" resname="s2-5.010">
         <source>Clear a table. Sister — every instrument we have.</source>
-        <note from="context">Story scene &quot;s2-5&quot; (The muster camp — dawn), line 6 of 6.</note>
+        <note from="context">Story scene &quot;s2-5&quot; (The muster camp — dawn), line 10 of 10.</note>
         <note from="speaker">Dr. Kreuzer</note>
       </trans-unit>
       <trans-unit id="s2-end.place" resname="s2-end.place">
@@ -713,48 +1212,226 @@
       </trans-unit>
       <trans-unit id="s2-end.001" resname="s2-end.001">
         <source>The singing stops. The standard-bearer breathes. In the flesh over his heart, a single word: LAUDS.</source>
-        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 1 of 9.</note>
+        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 1 of 13.</note>
         <note from="speaker">Narrator</note>
       </trans-unit>
       <trans-unit id="s2-end.002" resname="s2-end.002">
-        <source>Two of them now. Matins in the city, Lauds in my own camp. Someone is keeping time, Doctor.</source>
-        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 2 of 9.</note>
-        <note from="speaker">Captain Mauer</note>
-      </trans-unit>
-      <trans-unit id="s2-end.003" resname="s2-end.003">
-        <source>Six more hours to the full Office. Prime. Terce. Sext. None. Vespers. Compline.</source>
-        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 3 of 9.</note>
+        <source>And beside it — Doctor, look. An eye with a stroke through it. The same mark the page-boy carried.</source>
+        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 2 of 13.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
+      <trans-unit id="s2-end.003" resname="s2-end.003">
+        <source>Two of them now. Matins in the city, Lauds in my own camp. Someone is keeping time, Doctor.</source>
+        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 3 of 13.</note>
+        <note from="speaker">Captain Mauer</note>
+      </trans-unit>
       <trans-unit id="s2-end.004" resname="s2-end.004">
-        <source>Doctor Kreuzer.</source>
-        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 4 of 9.</note>
-        <note from="speaker">Inquisitor Stroh</note>
+        <source>Six more hours to the full Office. Prime. Terce. Sext. None. Vespers. Compline.</source>
+        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 4 of 13.</note>
+        <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="s2-end.005" resname="s2-end.005">
-        <source>When that thing screamed, every candle in this tent stopped flickering. The flames stood still. For eight heartbeats.</source>
-        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 5 of 9.</note>
-        <note from="speaker">Inquisitor Stroh</note>
+        <source>In the ward tent a wounded pikeman hums the dawn hymn in his sleep. Two notes. Then, from nowhere, the answer.</source>
+        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 5 of 13.</note>
+        <note from="speaker">Narrator</note>
       </trans-unit>
       <trans-unit id="s2-end.006" resname="s2-end.006">
-        <source>I counted.</source>
-        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 6 of 9.</note>
+        <source>Doctor Kreuzer.</source>
+        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 6 of 13.</note>
         <note from="speaker">Inquisitor Stroh</note>
       </trans-unit>
       <trans-unit id="s2-end.007" resname="s2-end.007">
-        <source>…The morning air is very still, Inquisitor.</source>
-        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 7 of 9.</note>
-        <note from="speaker">Dr. Kreuzer</note>
+        <source>When that thing screamed, every candle in this tent stopped flickering. The flames stood still. For eight heartbeats.</source>
+        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 7 of 13. Variant line: shown only if the Litany was spoken in the preceding operation.</note>
+        <note from="speaker">Inquisitor Stroh</note>
       </trans-unit>
       <trans-unit id="s2-end.008" resname="s2-end.008">
-        <source>So it is. We will speak at length, you and I. After Prime.</source>
-        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 8 of 9.</note>
+        <source>I counted.</source>
+        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 8 of 13. Variant line: shown only if the Litany was spoken in the preceding operation.</note>
         <note from="speaker">Inquisitor Stroh</note>
       </trans-unit>
       <trans-unit id="s2-end.009" resname="s2-end.009">
+        <source>…The morning air is very still, Inquisitor.</source>
+        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 9 of 13. Variant line: shown only if the Litany was spoken in the preceding operation.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
+      <trans-unit id="s2-end.010" resname="s2-end.010">
+        <source>I watched your hands while that thing screamed. They shook, Doctor. For once.</source>
+        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 10 of 13. Variant line: shown only if the Litany was NOT spoken in the preceding operation.</note>
+        <note from="speaker">Inquisitor Stroh</note>
+      </trans-unit>
+      <trans-unit id="s2-end.011" resname="s2-end.011">
+        <source>It was a long night, Inquisitor.</source>
+        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 11 of 13. Variant line: shown only if the Litany was NOT spoken in the preceding operation.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
+      <trans-unit id="s2-end.012" resname="s2-end.012">
+        <source>We will speak at length, you and I. After Prime.</source>
+        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 12 of 13.</note>
+        <note from="speaker">Inquisitor Stroh</note>
+      </trans-unit>
+      <trans-unit id="s2-end.013" resname="s2-end.013">
         <source>END OF CHAPTER II — THE HOUR OF LAUDS</source>
-        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 9 of 9.</note>
+        <note from="context">Story scene &quot;s2-end&quot; (The muster camp — morning), line 13 of 13.</note>
         <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="a2-1.place" resname="a2-1.place">
+        <source>The muster camp — after the gravehound</source>
+        <note from="context">Place caption of aftermath scene after op2-1 &quot;a2-1&quot;.</note>
+      </trans-unit>
+      <trans-unit id="a2-1.001" resname="a2-1.001">
+        <source>The scout will limp, but he will limp home.</source>
+        <note from="context">Aftermath scene after op2-1 &quot;a2-1&quot; (The muster camp — after the gravehound), line 1 of 3.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="a2-1.002" resname="a2-1.002">
+        <source>Forty. Still forty. I am starting to like you, Doctor, and I don’t care for it.</source>
+        <note from="context">Aftermath scene after op2-1 &quot;a2-1&quot; (The muster camp — after the gravehound), line 2 of 3.</note>
+        <note from="speaker">Captain Mauer</note>
+      </trans-unit>
+      <trans-unit id="a2-1.003" resname="a2-1.003">
+        <source>Every tooth, and not a drop of venom left. Master Haller would pretend not to be impressed.</source>
+        <note from="context">Aftermath scene after op2-1 &quot;a2-1&quot; (The muster camp — after the gravehound), line 3 of 3. Variant line: shown only if the preceding operation's rank was high (high = XS/S, mid = A/B, low = C).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="a2-2.place" resname="a2-2.place">
+        <source>The muster camp — the supply wagon</source>
+        <note from="context">Place caption of aftermath scene after op2-2 &quot;a2-2&quot;.</note>
+      </trans-unit>
+      <trans-unit id="a2-2.001" resname="a2-2.001">
+        <source>A strong arm after all. I shall name a mine for you, Doctor. The Kreuzer Deep.</source>
+        <note from="context">Aftermath scene after op2-2 &quot;a2-2&quot; (The muster camp — the supply wagon), line 1 of 4.</note>
+        <note from="speaker">Orsa Flintvein</note>
+      </trans-unit>
+      <trans-unit id="a2-2.002" resname="a2-2.002">
+        <source>Is it a good mine?</source>
+        <note from="context">Aftermath scene after op2-2 &quot;a2-2&quot; (The muster camp — the supply wagon), line 2 of 4.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
+      <trans-unit id="a2-2.003" resname="a2-2.003">
+        <source>It is not dug yet. It will probably be a bad one. The first ones always are.</source>
+        <note from="context">Aftermath scene after op2-2 &quot;a2-2&quot; (The muster camp — the supply wagon), line 3 of 4.</note>
+        <note from="speaker">Orsa Flintvein</note>
+      </trans-unit>
+      <trans-unit id="a2-2.004" resname="a2-2.004">
+        <source>Here. One knot, untied. You owe me nothing, and I owe you one.</source>
+        <note from="context">Aftermath scene after op2-2 &quot;a2-2&quot; (The muster camp — the supply wagon), line 4 of 4. Variant line: shown only if the preceding operation's rank was high (high = XS/S, mid = A/B, low = C).</note>
+        <note from="speaker">Orsa Flintvein</note>
+      </trans-unit>
+      <trans-unit id="a2-3.place" resname="a2-3.place">
+        <source>The muster camp — after midnight</source>
+        <note from="context">Place caption of aftermath scene after op2-3 &quot;a2-3&quot;.</note>
+      </trans-unit>
+      <trans-unit id="a2-3.001" resname="a2-3.001">
+        <source>Ilvaren wakes asking after his snares. The web-trees are left to the foresters, and to the fire.</source>
+        <note from="context">Aftermath scene after op2-3 &quot;a2-3&quot; (The muster camp — after midnight), line 1 of 3.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="a2-3.002" resname="a2-3.002">
+        <source>Forty, and a forager who will never set a snare again. My lads are calling you the spider-cutter.</source>
+        <note from="context">Aftermath scene after op2-3 &quot;a2-3&quot; (The muster camp — after midnight), line 2 of 3.</note>
+        <note from="speaker">Captain Mauer</note>
+      </trans-unit>
+      <trans-unit id="a2-3.003" resname="a2-3.003">
+        <source>Tell them I have been called worse by better men.</source>
+        <note from="context">Aftermath scene after op2-3 &quot;a2-3&quot; (The muster camp — after midnight), line 3 of 3.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
+      <trans-unit id="a2-4.place" resname="a2-4.place">
+        <source>The muster camp — the Inquisitor’s tent</source>
+        <note from="context">Place caption of aftermath scene after op2-4 &quot;a2-4&quot;.</note>
+      </trans-unit>
+      <trans-unit id="a2-4.001" resname="a2-4.001">
+        <source>The cantor breathes. The sigils on his chest are ash. Stroh’s men stand at the tent flap and do not let the Doctor leave.</source>
+        <note from="context">Aftermath scene after op2-4 &quot;a2-4&quot; (The muster camp — the Inquisitor’s tent), line 1 of 3.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="a2-4.002" resname="a2-4.002">
+        <source>He lives. Good. Now he can tell me who taught him to sing.</source>
+        <note from="context">Aftermath scene after op2-4 &quot;a2-4&quot; (The muster camp — the Inquisitor’s tent), line 2 of 3.</note>
+        <note from="speaker">Inquisitor Stroh</note>
+      </trans-unit>
+      <trans-unit id="a2-4.003" resname="a2-4.003">
+        <source>He is a patient until he walks out of this tent, Inquisitor. Then he is yours. Not one hour sooner.</source>
+        <note from="context">Aftermath scene after op2-4 &quot;a2-4&quot; (The muster camp — the Inquisitor’s tent), line 3 of 3.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="f2-1.place" resname="f2-1.place">
+        <source>The muster camp — the table goes still</source>
+        <note from="context">Place caption of failure scene when the patient of op2-1 dies, before the retry prompt &quot;f2-1&quot;.</note>
+      </trans-unit>
+      <trans-unit id="f2-1.001" resname="f2-1.001">
+        <source>Thirty-nine. …No. Not yet. Doctor, do it again. I’m not writing that number down.</source>
+        <note from="context">Failure scene when the patient of op2-1 dies, before the retry prompt &quot;f2-1&quot; (The muster camp — the table goes still), line 1 of 1.</note>
+        <note from="speaker">Captain Mauer</note>
+      </trans-unit>
+      <trans-unit id="f2-2.place" resname="f2-2.place">
+        <source>The muster camp — the table goes still</source>
+        <note from="context">Place caption of failure scene when the patient of op2-2 dies, before the retry prompt &quot;f2-2&quot;.</note>
+      </trans-unit>
+      <trans-unit id="f2-2.001" resname="f2-2.001">
+        <source>The shards we could not see were the ones that killed her. Slower with the lens, Doctor.</source>
+        <note from="context">Failure scene when the patient of op2-2 dies, before the retry prompt &quot;f2-2&quot; (The muster camp — the table goes still), line 1 of 1.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="f2-3.place" resname="f2-3.place">
+        <source>The muster camp — the table goes still</source>
+        <note from="context">Place caption of failure scene when the patient of op2-3 dies, before the retry prompt &quot;f2-3&quot;.</note>
+      </trans-unit>
+      <trans-unit id="f2-3.001" resname="f2-3.001">
+        <source>The sacs hatched before we lanced them. We know which ones now. Again.</source>
+        <note from="context">Failure scene when the patient of op2-3 dies, before the retry prompt &quot;f2-3&quot; (The muster camp — the table goes still), line 1 of 1.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="f2-4.place" resname="f2-4.place">
+        <source>The muster camp — the table goes still</source>
+        <note from="context">Place caption of failure scene when the patient of op2-4 dies, before the retry prompt &quot;f2-4&quot;.</note>
+      </trans-unit>
+      <trans-unit id="f2-4.001" resname="f2-4.001">
+        <source>His masters will be pleased. I am not. You will try again, Doctor.</source>
+        <note from="context">Failure scene when the patient of op2-4 dies, before the retry prompt &quot;f2-4&quot; (The muster camp — the table goes still), line 1 of 1.</note>
+        <note from="speaker">Inquisitor Stroh</note>
+      </trans-unit>
+      <trans-unit id="f2-5.place" resname="f2-5.place">
+        <source>The muster camp — dawn</source>
+        <note from="context">Place caption of failure scene when the patient of op2-5 dies, before the retry prompt &quot;f2-5&quot;.</note>
+      </trans-unit>
+      <trans-unit id="f2-5.001" resname="f2-5.001">
+        <source>Two voices, Doctor. Strike one and the other answers. Don’t give it time to answer.</source>
+        <note from="context">Failure scene when the patient of op2-5 dies, before the retry prompt &quot;f2-5&quot; (The muster camp — dawn), line 1 of 1.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="footnote.op2-1" resname="footnote.op2-1">
+        <source>Tomas kept the arm, and learned to throw left-handed anyway, in case.</source>
+        <note from="context">&quot;Where are they now&quot; line for the patient of op2-1, read after the chapter ends. Narration; wry, not cruel.</note>
+      </trans-unit>
+      <trans-unit id="footnote.op2-2" resname="footnote.op2-2">
+        <source>Orsa Flintvein walked back to her diggings with the shards in a lead box and a promise to return the favour.</source>
+        <note from="context">&quot;Where are they now&quot; line for the patient of op2-2, read after the chapter ends. Narration; wry, not cruel.</note>
+      </trans-unit>
+      <trans-unit id="footnote.op2-3" resname="footnote.op2-3">
+        <source>Ilvaren went home to the Grauwald and planted the spider’s thicket with nettles.</source>
+        <note from="context">&quot;Where are they now&quot; line for the patient of op2-3, read after the chapter ends. Narration; wry, not cruel.</note>
+      </trans-unit>
+      <trans-unit id="footnote.op2-4" resname="footnote.op2-4">
+        <source>The lay-cantor’s hymn is written in the Inquisitor’s ledger, in a hand that pressed hard enough to tear the page.</source>
+        <note from="context">&quot;Where are they now&quot; line for the patient of op2-4, read after the chapter ends. Narration; wry, not cruel.</note>
+      </trans-unit>
+      <trans-unit id="footnote.op2-5" resname="footnote.op2-5">
+        <source>Jorg carried the standard again at the next muster. He hums, now, without noticing, and stops when anyone looks.</source>
+        <note from="context">&quot;Where are they now&quot; line for the patient of op2-5, read after the chapter ends. Narration; wry, not cruel.</note>
+      </trans-unit>
+      <trans-unit id="recap.ch2.001" resname="recap.ch2.001">
+        <source>In the winter of the ninth year of the Long Muster, Dr. Kreuzer took up the knife at the Hospice of Saint Ildra in Kessendorf.</source>
+        <note from="context">Chapter-select recap before ch2 (&quot;previously&quot;), sentence 1 of 3. Narration.</note>
+      </trans-unit>
+      <trans-unit id="recap.ch2.002" resname="recap.ch2.002">
+        <source>A page-boy came in with a mark under his skin that sang, and Kreuzer drew the forbidden star to cut the Malison of Matins out of him.</source>
+        <note from="context">Chapter-select recap before ch2 (&quot;previously&quot;), sentence 2 of 3. Narration.</note>
+      </trans-unit>
+      <trans-unit id="recap.ch2.003" resname="recap.ch2.003">
+        <source>Inquisitor Stroh of the Ash Tribunal saw a candle stop flickering, and has not stopped watching since.</source>
+        <note from="context">Chapter-select recap before ch2 (&quot;previously&quot;), sentence 3 of 3. Narration.</note>
       </trans-unit>
     </group>
     <group id="ch2/ops" resname="ch2/ops">
@@ -787,7 +1464,7 @@
         <note from="context">Operation title (briefing, HUD banner, results, theatre list).</note>
       </trans-unit>
       <trans-unit id="op2-3.patient" resname="op2-3.patient">
-        <source>Henning, forager</source>
+        <source>Ilvaren, elf forager</source>
         <note from="context">Patient line on the chart and HUD.</note>
       </trans-unit>
       <trans-unit id="op2-3.diagnosis" resname="op2-3.diagnosis">
@@ -821,7 +1498,7 @@
     </group>
     <group id="ch2/callouts" resname="ch2/callouts">
       <trans-unit id="op2-1.p0.1" resname="op2-1.p0.1">
-        <source>The venom first — hold the tincture on the bite until it takes.</source>
+        <source>The venom first — hold the Tincture on the bite until it takes.</source>
         <note from="context">Assistant callout when phase 1 of 3 of &quot;Gravehound&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
@@ -862,47 +1539,67 @@
       </trans-unit>
       <trans-unit id="op2-3.p0.1" resname="op2-3.p0.1">
         <source>Venom from two bites. Tincture on each, quickly.</source>
-        <note from="context">Assistant callout when phase 1 of 3 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
+        <note from="context">Assistant callout when phase 1 of 4 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op2-3.p1.1" resname="op2-3.p1.1">
-        <source>The sacs — lance each one with a single touch, then sear the hatchlings with the brand.</source>
-        <note from="context">Assistant callout when phase 2 of 3 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
+        <source>The sacs — lance each with one touch, then sear the hatchlings with the Cautery Brand.</source>
+        <note from="context">Assistant callout when phase 2 of 4 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op2-3.p1.2" resname="op2-3.p1.2">
         <source>Mind the ones that are close to hatching.</source>
-        <note from="context">Assistant callout when phase 2 of 3 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
+        <note from="context">Assistant callout when phase 2 of 4 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op2-3.p2.1" resname="op2-3.p2.1">
-        <source>One more sac, deeper. Use the lens to find it, then open it.</source>
-        <note from="context">Assistant callout when phase 3 of 3 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
+        <source>Her brood-cluster — three sacs under one skin.</source>
+        <note from="context">Assistant callout when phase 3 of 4 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op2-3.p2.2" resname="op2-3.p2.2">
+        <source>Cut the membrane right around them with the Lancet first, or they’ll wake as one.</source>
+        <note from="context">Assistant callout when phase 3 of 4 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="op2-3.p3.1" resname="op2-3.p3.1">
+        <source>One more sac, deeper. Use the Scrying Lens to find it, then open it.</source>
+        <note from="context">Assistant callout when phase 4 of 4 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="op2-3.p3.2" resname="op2-3.p3.2">
         <source>And he’s taken a fever-bubo from the bite — lance and cleanse it.</source>
-        <note from="context">Assistant callout when phase 3 of 3 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
+        <note from="context">Assistant callout when phase 4 of 4 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op2-4.p0.1" resname="op2-4.p0.1">
-        <source>The poison he swallowed — tincture, now, or he’s gone before we start.</source>
-        <note from="context">Assistant callout when phase 1 of 4 of &quot;The Silenced Cantor&quot; begins.</note>
+        <source>The poison he swallowed — Tincture, now, or he’s gone before we start.</source>
+        <note from="context">Assistant callout when phase 1 of 5 of &quot;The Silenced Cantor&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op2-4.p1.1" resname="op2-4.p1.1">
         <source>Those sigils are burning him from within. Sear each one out — every stroke.</source>
-        <note from="context">Assistant callout when phase 2 of 4 of &quot;The Silenced Cantor&quot; begins.</note>
+        <note from="context">Assistant callout when phase 2 of 5 of &quot;The Silenced Cantor&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op2-4.p2.1" resname="op2-4.p2.1">
-        <source>The hexfire burns. Pluck the eschar, then salve them.</source>
-        <note from="context">Assistant callout when phase 3 of 4 of &quot;The Silenced Cantor&quot; begins.</note>
+        <source>There — a knot of it round his throat. Every time he hums, it ties itself again.</source>
+        <note from="context">Assistant callout when phase 3 of 5 of &quot;The Silenced Cantor&quot; begins.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="op2-4.p2.2" resname="op2-4.p2.2">
+        <source>Burn it out between the verses.</source>
+        <note from="context">Assistant callout when phase 3 of 5 of &quot;The Silenced Cantor&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op2-4.p3.1" resname="op2-4.p3.1">
-        <source>Maggots in an old sore — the Tribunal’s cells are filthy. Brand them.</source>
-        <note from="context">Assistant callout when phase 4 of 4 of &quot;The Silenced Cantor&quot; begins.</note>
+        <source>The hexfire burns. Pluck the eschar, then Saint’s Salve on them.</source>
+        <note from="context">Assistant callout when phase 4 of 5 of &quot;The Silenced Cantor&quot; begins.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="op2-4.p4.1" resname="op2-4.p4.1">
+        <source>Maggots in an old sore — the Tribunal’s cells are filthy. Cautery Brand.</source>
+        <note from="context">Assistant callout when phase 5 of 5 of &quot;The Silenced Cantor&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op2-5.p0.1" resname="op2-5.p0.1">
@@ -911,7 +1608,7 @@
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op2-5.p1.1" resname="op2-5.p1.1">
-        <source>Saints… it has a choir. Those little lights are its Voices — hold the brand on each as it circles.</source>
+        <source>A choir! Those lights are its Voices — hold the Cautery Brand on each as it circles.</source>
         <note from="context">Assistant callout when phase 2 of 4 of &quot;The Hour of Lauds&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
@@ -930,121 +1627,682 @@
         <note from="context">Assistant callout when phase 4 of 4 of &quot;The Hour of Lauds&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
+      <trans-unit id="tutorial.venom" resname="tutorial.venom">
+        <source>Venom: hold the Tincture on the bite itself until the poison is drawn.</source>
+        <note from="context">Tutorial prompt, first shown in op2-1. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction.</note>
+      </trans-unit>
+      <trans-unit id="tutorial.lens" resname="tutorial.lens">
+        <source>Scrying Lens {TOOL_LENS}: move slowly over the flesh; hold still where it shimmers.</source>
+        <note from="context">Tutorial prompt, first shown in op2-2. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction.</note>
+      </trans-unit>
+      <trans-unit id="tutorial.lens-hidden" resname="tutorial.lens-hidden">
+        <source>What the Lens reveals must still be pulled — Tongs, once it shows.</source>
+        <note from="context">Tutorial prompt, first shown in op2-2. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction.</note>
+      </trans-unit>
+      <trans-unit id="tutorial.egg-sacs" resname="tutorial.egg-sacs">
+        <source>Egg sacs: lance each before it hatches, then brand what spills out.</source>
+        <note from="context">Tutorial prompt, first shown in op2-3. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction.</note>
+      </trans-unit>
+    </group>
+    <group id="ch3/story" resname="ch3/story">
+      <trans-unit id="a3-1.place" resname="a3-1.place">
+        <source>The hospice — the examining room</source>
+        <note from="context">Place caption of aftermath scene after op3-1 &quot;a3-1&quot;.</note>
+      </trans-unit>
+      <trans-unit id="a3-1.001" resname="a3-1.001">
+        <source>Liesl wakes with a bandage like a crown and asks whether she may keep the bits of horn. Her mother says no. Kreuzer says yes.</source>
+        <note from="context">Aftermath scene after op3-1 &quot;a3-1&quot; (The hospice — the examining room), line 1 of 3.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="a3-1.002" resname="a3-1.002">
+        <source>Two buds, cut clean. And two sigils seared away beneath them, where no certificate will mention them.</source>
+        <note from="context">Aftermath scene after op3-1 &quot;a3-1&quot; (The hospice — the examining room), line 2 of 3.</note>
+        <note from="speaker">Inquisitor Stroh</note>
+      </trans-unit>
+      <trans-unit id="a3-1.003" resname="a3-1.003">
+        <source>The certificate mentions a natural growth, Inquisitor. I removed it.</source>
+        <note from="context">Aftermath scene after op3-1 &quot;a3-1&quot; (The hospice — the examining room), line 3 of 3.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
+      <trans-unit id="a3-2.place" resname="a3-2.place">
+        <source>The hospice — the steps</source>
+        <note from="context">Place caption of aftermath scene after op3-2 &quot;a3-2&quot;.</note>
+      </trans-unit>
+      <trans-unit id="a3-2.001" resname="a3-2.001">
+        <source>Kaspar’s doublet goes into a basin, a scrap at a time. Ilse counts them twice and matches every thread to the hole it came from.</source>
+        <note from="context">Aftermath scene after op3-2 &quot;a3-2&quot; (The hospice — the steps), line 1 of 4.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="a3-2.002" resname="a3-2.002">
+        <source>Every scrap, Doctor. He’ll not be burning by Vespers. He may be dancing by Terce.</source>
+        <note from="context">Aftermath scene after op3-2 &quot;a3-2&quot; (The hospice — the steps), line 2 of 4. Variant line: shown only if the preceding operation's rank was high (high = XS/S, mid = A/B, low = C).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="a3-2.003" resname="a3-2.003">
+        <source>I pray that was every scrap. We’ll know by Vespers, if he’s burning.</source>
+        <note from="context">Aftermath scene after op3-2 &quot;a3-2&quot; (The hospice — the steps), line 3 of 4. Variant line: shown only if the preceding operation's rank was mid or low (high = XS/S, mid = A/B, low = C).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="a3-2.004" resname="a3-2.004">
+        <source>Next! Three off the mill cart, Doctor, and the cart’s coming back for more.</source>
+        <note from="context">Aftermath scene after op3-2 &quot;a3-2&quot; (The hospice — the steps), line 4 of 4.</note>
+        <note from="speaker">Captain Mauer</note>
+      </trans-unit>
+      <trans-unit id="a3-3.place" resname="a3-3.place">
+        <source>The hospice — night</source>
+        <note from="context">Place caption of aftermath scene after op3-3 &quot;a3-3&quot;.</note>
+      </trans-unit>
+      <trans-unit id="a3-3.001" resname="a3-3.001">
+        <source>Ute Brandt goes home lighter by a quarter-pound of lead, which Ilse weighs, wraps, and labels for the Founders’ Guild.</source>
+        <note from="context">Aftermath scene after op3-3 &quot;a3-3&quot; (The hospice — night), line 1 of 3.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="a3-3.002" resname="a3-3.002">
+        <source>Put it in the privy basket. The Guild may send a clerk to collect its property.</source>
+        <note from="context">Aftermath scene after op3-3 &quot;a3-3&quot; (The hospice — night), line 2 of 3.</note>
+        <note from="speaker">Master Haller</note>
+      </trans-unit>
+      <trans-unit id="a3-3.003" resname="a3-3.003">
+        <source>I have already written the receipt, Master. “One quarter-pound of lead, lightly used.”</source>
+        <note from="context">Aftermath scene after op3-3 &quot;a3-3&quot; (The hospice — night), line 3 of 3.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="a3-4.place" resname="a3-4.place">
+        <source>The hospice — the steps, evening</source>
+        <note from="context">Place caption of aftermath scene after op3-4 &quot;a3-4&quot;.</note>
+      </trans-unit>
+      <trans-unit id="a3-4.001" resname="a3-4.001">
+        <source>Jannik, Old Rudi and Wenzel lie in a row on the hospice steps, wrapped in one blanket, arguing about whose fault the magazine was.</source>
+        <note from="context">Aftermath scene after op3-4 &quot;a3-4&quot; (The hospice — the steps, evening), line 1 of 3.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="a3-4.002" resname="a3-4.002">
+        <source>Three off the table and three still talking. That’s a good count for the Kilnrows.</source>
+        <note from="context">Aftermath scene after op3-4 &quot;a3-4&quot; (The hospice — the steps, evening), line 2 of 3.</note>
+        <note from="speaker">Captain Mauer</note>
+      </trans-unit>
+      <trans-unit id="a3-4.003" resname="a3-4.003">
+        <source>Keep them talking, Captain. A man complaining is a man breathing.</source>
+        <note from="context">Aftermath scene after op3-4 &quot;a3-4&quot; (The hospice — the steps, evening), line 3 of 3.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
+      <trans-unit id="a3-5.place" resname="a3-5.place">
+        <source>The Iron Bridge — the Watch hut</source>
+        <note from="context">Place caption of aftermath scene after op3-5 &quot;a3-5&quot;.</note>
+      </trans-unit>
+      <trans-unit id="a3-5.001" resname="a3-5.001">
+        <source>Berthold wakes to find his leg gone and his cart-horse tethered outside the window, which he says is the right way round.</source>
+        <note from="context">Aftermath scene after op3-5 &quot;a3-5&quot; (The Iron Bridge — the Watch hut), line 1 of 3.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="a3-5.002" resname="a3-5.002">
+        <source>A peg and a cushion, you said. I’ll hold you to the cushion, Doctor.</source>
+        <note from="context">Aftermath scene after op3-5 &quot;a3-5&quot; (The Iron Bridge — the Watch hut), line 2 of 3.</note>
+        <note from="speaker">Berthold</note>
+      </trans-unit>
+      <trans-unit id="a3-5.003" resname="a3-5.003">
+        <source>The council has sent a clerk to ask who will pay for the bridge-chain he bent. I sent the clerk away. Twice.</source>
+        <note from="context">Aftermath scene after op3-5 &quot;a3-5&quot; (The Iron Bridge — the Watch hut), line 3 of 3.</note>
+        <note from="speaker">Captain Mauer</note>
+      </trans-unit>
+      <trans-unit id="a3-6.place" resname="a3-6.place">
+        <source>The quarantine side — the Penny Stair</source>
+        <note from="context">Place caption of aftermath scene after op3-6 &quot;a3-6&quot;.</note>
+      </trans-unit>
+      <trans-unit id="a3-6.001" resname="a3-6.001">
+        <source>Forty-one worms, whole, in a jar. Gottfried the pie-man is asked to look at it, and does, and is quiet for a while.</source>
+        <note from="context">Aftermath scene after op3-6 &quot;a3-6&quot; (The quarantine side — the Penny Stair), line 1 of 3.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="a3-6.002" resname="a3-6.002">
+        <source>Eel. They told me it was eel.</source>
+        <note from="context">Aftermath scene after op3-6 &quot;a3-6&quot; (The quarantine side — the Penny Stair), line 2 of 3.</note>
+        <note from="speaker">Gottfried, pie-man</note>
+      </trans-unit>
+      <trans-unit id="a3-6.003" resname="a3-6.003">
+        <source>Then someone owes Frieda an apology, Gottfried, and you owe the city a new recipe.</source>
+        <note from="context">Aftermath scene after op3-6 &quot;a3-6&quot; (The quarantine side — the Penny Stair), line 3 of 3.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="a3-7.place" resname="a3-7.place">
+        <source>The quarantine ward — before dawn</source>
+        <note from="context">Place caption of aftermath scene after op3-7 &quot;a3-7&quot;.</note>
+      </trans-unit>
+      <trans-unit id="a3-7.001" resname="a3-7.001">
+        <source>Mother Agathe of the Grey Beguines sits up at the fourth bell and demands her beads, her boots, and a list of the other sick.</source>
+        <note from="context">Aftermath scene after op3-7 &quot;a3-7&quot; (The quarantine ward — before dawn), line 1 of 2.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="a3-7.002" resname="a3-7.002">
+        <source>You lance like a Beguine, boy. That is the highest praise I have. Now go and do it to someone else.</source>
+        <note from="context">Aftermath scene after op3-7 &quot;a3-7&quot; (The quarantine ward — before dawn), line 2 of 2.</note>
+        <note from="speaker">Mother Agathe</note>
+      </trans-unit>
+      <trans-unit id="a3-8.place" resname="a3-8.place">
+        <source>The quarantine ward — dawn</source>
+        <note from="context">Place caption of aftermath scene after op3-8 &quot;a3-8&quot;.</note>
+      </trans-unit>
+      <trans-unit id="a3-8.001" resname="a3-8.001">
+        <source>Brother Ansgar sleeps face-down with his hands open. The nails are in a bowl beside him. He has not asked for them back.</source>
+        <note from="context">Aftermath scene after op3-8 &quot;a3-8&quot; (The quarantine ward — dawn), line 1 of 3.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="a3-8.002" resname="a3-8.002">
+        <source>He asked me whether a debt can be paid by someone else. I told him the Order thinks so. I hope it does.</source>
+        <note from="context">Aftermath scene after op3-8 &quot;a3-8&quot; (The quarantine ward — dawn), line 2 of 3.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="a3-8.003" resname="a3-8.003">
+        <source>Let him sleep, Sister. We can argue theology when his back has closed.</source>
+        <note from="context">Aftermath scene after op3-8 &quot;a3-8&quot; (The quarantine ward — dawn), line 3 of 3.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
+      <trans-unit id="a3-10.place" resname="a3-10.place">
+        <source>The Hall of Records — morning</source>
+        <note from="context">Place caption of aftermath scene after op3-10 &quot;a3-10&quot;.</note>
+      </trans-unit>
+      <trans-unit id="a3-10.001" resname="a3-10.001">
+        <source>The Registrar’s skin is clean. The roll of the dead is the right length again, and every name on it had a family to miss it.</source>
+        <note from="context">Aftermath scene after op3-10 &quot;a3-10&quot; (The Hall of Records — morning), line 1 of 4.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="a3-10.002" resname="a3-10.002">
+        <source>I read the names of strangers, Doctor. People who had not died. Did they… will they?</source>
+        <note from="context">Aftermath scene after op3-10 &quot;a3-10&quot; (The Hall of Records — morning), line 2 of 4.</note>
+        <note from="speaker">Registrar Tallert</note>
+      </trans-unit>
+      <trans-unit id="a3-10.003" resname="a3-10.003">
+        <source>Not from anything you read, Registrar. Go home. Read something with a happy ending.</source>
+        <note from="context">Aftermath scene after op3-10 &quot;a3-10&quot; (The Hall of Records — morning), line 3 of 4.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
+      <trans-unit id="a3-10.004" resname="a3-10.004">
+        <source>The names stopped when you touched him, Doctor. I noticed. I notice things.</source>
+        <note from="context">Aftermath scene after op3-10 &quot;a3-10&quot; (The Hall of Records — morning), line 4 of 4.</note>
+        <note from="speaker">Inquisitor Stroh</note>
+      </trans-unit>
+      <trans-unit id="a3-9.place" resname="a3-9.place">
+        <source>The hospice — past midnight</source>
+        <note from="context">Place caption of aftermath scene after op3-9 &quot;a3-9&quot;.</note>
+      </trans-unit>
+      <trans-unit id="a3-9.001" resname="a3-9.001">
+        <source>The Inquisitor sits with a cloth to his jaw and his tooth in a twist of paper, which he pockets like evidence.</source>
+        <note from="context">Aftermath scene after op3-9 &quot;a3-9&quot; (The hospice — past midnight), line 1 of 4.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="a3-9.002" resname="a3-9.002">
+        <source>That was… gentle, Doctor. I had been told barbers enjoy it. I shall have to revise the Tribunal’s view of your trade.</source>
+        <note from="context">Aftermath scene after op3-9 &quot;a3-9&quot; (The hospice — past midnight), line 2 of 4. Variant line: shown only if the preceding operation's rank was high (high = XS/S, mid = A/B, low = C).</note>
+        <note from="speaker">Inquisitor Stroh</note>
+      </trans-unit>
+      <trans-unit id="a3-9.003" resname="a3-9.003">
+        <source>The root came out in two pieces. So, very nearly, did I. We shall say no more of it.</source>
+        <note from="context">Aftermath scene after op3-9 &quot;a3-9&quot; (The hospice — past midnight), line 3 of 4. Variant line: shown only if the preceding operation's rank was mid or low (high = XS/S, mid = A/B, low = C).</note>
+        <note from="speaker">Inquisitor Stroh</note>
+      </trans-unit>
+      <trans-unit id="a3-9.004" resname="a3-9.004">
+        <source>Rinse with salt, Inquisitor. And ask your questions in daylight.</source>
+        <note from="context">Aftermath scene after op3-9 &quot;a3-9&quot; (The hospice — past midnight), line 4 of 4.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
+      <trans-unit id="recap.ch3.001" resname="recap.ch3.001">
+        <source>The Watch marched to the barrow-fields with Kreuzer as its surgeon, and brought home a cantor whose chest was a lattice of sigils.</source>
+        <note from="context">Chapter-select recap before ch3 (&quot;previously&quot;), sentence 1 of 3. Narration.</note>
+      </trans-unit>
+      <trans-unit id="recap.ch3.002" resname="recap.ch3.002">
+        <source>At the muster, the Malison of Lauds sang through its host until Kreuzer silenced it — some say by the Litany, in front of witnesses.</source>
+        <note from="context">Chapter-select recap before ch3 (&quot;previously&quot;), sentence 2 of 3. Narration.</note>
+      </trans-unit>
+      <trans-unit id="recap.ch3.003" resname="recap.ch3.003">
+        <source>Stroh has promised they will speak after Prime. It is after Prime.</source>
+        <note from="context">Chapter-select recap before ch3 (&quot;previously&quot;), sentence 3 of 3. Narration.</note>
+      </trans-unit>
+    </group>
+    <group id="ch3/names" resname="ch3/names">
+      <trans-unit id="a3-5.002.as" resname="a3-5.002.as">
+        <source>Berthold</source>
+        <note from="context">Speaker name shown for a3-5.002.</note>
+      </trans-unit>
+      <trans-unit id="a3-6.002.as" resname="a3-6.002.as">
+        <source>Gottfried, pie-man</source>
+        <note from="context">Speaker name shown for a3-6.002.</note>
+      </trans-unit>
+      <trans-unit id="a3-7.002.as" resname="a3-7.002.as">
+        <source>Mother Agathe</source>
+        <note from="context">Speaker name shown for a3-7.002.</note>
+      </trans-unit>
+      <trans-unit id="a3-10.002.as" resname="a3-10.002.as">
+        <source>Registrar Tallert</source>
+        <note from="context">Speaker name shown for a3-10.002.</note>
+      </trans-unit>
+    </group>
+    <group id="ch4/story" resname="ch4/story">
+      <trans-unit id="recap.ch4.001" resname="recap.ch4.001">
+        <source>In the Kilnrows, Kreuzer examined a hornchild for the Tribunal and wrote a certificate that will follow him.</source>
+        <note from="context">Chapter-select recap before ch4 (&quot;previously&quot;), sentence 1 of 3. Narration.</note>
+      </trans-unit>
+      <trans-unit id="recap.ch4.002" resname="recap.ch4.002">
+        <source>The Guild put his licence to a vote, and Master Haller stood up for him with hands the hexfire of Terce had burned.</source>
+        <note from="context">Chapter-select recap before ch4 (&quot;previously&quot;), sentence 2 of 3. Narration.</note>
+      </trans-unit>
+      <trans-unit id="recap.ch4.003" resname="recap.ch4.003">
+        <source>Now Kessendorf hires out its war, and the Watch marches east to the Vennmark with its surgeon in the second wagon.</source>
+        <note from="context">Chapter-select recap before ch4 (&quot;previously&quot;), sentence 3 of 3. Narration.</note>
+      </trans-unit>
+    </group>
+    <group id="ch5/story" resname="ch5/story">
+      <trans-unit id="recap.ch5.001" resname="recap.ch5.001">
+        <source>In the rain of the Vennmark, Kreuzer kept Mauer’s men alive through Sext and None, in tents that never stopped leaking.</source>
+        <note from="context">Chapter-select recap before ch5 (&quot;previously&quot;), sentence 1 of 3. Narration.</note>
+      </trans-unit>
+      <trans-unit id="recap.ch5.002" resname="recap.ch5.002">
+        <source>The council roll showed Stroh’s charter had lapsed at the new year; what the Tribunal did since, it did on nothing.</source>
+        <note from="context">Chapter-select recap before ch5 (&quot;previously&quot;), sentence 2 of 3. Narration.</note>
+      </trans-unit>
+      <trans-unit id="recap.ch5.003" resname="recap.ch5.003">
+        <source>They came home to Kessendorf three days before Hollow Night, and a warrant with the Doctor’s name on it.</source>
+        <note from="context">Chapter-select recap before ch5 (&quot;previously&quot;), sentence 3 of 3. Narration.</note>
+      </trans-unit>
     </group>
     <group id="global/barks" resname="global/barks">
+      <trans-unit id="bark.traction" resname="bark.traction">
+        <source>Pull on the limb first — traction, or the ends grind.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/disciplines.ts:236).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.overshoot" resname="bark.overshoot">
+        <source>Stop at the end of the line — you’ve nicked him.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:182).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.incision-layer" resname="bark.incision-layer">
+        <source>Through the skin. Now the layer beneath — trace it again.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:225).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.stitch-gap" resname="bark.stitch-gap">
+        <source>There’s a gap in the suture — it’s still bleeding. Close it up.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:379).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.stitch-first" resname="bark.stitch-first">
+        <source>It keeps filling — stitch the wound beneath it first, then drain.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:486).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.pus-wound" resname="bark.pus-wound">
+        <source>The pus is getting into that cut — drain it before it festers!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:692).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
       <trans-unit id="bark.flooded" resname="bark.flooded">
         <source>Too much blood — draw it off with the leech-pipe before you stitch!</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:317).</note>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:708).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.compound" resname="bark.compound">
+        <source>The bone’s through the skin — set it before you stitch over it.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:712).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.salve-big" resname="bark.salve-big">
+        <source>Salve won’t hold a wound that size. Stitch it first.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:724).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.hex-whisper" resname="bark.hex-whisper">
+        <source>It’s whispering to him through the tongs — into the lead dish, quickly!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:867).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="bark.hexstone" resname="bark.hexstone">
         <source>The hexstone is corrupting the flesh around it — get it out!</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:407).</note>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:885).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="bark.barbs" resname="bark.barbs">
         <source>Barbed! Nick the flesh at the entry with the lancet before you pull.</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:437).</note>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:939).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.axis" resname="bark.axis">
+        <source>Pull along the line it went in — you’re tearing the channel!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:956).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.bolt-snap" resname="bark.bolt-snap">
+        <source>It snapped — the head’s still in there! Ease them out: pull, pause, then draw.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:976).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.glass-slow" resname="bark.glass-slow">
+        <source>Slowly with glass — it slices as it goes.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:983).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.lead-dish" resname="bark.lead-dish">
+        <source>Not the tray — hexstone goes in the lead dish!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:993).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.drop-off" resname="bark.drop-off">
+        <source>Right off the body, Doctor — into the tray, or it sinks back in.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:1012).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.wadding" resname="bark.wadding">
+        <source>Scraps of wadding went in with the shot — pull those out too, or it’ll fester.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:1027).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.hex-tell" resname="bark.hex-tell">
+        <source>Green flicker — it’s rekindling! Brand out the ember!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:1254).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="bark.burn-salve" resname="bark.burn-salve">
         <source>The dead flesh is off. Now salve the raw burn.</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:561).</note>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:1280).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.burn-core" resname="bark.burn-core">
+        <source>The dead core’s out. Pluck the rest of the eschar, then salve.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:1292).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.burn-char" resname="bark.burn-char">
+        <source>That centre is dead flesh — cut the char out with the lancet first!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:1321).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.acid-first" resname="bark.acid-first">
+        <source>The acid’s still live! Draw it off with the leech-pipe before you salve.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:1328).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="bark.burn-eschar" resname="bark.burn-eschar">
         <source>Pluck away the charred eschar with the tongs first!</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:568).</note>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:1333).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.hex-ember" resname="bark.hex-ember">
+        <source>Its ember still glows — brand it out or the hexfire will rekindle!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:1346).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.bubo-cut" resname="bark.bubo-cut">
+        <source>Draw a short cut across the crown — a prick won’t open it.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:1474).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.bubo-overcut" resname="bark.bubo-overcut">
+        <source>Too long a cut — it’s spilling everywhere. Short and across the crown!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:1490).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="bark.pus" resname="bark.pus">
         <source>Draw off the pus before you salve it.</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:648).</note>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:1499).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.venom-mote" resname="bark.venom-mote">
+        <source>The venom’s running for his heart along the vein — sear or draw off the drops, or tie the vein!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:1724).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.grub-burrow" resname="bark.grub-burrow">
+        <source>One’s burrowed in! Find it with the lens.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:1889).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.grub-split" resname="bark.grub-split">
+        <source>Don’t let go half-way — hold the brand until it stops moving!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:1920).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.sigil-regress" resname="bark.sigil-regress">
+        <source>Don’t stop half-way — the curse heals what you leave!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/entities.ts:2084).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="bark.lauds.the_choir_is_silenced" resname="bark.lauds.the_choir_is_silenced">
         <source>The choir is silenced — its heart is bare! Brand it, now!</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:84).</note>
+        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:216).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="bark.lauds.its_calling_its_voices" resname="bark.lauds.its_calling_its_voices">
         <source>It’s calling its Voices back!</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:92).</note>
+        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:224).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.lauds-response" resname="bark.lauds-response">
+        <source>It heals from the other body! Strike one, then the other — quickly!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:249).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="bark.lauds-hymn" resname="bark.lauds-hymn">
         <source>It’s singing — every verse tears him open! Stitch the cuts as they come!</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:111).</note>
+        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:295).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
-      <trans-unit id="bark.lauds.there_its_surfacing_finish" resname="bark.lauds.there_its_surfacing_finish">
-        <source>There! It’s surfacing — finish it!</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:145).</note>
+      <trans-unit id="bark.lauds-flare" resname="bark.lauds-flare">
+        <source>The dawn — I can’t see a thing through the Lens! Wait for the glare to pass!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:336).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.lauds-under" resname="bark.lauds-under">
+        <source>It’s gone under the skin! The Scrying Lens — hunt its ripples!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:360).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.lauds-surface" resname="bark.lauds-surface">
+        <source>There! It’s surfacing — brand it before it dives!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:392).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="bark.lauds-shielded" resname="bark.lauds-shielded">
-        <source>The Voices shield it. Silence them first — hold the brand on each as it circles.</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:155).</note>
+        <source>The Voices shield it. Silence them first — trace each one’s sigil with the brand.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:400).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
-      <trans-unit id="bark.lauds.its_gone_under_the" resname="bark.lauds.its_gone_under_the">
-        <source>It’s gone under the skin! The Scrying Lens — hunt it down!</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:167).</note>
+      <trans-unit id="bark.lauds.it_has_split_in" resname="bark.lauds.it_has_split_in">
+        <source>It has split in two — and the halves sing to each other! Strike one, then the other, before it answers!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:425).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.lauds.dawn_is_breaking_and" resname="bark.lauds.dawn_is_breaking_and">
+        <source>Dawn is breaking — and it has dived! Find it with the Lens between the flares!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:435).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="bark.lauds.it_shattered_hexstone_everywhere" resname="bark.lauds.it_shattered_hexstone_everywhere">
         <source>It shattered — hexstone, everywhere! Get every shard out before it spoils him!</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:174).</note>
+        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:445).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.lauds.the_thread_has_rewoven" resname="bark.lauds.the_thread_has_rewoven">
+        <source>The thread has rewoven — they’re linked again!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:583).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.lauds-dim" resname="bark.lauds-dim">
+        <source>The thread between them dims — cut across it with the lancet, now!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:592).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.lauds-bright" resname="bark.lauds-bright">
+        <source>Not while it blazes — wait for the thread to dim.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:609).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.lauds.severed_strike_freely_while" resname="bark.lauds.severed_strike_freely_while">
+        <source>Severed! Strike freely while they’re apart!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:617).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.lauds-voice-trace" resname="bark.lauds-voice-trace">
+        <source>Holding it there won’t quiet it — trace the Voice’s sigil with the brand, line by line.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:726).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="bark.eggsac-lanced" resname="bark.eggsac-lanced">
         <source>Spiderlings! Brand them before they scatter!</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:312).</note>
+        <note from="context">Assistant bark spoken during operations (src/surgery/lauds.ts:809).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="bark.malison-open" resname="bark.malison-open">
         <source>Its shroud has parted — sear it with the brand, now!</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/malison.ts:68).</note>
+        <note from="context">Assistant bark spoken during operations (src/surgery/malison.ts:214).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="bark.malison-rend" resname="bark.malison-rend">
         <source>It’s tearing the flesh as it moves! Stitch those wounds!</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/malison.ts:86).</note>
+        <note from="context">Assistant bark spoken during operations (src/surgery/malison.ts:224).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
-      <trans-unit id="bark.malison-veiled" resname="bark.malison-veiled">
-        <source>The brand can’t touch it while it’s veiled. Wait for the shroud to part!</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/malison.ts:95).</note>
+      <trans-unit id="bark.matins-shards" resname="bark.matins-shards">
+        <source>It’s shedding shards — they’re crawling for the wounds! Tongs — cast them out!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/malison.ts:266).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
-      <trans-unit id="bark.malison.its_shedding_hexlings_burn" resname="bark.malison.its_shedding_hexlings_burn">
-        <source>It’s shedding hexlings! Burn them before they feed!</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/malison.ts:112).</note>
+      <trans-unit id="bark.matins-gaze" resname="bark.matins-gaze">
+        <source>The eye has fixed on your hand — move off its line!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/malison.ts:293).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.matins-offbeat" resname="bark.matins-offbeat">
+        <source>Only on the third beat, Doctor — when the eye is wide!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/malison.ts:344).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.malison.wait_for_it_to" resname="bark.malison.wait_for_it_to">
+        <source>Wait for it to open.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/malison.ts:351).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.malison.its_quickening_doctor_the" resname="bark.malison.its_quickening_doctor_the">
+        <source>It’s quickening! Doctor — the Litany. Draw the star with the right hand and still the hour.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/malison.ts:373).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.malison.the_shroud_has_burned" resname="bark.malison.the_shroud_has_burned">
+        <source>The shroud has burned away — an eye! Brand it on the third beat, and only then!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/malison.ts:376).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="bark.malison.its_splitting_apart_seize" resname="bark.malison.its_splitting_apart_seize">
         <source>It’s splitting apart! Seize every shard with the tongs and cast it out — before they rejoin!</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/malison.ts:121).</note>
+        <note from="context">Assistant bark spoken during operations (src/surgery/malison.ts:385).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.operation.steady_hands" resname="bark.operation.steady_hands">
+        <source>Steady hands!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/operation.ts:525).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.operation.praise" resname="bark.operation.praise">
+        <source>praise</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/operation.ts:525).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.operation.now_doctor_the_litany" resname="bark.operation.now_doctor_the_litany">
+        <source>Now, Doctor — the Litany. Draw the five-pointed star with the right hand.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/operation.ts:688).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.operation.instruction" resname="bark.operation.instruction">
+        <source>instruction</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/operation.ts:688).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.operation.i_have_it_doctor" resname="bark.operation.i_have_it_doctor">
+        <source>I have it, Doctor — keep working.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/operation.ts:862).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.overheat" resname="bark.overheat">
+        <source>The brand’s overheated. Give it a moment between searings.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/operation.ts:1067).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="bark.brand-flesh" resname="bark.brand-flesh">
         <source>Careful! The brand is searing healthy flesh!</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/operation.ts:282).</note>
+        <note from="context">Assistant bark spoken during operations (src/surgery/operation.ts:1136).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
-      <trans-unit id="bark.low-vitals" resname="bark.low-vitals">
+      <trans-unit id="bark.reopened" resname="bark.reopened">
+        <source>You’ve cut through your own stitches! Close it again.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/operation.ts:1157).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.inject-wound" resname="bark.inject-wound">
+        <source>Not into the wound, Doctor — clean flesh, away from the cuts.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/operation.ts:1174).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.inject-waste" resname="bark.inject-waste">
+        <source>He didn’t need that, Doctor. Save the tincture.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/operation.ts:1195).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.overdose" resname="bark.overdose">
+        <source>Too much tincture — your hands are shaking!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/operation.ts:1207).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.operation.vitals_are_failing_use" resname="bark.operation.vitals_are_failing_use">
         <source>Vitals are failing! Use the tincture, Doctor!</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/operation.ts:337).</note>
+        <note from="context">Assistant bark spoken during operations (src/surgery/operation.ts:1433).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.operation.danger" resname="bark.operation.danger">
+        <source>danger</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/operation.ts:1433).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.operation.were_losing_him" resname="bark.operation.were_losing_him">
+        <source>We’re losing him!</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/operation.ts:1439).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.operation.everythings_clear_close_the" resname="bark.operation.everythings_clear_close_the">
+        <source>Everything’s clear. Close the incision with the thread.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/operation.ts:1508).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.operation.hes_burning_up_something" resname="bark.operation.hes_burning_up_something">
+        <source>He’s burning up — something was left in the wound! Keep him alive through the fever.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/operation.ts:1517).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="bark.operation.the_operation_is_complete" resname="bark.operation.the_operation_is_complete">
         <source>The operation is complete.</source>
-        <note from="context">Assistant bark spoken during operations (src/surgery/operation.ts:359).</note>
+        <note from="context">Assistant bark spoken during operations (src/surgery/operation.ts:1563).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.salve-dry" resname="bark.salve-dry">
+        <source>The salve pot’s empty — give it a moment to refill.</source>
+        <note from="context">Assistant bark spoken during operations (src/surgery/operation.ts:1672).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.barkDirector.whisper" resname="bark.barkDirector.whisper">
+        <source>whisper</source>
+        <note from="context">Assistant bark spoken during operations (src/content/barkDirector.ts:176).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.barkDirector.whisper_band" resname="bark.barkDirector.whisper_band">
+        <source>whisper-band</source>
+        <note from="context">Assistant bark spoken during operations (src/content/barkDirector.ts:185).</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="bark.barkDirector.praise" resname="bark.barkDirector.praise">
+        <source>praise</source>
+        <note from="context">Assistant bark spoken during operations (src/content/barkDirector.ts:208).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="bark.operation.instruments_ready_doctor" resname="bark.operation.instruments_ready_doctor">
         <source>Instruments ready, Doctor.</source>
-        <note from="context">Assistant bark spoken during operations (src/scenes/operation.ts:66).</note>
+        <note from="context">Assistant bark spoken during operations (src/scenes/operation.ts:399).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
     </group>

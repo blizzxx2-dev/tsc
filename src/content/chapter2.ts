@@ -11,6 +11,8 @@ export const STORY_2_1: StoryDef = {
   backdrop: 'camp',
   lines: [
     n('CHAPTER II — THE HOUR OF LAUDS'),
+    // The transition card (NAR-0057): a week passes, and the writ itself is shown.
+    n('A week later.', { prop: 'writ' }),
     n('A week after the page-boy, a writ arrives under the Watch’s seal: the hospice’s surgeon is requisitioned for the muster.'),
     say('mauer', 'Don’t look at me like that, Doctor. The Inquisitor dines with the Burgomaster on Thursdays. On Fridays, the Burgomaster signs things.'),
     say('ilse', 'So Stroh can watch you somewhere with fewer witnesses.'),

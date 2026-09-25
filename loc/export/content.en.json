@@ -65,6 +65,78 @@
     "chapter": "global",
     "context": "Character name plate. Proper-name policy applies (docs/loc/style-guide.md)."
   },
+  "char.precentor.name": {
+    "text": "The Precentor",
+    "scope": "names",
+    "chapter": "global",
+    "context": "Character name plate. Proper-name policy applies (docs/loc/style-guide.md)."
+  },
+  "char.precentor.title": {
+    "text": "Aurel Vennholt, struck from the Guild rolls",
+    "scope": "names",
+    "chapter": "global",
+    "context": "Epithet of The Precentor."
+  },
+  "char.orsa.name": {
+    "text": "Orsa Flintvein",
+    "scope": "names",
+    "chapter": "global",
+    "context": "Character name plate. Proper-name policy applies (docs/loc/style-guide.md)."
+  },
+  "char.orsa.title": {
+    "text": "Foreman of the Flintvein delvers",
+    "scope": "names",
+    "chapter": "global",
+    "context": "Epithet of Orsa Flintvein."
+  },
+  "char.reiss.name": {
+    "text": "Widow Reiss",
+    "scope": "names",
+    "chapter": "global",
+    "context": "Character name plate. Proper-name policy applies (docs/loc/style-guide.md)."
+  },
+  "char.reiss.title": {
+    "text": "Aldegund Reiss, the charity seat of the Council",
+    "scope": "names",
+    "chapter": "global",
+    "context": "Epithet of Widow Reiss."
+  },
+  "char.tallert.name": {
+    "text": "Registrar Tallert",
+    "scope": "names",
+    "chapter": "global",
+    "context": "Character name plate. Proper-name policy applies (docs/loc/style-guide.md)."
+  },
+  "char.tallert.title": {
+    "text": "Oswin Tallert, Hall of Records",
+    "scope": "names",
+    "chapter": "global",
+    "context": "Epithet of Registrar Tallert."
+  },
+  "char.motherSuperior.name": {
+    "text": "The Mother Superior",
+    "scope": "names",
+    "chapter": "global",
+    "context": "Character name plate. Proper-name policy applies (docs/loc/style-guide.md)."
+  },
+  "char.motherSuperior.title": {
+    "text": "Convent of the Merciful Order",
+    "scope": "names",
+    "chapter": "global",
+    "context": "Epithet of The Mother Superior."
+  },
+  "char.burgomaster.name": {
+    "text": "The Burgomaster",
+    "scope": "names",
+    "chapter": "global",
+    "context": "Character name plate. Proper-name policy applies (docs/loc/style-guide.md)."
+  },
+  "char.burgomaster.title": {
+    "text": "Kessendorf, who signs things on Fridays",
+    "scope": "names",
+    "chapter": "global",
+    "context": "Epithet of The Burgomaster."
+  },
   "chapter.ch1.title": {
     "text": "The Hour of Matins",
     "scope": "names",
@@ -78,74 +150,102 @@
     "context": "Place and time caption at the top-left of the scene."
   },
   "prologue.001": {
+    "text": "An old surgeon’s woodcut hangs by the hospice door: a man stuck with every blade, bolt and fang in the world — and standing.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Narrator",
+    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 1 of 14."
+  },
+  "prologue.002": {
+    "text": "Beneath it, in faded ink: “Here is the battlefield. Hold it.”",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Narrator",
+    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 2 of 14."
+  },
+  "prologue.003": {
     "text": "The Free City of Kessendorf. Winter, in the ninth year of the Long Muster.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Narrator",
-    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 1 of 10."
+    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 3 of 14."
   },
-  "prologue.002": {
+  "prologue.004": {
     "text": "The river has frozen twice. The pyres outside the east gate have not gone out since autumn.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Narrator",
-    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 2 of 10."
+    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 4 of 14."
   },
-  "prologue.003": {
+  "prologue.005": {
     "text": "So. You are the new sawbones the Guild sent me. Kreuzer, is it?",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Master Haller",
-    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 3 of 10."
+    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 5 of 14."
   },
-  "prologue.004": {
+  "prologue.006": {
     "text": "Apothecary-surgeon, sworn at Weissburg. I have my letters, Master Haller—",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Dr. Kreuzer",
-    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 4 of 10."
+    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 6 of 14."
   },
-  "prologue.005": {
+  "prologue.007": {
     "text": "Letters. Letters don’t stop a man bleeding into the straw. Hands do. Show me your hands.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Master Haller",
-    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 5 of 10."
+    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 7 of 14."
   },
-  "prologue.006": {
-    "text": "…Steady enough. Sister! Our young doctor has arrived just in time for the Tuesday knife-fights.",
+  "prologue.008": {
+    "text": "…Steady enough. Why would a sworn Weissburg man take a charity bed in a city that burns its sick?",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Master Haller",
-    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 6 of 10."
+    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 8 of 14."
   },
-  "prologue.007": {
+  "prologue.009": {
+    "text": "Weissburg taught me the rules, Master. I came somewhere too poor to afford them.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Dr. Kreuzer",
+    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 9 of 14."
+  },
+  "prologue.010": {
+    "text": "Hm. Sister! Our young doctor has arrived just in time for the Tuesday knife-fights.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Master Haller",
+    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 10 of 14."
+  },
+  "prologue.011": {
     "text": "Sister Ilse, of the Merciful Order. I keep the instruments, the ledgers, and the Master’s temper.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
-    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 7 of 10."
+    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 11 of 14."
   },
-  "prologue.008": {
-    "text": "There’s a drover on the table already. Somebody at the Gilded Goose disagreed with his dice.",
+  "prologue.012": {
+    "text": "There’s a drover on the table already. Somebody at the Crooked Goose disagreed with his dice.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
-    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 8 of 10."
+    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 12 of 14."
   },
-  "prologue.009": {
-    "text": "Knife wounds. Simple work. Stitch him, drain him, salve him. I’ll watch.",
+  "prologue.013": {
+    "text": "Knife wounds. Simple work. I’ll watch.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Master Haller",
-    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 9 of 10."
+    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 13 of 14."
   },
-  "prologue.010": {
+  "prologue.014": {
     "text": "And Kreuzer — in this hospice we do not lose patients to simple work.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Master Haller",
-    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 10 of 10."
+    "context": "Story scene \"prologue\" (Kessendorf — the Hospice of Saint Ildra the Merciful), line 14 of 14."
   },
   "op1-1.title": {
     "text": "A Tavern Knife",
@@ -166,7 +266,7 @@
     "context": "Findings paragraph on the patient chart."
   },
   "op1-1.p0.1": {
-    "text": "Two deep cuts. Take the gut thread and zig-zag across each wound to stitch it.",
+    "text": "Two deep cuts. Take the Gut Thread and zig-zag across each wound to stitch it.",
     "scope": "callouts",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
@@ -180,21 +280,21 @@
     "context": "Assistant callout when phase 1 of 3 of \"A Tavern Knife\" begins."
   },
   "op1-1.p1.1": {
-    "text": "Blood’s pooling. Hold the leech-pipe over it to draw it off.",
+    "text": "Blood’s pooled from the cuts. Hold the Leech-Pipe over it to draw it off.",
     "scope": "callouts",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
     "context": "Assistant callout when phase 2 of 3 of \"A Tavern Knife\" begins."
   },
   "op1-1.p1.2": {
-    "text": "You can’t stitch through a pool of blood — drain first.",
+    "text": "Next time, drain first — you can’t stitch through a pool of blood.",
     "scope": "callouts",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
     "context": "Assistant callout when phase 2 of 3 of \"A Tavern Knife\" begins."
   },
   "op1-1.p2.1": {
-    "text": "Just nicks left. Brush Saint’s Salve over the small ones — no need for thread.",
+    "text": "Just nicks left. Brush Saint’s Salve over the small ones — no need for Gut Thread.",
     "scope": "callouts",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
@@ -207,46 +307,67 @@
     "context": "Place and time caption at the top-left of the scene."
   },
   "s1-2.001": {
-    "text": "The drover lived. He paid in turnips and a promise not to gamble again. He will break it by Friday.",
+    "text": "The next morning the Watch arrives before the bread does.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Narrator",
-    "context": "Story scene \"s1-2\" (The Hospice — the next morning), line 1 of 6."
+    "context": "Story scene \"s1-2\" (The Hospice — the next morning), line 1 of 9."
   },
   "s1-2.002": {
     "text": "Make way! Make way, damn you! Surgeon! Where’s the surgeon?",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Captain Mauer",
-    "context": "Story scene \"s1-2\" (The Hospice — the next morning), line 2 of 6."
+    "context": "Story scene \"s1-2\" (The Hospice — the next morning), line 2 of 9."
   },
   "s1-2.003": {
     "text": "Captain Mauer of the Watch. Lower your voice, Captain, this is a house of mercy.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
-    "context": "Story scene \"s1-2\" (The Hospice — the next morning), line 3 of 6."
+    "context": "Story scene \"s1-2\" (The Hospice — the next morning), line 3 of 9."
   },
   "s1-2.004": {
-    "text": "Horned raiders hit the timber-road caravan at dawn. We drove them off, but young Pieter took a shaft in the side.",
+    "text": "Twelve went out with the timber-road caravan. Twelve came back, eleven walking. Horned folk hit us at dawn.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Captain Mauer",
-    "context": "Story scene \"s1-2\" (The Hospice — the next morning), line 4 of 6."
+    "context": "Story scene \"s1-2\" (The Hospice — the next morning), line 4 of 9."
   },
   "s1-2.005": {
-    "text": "Beast-folk fletch their arrows with barbed heads. Rip one straight out and you’ll tear half his side with it.",
+    "text": "Young Pieter took a shaft in the side. Twelve, Doctor. I’d like it to stay twelve.",
     "scope": "story",
     "chapter": "ch1",
-    "speaker": "Master Haller",
-    "context": "Story scene \"s1-2\" (The Hospice — the next morning), line 5 of 6."
+    "speaker": "Captain Mauer",
+    "context": "Story scene \"s1-2\" (The Hospice — the next morning), line 5 of 9."
   },
   "s1-2.006": {
-    "text": "Nick the flesh at the entry with the lancet — twice — to free the barbs. Then pull. Cleanly.",
+    "text": "Then put him down gently, Captain, and stop counting him among the dead.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Dr. Kreuzer",
+    "context": "Story scene \"s1-2\" (The Hospice — the next morning), line 6 of 9."
+  },
+  "s1-2.007": {
+    "text": "Horned-folk heads are barbed like fish-hooks. They cut a notch in their antlers for every one that sticks in a man.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Master Haller",
-    "context": "Story scene \"s1-2\" (The Hospice — the next morning), line 6 of 6."
+    "context": "Story scene \"s1-2\" (The Hospice — the next morning), line 7 of 9."
+  },
+  "s1-2.008": {
+    "text": "Rip it straight out and you’ll take half his side with it. Free the barbs first, then pull. Cleanly.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Master Haller",
+    "context": "Story scene \"s1-2\" (The Hospice — the next morning), line 8 of 9."
+  },
+  "s1-2.009": {
+    "text": "Twelve. Say it with me, Doctor. Twelve.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Captain Mauer",
+    "context": "Story scene \"s1-2\" (The Hospice — the next morning), line 9 of 9."
   },
   "op1-2.title": {
     "text": "The Barbed Shaft",
@@ -267,13 +388,20 @@
     "context": "Findings paragraph on the patient chart."
   },
   "op1-2.p0.1": {
-    "text": "The arrow’s barbed. Lancet first — two nicks at the entry wound. Then seize it with the tongs and pull it well clear.",
+    "text": "The arrow’s barbed. Lancet first — two nicks at the entry wound.",
     "scope": "callouts",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
     "context": "Assistant callout when phase 1 of 2 of \"The Barbed Shaft\" begins."
   },
   "op1-2.p0.2": {
+    "text": "Then seize it with the Tongs and pull it well clear.",
+    "scope": "callouts",
+    "chapter": "ch1",
+    "speaker": "Sister Ilse",
+    "context": "Assistant callout when phase 1 of 2 of \"The Barbed Shaft\" begins."
+  },
+  "op1-2.p0.3": {
     "text": "Then drain and stitch the wound it leaves.",
     "scope": "callouts",
     "chapter": "ch1",
@@ -301,46 +429,60 @@
     "context": "Place and time caption at the top-left of the scene."
   },
   "s1-3.001": {
-    "text": "Pieter will keep his side, and his opinion of beast-folk.",
+    "text": "Noon. A second sack of turnips arrives at the gate. The drover has told his friends about us.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Narrator",
-    "context": "Story scene \"s1-3\" (The Hospice — noon), line 1 of 6."
+    "context": "Story scene \"s1-3\" (The Hospice — noon), line 1 of 8."
   },
   "s1-3.002": {
     "text": "Doctor, the gunsmiths’ quarter. An apprentice was proving a new handgun barrel and it burst in his hands.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
-    "context": "Story scene \"s1-3\" (The Hospice — noon), line 2 of 6."
+    "context": "Story scene \"s1-3\" (The Hospice — noon), line 2 of 8."
   },
   "s1-3.003": {
-    "text": "Burns across the chest and lead fragments driven under the skin.",
+    "text": "Burns across the chest, lead driven under the skin — and a note from the Gunsmiths’ Guild pinned to his shirt.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
-    "context": "Story scene \"s1-3\" (The Hospice — noon), line 3 of 6."
+    "context": "Story scene \"s1-3\" (The Hospice — noon), line 3 of 8."
   },
   "s1-3.004": {
-    "text": "Powder burns. The charred skin is dead — pluck the eschar away with tongs before you salve, or it festers.",
+    "text": "The Guild will pay for his care. Once we have paid the Guild’s fee for inspecting its own burst barrel.",
     "scope": "story",
     "chapter": "ch1",
-    "speaker": "Master Haller",
-    "context": "Story scene \"s1-3\" (The Hospice — noon), line 4 of 6."
+    "speaker": "Sister Ilse",
+    "context": "Story scene \"s1-3\" (The Hospice — noon), line 4 of 8."
   },
   "s1-3.005": {
-    "text": "The shot is in deep. You’ll have to open him. Trace the line I’ve inked, and keep your hand true.",
+    "text": "Naturally. In Kessendorf a man pays the Guild for the privilege of being shot by its work.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Master Haller",
-    "context": "Story scene \"s1-3\" (The Hospice — noon), line 5 of 6."
+    "context": "Story scene \"s1-3\" (The Hospice — noon), line 5 of 8."
   },
   "s1-3.006": {
-    "text": "He’s lost blood already. If his pulse flags, the tincture — hold it to the flesh and let it take.",
+    "text": "Then we send the Guild a bill for the lead we take out of him. Itemised, by the ounce.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Dr. Kreuzer",
+    "context": "Story scene \"s1-3\" (The Hospice — noon), line 6 of 8."
+  },
+  "s1-3.007": {
+    "text": "Powder burns. The black crust is dead meat: off with it before any salve, or it festers underneath.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Master Haller",
-    "context": "Story scene \"s1-3\" (The Hospice — noon), line 6 of 6."
+    "context": "Story scene \"s1-3\" (The Hospice — noon), line 7 of 8."
+  },
+  "s1-3.008": {
+    "text": "The shot is deep. You’ll open him along the line I’ve inked. And if his pulse flags — the tincture.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Master Haller",
+    "context": "Story scene \"s1-3\" (The Hospice — noon), line 8 of 8."
   },
   "op1-3.title": {
     "text": "Powder Burns",
@@ -361,35 +503,35 @@
     "context": "Findings paragraph on the patient chart."
   },
   "op1-3.p0.1": {
-    "text": "His pulse is weak already. Hold the tincture to the flesh to steady him if you need it.",
+    "text": "His pulse is weak already. Hold the Tincture to the flesh to steady him if need be.",
     "scope": "callouts",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
     "context": "Assistant callout when phase 1 of 4 of \"Powder Burns\" begins."
   },
   "op1-3.p0.2": {
-    "text": "Burns first. Pluck the black eschar away with the tongs, then salve the raw flesh.",
+    "text": "Burns first. Tongs to pluck the black eschar, then Saint’s Salve on the raw flesh.",
     "scope": "callouts",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
     "context": "Assistant callout when phase 1 of 4 of \"Powder Burns\" begins."
   },
   "op1-3.p1.1": {
-    "text": "Now open him along the inked line with the lancet. Keep to the line — start at the glowing end.",
+    "text": "Now open him along the inked line with the Lancet. Start at the glowing end.",
     "scope": "callouts",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
     "context": "Assistant callout when phase 2 of 4 of \"Powder Burns\" begins."
   },
   "op1-3.p2.1": {
-    "text": "There — the shot. Pull each ball out with the tongs.",
+    "text": "There — the shot. Pull each ball out with the Tongs.",
     "scope": "callouts",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
     "context": "Assistant callout when phase 3 of 4 of \"Powder Burns\" begins."
   },
   "op1-3.p3.1": {
-    "text": "Everything’s clear. Close the incision with the thread.",
+    "text": "Everything’s clear. Close the incision with the Gut Thread.",
     "scope": "callouts",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
@@ -406,49 +548,76 @@
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Narrator",
-    "context": "Story scene \"s1-4\" (The Hospice — dusk), line 1 of 7."
+    "context": "Story scene \"s1-4\" (The Hospice — dusk), line 1 of 10."
   },
   "s1-4.002": {
-    "text": "Doctor… this one was found in the Tanners’ Rows. Swellings at the neck and groin. Fever. Maggots in a sore.",
+    "text": "This one was found in the Tanners’ Rows. Swellings at the neck and groin. Fever. Maggots in an old sore.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
-    "context": "Story scene \"s1-4\" (The Hospice — dusk), line 2 of 7."
+    "context": "Story scene \"s1-4\" (The Hospice — dusk), line 2 of 10."
   },
   "s1-4.003": {
-    "text": "Buboes. Lance them before they burst, draw off the pus, and salve the wound. Rot-patches creep back if you dawdle.",
+    "text": "Matthis Kolb. Twenty years a tanner’s man. Write that, Sister, not “vagrant”. I had a trade before I had a fever.",
     "scope": "story",
     "chapter": "ch1",
-    "speaker": "Master Haller",
-    "context": "Story scene \"s1-4\" (The Hospice — dusk), line 3 of 7."
+    "speaker": "Matthis Kolb",
+    "context": "Story scene \"s1-4\" (The Hospice — dusk), line 3 of 10."
+  },
+  "s1-4.003.as": {
+    "text": "Matthis Kolb",
+    "scope": "names",
+    "chapter": "ch1",
+    "context": "Speaker name shown for s1-4.003."
   },
   "s1-4.004": {
-    "text": "And the grubs — the cautery brand. Hold it on them until they stop wriggling. Mind you don’t sear good flesh.",
+    "text": "Matthis Kolb, tanner’s man. Written, and underlined.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Sister Ilse",
+    "context": "Story scene \"s1-4\" (The Hospice — dusk), line 4 of 10."
+  },
+  "s1-4.005": {
+    "text": "Buboes, and a rotting sore. He’s slept in the Rows among the hides. Burn the grubs, Kreuzer — not the man.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Master Haller",
-    "context": "Story scene \"s1-4\" (The Hospice — dusk), line 4 of 7."
+    "context": "Story scene \"s1-4\" (The Hospice — dusk), line 5 of 10."
   },
-  "s1-4.005": {
+  "s1-4.006": {
+    "text": "Nobody hears the door. There is simply a man in black standing in the ward, where a moment ago there was not.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Narrator",
+    "context": "Story scene \"s1-4\" (The Hospice — dusk), line 6 of 10."
+  },
+  "s1-4.007": {
     "text": "A plague case. In the city. How very interesting.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Inquisitor Stroh",
-    "context": "Story scene \"s1-4\" (The Hospice — dusk), line 5 of 7."
+    "context": "Story scene \"s1-4\" (The Hospice — dusk), line 7 of 10."
   },
-  "s1-4.006": {
+  "s1-4.008": {
     "text": "…Inquisitor Stroh. Of the Ash Tribunal.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
-    "context": "Story scene \"s1-4\" (The Hospice — dusk), line 6 of 7."
+    "context": "Story scene \"s1-4\" (The Hospice — dusk), line 8 of 10."
   },
-  "s1-4.007": {
-    "text": "Please, do carry on, Doctor. I only wish to watch. Pestilence so often has a sponsor.",
+  "s1-4.009": {
+    "text": "Carry on, Doctor. I only wish to watch. Pestilence so often has a sponsor — and I hear the Kilnrows are coughing too.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Inquisitor Stroh",
-    "context": "Story scene \"s1-4\" (The Hospice — dusk), line 7 of 7."
+    "context": "Story scene \"s1-4\" (The Hospice — dusk), line 9 of 10."
+  },
+  "s1-4.010": {
+    "text": "Then stand back from the table, Inquisitor. Whoever sponsors it, it isn’t particular whom it takes.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Dr. Kreuzer",
+    "context": "Story scene \"s1-4\" (The Hospice — dusk), line 10 of 10."
   },
   "op1-4.title": {
     "text": "Pestilent Humours",
@@ -457,7 +626,7 @@
     "context": "Operation title (briefing, HUD banner, results, theatre list)."
   },
   "op1-4.patient": {
-    "text": "Unknown vagrant, Tanners’ Rows",
+    "text": "Matthis Kolb, tanner’s man, Tanners’ Rows",
     "scope": "ops",
     "chapter": "ch1",
     "context": "Patient line on the chart and HUD."
@@ -469,28 +638,35 @@
     "context": "Findings paragraph on the patient chart."
   },
   "op1-4.p0.1": {
-    "text": "Lance each bubo with a single touch of the lancet before it bursts. Then drain the pus and salve it.",
+    "text": "Lance each bubo with a single touch of the Lancet before it bursts.",
+    "scope": "callouts",
+    "chapter": "ch1",
+    "speaker": "Sister Ilse",
+    "context": "Assistant callout when phase 1 of 3 of \"Pestilent Humours\" begins."
+  },
+  "op1-4.p0.2": {
+    "text": "Then drain the pus and brush Saint’s Salve over it.",
     "scope": "callouts",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
     "context": "Assistant callout when phase 1 of 3 of \"Pestilent Humours\" begins."
   },
   "op1-4.p1.1": {
-    "text": "Grubs in the sore! The cautery brand — hold it on each one until it stops moving.",
+    "text": "Grubs in the sore! The Cautery Brand — hold it on each one until it stops moving.",
     "scope": "callouts",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
     "context": "Assistant callout when phase 2 of 3 of \"Pestilent Humours\" begins."
   },
   "op1-4.p1.2": {
-    "text": "Don’t linger on bare flesh with the brand.",
+    "text": "Don’t linger on bare flesh with the Cautery Brand.",
     "scope": "callouts",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
     "context": "Assistant callout when phase 2 of 3 of \"Pestilent Humours\" begins."
   },
   "op1-4.p2.1": {
-    "text": "The rot’s spreading. Salve every patch — quickly, it creeps back.",
+    "text": "The rot’s spreading. Saint’s Salve on every patch — quickly, it creeps back.",
     "scope": "callouts",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
@@ -503,7 +679,7 @@
     "context": "Place and time caption at the top-left of the scene."
   },
   "s1-5.001": {
-    "text": "Near midnight a carriage without a crest stops at the gate. A page-boy is carried in, raving.",
+    "text": "Near midnight a carriage stops at the gate. Its door panel has been planed smooth where a crest should be — on purpose.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Narrator",
@@ -523,7 +699,7 @@
     "context": "Speaker name shown for s1-5.002."
   },
   "s1-5.003": {
-    "text": "Doctor, look at his chest. Those marks — they’re moving.",
+    "text": "Doctor, look at his chest. Those marks — they’re moving. That one is an eye, with a stroke drawn through it.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
@@ -537,21 +713,21 @@
     "context": "Story scene \"s1-5\" (The Hospice — the small hours), line 4 of 8."
   },
   "s1-5.005": {
-    "text": "Kreuzer. Listen to me carefully. Sear the sigils out with the brand — trace every stroke.",
+    "text": "Then we unwrite him. The brand, Sister. And more light.",
     "scope": "story",
     "chapter": "ch1",
-    "speaker": "Master Haller",
+    "speaker": "Dr. Kreuzer",
     "context": "Story scene \"s1-5\" (The Hospice — the small hours), line 5 of 8."
   },
   "s1-5.006": {
-    "text": "And if something… answers… when you do — there is an old apothecary’s rite. The Litany of Stillness.",
+    "text": "If something answers when you do — there is an old apothecary’s rite. The Litany of Stillness.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Master Haller",
     "context": "Story scene \"s1-5\" (The Hospice — the small hours), line 6 of 8."
   },
   "s1-5.007": {
-    "text": "Trace the five-pointed star and still your heart. For a few breaths, the world will wait for you.",
+    "text": "Draw the five-pointed star and still your heart. For a few breaths, the world will wait for you.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Master Haller",
@@ -583,14 +759,14 @@
     "context": "Findings paragraph on the patient chart."
   },
   "op1-5.p0.1": {
-    "text": "Those sigils are draining him. Trace every stroke of each one with the brand to sear it out.",
+    "text": "Those sigils are draining him. Trace every stroke with the Cautery Brand to sear them.",
     "scope": "callouts",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
     "context": "Assistant callout when phase 1 of 5 of \"The Hour of Matins\" begins."
   },
   "op1-5.p1.1": {
-    "text": "Something is moving beneath the skin. We have to open him. The lancet — along the line.",
+    "text": "Something is moving beneath the skin. We have to open him. The Lancet — along the line.",
     "scope": "callouts",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
@@ -604,7 +780,7 @@
     "context": "Assistant callout when phase 3 of 5 of \"The Hour of Matins\" begins."
   },
   "op1-5.p2.2": {
-    "text": "Doctor — if ever there were a time for the Litany, it is now. Draw the star with the right hand.",
+    "text": "Doctor — if ever there were a time for the Litany, it is now. Draw the star.",
     "scope": "callouts",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
@@ -618,7 +794,7 @@
     "context": "Assistant callout when phase 4 of 5 of \"The Hour of Matins\" begins."
   },
   "op1-5.p4.1": {
-    "text": "Everything’s clear. Close the incision with the thread.",
+    "text": "Everything’s clear. Close the incision with the Gut Thread.",
     "scope": "callouts",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
@@ -635,70 +811,91 @@
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Narrator",
-    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 1 of 10."
+    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 1 of 13."
   },
   "s1-end.002": {
-    "text": "Doctor… after it broke, a word was left seared into the flesh. Matins.",
+    "text": "Doctor… after it broke, a word was left seared into the flesh. Matins. And beside it, fading: the struck-through eye.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Sister Ilse",
-    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 2 of 10."
+    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 2 of 13."
   },
   "s1-end.003": {
     "text": "The first of the canonical hours. The first prayer of the night.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Master Haller",
-    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 3 of 10."
+    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 3 of 13."
   },
   "s1-end.004": {
     "text": "A curse that lives and fights like a beast, and signs itself like a psalm. A Malison.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Master Haller",
-    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 4 of 10."
+    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 4 of 13."
   },
   "s1-end.005": {
     "text": "And if this was Matins… then somewhere, someone is already writing Lauds.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Master Haller",
-    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 5 of 10."
+    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 5 of 13."
   },
   "s1-end.006": {
+    "text": "In the yard, the carriage without a crest pulls away before anyone thinks to ask whose it is.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Narrator",
+    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 6 of 13."
+  },
+  "s1-end.007": {
     "text": "A remarkable recovery, Doctor. Remarkable.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Inquisitor Stroh",
-    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 6 of 10."
+    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 7 of 13."
   },
-  "s1-end.007": {
+  "s1-end.008": {
     "text": "Tell me — at the end, your hands moved so very quickly. Almost as if time itself were… obliging you.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Inquisitor Stroh",
-    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 7 of 10."
+    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 8 of 13. Variant line: shown only if the Litany was spoken in the preceding operation."
   },
-  "s1-end.008": {
+  "s1-end.009": {
     "text": "Practice, Inquisitor. And the grace of Saint Ildra.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Dr. Kreuzer",
-    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 8 of 10."
+    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 9 of 13. Variant line: shown only if the Litany was spoken in the preceding operation."
   },
-  "s1-end.009": {
+  "s1-end.010": {
     "text": "Of course. The grace of the Saint. I shall pray on it.",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Inquisitor Stroh",
-    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 9 of 10."
+    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 10 of 13. Variant line: shown only if the Litany was spoken in the preceding operation."
   },
-  "s1-end.010": {
+  "s1-end.011": {
+    "text": "I watched every stroke. No tricks, no prayers. Only a surgeon, working. I find it almost disappointing.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Inquisitor Stroh",
+    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 11 of 13. Variant line: shown only if the Litany was NOT spoken in the preceding operation."
+  },
+  "s1-end.012": {
+    "text": "Surgery usually is, Inquisitor. That is how you know it worked.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Dr. Kreuzer",
+    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 12 of 13. Variant line: shown only if the Litany was NOT spoken in the preceding operation."
+  },
+  "s1-end.013": {
     "text": "END OF CHAPTER I — THE HOUR OF MATINS",
     "scope": "story",
     "chapter": "ch1",
     "speaker": "Narrator",
-    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 10 of 10."
+    "context": "Story scene \"s1-end\" (The Hospice — before dawn), line 13 of 13."
   },
   "chapter.ch2.title": {
     "text": "The Hour of Lauds",
@@ -717,56 +914,77 @@
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Narrator",
-    "context": "Story scene \"s2-1\" (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 1 of 8."
+    "context": "Story scene \"s2-1\" (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 1 of 11."
   },
   "s2-1.002": {
-    "text": "A week after the page-boy, a writ arrives with the Watch’s seal: the hospice’s surgeon is requisitioned for the muster.",
+    "text": "A week later.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Narrator",
-    "context": "Story scene \"s2-1\" (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 2 of 8."
+    "context": "Story scene \"s2-1\" (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 2 of 11."
   },
   "s2-1.003": {
-    "text": "Don’t look at me like that, Doctor. I didn’t ask for you. The Inquisitor “suggested” it to the Burgomaster.",
+    "text": "A week after the page-boy, a writ arrives under the Watch’s seal: the hospice’s surgeon is requisitioned for the muster.",
     "scope": "story",
     "chapter": "ch2",
-    "speaker": "Captain Mauer",
-    "context": "Story scene \"s2-1\" (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 3 of 8."
+    "speaker": "Narrator",
+    "context": "Story scene \"s2-1\" (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 3 of 11."
   },
   "s2-1.004": {
-    "text": "So he can watch you somewhere with fewer witnesses.",
+    "text": "Don’t look at me like that, Doctor. The Inquisitor dines with the Burgomaster on Thursdays. On Fridays, the Burgomaster signs things.",
     "scope": "story",
     "chapter": "ch2",
-    "speaker": "Sister Ilse",
-    "context": "Story scene \"s2-1\" (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 4 of 8."
+    "speaker": "Captain Mauer",
+    "context": "Story scene \"s2-1\" (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 4 of 11."
   },
   "s2-1.005": {
-    "text": "We’re clearing the Grauwald of raiders before the spring caravans. My lads need a surgeon more than a city needs rumours.",
+    "text": "So Stroh can watch you somewhere with fewer witnesses.",
     "scope": "story",
     "chapter": "ch2",
-    "speaker": "Captain Mauer",
-    "context": "Story scene \"s2-1\" (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 5 of 8."
+    "speaker": "Sister Ilse",
+    "context": "Story scene \"s2-1\" (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 5 of 11."
   },
   "s2-1.006": {
-    "text": "Speaking of which — the scouts came back. Two of them. Something followed them out of the barrow-fields.",
+    "text": "Fewer? Forty men in this camp, Sister. Forty witnesses. Forty-one with the cook, and I don’t count the cook.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Captain Mauer",
-    "context": "Story scene \"s2-1\" (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 6 of 8."
+    "context": "Story scene \"s2-1\" (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 6 of 11."
   },
   "s2-1.007": {
-    "text": "Doctor, it’s a gravehound bite. Claw rakes across the back, and — look — it left its teeth in him.",
+    "text": "You count everyone, Captain. You counted the mules.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Story scene \"s2-1\" (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 7 of 8."
+    "context": "Story scene \"s2-1\" (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 7 of 11."
   },
   "s2-1.008": {
-    "text": "Corpse-eaters carry a venom in their spit. Hold the tincture to the bite itself and it will draw the poison.",
+    "text": "The mules keep better order. We clear the Grauwald of raiders before the spring caravans. Two scouts came back from the barrow-fields.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Captain Mauer",
+    "context": "Story scene \"s2-1\" (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 8 of 11."
+  },
+  "s2-1.009": {
+    "text": "Something followed them out.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Captain Mauer",
+    "context": "Story scene \"s2-1\" (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 9 of 11."
+  },
+  "s2-1.010": {
+    "text": "A gravehound. Claw rakes across his back — and it has left its teeth in him.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Story scene \"s2-1\" (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 8 of 8."
+    "context": "Story scene \"s2-1\" (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 10 of 11."
+  },
+  "s2-1.011": {
+    "text": "Corpse-eaters carry a venom in their spit. Tomas, isn’t it? Look at me, Tomas. You’ll keep the arm.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Dr. Kreuzer",
+    "context": "Story scene \"s2-1\" (The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf), line 11 of 11."
   },
   "op2-1.title": {
     "text": "Gravehound",
@@ -787,7 +1005,7 @@
     "context": "Findings paragraph on the patient chart."
   },
   "op2-1.p0.1": {
-    "text": "The venom first — hold the tincture on the bite until it takes.",
+    "text": "The venom first — hold the Tincture on the bite until it takes.",
     "scope": "callouts",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
@@ -821,71 +1039,91 @@
     "context": "Place and time caption at the top-left of the scene."
   },
   "s2-2.001": {
-    "text": "The scout will limp, but he will limp home.",
-    "scope": "story",
-    "chapter": "ch2",
-    "speaker": "Narrator",
-    "context": "Story scene \"s2-2\" (The muster camp — afternoon), line 1 of 7."
-  },
-  "s2-2.002": {
     "text": "Put me down, you long-legged oafs! I can walk! I can… mostly walk.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Orsa Flintvein",
-    "context": "Story scene \"s2-2\" (The muster camp — afternoon), line 2 of 7."
+    "context": "Story scene \"s2-2\" (The muster camp — afternoon), line 1 of 9."
   },
-  "s2-2.002.as": {
+  "s2-2.001.as": {
     "text": "Orsa Flintvein",
     "scope": "names",
     "chapter": "ch2",
-    "context": "Speaker name shown for s2-2.002."
+    "context": "Speaker name shown for s2-2.001."
   },
-  "s2-2.003": {
+  "s2-2.002": {
     "text": "Dwarf prospector. Her crew was working a seam in the hills when it caved in.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Captain Mauer",
-    "context": "Story scene \"s2-2\" (The muster camp — afternoon), line 3 of 7."
+    "context": "Story scene \"s2-2\" (The muster camp — afternoon), line 2 of 9."
   },
-  "s2-2.004": {
-    "text": "The rock went black, Doctor. Black and wrong, like a bruise in the stone. It sang when we struck it. Then it burst.",
+  "s2-2.003": {
+    "text": "The rock went black, Doctor. Black as a wet eye, and it had a pulse. It sang when we struck it. Then it burst.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Orsa Flintvein",
-    "context": "Story scene \"s2-2\" (The muster camp — afternoon), line 4 of 7."
+    "context": "Story scene \"s2-2\" (The muster camp — afternoon), line 3 of 9."
   },
-  "s2-2.004.as": {
+  "s2-2.003.as": {
     "text": "Orsa Flintvein",
     "scope": "names",
     "chapter": "ch2",
-    "context": "Speaker name shown for s2-2.004."
+    "context": "Speaker name shown for s2-2.003."
+  },
+  "s2-2.004": {
+    "text": "Mind her beard, Doctor. Every knot in it is tied for a debt.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Sister Ilse",
+    "context": "Story scene \"s2-2\" (The muster camp — afternoon), line 4 of 9."
   },
   "s2-2.005": {
-    "text": "There are shards under her skin that I can’t see — but the flesh around them is spoiling.",
+    "text": "Nineteen knots. Nine are owed to me, ten I owe. If I die owing ten, my sons pay them, and my sons are idle.",
     "scope": "story",
     "chapter": "ch2",
-    "speaker": "Sister Ilse",
-    "context": "Story scene \"s2-2\" (The muster camp — afternoon), line 5 of 7."
+    "speaker": "Orsa Flintvein",
+    "context": "Story scene \"s2-2\" (The muster camp — afternoon), line 5 of 9."
+  },
+  "s2-2.005.as": {
+    "text": "Orsa Flintvein",
+    "scope": "names",
+    "chapter": "ch2",
+    "context": "Speaker name shown for s2-2.005."
   },
   "s2-2.006": {
-    "text": "Master Haller sent this with me. His old Scrying Lens. Pass it slowly over the flesh and it shows what hides beneath.",
+    "text": "There are shards under her skin I can’t see — but the flesh around them is spoiling.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Story scene \"s2-2\" (The muster camp — afternoon), line 6 of 7."
+    "context": "Story scene \"s2-2\" (The muster camp — afternoon), line 6 of 9."
   },
   "s2-2.007": {
+    "text": "Master Haller sent his old Scrying Lens with me. He says you are to break anything else of his first.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Sister Ilse",
+    "context": "Story scene \"s2-2\" (The muster camp — afternoon), line 7 of 9."
+  },
+  "s2-2.008": {
     "text": "Dwarf hide’s thicker than yours, lad. You’ll want a strong arm on that thread.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Orsa Flintvein",
-    "context": "Story scene \"s2-2\" (The muster camp — afternoon), line 7 of 7."
+    "context": "Story scene \"s2-2\" (The muster camp — afternoon), line 8 of 9."
   },
-  "s2-2.007.as": {
+  "s2-2.008.as": {
     "text": "Orsa Flintvein",
     "scope": "names",
     "chapter": "ch2",
-    "context": "Speaker name shown for s2-2.007."
+    "context": "Speaker name shown for s2-2.008."
+  },
+  "s2-2.009": {
+    "text": "Hold still, Mistress Flintvein, and I’ll owe you a knot.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Dr. Kreuzer",
+    "context": "Story scene \"s2-2\" (The muster camp — afternoon), line 9 of 9."
   },
   "op2-2.title": {
     "text": "The Black Seam",
@@ -940,32 +1178,66 @@
     "context": "Place and time caption at the top-left of the scene."
   },
   "s2-3.001": {
-    "text": "Orsa sleeps in the supply wagon, snoring like a bellows. She has promised to name a mine after the Doctor. It will probably be a bad one.",
+    "text": "Orsa sleeps in the supply wagon, snoring like a bellows. The sentries swear it keeps the wolves off.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Narrator",
-    "context": "Story scene \"s2-3\" (The muster camp — night), line 1 of 4."
+    "context": "Story scene \"s2-3\" (The muster camp — night), line 1 of 8."
   },
   "s2-3.002": {
-    "text": "Forager. Went to check his snares near the old web-trees. We found him wrapped up like a Martinmas ham.",
+    "text": "Elf forager. Went to check his snares by the old web-trees. We found him wrapped up like a midwinter ham.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Captain Mauer",
-    "context": "Story scene \"s2-3\" (The muster camp — night), line 2 of 4."
+    "context": "Story scene \"s2-3\" (The muster camp — night), line 2 of 8."
   },
   "s2-3.003": {
-    "text": "A web-spinner bite. Venom, spreading fast. And these lumps under the skin… Saints. She laid in him.",
+    "text": "…the brood-mother… she kissed me… she was so gentle about it…",
     "scope": "story",
     "chapter": "ch2",
-    "speaker": "Sister Ilse",
-    "context": "Story scene \"s2-3\" (The muster camp — night), line 3 of 4."
+    "speaker": "Ilvaren",
+    "context": "Story scene \"s2-3\" (The muster camp — night), line 3 of 8."
+  },
+  "s2-3.003.as": {
+    "text": "Ilvaren",
+    "scope": "names",
+    "chapter": "ch2",
+    "context": "Speaker name shown for s2-3.003."
   },
   "s2-3.004": {
-    "text": "Lance the sacs before they hatch, Doctor, and sear what spills out. If they hatch on their own, they’ll scatter.",
+    "text": "Elf skin, Doctor — thin as vellum. It cuts at a breath and bleeds like a spring.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Story scene \"s2-3\" (The muster camp — night), line 4 of 4."
+    "context": "Story scene \"s2-3\" (The muster camp — night), line 4 of 8."
+  },
+  "s2-3.005": {
+    "text": "The foresters call the great web-spinners brood-mothers. Venom, spreading fast. And these lumps… Saints. She laid in him.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Sister Ilse",
+    "context": "Story scene \"s2-3\" (The muster camp — night), line 5 of 8."
+  },
+  "s2-3.006": {
+    "text": "My lads won’t fetch water past the web-trees now. They say a brood-mother remembers every face that has seen her.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Captain Mauer",
+    "context": "Story scene \"s2-3\" (The muster camp — night), line 6 of 8."
+  },
+  "s2-3.007": {
+    "text": "Then fetch my water from somewhere she hasn’t looked, Captain. And more light.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Dr. Kreuzer",
+    "context": "Story scene \"s2-3\" (The muster camp — night), line 7 of 8."
+  },
+  "s2-3.008": {
+    "text": "The sacs are swelling, Doctor. If they hatch on their own, they’ll scatter.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Sister Ilse",
+    "context": "Story scene \"s2-3\" (The muster camp — night), line 8 of 8."
   },
   "op2-3.title": {
     "text": "Brood-Mother’s Kiss",
@@ -974,7 +1246,7 @@
     "context": "Operation title (briefing, HUD banner, results, theatre list)."
   },
   "op2-3.patient": {
-    "text": "Henning, forager",
+    "text": "Ilvaren, elf forager",
     "scope": "ops",
     "chapter": "ch2",
     "context": "Patient line on the chart and HUD."
@@ -990,35 +1262,49 @@
     "scope": "callouts",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Assistant callout when phase 1 of 3 of \"Brood-Mother’s Kiss\" begins."
+    "context": "Assistant callout when phase 1 of 4 of \"Brood-Mother’s Kiss\" begins."
   },
   "op2-3.p1.1": {
-    "text": "The sacs — lance each one with a single touch, then sear the hatchlings with the brand.",
+    "text": "The sacs — lance each with one touch, then sear the hatchlings with the Cautery Brand.",
     "scope": "callouts",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Assistant callout when phase 2 of 3 of \"Brood-Mother’s Kiss\" begins."
+    "context": "Assistant callout when phase 2 of 4 of \"Brood-Mother’s Kiss\" begins."
   },
   "op2-3.p1.2": {
     "text": "Mind the ones that are close to hatching.",
     "scope": "callouts",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Assistant callout when phase 2 of 3 of \"Brood-Mother’s Kiss\" begins."
+    "context": "Assistant callout when phase 2 of 4 of \"Brood-Mother’s Kiss\" begins."
   },
   "op2-3.p2.1": {
-    "text": "One more sac, deeper. Use the lens to find it, then open it.",
+    "text": "Her brood-cluster — three sacs under one skin.",
     "scope": "callouts",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Assistant callout when phase 3 of 3 of \"Brood-Mother’s Kiss\" begins."
+    "context": "Assistant callout when phase 3 of 4 of \"Brood-Mother’s Kiss\" begins."
   },
   "op2-3.p2.2": {
+    "text": "Cut the membrane right around them with the Lancet first, or they’ll wake as one.",
+    "scope": "callouts",
+    "chapter": "ch2",
+    "speaker": "Sister Ilse",
+    "context": "Assistant callout when phase 3 of 4 of \"Brood-Mother’s Kiss\" begins."
+  },
+  "op2-3.p3.1": {
+    "text": "One more sac, deeper. Use the Scrying Lens to find it, then open it.",
+    "scope": "callouts",
+    "chapter": "ch2",
+    "speaker": "Sister Ilse",
+    "context": "Assistant callout when phase 4 of 4 of \"Brood-Mother’s Kiss\" begins."
+  },
+  "op2-3.p3.2": {
     "text": "And he’s taken a fever-bubo from the bite — lance and cleanse it.",
     "scope": "callouts",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Assistant callout when phase 3 of 3 of \"Brood-Mother’s Kiss\" begins."
+    "context": "Assistant callout when phase 4 of 4 of \"Brood-Mother’s Kiss\" begins."
   },
   "s2-4.place": {
     "text": "The muster camp — before midnight",
@@ -1031,49 +1317,84 @@
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Inquisitor Stroh",
-    "context": "Story scene \"s2-4\" (The muster camp — before midnight), line 1 of 7."
+    "context": "Story scene \"s2-4\" (The muster camp — before midnight), line 1 of 10."
   },
   "s2-4.002": {
     "text": "Two of the Inquisitor’s men drag a thin, grey-robed figure into the light. His chest is a lattice of glowing sigils.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Narrator",
-    "context": "Story scene \"s2-4\" (The muster camp — before midnight), line 2 of 7."
+    "context": "Story scene \"s2-4\" (The muster camp — before midnight), line 2 of 10."
   },
   "s2-4.003": {
-    "text": "A lay-cantor of the Hollow Choir. We took him in the barrow-fields, singing to the dead.",
+    "text": "A lay-cantor of the Hollow Choir. We took him in the barrow-fields, singing to the dead. Something in the barrows sang back.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Inquisitor Stroh",
-    "context": "Story scene \"s2-4\" (The muster camp — before midnight), line 3 of 7."
+    "context": "Story scene \"s2-4\" (The muster camp — before midnight), line 3 of 10."
   },
   "s2-4.004": {
-    "text": "The moment he began to confess, those marks ignited. His masters would rather he burned than spoke.",
+    "text": "The moment he began to confess, those marks ignited. He also swallowed something. His masters would rather he burned than spoke.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Inquisitor Stroh",
-    "context": "Story scene \"s2-4\" (The muster camp — before midnight), line 4 of 7."
+    "context": "Story scene \"s2-4\" (The muster camp — before midnight), line 4 of 10."
   },
   "s2-4.005": {
-    "text": "He also swallowed something. You will keep him alive. I have questions, and the dead are poor at answering them.",
+    "text": "You will keep him alive, Doctor — and awake. I have questions, and the dead are poor at answering them.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Inquisitor Stroh",
-    "context": "Story scene \"s2-4\" (The muster camp — before midnight), line 5 of 7."
+    "context": "Story scene \"s2-4\" (The muster camp — before midnight), line 5 of 10."
   },
   "s2-4.006": {
-    "text": "…Doctor. Whatever he is, he’s a patient.",
+    "text": "…He’s dying, Doctor. Whatever else he is, he’s a patient.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Story scene \"s2-4\" (The muster camp — before midnight), line 6 of 7."
+    "context": "Story scene \"s2-4\" (The muster camp — before midnight), line 6 of 10."
   },
   "s2-4.007": {
+    "text": "The cantor’s eyes find Kreuzer’s. Stroh waits, one glove already off.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Narrator",
+    "context": "Story scene \"s2-4\" (The muster camp — before midnight), line 7 of 10. Choice prompt: the player then picks one of 2 replies (ids .o1–.o2)."
+  },
+  "s2-4.007.o1": {
+    "text": "I treat the man on my table, Inquisitor, not your witness. If he needs poppy for the pain, he has poppy.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Dr. Kreuzer",
+    "context": "Reply 1 of 2 to the choice at s2-4.007; shown as a menu option, then in the backlog as Kreuzer's line. Sets `cantorMercy` = true."
+  },
+  "s2-4.007.o2": {
+    "text": "You’ll have him alive and awake, Inquisitor. Keep your men out of my light.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Dr. Kreuzer",
+    "context": "Reply 2 of 2 to the choice at s2-4.007; shown as a menu option, then in the backlog as Kreuzer's line. Sets `cantorMercy` = false."
+  },
+  "s2-4.008": {
+    "text": "Poppy. So the Choir’s man sleeps soft while the city burns its sick. I shall remember whose mercy that was.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Inquisitor Stroh",
+    "context": "Story scene \"s2-4\" (The muster camp — before midnight), line 8 of 10. Variant line: shown only if `cantorMercy` is set."
+  },
+  "s2-4.009": {
+    "text": "Alive and awake. Good. We understand each other, Doctor — a rarer thing than you know.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Inquisitor Stroh",
+    "context": "Story scene \"s2-4\" (The muster camp — before midnight), line 9 of 10. Variant line: shown only if `cantorMercy` is false."
+  },
+  "s2-4.010": {
     "text": "On the table. Now.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Dr. Kreuzer",
-    "context": "Story scene \"s2-4\" (The muster camp — before midnight), line 7 of 7."
+    "context": "Story scene \"s2-4\" (The muster camp — before midnight), line 10 of 10."
   },
   "op2-4.title": {
     "text": "The Silenced Cantor",
@@ -1094,32 +1415,46 @@
     "context": "Findings paragraph on the patient chart."
   },
   "op2-4.p0.1": {
-    "text": "The poison he swallowed — tincture, now, or he’s gone before we start.",
+    "text": "The poison he swallowed — Tincture, now, or he’s gone before we start.",
     "scope": "callouts",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Assistant callout when phase 1 of 4 of \"The Silenced Cantor\" begins."
+    "context": "Assistant callout when phase 1 of 5 of \"The Silenced Cantor\" begins."
   },
   "op2-4.p1.1": {
     "text": "Those sigils are burning him from within. Sear each one out — every stroke.",
     "scope": "callouts",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Assistant callout when phase 2 of 4 of \"The Silenced Cantor\" begins."
+    "context": "Assistant callout when phase 2 of 5 of \"The Silenced Cantor\" begins."
   },
   "op2-4.p2.1": {
-    "text": "The hexfire burns. Pluck the eschar, then salve them.",
+    "text": "There — a knot of it round his throat. Every time he hums, it ties itself again.",
     "scope": "callouts",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Assistant callout when phase 3 of 4 of \"The Silenced Cantor\" begins."
+    "context": "Assistant callout when phase 3 of 5 of \"The Silenced Cantor\" begins."
+  },
+  "op2-4.p2.2": {
+    "text": "Burn it out between the verses.",
+    "scope": "callouts",
+    "chapter": "ch2",
+    "speaker": "Sister Ilse",
+    "context": "Assistant callout when phase 3 of 5 of \"The Silenced Cantor\" begins."
   },
   "op2-4.p3.1": {
-    "text": "Maggots in an old sore — the Tribunal’s cells are filthy. Brand them.",
+    "text": "The hexfire burns. Pluck the eschar, then Saint’s Salve on them.",
     "scope": "callouts",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Assistant callout when phase 4 of 4 of \"The Silenced Cantor\" begins."
+    "context": "Assistant callout when phase 4 of 5 of \"The Silenced Cantor\" begins."
+  },
+  "op2-4.p4.1": {
+    "text": "Maggots in an old sore — the Tribunal’s cells are filthy. Cautery Brand.",
+    "scope": "callouts",
+    "chapter": "ch2",
+    "speaker": "Sister Ilse",
+    "context": "Assistant callout when phase 5 of 5 of \"The Silenced Cantor\" begins."
   },
   "s2-5.place": {
     "text": "The muster camp — dawn",
@@ -1128,52 +1463,104 @@
     "context": "Place and time caption at the top-left of the scene."
   },
   "s2-5.001": {
-    "text": "The cantor lived long enough to whisper one thing, before Stroh’s men took him away.",
-    "scope": "story",
-    "chapter": "ch2",
-    "speaker": "Narrator",
-    "context": "Story scene \"s2-5\" (The muster camp — dawn), line 1 of 6."
-  },
-  "s2-5.002": {
     "text": "Lauds… is sung at dawn… with the muster… under the banner…",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "The cantor",
-    "context": "Story scene \"s2-5\" (The muster camp — dawn), line 2 of 6."
+    "context": "Story scene \"s2-5\" (The muster camp — dawn), line 1 of 10."
   },
-  "s2-5.002.as": {
+  "s2-5.001.as": {
     "text": "The cantor",
     "scope": "names",
     "chapter": "ch2",
-    "context": "Speaker name shown for s2-5.002."
+    "context": "Speaker name shown for s2-5.001."
   },
-  "s2-5.003": {
-    "text": "The dawn muster? That’s now — the whole company’s singing the morning hymn—",
+  "s2-5.002": {
+    "text": "The dawn muster? That’s now—",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Captain Mauer",
-    "context": "Story scene \"s2-5\" (The muster camp — dawn), line 3 of 6."
+    "context": "Story scene \"s2-5\" (The muster camp — dawn), line 2 of 10."
   },
-  "s2-5.004": {
-    "text": "Across the camp, the hymn falters. The standard-bearer drops to his knees, the banner falling across him.",
+  "s2-5.003": {
+    "text": "Across the camp, forty voices sing up the dawn. Beneath them, two more voices begin: one calling, one answering.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Narrator",
-    "context": "Story scene \"s2-5\" (The muster camp — dawn), line 4 of 6."
+    "context": "Story scene \"s2-5\" (The muster camp — dawn), line 3 of 10."
+  },
+  "s2-5.004": {
+    "text": "Who keeps the watch before the sun?",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "The first voice",
+    "context": "Story scene \"s2-5\" (The muster camp — dawn), line 4 of 10."
+  },
+  "s2-5.004.as": {
+    "text": "The first voice",
+    "scope": "names",
+    "chapter": "ch2",
+    "context": "Speaker name shown for s2-5.004."
   },
   "s2-5.005": {
-    "text": "Doctor! It’s Jorg, the standard-bearer — his chest is moving… it’s singing back!",
+    "text": "The one who wakes, and wakes alone.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "The answering voice",
+    "context": "Story scene \"s2-5\" (The muster camp — dawn), line 5 of 10."
+  },
+  "s2-5.005.as": {
+    "text": "The answering voice",
+    "scope": "names",
+    "chapter": "ch2",
+    "context": "Speaker name shown for s2-5.005."
+  },
+  "s2-5.006": {
+    "text": "Who sings the day when day is done?",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "The first voice",
+    "context": "Story scene \"s2-5\" (The muster camp — dawn), line 6 of 10."
+  },
+  "s2-5.006.as": {
+    "text": "The first voice",
+    "scope": "names",
+    "chapter": "ch2",
+    "context": "Speaker name shown for s2-5.006."
+  },
+  "s2-5.007": {
+    "text": "The one we answer, bone to bone.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "The answering voice",
+    "context": "Story scene \"s2-5\" (The muster camp — dawn), line 7 of 10."
+  },
+  "s2-5.007.as": {
+    "text": "The answering voice",
+    "scope": "names",
+    "chapter": "ch2",
+    "context": "Speaker name shown for s2-5.007."
+  },
+  "s2-5.008": {
+    "text": "The standard-bearer drops to his knees, the banner falling across him. The hymn falters. The two voices do not.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Narrator",
+    "context": "Story scene \"s2-5\" (The muster camp — dawn), line 8 of 10."
+  },
+  "s2-5.009": {
+    "text": "Doctor! It’s Jorg — there are two of them in his chest, and each one answers the other!",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Story scene \"s2-5\" (The muster camp — dawn), line 5 of 6."
+    "context": "Story scene \"s2-5\" (The muster camp — dawn), line 9 of 10."
   },
-  "s2-5.006": {
+  "s2-5.010": {
     "text": "Clear a table. Sister — every instrument we have.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Dr. Kreuzer",
-    "context": "Story scene \"s2-5\" (The muster camp — dawn), line 6 of 6."
+    "context": "Story scene \"s2-5\" (The muster camp — dawn), line 10 of 10."
   },
   "op2-5.title": {
     "text": "The Hour of Lauds",
@@ -1201,7 +1588,7 @@
     "context": "Assistant callout when phase 1 of 4 of \"The Hour of Lauds\" begins."
   },
   "op2-5.p1.1": {
-    "text": "Saints… it has a choir. Those little lights are its Voices — hold the brand on each as it circles.",
+    "text": "A choir! Those lights are its Voices — hold the Cautery Brand on each as it circles.",
     "scope": "callouts",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
@@ -1239,223 +1626,1624 @@
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Narrator",
-    "context": "Story scene \"s2-end\" (The muster camp — morning), line 1 of 9."
+    "context": "Story scene \"s2-end\" (The muster camp — morning), line 1 of 13."
   },
   "s2-end.002": {
+    "text": "And beside it — Doctor, look. An eye with a stroke through it. The same mark the page-boy carried.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Sister Ilse",
+    "context": "Story scene \"s2-end\" (The muster camp — morning), line 2 of 13."
+  },
+  "s2-end.003": {
     "text": "Two of them now. Matins in the city, Lauds in my own camp. Someone is keeping time, Doctor.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Captain Mauer",
-    "context": "Story scene \"s2-end\" (The muster camp — morning), line 2 of 9."
+    "context": "Story scene \"s2-end\" (The muster camp — morning), line 3 of 13."
   },
-  "s2-end.003": {
+  "s2-end.004": {
     "text": "Six more hours to the full Office. Prime. Terce. Sext. None. Vespers. Compline.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Story scene \"s2-end\" (The muster camp — morning), line 3 of 9."
+    "context": "Story scene \"s2-end\" (The muster camp — morning), line 4 of 13."
   },
-  "s2-end.004": {
+  "s2-end.005": {
+    "text": "In the ward tent a wounded pikeman hums the dawn hymn in his sleep. Two notes. Then, from nowhere, the answer.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Narrator",
+    "context": "Story scene \"s2-end\" (The muster camp — morning), line 5 of 13."
+  },
+  "s2-end.006": {
     "text": "Doctor Kreuzer.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Inquisitor Stroh",
-    "context": "Story scene \"s2-end\" (The muster camp — morning), line 4 of 9."
+    "context": "Story scene \"s2-end\" (The muster camp — morning), line 6 of 13."
   },
-  "s2-end.005": {
+  "s2-end.007": {
     "text": "When that thing screamed, every candle in this tent stopped flickering. The flames stood still. For eight heartbeats.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Inquisitor Stroh",
-    "context": "Story scene \"s2-end\" (The muster camp — morning), line 5 of 9."
+    "context": "Story scene \"s2-end\" (The muster camp — morning), line 7 of 13. Variant line: shown only if the Litany was spoken in the preceding operation."
   },
-  "s2-end.006": {
+  "s2-end.008": {
     "text": "I counted.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Inquisitor Stroh",
-    "context": "Story scene \"s2-end\" (The muster camp — morning), line 6 of 9."
+    "context": "Story scene \"s2-end\" (The muster camp — morning), line 8 of 13. Variant line: shown only if the Litany was spoken in the preceding operation."
   },
-  "s2-end.007": {
+  "s2-end.009": {
     "text": "…The morning air is very still, Inquisitor.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Dr. Kreuzer",
-    "context": "Story scene \"s2-end\" (The muster camp — morning), line 7 of 9."
+    "context": "Story scene \"s2-end\" (The muster camp — morning), line 9 of 13. Variant line: shown only if the Litany was spoken in the preceding operation."
   },
-  "s2-end.008": {
-    "text": "So it is. We will speak at length, you and I. After Prime.",
+  "s2-end.010": {
+    "text": "I watched your hands while that thing screamed. They shook, Doctor. For once.",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Inquisitor Stroh",
-    "context": "Story scene \"s2-end\" (The muster camp — morning), line 8 of 9."
+    "context": "Story scene \"s2-end\" (The muster camp — morning), line 10 of 13. Variant line: shown only if the Litany was NOT spoken in the preceding operation."
   },
-  "s2-end.009": {
+  "s2-end.011": {
+    "text": "It was a long night, Inquisitor.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Dr. Kreuzer",
+    "context": "Story scene \"s2-end\" (The muster camp — morning), line 11 of 13. Variant line: shown only if the Litany was NOT spoken in the preceding operation."
+  },
+  "s2-end.012": {
+    "text": "We will speak at length, you and I. After Prime.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Inquisitor Stroh",
+    "context": "Story scene \"s2-end\" (The muster camp — morning), line 12 of 13."
+  },
+  "s2-end.013": {
     "text": "END OF CHAPTER II — THE HOUR OF LAUDS",
     "scope": "story",
     "chapter": "ch2",
     "speaker": "Narrator",
-    "context": "Story scene \"s2-end\" (The muster camp — morning), line 9 of 9."
+    "context": "Story scene \"s2-end\" (The muster camp — morning), line 13 of 13."
+  },
+  "a1-1.place": {
+    "text": "The Hospice — after the knife-work",
+    "scope": "story",
+    "chapter": "ch1",
+    "context": "Place caption of aftermath scene after op1-1 \"a1-1\"."
+  },
+  "a1-1.001": {
+    "text": "The drover lives. He pays in turnips and a promise not to gamble again. He will break it by Friday.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Narrator",
+    "context": "Aftermath scene after op1-1 \"a1-1\" (The Hospice — after the knife-work), line 1 of 6."
+  },
+  "a1-1.002": {
+    "text": "Clean. Quick. Hm. Don’t let it go to your head, Kreuzer. It was simple work.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Master Haller",
+    "context": "Aftermath scene after op1-1 \"a1-1\" (The Hospice — after the knife-work), line 2 of 6. Variant line: shown only if the preceding operation's rank was high (high = XS/S, mid = A/B, low = C)."
+  },
+  "a1-1.003": {
+    "text": "Adequate. The Weissburg Guild would call that adequate. I call it Tuesday.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Master Haller",
+    "context": "Aftermath scene after op1-1 \"a1-1\" (The Hospice — after the knife-work), line 3 of 6. Variant line: shown only if the preceding operation's rank was mid (high = XS/S, mid = A/B, low = C)."
+  },
+  "a1-1.004": {
+    "text": "He’ll live. Eventually. I said simple work, Kreuzer. I did not say leisurely.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Master Haller",
+    "context": "Aftermath scene after op1-1 \"a1-1\" (The Hospice — after the knife-work), line 4 of 6. Variant line: shown only if the preceding operation's rank was low (high = XS/S, mid = A/B, low = C)."
+  },
+  "a1-1.005": {
+    "text": "Turnips, Sister?",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Dr. Kreuzer",
+    "context": "Aftermath scene after op1-1 \"a1-1\" (The Hospice — after the knife-work), line 5 of 6."
+  },
+  "a1-1.006": {
+    "text": "Under “fees, vegetable”. We have a column. It is the longest one in the ledger.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Sister Ilse",
+    "context": "Aftermath scene after op1-1 \"a1-1\" (The Hospice — after the knife-work), line 6 of 6."
+  },
+  "a1-2.place": {
+    "text": "The Hospice — after the barbed shaft",
+    "scope": "story",
+    "chapter": "ch1",
+    "context": "Place caption of aftermath scene after op1-2 \"a1-2\"."
+  },
+  "a1-2.001": {
+    "text": "Pieter will keep his side, and his opinion of the horned folk.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Narrator",
+    "context": "Aftermath scene after op1-2 \"a1-2\" (The Hospice — after the barbed shaft), line 1 of 4."
+  },
+  "a1-2.002": {
+    "text": "Twelve. Twelve walking. The Watch pays its debts, Doctor. Slowly, but it pays.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Captain Mauer",
+    "context": "Aftermath scene after op1-2 \"a1-2\" (The Hospice — after the barbed shaft), line 2 of 4."
+  },
+  "a1-2.003": {
+    "text": "You nicked those barbs like a tailor. Where did Weissburg find the time to teach you that?",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Master Haller",
+    "context": "Aftermath scene after op1-2 \"a1-2\" (The Hospice — after the barbed shaft), line 3 of 4. Variant line: shown only if the preceding operation's rank was high (high = XS/S, mid = A/B, low = C)."
+  },
+  "a1-2.004": {
+    "text": "You tore him on the second barb. He will heal. He will also remember you.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Master Haller",
+    "context": "Aftermath scene after op1-2 \"a1-2\" (The Hospice — after the barbed shaft), line 4 of 4. Variant line: shown only if the preceding operation's rank was low (high = XS/S, mid = A/B, low = C)."
+  },
+  "a1-3.place": {
+    "text": "The Hospice — after the burst barrel",
+    "scope": "story",
+    "chapter": "ch1",
+    "context": "Place caption of aftermath scene after op1-3 \"a1-3\"."
+  },
+  "a1-3.001": {
+    "text": "Anno keeps both hands. The Guild keeps its fee. Nobody keeps the barrel.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Narrator",
+    "context": "Aftermath scene after op1-3 \"a1-3\" (The Hospice — after the burst barrel), line 1 of 4."
+  },
+  "a1-3.002": {
+    "text": "His master called. He asked whether the lead we took out of the boy could be melted down again.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Sister Ilse",
+    "context": "Aftermath scene after op1-3 \"a1-3\" (The Hospice — after the burst barrel), line 2 of 4."
+  },
+  "a1-3.003": {
+    "text": "Tell him yes. Tell him it is the best-proven lead in Kessendorf.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Dr. Kreuzer",
+    "context": "Aftermath scene after op1-3 \"a1-3\" (The Hospice — after the burst barrel), line 3 of 4."
+  },
+  "a1-3.004": {
+    "text": "The boy will scar. Burns remember every minute you wasted, Kreuzer. So do I.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Master Haller",
+    "context": "Aftermath scene after op1-3 \"a1-3\" (The Hospice — after the burst barrel), line 4 of 4. Variant line: shown only if the preceding operation's rank was low (high = XS/S, mid = A/B, low = C)."
+  },
+  "a1-4.place": {
+    "text": "The Hospice — after dark",
+    "scope": "story",
+    "chapter": "ch1",
+    "context": "Place caption of aftermath scene after op1-4 \"a1-4\"."
+  },
+  "a1-4.001": {
+    "text": "Matthis Kolb sleeps in a clean bed for the first time in a year. He asks Ilse to read his name back to him, twice.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Narrator",
+    "context": "Aftermath scene after op1-4 \"a1-4\" (The Hospice — after dark), line 1 of 4."
+  },
+  "a1-4.002": {
+    "text": "Buboes in winter. The pestilence is early this year, Doctor. Or it was invited.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Inquisitor Stroh",
+    "context": "Aftermath scene after op1-4 \"a1-4\" (The Hospice — after dark), line 2 of 4."
+  },
+  "a1-4.003": {
+    "text": "Fevers don’t wait for invitations, Inquisitor.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Dr. Kreuzer",
+    "context": "Aftermath scene after op1-4 \"a1-4\" (The Hospice — after dark), line 3 of 4."
+  },
+  "a1-4.004": {
+    "text": "In my experience, everything does.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Inquisitor Stroh",
+    "context": "Aftermath scene after op1-4 \"a1-4\" (The Hospice — after dark), line 4 of 4."
+  },
+  "a2-1.place": {
+    "text": "The muster camp — after the gravehound",
+    "scope": "story",
+    "chapter": "ch2",
+    "context": "Place caption of aftermath scene after op2-1 \"a2-1\"."
+  },
+  "a2-1.001": {
+    "text": "The scout will limp, but he will limp home.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Narrator",
+    "context": "Aftermath scene after op2-1 \"a2-1\" (The muster camp — after the gravehound), line 1 of 3."
+  },
+  "a2-1.002": {
+    "text": "Forty. Still forty. I am starting to like you, Doctor, and I don’t care for it.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Captain Mauer",
+    "context": "Aftermath scene after op2-1 \"a2-1\" (The muster camp — after the gravehound), line 2 of 3."
+  },
+  "a2-1.003": {
+    "text": "Every tooth, and not a drop of venom left. Master Haller would pretend not to be impressed.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Sister Ilse",
+    "context": "Aftermath scene after op2-1 \"a2-1\" (The muster camp — after the gravehound), line 3 of 3. Variant line: shown only if the preceding operation's rank was high (high = XS/S, mid = A/B, low = C)."
+  },
+  "a2-2.place": {
+    "text": "The muster camp — the supply wagon",
+    "scope": "story",
+    "chapter": "ch2",
+    "context": "Place caption of aftermath scene after op2-2 \"a2-2\"."
+  },
+  "a2-2.001": {
+    "text": "A strong arm after all. I shall name a mine for you, Doctor. The Kreuzer Deep.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Orsa Flintvein",
+    "context": "Aftermath scene after op2-2 \"a2-2\" (The muster camp — the supply wagon), line 1 of 4."
+  },
+  "a2-2.001.as": {
+    "text": "Orsa Flintvein",
+    "scope": "names",
+    "chapter": "ch2",
+    "context": "Speaker name shown for a2-2.001."
+  },
+  "a2-2.002": {
+    "text": "Is it a good mine?",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Dr. Kreuzer",
+    "context": "Aftermath scene after op2-2 \"a2-2\" (The muster camp — the supply wagon), line 2 of 4."
+  },
+  "a2-2.003": {
+    "text": "It is not dug yet. It will probably be a bad one. The first ones always are.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Orsa Flintvein",
+    "context": "Aftermath scene after op2-2 \"a2-2\" (The muster camp — the supply wagon), line 3 of 4."
+  },
+  "a2-2.003.as": {
+    "text": "Orsa Flintvein",
+    "scope": "names",
+    "chapter": "ch2",
+    "context": "Speaker name shown for a2-2.003."
+  },
+  "a2-2.004": {
+    "text": "Here. One knot, untied. You owe me nothing, and I owe you one.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Orsa Flintvein",
+    "context": "Aftermath scene after op2-2 \"a2-2\" (The muster camp — the supply wagon), line 4 of 4. Variant line: shown only if the preceding operation's rank was high (high = XS/S, mid = A/B, low = C)."
+  },
+  "a2-2.004.as": {
+    "text": "Orsa Flintvein",
+    "scope": "names",
+    "chapter": "ch2",
+    "context": "Speaker name shown for a2-2.004."
+  },
+  "a2-3.place": {
+    "text": "The muster camp — after midnight",
+    "scope": "story",
+    "chapter": "ch2",
+    "context": "Place caption of aftermath scene after op2-3 \"a2-3\"."
+  },
+  "a2-3.001": {
+    "text": "Ilvaren wakes asking after his snares. The web-trees are left to the foresters, and to the fire.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Narrator",
+    "context": "Aftermath scene after op2-3 \"a2-3\" (The muster camp — after midnight), line 1 of 3."
+  },
+  "a2-3.002": {
+    "text": "Forty, and a forager who will never set a snare again. My lads are calling you the spider-cutter.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Captain Mauer",
+    "context": "Aftermath scene after op2-3 \"a2-3\" (The muster camp — after midnight), line 2 of 3."
+  },
+  "a2-3.003": {
+    "text": "Tell them I have been called worse by better men.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Dr. Kreuzer",
+    "context": "Aftermath scene after op2-3 \"a2-3\" (The muster camp — after midnight), line 3 of 3."
+  },
+  "a2-4.place": {
+    "text": "The muster camp — the Inquisitor’s tent",
+    "scope": "story",
+    "chapter": "ch2",
+    "context": "Place caption of aftermath scene after op2-4 \"a2-4\"."
+  },
+  "a2-4.001": {
+    "text": "The cantor breathes. The sigils on his chest are ash. Stroh’s men stand at the tent flap and do not let the Doctor leave.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Narrator",
+    "context": "Aftermath scene after op2-4 \"a2-4\" (The muster camp — the Inquisitor’s tent), line 1 of 3."
+  },
+  "a2-4.002": {
+    "text": "He lives. Good. Now he can tell me who taught him to sing.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Inquisitor Stroh",
+    "context": "Aftermath scene after op2-4 \"a2-4\" (The muster camp — the Inquisitor’s tent), line 2 of 3."
+  },
+  "a2-4.003": {
+    "text": "He is a patient until he walks out of this tent, Inquisitor. Then he is yours. Not one hour sooner.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Sister Ilse",
+    "context": "Aftermath scene after op2-4 \"a2-4\" (The muster camp — the Inquisitor’s tent), line 3 of 3."
+  },
+  "a3-1.place": {
+    "text": "The hospice — the examining room",
+    "scope": "story",
+    "chapter": "ch3",
+    "context": "Place caption of aftermath scene after op3-1 \"a3-1\"."
+  },
+  "a3-1.001": {
+    "text": "Liesl wakes with a bandage like a crown and asks whether she may keep the bits of horn. Her mother says no. Kreuzer says yes.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Narrator",
+    "context": "Aftermath scene after op3-1 \"a3-1\" (The hospice — the examining room), line 1 of 3."
+  },
+  "a3-1.002": {
+    "text": "Two buds, cut clean. And two sigils seared away beneath them, where no certificate will mention them.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Inquisitor Stroh",
+    "context": "Aftermath scene after op3-1 \"a3-1\" (The hospice — the examining room), line 2 of 3."
+  },
+  "a3-1.003": {
+    "text": "The certificate mentions a natural growth, Inquisitor. I removed it.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Dr. Kreuzer",
+    "context": "Aftermath scene after op3-1 \"a3-1\" (The hospice — the examining room), line 3 of 3."
+  },
+  "a3-2.place": {
+    "text": "The hospice — the steps",
+    "scope": "story",
+    "chapter": "ch3",
+    "context": "Place caption of aftermath scene after op3-2 \"a3-2\"."
+  },
+  "a3-2.001": {
+    "text": "Kaspar’s doublet goes into a basin, a scrap at a time. Ilse counts them twice and matches every thread to the hole it came from.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Narrator",
+    "context": "Aftermath scene after op3-2 \"a3-2\" (The hospice — the steps), line 1 of 4."
+  },
+  "a3-2.002": {
+    "text": "Every scrap, Doctor. He’ll not be burning by Vespers. He may be dancing by Terce.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Sister Ilse",
+    "context": "Aftermath scene after op3-2 \"a3-2\" (The hospice — the steps), line 2 of 4. Variant line: shown only if the preceding operation's rank was high (high = XS/S, mid = A/B, low = C)."
+  },
+  "a3-2.003": {
+    "text": "I pray that was every scrap. We’ll know by Vespers, if he’s burning.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Sister Ilse",
+    "context": "Aftermath scene after op3-2 \"a3-2\" (The hospice — the steps), line 3 of 4. Variant line: shown only if the preceding operation's rank was mid or low (high = XS/S, mid = A/B, low = C)."
+  },
+  "a3-2.004": {
+    "text": "Next! Three off the mill cart, Doctor, and the cart’s coming back for more.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Captain Mauer",
+    "context": "Aftermath scene after op3-2 \"a3-2\" (The hospice — the steps), line 4 of 4."
+  },
+  "a3-3.place": {
+    "text": "The hospice — night",
+    "scope": "story",
+    "chapter": "ch3",
+    "context": "Place caption of aftermath scene after op3-3 \"a3-3\"."
+  },
+  "a3-3.001": {
+    "text": "Ute Brandt goes home lighter by a quarter-pound of lead, which Ilse weighs, wraps, and labels for the Founders’ Guild.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Narrator",
+    "context": "Aftermath scene after op3-3 \"a3-3\" (The hospice — night), line 1 of 3."
+  },
+  "a3-3.002": {
+    "text": "Put it in the privy basket. The Guild may send a clerk to collect its property.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Master Haller",
+    "context": "Aftermath scene after op3-3 \"a3-3\" (The hospice — night), line 2 of 3."
+  },
+  "a3-3.003": {
+    "text": "I have already written the receipt, Master. “One quarter-pound of lead, lightly used.”",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Sister Ilse",
+    "context": "Aftermath scene after op3-3 \"a3-3\" (The hospice — night), line 3 of 3."
+  },
+  "a3-4.place": {
+    "text": "The hospice — the steps, evening",
+    "scope": "story",
+    "chapter": "ch3",
+    "context": "Place caption of aftermath scene after op3-4 \"a3-4\"."
+  },
+  "a3-4.001": {
+    "text": "Jannik, Old Rudi and Wenzel lie in a row on the hospice steps, wrapped in one blanket, arguing about whose fault the magazine was.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Narrator",
+    "context": "Aftermath scene after op3-4 \"a3-4\" (The hospice — the steps, evening), line 1 of 3."
+  },
+  "a3-4.002": {
+    "text": "Three off the table and three still talking. That’s a good count for the Kilnrows.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Captain Mauer",
+    "context": "Aftermath scene after op3-4 \"a3-4\" (The hospice — the steps, evening), line 2 of 3."
+  },
+  "a3-4.003": {
+    "text": "Keep them talking, Captain. A man complaining is a man breathing.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Dr. Kreuzer",
+    "context": "Aftermath scene after op3-4 \"a3-4\" (The hospice — the steps, evening), line 3 of 3."
+  },
+  "a3-5.place": {
+    "text": "The Iron Bridge — the Watch hut",
+    "scope": "story",
+    "chapter": "ch3",
+    "context": "Place caption of aftermath scene after op3-5 \"a3-5\"."
+  },
+  "a3-5.001": {
+    "text": "Berthold wakes to find his leg gone and his cart-horse tethered outside the window, which he says is the right way round.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Narrator",
+    "context": "Aftermath scene after op3-5 \"a3-5\" (The Iron Bridge — the Watch hut), line 1 of 3."
+  },
+  "a3-5.002": {
+    "text": "A peg and a cushion, you said. I’ll hold you to the cushion, Doctor.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Berthold",
+    "context": "Aftermath scene after op3-5 \"a3-5\" (The Iron Bridge — the Watch hut), line 2 of 3."
+  },
+  "a3-5.002.as": {
+    "text": "Berthold",
+    "scope": "names",
+    "chapter": "ch3",
+    "context": "Speaker name shown for a3-5.002."
+  },
+  "a3-5.003": {
+    "text": "The council has sent a clerk to ask who will pay for the bridge-chain he bent. I sent the clerk away. Twice.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Captain Mauer",
+    "context": "Aftermath scene after op3-5 \"a3-5\" (The Iron Bridge — the Watch hut), line 3 of 3."
+  },
+  "a3-6.place": {
+    "text": "The quarantine side — the Penny Stair",
+    "scope": "story",
+    "chapter": "ch3",
+    "context": "Place caption of aftermath scene after op3-6 \"a3-6\"."
+  },
+  "a3-6.001": {
+    "text": "Forty-one worms, whole, in a jar. Gottfried the pie-man is asked to look at it, and does, and is quiet for a while.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Narrator",
+    "context": "Aftermath scene after op3-6 \"a3-6\" (The quarantine side — the Penny Stair), line 1 of 3."
+  },
+  "a3-6.002": {
+    "text": "Eel. They told me it was eel.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Gottfried, pie-man",
+    "context": "Aftermath scene after op3-6 \"a3-6\" (The quarantine side — the Penny Stair), line 2 of 3."
+  },
+  "a3-6.002.as": {
+    "text": "Gottfried, pie-man",
+    "scope": "names",
+    "chapter": "ch3",
+    "context": "Speaker name shown for a3-6.002."
+  },
+  "a3-6.003": {
+    "text": "Then someone owes Frieda an apology, Gottfried, and you owe the city a new recipe.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Sister Ilse",
+    "context": "Aftermath scene after op3-6 \"a3-6\" (The quarantine side — the Penny Stair), line 3 of 3."
+  },
+  "a3-7.place": {
+    "text": "The quarantine ward — before dawn",
+    "scope": "story",
+    "chapter": "ch3",
+    "context": "Place caption of aftermath scene after op3-7 \"a3-7\"."
+  },
+  "a3-7.001": {
+    "text": "Mother Agathe of the Grey Beguines sits up at the fourth bell and demands her beads, her boots, and a list of the other sick.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Narrator",
+    "context": "Aftermath scene after op3-7 \"a3-7\" (The quarantine ward — before dawn), line 1 of 2."
+  },
+  "a3-7.002": {
+    "text": "You lance like a Beguine, boy. That is the highest praise I have. Now go and do it to someone else.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Mother Agathe",
+    "context": "Aftermath scene after op3-7 \"a3-7\" (The quarantine ward — before dawn), line 2 of 2."
+  },
+  "a3-7.002.as": {
+    "text": "Mother Agathe",
+    "scope": "names",
+    "chapter": "ch3",
+    "context": "Speaker name shown for a3-7.002."
+  },
+  "a3-8.place": {
+    "text": "The quarantine ward — dawn",
+    "scope": "story",
+    "chapter": "ch3",
+    "context": "Place caption of aftermath scene after op3-8 \"a3-8\"."
+  },
+  "a3-8.001": {
+    "text": "Brother Ansgar sleeps face-down with his hands open. The nails are in a bowl beside him. He has not asked for them back.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Narrator",
+    "context": "Aftermath scene after op3-8 \"a3-8\" (The quarantine ward — dawn), line 1 of 3."
+  },
+  "a3-8.002": {
+    "text": "He asked me whether a debt can be paid by someone else. I told him the Order thinks so. I hope it does.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Sister Ilse",
+    "context": "Aftermath scene after op3-8 \"a3-8\" (The quarantine ward — dawn), line 2 of 3."
+  },
+  "a3-8.003": {
+    "text": "Let him sleep, Sister. We can argue theology when his back has closed.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Dr. Kreuzer",
+    "context": "Aftermath scene after op3-8 \"a3-8\" (The quarantine ward — dawn), line 3 of 3."
+  },
+  "a3-10.place": {
+    "text": "The Hall of Records — morning",
+    "scope": "story",
+    "chapter": "ch3",
+    "context": "Place caption of aftermath scene after op3-10 \"a3-10\"."
+  },
+  "a3-10.001": {
+    "text": "The Registrar’s skin is clean. The roll of the dead is the right length again, and every name on it had a family to miss it.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Narrator",
+    "context": "Aftermath scene after op3-10 \"a3-10\" (The Hall of Records — morning), line 1 of 4."
+  },
+  "a3-10.002": {
+    "text": "I read the names of strangers, Doctor. People who had not died. Did they… will they?",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Registrar Tallert",
+    "context": "Aftermath scene after op3-10 \"a3-10\" (The Hall of Records — morning), line 2 of 4."
+  },
+  "a3-10.002.as": {
+    "text": "Registrar Tallert",
+    "scope": "names",
+    "chapter": "ch3",
+    "context": "Speaker name shown for a3-10.002."
+  },
+  "a3-10.003": {
+    "text": "Not from anything you read, Registrar. Go home. Read something with a happy ending.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Dr. Kreuzer",
+    "context": "Aftermath scene after op3-10 \"a3-10\" (The Hall of Records — morning), line 3 of 4."
+  },
+  "a3-10.004": {
+    "text": "The names stopped when you touched him, Doctor. I noticed. I notice things.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Inquisitor Stroh",
+    "context": "Aftermath scene after op3-10 \"a3-10\" (The Hall of Records — morning), line 4 of 4."
+  },
+  "a3-9.place": {
+    "text": "The hospice — past midnight",
+    "scope": "story",
+    "chapter": "ch3",
+    "context": "Place caption of aftermath scene after op3-9 \"a3-9\"."
+  },
+  "a3-9.001": {
+    "text": "The Inquisitor sits with a cloth to his jaw and his tooth in a twist of paper, which he pockets like evidence.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Narrator",
+    "context": "Aftermath scene after op3-9 \"a3-9\" (The hospice — past midnight), line 1 of 4."
+  },
+  "a3-9.002": {
+    "text": "That was… gentle, Doctor. I had been told barbers enjoy it. I shall have to revise the Tribunal’s view of your trade.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Inquisitor Stroh",
+    "context": "Aftermath scene after op3-9 \"a3-9\" (The hospice — past midnight), line 2 of 4. Variant line: shown only if the preceding operation's rank was high (high = XS/S, mid = A/B, low = C)."
+  },
+  "a3-9.003": {
+    "text": "The root came out in two pieces. So, very nearly, did I. We shall say no more of it.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Inquisitor Stroh",
+    "context": "Aftermath scene after op3-9 \"a3-9\" (The hospice — past midnight), line 3 of 4. Variant line: shown only if the preceding operation's rank was mid or low (high = XS/S, mid = A/B, low = C)."
+  },
+  "a3-9.004": {
+    "text": "Rinse with salt, Inquisitor. And ask your questions in daylight.",
+    "scope": "story",
+    "chapter": "ch3",
+    "speaker": "Dr. Kreuzer",
+    "context": "Aftermath scene after op3-9 \"a3-9\" (The hospice — past midnight), line 4 of 4."
+  },
+  "f1-1.place": {
+    "text": "The Hospice — the table goes still",
+    "scope": "story",
+    "chapter": "ch1",
+    "context": "Place caption of failure scene when the patient of op1-1 dies, before the retry prompt \"f1-1\"."
+  },
+  "f1-1.001": {
+    "text": "Simple work, Kreuzer. Wash your hands. Look at the wounds again. Then do it properly.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Master Haller",
+    "context": "Failure scene when the patient of op1-1 dies, before the retry prompt \"f1-1\" (The Hospice — the table goes still), line 1 of 1."
+  },
+  "f1-2.place": {
+    "text": "The Hospice — the table goes still",
+    "scope": "story",
+    "chapter": "ch1",
+    "context": "Place caption of failure scene when the patient of op1-2 dies, before the retry prompt \"f1-2\"."
+  },
+  "f1-2.001": {
+    "text": "Eleven.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Captain Mauer",
+    "context": "Failure scene when the patient of op1-2 dies, before the retry prompt \"f1-2\" (The Hospice — the table goes still), line 1 of 2."
+  },
+  "f1-2.002": {
+    "text": "Free the barbs before you pull, not after. Again, Kreuzer. He is not yet cold, and neither are you.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Master Haller",
+    "context": "Failure scene when the patient of op1-2 dies, before the retry prompt \"f1-2\" (The Hospice — the table goes still), line 2 of 2."
+  },
+  "f1-3.place": {
+    "text": "The Hospice — the table goes still",
+    "scope": "story",
+    "chapter": "ch1",
+    "context": "Place caption of failure scene when the patient of op1-3 dies, before the retry prompt \"f1-3\"."
+  },
+  "f1-3.001": {
+    "text": "His pulse was fading, Doctor, and we let it fade. The tincture is there to be used.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Sister Ilse",
+    "context": "Failure scene when the patient of op1-3 dies, before the retry prompt \"f1-3\" (The Hospice — the table goes still), line 1 of 1."
+  },
+  "f1-4.place": {
+    "text": "The Hospice — the table goes still",
+    "scope": "story",
+    "chapter": "ch1",
+    "context": "Place caption of failure scene when the patient of op1-4 dies, before the retry prompt \"f1-4\"."
+  },
+  "f1-4.001": {
+    "text": "I wrote his name down. I will not write it in the other ledger. Not tonight. Again, Doctor.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Sister Ilse",
+    "context": "Failure scene when the patient of op1-4 dies, before the retry prompt \"f1-4\" (The Hospice — the table goes still), line 1 of 1."
+  },
+  "f1-5.place": {
+    "text": "The Hospice — the small hours",
+    "scope": "story",
+    "chapter": "ch1",
+    "context": "Place caption of failure scene when the patient of op1-5 dies, before the retry prompt \"f1-5\"."
+  },
+  "f1-5.001": {
+    "text": "It fights, Kreuzer. It is meant to. Brand it only when it opens its eye — and remember the star.",
+    "scope": "story",
+    "chapter": "ch1",
+    "speaker": "Master Haller",
+    "context": "Failure scene when the patient of op1-5 dies, before the retry prompt \"f1-5\" (The Hospice — the small hours), line 1 of 1."
+  },
+  "f2-1.place": {
+    "text": "The muster camp — the table goes still",
+    "scope": "story",
+    "chapter": "ch2",
+    "context": "Place caption of failure scene when the patient of op2-1 dies, before the retry prompt \"f2-1\"."
+  },
+  "f2-1.001": {
+    "text": "Thirty-nine. …No. Not yet. Doctor, do it again. I’m not writing that number down.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Captain Mauer",
+    "context": "Failure scene when the patient of op2-1 dies, before the retry prompt \"f2-1\" (The muster camp — the table goes still), line 1 of 1."
+  },
+  "f2-2.place": {
+    "text": "The muster camp — the table goes still",
+    "scope": "story",
+    "chapter": "ch2",
+    "context": "Place caption of failure scene when the patient of op2-2 dies, before the retry prompt \"f2-2\"."
+  },
+  "f2-2.001": {
+    "text": "The shards we could not see were the ones that killed her. Slower with the lens, Doctor.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Sister Ilse",
+    "context": "Failure scene when the patient of op2-2 dies, before the retry prompt \"f2-2\" (The muster camp — the table goes still), line 1 of 1."
+  },
+  "f2-3.place": {
+    "text": "The muster camp — the table goes still",
+    "scope": "story",
+    "chapter": "ch2",
+    "context": "Place caption of failure scene when the patient of op2-3 dies, before the retry prompt \"f2-3\"."
+  },
+  "f2-3.001": {
+    "text": "The sacs hatched before we lanced them. We know which ones now. Again.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Sister Ilse",
+    "context": "Failure scene when the patient of op2-3 dies, before the retry prompt \"f2-3\" (The muster camp — the table goes still), line 1 of 1."
+  },
+  "f2-4.place": {
+    "text": "The muster camp — the table goes still",
+    "scope": "story",
+    "chapter": "ch2",
+    "context": "Place caption of failure scene when the patient of op2-4 dies, before the retry prompt \"f2-4\"."
+  },
+  "f2-4.001": {
+    "text": "His masters will be pleased. I am not. You will try again, Doctor.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Inquisitor Stroh",
+    "context": "Failure scene when the patient of op2-4 dies, before the retry prompt \"f2-4\" (The muster camp — the table goes still), line 1 of 1."
+  },
+  "f2-5.place": {
+    "text": "The muster camp — dawn",
+    "scope": "story",
+    "chapter": "ch2",
+    "context": "Place caption of failure scene when the patient of op2-5 dies, before the retry prompt \"f2-5\"."
+  },
+  "f2-5.001": {
+    "text": "Two voices, Doctor. Strike one and the other answers. Don’t give it time to answer.",
+    "scope": "story",
+    "chapter": "ch2",
+    "speaker": "Sister Ilse",
+    "context": "Failure scene when the patient of op2-5 dies, before the retry prompt \"f2-5\" (The muster camp — dawn), line 1 of 1."
+  },
+  "tutorial.thread": {
+    "text": "Gut Thread {TOOL_THREAD}: {USE_DRAG} back and forth across the wound, moving along it.",
+    "scope": "callouts",
+    "chapter": "ch1",
+    "context": "Tutorial prompt, first shown in op1-1. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction."
+  },
+  "tutorial.leech": {
+    "text": "Leech-Pipe {TOOL_LEECH}: hold {USE} over pooled blood until it is drawn off.",
+    "scope": "callouts",
+    "chapter": "ch1",
+    "context": "Tutorial prompt, first shown in op1-1. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction."
+  },
+  "tutorial.drain-first": {
+    "text": "Blood in a wound? Drain it with the Leech-Pipe before you stitch.",
+    "scope": "callouts",
+    "chapter": "ch1",
+    "context": "Tutorial prompt, first shown in op1-1. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction."
+  },
+  "tutorial.salve": {
+    "text": "Saint’s Salve {TOOL_SALVE}: {USE_DRAG} over small nicks and rot to seal them.",
+    "scope": "callouts",
+    "chapter": "ch1",
+    "context": "Tutorial prompt, first shown in op1-1. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction."
+  },
+  "tutorial.lancet": {
+    "text": "Lancet {TOOL_LANCET}: {USE_DRAG} along an inked line, or tap {USE} to nick or lance.",
+    "scope": "callouts",
+    "chapter": "ch1",
+    "context": "Tutorial prompt, first shown in op1-2. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction."
+  },
+  "tutorial.barbs": {
+    "text": "Barbed head: nick the entry twice with the Lancet before you pull.",
+    "scope": "callouts",
+    "chapter": "ch1",
+    "context": "Tutorial prompt, first shown in op1-2. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction."
+  },
+  "tutorial.tongs": {
+    "text": "Tongs {TOOL_TONGS}: hold {USE} on the object and drag it well clear of the body.",
+    "scope": "callouts",
+    "chapter": "ch1",
+    "context": "Tutorial prompt, first shown in op1-2. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction."
+  },
+  "tutorial.eschar": {
+    "text": "Burns: pluck the black eschar away with the Tongs, then salve the raw flesh.",
+    "scope": "callouts",
+    "chapter": "ch1",
+    "context": "Tutorial prompt, first shown in op1-3. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction."
+  },
+  "tutorial.incision": {
+    "text": "Incision: start at the glowing end of the inked line and keep to it.",
+    "scope": "callouts",
+    "chapter": "ch1",
+    "context": "Tutorial prompt, first shown in op1-3. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction."
+  },
+  "tutorial.tincture": {
+    "text": "Tincture {TOOL_TINCTURE}: hold {USE} on the body to steady a failing pulse.",
+    "scope": "callouts",
+    "chapter": "ch1",
+    "context": "Tutorial prompt, first shown in op1-3. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction."
+  },
+  "tutorial.buboes": {
+    "text": "Buboes: one clean tap of the Lancet each, then drain the pus and salve.",
+    "scope": "callouts",
+    "chapter": "ch1",
+    "context": "Tutorial prompt, first shown in op1-4. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction."
+  },
+  "tutorial.brand": {
+    "text": "Cautery Brand {TOOL_BRAND}: hold {USE} on grubs and sigils. It sears healthy flesh too.",
+    "scope": "callouts",
+    "chapter": "ch1",
+    "context": "Tutorial prompt, first shown in op1-4. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction."
+  },
+  "tutorial.sigils": {
+    "text": "Sigils: trace every stroke with the Brand, in order.",
+    "scope": "callouts",
+    "chapter": "ch1",
+    "context": "Tutorial prompt, first shown in op1-5. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction."
+  },
+  "tutorial.matins": {
+    "text": "The Malison: brand it only while its eye is open.",
+    "scope": "callouts",
+    "chapter": "ch1",
+    "context": "Tutorial prompt, first shown in op1-5. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction."
+  },
+  "tutorial.litany": {
+    "text": "The Litany of Stillness: {LITANY_GESTURE} to draw a five-pointed star, or {LITANY_KEY}. Once per operation.",
+    "scope": "callouts",
+    "chapter": "ch1",
+    "context": "Tutorial prompt, first shown in op1-5. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction."
+  },
+  "tutorial.venom": {
+    "text": "Venom: hold the Tincture on the bite itself until the poison is drawn.",
+    "scope": "callouts",
+    "chapter": "ch2",
+    "context": "Tutorial prompt, first shown in op2-1. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction."
+  },
+  "tutorial.lens": {
+    "text": "Scrying Lens {TOOL_LENS}: move slowly over the flesh; hold still where it shimmers.",
+    "scope": "callouts",
+    "chapter": "ch2",
+    "context": "Tutorial prompt, first shown in op2-2. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction."
+  },
+  "tutorial.lens-hidden": {
+    "text": "What the Lens reveals must still be pulled — Tongs, once it shows.",
+    "scope": "callouts",
+    "chapter": "ch2",
+    "context": "Tutorial prompt, first shown in op2-2. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction."
+  },
+  "tutorial.egg-sacs": {
+    "text": "Egg sacs: lance each before it hatches, then brand what spills out.",
+    "scope": "callouts",
+    "chapter": "ch2",
+    "context": "Tutorial prompt, first shown in op2-3. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction."
+  },
+  "footnote.op1-1": {
+    "text": "Jost the drover swore off dice for good. He broke the promise by Friday, and the stitches held anyway.",
+    "scope": "story",
+    "chapter": "ch1",
+    "context": "\"Where are they now\" line for the patient of op1-1, read after the chapter ends. Narration; wry, not cruel."
+  },
+  "footnote.op1-2": {
+    "text": "Pieter kept the arrowhead on a cord round his neck and told the militia it was from a duel.",
+    "scope": "story",
+    "chapter": "ch1",
+    "context": "\"Where are they now\" line for the patient of op1-2, read after the chapter ends. Narration; wry, not cruel."
+  },
+  "footnote.op1-3": {
+    "text": "Anno went back to the gunsmith’s bench and now stands to the side of every barrel he proves.",
+    "scope": "story",
+    "chapter": "ch1",
+    "context": "\"Where are they now\" line for the patient of op1-3, read after the chapter ends. Narration; wry, not cruel."
+  },
+  "footnote.op1-4": {
+    "text": "Matthis Kolb returned to the Tanners’ Rows, and would speak of the buboes to no one but the hospice cat.",
+    "scope": "story",
+    "chapter": "ch1",
+    "context": "\"Where are they now\" line for the patient of op1-4, read after the chapter ends. Narration; wry, not cruel."
+  },
+  "footnote.op1-5": {
+    "text": "Emmerich no longer hears the singing. He sleeps with a candle lit, and nobody at the hospice has the heart to stop him.",
+    "scope": "story",
+    "chapter": "ch1",
+    "context": "\"Where are they now\" line for the patient of op1-5, read after the chapter ends. Narration; wry, not cruel."
+  },
+  "footnote.op2-1": {
+    "text": "Tomas kept the arm, and learned to throw left-handed anyway, in case.",
+    "scope": "story",
+    "chapter": "ch2",
+    "context": "\"Where are they now\" line for the patient of op2-1, read after the chapter ends. Narration; wry, not cruel."
+  },
+  "footnote.op2-2": {
+    "text": "Orsa Flintvein walked back to her diggings with the shards in a lead box and a promise to return the favour.",
+    "scope": "story",
+    "chapter": "ch2",
+    "context": "\"Where are they now\" line for the patient of op2-2, read after the chapter ends. Narration; wry, not cruel."
+  },
+  "footnote.op2-3": {
+    "text": "Ilvaren went home to the Grauwald and planted the spider’s thicket with nettles.",
+    "scope": "story",
+    "chapter": "ch2",
+    "context": "\"Where are they now\" line for the patient of op2-3, read after the chapter ends. Narration; wry, not cruel."
+  },
+  "footnote.op2-4": {
+    "text": "The lay-cantor’s hymn is written in the Inquisitor’s ledger, in a hand that pressed hard enough to tear the page.",
+    "scope": "story",
+    "chapter": "ch2",
+    "context": "\"Where are they now\" line for the patient of op2-4, read after the chapter ends. Narration; wry, not cruel."
+  },
+  "footnote.op2-5": {
+    "text": "Jorg carried the standard again at the next muster. He hums, now, without noticing, and stops when anyone looks.",
+    "scope": "story",
+    "chapter": "ch2",
+    "context": "\"Where are they now\" line for the patient of op2-5, read after the chapter ends. Narration; wry, not cruel."
+  },
+  "recap.ch2.001": {
+    "text": "In the winter of the ninth year of the Long Muster, Dr. Kreuzer took up the knife at the Hospice of Saint Ildra in Kessendorf.",
+    "scope": "story",
+    "chapter": "ch2",
+    "context": "Chapter-select recap before ch2 (\"previously\"), sentence 1 of 3. Narration."
+  },
+  "recap.ch2.002": {
+    "text": "A page-boy came in with a mark under his skin that sang, and Kreuzer drew the forbidden star to cut the Malison of Matins out of him.",
+    "scope": "story",
+    "chapter": "ch2",
+    "context": "Chapter-select recap before ch2 (\"previously\"), sentence 2 of 3. Narration."
+  },
+  "recap.ch2.003": {
+    "text": "Inquisitor Stroh of the Ash Tribunal saw a candle stop flickering, and has not stopped watching since.",
+    "scope": "story",
+    "chapter": "ch2",
+    "context": "Chapter-select recap before ch2 (\"previously\"), sentence 3 of 3. Narration."
+  },
+  "recap.ch3.001": {
+    "text": "The Watch marched to the barrow-fields with Kreuzer as its surgeon, and brought home a cantor whose chest was a lattice of sigils.",
+    "scope": "story",
+    "chapter": "ch3",
+    "context": "Chapter-select recap before ch3 (\"previously\"), sentence 1 of 3. Narration."
+  },
+  "recap.ch3.002": {
+    "text": "At the muster, the Malison of Lauds sang through its host until Kreuzer silenced it — some say by the Litany, in front of witnesses.",
+    "scope": "story",
+    "chapter": "ch3",
+    "context": "Chapter-select recap before ch3 (\"previously\"), sentence 2 of 3. Narration."
+  },
+  "recap.ch3.003": {
+    "text": "Stroh has promised they will speak after Prime. It is after Prime.",
+    "scope": "story",
+    "chapter": "ch3",
+    "context": "Chapter-select recap before ch3 (\"previously\"), sentence 3 of 3. Narration."
+  },
+  "recap.ch4.001": {
+    "text": "In the Kilnrows, Kreuzer examined a hornchild for the Tribunal and wrote a certificate that will follow him.",
+    "scope": "story",
+    "chapter": "ch4",
+    "context": "Chapter-select recap before ch4 (\"previously\"), sentence 1 of 3. Narration."
+  },
+  "recap.ch4.002": {
+    "text": "The Guild put his licence to a vote, and Master Haller stood up for him with hands the hexfire of Terce had burned.",
+    "scope": "story",
+    "chapter": "ch4",
+    "context": "Chapter-select recap before ch4 (\"previously\"), sentence 2 of 3. Narration."
+  },
+  "recap.ch4.003": {
+    "text": "Now Kessendorf hires out its war, and the Watch marches east to the Vennmark with its surgeon in the second wagon.",
+    "scope": "story",
+    "chapter": "ch4",
+    "context": "Chapter-select recap before ch4 (\"previously\"), sentence 3 of 3. Narration."
+  },
+  "recap.ch5.001": {
+    "text": "In the rain of the Vennmark, Kreuzer kept Mauer’s men alive through Sext and None, in tents that never stopped leaking.",
+    "scope": "story",
+    "chapter": "ch5",
+    "context": "Chapter-select recap before ch5 (\"previously\"), sentence 1 of 3. Narration."
+  },
+  "recap.ch5.002": {
+    "text": "The council roll showed Stroh’s charter had lapsed at the new year; what the Tribunal did since, it did on nothing.",
+    "scope": "story",
+    "chapter": "ch5",
+    "context": "Chapter-select recap before ch5 (\"previously\"), sentence 2 of 3. Narration."
+  },
+  "recap.ch5.003": {
+    "text": "They came home to Kessendorf three days before Hollow Night, and a warrant with the Doctor’s name on it.",
+    "scope": "story",
+    "chapter": "ch5",
+    "context": "Chapter-select recap before ch5 (\"previously\"), sentence 3 of 3. Narration."
+  },
+  "bark.traction": {
+    "text": "Pull on the limb first — traction, or the ends grind.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/disciplines.ts:236)."
+  },
+  "bark.overshoot": {
+    "text": "Stop at the end of the line — you’ve nicked him.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:182)."
+  },
+  "bark.incision-layer": {
+    "text": "Through the skin. Now the layer beneath — trace it again.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:225)."
+  },
+  "bark.stitch-gap": {
+    "text": "There’s a gap in the suture — it’s still bleeding. Close it up.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:379)."
+  },
+  "bark.stitch-first": {
+    "text": "It keeps filling — stitch the wound beneath it first, then drain.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:486)."
+  },
+  "bark.pus-wound": {
+    "text": "The pus is getting into that cut — drain it before it festers!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:692)."
   },
   "bark.flooded": {
     "text": "Too much blood — draw it off with the leech-pipe before you stitch!",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:317)."
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:708)."
+  },
+  "bark.compound": {
+    "text": "The bone’s through the skin — set it before you stitch over it.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:712)."
+  },
+  "bark.salve-big": {
+    "text": "Salve won’t hold a wound that size. Stitch it first.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:724)."
+  },
+  "bark.hex-whisper": {
+    "text": "It’s whispering to him through the tongs — into the lead dish, quickly!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:867)."
   },
   "bark.hexstone": {
     "text": "The hexstone is corrupting the flesh around it — get it out!",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:407)."
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:885)."
   },
   "bark.barbs": {
     "text": "Barbed! Nick the flesh at the entry with the lancet before you pull.",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:437)."
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:939)."
+  },
+  "bark.axis": {
+    "text": "Pull along the line it went in — you’re tearing the channel!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:956)."
+  },
+  "bark.bolt-snap": {
+    "text": "It snapped — the head’s still in there! Ease them out: pull, pause, then draw.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:976)."
+  },
+  "bark.glass-slow": {
+    "text": "Slowly with glass — it slices as it goes.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:983)."
+  },
+  "bark.lead-dish": {
+    "text": "Not the tray — hexstone goes in the lead dish!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:993)."
+  },
+  "bark.drop-off": {
+    "text": "Right off the body, Doctor — into the tray, or it sinks back in.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:1012)."
+  },
+  "bark.wadding": {
+    "text": "Scraps of wadding went in with the shot — pull those out too, or it’ll fester.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:1027)."
+  },
+  "bark.hex-tell": {
+    "text": "Green flicker — it’s rekindling! Brand out the ember!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:1254)."
   },
   "bark.burn-salve": {
     "text": "The dead flesh is off. Now salve the raw burn.",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:561)."
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:1280)."
+  },
+  "bark.burn-core": {
+    "text": "The dead core’s out. Pluck the rest of the eschar, then salve.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:1292)."
+  },
+  "bark.burn-char": {
+    "text": "That centre is dead flesh — cut the char out with the lancet first!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:1321)."
+  },
+  "bark.acid-first": {
+    "text": "The acid’s still live! Draw it off with the leech-pipe before you salve.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:1328)."
   },
   "bark.burn-eschar": {
     "text": "Pluck away the charred eschar with the tongs first!",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:568)."
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:1333)."
+  },
+  "bark.hex-ember": {
+    "text": "Its ember still glows — brand it out or the hexfire will rekindle!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:1346)."
+  },
+  "bark.bubo-cut": {
+    "text": "Draw a short cut across the crown — a prick won’t open it.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:1474)."
+  },
+  "bark.bubo-overcut": {
+    "text": "Too long a cut — it’s spilling everywhere. Short and across the crown!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:1490)."
   },
   "bark.pus": {
     "text": "Draw off the pus before you salve it.",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:648)."
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:1499)."
+  },
+  "bark.venom-mote": {
+    "text": "The venom’s running for his heart along the vein — sear or draw off the drops, or tie the vein!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:1724)."
+  },
+  "bark.grub-burrow": {
+    "text": "One’s burrowed in! Find it with the lens.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:1889)."
+  },
+  "bark.grub-split": {
+    "text": "Don’t let go half-way — hold the brand until it stops moving!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:1920)."
+  },
+  "bark.sigil-regress": {
+    "text": "Don’t stop half-way — the curse heals what you leave!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/entities.ts:2084)."
   },
   "bark.lauds.the_choir_is_silenced": {
     "text": "The choir is silenced — its heart is bare! Brand it, now!",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:84)."
+    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:216)."
   },
   "bark.lauds.its_calling_its_voices": {
     "text": "It’s calling its Voices back!",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:92)."
+    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:224)."
+  },
+  "bark.lauds-response": {
+    "text": "It heals from the other body! Strike one, then the other — quickly!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:249)."
   },
   "bark.lauds-hymn": {
     "text": "It’s singing — every verse tears him open! Stitch the cuts as they come!",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:111)."
+    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:295)."
   },
-  "bark.lauds.there_its_surfacing_finish": {
-    "text": "There! It’s surfacing — finish it!",
+  "bark.lauds-flare": {
+    "text": "The dawn — I can’t see a thing through the Lens! Wait for the glare to pass!",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:145)."
+    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:336)."
+  },
+  "bark.lauds-under": {
+    "text": "It’s gone under the skin! The Scrying Lens — hunt its ripples!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:360)."
+  },
+  "bark.lauds-surface": {
+    "text": "There! It’s surfacing — brand it before it dives!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:392)."
   },
   "bark.lauds-shielded": {
-    "text": "The Voices shield it. Silence them first — hold the brand on each as it circles.",
+    "text": "The Voices shield it. Silence them first — trace each one’s sigil with the brand.",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:155)."
+    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:400)."
   },
-  "bark.lauds.its_gone_under_the": {
-    "text": "It’s gone under the skin! The Scrying Lens — hunt it down!",
+  "bark.lauds.it_has_split_in": {
+    "text": "It has split in two — and the halves sing to each other! Strike one, then the other, before it answers!",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:167)."
+    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:425)."
+  },
+  "bark.lauds.dawn_is_breaking_and": {
+    "text": "Dawn is breaking — and it has dived! Find it with the Lens between the flares!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:435)."
   },
   "bark.lauds.it_shattered_hexstone_everywhere": {
     "text": "It shattered — hexstone, everywhere! Get every shard out before it spoils him!",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:174)."
+    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:445)."
+  },
+  "bark.lauds.the_thread_has_rewoven": {
+    "text": "The thread has rewoven — they’re linked again!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:583)."
+  },
+  "bark.lauds-dim": {
+    "text": "The thread between them dims — cut across it with the lancet, now!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:592)."
+  },
+  "bark.lauds-bright": {
+    "text": "Not while it blazes — wait for the thread to dim.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:609)."
+  },
+  "bark.lauds.severed_strike_freely_while": {
+    "text": "Severed! Strike freely while they’re apart!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:617)."
+  },
+  "bark.lauds-voice-trace": {
+    "text": "Holding it there won’t quiet it — trace the Voice’s sigil with the brand, line by line.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:726)."
   },
   "bark.eggsac-lanced": {
     "text": "Spiderlings! Brand them before they scatter!",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:312)."
+    "context": "Assistant bark spoken during operations (src/surgery/lauds.ts:809)."
   },
   "bark.malison-open": {
     "text": "Its shroud has parted — sear it with the brand, now!",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/malison.ts:68)."
+    "context": "Assistant bark spoken during operations (src/surgery/malison.ts:214)."
   },
   "bark.malison-rend": {
     "text": "It’s tearing the flesh as it moves! Stitch those wounds!",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/malison.ts:86)."
+    "context": "Assistant bark spoken during operations (src/surgery/malison.ts:224)."
   },
-  "bark.malison-veiled": {
-    "text": "The brand can’t touch it while it’s veiled. Wait for the shroud to part!",
+  "bark.matins-shards": {
+    "text": "It’s shedding shards — they’re crawling for the wounds! Tongs — cast them out!",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/malison.ts:95)."
+    "context": "Assistant bark spoken during operations (src/surgery/malison.ts:266)."
   },
-  "bark.malison.its_shedding_hexlings_burn": {
-    "text": "It’s shedding hexlings! Burn them before they feed!",
+  "bark.matins-gaze": {
+    "text": "The eye has fixed on your hand — move off its line!",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/malison.ts:112)."
+    "context": "Assistant bark spoken during operations (src/surgery/malison.ts:293)."
+  },
+  "bark.matins-offbeat": {
+    "text": "Only on the third beat, Doctor — when the eye is wide!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/malison.ts:344)."
+  },
+  "bark.malison.wait_for_it_to": {
+    "text": "Wait for it to open.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/malison.ts:351)."
+  },
+  "bark.malison.its_quickening_doctor_the": {
+    "text": "It’s quickening! Doctor — the Litany. Draw the star with the right hand and still the hour.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/malison.ts:373)."
+  },
+  "bark.malison.the_shroud_has_burned": {
+    "text": "The shroud has burned away — an eye! Brand it on the third beat, and only then!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/malison.ts:376)."
   },
   "bark.malison.its_splitting_apart_seize": {
     "text": "It’s splitting apart! Seize every shard with the tongs and cast it out — before they rejoin!",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/malison.ts:121)."
+    "context": "Assistant bark spoken during operations (src/surgery/malison.ts:385)."
+  },
+  "bark.operation.steady_hands": {
+    "text": "Steady hands!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/operation.ts:525)."
+  },
+  "bark.operation.praise": {
+    "text": "praise",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/operation.ts:525)."
+  },
+  "bark.operation.now_doctor_the_litany": {
+    "text": "Now, Doctor — the Litany. Draw the five-pointed star with the right hand.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/operation.ts:688)."
+  },
+  "bark.operation.instruction": {
+    "text": "instruction",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/operation.ts:688)."
+  },
+  "bark.operation.i_have_it_doctor": {
+    "text": "I have it, Doctor — keep working.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/operation.ts:862)."
+  },
+  "bark.overheat": {
+    "text": "The brand’s overheated. Give it a moment between searings.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/operation.ts:1067)."
   },
   "bark.brand-flesh": {
     "text": "Careful! The brand is searing healthy flesh!",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/operation.ts:282)."
+    "context": "Assistant bark spoken during operations (src/surgery/operation.ts:1136)."
   },
-  "bark.low-vitals": {
+  "bark.reopened": {
+    "text": "You’ve cut through your own stitches! Close it again.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/operation.ts:1157)."
+  },
+  "bark.inject-wound": {
+    "text": "Not into the wound, Doctor — clean flesh, away from the cuts.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/operation.ts:1174)."
+  },
+  "bark.inject-waste": {
+    "text": "He didn’t need that, Doctor. Save the tincture.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/operation.ts:1195)."
+  },
+  "bark.overdose": {
+    "text": "Too much tincture — your hands are shaking!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/operation.ts:1207)."
+  },
+  "bark.operation.vitals_are_failing_use": {
     "text": "Vitals are failing! Use the tincture, Doctor!",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/operation.ts:337)."
+    "context": "Assistant bark spoken during operations (src/surgery/operation.ts:1433)."
+  },
+  "bark.operation.danger": {
+    "text": "danger",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/operation.ts:1433)."
+  },
+  "bark.operation.were_losing_him": {
+    "text": "We’re losing him!",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/operation.ts:1439)."
+  },
+  "bark.operation.everythings_clear_close_the": {
+    "text": "Everything’s clear. Close the incision with the thread.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/operation.ts:1508)."
+  },
+  "bark.operation.hes_burning_up_something": {
+    "text": "He’s burning up — something was left in the wound! Keep him alive through the fever.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/operation.ts:1517)."
   },
   "bark.operation.the_operation_is_complete": {
     "text": "The operation is complete.",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/surgery/operation.ts:359)."
+    "context": "Assistant bark spoken during operations (src/surgery/operation.ts:1563)."
+  },
+  "bark.salve-dry": {
+    "text": "The salve pot’s empty — give it a moment to refill.",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/surgery/operation.ts:1672)."
+  },
+  "bark.barkDirector.whisper": {
+    "text": "whisper",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/content/barkDirector.ts:176)."
+  },
+  "bark.barkDirector.whisper_band": {
+    "text": "whisper-band",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/content/barkDirector.ts:185)."
+  },
+  "bark.barkDirector.praise": {
+    "text": "praise",
+    "scope": "barks",
+    "chapter": "global",
+    "speaker": "Sister Ilse",
+    "context": "Assistant bark spoken during operations (src/content/barkDirector.ts:208)."
   },
   "bark.operation.instruments_ready_doctor": {
     "text": "Instruments ready, Doctor.",
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/scenes/operation.ts:66)."
+    "context": "Assistant bark spoken during operations (src/scenes/operation.ts:399)."
   }
 }
