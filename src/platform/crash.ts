@@ -149,6 +149,7 @@ export function showErrorBoundary(r: ErrorReport, opts: CaptureOptions): void {
   btn('Restart', opts.restart);
   wrap.append(h, p, id, row);
   document.body.appendChild(wrap);
-  document.querySelector('canvas')?.setAttribute('style', 'display:none');
+  const canvas = document.querySelector('canvas');
+  if (canvas) canvas.style.display = 'none';
   document.body.style.cursor = 'default';
 }

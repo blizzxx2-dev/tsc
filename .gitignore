@@ -8,4 +8,4 @@ desktop/dist/
 dist-*/
 coverage/
 steam/output/
-steam/steam_appid.txt
+steam_appid.txt

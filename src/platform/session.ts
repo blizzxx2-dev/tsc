@@ -198,7 +198,8 @@ function installFocus(): void {
 }
 
 async function firstRunPrompts(): Promise<void> {
-  if (settings.crashReports === 'ask' && (parseDsn(import.meta.env?.VITE_SENTRY_DSN) || platform.kind === 'desktop')) {
+  // Only ask when this build can actually upload (DSN configured at build time; the desktop build uses the same project for minidumps).
+  if (settings.crashReports === 'ask' && parseDsn(import.meta.env?.VITE_SENTRY_DSN)) {
     const i = await prompt({
       title: 'Help mend the game?',
       message: 'Suture & Steel can send anonymous crash reports — the error, your build and hardware tier, never your name or files. You can change this any time in Options → Privacy.',
