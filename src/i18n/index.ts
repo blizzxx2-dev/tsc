@@ -131,9 +131,9 @@ export function sourceKey(text: string): string | undefined {
  * popups ("-12", "+20") are reformatted; anything else (story and callout
  * content, which stays English) is returned unchanged.
  */
-export function tSource(text: string): string {
+export function tSource(text: string, params?: Record<string, string | number>): string {
   const key = sourceKey(text);
-  if (key) return t(key);
+  if (key) return t(key, params);
   const m = /^([-+])(\d+)$/.exec(text);
   if (m) return t(m[1] === '-' ? 'popup.vitals_loss' : 'popup.vitals_gain', { n: Number(m[2]) });
   return text;

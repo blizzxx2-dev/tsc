@@ -1,7 +1,7 @@
 import type { Vec } from '../core/math';
-import { alphaOf, type RGBA } from './color';
+import { alphaOf, hex, type RGBA } from './color';
 import { bakeLut, GRADES, LUT_SIZE } from './lut';
-import { GlyphAtlas, type FontId } from './text';
+import { fallbackHighlight, GlyphAtlas, type FontId } from './text';
 import { BRIGHT_FS, CREATURE_FS, DOWN_FS, FLESH_FS, FLUID_FS, FULL_VS, IMAGE_FS, IMAGE_VS, PORTRAIT_FS, POST_FS, RECT_VS, SCENE_FS, UP_FS } from './shaders';
 import { BATCH_FS, BATCH_UNITS, BATCH_VS, FALLBACK_VS, FXAA_FS } from './batch-shaders';
 import { fallbackPlan, FULL_CAPS, probeCaps, toMediump, type FallbackPlan, type GpuCaps } from './caps';
@@ -23,6 +23,8 @@ void main() { o = vec4(texture(u_tex, v_uv).rgb, 1.0); }`;
 import type { DisplayPrefs } from '../ui/display';
 
 const TAU = Math.PI * 2;
+/** LQA fallback-glyph tint (LOC-0025). */
+const MAGENTA: RGBA = hex('#ff00ff');
 
 /** '#rrggbb' → [r, g, b] in 0..1. */
 const rgb01 = (h: string): [number, number, number] => [parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255];
@@ -1446,9 +1448,11 @@ export class Gfx {
     const w = this.atlas.measure(str, font) * s;
     let cx = align === 'center' ? x - w / 2 : align === 'right' ? x - w : x;
     const top = y - this.atlas.ascent(font) * s;
+    const lqa = fallbackHighlight();
     for (const ch of str) {
       const g = this.atlas.glyph(ch, font);
       if (g.w > 0) {
+        if (lqa && g.fallback) c = c2 = MAGENTA;
         this.room(6);
         const x0 = cx + g.ox * s;
         const y0 = top + g.oy * s;

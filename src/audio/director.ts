@@ -798,7 +798,7 @@ export class OperationAudio {
 
     // Barks duck the music and ambience while the line is on screen (and voiced when recorded).
     const line = op.callouts[0] ?? '';
-    const hold = Math.max(2.4, line.length * 0.055);
+    const hold = Math.max(2.5, line.length * 0.055) * (this.op?.calloutPace ?? 1);
     if (line && line !== this.lastCallout) {
       const urgent = /!/.test(line);
       this.sys.vo.bark(line, hold, urgent);

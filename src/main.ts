@@ -35,7 +35,7 @@ import { downloadRecording, parseRecording, Recorder, Replayer } from './input/r
 import { Transition } from './ui/transition';
 import { GalleryScene } from './scenes/gallery';
 import { displayPrefs } from './ui/display';
-import { setReadableFont } from './render/text';
+import { setFallbackHighlight, setReadableFont } from './render/text';
 import { bindUiSounds } from './ui/events';
 
 /** Dev/QA tooling ships in dev and QA builds; `vite build --mode release` strips it (ENG-0237). */
@@ -385,6 +385,8 @@ async function boot(): Promise<void> {
       console.error('Replay failed', err);
     }
   }
+  // ?lqa=1 (dev/QA builds) tints glyphs drawn from a fallback face magenta (LOC-0025).
+  setFallbackHighlight(DEV_TOOLS && params.get('lqa') === '1');
   // ?scene=artview|fleshlab opens an art dev page.
   const artScene = DEV_TOOLS ? artDevScene(params.get('scene')) : null;
   if (artScene) game.go(artScene);

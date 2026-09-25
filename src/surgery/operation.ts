@@ -47,6 +47,8 @@ export interface OperationDef {
   id: string;
   title: string;
   patient: string;
+  /** Grammatical gender of the patient for translated lines (ICU `select`, LOC-0014). */
+  patientGender?: 'm' | 'f' | 'unknown';
   diagnosis: string;
   organ: OrganKind;
   /** Folk of the patient, for flesh tint (setting peoples only: see docs/content/op-checklist.md). */
@@ -249,6 +251,8 @@ export class Operation {
   private phaseDelay: number;
   private inBreather = false;
   callouts: string[] = [];
+  /** Reading-time factor for callouts (the locale's reading speed, LOC-0018); presentation only. */
+  calloutPace = 1;
   private calloutPri: number[] = [];
   calloutT = 0;
   litanyTime = 0;
@@ -1157,7 +1161,7 @@ export class Operation {
     this.shake = Math.max(0, this.shake - dt * 30);
     if (this.callouts.length) {
       this.calloutT += dt;
-      if (this.calloutT > Math.max(2.5, this.callouts[0].length * 0.055)) {
+      if (this.calloutT > Math.max(2.5, this.callouts[0].length * 0.055) * this.calloutPace) {
         this.callouts.shift();
         this.calloutPri.shift();
         this.calloutT = 0;

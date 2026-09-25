@@ -8,6 +8,13 @@ export function setReadableFont(on: boolean): void {
 }
 export const readableFont = (): boolean => readable;
 
+/** LQA builds tint glyphs that came from a fallback face magenta (LOC-0025). */
+let highlightFallback = false;
+export function setFallbackHighlight(on: boolean): void {
+  highlightFallback = on;
+}
+export const fallbackHighlight = (): boolean => highlightFallback;
+
 export const FONT_FAMILIES: Record<FontId, { style: string; family: string }> = {
   body: { style: 'normal', family: '"IM Fell English", "Palatino Linotype", "Book Antiqua", Georgia, serif' },
   italic: { style: 'italic', family: '"IM Fell English", "Palatino Linotype", Georgia, serif' },
@@ -24,6 +31,8 @@ export interface Glyph {
   ox: number;
   oy: number;
   adv: number;
+  /** Rasterised from a fallback face: the intended font lacks this character. */
+  fallback?: boolean;
 }
 
 import type { GlRegistry } from './registry';
@@ -146,6 +155,8 @@ export class GlyphAtlas {
     ctx.fillStyle = '#fff';
     ctx.textBaseline = 'alphabetic';
     ctx.fillText(ch, this.penX + PAD + 4, this.penY + PAD + m.ascent);
+    const fallback = this.isFallback(ch, f);
+    ctx.font = this.font(f);
     g = {
       u0: this.penX / SIZE,
       v0: this.penY / SIZE,
@@ -156,12 +167,29 @@ export class GlyphAtlas {
       ox: -PAD - 4,
       oy: -PAD,
       adv,
+      fallback,
     };
     this.markDirty(this.penX, this.penY, w, h);
     this.penX += w + 2;
     this.rowH = Math.max(this.rowH, h);
     this.glyphs.set(key, g);
     return g;
+  }
+
+  /**
+   * Did the intended face supply `ch`? If it did not, the browser fell through to the next family,
+   * so the character measures the same as in two different generic fonts on their own.
+   */
+  private isFallback(ch: string, f: FontId): boolean {
+    const ctx = this.ctx;
+    const face = this.font(f);
+    const primary = face.slice(0, face.indexOf(',') >= 0 ? face.indexOf(',') : face.length);
+    const [style, size] = face.split(' ');
+    const w = (font: string) => {
+      ctx.font = font;
+      return ctx.measureText(ch).width;
+    };
+    return w(`${primary}, monospace`) === w(`${style} ${size} monospace`) && w(`${primary}, cursive`) === w(`${style} ${size} cursive`);
   }
 
   measure(str: string, f: FontId): number {

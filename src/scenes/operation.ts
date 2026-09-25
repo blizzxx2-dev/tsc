@@ -17,6 +17,8 @@ import { button, inRect, reticle, toolIcon } from '../ui/widgets';
 import { banner, divider, giltText, hourglass, leatherPanel, medallion, plaque, scroll, UI } from '../ui/ornaments';
 import { buttonSurface } from '../ui/widgets';
 import { DamageAggregator, ToolHints } from '../ui/hudPrefs';
+import { localeInfo } from '../i18n/locales';
+import { getLocale } from '../i18n';
 import { bloodScale, GORE_LEVEL, presentation } from '../render/presentation';
 import { highContrast, palette } from '../ui/theme';
 import { giltNumerals, snuffedVeil } from '../ui/ornaments';
@@ -276,6 +278,7 @@ export class OperationScene implements Scene {
   render(g: Gfx, game: Game): void {
     const op = this.op;
     presentation.creatureFilter = settings.creatureFilter;
+    op.calloutPace = localeInfo(getLocale())?.reading ?? 1;
     presentation.gore = GORE_LEVEL[settings.goreLevel];
     const pal = organPalette(op.def);
     const t = g.time;
@@ -550,7 +553,9 @@ export class OperationScene implements Scene {
     const r = { x: mx + 44, y: 702 - h, w: 840, h };
     scroll(g, r);
     g.text(ASSISTANT_NAME, r.x + 16, r.y + 20, { size: 16, color: hex('#6a0a10'), shadow: false });
-    const shown = line.slice(0, Math.floor(this.op.calloutT * 60 * settings.textSpeed));
+    // Keyed callouts are translated with the patient's grammatical gender for ICU select (LOC-0014).
+    const text = tSource(line, { gender: this.op.def.patientGender ?? 'unknown' });
+    const shown = text.slice(0, Math.floor(this.op.calloutT * 60 * settings.textSpeed));
     g.textBlock(shown, r.x + 16, r.y + 22 + size, 808, { size, color: hex(UI.inkDark), shadow: false }, 1.3);
   }
 
