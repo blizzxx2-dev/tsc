@@ -6,6 +6,7 @@
   "description": "A grimdark-fantasy surgery action game inspired by the Trauma Center series.",
   "scripts": {
     "dev": "vite",
+    "prebuild": "npm run -s audio:check",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",

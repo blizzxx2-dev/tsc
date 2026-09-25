@@ -474,8 +474,8 @@ export class AudioEngine {
       end = now + src.buffer.duration / pitch;
     } else if (recipe) {
       end = recipe(this.synth.begin(now, g, pitch, stretch), v, o.params ?? {});
-    } else if (import.meta.env?.DEV !== false) {
-      end = this.legacySynth(now, g);
+    } else if (DEV_FALLBACK) {
+      end = DEV_FALLBACK(this.synth.begin(now, g));
     } else end = now;
     const voice = this.voices.add({
       event: key,
@@ -492,13 +492,6 @@ export class AudioEngine {
       },
     });
     return voice;
-  }
-
-  /** Dev fallback for ids with no recipe or asset: a neutral wooden tick, so dev builds never go silent (compiled out of release builds). */
-  private legacySynth(t: number, out: AudioNode): number {
-    const s = this.synth!.begin(t, out);
-    s.burst({ dur: 0.03, f: 1500, q: 2, gain: 0.15 });
-    return s.tone(600, 0.08, { gain: 0.08, type: 'triangle' });
   }
 
   // ------------------------------------------------------------------ loops
@@ -602,6 +595,18 @@ export class AudioEngine {
     return { base: c?.baseLatency ?? 0, output: c?.outputLatency ?? 0 };
   }
 }
+
+/**
+ * Dev fallback for ids with no recipe or asset: a neutral wooden tick, so dev builds
+ * never go silent. `import.meta.env.DEV` is a build-time constant, so release builds
+ * fold this to null and drop the function.
+ */
+const DEV_FALLBACK: ((s: Synth) => number) | null = import.meta.env.DEV
+  ? (s) => {
+      s.burst({ dur: 0.03, f: 1500, q: 2, gain: 0.15 });
+      return s.tone(600, 0.08, { gain: 0.08, type: 'triangle' });
+    }
+  : null;
 
 function setTimeoutSafe(fn: () => void, ms: number): void {
   if (typeof setTimeout !== 'undefined') setTimeout(fn, ms);

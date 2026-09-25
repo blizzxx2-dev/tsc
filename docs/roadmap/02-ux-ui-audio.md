@@ -399,35 +399,35 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] AUD-0001 · M0 · P0 · M · Procedural WebAudio cues — 16 `Cue`s (ratings, cut, stitch, squelch, pluck, burn, inject, heartbeat, flatline, litany, bell, select, alarm) synthesised from oscillators and filtered noise into a master gain
 - [x] AUD-0002 · M0 · P0 · S · Audio unlock & mute — AudioContext unlocked on first pointer/key gesture; mute toggle on the title screen
 - [x] AUD-0003 · M0 · P1 · S · Simulation emits sounds as data (`op.cues`), drained and de-duplicated per frame by `OperationScene` — keeps the sim DOM-free
-- [ ] AUD-0004 · Demo · P0 · M · Bus graph — master → music, sfx (world, hud), ui, vo, ambience buses as GainNodes with persisted 0–100 volumes; topology unit-tested against a fake AudioContext
+- [x] AUD-0004 · Demo · P0 · M · Bus graph — master → music, sfx (world, hud), ui, vo, ambience buses as GainNodes with persisted 0–100 volumes; topology unit-tested against a fake AudioContext
 - [x] AUD-0005 · M0 · P0 · S · Persisted master volume & mute — `Audio.volume`/`muted` setters update the master gain live; values loaded from settings on boot
-- [ ] AUD-0006 · Demo · P0 · S · Master safety limiter — DynamicsCompressorNode on master (threshold −6 dB, ratio 20, attack 3 ms, release 100 ms); an offline render of the op1-5 boss replay shows no sample above −0.5 dBFS
-- [ ] AUD-0007 · Demo · P0 · M · Data-driven events — replace the `Cue` string union with event ids (`sfx.lancet.cut`, `sfx.rate.cool`, `vo.ilse.lowVitals`…) defined in `src/audio/events.ts`; the sim keeps pushing ids into `op.cues`; unit test that every id the sim can emit has a mapping
-- [ ] AUD-0008 · Demo · P0 · S · Procedural fallback — events without recorded assets fall back to the existing synth so dev builds never go silent; boot logs a list of unmapped/placeholder events in dev
-- [ ] AUD-0009 · Demo · P1 · S · Pre-built noise buffers — `noise()` allocates and fills a new AudioBuffer with `Math.random()` per call; precompute white-noise buffers at unlock and reuse (no per-cue buffer allocations in a heap snapshot)
-- [ ] AUD-0010 · Demo · P0 · M · Voice manager — `play(id, { pan, vol, pitch, priority })` with per-event voice limits (e.g. stitch 4, squelch 3, rating 2), stealing lowest-priority/oldest voice, global cap 48 voices; unit tests on stealing order
-- [ ] AUD-0011 · Demo · P0 · S · Variation & randomisation — events define 3–6 variations with no-immediate-repeat selection and per-event pitch (± cents) and gain (± dB) ranges
-- [ ] AUD-0012 · Demo · P0 · M · Loop API — `startLoop(id)` / `setParam(handle, name, v)` / `stopLoop(handle, fadeMs)` for held-tool loops (leech suction, brand sizzle, salve smear, tincture plunger, lens hum, Litany drone); loops stop within 50 ms of release and never leak (test: 1 000 hold/release cycles leave 0 active loops)
-- [ ] AUD-0013 · Demo · P1 · S · Stereo placement — StereoPannerNode pan from entity screen X across the operating field (−0.6…0.6); disabled by the Mono setting
-- [ ] AUD-0014 · Demo · P1 · S · Scheduled heartbeat — heartbeat events scheduled on `ctx.currentTime` with 100 ms look-ahead from the ECG beat phase, so beats land within ±5 ms of the QRS spike instead of rAF jitter
-- [ ] AUD-0015 · Demo · P1 · S · Convolution reverb — two impulse responses (stone operating theatre, chapel) as send effects per bus; scene selects the space; wet level per snapshot
+- [x] AUD-0006 · Demo · P0 · S · Master safety limiter — DynamicsCompressorNode on master (threshold −6 dB, ratio 20, attack 3 ms, release 100 ms); an offline render of the op1-5 boss replay shows no sample above −0.5 dBFS
+- [x] AUD-0007 · Demo · P0 · M · Data-driven events — replace the `Cue` string union with event ids (`sfx.lancet.cut`, `sfx.rate.cool`, `vo.ilse.lowVitals`…) defined in `src/audio/events.ts`; the sim keeps pushing ids into `op.cues`; unit test that every id the sim can emit has a mapping
+- [x] AUD-0008 · Demo · P0 · S · Procedural fallback — events without recorded assets fall back to the existing synth so dev builds never go silent; boot logs a list of unmapped/placeholder events in dev
+- [x] AUD-0009 · Demo · P1 · S · Pre-built noise buffers — `noise()` allocates and fills a new AudioBuffer with `Math.random()` per call; precompute white-noise buffers at unlock and reuse (no per-cue buffer allocations in a heap snapshot)
+- [x] AUD-0010 · Demo · P0 · M · Voice manager — `play(id, { pan, vol, pitch, priority })` with per-event voice limits (e.g. stitch 4, squelch 3, rating 2), stealing lowest-priority/oldest voice, global cap 48 voices; unit tests on stealing order
+- [x] AUD-0011 · Demo · P0 · S · Variation & randomisation — events define 3–6 variations with no-immediate-repeat selection and per-event pitch (± cents) and gain (± dB) ranges
+- [x] AUD-0012 · Demo · P0 · M · Loop API — `startLoop(id)` / `setParam(handle, name, v)` / `stopLoop(handle, fadeMs)` for held-tool loops (leech suction, brand sizzle, salve smear, tincture plunger, lens hum, Litany drone); loops stop within 50 ms of release and never leak (test: 1 000 hold/release cycles leave 0 active loops)
+- [x] AUD-0013 · Demo · P1 · S · Stereo placement — StereoPannerNode pan from entity screen X across the operating field (−0.6…0.6); disabled by the Mono setting
+- [x] AUD-0014 · Demo · P1 · S · Scheduled heartbeat — heartbeat events scheduled on `ctx.currentTime` with 100 ms look-ahead from the ECG beat phase, so beats land within ±5 ms of the QRS spike instead of rAF jitter
+- [x] AUD-0015 · Demo · P1 · S · Convolution reverb — two impulse responses (stone operating theatre, chapel) as send effects per bus; scene selects the space; wet level per snapshot
 
 ### Mixing: ducking & snapshots
-- [ ] AUD-0016 · Demo · P0 · M · Ducking — VO/callout barks duck music −8 dB and ambience −6 dB (attack 80 ms, release 400 ms); rating stings duck music −3 dB for 250 ms; ducking amounts in a data table
-- [ ] AUD-0017 · Demo · P0 · M · Snapshots — `default`, `pause` (music LPF 800 Hz −6 dB, world SFX muted, ambience −12 dB), `litany`, `lowVitals`, `vn`, `results`, `menu`; 300 ms cross-fades; stack with priorities; unit-tested transitions
-- [ ] AUD-0018 · Demo · P0 · M · Litany snapshot — world SFX playbackRate ×0.6 and LPF 1.2 kHz, reverb send +6 dB, heartbeat slowed to match the 0.15 time scale, UI/VO untouched; enters in 400 ms, exits in 600 ms synced to `litanyTime`
-- [ ] AUD-0019 · Demo · P1 · S · Low-vitals snapshot — below 30 vitals a gradual high-shelf cut (−6 dB above 4 kHz) and a faint tinnitus layer; lifted with 35 hysteresis; off with "Reduce audio stress"
-- [ ] AUD-0020 · Demo · P1 · S · Pause behaviour — pausing freezes world loops (suspended, not stopped) and resumes them in place; VO pauses mid-line and resumes
+- [x] AUD-0016 · Demo · P0 · M · Ducking — VO/callout barks duck music −8 dB and ambience −6 dB (attack 80 ms, release 400 ms); rating stings duck music −3 dB for 250 ms; ducking amounts in a data table
+- [x] AUD-0017 · Demo · P0 · M · Snapshots — `default`, `pause` (music LPF 800 Hz −6 dB, world SFX muted, ambience −12 dB), `litany`, `lowVitals`, `vn`, `results`, `menu`; 300 ms cross-fades; stack with priorities; unit-tested transitions
+- [x] AUD-0018 · Demo · P0 · M · Litany snapshot — world SFX playbackRate ×0.6 and LPF 1.2 kHz, reverb send +6 dB, heartbeat slowed to match the 0.15 time scale, UI/VO untouched; enters in 400 ms, exits in 600 ms synced to `litanyTime`
+- [x] AUD-0019 · Demo · P1 · S · Low-vitals snapshot — below 30 vitals a gradual high-shelf cut (−6 dB above 4 kHz) and a faint tinnitus layer; lifted with 35 hysteresis; off with "Reduce audio stress"
+- [x] AUD-0020 · Demo · P1 · S · Pause behaviour — pausing freezes world loops (suspended, not stopped) and resumes them in place; VO pauses mid-line and resumes
 
 ### Asset pipeline & runtime
-- [ ] AUD-0021 · Demo · P0 · M · Asset pipeline — source WAVs (48 kHz/24-bit) in `assets-src/audio`, build script encodes Ogg Opus (SFX 96 kbps, music 160 kbps, VO 64 kbps mono), generates a manifest with duration, integrated LUFS and true peak; CI fails on missing or oversized files
-- [ ] AUD-0022 · Demo · P0 · M · Bank loading — events grouped in banks (boot/ui, title, story, operation-common, per-operation, boss) preloaded on scene entry with progress; decoded memory ≤ 150 MB for the demo; unused banks released
-- [ ] AUD-0023 · Demo · P1 · S · Music streaming decision — long music stems either streamed via `MediaElementAudioSourceNode` or decoded buffers with loop points; decide by memory/gapless test and document in the PR
+- [x] AUD-0021 · Demo · P0 · M · Asset pipeline — source WAVs (48 kHz/24-bit) in `assets-src/audio`, build script encodes Ogg Opus (SFX 96 kbps, music 160 kbps, VO 64 kbps mono), generates a manifest with duration, integrated LUFS and true peak; CI fails on missing or oversized files
+- [x] AUD-0022 · Demo · P0 · M · Bank loading — events grouped in banks (boot/ui, title, story, operation-common, per-operation, boss) preloaded on scene entry with progress; decoded memory ≤ 150 MB for the demo; unused banks released
+- [x] AUD-0023 · Demo · P1 · S · Music streaming decision — long music stems either streamed via `MediaElementAudioSourceNode` or decoded buffers with loop points; decide by memory/gapless test and document in the PR
 - [ ] AUD-0024 · Demo · P1 · S · Device resilience — handle output device change (`devicechange`), headphones unplug, sample-rate changes and `AudioContext` `interrupted` state on macOS without silence or crash (manual matrix)
 - [ ] AUD-0025 · Demo · P1 · S · Output latency — create the context with `latencyHint: 'interactive'`; debug overlay shows `baseLatency` + `outputLatency`; target < 40 ms on Windows WASAPI in Electron
-- [ ] AUD-0026 · Demo · P1 · S · Mute when unfocused — option (default on) fades master to −∞ in 200 ms on window blur and back on focus
-- [ ] AUD-0027 · Demo · P1 · M · Audio debug overlay (F4) — active voices by bus, bus RMS/peak meters, current snapshot stack, loaded banks and memory, last 20 events fired
-- [ ] AUD-0028 · Demo · P2 · M · Offline audio tests — Vitest renders event sequences through `OfflineAudioContext` (node-web-audio-api) to assert no clipping, correct ducking depth and loop stop timing
+- [x] AUD-0026 · Demo · P1 · S · Mute when unfocused — option (default on) fades master to −∞ in 200 ms on window blur and back on focus
+- [x] AUD-0027 · Demo · P1 · M · Audio debug overlay (F4) — active voices by bus, bus RMS/peak meters, current snapshot stack, loaded banks and memory, last 20 events fired
+- [x] AUD-0028 · Demo · P2 · M · Offline audio tests — Vitest renders event sequences through `OfflineAudioContext` (node-web-audio-api) to assert no clipping, correct ducking depth and loop stop timing
 
 ## Epic AUD-B · Designed SFX for Chapters 1–2 (Demo)
 
@@ -435,104 +435,104 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] AUD-0029 · Demo · P0 · S · SFX direction brief — period-authentic palette (steel, horn, wood, glass, wax, wet leather, embers, church bronze; no modern beeps), grim but not gratuitous gore level, reference clips; approved before recording
 - [ ] AUD-0030 · Demo · P0 · M · Foley session — record flesh (cabbage, wet chamois, raw meat, gelatine), antique steel instruments, glass vials/jars, wax seals, parchment, quill, thread through leather, embers/cautery iron in water; 48 kHz/24-bit, slate log, ≥ 5 takes per action
 - [ ] AUD-0031 · Demo · P1 · S · Library licensing — licences for bell, choir and ambience libraries recorded in `docs/licences/audio.md` with per-file provenance in the manifest
-- [ ] AUD-0032 · Demo · P0 · M · SFX event list — spreadsheet of every Ch1–2 event (id, trigger in code, variations, loop?, bus, priority, caption text, status) generated from `events.ts` and reviewed weekly
-- [ ] AUD-0033 · Demo · P0 · S · Procedural → designed migration — each of the 16 current `Cue`s mapped to designed events (e.g. `cut` splits into lancet cut, barb nick, Malison rend; `pluck` into tongs grab, burn debride, grub pluck); after migration the synth only runs as fallback (dev report shows 0 fallback plays in a full Ch1–2 replay)
+- [x] AUD-0032 · Demo · P0 · M · SFX event list — spreadsheet of every Ch1–2 event (id, trigger in code, variations, loop?, bus, priority, caption text, status) generated from `events.ts` and reviewed weekly
+- [x] AUD-0033 · Demo · P0 · S · Procedural → designed migration — each of the 16 current `Cue`s mapped to designed events (e.g. `cut` splits into lancet cut, barb nick, Malison rend; `pluck` into tongs grab, burn debride, grub pluck); after migration the synth only runs as fallback (dev report shows 0 fallback plays in a full Ch1–2 replay)
 
 ### Instruments (per tool)
-- [ ] AUD-0034 · Demo · P0 · M · Lancet set — skin-touch on press, cutting loop with gain/pitch from stroke speed, incision-complete wet open, off-the-line slip, empty-press air slash (MISS), barb nick; ≥ 4 variations each
-- [ ] AUD-0035 · Demo · P0 · M · Tongs set — jaw open/close clicks, grab (wet flesh vs hard object), pulling-strain loop scaled by distance from origin, extraction pop per object (wooden arrow shaft, crossbow bolt, lead shot, tooth, glass shard, hexstone chime), drop into metal dish
-- [ ] AUD-0036 · Demo · P0 · S · Leech-Pipe set — suction loop with gurgle intensity from pool radius, separate textures for blood, pus and black bile, pool-cleared slurp
-- [ ] AUD-0037 · Demo · P0 · M · Gut Thread set — needle pierce per stitch with pitch rising along the wound (+1 semitone per stitch, capped), thread pull zip, final knot tie on closure
-- [ ] AUD-0038 · Demo · P0 · S · Saint's Salve set — jar lid, wet smear loop gated by coverage progress, sealing shimmer when a nick or rot patch is sealed
-- [ ] AUD-0039 · Demo · P0 · S · Tincture set — vial clink on select, plunger loop during the 0.7 s hold, injection-complete swell + heal chime, cooldown-ready tick after 6 s
-- [ ] AUD-0040 · Demo · P0 · M · Cautery Brand set — idle ember hum, sizzle loop on contact with variants for flesh (warning hiss), grub, curse-sigil and Malison flesh, quench/steam on release
-- [ ] AUD-0041 · Demo · P0 · S · Scrying Lens set — glass hum loop while selected, proximity shimmer rising near hidden objects, "Found!" reveal chime
-- [ ] AUD-0042 · Demo · P1 · S · Tool pick-up sounds — distinct select sound per tool (steel, tong spring, glass, jar, iron) replacing the shared `select` square blip; unavailable-tool dull clack
+- [x] AUD-0034 · Demo · P0 · M · Lancet set — skin-touch on press, cutting loop with gain/pitch from stroke speed, incision-complete wet open, off-the-line slip, empty-press air slash (MISS), barb nick; ≥ 4 variations each
+- [x] AUD-0035 · Demo · P0 · M · Tongs set — jaw open/close clicks, grab (wet flesh vs hard object), pulling-strain loop scaled by distance from origin, extraction pop per object (wooden arrow shaft, crossbow bolt, lead shot, tooth, glass shard, hexstone chime), drop into metal dish
+- [x] AUD-0036 · Demo · P0 · S · Leech-Pipe set — suction loop with gurgle intensity from pool radius, separate textures for blood, pus and black bile, pool-cleared slurp
+- [x] AUD-0037 · Demo · P0 · M · Gut Thread set — needle pierce per stitch with pitch rising along the wound (+1 semitone per stitch, capped), thread pull zip, final knot tie on closure
+- [x] AUD-0038 · Demo · P0 · S · Saint's Salve set — jar lid, wet smear loop gated by coverage progress, sealing shimmer when a nick or rot patch is sealed
+- [x] AUD-0039 · Demo · P0 · S · Tincture set — vial clink on select, plunger loop during the 0.7 s hold, injection-complete swell + heal chime, cooldown-ready tick after 6 s
+- [x] AUD-0040 · Demo · P0 · M · Cautery Brand set — idle ember hum, sizzle loop on contact with variants for flesh (warning hiss), grub, curse-sigil and Malison flesh, quench/steam on release
+- [x] AUD-0041 · Demo · P0 · S · Scrying Lens set — glass hum loop while selected, proximity shimmer rising near hidden objects, "Found!" reveal chime
+- [x] AUD-0042 · Demo · P1 · S · Tool pick-up sounds — distinct select sound per tool (steel, tong spring, glass, jar, iron) replacing the shared `select` square blip; unavailable-tool dull clack
 
 ### Ailments & patient (Ch1–2)
-- [ ] AUD-0043 · Demo · P0 · S · Bleeding — laceration trickle loop scaled by severity, blood-pool growth drips, pooled blood blocking stitching ("flooded") wet slap
-- [ ] AUD-0044 · Demo · P0 · S · Embedded objects — hexstone corruption pulse (whisper + low chime every 7 s cycle), barbed tear rip with pained patient vocal
-- [ ] AUD-0045 · Demo · P0 · S · Burns — eschar flake crack on debride, fire-burn crackle bed, acid fizz, hexfire whispering crackle; "Burn dressed" cool-down hiss
-- [ ] AUD-0046 · Demo · P0 · S · Plague — bubo swelling creak, lance pop + pus burst, pus drain, rot creeping squelch loop, "Rot purged" cleanse
-- [ ] AUD-0047 · Demo · P0 · S · Venom — spreading hiss/tingle loop scaled by `spreadR`, antidote neutralise effervescence
-- [ ] AUD-0048 · Demo · P0 · S · Grubs — wriggle chitter loop per grub (voice-limited to 3), burrow, seared squeal, plucked squeak, dropped-in-dish tick
-- [ ] AUD-0049 · Demo · P0 · S · Curse-sigil — chanting whisper loop while active, crack stages during searing, "Curse broken" glass-bell shatter
-- [ ] AUD-0050 · Demo · P0 · S · Egg sacs & spiderlings — sac pulse loop quickening as the hatch timer runs down, lance squelch, hatch burst, spiderling skitter loop (voice-limited to 4), seared squeal (op2-3 "Brood-Mother's Kiss")
-- [ ] AUD-0051 · Demo · P1 · M · Patient vocal set — moans, sharp pain on BAD/MISS hurt ≥ 3, relieved breath on win, death rattle; 4 voice types (man, woman, elder, dwarf); toggle "Patient vocalisations"
+- [x] AUD-0043 · Demo · P0 · S · Bleeding — laceration trickle loop scaled by severity, blood-pool growth drips, pooled blood blocking stitching ("flooded") wet slap
+- [x] AUD-0044 · Demo · P0 · S · Embedded objects — hexstone corruption pulse (whisper + low chime every 7 s cycle), barbed tear rip with pained patient vocal
+- [x] AUD-0045 · Demo · P0 · S · Burns — eschar flake crack on debride, fire-burn crackle bed, acid fizz, hexfire whispering crackle; "Burn dressed" cool-down hiss
+- [x] AUD-0046 · Demo · P0 · S · Plague — bubo swelling creak, lance pop + pus burst, pus drain, rot creeping squelch loop, "Rot purged" cleanse
+- [x] AUD-0047 · Demo · P0 · S · Venom — spreading hiss/tingle loop scaled by `spreadR`, antidote neutralise effervescence
+- [x] AUD-0048 · Demo · P0 · S · Grubs — wriggle chitter loop per grub (voice-limited to 3), burrow, seared squeal, plucked squeak, dropped-in-dish tick
+- [x] AUD-0049 · Demo · P0 · S · Curse-sigil — chanting whisper loop while active, crack stages during searing, "Curse broken" glass-bell shatter
+- [x] AUD-0050 · Demo · P0 · S · Egg sacs & spiderlings — sac pulse loop quickening as the hatch timer runs down, lance squelch, hatch burst, spiderling skitter loop (voice-limited to 4), seared squeal (op2-3 "Brood-Mother's Kiss")
+- [x] AUD-0051 · Demo · P1 · M · Patient vocal set — moans, sharp pain on BAD/MISS hurt ≥ 3, relieved breath on win, death rattle; 4 voice types (man, woman, elder, dwarf); toggle "Patient vocalisations"
 
 ### The Malison (Ch1–2 bosses)
-- [ ] AUD-0052 · Demo · P0 · M · Malison of Matins set — veiled drone, shroud-parting choir swell, flesh-rending tear, brand-hit shriek, hexling shedding, splitting apart, shard rejoin warning (2 s rising whisper) and rejoin thud, "Malison unmade" collapse with bell
-- [ ] AUD-0053 · Demo · P0 · M · Malison of Lauds set — per-Voice choir loop panned with its orbit, Voice-silenced cut-off, "calling its Voices back" swell, Hymn verse build + tearing blast, submerge gurgle and lens-found surfacing sting, hexstone shatter burst, death; every telegraph audible ≥ 0.5 s before it lands
-- [ ] AUD-0054 · Demo · P0 · S · Hymn cue collision — `lauds.ts` pushes the player's `litany` cue for the Hymn; give the Hymn its own event so it is never mistaken for the player's Litany (unit test: the Hymn emits no `litany` cue)
-- [ ] AUD-0055 · Demo · P1 · S · Hour bells — boss intro card plays the canonical hour bell pattern (Matins: 3 slow strokes in darkness; Lauds: dawn peal) through the chapel reverb
+- [x] AUD-0052 · Demo · P0 · M · Malison of Matins set — veiled drone, shroud-parting choir swell, flesh-rending tear, brand-hit shriek, hexling shedding, splitting apart, shard rejoin warning (2 s rising whisper) and rejoin thud, "Malison unmade" collapse with bell
+- [x] AUD-0053 · Demo · P0 · M · Malison of Lauds set — per-Voice choir loop panned with its orbit, Voice-silenced cut-off, "calling its Voices back" swell, Hymn verse build + tearing blast, submerge gurgle and lens-found surfacing sting, hexstone shatter burst, death; every telegraph audible ≥ 0.5 s before it lands
+- [x] AUD-0054 · Demo · P0 · S · Hymn cue collision — `lauds.ts` pushes the player's `litany` cue for the Hymn; give the Hymn its own event so it is never mistaken for the player's Litany (unit test: the Hymn emits no `litany` cue)
+- [x] AUD-0055 · Demo · P1 · S · Hour bells — boss intro card plays the canonical hour bell pattern (Matins: 3 slow strokes in darkness; Lauds: dawn peal) through the chapel reverb
 
 ### Scoring, vitals & timer
-- [ ] AUD-0056 · Demo · P0 · S · Rating stings — COOL (bright bell + parchment stamp), GOOD (soft chime), BAD (dull wooden thud), MISS (discordant lute + splash); ≤ 400 ms, voice limit 2, never mask the action sound
-- [ ] AUD-0057 · Demo · P1 · S · Combo tiers — chain 5/10/20 add an ascending choir note layer to COOL/GOOD; combo break plays a snapped-string cue
-- [ ] AUD-0058 · Demo · P0 · S · Vitals alarms — crossing below 60 and 30 plays a period hand-bell warning (replaces the square-wave `alarm`); below 15 a rapid bell; rate-limited to once per 5 s
-- [ ] AUD-0059 · Demo · P0 · S · Flatline/death — replace the 980 Hz beep with a death knell + sustained low drone and heartbeat stop
-- [ ] AUD-0060 · Demo · P1 · S · Timer — clock-escapement tick each second in the last 10 s (quieter 11–30 s option), "time is up" bell; ticking suspended during the Litany
-- [ ] AUD-0061 · Demo · P1 · S · Phase clear — short resolving motif (on the music bar grid when possible) when a phase's required entities are gone
+- [x] AUD-0056 · Demo · P0 · S · Rating stings — COOL (bright bell + parchment stamp), GOOD (soft chime), BAD (dull wooden thud), MISS (discordant lute + splash); ≤ 400 ms, voice limit 2, never mask the action sound
+- [x] AUD-0057 · Demo · P1 · S · Combo tiers — chain 5/10/20 add an ascending choir note layer to COOL/GOOD; combo break plays a snapped-string cue
+- [x] AUD-0058 · Demo · P0 · S · Vitals alarms — crossing below 60 and 30 plays a period hand-bell warning (replaces the square-wave `alarm`); below 15 a rapid bell; rate-limited to once per 5 s
+- [x] AUD-0059 · Demo · P0 · S · Flatline/death — replace the 980 Hz beep with a death knell + sustained low drone and heartbeat stop
+- [x] AUD-0060 · Demo · P1 · S · Timer — clock-escapement tick each second in the last 10 s (quieter 11–30 s option), "time is up" bell; ticking suspended during the Litany
+- [x] AUD-0061 · Demo · P1 · S · Phase clear — short resolving motif (on the music bar grid when possible) when a phase's required entities are gone
 
 ### Litany of Stillness
-- [ ] AUD-0062 · Demo · P0 · S · Star drawing — shimmering trail loop while the right button draws, pitch step per detected vertex (5 steps of a pentatonic scale); failed sign fizzle; "Litany spent" dull denial
-- [ ] AUD-0063 · Demo · P0 · S · Invocation — whispered Kreuzer prayer ("Be still…") + choral swell replacing the four sine tones; end warning reverse swell 1.5 s before Stillness ends; release exhale when time resumes
+- [x] AUD-0062 · Demo · P0 · S · Star drawing — shimmering trail loop while the right button draws, pitch step per detected vertex (5 steps of a pentatonic scale); failed sign fizzle; "Litany spent" dull denial
+- [x] AUD-0063 · Demo · P0 · S · Invocation — whispered Kreuzer prayer ("Be still…") + choral swell replacing the four sine tones; end warning reverse swell 1.5 s before Stillness ends; release exhale when time resumes
 
 ### UI, story & results
-- [ ] AUD-0064 · Demo · P0 · S · UI set — hover (soft quill), confirm (wax seal stamp), back (page turn), tab (page flip), slider tick, toggle (latch), error (dull lute), pause open/close (cloth rustle), save (quill scratch)
-- [ ] AUD-0065 · Demo · P1 · S · VN set — line advance tick, optional per-character text blips (off by default), scene transition page turn, backdrop change whoosh, portrait enter rustle
-- [ ] AUD-0066 · Demo · P1 · S · Results set — tally tick per row, score roll loop, rank seal stamps per rank (XS choir sting, S bell, A chime, B/C muted thud), new-best flourish
-- [ ] AUD-0067 · Demo · P1 · S · Briefing/chart set — parchment unroll, quill writing loop during ink animation, "Scrub In" basin splash + instrument tray rattle
+- [x] AUD-0064 · Demo · P0 · S · UI set — hover (soft quill), confirm (wax seal stamp), back (page turn), tab (page flip), slider tick, toggle (latch), error (dull lute), pause open/close (cloth rustle), save (quill scratch)
+- [x] AUD-0065 · Demo · P1 · S · VN set — line advance tick, optional per-character text blips (off by default), scene transition page turn, backdrop change whoosh, portrait enter rustle
+- [x] AUD-0066 · Demo · P1 · S · Results set — tally tick per row, score roll loop, rank seal stamps per rank (XS choir sting, S bell, A chime, B/C muted thud), new-best flourish
+- [x] AUD-0067 · Demo · P1 · S · Briefing/chart set — parchment unroll, quill writing loop during ink animation, "Scrub In" basin splash + instrument tray rattle
 
 ## Epic AUD-C · Adaptive music (Demo)
 
 ### Direction & production
 - [ ] AUD-0068 · Demo · P0 · S · Music direction brief — early-modern instrumentation (viol consort, hurdy-gurdy, sackbut, shawm, crumhorn, frame drum, positive organ, plainchant voices, church bells), modal harmony (Phrygian/Dorian), Hollow Choir leitmotif, reference tracks; approved by the owner
 - [ ] AUD-0069 · Demo · P0 · M · Composer contract & schedule — ≈ 30 min of stemmed music for the demo (list below), stems delivered at 48 kHz/24-bit with tempo, key and loop-point metadata; rights cover demo, full game, trailers and soundtrack release
-- [ ] AUD-0070 · Demo · P0 · S · Music cue sheet — every demo cue with state, length, stems, loop points and owner, kept alongside the SFX event list
+- [x] AUD-0070 · Demo · P0 · S · Music cue sheet — every demo cue with state, length, stems, loop points and owner, kept alongside the SFX event list
 
 ### Adaptive system
-- [ ] AUD-0071 · Demo · P0 · M · Music state machine — states title, story-calm, story-tense, briefing, op-intro, operation, boss, victory, failure, results, demo-end; transitions quantised to the next bar (tempo metadata) or immediate with a 2 s cross-fade when urgent; unit-tested transition table
-- [ ] AUD-0072 · Demo · P0 · M · Vertical layering — operation tracks ship 4 synchronised stems (bed, pulse, tension, danger) started sample-accurately together; layer gains follow game state: tension fades in below 60 vitals, danger below 30, a percussion "clock" layer in the last 30 s, a "flow" ornament layer at chain ≥ 10; 1.5 s gain ramps
-- [ ] AUD-0073 · Demo · P0 · S · Gapless loops — stems loop at their metadata loop points with no audible gap or phase drift after 20 minutes (automated check that stem playheads stay within 1 ms)
-- [ ] AUD-0074 · Demo · P0 · M · Litany music treatment — on invoke, cross-fade (400 ms) to a "Stillness" stem (sustained, same key/tempo grid), duck other stems −12 dB with LPF, reverb up; 1.5 s before the end a reverse swell; stems resume in sync at the exact musical position they would have reached
-- [ ] AUD-0075 · Demo · P1 · S · Stingers — scrub-in, phase clear, boss reveal, victory, failure and rank-reveal stingers in key with the playing track, scheduled on beat when a track is running
-- [ ] AUD-0076 · Demo · P1 · S · Outcome endings — on failure the operation music is cut by a bowed-string scrape into silence (no modern tape-stop effect); on victory the stems resolve to the tonic through the victory stinger on the next beat
+- [x] AUD-0071 · Demo · P0 · M · Music state machine — states title, story-calm, story-tense, briefing, op-intro, operation, boss, victory, failure, results, demo-end; transitions quantised to the next bar (tempo metadata) or immediate with a 2 s cross-fade when urgent; unit-tested transition table
+- [x] AUD-0072 · Demo · P0 · M · Vertical layering — operation tracks ship 4 synchronised stems (bed, pulse, tension, danger) started sample-accurately together; layer gains follow game state: tension fades in below 60 vitals, danger below 30, a percussion "clock" layer in the last 30 s, a "flow" ornament layer at chain ≥ 10; 1.5 s gain ramps
+- [x] AUD-0073 · Demo · P0 · S · Gapless loops — stems loop at their metadata loop points with no audible gap or phase drift after 20 minutes (automated check that stem playheads stay within 1 ms)
+- [x] AUD-0074 · Demo · P0 · M · Litany music treatment — on invoke, cross-fade (400 ms) to a "Stillness" stem (sustained, same key/tempo grid), duck other stems −12 dB with LPF, reverb up; 1.5 s before the end a reverse swell; stems resume in sync at the exact musical position they would have reached
+- [x] AUD-0075 · Demo · P1 · S · Stingers — scrub-in, phase clear, boss reveal, victory, failure and rank-reveal stingers in key with the playing track, scheduled on beat when a track is running
+- [x] AUD-0076 · Demo · P1 · S · Outcome endings — on failure the operation music is cut by a bowed-string scrape into silence (no modern tape-stop effect); on victory the stems resolve to the tonic through the victory stinger on the next beat
 
 ### Demo tracks
-- [ ] AUD-0077 · Demo · P0 · M · Title theme "The Malison Hours" — 2–3 min loop (hurdy-gurdy + choir) with a 20 s intro for first boot
-- [ ] AUD-0078 · Demo · P0 · M · Hospice / story themes — calm hospice (Ilse), tense (Stroh / witch-hunter), sorrow (patient loss); 3 loops of 90–150 s
-- [ ] AUD-0079 · Demo · P0 · M · Operation theme A (Ch1 standard operations) — 4 stems, 120 BPM grid, 2 min loop
-- [ ] AUD-0080 · Demo · P0 · M · Operation theme B (Ch2 standard operations, harsher arrangement) — 4 stems, 2 min loop
-- [ ] AUD-0081 · Demo · P0 · L · Malison of Matins boss theme — nocturnal plainchant + tolling bells; sections for veiled, shroud-open and shard phases driven by the Malison's phase; intro and death outro
-- [ ] AUD-0082 · Demo · P0 · L · Malison of Lauds boss theme — perverted dawn hymn; sections per Lauds phase; shares the Hollow Choir leitmotif with Matins
-- [ ] AUD-0083 · Demo · P1 · S · Briefing & results loops — quiet 60–90 s chart loop; results loop in warm (win) and grave (loss) variants
-- [ ] AUD-0084 · Demo · P1 · S · Demo-end cue — Prime teaser motif leading into the wishlist screen, loops quietly on the summary
-- [ ] AUD-0085 · Demo · P1 · S · Chapter card fanfares — short illuminated-card flourishes for Chapter I and Chapter II openings
+- [x] AUD-0077 · Demo · P0 · M · Title theme "The Malison Hours" — 2–3 min loop (hurdy-gurdy + choir) with a 20 s intro for first boot
+- [x] AUD-0078 · Demo · P0 · M · Hospice / story themes — calm hospice (Ilse), tense (Stroh / witch-hunter), sorrow (patient loss); 3 loops of 90–150 s
+- [x] AUD-0079 · Demo · P0 · M · Operation theme A (Ch1 standard operations) — 4 stems, 120 BPM grid, 2 min loop
+- [x] AUD-0080 · Demo · P0 · M · Operation theme B (Ch2 standard operations, harsher arrangement) — 4 stems, 2 min loop
+- [x] AUD-0081 · Demo · P0 · L · Malison of Matins boss theme — nocturnal plainchant + tolling bells; sections for veiled, shroud-open and shard phases driven by the Malison's phase; intro and death outro
+- [x] AUD-0082 · Demo · P0 · L · Malison of Lauds boss theme — perverted dawn hymn; sections per Lauds phase; shares the Hollow Choir leitmotif with Matins
+- [x] AUD-0083 · Demo · P1 · S · Briefing & results loops — quiet 60–90 s chart loop; results loop in warm (win) and grave (loss) variants
+- [x] AUD-0084 · Demo · P1 · S · Demo-end cue — Prime teaser motif leading into the wishlist screen, loops quietly on the summary
+- [x] AUD-0085 · Demo · P1 · S · Chapter card fanfares — short illuminated-card flourishes for Chapter I and Chapter II openings
 
 ## Epic AUD-D · Ambience, heartbeat & sonification (Demo)
 
 ### Ambiences
-- [ ] AUD-0086 · Demo · P0 · M · Backdrop ambiences — seamless 60–120 s loops for each `Backdrop` (hospice, street, theatre, chapel, night, camp): rain on shutters, distant coughs, cart wheels, gulls/crows, candle crackle; cross-fade 1 s on scene change
-- [ ] AUD-0087 · Demo · P1 · S · Random emitters — one-shot layers (distant church bell, dog bark, drunk singing, watchman's call) with min/max intervals and random pan per backdrop; never two within 4 s
-- [ ] AUD-0088 · Demo · P0 · S · Operating theatre bed — stone-room tone, dripping basin, fire in the brazier, flies; ducks −6 dB as tension layers rise
-- [ ] AUD-0089 · Demo · P1 · S · Curse corruption bed — whispering choir layer whose gain follows the scene's `corrupt` value (sigils 0.25, Malison 0.7) with 1.5 s smoothing
+- [x] AUD-0086 · Demo · P0 · M · Backdrop ambiences — seamless 60–120 s loops for each `Backdrop` (hospice, street, theatre, chapel, night, camp): rain on shutters, distant coughs, cart wheels, gulls/crows, candle crackle; cross-fade 1 s on scene change
+- [x] AUD-0087 · Demo · P1 · S · Random emitters — one-shot layers (distant church bell, dog bark, drunk singing, watchman's call) with min/max intervals and random pan per backdrop; never two within 4 s
+- [x] AUD-0088 · Demo · P0 · S · Operating theatre bed — stone-room tone, dripping basin, fire in the brazier, flies; ducks −6 dB as tension layers rise
+- [x] AUD-0089 · Demo · P1 · S · Curse corruption bed — whispering choir layer whose gain follows the scene's `corrupt` value (sigils 0.25, Malison 0.7) with 1.5 s smoothing
 
 ### Heartbeat & ECG sonification
 - [x] AUD-0090 · M0 · P1 · S · Low-vitals heartbeat — thump per beat when vitals < 45, rate from the ECG bpm formula
-- [ ] AUD-0091 · Demo · P0 · M · Heartbeat v2 — recorded heartbeat pairs (lub-dub) with bpm from vitals, timbre degrading below 25 (muffled, irregular skipped beats), strength rising as vitals fall; setting "Heartbeat: Always / Low vitals only / Off"
-- [ ] AUD-0092 · Demo · P1 · S · Pulse chime decision — replace the anachronistic monitor idea with a period-flavoured pulse (a small glass/brass tick per beat, audible only when enabled or vitals < 30); decision recorded, implemented behind the heartbeat setting
-- [ ] AUD-0093 · Demo · P1 · S · Heal and hurt sonification — vitals gains play a rising breath/chime scaled by amount; losses ≥ 5 play a body-impact thud scaled by amount (rate-limited)
-- [ ] AUD-0094 · Demo · P2 · S · Drain sonification — the entity currently draining the most vitals gets a subtle louder loop (e.g. the heaviest bleed), helping players triage by ear
+- [x] AUD-0091 · Demo · P0 · M · Heartbeat v2 — recorded heartbeat pairs (lub-dub) with bpm from vitals, timbre degrading below 25 (muffled, irregular skipped beats), strength rising as vitals fall; setting "Heartbeat: Always / Low vitals only / Off"
+- [x] AUD-0092 · Demo · P1 · S · Pulse chime decision — replace the anachronistic monitor idea with a period-flavoured pulse (a small glass/brass tick per beat, audible only when enabled or vitals < 30); decision recorded, implemented behind the heartbeat setting
+- [x] AUD-0093 · Demo · P1 · S · Heal and hurt sonification — vitals gains play a rising breath/chime scaled by amount; losses ≥ 5 play a body-impact thud scaled by amount (rate-limited)
+- [x] AUD-0094 · Demo · P2 · S · Drain sonification — the entity currently draining the most vitals gets a subtle louder loop (e.g. the heaviest bleed), helping players triage by ear
 
 ## Epic AUD-E · Voice (Demo)
 
 ### Plan & pipeline
 - [ ] AUD-0095 · Demo · P0 · S · VO scope decision — demo ships fully voiced Sister Ilse operation barks (gameplay-critical) + grunt-style emotive snippets for VN lines (all speaking characters); full VN VO decided at Alpha by budget; decision recorded with cost estimate
 - [ ] AUD-0096 · Demo · P0 · M · Line IDs — every speakable string gets a stable id: story lines (`s1-2.014`), phase callouts (`op1-2.p0.1`), `sayOnce` tips in `entities.ts`/`malison.ts`/`operation.ts` (`bark.flooded`, `bark.barbs`, `bark.lowVitals`…); `op.say` accepts ids; a test fails if any inline literal remains in `say()`/`sayOnce()` calls
-- [ ] AUD-0097 · Demo · P0 · S · Script export — `npm run vo:export` writes a CSV (id, character, line, context, emotion, max duration, variant count) from content and barks; re-export diff highlights changed lines needing pickups
-- [ ] AUD-0098 · Demo · P0 · S · VO runtime — `vo.play(id)` on the vo bus with ducking; text-only fallback when audio is missing; a new urgent bark interrupts a playing tip with a 60 ms fade; callout panel timing follows VO length when present
-- [ ] AUD-0099 · Demo · P1 · S · Bark variants & cooldowns — repeated barks (low vitals, praise, flooded, brand on flesh) have 3 variants and per-bark cooldowns (≥ 20 s) so they never repeat back-to-back
+- [x] AUD-0097 · Demo · P0 · S · Script export — `npm run vo:export` writes a CSV (id, character, line, context, emotion, max duration, variant count) from content and barks; re-export diff highlights changed lines needing pickups
+- [x] AUD-0098 · Demo · P0 · S · VO runtime — `vo.play(id)` on the vo bus with ducking; text-only fallback when audio is missing; a new urgent bark interrupts a playing tip with a 60 ms fade; callout panel timing follows VO length when present
+- [x] AUD-0099 · Demo · P1 · S · Bark variants & cooldowns — repeated barks (low vitals, praise, flooded, brand on flesh) have 3 variants and per-bark cooldowns (≥ 20 s) so they never repeat back-to-back
 
 ### Casting & recording
 - [ ] AUD-0100 · Demo · P0 · M · Casting briefs & auditions — Sister Ilse (warm, steady alto, calm under pressure), Dr. Kreuzer (weary baritone; efforts and Litany whisper), Inquisitor Stroh (cold, precise bass-baritone), Master Haller (gravelly elder), Captain Mauer (gruff soldier), Hollow Choir (whispered ensemble); 3 auditions per role; human performers only, no synthetic voices
@@ -546,22 +546,22 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 ## Epic AUD-F · Loudness, audio options & visual sound cues (Demo)
 
 ### Loudness & mix
-- [ ] AUD-0107 · Demo · P0 · S · Loudness spec — gameplay integrated −18 LUFS ±2 over a 10-minute capture, true peak ≤ −1 dBTP; music stems −20 LUFS; SFX peaks ≤ −3 dBFS; VO sits ≈ 6 LU above the music bed; documented in `docs/audio/loudness.md`
-- [ ] AUD-0108 · Demo · P0 · S · Loudness CI — script runs ffmpeg `ebur128` over every audio asset and fails the build when a file is outside its category tolerance
+- [x] AUD-0107 · Demo · P0 · S · Loudness spec — gameplay integrated −18 LUFS ±2 over a 10-minute capture, true peak ≤ −1 dBTP; music stems −20 LUFS; SFX peaks ≤ −3 dBFS; VO sits ≈ 6 LU above the music bed; documented in `docs/audio/loudness.md`
+- [x] AUD-0108 · Demo · P0 · S · Loudness CI — script runs ffmpeg `ebur128` over every audio asset and fails the build when a file is outside its category tolerance
 - [ ] AUD-0109 · Demo · P0 · M · Mix passes — full Ch1–2 mix review on studio monitors, laptop speakers, Steam Deck speakers and headphones; issues logged and closed; final capture measured against the loudness spec
-- [ ] AUD-0110 · Demo · P1 · S · Dynamic range setting — Full / Reduced / Night: Reduced adds bus compression (3:1), Night (6:1) with raised VO; default Reduced on Steam Deck
+- [x] AUD-0110 · Demo · P1 · S · Dynamic range setting — Full / Reduced / Night: Reduced adds bus compression (3:1), Night (6:1) with raised VO; default Reduced on Steam Deck
 
 ### Audio options
-- [ ] AUD-0111 · Demo · P0 · S · Volume sliders — Master, Music, Sound Effects, Voice, Ambience, Interface (0–100, step 5) with a test sound on release; replaces the title "Sound: On/Off" toggle
-- [ ] AUD-0112 · Demo · P1 · S · Mono & balance — mono downmix toggle and left/right balance slider applied on the master bus
-- [ ] AUD-0113 · Demo · P1 · S · Comfort audio toggles — patient vocalisations on/off, heartbeat mode, "Reduce audio stress" (removes tinnitus/low-vitals filtering and caps alarm repetition)
-- [ ] AUD-0114 · Demo · P2 · S · Output device selection — Electron `setSinkId` device picker in Audio options (hidden when unsupported)
+- [x] AUD-0111 · Demo · P0 · S · Volume sliders — Master, Music, Sound Effects, Voice, Ambience, Interface (0–100, step 5) with a test sound on release; replaces the title "Sound: On/Off" toggle
+- [x] AUD-0112 · Demo · P1 · S · Mono & balance — mono downmix toggle and left/right balance slider applied on the master bus
+- [x] AUD-0113 · Demo · P1 · S · Comfort audio toggles — patient vocalisations on/off, heartbeat mode, "Reduce audio stress" (removes tinnitus/low-vitals filtering and caps alarm repetition)
+- [x] AUD-0114 · Demo · P2 · S · Output device selection — Electron `setSinkId` device picker in Audio options (hidden when unsupported)
 
 ### Visual cues for sound
-- [ ] AUD-0115 · Demo · P0 · M · Sound captions — events carry an optional caption ("[Bell tolls for Matins]", "[The shard whispers — it will rejoin]", "[Heartbeat quickens]", "[Grub chitters beneath the skin]"); shown in the subtitle area with source-side arrow when off-centre; toggle "Sound captions"
-- [ ] AUD-0116 · Demo · P0 · S · Subtitles for all VO — speaker name in character colour, size S/M/L/XL, background opacity 0–100 %, max 2 lines, timed to VO; on by default
+- [x] AUD-0115 · Demo · P0 · M · Sound captions — events carry an optional caption ("[Bell tolls for Matins]", "[The shard whispers — it will rejoin]", "[Heartbeat quickens]", "[Grub chitters beneath the skin]"); shown in the subtitle area with source-side arrow when off-centre; toggle "Sound captions"
+- [x] AUD-0116 · Demo · P0 · S · Subtitles for all VO — speaker name in character colour, size S/M/L/XL, background opacity 0–100 %, max 2 lines, timed to VO; on by default
 - [ ] AUD-0117 · Demo · P0 · S · Audio-visual parity audit — table of every gameplay-relevant sound (telegraphs, alarms, heartbeat state, timer ticks, shard rejoin warning, Litany end warning) and its visual counterpart; missing visuals filed as UIX tasks; deaf/hard-of-hearing tester completes Ch1–2 with sound off
-- [ ] AUD-0118 · Demo · P1 · S · Visual heartbeat — when heartbeat audio is Off or the SFX bus is muted, a faint edge vignette pulses on each beat below 45 vitals, carrying the warning the audible thump gives today
+- [x] AUD-0118 · Demo · P1 · S · Visual heartbeat — when heartbeat audio is Off or the SFX bus is muted, a faint edge vignette pulses on each beat below 45 vitals, carrying the warning the audible thump gives today
 
 ## Epic INP-C · Full-game input: disciplines, Chapters 3–5, advanced devices (Alpha–Beta)
 
@@ -626,24 +626,24 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 ## Epic AUD-G · Full-game audio: Chapters 3–5, hours & voice (Alpha–Beta)
 
 ### Music
-- [ ] AUD-0119 · Alpha · P1 · M · Placeholder boss themes — temp-stemmed tracks for Prime, Terce, Sext, None, Vespers and Compline wired into the state machine so every boss is playable with adaptive music at Alpha
+- [x] AUD-0119 · Alpha · P1 · M · Placeholder boss themes — temp-stemmed tracks for Prime, Terce, Sext, None, Vespers and Compline wired into the state machine so every boss is playable with adaptive music at Alpha
 - [ ] AUD-0120 · Beta · P1 · L · Malison of Prime and Terce themes — final stemmed boss tracks, one liturgical character each (Prime: morning office in plainsong; Terce: bright brass turned sour), with phase sections and outros
 - [ ] AUD-0121 · Beta · P1 · L · Malison of Sext and None themes — final stemmed boss tracks (Sext: midday heat, droning shawms; None: the hour of death, funereal organ)
 - [ ] AUD-0122 · Beta · P1 · L · Malison of Vespers and Compline themes — final stemmed boss tracks (Vespers: evening Magnificat inverted; Compline: final night office, full Hollow Choir), Compline as the finale with extended phases
-- [ ] AUD-0123 · Beta · P1 · M · Chapter 3–5 operation themes — two additional 4-stem operation tracks plus variations for later chapters' higher stakes
-- [ ] AUD-0124 · Beta · P2 · M · Discipline music — field triage (distant pike-and-shot battle drums), diagnosis (sparse viol), forensic/inquisition (tense low strings), bone-setting (rhythmic, percussive)
-- [ ] AUD-0125 · Beta · P2 · S · Challenge-mode remixes — faster variants of two operation themes for challenge mode
-- [ ] AUD-0126 · Release · P1 · M · Credits song / finale piece — full choir arrangement of the Hollow Choir leitmotif resolved, used in ending credits
+- [x] AUD-0123 · Beta · P1 · M · Chapter 3–5 operation themes — two additional 4-stem operation tracks plus variations for later chapters' higher stakes
+- [x] AUD-0124 · Beta · P2 · M · Discipline music — field triage (distant pike-and-shot battle drums), diagnosis (sparse viol), forensic/inquisition (tense low strings), bone-setting (rhythmic, percussive)
+- [x] AUD-0125 · Beta · P2 · S · Challenge-mode remixes — faster variants of two operation themes for challenge mode
+- [x] AUD-0126 · Release · P1 · M · Credits song / finale piece — full choir arrangement of the Hollow Choir leitmotif resolved, used in ending credits
 
 ### SFX
 - [ ] AUD-0127 · Alpha · P1 · M · Placeholder SFX for all Ch3–5 events — every new event id has at least a library placeholder so Alpha is fully audible; fallback-synth report shows 0 unmapped events
-- [ ] AUD-0128 · Beta · P1 · M · Dragon-breath burn and gangrene sets — roaring ember bed, blistering pops, necrotic wet crackle, amputation-grade saw if required by design
-- [ ] AUD-0129 · Beta · P2 · S · Growth excision set — encircle cut loop, severed release and Tongs removal of the excised mass, for the Chapters 3–5 growth mechanic
-- [ ] AUD-0130 · Beta · P1 · M · Petrification set — stone creep, chip strikes with pitch by crust depth, crumble release, flesh-under-stone reveal
-- [ ] AUD-0131 · Beta · P1 · M · Monster wound sets — lodged-fang extraction (enamel grind), claw-rake laceration variants, larvae swarm loop with per-larva voices
-- [ ] AUD-0132 · Beta · P1 · L · Malison hour SFX sets — Prime, Terce, Sext, None, Vespers, Compline each with ≈ 12 events (intro, telegraphs, attacks, hits, phase changes, death) following the Matins processing chain
-- [ ] AUD-0133 · Beta · P2 · M · Discipline SFX — triage tag stamps, battlefield ambience one-shots, stethoscope-analogue (ear trumpet) listening, bone crepitus and snap-into-place
-- [ ] AUD-0134 · Beta · P1 · M · Ch3–5 ambiences — witch-hunter pyre square, cathedral, catacombs, army camp at night, flooded lower city; 60–120 s loops with emitters
+- [x] AUD-0128 · Beta · P1 · M · Dragon-breath burn and gangrene sets — roaring ember bed, blistering pops, necrotic wet crackle, amputation-grade saw if required by design
+- [x] AUD-0129 · Beta · P2 · S · Growth excision set — encircle cut loop, severed release and Tongs removal of the excised mass, for the Chapters 3–5 growth mechanic
+- [x] AUD-0130 · Beta · P1 · M · Petrification set — stone creep, chip strikes with pitch by crust depth, crumble release, flesh-under-stone reveal
+- [x] AUD-0131 · Beta · P1 · M · Monster wound sets — lodged-fang extraction (enamel grind), claw-rake laceration variants, larvae swarm loop with per-larva voices
+- [x] AUD-0132 · Beta · P1 · L · Malison hour SFX sets — Prime, Terce, Sext, None, Vespers, Compline each with ≈ 12 events (intro, telegraphs, attacks, hits, phase changes, death) following the Matins processing chain
+- [x] AUD-0133 · Beta · P2 · M · Discipline SFX — triage tag stamps, battlefield ambience one-shots, stethoscope-analogue (ear trumpet) listening, bone crepitus and snap-into-place
+- [x] AUD-0134 · Beta · P1 · M · Ch3–5 ambiences — witch-hunter pyre square, cathedral, catacombs, army camp at night, flooded lower city; 60–120 s loops with emitters
 
 ### Voice
 - [ ] AUD-0135 · Alpha · P1 · S · Full-game VO decision — full VN VO vs extended grunt-style for Chapters 3–5, based on demo wishlist conversion and budget; decision recorded with line count and cost
@@ -660,8 +660,8 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] UIX-0202 · Beta · P1 · S · Blackletter fallback — languages with glyphs outside UnifrakturMaguntia (Polish, Russian) use a Cyrillic/Latin-Extended display face for titles, chosen in the style guide
 - [ ] UIX-0203 · Beta · P1 · S · Language switch at runtime — Options → Language reloads strings, fonts and captions without restarting; persisted in settings
 - [ ] UIX-0204 · Beta · P1 · S · Localised text in art — title cards, wax seals and rank stamps with words are rendered from text over art, not baked into textures
-- [ ] AUD-0139 · Beta · P1 · S · Localised subtitles and captions — subtitle/caption tables per language keyed by VO line id and event id; timing re-validated for languages ≥ 30 % longer (split into two subtitle cards)
-- [ ] AUD-0140 · Beta · P2 · S · VO language independence — VO stays English with localised subtitles; the audio pipeline supports a per-language VO folder so localised VO can be added post-launch without code changes
+- [x] AUD-0139 · Beta · P1 · S · Localised subtitles and captions — subtitle/caption tables per language keyed by VO line id and event id; timing re-validated for languages ≥ 30 % longer (split into two subtitle cards)
+- [x] AUD-0140 · Beta · P2 · S · VO language independence — VO stays English with localised subtitles; the audio pipeline supports a per-language VO folder so localised VO can be added post-launch without code changes
 
 ## Epic REL · Release readiness (Release)
 
@@ -681,8 +681,8 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 ### Audio
 - [ ] AUD-0141 · Release · P0 · M · Final mix — full-campaign mix pass on the four reference playback systems; loudness spec met for every chapter capture; sign-off note in `docs/audio/loudness.md`
 - [ ] AUD-0142 · Release · P1 · S · Audio performance budget — audio thread ≤ 3 % CPU on Steam Deck and zero underruns during a 30-minute soak with the busiest boss replay looping
-- [ ] AUD-0143 · Release · P1 · S · Fallback purge — release build contains no procedural fallback plays in a full campaign replay (report checked in CI) and the dev-only synth is tree-shaken out
-- [ ] AUD-0144 · Release · P1 · S · Asset licence audit — every audio file in the manifest has provenance and licence recorded; unlicensed or temp files block the build
+- [x] AUD-0143 · Release · P1 · S · Fallback purge — release build contains no procedural fallback plays in a full campaign replay (report checked in CI) and the dev-only synth is tree-shaken out
+- [x] AUD-0144 · Release · P1 · S · Asset licence audit — every audio file in the manifest has provenance and licence recorded; unlicensed or temp files block the build
 
 ## Epic POST · Post-launch (Post)
 

@@ -41,7 +41,7 @@ export class AudioSystem {
     this.started = true;
     this.music.resume();
     void this.engine.assets.init().then(() => this.loadBanks());
-    if (import.meta.env?.DEV) console.info('[audio] dev report', this.devReport());
+    if (import.meta.env.DEV) console.info('[audio] dev report', this.devReport());
   }
 
   /** Load the banks the current scene needs (and release the rest). */
