@@ -11,6 +11,15 @@ import { SpriteBank, type SpriteOpts } from './sprites';
 import { RenderTargetPool, type Target } from './targets';
 import { checkerPixels, Texture } from './texture';
 import { scissorRect } from './viewport';
+import { UI_ART_FS } from '../art/uiShader';
+
+/** Bilinear upsample of a reduced-resolution layer. */
+const UPSAMPLE_FS = `#version 300 es
+precision mediump float;
+in vec2 v_uv;
+uniform sampler2D u_tex;
+out vec4 o;
+void main() { o = vec4(texture(u_tex, v_uv).rgb, 1.0); }`;
 
 const TAU = Math.PI * 2;
 const MAX_VERTS = 60000;
@@ -242,6 +251,10 @@ export class Gfx {
     this.sceneProg = reg.createProgram('scene', FULL_VS, SCENE_FS);
     this.portraitProg = reg.createProgram('portrait', RECT_VS, PORTRAIT_FS);
     this.creatureProg = reg.createProgram('creature', RECT_VS, CREATURE_FS);
+    // Lazily compiled programs belong to the old context after a restore.
+    this.sceneProgs.clear();
+    this.uiArtProg = null;
+    this.upsampleProg = null;
     this.downProg = reg.createProgram('bloom-down', FULL_VS, DOWN_FS);
     this.upProg = reg.createProgram('bloom-up', FULL_VS, UP_FS);
     // LUT textures belong to the old context after a restore; they are rebaked lazily.
@@ -616,7 +629,7 @@ export class Gfx {
 
   /** Load (once) and return an image handle; draws are skipped until it is ready. */
   image(url: string): ImageHandle {
-    let h = this.images.get(url);
+    const h = this.images.get(url);
     if (h) return h;
     const handle: ImageHandle = { tex: null, w: 0, h: 0, ready: false };
     this.images.set(url, handle);
@@ -792,6 +805,45 @@ export class Gfx {
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   }
 
+  /** Restrict drawing to a rect in virtual units (null clears). Used for side-by-side look-dev views. */
+  clipRect(r: { x: number; y: number; w: number; h: number } | null): void {
+    // One look-dev clip at a time, on top of the scissor stack (ENG-0027).
+    if (this.lookDevClip) this.popClip();
+    this.lookDevClip = !!r;
+    if (r) this.pushClip(r);
+  }
+  private lookDevClip = false;
+
+  private uiArtProg: WebGLProgram | null = null;
+
+  /**
+   * Procedural UI art (src/art/uiShader.ts) drawn into a rect, premultiplied. `mode` picks the
+   * piece (parchment, oak, wax seal, gauge, sand-glass, reliquary, tool icon…); `a` carries its
+   * state. `rot` turns the art inside the rect (make the rect large enough to hold it).
+   */
+  ornament(mode: number, x: number, y: number, w: number, h: number, p: { col?: [number, number, number]; col2?: [number, number, number]; a?: [number, number, number, number]; seed?: number; rot?: number; alpha?: number } = {}): void {
+    if (w <= 0 || h <= 0) return;
+    this.flush('program');
+    this.stats.drawCalls++;
+    const gl = this.gl;
+    const pr = (this.uiArtProg ??= this.registry.createProgram('ui-art', RECT_VS, UI_ART_FS));
+    gl.useProgram(pr);
+    this.rectQuad(x, y, w, h);
+    gl.uniform2f(this.u(pr, 'u_view'), this.vw, this.vh);
+    gl.uniform1i(this.u(pr, 'u_mode'), mode);
+    gl.uniform2f(this.u(pr, 'u_size'), w, h);
+    gl.uniform1f(this.u(pr, 'u_time'), this.time);
+    gl.uniform1f(this.u(pr, 'u_seed'), p.seed ?? 0);
+    gl.uniform1f(this.u(pr, 'u_rot'), p.rot ?? 0);
+    gl.uniform1f(this.u(pr, 'u_alpha'), p.alpha ?? 1);
+    gl.uniform3fv(this.u(pr, 'u_col'), p.col ?? [0.55, 0.06, 0.08]);
+    gl.uniform3fv(this.u(pr, 'u_col2'), p.col2 ?? [0.9, 0.8, 0.5]);
+    gl.uniform4fv(this.u(pr, 'u_a'), p.a ?? [0, 0, 0, 0]);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    this.applyBlend();
+  }
+
   /** Shader-drawn creature/effect in a square around (x, y). Modes: 0 Matins, 1 Lauds, 2 hexfire, 3 hexstone glow. */
   creature(mode: number, x: number, y: number, size: number, p: { seed?: number; open?: number; health?: number; flash?: number; dissolve?: number; intensity?: number; blend?: Blend } = {}): void {
     this.flush();
@@ -815,20 +867,46 @@ export class Gfx {
     this.applyBlend();
   }
 
-  /** Shader-rendered story environment (0 hospice … 5 camp) over the whole world target. */
-  sceneField(kind: number): void {
+  private sceneProgs = new Map<number, WebGLProgram>();
+  private upsampleProg: WebGLProgram | null = null;
+
+  /**
+   * Shader-rendered story environment over the whole world target. Each location compiles its
+   * own specialised program (SCENE_FS with `#define KIND n`) on first use. `light` picks the
+   * lighting variant (0 night, 1 dusk, 2 day); `parallax` is a small pointer offset (-1..1).
+   * `scale` < 1 renders at reduced resolution and upsamples bilinearly (quality tiers).
+   */
+  sceneField(kind: number, opts: { light?: number; parallax?: [number, number]; variant?: number; scale?: number } = {}): void {
     this.flush('program');
     this.worldFb();
     this.stats.drawCalls++;
     const gl = this.gl;
-    const pr = this.sceneProg;
+    let pr = kind === 0 ? this.sceneProg : this.sceneProgs.get(kind);
+    if (!pr) {
+      pr = this.registry.createProgram(`scene-${kind}`, FULL_VS, SCENE_FS.replace('#version 300 es', `#version 300 es\n#define KIND ${kind}`));
+      this.sceneProgs.set(kind, pr);
+    }
+    const scale = Math.max(0.25, Math.min(1, opts.scale ?? 1));
+    const low = scale < 0.99 ? this.targets.acquire('scene-low', this.outW * scale, this.outH * scale) : null;
+    if (low) this.bindTarget(low);
     gl.useProgram(pr);
     gl.bindVertexArray(this.emptyVao);
     gl.disable(gl.BLEND);
     gl.uniform2f(this.u(pr, 'u_view'), this.vw, this.vh);
     gl.uniform1f(this.u(pr, 'u_time'), this.time);
     gl.uniform1i(this.u(pr, 'u_kind'), kind);
+    gl.uniform1f(this.u(pr, 'u_light'), opts.light ?? 0);
+    gl.uniform1f(this.u(pr, 'u_variant'), opts.variant ?? 0);
+    gl.uniform2fv(this.u(pr, 'u_parallax'), opts.parallax ?? [0, 0]);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
+    if (low) {
+      this.worldFb();
+      const up = (this.upsampleProg ??= this.registry.createProgram('scene-upsample', FULL_VS, UPSAMPLE_FS));
+      gl.useProgram(up);
+      this.bindTex(low.tex, 0);
+      gl.uniform1i(this.u(up, 'u_tex'), 0);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
     gl.enable(gl.BLEND);
   }
 

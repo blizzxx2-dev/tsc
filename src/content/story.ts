@@ -7,12 +7,14 @@ export interface Line {
   as?: string;
 }
 
-export type Backdrop = 'hospice' | 'street' | 'theatre' | 'chapel' | 'night' | 'camp';
+export type Backdrop = 'hospice' | 'street' | 'theatre' | 'chapel' | 'night' | 'camp' | 'apothecary' | 'alley' | 'guildhall' | 'tent' | 'graveyard' | 'orecamp' | 'forest' | 'abbey' | 'dawn';
 
 export interface StoryDef {
   id: string;
   place: string;
   backdrop: Backdrop;
+  /** Lighting variant for the backdrop (defaults per location). */
+  lighting?: 'day' | 'dusk' | 'night';
   lines: Line[];
 }
 

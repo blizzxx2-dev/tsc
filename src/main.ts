@@ -39,6 +39,7 @@ import { platform } from './platform';
 import { installPlatform, platformFrame, sceneChanged } from './platform/session';
 import { installTelemetry } from './telemetry';
 import { installQaHooks } from './debug/hooks';
+import { artDevScene } from './art/devScenes';
 
 class Main implements Game {
   input: Input;
@@ -352,6 +353,9 @@ async function boot(): Promise<void> {
       console.error('Replay failed', err);
     }
   }
+  // ?scene=artview|fleshlab opens an art dev page.
+  const artScene = DEV_TOOLS ? artDevScene(params.get('scene')) : null;
+  if (artScene) game.go(artScene);
   // ?story=<backdrop> previews a story environment.
   const storyBg = params.get('story');
   if (storyBg) game.go(new StoryScene({ id: 'preview', place: 'Preview', backdrop: storyBg as Backdrop, lines: [{ who: (params.get('who') ?? 'narrator') as CharacterId, text: 'The Free City of Kessendorf. Winter, in the ninth year of the Long Muster.' }] }, () => game.go(new TitleScene())));

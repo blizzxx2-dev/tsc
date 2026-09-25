@@ -31,10 +31,11 @@ describe('action map (INP-0004)', () => {
       }
     };
     walk(join(__dirname, '..', 'src'));
-    // src/debug is dev/QA-only tooling (F1 cheat menu, backquote console) and is stripped from release builds.
+    // src/debug (F1 cheat menu, backquote console) and the art look-dev pages are dev/QA-only tooling.
+    const devOnly = (f: string) => f.includes(join('src', 'debug')) || f.endsWith(join('art', 'artview.ts')) || f.endsWith(join('art', 'fleshlab.ts'));
     const offenders = files.filter(
       (f) =>
-        !f.includes(join('src', 'debug')) &&
+        !devOnly(f) &&
         (/\.(keyPressed|key)\(\s*['"`]/.test(readFileSync(f, 'utf8')) ||
           (/['"](Key[A-Z]|Digit\d)['"]/.test(readFileSync(f, 'utf8')) &&
             !f.endsWith(join('input', 'actions.ts')) &&
