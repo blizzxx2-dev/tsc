@@ -7,6 +7,7 @@ import type { Vec } from '../core/math';
 import { MANIFEST } from '../assets/manifest.gen';
 import { setFor, setScene } from './sets';
 import type { AssetEntry } from '../assets/types';
+import { LISTENER_LIT, packPose, type PortraitPose } from '../art/portraitRig';
 
 /** Painted backdrop layers for a key, far to near (manifest `layer` + `parallax`, ART-0045). */
 export function backdropLayers(key: string, manifest: Record<string, AssetEntry> = MANIFEST): AssetEntry[] {
@@ -123,20 +124,26 @@ export function drawBackdrop(g: Gfx, kind: Backdrop | 'title' | 'results', t: nu
 
 const STYLE: Record<Character['silhouette'], number> = { hood: 0, coif: 1, cap: 2, hat: 3, helm: 4, bare: 5, none: 5 };
 
-/** A character portrait: a raymarched, candle-lit bust (PORTRAIT_FS). */
-export function drawPortrait(g: Gfx, c: Character, x: number, y: number, t: number, active: boolean, talking = false): void {
+/**
+ * A character portrait: a raymarched, candle-lit bust (PORTRAIT_FS) posed by a rig (UIX-0129).
+ * Without a `pose`, the legacy call stands in: lit for the speaker, listener-darkened otherwise
+ * (ART-0089), with a sine lip flap while `talking`.
+ */
+export function drawPortrait(g: Gfx, c: Character, x: number, y: number, t: number, active: boolean, talking = false, pose?: PortraitPose): void {
   if (c.silhouette === 'none') return;
   const w = 420;
   const h = 540;
-  g.glow(x, y - 200, 260, hex(c.color, 0.16 * (active ? 1 : 0.5)));
+  const p = pose ?? { prev: 0, next: 0, blend: 1, blink: 0, mouth: talking ? 0.5 + 0.5 * Math.sin(t * 16) : 0, lit: active ? 1 : LISTENER_LIT };
+  g.glow(x, y - 200, 260, hex(c.color, 0.16 * p.lit));
+  const { talk, active: lit } = packPose(p);
   g.portrait(x - w / 2, y - h + 70, w, h, {
     style: STYLE[c.silhouette],
     rim: vec3(c.color),
     cloth: vec3(c.cloth ?? '#3a3028'),
     skin: vec3(c.skin ?? '#c89a80'),
-    active: active ? 1 : 0,
+    active: lit,
     seed: c.name.length * 1.7,
-    talk: talking ? 0.5 + 0.5 * Math.sin(t * 16) : 0,
+    talk,
     beard: c.beard ?? 0,
     hair: vec3(c.hair ?? '#2a1c14'),
   });

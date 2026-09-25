@@ -5,6 +5,7 @@
  * pseudo-locale and text-scale runs produce a clean overflow report.
  */
 import type { Gfx, TextOpts } from '../render/gfx';
+import { hex, type RGBA } from '../render/color';
 import type { FontId } from '../render/text';
 
 const logged = new Set<string>();
@@ -86,5 +87,132 @@ export function fitBlock(g: Gfx, id: string, str: string, x: number, y: number, 
     lines[maxLines - 1] = ellipsize(m, `${lines[maxLines - 1]} …`, width);
   }
   lines.forEach((l, i) => g.text(l, x, y + i * size * lineH, o));
+  return lines.length * size * lineH;
+}
+
+// ---- inline emphasis markup (UIX-0134) -----------------------------------------------------
+// Story text (and any shared caller) may carry `*italic*` runs and `{term}` key terms (Malison,
+// Litany, Hollow Choir), which are lettered in gold. The markers are stripped for measuring and
+// typing out, so a line's reveal count and its localisation ids are unchanged.
+
+/** Style bits per character of the plain text. */
+export const STYLE_ITALIC = 1;
+export const STYLE_TERM = 2;
+
+export interface Marked {
+  /** The text with markers removed. */
+  plain: string;
+  /** One style bitmask per code point of `plain`. */
+  style: number[];
+}
+
+/** Parse `*italic*` and `{term}` markers. An unmatched marker stays literal. */
+export function parseMarkup(str: string): Marked {
+  const chars = [...str];
+  const plain: string[] = [];
+  const style: number[] = [];
+  let italic = false;
+  let term = false;
+  for (let i = 0; i < chars.length; i++) {
+    const c = chars[i];
+    if (c === '*' && (italic || chars.indexOf('*', i + 1) > i)) {
+      italic = !italic;
+      continue;
+    }
+    if (c === '{' && !term && chars.indexOf('}', i + 1) > i) {
+      term = true;
+      continue;
+    }
+    if (c === '}' && term) {
+      term = false;
+      continue;
+    }
+    plain.push(c);
+    style.push((italic ? STYLE_ITALIC : 0) | (term ? STYLE_TERM : 0));
+  }
+  return { plain: plain.join(''), style };
+}
+
+/** The text with markers removed. */
+export const stripMarkup = (str: string): string => parseMarkup(str).plain;
+
+/** A run of same-styled characters within a laid-out line. */
+export interface RichRun {
+  text: string;
+  style: number;
+}
+
+/** Word-wrap marked-up text: lines of runs, measured per style (so italics wrap correctly). */
+export function wrapRich(measure: (s: string, style: number) => number, str: string, width: number): RichRun[][] {
+  const { plain, style } = parseMarkup(str);
+  const chars = [...plain];
+  const runsOf = (a: number, b: number): RichRun[] => {
+    const out: RichRun[] = [];
+    for (let i = a; i < b; i++) {
+      const last = out[out.length - 1];
+      if (last && last.style === style[i]) last.text += chars[i];
+      else out.push({ text: chars[i], style: style[i] });
+    }
+    return out;
+  };
+  const widthOf = (a: number, b: number) => runsOf(a, b).reduce((w, r) => w + measure(r.text, r.style), 0);
+  const lines: RichRun[][] = [];
+  let start = 0;
+  for (let i = 0; i <= chars.length; i++) {
+    if (i < chars.length && chars[i] !== '\n') continue;
+    // One paragraph [start, i): break at spaces.
+    let lineStart = start;
+    let lastSpace = -1;
+    for (let j = start; j <= i; j++) {
+      const atEnd = j === i;
+      if (!atEnd && chars[j] !== ' ') continue;
+      if (widthOf(lineStart, j) > width && lastSpace >= lineStart) {
+        lines.push(runsOf(lineStart, lastSpace));
+        lineStart = lastSpace + 1;
+      }
+      if (atEnd) lines.push(runsOf(lineStart, i));
+      else lastSpace = j;
+    }
+    start = i + 1;
+  }
+  return lines;
+}
+
+export interface RichOpts extends TextOpts {
+  /** Colour of `{term}` runs (gold by default). */
+  termColor?: RGBA;
+  /** Font for `*italic*` runs; a base font that is already italic swaps to roman. */
+  italicFont?: FontId;
+}
+
+/** INK.gold (#e6c77a) as packed ABGR, the default term colour. */
+const TERM_GOLD: RGBA = hex('#e6c77a');
+
+/**
+ * Draw marked-up text word-wrapped to `width`, revealing only the first `shown` plain characters
+ * (typewriter), and return the height used. Runs are drawn left to right with their own font and
+ * colour, so a gold term or an italic aside sits inline with the body text.
+ */
+export function drawRich(g: Gfx, str: string, x: number, y: number, width: number, o: RichOpts = {}, lineH = 1.35, shown = Infinity): number {
+  const size = o.size ?? 20;
+  const base: FontId = o.font ?? 'body';
+  const italic: FontId = base === 'italic' ? 'body' : (o.italicFont ?? 'italic');
+  const fontOf = (style: number) => (style & STYLE_ITALIC ? italic : base);
+  const lines = wrapRich((s, st) => g.measure(s, size, fontOf(st)), str, width);
+  const gold = o.termColor ?? TERM_GOLD;
+  let left = shown;
+  lines.forEach((runs, i) => {
+    let cx = x;
+    for (const r of runs) {
+      if (left <= 0) return;
+      const chars = [...r.text];
+      const text = chars.length > left ? chars.slice(0, left).join('') : r.text;
+      left -= chars.length;
+      const font = fontOf(r.style);
+      g.text(text, cx, y + i * size * lineH, { ...o, font, color: r.style & STYLE_TERM ? gold : o.color });
+      cx += g.measure(text, size, font);
+    }
+    left -= 1; // the space or newline the wrap consumed
+  });
   return lines.length * size * lineH;
 }
