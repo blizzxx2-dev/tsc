@@ -290,7 +290,8 @@ class Main implements Game {
     p.end('render');
     this.gfx.setCamera(null);
     this.transition.draw(this.gfx);
-    if (DEV_TOOLS) this.drawDevStamp();
+    // Not under automation (goldens must not carry a sha), nor while the QA API holds the frame frozen.
+    if (DEV_TOOLS && !navigator.webdriver && !(this as { debug?: { isFrozen(): boolean } }).debug?.isFrozen()) this.drawDevStamp();
     this.profiler.draw(this.gfx, this.gfx.stats, this.gfx.registry, this.gfx.plan.gpuProfiler ? this.gfx.gpuTimer : null);
     this.gfx.endFrame();
     this.gfx.gpuTimer.collect();

@@ -13,6 +13,7 @@ import { UPSAMPLE_FS } from './gfx';
 import { PBR_FS, PBR_VS, SHADOW_FS, SHADOW_VS } from './renderer3d';
 import { fleshShaderSource } from './shaders/flesh';
 import { QUALITIES, SHADER_TIERS } from './quality';
+import { PARTICLE_FS, PARTICLE_VS } from './shaders/particle';
 
 export interface ShaderVariant {
   name: string;
@@ -42,6 +43,7 @@ export function shaderCatalog(): ShaderVariant[] {
     { name: 'scene-upsample', vs: FULL_VS, fs: UPSAMPLE_FS },
     { name: 'pbr', vs: PBR_VS, fs: PBR_FS },
     { name: 'pbr-shadow', vs: SHADOW_VS, fs: SHADOW_FS },
+    { name: 'particle', vs: PARTICLE_VS, fs: PARTICLE_FS },
   ];
   // Quality tiers (ENG-0082): each tier's flesh variant, with its mediump fallback, plus the live-noise A/B variant.
   for (const q of QUALITIES) {

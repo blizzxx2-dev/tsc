@@ -149,6 +149,8 @@ export class OperationScene implements Scene {
   ) {
     this.op = OperationScene.create(def, runOpts);
     this.presRng = new Rng(def.seed ?? 1);
+    // Emitter streams seeded from the operation seed (ENG-0131).
+    this.particles.seed(this.runOpts.seed ?? this.def.seed ?? 1);
     this.listen(this.op);
   }
 
@@ -246,7 +248,7 @@ export class OperationScene implements Scene {
     this.popups.length = 0;
     this.listen(this.op);
     this.camera.reset();
-    this.particles = new Particles();
+    this.particles = new Particles(undefined, this.runOpts.seed ?? this.def.seed ?? 1);
     this.ctl = new OperationInput();
     this.paused = false;
     this.resumeT = 0;

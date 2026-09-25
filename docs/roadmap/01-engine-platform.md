@@ -183,14 +183,14 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 
 ### Core system
 - [ ] ENG-0123 · Demo · P0 · M · Spike — CPU-simulated instanced particles vs WebGL2 transform-feedback simulation at 20k particles on Intel UHD 620 and Steam Deck; pick one and record the decision (ADR) with measurements
-- [ ] ENG-0124 · Demo · P0 · L · Instanced particle renderer — per-instance position, velocity, life, size, rotation, colour, frame; quad expanded in the vertex shader; alpha and additive batches; one draw per blend per layer
+- [x] ENG-0124 · Demo · P0 · L · Instanced particle renderer — per-instance position, velocity, life, size, rotation, colour, frame; quad expanded in the vertex shader; alpha and additive batches; one draw per blend per layer
 - [ ] ENG-0125 · Demo · P1 · L · Transform-feedback simulation path — ping-pong buffers, gravity, drag, curl-noise turbulence (if chosen by the spike), CPU fallback when the capability probe fails
-- [ ] ENG-0126 · Demo · P0 · M · Emitter definitions as data (JSON) — rate/burst, spawn shape (point, line, arc, ellipse, path), velocity cone, gravity, drag, size/colour/alpha-over-life curves, frame sequence, blend, layer
-- [ ] ENG-0127 · Demo · P1 · S · Curve/gradient utilities — baked 64-sample LUTs uploaded as a texture; unit tests for curve sampling
-- [ ] ENG-0128 · Demo · P0 · S · Particle budget per quality tier (High 16k, Medium 8k, Low 4k) with priority classes — gameplay-readable effects never culled before ambient ones
+- [x] ENG-0126 · Demo · P0 · M · Emitter definitions as data (JSON) — rate/burst, spawn shape (point, line, arc, ellipse, path), velocity cone, gravity, drag, size/colour/alpha-over-life curves, frame sequence, blend, layer
+- [x] ENG-0127 · Demo · P1 · S · Curve/gradient utilities — baked 64-sample LUTs uploaded as a texture; unit tests for curve sampling
+- [x] ENG-0128 · Demo · P0 · S · Particle budget per quality tier (High 16k, Medium 8k, Low 4k) with priority classes — gameplay-readable effects never culled before ambient ones
 - [x] ENG-0129 · Demo · P1 · M · Collision against the field — blood droplets that land stamp the blood decal map (splat size ∝ velocity); sparks bounce once off the field plane
 - [x] ENG-0130 · Demo · P0 · S · Particles in world time slow to 0.15× during the Litany — UI particles run on real time (unit test on clock routing)
-- [ ] ENG-0131 · Demo · P1 · S · Deterministic spawn — emitter RNG seeded from operation seed + emitter id so replays and golden screenshots are reproducible
+- [x] ENG-0131 · Demo · P1 · S · Deterministic spawn — emitter RNG seeded from operation seed + emitter id so replays and golden screenshots are reproducible
 - [ ] ENG-0132 · Demo · P2 · M · Dev particle panel — live-tweak emitter parameters on a running operation, preview in isolation, copy JSON to clipboard
 
 ### Effects for Chapters 1–2

@@ -65,6 +65,11 @@ export class GlRegistry {
     return obj;
   }
 
+  /** Is `obj` a tracked object of the current context (false after a loss or release)? */
+  isLive(obj: object): boolean {
+    return this.entries.has(obj);
+  }
+
   setBytes(obj: object, bytes: number, label?: string): void {
     const e = this.entries.get(obj);
     if (e) {

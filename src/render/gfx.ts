@@ -21,6 +21,8 @@ import { UI_ART_FS } from '../art/uiShader';
 import { PLATE_FS } from './shaders/plate';
 import { SPECIES_PROFILES, type SpeciesLook } from '../surgery/species';
 import { Renderer3D, type Scene3D } from './renderer3d';
+import type { CurveAtlas } from './curves';
+import { PARTICLE_FS, PARTICLE_SIZE_RANGE, PARTICLE_VS } from './shaders/particle';
 
 /** Bilinear upsample of a reduced-resolution layer. */
 export const UPSAMPLE_FS = `#version 300 es
@@ -363,6 +365,7 @@ export class Gfx {
     this.sceneProgs.clear();
     this.uiArtProg = null;
     this.plateProg = null;
+    this.part = null;
     this.upsampleProg = null;
     this.downProg = reg.createProgram('bloom-down', FULL_VS, DOWN_FS);
     this.upProg = reg.createProgram('bloom-up', FULL_VS, UP_FS);
@@ -1022,6 +1025,67 @@ export class Gfx {
     gl.uniform1f(this.u(pr, 'u_alpha'), o.alpha ?? 1);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
+    this.applyBlend();
+  }
+
+  /** Instanced particle program, VAO, static corner buffer and instance buffer (ENG-0124). */
+  private part: { prog: WebGLProgram; vao: WebGLVertexArrayObject; inst: WebGLBuffer; bytes: number } | null = null;
+
+  /**
+   * Draw `count` particle instances (layout: particles.ts PARTICLE_STRIDE) in one instanced call
+   * with premultiplied `alpha` or additive blending. Curves are sampled from the baked texture.
+   */
+  drawParticles(data: Float32Array, count: number, blend: 'alpha' | 'add', curves: CurveAtlas): void {
+    if (count <= 0) return;
+    this.flush('program');
+    const gl = this.gl;
+    const reg = this.registry;
+    if (!this.part) {
+      const prog = reg.createProgram('particle', PARTICLE_VS, PARTICLE_FS);
+      const vao = reg.createVertexArray('particle');
+      gl.bindVertexArray(vao);
+      const corners = reg.createBuffer('particle corners');
+      gl.bindBuffer(gl.ARRAY_BUFFER, corners);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+      reg.setBytes(corners, 32);
+      gl.enableVertexAttribArray(0);
+      gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 8, 0);
+      const inst = reg.createBuffer('particle instances');
+      gl.bindBuffer(gl.ARRAY_BUFFER, inst);
+      const stride = 48;
+      for (let i = 0; i < 3; i++) {
+        gl.enableVertexAttribArray(1 + i);
+        gl.vertexAttribPointer(1 + i, 4, gl.FLOAT, false, stride, i * 16);
+        gl.vertexAttribDivisor(1 + i, 1);
+      }
+      gl.bindVertexArray(null);
+      this.part = { prog, vao, inst, bytes: 0 };
+    }
+    const p = this.part;
+    const pr = p.prog;
+    gl.useProgram(pr);
+    gl.bindVertexArray(p.vao);
+    gl.bindBuffer(gl.ARRAY_BUFFER, p.inst);
+    const bytes = count * 48;
+    // Orphan and refill: a fresh store each frame so the driver never waits on last frame's draw.
+    if (bytes > p.bytes) {
+      p.bytes = Math.max(bytes, 64 * 1024);
+      reg.setBytes(p.inst, p.bytes);
+    }
+    gl.bufferData(gl.ARRAY_BUFFER, p.bytes, gl.STREAM_DRAW);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, data, 0, count * 12);
+    this.bindTex(curves.texture(gl, reg), 0);
+    gl.uniform1i(this.u(pr, 'u_curves'), 0);
+    gl.uniform2f(this.u(pr, 'u_view'), this.vw, this.vh);
+    gl.uniformMatrix3fv(this.u(pr, 'u_xf'), false, this.xf);
+    gl.uniform1f(this.u(pr, 'u_sizeRange'), PARTICLE_SIZE_RANGE);
+    gl.uniform1f(this.u(pr, 'u_stretch'), 0.03);
+    if (blend === 'add') gl.blendFunc(gl.ONE, gl.ONE);
+    else gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, count);
+    gl.bindVertexArray(null);
+    this.stats.drawCalls++;
+    this.stats.vertices += count * 4;
     this.applyBlend();
   }
 
