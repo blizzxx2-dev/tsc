@@ -8,6 +8,10 @@ import { FIELD, onBody, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
 import { distortion, drawBossRing, fxRange, TAU } from './common';
 import { Voice } from './voices';
+import { assistsOf, attack, bossSound, leadFor, tell } from './signals';
+
+/** The pitch of each tongue's syllable; together, the word the merged core sings. */
+export const TERCE_WORD: readonly number[] = [0.8, 1.0, 1.25];
 
 export interface TerceTuning {
   hp: number;
@@ -165,6 +169,7 @@ export class TerceMalison extends Entity {
   private circleLast = 0;
   private hurtFlash = 0;
   private stage: 1 | 2 | 3 = 1;
+  private sungT = 2;
 
   constructor(
     op: Operation,
@@ -276,17 +281,21 @@ export class TerceMalison extends Entity {
     if (Math.random() < dt * 8) op.emit('spark', { x: this.pos.x + fxRange(-15, 15), y: this.pos.y + fxRange(-15, 15) }, 1);
     if (this.stage === 1) {
       this.leapT -= dt;
-      if (this.tellZone < 0 && this.leapT <= this.tune.leapTell) {
-        // Tell: the organ it will leap to glows first.
+      if (this.tellZone < 0 && this.leapT <= Math.max(this.tune.leapTell, leadFor(op, 'terce', 'leap'))) {
+        // Tell (BOS-0068): the organ it will leap to glows orange, and a crackle pans toward it.
         const choices = this.zones.map((_, i) => i).filter((i) => i !== this.zone);
         this.tellZone = op.rng.pick(choices);
         op.cues.push('burn');
+        const z = this.zones[this.tellZone];
+        tell(op, 'terce', 'leap', z);
+        bossSound(op, 'crackle', z);
       }
       if (this.leapT <= 0) {
         this.leapT = this.tune.leapEvery;
         this.zone = this.tellZone >= 0 ? this.tellZone : this.zone;
         this.tellZone = -1;
         this.pos = { ...this.zones[this.zone] };
+        attack(op, 'terce', 'leap', this.pos);
         if (this.living.length < 3) {
           this.addTongue(op, this.zone);
           op.sayOnce('terce-leap', 'It leapt to another organ! Salve the flame-front — not the brand!');
@@ -301,7 +310,15 @@ export class TerceMalison extends Entity {
           }
         }
       }
-    } else if (this.stage === 3) {
+    }
+    // Each tongue whispers its own syllable; the merged core sings the whole word (BOS-0070).
+    this.sungT -= dt;
+    if (this.sungT <= 0) {
+      this.sungT = 3.2;
+      if (this.stage === 3) TERCE_WORD.forEach((p, i) => bossSound(op, 'syllable', this.pos, 1, p * (1 + i * 0.001)));
+      else this.living.forEach((t, i) => t.state === 'flame' && bossSound(op, 'syllable', t.pos, 0.7, TERCE_WORD[i % TERCE_WORD.length]));
+    }
+    if (this.stage === 3) {
       this.hazeClearT = Math.max(0, this.hazeClearT - dt);
       distortion(op).haze = this.hazed ? this.tune.haze : 0;
       this.smokeT = Math.max(0, this.smokeT - dt * 0.5);
@@ -400,7 +417,14 @@ export class TerceMalison extends Entity {
       g.glow(x, y, 70, hex('#a040ff', 0.15 + 0.08 * Math.sin(t * 4)));
       return;
     }
-    if (this.hazed) for (let i = 0; i < 5; i++) g.glow(x + Math.sin(t * 2 + i) * 60, y - 30 - i * 14, 70, hex('#ffa060', 0.06));
+    if (this.hazed) {
+      if (assistsOf(op).hazeOutline) {
+        // Accessible haze (BOS-0069): an orange outline instead of shimmer, and a ghost of where the instrument really lands.
+        g.arc(x, y, 150, 2, hex('#ff9040', 0.7));
+        g.circle(op.pointer.x, op.pointer.y, 6, hex('#ffb070', 0.5));
+        g.arc(op.pointer.x, op.pointer.y, 10, 1.5, hex('#ffb070', 0.8));
+      } else for (let i = 0; i < 5; i++) g.glow(x + Math.sin(t * 2 + i) * 60, y - 30 - i * 14, 70, hex('#ffa060', 0.06));
+    }
     g.glow(x, y, this.radius * 2.6, hex('#ff6020', 0.3));
     g.circleGrad(x, y, this.radius, this.hurtFlash > 0 ? hex('#fff0c0') : hex('#ff9040'), hex('#801000', 0.6));
     g.circle(x, y, this.radius * 0.4, hex('#fff8e0', 0.9));

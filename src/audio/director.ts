@@ -672,7 +672,7 @@ export class OperationAudio {
       this.laudsState.set(lauds, st);
       this.sys.music.setSection(lauds.submerged ? 'submerged' : lauds.livingVoices.length ? 'choir' : 'exposed');
       for (const v of lauds.livingVoices) {
-        this.loop(v, 'loop.lauds.voice', !lauds.submerged, { note: [0, 4, 7, 11, 14, 16][v.id % 6], silence: Math.min(1, v.silence / 1.2) }, panOf(v.pos.x), 60);
+        this.loop(v, 'loop.lauds.voice', !lauds.submerged, { note: [0, 4, 7, 11, 14, 16][v.id % 6], silence: Math.min(1, v.traced) }, panOf(v.pos.x), 60);
       }
     } else if (this.boss === 'lauds' && op.entities.some((e) => e instanceof Embedded && e.kind === 'hexstone')) this.sys.music.setSection('shattered');
   }

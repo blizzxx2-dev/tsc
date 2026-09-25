@@ -231,9 +231,9 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ### Boss HUD (Malison)
 - [ ] UIX-0063 · Demo · P0 · M · Malison intro card — 3 s blackletter title card ("The Malison — Hour of Matins" / "— Hour of Lauds") with woodcut illustration and bell hook; skippable after first view; shown before the boss phase spawns
-- [ ] UIX-0064 · Demo · P0 · M · Malison bar — name plate + "unmaking" bar with phase notches under the top bar; veiled/open state icon (the brand can only hurt when open); shard phase shows remaining shard count
-- [ ] UIX-0065 · Demo · P1 · S · Veil telegraph — 0.6 s before the shroud parts, the Malison bar icon and the creature outline flash a warning so players can pre-select the Brand
-- [ ] UIX-0066 · Demo · P0 · M · Lauds HUD — Malison bar shows the orbiting Choir Voice count and a "shielded" state while any Voice sings, a Hymn telegraph ring expanding 0.8 s before each verse tears the flesh, and a "Submerged — use the Scrying Lens" state when it dives under the skin
+- [x] UIX-0064 · Demo · P0 · M · Malison bar — name plate + "unmaking" bar with phase notches under the top bar; veiled/open state icon (the brand can only hurt when open); shard phase shows remaining shard count
+- [x] UIX-0065 · Demo · P1 · S · Veil telegraph — 0.6 s before the shroud parts, the Malison bar icon and the creature outline flash a warning so players can pre-select the Brand
+- [x] UIX-0066 · Demo · P0 · M · Lauds HUD — Malison bar shows the orbiting Choir Voice count and a "shielded" state while any Voice sings, a Hymn telegraph ring expanding 0.8 s before each verse tears the flesh, and a "Submerged — use the Scrying Lens" state when it dives under the skin
 
 ### Litany & end-of-operation presentation
 - [ ] UIX-0067 · Demo · P0 · S · Litany indicator v2 — star fills per detected vertex while drawing, candle flame when ready, 8 s radial while active, caption from current binding (draw or Litany key); HUD dims 30 % during Stillness so the world reads first

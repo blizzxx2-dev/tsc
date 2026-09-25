@@ -36,9 +36,15 @@ export const OP_2_1 = defineOp({
 
       callout: ['Now the fangs. Tongs — pull each one clear.'],
       spawn: [
-        { e: 'embedded', at: [-150, -50], kind: 'tooth', angle: 0.9, barbed: false },
-        { e: 'embedded', at: [-100, -10], kind: 'tooth', angle: 1.2, barbed: false },
-        { e: 'embedded', at: [-80, -60], kind: 'tooth', angle: 0.6, barbed: false },
+        {
+          e: 'elite-fangnest',
+          path: [
+            [-150, -50],
+            [-100, -10],
+            [-80, -60],
+          ],
+          angles: [0.9, 1.2, 0.6],
+        },
       ],
     },
     {
@@ -128,6 +134,12 @@ export const OP_2_3 = defineOp({
       ],
     },
     {
+      objective: 'Cut the brood-cluster free',
+
+      callout: ['Her brood-cluster — three sacs under one skin.', 'Cut the membrane right around them with the lancet first, or they’ll wake as one.'],
+      spawn: [{ e: 'elite-broodcluster', at: [-20, 20], hatchIn: 26 }],
+    },
+    {
       objective: 'Find the last sac',
 
       callout: ['One more sac, deeper. Use the lens to find it, then open it.', 'And he’s taken a fever-bubo from the bite — lance and cleanse it.'],
@@ -171,6 +183,12 @@ export const OP_2_4 = defineOp({
       ],
     },
     {
+      objective: 'Burn out the cantor’s knot',
+
+      callout: ['There — a knot of it round his throat. Every time he hums, it ties itself again.', 'Burn it out between the verses.'],
+      spawn: [{ e: 'elite-cantor', at: [0, -150] }],
+    },
+    {
       objective: 'Dress the hexfire burns',
 
       callout: ['The hexfire burns. Pluck the eschar, then salve them.'],
@@ -200,7 +218,7 @@ export const OP_2_5 = defineOp({
   patientGender: 'm',
   diagnosis: 'Collapsed during the dawn hymn. Something beneath the sternum is singing.',
   organ: 'flesh',
-  timeLimit: 420,
+  timeLimit: 480,
   baseDrain: 0.1,
   tools: ALL,
   ranks: { S: 7600, A: 6100, B: 4550 },

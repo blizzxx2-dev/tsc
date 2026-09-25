@@ -12,6 +12,22 @@ import { NameSigil, PRIME_NAMES } from './prime';
 import { CrustPlate } from './sext';
 import { FlameTongue } from './terce';
 import { TallowClot } from './vespers';
+import { attack, bossSound, difficultyOf, tell, type BossOpDef, type BossSound } from './signals';
+
+/** Seconds of Stillness the Final Litany grants (Kreuzer's star and Ilse's prayer together). */
+export const FINAL_LITANY = 12;
+
+/** Each Hour's signature sound, heard as the dial hand sweeps to it. */
+export const HOUR_SIGNATURE: Record<HourId, BossSound> = {
+  matins: 'toll',
+  lauds: 'call',
+  prime: 'reading',
+  terce: 'crackle',
+  sext: 'drone',
+  none: 'ripple',
+  vespers: 'hiss',
+  compline: 'hush',
+};
 
 export type HourId = 'matins' | 'lauds' | 'prime' | 'terce' | 'sext' | 'none' | 'vespers' | 'compline';
 
@@ -149,7 +165,68 @@ export class OfficeMalison extends Entity {
       [this.order[i], this.order[j]] = [this.order[j], this.order[i]];
     }
     this.handT = handSweep;
-    this.handTo = HOURS.indexOf(this.order[0]);
+    const def = op.def as BossOpDef;
+    // Stroh's branch (BOS-0139): the Inquisitor's brand puts out one hour-sigil before the Dial begins.
+    if (def.storyFlags?.includes('strohAlly')) {
+      const h = this.order.pop()!;
+      this.lit.delete(h);
+      this.strohStruck = h;
+    }
+    // Checkpoints (BOS-0144): after each extinguished sigil in the Dial (Novice/Surgeon), per phase on Master.
+    const cp = def.bossCheckpoint ?? 0;
+    if (cp > 0) this.resumeAt(op, difficultyOf(op) === 'master' && cp < 8 ? 0 : cp);
+    this.handTo = HOURS.indexOf(this.current()[0] ?? this.order[0]);
+    // The Final Litany (BOS-0138): at the Heart, Ilse's prayer answers the surgeon's star.
+    op.events.on('litany', () => this.onLitany(op));
+  }
+
+  /** The hour-sigil Stroh's brand put out (story flag `strohAlly`). */
+  strohStruck: HourId | null = null;
+  /** Seconds left in which a second star becomes the Final Litany. */
+  prayerT = 0;
+  finalLitany = false;
+  private sweptFor = -1;
+
+  /** The checkpoint a retry would resume from now. */
+  checkpoint(op: Operation): number {
+    if (this.stage === 3) return 9;
+    if (this.stage === 2) return 8;
+    return difficultyOf(op) === 'master' ? 0 : this.step;
+  }
+
+  private resumeAt(op: Operation, cp: number): void {
+    if (cp >= 9) {
+      this.stage = 3;
+      this.lit.clear();
+      this.heartSigil = new Sigil({ ...this.heart }, OFFICE_SIGIL, 80, 6);
+      op.spawn(this.heartSigil);
+      return;
+    }
+    if (cp >= 8) {
+      this.stage = 2;
+      this.step = 0;
+      this.lit = new Set(HOURS);
+      return;
+    }
+    this.step = Math.min(cp, this.order.length - 1);
+    for (const h of this.order.slice(0, this.step)) this.lit.delete(h);
+  }
+
+  private onLitany(op: Operation): void {
+    if (this.stage !== 3 || !this.alive) return;
+    if (this.prayerT > 0) {
+      this.prayerT = 0;
+      this.finalLitany = true;
+      op.litanyTime = FINAL_LITANY;
+      op.popup('THE FINAL LITANY', { x: FIELD.cx, y: FIELD.cy - 170 }, '#f5d76e');
+      op.say('I’m with you, Doctor — pray it with me!');
+      return;
+    }
+    if (this.finalLitany) return;
+    // Ilse takes up the prayer: a second star within 3 s joins hers.
+    this.prayerT = 3;
+    op.grantLitany();
+    op.sayOnce('office-prayer', 'Again, Doctor — draw it again, and I’ll pray it with you!');
   }
 
   /** Where Hour `h` stands on the clock-face. */
@@ -194,12 +271,27 @@ export class OfficeMalison extends Entity {
       op.cues.push('inject');
       op.popup(`Ilse holds him: +${amt}`, { x: FIELD.cx + 300, y: FIELD.cy + 120 }, '#9fd3a8');
     }
+    if (this.prayerT > 0) {
+      this.prayerT = Math.max(0, this.prayerT - dt / Math.max(op.timeScale, 1e-6));
+      // The prayer lapses: the extra star goes unanswered.
+      if (this.prayerT === 0 && !this.finalLitany && op.litanyUses < op.litanyAllowed) op.litanyAllowed--;
+    }
     if (this.stage === 3) {
       if (this.heartSigil && !this.heartSigil.alive) this.die(op);
       return;
     }
     if (this.handT > 0) {
+      // Dial tell (BOS-0140): the hand sweeps to the next Hour over 1.5 s, sounding that Hour.
+      const key = this.stage * 100 + this.step;
+      if (this.sweptFor !== key) {
+        this.sweptFor = key;
+        const next = this.current();
+        tell(op, 'office', 'dial', this.sigilPos(next[0]));
+        bossSound(op, 'dial', this.sigilPos(next[0]));
+        for (const h of next) bossSound(op, HOUR_SIGNATURE[h], this.sigilPos(h), 0.8);
+      }
       this.handT -= dt;
+      if (this.handT <= 0) attack(op, 'office', 'dial', this.sigilPos(this.current()[0]));
       if (this.handT <= 0) this.begin(op, this.current());
       return;
     }

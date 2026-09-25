@@ -6227,6 +6227,671 @@
     "context": "Beside the cursor over a target the instrument in hand cannot treat; {tool} is the instrument it needs.",
     "screenshot": "docs/loc/screens/operation.png"
   },
+  "label.matins.veiled": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Rating label: the surgeon branded the Malison while its shroud was closed.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.matins.off_beat": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Rating label: the eye of Matins was branded off its third beat.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.matins.fed": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Rating label: a crawling Malison shard reached a wound and fed on it.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.lauds.answered": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Rating label: the second linked body of Lauds was struck in time (the antiphon answered).",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.lauds.severed": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Rating label: the light-thread between Lauds's two bodies was cut on its dim beat.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.dodged": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 200,
+    "context": "Floating popup: the surgeon moved off the eye's gaze line before it lashed.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.lauds_heals": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup: an unanswered strike on one body of Lauds is half-healed by the other.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.too_bright": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 200,
+    "context": "Floating popup: the light-thread was cut while it blazed (it only parts on its dim beat).",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.matins.name": {
+    "scene": "operation",
+    "font": "display",
+    "size": 24,
+    "maxPx": 300,
+    "context": "Boss HP bar: the Hour's name, set in Fraktur. The canonical hour of the night vigil.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.matins.phase.vigil": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 13,
+    "maxPx": 160,
+    "context": "Boss HP bar: name of Matins's first phase.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.matins.phase.watchfire": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 13,
+    "maxPx": 160,
+    "context": "Boss HP bar: name of Matins's second phase.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.matins.phase.eye": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 13,
+    "maxPx": 160,
+    "context": "Boss HP bar: name of Matins's third phase.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.lauds.name": {
+    "scene": "operation",
+    "font": "display",
+    "size": 24,
+    "maxPx": 300,
+    "context": "Boss HP bar: the Hour's name, set in Fraktur. The canonical hour of dawn praise.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.lauds.phase.call": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 13,
+    "maxPx": 160,
+    "context": "Boss HP bar: name of Lauds's first phase (the antiphon's call).",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.lauds.phase.response": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 13,
+    "maxPx": 160,
+    "context": "Boss HP bar: name of Lauds's second phase (the antiphon's response).",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.lauds.phase.dawn": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 13,
+    "maxPx": 160,
+    "context": "Boss HP bar: name of Lauds's third phase.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "codex.matins.title": {
+    "scene": "codex",
+    "font": "display",
+    "size": 32,
+    "maxPx": 700,
+    "context": "Codex entry title for the first Malison.",
+    "screenshot": "docs/loc/screens/codex.png"
+  },
+  "codex.matins.body": {
+    "scene": "codex",
+    "font": "body",
+    "size": 20,
+    "maxPx": 550,
+    "context": "Codex entry body for the Malison of Matins.",
+    "screenshot": "docs/loc/screens/codex.png",
+    "maxLines": 12
+  },
+  "debrief.matins.high": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after Matins at rank XS or S.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "debrief.matins.mid": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after Matins at rank A or B.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "debrief.matins.low": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after Matins at rank C.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "codex.lauds.title": {
+    "scene": "codex",
+    "font": "display",
+    "size": 32,
+    "maxPx": 700,
+    "context": "Codex entry title for the second Malison.",
+    "screenshot": "docs/loc/screens/codex.png"
+  },
+  "codex.lauds.body": {
+    "scene": "codex",
+    "font": "body",
+    "size": 20,
+    "maxPx": 550,
+    "context": "Codex entry body for the Malison of Lauds.",
+    "screenshot": "docs/loc/screens/codex.png",
+    "maxLines": 12
+  },
+  "debrief.lauds.high": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after Lauds at rank XS or S.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "debrief.lauds.mid": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after Lauds at rank A or B.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "debrief.lauds.low": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after Lauds at rank C.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "codex.prime.title": {
+    "scene": "codex",
+    "font": "display",
+    "size": 32,
+    "maxPx": 700,
+    "context": "Codex entry title for the third Malison.",
+    "screenshot": "docs/loc/screens/codex.png"
+  },
+  "codex.prime.body": {
+    "scene": "codex",
+    "font": "body",
+    "size": 20,
+    "maxPx": 550,
+    "context": "Codex entry body for the Malison of Prime.",
+    "screenshot": "docs/loc/screens/codex.png",
+    "maxLines": 12
+  },
+  "debrief.prime.high": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after Prime at rank XS or S.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "debrief.prime.mid": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after Prime at rank A or B.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "debrief.prime.low": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after Prime at rank C.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "codex.terce.title": {
+    "scene": "codex",
+    "font": "display",
+    "size": 32,
+    "maxPx": 700,
+    "context": "Codex entry title for the fourth Malison.",
+    "screenshot": "docs/loc/screens/codex.png"
+  },
+  "codex.terce.body": {
+    "scene": "codex",
+    "font": "body",
+    "size": 20,
+    "maxPx": 550,
+    "context": "Codex entry body for the Malison of Terce.",
+    "screenshot": "docs/loc/screens/codex.png",
+    "maxLines": 12
+  },
+  "debrief.terce.high": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after Terce at rank XS or S.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "debrief.terce.mid": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after Terce at rank A or B.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "debrief.terce.low": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after Terce at rank C.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "codex.sext.title": {
+    "scene": "codex",
+    "font": "display",
+    "size": 32,
+    "maxPx": 700,
+    "context": "Codex entry title for the fifth Malison.",
+    "screenshot": "docs/loc/screens/codex.png"
+  },
+  "codex.sext.body": {
+    "scene": "codex",
+    "font": "body",
+    "size": 20,
+    "maxPx": 550,
+    "context": "Codex entry body for the Malison of Sext.",
+    "screenshot": "docs/loc/screens/codex.png",
+    "maxLines": 12
+  },
+  "debrief.sext.high": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after Sext at rank XS or S.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "debrief.sext.mid": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after Sext at rank A or B.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "debrief.sext.low": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after Sext at rank C.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "codex.none.title": {
+    "scene": "codex",
+    "font": "display",
+    "size": 32,
+    "maxPx": 700,
+    "context": "Codex entry title for the sixth Malison.",
+    "screenshot": "docs/loc/screens/codex.png"
+  },
+  "codex.none.body": {
+    "scene": "codex",
+    "font": "body",
+    "size": 20,
+    "maxPx": 550,
+    "context": "Codex entry body for the Malison of None.",
+    "screenshot": "docs/loc/screens/codex.png",
+    "maxLines": 12
+  },
+  "debrief.none.high": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after None at rank XS or S.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "debrief.none.mid": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after None at rank A or B.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "debrief.none.low": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after None at rank C.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "codex.vespers.title": {
+    "scene": "codex",
+    "font": "display",
+    "size": 32,
+    "maxPx": 700,
+    "context": "Codex entry title for the seventh Malison.",
+    "screenshot": "docs/loc/screens/codex.png"
+  },
+  "codex.vespers.body": {
+    "scene": "codex",
+    "font": "body",
+    "size": 20,
+    "maxPx": 550,
+    "context": "Codex entry body for the Malison of Vespers.",
+    "screenshot": "docs/loc/screens/codex.png",
+    "maxLines": 12
+  },
+  "debrief.vespers.high": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after Vespers at rank XS or S.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "debrief.vespers.mid": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after Vespers at rank A or B.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "debrief.vespers.low": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after Vespers at rank C.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "codex.compline.title": {
+    "scene": "codex",
+    "font": "display",
+    "size": 32,
+    "maxPx": 700,
+    "context": "Codex entry title for the eighth Malison.",
+    "screenshot": "docs/loc/screens/codex.png"
+  },
+  "codex.compline.body": {
+    "scene": "codex",
+    "font": "body",
+    "size": 20,
+    "maxPx": 550,
+    "context": "Codex entry body for the Malison of Compline.",
+    "screenshot": "docs/loc/screens/codex.png",
+    "maxLines": 12
+  },
+  "debrief.compline.high": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after Compline at rank XS or S.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "debrief.compline.mid": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after Compline at rank A or B.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "debrief.compline.low": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's debrief after Compline at rank C.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "codex.office.title": {
+    "scene": "codex",
+    "font": "display",
+    "size": 32,
+    "maxPx": 700,
+    "context": "Codex entry title for the final Malison.",
+    "screenshot": "docs/loc/screens/codex.png"
+  },
+  "codex.office.body": {
+    "scene": "codex",
+    "font": "body",
+    "size": 20,
+    "maxPx": 550,
+    "context": "Codex entry body for the Office.",
+    "screenshot": "docs/loc/screens/codex.png",
+    "maxLines": 12
+  },
+  "debrief.office.high": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's ending debrief after the Office at rank XS or S.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "debrief.office.mid": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's ending debrief after the Office at rank A or B.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "debrief.office.low": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's ending debrief after the Office at rank C.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "debrief.office.high.stroh": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's ending debrief after the Office at rank XS or S when Inquisitor Stroh is an ally.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "debrief.office.mid.stroh": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's ending debrief after the Office at rank A or B when Stroh is an ally.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "debrief.office.low.stroh": {
+    "scene": "results",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 900,
+    "context": "Ilse's ending debrief after the Office at rank C when Stroh is an ally.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
+  "hud.boss.lag": {
+    "scene": "operation",
+    "font": "body",
+    "size": 14,
+    "maxPx": 160,
+    "context": "Numeric readout beside the cursor of how late the instruments answer under Sext's torpor (accessibility assist).",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.brood.cut": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Rating label: the membrane around the Brood-Mother's egg-cluster was cut all the way round.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.herald.burned": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Rating label: the lone Matins shard (a herald of the first Malison) was seared.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.brood.not_round": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup: the lancet stroke around the egg-cluster did not close the circle.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.cantor.reties": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 260,
+    "context": "Floating popup: the Cantor's Knot re-drew one stroke as its bearer hummed.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.gravehound.spreads": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 340,
+    "context": "Floating popup: a fang was pulled out of order and the rot web spread.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.herald.gone": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 240,
+    "context": "Floating popup: the Matins herald escaped before it was seared.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.final_litany": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 420,
+    "context": "Floating popup: Kreuzer's star and Ilse's prayer together grant the long Stillness in the Office's final phase.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.broodmother.name": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 15,
+    "maxPx": 260,
+    "context": "Compact elite HP bar: the egg-cluster elite.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.broodmother.phase.main": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 13,
+    "maxPx": 160,
+    "context": "Elite phase name (egg-cluster).",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.cantor.name": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 15,
+    "maxPx": 260,
+    "context": "Compact elite HP bar: the sigil knotted round a cantor's throat.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.cantor.phase.main": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 13,
+    "maxPx": 160,
+    "context": "Elite phase name (Cantor's Knot).",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.gravehound.name": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 15,
+    "maxPx": 260,
+    "context": "Compact elite HP bar: the Gravehound's three webbed fangs.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.gravehound.phase.main": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 13,
+    "maxPx": 160,
+    "context": "Elite phase name (fang-nest).",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "ui.codex.title": {
+    "scene": "codex",
+    "font": "display",
+    "size": 30,
+    "maxPx": 280,
+    "context": "Codex heading: the book of Malison Hours met so far.",
+    "screenshot": "docs/loc/screens/codex.png"
+  },
+  "ui.codex.open": {
+    "scene": "codex",
+    "font": "display",
+    "size": 24,
+    "maxPx": 260,
+    "context": "Operating Theatre button opening the codex of Hours.",
+    "screenshot": "docs/loc/screens/codex.png"
+  },
+  "ui.codex.sealed": {
+    "scene": "codex",
+    "font": "display",
+    "size": 14,
+    "maxPx": 240,
+    "context": "Codex list entry for an Hour not yet met.",
+    "screenshot": "docs/loc/screens/codex.png"
+  },
+  "ui.codex.locked": {
+    "scene": "codex",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 560,
+    "context": "Codex page text for an Hour not yet met.",
+    "screenshot": "docs/loc/screens/codex.png"
+  },
   "ui.briefing.litany_sealed": {
     "scene": "briefing",
     "font": "display",

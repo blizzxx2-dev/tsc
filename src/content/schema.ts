@@ -14,6 +14,7 @@ import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, SALVE
 import type { Entity } from '../surgery/entity';
 import { EggSac, LaudsMalison } from '../surgery/lauds';
 import { Malison } from '../surgery/malison';
+import { CantorKnot, EggCluster, FangNest, MatinsHerald } from '../surgery/bosses/elites';
 import { FIELD, onBody, type Operation, type OperationDef, type PhaseDef } from '../surgery/operation';
 import type { ToolId } from '../surgery/types';
 
@@ -40,7 +41,11 @@ export type EntitySpec =
   | ({ e: 'pool'; at: Pt; r: number; ichor?: 'blood' | 'pus' | 'blackbile' } & Common)
   | ({ e: 'eggsac'; at: Pt; brood?: number; hatchIn?: number } & Common)
   | ({ e: 'malison-matins'; at: Pt; hp?: number } & Common)
-  | ({ e: 'malison-lauds'; at: Pt } & Common);
+  | ({ e: 'malison-lauds'; at: Pt } & Common)
+  | ({ e: 'elite-broodcluster'; at: Pt; hatchIn?: number } & Common)
+  | ({ e: 'elite-cantor'; at: Pt; every?: number } & Common)
+  | ({ e: 'elite-fangnest'; path: readonly Pt[]; angles: readonly number[] } & Common)
+  | ({ e: 'herald'; at: Pt } & Common);
 
 export type EntityId = EntitySpec['e'];
 
@@ -76,7 +81,7 @@ export interface DataPhaseDef extends PhaseDef {
 
 // ------------------------------------------------------------------ registry
 
-type ParamType = 'number' | 'boolean' | 'pt' | 'path' | 'string';
+type ParamType = 'number' | 'numbers' | 'boolean' | 'pt' | 'path' | 'string';
 
 interface Param {
   type: ParamType;
@@ -90,7 +95,8 @@ export interface RegistryEntry<S extends EntitySpec = EntitySpec> {
   params: Record<string, Param>;
   /** Instruments needed to resolve it: every inner list must share at least one tool with the op. */
   needs(spec: S): ToolId[][];
-  make(spec: S, op: Operation): Entity;
+  /** The entity, or a group led by its core (an elite and the wounds it binds). */
+  make(spec: S, op: Operation): Entity | Entity[];
 }
 
 const P = (x: Pt): Vec => ({ x: FIELD.cx + x[0], y: FIELD.cy + x[1] });
@@ -167,16 +173,44 @@ export const ENTITY_REGISTRY: { [K in EntityId]: Entry<K> } = {
     needs: () => [['brand'], ['lens'], ['tongs']],
     make: (s, op) => new LaudsMalison(P(s.at), op),
   },
+  // Demo elites (BOS-0147..0150): each spawns its core with the wounds it binds.
+  'elite-broodcluster': {
+    params: { at: { type: 'pt' }, hatchIn: num(true, [4, 9999]) },
+    needs: () => [['lancet'], ['brand']],
+    make: (s, op) => new EggCluster(P(s.at), op, s.hatchIn).all,
+  },
+  'elite-cantor': {
+    params: { at: { type: 'pt' }, every: num(true, [2, 30]) },
+    needs: () => [['brand']],
+    make: (s, op) => new CantorKnot(P(s.at), op, s.every).all,
+  },
+  'elite-fangnest': {
+    params: { path: { type: 'path' }, angles: { type: 'numbers' } },
+    needs: () => [['tongs']],
+    make: (s, op) => new FangNest(op, s.path.map((p, i) => [P(p), s.angles[i] ?? 0] as [Vec, number])).all,
+  },
+  herald: {
+    params: { at: { type: 'pt' } },
+    needs: () => [['brand']],
+    make: (s, op) => new MatinsHerald(P(s.at), op),
+  },
 };
 
-/** Build one entity from its spec. */
-export function makeEntity(spec: EntitySpec, op: Operation): Entity {
+/** Build the entities for one spec: usually one, or an elite's core followed by what it binds. */
+export function makeEntities(spec: EntitySpec, op: Operation): Entity[] {
   const entry = ENTITY_REGISTRY[spec.e] as RegistryEntry | undefined;
   if (!entry) throw new Error(`Unknown entity id "${(spec as { e: string }).e}"`);
-  const e = entry.make(spec, op);
-  if (spec.hidden) e.hidden = true;
-  if (spec.required !== undefined) e.required = spec.required;
-  return e;
+  const made = entry.make(spec, op);
+  const list = Array.isArray(made) ? made : [made];
+  const core = list[0];
+  if (spec.hidden) core.hidden = true;
+  if (spec.required !== undefined) core.required = spec.required;
+  return list;
+}
+
+/** Build one entity from its spec (an elite's core; its bound wounds are dropped — use `makeEntities`). */
+export function makeEntity(spec: EntitySpec, op: Operation): Entity {
+  return makeEntities(spec, op)[0];
 }
 
 /** Resolve a phase's spawn list (picks consume the op's seeded rng, in order). */
@@ -184,12 +218,12 @@ export function spawnAll(list: readonly SpawnSpec[], op: Operation): Entity[] {
   const out: Entity[] = [];
   for (const s of list) {
     if (s.e !== 'pick') {
-      out.push(makeEntity(s, op));
+      out.push(...makeEntities(s, op));
       continue;
     }
     const n = typeof s.n === 'number' ? s.n : op.rng.int(s.n[0], s.n[1]);
     const pool = [...s.of];
-    for (let i = 0; i < n && pool.length; i++) out.push(makeEntity(pool.splice(Math.floor(op.rng.next() * pool.length), 1)[0], op));
+    for (let i = 0; i < n && pool.length; i++) out.push(...makeEntities(pool.splice(Math.floor(op.rng.next() * pool.length), 1)[0], op));
   }
   return out;
 }
@@ -264,6 +298,8 @@ function checkParam(name: string, v: unknown, p: Param): string | null {
       if (typeof v !== 'number' || !Number.isFinite(v)) return `"${name}" must be a number`;
       if (p.range && (v < p.range[0] || v > p.range[1])) return `"${name}" ${v} outside ${p.range[0]}…${p.range[1]}`;
       return null;
+    case 'numbers':
+      return Array.isArray(v) && v.every((n) => typeof n === 'number' && Number.isFinite(n)) ? null : `"${name}" must be a list of numbers`;
     case 'boolean':
       return typeof v === 'boolean' ? null : `"${name}" must be true/false`;
     case 'string':

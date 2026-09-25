@@ -85,7 +85,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0047 · Alpha · P2 · S · Tincture overdose — > 3 doses in 20 s causes 5 s tremor (cursor jitter 4 px); telegraphed by vial going dark
 
 ### Cautery Brand
-- [ ] GAM-0048 · Demo · P0 · S · Brand hold times — grub 0.8 s, sigil node 1.0 s, Malison flesh continuous DPS 18/s; values from tuning table
+- [x] GAM-0048 · Demo · P0 · S · Brand hold times — grub 0.8 s, sigil node 1.0 s, Malison flesh continuous DPS 18/s; values from tuning table
 - [x] GAM-0049 · Demo · P1 · S · Branding healthy flesh > 0.5 s creates a Burn(fire) and BAD — prevents holding brand everywhere
 - [x] GAM-0050 · Demo · P1 · S · Brand overheat meter — 6 s continuous use locks it for 2 s; shown as glowing tip colour
 - [ ] GAM-0051 · Demo · P2 · S · Sizzle SFX and smoke particles scale with target type — brand smoke obscures field briefly (cosmetic only)
@@ -405,64 +405,64 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 
 ## BOS-A · Boss framework (Demo)
 
-- [ ] BOS-0001 · Demo · P0 · M · `MalisonBase` class — shared HP, phase list, hurt flash, tells, add registry (`spawnedByBoss`), exposure windows; Matins and Lauds refactored onto it with unchanged bot results
-- [ ] BOS-0002 · Demo · P0 · S · Boss HP bar HUD with phase notches and hour name in Fraktur — hidden segments reveal as phases unlock
-- [ ] BOS-0003 · Demo · P0 · S · Tell framework — every attack declares `tell: {lead: s, visual, audio}`; minimum lead 0.8 s on Surgeon, 1.0 s on Novice; test enforces for all bosses
-- [ ] BOS-0004 · Demo · P0 · S · Boss phase-transition cinematic beat — (1.2 s, sim frozen, shake + choir sting) with skip on repeat attempts
-- [ ] BOS-0005 · Demo · P1 · S · Boss death sequence — 2.5 s dissolve, ash particles, all boss-spawned adds wither over 3 s (scored at 0, not failed)
-- [ ] BOS-0006 · Demo · P1 · S · Boss drain budget — sum of boss + adds drain never exceeds 2.0/s on Surgeon (sim assertion in debug builds)
-- [ ] BOS-0007 · Demo · P1 · S · Boss bot-harness contract — every boss exports a `botStrategy` used by `tests/bot.ts`; completion test on 20 seeds per difficulty
-- [ ] BOS-0008 · Demo · P1 · S · Hollow Choir leitmotif hooks — boss emits `music.intensity` 0–3 by phase for adaptive music
+- [x] BOS-0001 · Demo · P0 · M · `MalisonBase` class — shared HP, phase list, hurt flash, tells, add registry (`spawnedByBoss`), exposure windows; Matins and Lauds refactored onto it with unchanged bot results
+- [x] BOS-0002 · Demo · P0 · S · Boss HP bar HUD with phase notches and hour name in Fraktur — hidden segments reveal as phases unlock
+- [x] BOS-0003 · Demo · P0 · S · Tell framework — every attack declares `tell: {lead: s, visual, audio}`; minimum lead 0.8 s on Surgeon, 1.0 s on Novice; test enforces for all bosses
+- [x] BOS-0004 · Demo · P0 · S · Boss phase-transition cinematic beat — (1.2 s, sim frozen, shake + choir sting) with skip on repeat attempts
+- [x] BOS-0005 · Demo · P1 · S · Boss death sequence — 2.5 s dissolve, ash particles, all boss-spawned adds wither over 3 s (scored at 0, not failed)
+- [x] BOS-0006 · Demo · P1 · S · Boss drain budget — sum of boss + adds drain never exceeds 2.0/s on Surgeon (sim assertion in debug builds)
+- [x] BOS-0007 · Demo · P1 · S · Boss bot-harness contract — every boss exports a `botStrategy` used by `tests/bot.ts`; completion test on 20 seeds per difficulty
+- [x] BOS-0008 · Demo · P1 · S · Hollow Choir leitmotif hooks — boss emits `music.intensity` 0–3 by phase for adaptive music
 - [ ] BOS-0009 · Alpha · P1 · S · Boss content lint — every boss phase has ≥ 1 tell, ≥ 1 counter, an Ilse hint line, and codex text
 
 ## BOS-B · Matins — The Night Vigil (Chapter 1 boss, Demo polish)
 
 ### Mechanics & phases
 - [x] BOS-0010 · M0 · P0 · M · Matins core — shroud rhythm 4 s veiled / 2.5 s open, drift, rend lacerations while veiled, brand only while open, MalisonShard spawns
-- [ ] BOS-0011 · Demo · P0 · S · Phase 1 "Vigil" (100–60 % HP): base rhythm — rend every 4.5 s; tell = shroud tremor 0.8 s before opening
-- [ ] BOS-0012 · Demo · P0 · S · Phase 2 "Watchfire" (60–25 %): open window 2.0 s, spawns 2 MalisonShards on each veil close that crawl to wounds — Litany tutorial triggers at phase start
-- [ ] BOS-0013 · Demo · P0 · S · Phase 3 "The Eye" (25–0 %): a single eye opens on a 3-beat pulse — branding the eye only on beat 3 deals ×2 damage; misses rend
-- [ ] BOS-0014 · Demo · P1 · S · Eye-gaze attack — eye locks cursor for 1 s (tell: iris contracts) then fires a lash laceration along the gaze line; moving cursor off gaze line avoids
-- [ ] BOS-0015 · Demo · P1 · S · Veiled-branding feedback — branding the veiled shroud rates MISS once then hint "Wait for it to open"; no further MISSes for 5 s
-- [ ] BOS-0016 · Demo · P1 · S · Drift clamp — Matins never drifts within 40 px of field edge or under HUD
+- [x] BOS-0011 · Demo · P0 · S · Phase 1 "Vigil" (100–60 % HP): base rhythm — rend every 4.5 s; tell = shroud tremor 0.8 s before opening
+- [x] BOS-0012 · Demo · P0 · S · Phase 2 "Watchfire" (60–25 %): open window 2.0 s, spawns 2 MalisonShards on each veil close that crawl to wounds — Litany tutorial triggers at phase start
+- [x] BOS-0013 · Demo · P0 · S · Phase 3 "The Eye" (25–0 %): a single eye opens on a 3-beat pulse — branding the eye only on beat 3 deals ×2 damage; misses rend
+- [x] BOS-0014 · Demo · P1 · S · Eye-gaze attack — eye locks cursor for 1 s (tell: iris contracts) then fires a lash laceration along the gaze line; moving cursor off gaze line avoids
+- [x] BOS-0015 · Demo · P1 · S · Veiled-branding feedback — branding the veiled shroud rates MISS once then hint "Wait for it to open"; no further MISSes for 5 s
+- [x] BOS-0016 · Demo · P1 · S · Drift clamp — Matins never drifts within 40 px of field edge or under HUD
 ### Audio/visual cues
-- [ ] BOS-0017 · Demo · P1 · S · Opening cue — low bell toll + shroud peels with inner red glow; visual lead 0.8 s, audio lead 0.6 s
-- [ ] BOS-0018 · Demo · P1 · S · Rend cue — shroud edge sharpens into hooks 0.5 s before laceration spawns
-- [ ] BOS-0019 · Demo · P2 · S · Matins flesh-shader corruption radius grows with HP lost — recedes on death
-- [ ] BOS-0020 · Demo · P2 · S · Matins ambience — choir whisper loop stereo-panned to Matins screen x-position (−1..1)
+- [x] BOS-0017 · Demo · P1 · S · Opening cue — low bell toll + shroud peels with inner red glow; visual lead 0.8 s, audio lead 0.6 s
+- [x] BOS-0018 · Demo · P1 · S · Rend cue — shroud edge sharpens into hooks 0.5 s before laceration spawns
+- [x] BOS-0019 · Demo · P2 · S · Matins flesh-shader corruption radius grows with HP lost — recedes on death
+- [x] BOS-0020 · Demo · P2 · S · Matins ambience — choir whisper loop stereo-panned to Matins screen x-position (−1..1)
 ### Tuning & tests
-- [ ] BOS-0021 · Demo · P0 · S · HP and brand DPS tuned so steady bot clears in 150–210 s on Surgeon — novice bot wins 20/20 seeds
+- [x] BOS-0021 · Demo · P0 · S · HP and brand DPS tuned so steady bot clears in 150–210 s on Surgeon — novice bot wins 20/20 seeds
 - [x] BOS-0022 · Demo · P0 · S · Farming regression — `farm` bot Matins score ≤ steady score (depends on GAM farming fix)
-- [ ] BOS-0023 · Demo · P1 · S · Unit tests — rhythm timings per phase, eye beat damage multiplier, shard spawn count per veil
-- [ ] BOS-0024 · Demo · P1 · S · Checkpoint at phases 2 and 3 verified — retry resumes with correct HP and no leftover adds
+- [x] BOS-0023 · Demo · P1 · S · Unit tests — rhythm timings per phase, eye beat damage multiplier, shard spawn count per veil
+- [x] BOS-0024 · Demo · P1 · S · Checkpoint at phases 2 and 3 verified — retry resumes with correct HP and no leftover adds
 - [ ] BOS-0025 · Demo · P1 · S · Playtest gate — 5 new players: ≥ 4 clear Matins within 3 attempts on Surgeon
-- [ ] BOS-0026 · Demo · P2 · S · Matins codex & debrief — codex entry unlocked on first encounter; 3 Ilse debrief lines keyed to rank (XS/S, A/B, C)
+- [x] BOS-0026 · Demo · P2 · S · Matins codex & debrief — codex entry unlocked on first encounter; 3 Ilse debrief lines keyed to rank (XS/S, A/B, C)
 
 ## BOS-C · Lauds — The Antiphon (Chapter 2 boss, Demo polish)
 
 ### Mechanics & phases
 - [x] BOS-0027 · M0 · P0 · M · Lauds core — 4 orbiting ChoirVoices shield heart; 5 s exposure before rekindle; Hymn ring lacerations; submerge phase leaving Rot; EggSac + SpiderlingGrub adds
-- [ ] BOS-0028 · Demo · P0 · S · Phase 1 "Call" (100–65 %): 4 Voices — silence a Voice by tracing its sigil; heart exposed when all silent
-- [ ] BOS-0029 · Demo · P0 · S · Phase 2 "Response" (65–30 %): two linked bodies in different regions joined by light-thread — damaging one heals the other 50 % unless the other is struck within a 1.5 s response window
-- [ ] BOS-0030 · Demo · P0 · S · Thread severance counter — Lancet across the light-thread during its dim beat (every 6 s, 1 s window) unlinks bodies for 8 s
-- [ ] BOS-0031 · Demo · P0 · S · Phase 3 "Dawn" (30–0 %): submerges and surfaces at Lens-revealed ripples — dawn flare blinds Lens every 12 s for 2 s (tell: horizon glow 1 s)
-- [ ] BOS-0032 · Demo · P1 · S · Hymn ring — max 1 laceration per verse on Surgeon, 2 on Master; ring radius and speed exposed in tuning
-- [ ] BOS-0033 · Demo · P1 · S · Rekindle rules — rekindled Voices spawn at 50 % trace length (partially traced) so repeated rekindles are faster to clear
-- [ ] BOS-0034 · Demo · P1 · S · EggSac hatch timer 10 s with swell tell — hatched spiderlings target open wounds; limit 6 live spiderlings
+- [x] BOS-0028 · Demo · P0 · S · Phase 1 "Call" (100–65 %): 4 Voices — silence a Voice by tracing its sigil; heart exposed when all silent
+- [x] BOS-0029 · Demo · P0 · S · Phase 2 "Response" (65–30 %): two linked bodies in different regions joined by light-thread — damaging one heals the other 50 % unless the other is struck within a 1.5 s response window
+- [x] BOS-0030 · Demo · P0 · S · Thread severance counter — Lancet across the light-thread during its dim beat (every 6 s, 1 s window) unlinks bodies for 8 s
+- [x] BOS-0031 · Demo · P0 · S · Phase 3 "Dawn" (30–0 %): submerges and surfaces at Lens-revealed ripples — dawn flare blinds Lens every 12 s for 2 s (tell: horizon glow 1 s)
+- [x] BOS-0032 · Demo · P1 · S · Hymn ring — max 1 laceration per verse on Surgeon, 2 on Master; ring radius and speed exposed in tuning
+- [x] BOS-0033 · Demo · P1 · S · Rekindle rules — rekindled Voices spawn at 50 % trace length (partially traced) so repeated rekindles are faster to clear
+- [x] BOS-0034 · Demo · P1 · S · EggSac hatch timer 10 s with swell tell — hatched spiderlings target open wounds; limit 6 live spiderlings
 - [x] BOS-0035 · Demo · P1 · S · Submerged Rot trail capped at 3 patches — (existing) and trail Rot rated as boss-add (farming fix)
 ### Audio/visual cues
-- [ ] BOS-0036 · Demo · P1 · S · Antiphon audio — each linked body sings one half of a two-note call; response window visualised as an arc filling between them
-- [ ] BOS-0037 · Demo · P1 · S · Hymn tell — choir inhale SFX + ring outline shimmer 0.8 s before expansion
-- [ ] BOS-0038 · Demo · P1 · S · Dawn flare — gold bloom spike limited by flash-intensity option; Lens icon greys out during blind
-- [ ] BOS-0039 · Demo · P2 · S · Voice silence FX — each silenced Voice drops a note from the sung chord (4-voice stem mix)
+- [x] BOS-0036 · Demo · P1 · S · Antiphon audio — each linked body sings one half of a two-note call; response window visualised as an arc filling between them
+- [x] BOS-0037 · Demo · P1 · S · Hymn tell — choir inhale SFX + ring outline shimmer 0.8 s before expansion
+- [x] BOS-0038 · Demo · P1 · S · Dawn flare — gold bloom spike limited by flash-intensity option; Lens icon greys out during blind
+- [x] BOS-0039 · Demo · P2 · S · Voice silence FX — each silenced Voice drops a note from the sung chord (4-voice stem mix)
 ### Tuning & tests
-- [ ] BOS-0040 · Demo · P0 · S · Steady bot clears Lauds in 240–320 s — novice bot 20/20; expert XS reachable
-- [ ] BOS-0041 · Demo · P0 · S · Bot strategy handles response window — (strike A then B within 1.5 s) and thread severance timing
+- [x] BOS-0040 · Demo · P0 · S · Steady bot clears Lauds in 240–320 s — novice bot 20/20; expert XS reachable
+- [x] BOS-0041 · Demo · P0 · S · Bot strategy handles response window — (strike A then B within 1.5 s) and thread severance timing
 - [x] BOS-0042 · Demo · P0 · S · Farming regression — `farm` bot Lauds score ≤ steady score
-- [ ] BOS-0043 · Demo · P1 · S · Unit tests — heal-on-unanswered strike, severance unlink duration, flare blind duration, rekindle partial trace
-- [ ] BOS-0044 · Demo · P1 · S · Lauds checkpoints — retry at phases 2 and 3 resumes with correct HP, linked-body state, and no leftover adds (test)
+- [x] BOS-0043 · Demo · P1 · S · Unit tests — heal-on-unanswered strike, severance unlink duration, flare blind duration, rekindle partial trace
+- [x] BOS-0044 · Demo · P1 · S · Lauds checkpoints — retry at phases 2 and 3 resumes with correct HP, linked-body state, and no leftover adds (test)
 - [ ] BOS-0045 · Demo · P1 · S · Playtest gate — ≥ 4/5 players clear Lauds in ≤ 4 attempts on Surgeon; median attempt time logged
-- [ ] BOS-0046 · Demo · P2 · S · Lauds codex, debrief lines, and end-of-demo tease of Prime — (name-sigil flicker in final frame)
+- [x] BOS-0046 · Demo · P2 · S · Lauds codex, debrief lines, and end-of-demo tease of Prime — (name-sigil flicker in final frame)
 
 ## BOS-D · Prime — The Roll of the Dead (Chapter 3)
 
@@ -577,9 +577,9 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0124 · Alpha · P0 · M · Phase 3 "Great Silence" (35–0 %): core only damageable by a two-tool combo — Lancet open then Brand within 0.6 s — each combo 8 %
 - [x] BOS-0125 · Alpha · P1 · S · Terce/Sext/None/Vespers snippets rotate in phase 3 as interrupts — (one per 20 s) at 60 % intensity
 ### Counterplay, tells & cues
-- [ ] BOS-0126 · Alpha · P1 · S · Litany-theft tell — HUD star glyph cracks and turns black; Ilse gasp line
-- [ ] BOS-0127 · Alpha · P1 · S · Silence window tell — all ambient audio ducks 1 s before full mute; subtitles show "[silence]"
-- [ ] BOS-0128 · Alpha · P2 · S · Compline music: evening prayer fades to single sustained note — returns in full when silence nodes broken
+- [x] BOS-0126 · Alpha · P1 · S · Litany-theft tell — HUD star glyph cracks and turns black; Ilse gasp line
+- [x] BOS-0127 · Alpha · P1 · S · Silence window tell — all ambient audio ducks 1 s before full mute; subtitles show "[silence]"
+- [x] BOS-0128 · Alpha · P2 · S · Compline music: evening prayer fades to single sustained note — returns in full when silence nodes broken
 ### Tuning & tests
 - [ ] BOS-0129 · Alpha · P0 · S · Bot strategy covers stolen-Litany slow, node breaking, two-tool combo — steady clears 380–480 s; novice ≥ 19/20
 - [x] BOS-0130 · Alpha · P1 · S · Unit tests — Litany ownership transfer and restore, mute windows never overlap a lethal attack without visual tell, combo window
@@ -609,11 +609,11 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 ## BOS-K · Mid-bosses & elite ailments
 
 ### Demo elites (Chapters 1–2)
-- [ ] BOS-0147 · Demo · P1 · M · Brood-Mother's egg-cluster elite (op2-3) — cluster of 3 EggSacs sharing a membrane; cutting membrane first (encircle) prevents simultaneous hatch; unit + bot test
-- [ ] BOS-0148 · Demo · P1 · M · Cantor's Knot elite (op2-4) — a sigil wound round the larynx that re-draws one stroke each time its bearer "sings" (5 s cycle, tell = hum SFX + glow); must be traced between hums
-- [ ] BOS-0149 · Demo · P1 · S · Gravehound fang-nest elite (op2-1) — 3 fangs linked by a rot web; extracting fangs out of order spreads Rot 30 px
-- [ ] BOS-0150 · Demo · P2 · S · Matins herald (op1-4 final phase) — a single MalisonShard that flees the Lens; foreshadows Matins; branding it gives bonus 300
-- [ ] BOS-0151 · Demo · P1 · S · Elite health bars use the boss HUD in compact form — elite ops calibrated in balance test
+- [x] BOS-0147 · Demo · P1 · M · Brood-Mother's egg-cluster elite (op2-3) — cluster of 3 EggSacs sharing a membrane; cutting membrane first (encircle) prevents simultaneous hatch; unit + bot test
+- [x] BOS-0148 · Demo · P1 · M · Cantor's Knot elite (op2-4) — a sigil wound round the larynx that re-draws one stroke each time its bearer "sings" (5 s cycle, tell = hum SFX + glow); must be traced between hums
+- [x] BOS-0149 · Demo · P1 · S · Gravehound fang-nest elite (op2-1) — 3 fangs linked by a rot web; extracting fangs out of order spreads Rot 30 px
+- [x] BOS-0150 · Demo · P2 · S · Matins herald (op1-4 final phase) — a single MalisonShard that flees the Lens; foreshadows Matins; branding it gives bonus 300
+- [x] BOS-0151 · Demo · P1 · S · Elite health bars use the boss HUD in compact form — elite ops calibrated in balance test
 
 ### Alpha/Beta elites (Chapters 3–5)
 - [x] BOS-0152 · Alpha · P1 · M · Stone Bride elite — petrification front from fingertips toward heart; chipping order puzzle + Litany freeze; 3 phases (hand, arm, chest)
@@ -626,8 +626,8 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [ ] BOS-0159 · Beta · P2 · M · Frost-Wight's Kiss elite — frost-curse spreading from a bite, frost patches refreeze unless thawed in ring order
 - [ ] BOS-0160 · Beta · P2 · M · Ghoul-claw infection elite — infection lines race to armpit; forced amputation branch if lost
 - [ ] BOS-0161 · Beta · P2 · M · Choir Magus remnant — mid-boss before Compline: a Hollow Choir agent's hex embedded as 3 hexstones that orbit and swap places (shell-game) under the Lens
-- [ ] BOS-0162 · Alpha · P1 · S · Elite framework — elites use `MalisonBase` with ≤ 2 phases, no checkpoints, bot completion tests, and farming guards
-- [ ] BOS-0163 · Beta · P1 · S · Every elite has codex entry — Ilse hint on 2nd failure, and balance-report row
+- [x] BOS-0162 · Alpha · P1 · S · Elite framework — elites use `MalisonBase` with ≤ 2 phases, no checkpoints, bot completion tests, and farming guards
+- [x] BOS-0163 · Beta · P1 · S · Every elite has codex entry — Ilse hint on 2nd failure, and balance-report row
 
 ## BOS-L · Boss X-op remixes (challenge mode)
 

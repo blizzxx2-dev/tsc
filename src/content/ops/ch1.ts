@@ -164,6 +164,7 @@ export const OP_1_4 = defineOp({
       spawn: [
         { e: 'rot', at: [-180, 70], r: 50, spread: 0.6 },
         { e: 'rot', at: [180, -60], r: 55, spread: 0.6 },
+        { e: 'herald', at: [0, 60] },
       ],
     },
   ],

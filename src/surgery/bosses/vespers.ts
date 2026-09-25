@@ -7,6 +7,10 @@ import { FIELD, onBody, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
 import { drawBossRing, InjectionWatch, randomOnBody, samplePath, stepToward, TAU } from './common';
 import { Voice } from './voices';
+import { assistsOf, attack, bossSound, leadFor, tell } from './signals';
+
+/** Shade of a dark quadrant under the minimum-brightness assist (keeps ≥ 45 % brightness). */
+export const VESPERS_MIN_BRIGHT_SHADE = 0.55;
 
 export interface VespersTuning {
   hp: number;
@@ -59,6 +63,7 @@ export class LampNode extends Entity {
       if (this.gutterT <= 0) {
         this.light = 0;
         op.emit('smoke', this.pos, 5);
+        attack(op, 'vespers', 'snuff', this.pos);
       }
     }
     if (this.wander) {
@@ -206,6 +211,7 @@ export class VespersMalison extends Entity {
   lamps: LampNode[] = [];
   filaments: WickFilament[] = [];
   private snuffT = 0;
+  private hymnT = 0;
   private target: Vec;
   private hurtFlash = 0;
   private watch = new InjectionWatch();
@@ -329,6 +335,14 @@ export class VespersMalison extends Entity {
     this.voice.tick(op, dt, this.pos);
     this.branded = false;
     this.hurtFlash = Math.max(0, this.hurtFlash - dt * 3);
+    // Evening hymn (BOS-0113): each lit lamp adds a harmonic to the music.
+    this.hymnT -= dt;
+    if (this.hymnT <= 0) {
+      this.hymnT = 0.5;
+      const lit = this.lamps.filter((l) => l.alive && l.lit).length;
+      op.events.emit('boss', { kind: 'music', boss: 'vespers', intensity: this.stage as 1 | 2 | 3, layers: lit });
+      op.events.emit('boss', { kind: 'ambience', id: 'vespers-hymn', pan: 0, gain: 1, layers: lit });
+    }
     // The dark hides the wicks.
     for (const f of this.living) f.hidden = !this.litAt(f.pos);
     // Tallow blood: the tincture is only half as strong while three or more clots remain.
@@ -344,11 +358,15 @@ export class VespersMalison extends Entity {
       if (dist(this.pos, this.target) < 8) this.target = randomOnBody(op, 0.55, 0.45);
       this.pos = stepToward(this.pos, this.target, 26, dt);
       this.snuffT -= dt;
-      if (this.snuffT <= this.tune.snuffTell && !this.lamps.some((l) => l.gutterT > 0)) {
+      const lead = Math.max(this.tune.snuffTell, leadFor(op, 'vespers', 'snuff'));
+      if (this.snuffT <= lead && !this.lamps.some((l) => l.gutterT > 0)) {
         const lit = this.lamps.filter((l) => l.lit);
         for (let i = 0; i < 2 && lit.length; i++) {
           const l = lit.splice(Math.floor(op.rng.next() * lit.length), 1)[0];
-          l.gutterT = this.tune.snuffTell;
+          // Snuff tell (BOS-0111): the flame gutters and leans, and hisses.
+          l.gutterT = lead;
+          tell(op, 'vespers', 'snuff', l.pos);
+          bossSound(op, 'hiss', l.pos);
         }
         op.sayOnce('vespers-snuff', 'The lamps are guttering — it’s snuffing them!');
       }
@@ -438,18 +456,22 @@ export class VespersMalison extends Entity {
       this.wickSamples.forEach((p, k) => this.traced[k] && g.circle(p.x, p.y, 3, hex('#ffd080')));
       g.circle(this.root.x, this.root.y, 10, hex(this.rootBare ? '#ff9040' : '#6a5030', wickLit || this.rootBare ? 1 : 0.3));
     }
-    // The dark: unlit quadrants fall to a fifth of their light.
+    // The dark: unlit quadrants fall to a fifth of their light (or, with the
+    // minimum-brightness assist, never below 45 %, with Vespers outlined — BOS-0112).
+    const minBright = !!assistsOf(op).minBrightness;
+    const shade = minBright ? VESPERS_MIN_BRIGHT_SHADE : 0.8;
     const dark = (q: number) => {
       const qx = q % 2 === 0 ? FIELD.cx - FIELD.rx - 20 : FIELD.cx;
       const qy = q < 2 ? FIELD.cy - FIELD.ry - 20 : FIELD.cy;
-      g.rect(qx, qy, FIELD.rx + 20, FIELD.ry + 20, hex('#000000', 0.8));
+      g.rect(qx, qy, FIELD.rx + 20, FIELD.ry + 20, hex('#000000', shade));
     };
     if (this.stage < 3) {
       for (let q = 0; q < 4; q++) if (!this.lamps.some((l) => l.alive && l.lit && l.quadrant === q)) dark(q);
     } else {
       const l = this.lamps.find((o) => o.alive);
-      g.rect(FIELD.cx - FIELD.rx - 20, FIELD.cy - FIELD.ry - 20, (FIELD.rx + 20) * 2, (FIELD.ry + 20) * 2, hex('#000000', l && l.lit ? 0.45 : 0.8));
+      g.rect(FIELD.cx - FIELD.rx - 20, FIELD.cy - FIELD.ry - 20, (FIELD.rx + 20) * 2, (FIELD.ry + 20) * 2, hex('#000000', l && l.lit ? 0.45 : shade));
       if (l && l.lit) g.glow(l.pos.x, l.pos.y, 200, hex('#ffc060', 0.12));
     }
+    if (minBright && this.stage >= 2) g.arc(x, y, this.radius + 4, 2, hex('#f0e0b0', 0.8));
   }
 }

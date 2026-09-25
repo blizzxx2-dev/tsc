@@ -893,6 +893,10 @@ export class Operation {
   /** Player input: uses real time so the Litany does not slow the surgeon. */
   /** Optional distortion of the surgeon's input (a boss's torpor or heat-haze); null = none. */
   inputFilter: ((ptr: Pointer, dt: number) => Pointer) | null = null;
+  /** Seconds the whole simulation stands still (a boss's phase-transition beat, BOS-0004). */
+  freezeT = 0;
+  /** Where the surgeon's instrument last was (after any input distortion), for gaze attacks. */
+  pointer: Vec = { x: FIELD.cx, y: FIELD.cy };
 
   handlePointer(ptr: Pointer, dt: number): void {
     this.log?.push(['p', ptr.pos.x, ptr.pos.y, ptr.prev.x, ptr.prev.y, ptr.down ? 1 : 0, ptr.pressed ? 1 : 0, ptr.released ? 1 : 0, dt]);
@@ -917,6 +921,11 @@ export class Operation {
         this.toggleLatch = !this.toggleLatch;
         ptr = { ...ptr, pressed: this.toggleLatch, released: !this.toggleLatch, down: this.toggleLatch };
       } else ptr = { ...ptr, pressed: false, released: false, down: this.toggleLatch };
+    }
+    this.pointer = ptr.pos;
+    if (this.freezeT > 0) {
+      if (ptr.released) this.releaseCapture();
+      return;
     }
     const tool = this.tool;
     if (!this.toolUsable(tool)) {
@@ -1171,6 +1180,10 @@ export class Operation {
       }
     }
     if (this.status === 'won' || this.status === 'lost') return;
+    if (this.freezeT > 0) {
+      this.freezeT = Math.max(0, this.freezeT - dt);
+      return;
+    }
     if (this.dialogue.length || this.litanyPractice) return;
 
     this.injectCooldown = Math.max(0, this.injectCooldown - dt);

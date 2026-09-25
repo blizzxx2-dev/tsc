@@ -3,6 +3,7 @@ import { EventBus } from '../core/events';
 import type { Vec } from '../core/math';
 import type { FxEvent } from '../render/particles';
 import type { Entity } from './entity';
+import type { BossEvent } from './bosses/signals';
 import type { Rating, ToolId } from './types';
 
 /**
@@ -30,6 +31,8 @@ export interface SimEvents {
   spawn: { entity: Entity };
   death: { entity: Entity };
   malisonHit: { pos: Vec; damage: number };
+  /** Boss phases, tells, attacks, music intensity and boss sounds (src/surgery/bosses/signals.ts). */
+  boss: BossEvent;
   win: { score: number; vitals: number; timeLeft: number };
   lose: { reason: string };
 }

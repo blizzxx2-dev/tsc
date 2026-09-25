@@ -9,6 +9,7 @@ import { FIELD, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
 import { BrandNode, distortion, drawBossRing, Muffler, randomOnBody, stepToward, TAU } from './common';
 import { Voice } from './voices';
+import { attack, bossSound, leadFor, tell } from './signals';
 import { burrowPath, BurrowSegment } from './none';
 import { NameSigil, PRIME_NAMES } from './prime';
 import { CrustPlate } from './sext';
@@ -59,6 +60,9 @@ export type EchoKind = 'matins' | 'lauds' | 'prime';
 /** Matins as Compline remembers it: the same shroud and rhythm, but it sheds at most two hexlings and no shards. */
 export class MatinsEcho extends Malison {
   private shed = 0;
+  constructor(pos: Vec, op: Operation, hour: 'matins' = 'matins', hp = 30) {
+    super(pos, op, hour, hp, { phased: false });
+  }
   override onSweep(op: Operation, ptr: Pointer, tool: ToolId, dt: number): void {
     const before = op.entities.length;
     super.onSweep(op, ptr, tool, dt);
@@ -77,8 +81,7 @@ export class LaudsEcho extends LaudsMalison {
     /** A hushed echo never raises its Hymn (the Office's Lauds trial is about the Voices). */
     private hushed = false,
   ) {
-    super(pos, op);
-    this.hp = hp;
+    super(pos, op, { hp, phased: false });
     for (const v of this.voices.slice(2)) v.kill();
   }
   override update(op: Operation, dt: number): void {
@@ -152,6 +155,7 @@ export class ComplineMalison extends Entity {
   private interruptIx = 0;
   private target: Vec;
   private hurtFlash = 0;
+  private musicT = 0;
   readonly echoes: readonly EchoKind[] = ['matins', 'lauds', 'prime'];
 
   constructor(
@@ -231,7 +235,10 @@ export class ComplineMalison extends Entity {
     op.litanyTime = 0;
     this.stealT = this.tune.stolenEvery;
     op.popup('THE LITANY IS TAKEN', { x: FIELD.cx, y: FIELD.cy - 150 }, '#8090c0');
-    op.say('Doctor — the stillness, it’s taken your stillness! It will turn it on your own hands!');
+    // Litany-theft tell (BOS-0126): the HUD star cracks and blackens; Ilse gasps.
+    op.events.emit('boss', { kind: 'hud', flag: 'litany-stolen', on: true });
+    bossSound(op, 'gasp', this.pos);
+    op.say('—! Doctor — the stillness, it’s taken your stillness! It will turn it on your own hands!');
     op.cues.push('bell');
     op.shake = 10;
     if (this.tune.noNodes) return;
@@ -260,6 +267,7 @@ export class ComplineMalison extends Entity {
     op.litanyLocked = false;
     // Usable once more even if it was already spent.
     if (!op.canInvokeLitany()) op.grantLitany();
+    op.events.emit('boss', { kind: 'hud', flag: 'litany-stolen', on: false });
     op.popup('THE LITANY RETURNS', { x: FIELD.cx, y: FIELD.cy - 150 }, '#f5d76e');
     op.cues.push('litany');
   }
@@ -294,16 +302,35 @@ export class ComplineMalison extends Entity {
     if (dist(this.pos, this.target) < 6) this.target = randomOnBody(op, 0.35, 0.3);
     this.pos = stepToward(this.pos, this.target, this.stage === 3 ? 14 : 20, dt);
 
+    // Compline's music (BOS-0128): the evening prayer thins to one sustained note while the Litany is held.
+    this.musicT -= dt;
+    if (this.musicT <= 0) {
+      this.musicT = 0.5;
+      op.events.emit('boss', { kind: 'music', boss: 'compline', intensity: this.stage, layers: this.litanyStolen ? 1 : 4 });
+    }
+
     // Windows of silence (with a one-second tell), in every phase.
+    const before = this.muteCycle;
     this.muteCycle += dt;
+    const lead = leadFor(op, 'compline', 'silence');
     if (this.muteT > 0) {
       this.muteT -= dt;
       op.spawn(new Muffler());
+      if (this.muteT <= 0) op.events.emit('boss', { kind: 'hud', flag: 'silence', on: false });
     } else if (this.muteCycle >= this.tune.muteEvery) {
       this.muteCycle = 0;
       this.muteT = this.tune.muteFor;
+      attack(op, 'compline', 'silence', this.pos);
       op.spawn(new Muffler());
-    } else if (this.muteCycle >= this.tune.muteEvery - 1) op.popup('[silence]', { x: FIELD.cx, y: FIELD.cy - FIELD.ry - 10 }, '#8090c0');
+    } else if (this.muteCycle >= this.tune.muteEvery - lead) {
+      if (before < this.tune.muteEvery - lead) {
+        // Silence tell (BOS-0127): ambience ducks a second before the full mute; subtitles say so.
+        tell(op, 'compline', 'silence', this.pos);
+        bossSound(op, 'hush', this.pos);
+        op.events.emit('boss', { kind: 'hud', flag: 'silence', on: true });
+      }
+      op.popup('[silence]', { x: FIELD.cx, y: FIELD.cy - FIELD.ry - 10 }, '#8090c0');
+    }
 
     if (this.comboOpen && op.elapsed - this.comboOpenAt > this.tune.comboWindow) this.comboOpenAt = -Infinity;
 
@@ -320,7 +347,13 @@ export class ComplineMalison extends Entity {
       if (this.litanyStolen) op.litanyLocked = true;
       this.stealT -= dt;
       if (this.stolenT > 0) this.stolenT -= dt;
+      const sl = leadFor(op, 'compline', 'steal');
+      if (this.litanyStolen && this.stealT + dt > sl && this.stealT <= sl) {
+        tell(op, 'compline', 'steal', this.pos);
+        bossSound(op, 'gasp', this.pos, 0.5);
+      }
       if (this.stealT <= 0 && this.litanyStolen) {
+        attack(op, 'compline', 'steal', this.pos);
         this.stealT = this.tune.stolenEvery;
         this.stolenT = this.tune.stolenFor;
         op.popup('Stillness — against you', this.pos, '#8090c0');

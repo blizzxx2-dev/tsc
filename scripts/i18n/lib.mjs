@@ -1,5 +1,6 @@
 // Shared helpers for the localisation scripts (scripts/i18n/*.mjs).
-import { mkdirSync, readFileSync, readdirSync, existsSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { inflateSync } from 'node:zlib';
@@ -30,9 +31,18 @@ export async function loadTs(entry) {
   const { build } = await import('esbuild');
   const outdir = join(ROOT, 'node_modules/.cache/i18n-scripts');
   mkdirSync(outdir, { recursive: true });
-  const outfile = join(outdir, entry.replace(/[^\w]+/g, '_') + '.mjs');
-  await build({ entryPoints: [join(ROOT, entry)], bundle: true, format: 'esm', platform: 'node', outfile, logLevel: 'error' });
-  return import(`${pathToFileURL(outfile).href}?t=${Date.now()}`);
+  const r = await build({ entryPoints: [join(ROOT, entry)], bundle: true, format: 'esm', platform: 'node', write: false, logLevel: 'error' });
+  const code = r.outputFiles[0].text;
+  // The bundle is named by its content: a changed source is a fresh module, an unchanged one the
+  // cached module. (A `?t=` cache-buster on the import would stop Vitest treating the file as an
+  // external dependency, which breaks when node_modules is a symlink outside the checkout.)
+  const base = entry.replace(/[^\w]+/g, '_');
+  const outfile = join(outdir, `${base}.${createHash('sha1').update(code).digest('hex').slice(0, 12)}.mjs`);
+  if (!existsSync(outfile)) {
+    for (const f of readdirSync(outdir)) if (f.startsWith(`${base}.`) && f.endsWith('.mjs')) unlinkSync(join(outdir, f));
+    writeFileSync(outfile, code);
+  }
+  return import(pathToFileURL(outfile).href);
 }
 
 // ------------------------------------------------------------------ WOFF / OpenType

@@ -370,8 +370,8 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] CON-0048 · Demo · P2 · S · Stroh observer overlay — silhouette at field edge during this op only
 
 ### op1-5 "The Hour of Matins" (Emmerich, page-boy) — sigils, Malison boss, Litany intro
-- [ ] CON-0049 · Demo · P0 · M · Matins boss phase review — eye-open rhythm telegraphed 0.8 s before opening (audio + visual), brand damage only while open
-- [ ] CON-0050 · Demo · P0 · S · Litany teaching beat — first Malison enrage forces a callout prompting the star gesture; op still winnable without Litany (perfect bot test)
+- [x] CON-0049 · Demo · P0 · M · Matins boss phase review — eye-open rhythm telegraphed 0.8 s before opening (audio + visual), brand damage only while open
+- [x] CON-0050 · Demo · P0 · S · Litany teaching beat — first Malison enrage forces a callout prompting the star gesture; op still winnable without Litany (perfect bot test)
 - [ ] CON-0051 · Demo · P1 · S · Sigil trace phase — stroke order shown as numbered ink dots on first attempt, hidden on retry ≥ 2
 - [ ] CON-0052 · Demo · P1 · S · Mote spawn cap — ≤ 6 alive; so the field never becomes unreadable
 - [ ] CON-0053 · Demo · P1 · S · Final phase — MATINS word seared into flesh as a visual when boss dies (matches s1-end)
@@ -393,7 +393,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] CON-0063 · Demo · P2 · S · Hexshard handling — shards dropped only in the lead dish tray; dropping elsewhere = BAD (plants Whisper system)
 
 ### op2-3 "Brood-Mother's Kiss" (Henning, forager) — venom, egg sacs, grubs
-- [ ] CON-0064 · Demo · P0 · S · Egg-sac hatch timer shown as swelling — lanced sacs spill grubs to be branded; unlanced hatch scatters 3× grubs (test)
+- [x] CON-0064 · Demo · P0 · S · Egg-sac hatch timer shown as swelling — lanced sacs spill grubs to be branded; unlanced hatch scatters 3× grubs (test)
 - [ ] CON-0065 · Demo · P1 · S · Venom spread along drawn veins — tincture targets the vein head
 - [ ] CON-0066 · Demo · P1 · S · Web-silk wrapping overlay that must be cut — with the lancet before the field is accessible
 - [x] CON-0067 · Demo · P2 · S · Grub AI flees toward nearest open wound — not random; so good play closes wounds first
@@ -405,9 +405,9 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] CON-0071 · Demo · P2 · S · Hymn-token prop — one sigil matches Emmerich's (visual continuity with s1-end)
 
 ### op2-5 "The Hour of Lauds" (Jorg, standard-bearer) — antiphonal Malison boss
-- [ ] CON-0072 · Demo · P0 · M · Lauds antiphonal pair — two linked bodies joined by a light-thread; damaging one makes the other "answer" (heals 15% + spawns a cut) unless struck within a 1.2 s response window
-- [ ] CON-0073 · Demo · P0 · S · Thread-sever option — lancet then gut thread on the light-thread splits the pair for 8 s
-- [ ] CON-0074 · Demo · P1 · S · Dawn-flare hazard — every 20 s the field flares white and the lens is blinded 3 s; warned 1 s ahead
+- [x] CON-0072 · Demo · P0 · M · Lauds antiphonal pair — two linked bodies joined by a light-thread; damaging one makes the other "answer" (heals 15% + spawns a cut) unless struck within a 1.2 s response window
+- [x] CON-0073 · Demo · P0 · S · Thread-sever option — lancet then gut thread on the light-thread splits the pair for 8 s
+- [x] CON-0074 · Demo · P1 · S · Dawn-flare hazard — every 20 s the field flares white and the lens is blinded 3 s; warned 1 s ahead
 - [ ] CON-0075 · Demo · P1 · S · Phase 3 fusion — halves fuse into one body with a Voices ring; brand the Voices as currently implemented
 - [ ] CON-0076 · Demo · P1 · S · Litany synergy — during Litany both halves can be hit in one window; sim confirms Litany is not mandatory
 - [ ] CON-0077 · Demo · P1 · S · Boss-fail tips (3) and phase checkpoint — on fail after phase 2, retry offers "start at the Choir" with rank capped at B

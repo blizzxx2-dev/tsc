@@ -7,6 +7,7 @@ import { FIELD, MAX_VITALS, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
 import { BrandNode, distortion, drawBossRing, InjectionWatch, TAU } from './common';
 import { Voice } from './voices';
+import { bossSound, type BossOpDef } from './signals';
 
 export interface SextTuning {
   hp: number;
@@ -25,6 +26,9 @@ export interface SextTuning {
   /** False vitals never clear, even under the lens (X-op "Noonday Demon"). */
   permanentFalse?: boolean;
 }
+
+/** Torpor cap under the reduced input-lag assist (s). */
+export const REDUCED_LAG_CAP = 0.12;
 
 export const SEXT_DEFAULT: SextTuning = { hp: 100, lagMax: 0.25, lagRamp: 20, stillLag: 0.4, falseTarget: 70, realDrain: 1.2, plates: 6, dps: 11 };
 
@@ -136,6 +140,7 @@ export class SextMalison extends Entity {
   private cycleStart = 0;
   private recast = 0;
   private hurtFlash = 0;
+  private droneT = 0;
   private watch = new InjectionWatch();
   private truth: HeartTruth;
   readonly heart: Vec;
@@ -149,10 +154,16 @@ export class SextMalison extends Entity {
     super(pos);
     this.layer = 2;
     this.hp = this.maxHp = tune.hp;
+    if ((op.def as BossOpDef).assists?.reducedLag) this.lagCap = REDUCED_LAG_CAP;
     this.heart = heart ?? { x: FIELD.cx - 150, y: FIELD.cy - 60 };
     this.crust(op, tune.plates);
     this.truth = new HeartTruth(this.heart, this);
     op.spawn(this.truth);
+  }
+
+  /** The false reading is on the monitors (not the truth under the Lens) — the ECG runs too smooth (BOS-0083). */
+  get falseShown(): boolean {
+    return this.trueVitals !== null && this.truthT <= 0;
   }
 
   get exposed(): boolean {
@@ -161,9 +172,12 @@ export class SextMalison extends Entity {
 
   /** The instruments' current lag in seconds. */
   get lag(): number {
-    if (this.stillborn) return this.tune.stillLag;
-    return this.tune.lagMax * clamp(this.torporT / this.tune.lagRamp, 0, 1);
+    if (this.stillborn) return Math.min(this.lagCap, this.tune.stillLag);
+    return Math.min(this.lagCap, this.tune.lagMax * clamp(this.torporT / this.tune.lagRamp, 0, 1));
   }
+
+  /** The "reduced input-lag effects" assist caps the torpor at 120 ms (BOS-0085). */
+  lagCap = Infinity;
 
   get radius(): number {
     return 30 + 8 * (this.hp / this.maxHp);
@@ -245,6 +259,12 @@ export class SextMalison extends Entity {
       this.torporT = 0;
     }
     this.torporT += dt;
+    // Noon bell audio (BOS-0084): a heat drone and cicada buzz that rise with the torpor.
+    this.droneT -= dt;
+    if (this.droneT <= 0) {
+      this.droneT = 2;
+      bossSound(op, 'drone', this.pos, 0.3 + 0.7 * clamp(this.lag / Math.max(this.tune.lagMax, 1e-6), 0, 1));
+    }
     if (this.lag > 0.15) op.sayOnce('sext-torpor', 'Your hands are slowing, Doctor — it’s the curse! A tincture will quicken you.');
     // Clash: the Litany against its Stillness cancels both and stuns it.
     if (this.stillborn && op.litanyTime > 0) {

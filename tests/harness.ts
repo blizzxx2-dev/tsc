@@ -82,6 +82,34 @@ export class Hand {
     }
     return release ? this.release() : this;
   }
+
+  /** One frame with the button up at p (the instrument hovers). */
+  hover(p: Vec): this {
+    this.frame(p, false);
+    return this;
+  }
+
+  /** Trace a closed local path around a moving target for `seconds`, button held. */
+  traceMoving(tool: ToolId, at: () => Vec, path: readonly Vec[], seconds: number, speed = 120): this {
+    let per = 0;
+    for (let i = 1; i < path.length; i++) per += Math.hypot(path[i].x - path[i - 1].x, path[i].y - path[i - 1].y);
+    const along = (s: number): Vec => {
+      s %= per;
+      for (let i = 1; i < path.length; i++) {
+        const l = Math.hypot(path[i].x - path[i - 1].x, path[i].y - path[i - 1].y);
+        if (s <= l) return { x: path[i - 1].x + ((path[i].x - path[i - 1].x) * s) / l, y: path[i - 1].y + ((path[i].y - path[i - 1].y) * s) / l };
+        s -= l;
+      }
+      return path[0];
+    };
+    this.op.setTool(tool);
+    for (let t = 0, s = 0; t < seconds; t += DT, s += speed * DT) {
+      const c = at();
+      const l = along(s);
+      this.frame({ x: c.x + l.x, y: c.y + l.y }, true);
+    }
+    return this.release();
+  }
 }
 
 /** Every live entity of a class. */

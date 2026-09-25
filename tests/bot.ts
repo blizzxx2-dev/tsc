@@ -11,17 +11,20 @@
  * - `sloppy`  steady, but 30 % of order-sensitive steps are done wrong (no barb nick, no bolt pause, overcut buboes…)
  */
 import { dist, Rng, type Vec } from '../src/core/math';
-import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, SALVE_MAX, Sigil, Venom, Wadding } from '../src/surgery/entities';
+import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, projectAlong, Rot, SALVE_MAX, Sigil, Venom, Wadding } from '../src/surgery/entities';
 import type { Entity } from '../src/surgery/entity';
-import { ChoirVoice, EggSac, LaudsMalison, SpiderlingGrub } from '../src/surgery/lauds';
+import { ChoirVoice, DawnOverlay, EggSac, LaudsBody, LaudsMalison, LightThread, SpiderlingGrub } from '../src/surgery/lauds';
 import { Malison, MalisonAsh, MalisonShard } from '../src/surgery/malison';
 import { FIELD, LEAD_DISH, Operation, Reopened, SimpleBurn, TRAY_DISH, type OperationDef, type OperationOptions } from '../src/surgery/operation';
 import type { Pointer, ToolId } from '../src/surgery/types';
+import { planLater } from './bot-later';
+import { hoursUrgent, planHours } from './bot-hours';
+import { BossDeath, MalisonBase } from '../src/surgery/bosses/base';
+import { MatinsHerald } from '../src/surgery/bosses/elites';
 import type { JournalEvent } from '../src/surgery/events';
 import type { Input } from '../src/core/input';
 import type { Game } from '../src/core/scene';
 import { OperationScene } from '../src/scenes/operation';
-import { planLater } from './bot-later';
 import type { TinctureColor } from '../src/surgery/progress';
 import { botPlanAlpha, isAlphaEntity } from './botAlpha';
 
@@ -106,6 +109,61 @@ export function zigzag(line: Vec[], crossings: number, amp = 26): Vec[] {
     pts.push({ x: p.x + n.x * side, y: p.y + n.y * side });
   }
   return pts;
+}
+
+/**
+ * Stitch a wound that already carries stitches: one stab through each remaining gap (a repeat of
+ * the first zig-zag lands beside the old stitches and is refused). Each stab lands 4.5 px past the
+ * wound, so the stitch sits where it was aimed along it; a gap too narrow to fit one cleanly is
+ * stabbed from the side the neighbouring stitches lean away from.
+ */
+export function* restitch(lac: Laceration): Action {
+  const line = [lac.a, lac.b];
+  const st = lac.stitch;
+  const total = st.length;
+  const d = { x: (lac.b.x - lac.a.x) / (total || 1), y: (lac.b.y - lac.a.y) / (total || 1) };
+  const n = { x: -d.y, y: d.x };
+  const at = st.marks.map((m) => ({ s: projectAlong(line, m).at, o: (m.x - lac.a.x) * n.x + (m.y - lac.a.y) * n.y })).sort((a, b) => a.s - b.s);
+  const edges = [0, ...at.map((m) => m.s), total];
+  const gaps = edges.slice(1).map((b, i) => ({ a: edges[i], b, lean: (at[i - 1]?.o ?? 0) + (at[i]?.o ?? 0) }));
+  const stabs: { s: number; side: number }[] = [];
+  for (const g of gaps) {
+    const len = g.b - g.a;
+    // Room for a stitch at least `minSpacing` (10 px) from both neighbours.
+    if (len < 21) continue;
+    const k = Math.max(1, Math.ceil(len / 40) - 1);
+    for (let i = 1; i <= k; i++) stabs.push({ s: g.a + (len * i) / (k + 1), side: 0 });
+  }
+  if (!stabs.length) {
+    const g = gaps.reduce((w, x) => (x.b - x.a > w.b - w.a ? x : w));
+    stabs.push({ s: (g.a + g.b) / 2, side: g.lean >= 0 ? -1 : 1 });
+  }
+  const P = (s: number, o: number): Vec => ({ x: lac.a.x + d.x * s + n.x * o, y: lac.a.y + d.y * s + n.y * o });
+  let side = stabs[0].side || 1;
+  let p = P(stabs[0].s, -8 * side);
+  yield { tool: 'thread', pos: p, down: true };
+  for (const stab of stabs) {
+    if (stab.side) side = stab.side;
+    // Approach along the wound on this side, then stab across it in one frame.
+    const from = P(stab.s, -8 * side);
+    for (let i = 1, k = Math.max(1, Math.ceil(dist(p, from) / 4)); i <= k; i++) yield { tool: 'thread', pos: { x: p.x + ((from.x - p.x) * i) / k, y: p.y + ((from.y - p.y) * i) / k }, down: true };
+    p = P(stab.s, 4.5 * side);
+    yield { tool: 'thread', pos: p, down: true };
+    side = -side;
+  }
+  yield { tool: 'thread', pos: p, down: false };
+}
+
+/** The thread stroke for a wound: a fresh zig-zag, or one stab through each remaining gap. */
+export function stitchWound(lac: Laceration): Action {
+  if (lac.stitch.count === 0) {
+    // One spare crossing, unless that would pack the stitches too close to the 10 px minimum
+    // spacing (short wounds): rejected stitches leave gaps no later stitch can fill.
+    const needed = Math.max(1, lac.stitch.needed);
+    const spare = (0.92 * lac.length) / (needed + 1) >= 13 ? 1 : 0;
+    return drag('thread', zigzag([lac.a, lac.b], needed + spare), 380);
+  }
+  return restitch(lac);
 }
 
 /** Brush raster over a disc. */
@@ -202,14 +260,15 @@ function plan(ctx: BotContext): Action | null {
     vis.find((e): e is T => e instanceof cls && pred(e as T));
 
   // Chapters III–V: bosses and ailments with their own counterplay (tests/bot-later.ts).
-  const later = planLater(op, { hold, tap, drag: (t, pts, sp) => drag(t, pts, sp), grabTo, chain, pause, zigzag, raster, OFF_BODY });
+  const kit = { hold, tap, drag: (t: ToolId, pts: Vec[], sp: number) => drag(t, pts, sp), grabTo, chain, pause, zigzag, raster, OFF_BODY };
+  const later = planLater(op, kit);
   if (later) return later;
 
   // Chapters III–V have their own entity kinds, planned by tests/bot-later.ts.
   const laterOp = /^op[345]-/.test(op.def.id);
   if (!laterOp) for (const e of ents) if (!isKnown(e)) throw new Error(`bot: unknown entity kind ${e.constructor.name}`);
 
-  if (op.vitals < (ctx.expert ? 55 : 40) && op.injectCooldown === 0 && has('tincture')) return hold('tincture', () => ({ x: FIELD.cx + 330, y: FIELD.cy + 20 }), 0.8);
+  if (op.vitals < (ctx.expert ? 60 : 40) && op.injectCooldown === 0 && has('tincture')) return hold('tincture', () => ({ x: FIELD.cx + 330, y: FIELD.cy + 20 }), 0.8);
 
   // Let a hot brand cool rather than have it lock mid-searing.
   if (op.brandHeat > 4 && has('brand')) return pause(OFF_BODY, op.tool, 1.2);
@@ -225,6 +284,28 @@ function plan(ctx: BotContext): Action | null {
     return hold(catcher, () => (mv.alive && m.alive ? mv.motePos(m) : null), 1.2);
   }
 
+  const bosses = vis.filter((e) => e.boss);
+  if (bosses.length && ctx.bossSeen < 0) ctx.bossSeen = op.elapsed;
+  const stalling = ctx.farm > 0 && ctx.bossSeen >= 0 && op.elapsed - ctx.bossSeen < ctx.farm;
+
+  // The Hours on MalisonBase (Matins, Lauds): their own strategies, unless wounds are piling up
+  // (a farming bot only dodges while it stalls).
+  const lacs = vis.filter((e): e is Laceration => e instanceof Laceration);
+  // An expert keeps the table clean (and the vitals up) rather than pressing on with wounds open.
+  const piling = ctx.expert ? lacs.length >= 2 || (lacs.length > 0 && op.vitals < 60) : lacs.length >= 3 || (lacs.length > 0 && op.vitals < 45);
+  if (!stalling && (hoursUrgent(op) || !(piling || find(BloodPool, (p) => p.r > 34)))) {
+    const hours = planHours(op, kit);
+    if (hours) return hours;
+  } else if (lacs.length && ents.some((e) => e instanceof MalisonBase)) {
+    // In a boss fight, close the bleeding wound before mopping up what it bleeds.
+    const big = find(BloodPool, (p) => p.r > 40);
+    if (big) return hold('leech', alive(big), 3);
+    const worst = lacs.sort((a, b) => b.drain(op) - a.drain(op))[0];
+    // A flooded wound cannot be stitched: draw off the pool that covers it first.
+    const over = find(BloodPool, (p) => dist(p.pos, worst.pos) < p.r + 12);
+    if (over) return hold('leech', alive(over), 2.5);
+    return tendLaceration(worst, has('salve'));
+  }
   const venom = find(Venom);
   if (venom) return hold('tincture', alive(venom), 1.1);
 
@@ -238,13 +319,9 @@ function plan(ctx: BotContext): Action | null {
     return drag('lancet', [{ x: c.x - half, y: c.y }, { x: c.x + half, y: c.y }], 300);
   }
 
-  const bosses = vis.filter((e) => e.boss);
-  if (bosses.length && ctx.bossSeen < 0) ctx.bossSeen = op.elapsed;
-  const stalling = ctx.farm > 0 && ctx.bossSeen >= 0 && op.elapsed - ctx.bossSeen < ctx.farm;
-
-  // A player invokes the Litany when the Malison lays itself open.
+  // A player invokes the Litany when the Malison lays itself open (the phased Hours pick their own moment).
   if (op.canInvokeLitany() && bosses.length && !stalling) {
-    const opening = bosses.some((b) => (b instanceof Malison && b.open) || (b instanceof LaudsMalison && b.livingVoices.length <= 2));
+    const opening = bosses.some((b) => (b instanceof Malison && !b.tune.phased && b.open) || (b instanceof LaudsMalison && !b.tune.phased && b.livingVoices.length <= 2));
     if (opening) ctx.litany();
   }
 
@@ -253,7 +330,6 @@ function plan(ctx: BotContext): Action | null {
     const m = find(Malison, (mm) => mm.open);
     if (m) return hold('brand', () => (m.alive && m.open ? m.pos : null), 3);
   }
-
   const shard = find(MalisonShard);
   if (shard) return grabTo('tongs', alive(shard), OFF_BODY);
 
@@ -263,16 +339,9 @@ function plan(ctx: BotContext): Action | null {
     if (g) return grabTo('tongs', alive(g), OFF_BODY);
   }
 
-  if (!stalling) {
-    const voice = find(ChoirVoice);
-    if (voice) return hold('brand', alive(voice), 2);
-  }
-  const lauds = ents.find((e): e is LaudsMalison => e instanceof LaudsMalison);
-  if (lauds?.submerged) return hold('lens', () => (lauds.alive && lauds.submerged ? lauds.pos : null), 1.5);
-  if (lauds && lauds.livingVoices.length === 0 && !stalling) return hold('brand', () => (lauds.alive && !lauds.submerged && lauds.livingVoices.length === 0 ? lauds.pos : null), 4);
-
-  const matins = find(Malison, (m) => m.open);
-  if (matins && !stalling) return hold('brand', () => (matins.alive && matins.open ? matins.pos : null), 3);
+  // With wounds tended, press the Hour again.
+  const hours = stalling ? null : planHours(op, kit);
+  if (hours && !find(Laceration) && !find(BloodPool, (p) => p.ichor !== 'blood' || p.r > 28)) return hours;
 
   // Drain big pools before anything they cover.
   const pool = find(BloodPool, (p) => p.ichor !== 'blood' || p.r > 28);
@@ -311,7 +380,7 @@ function plan(ctx: BotContext): Action | null {
   const lac = find(Laceration);
   if (lac) {
     if (lac.length <= SALVE_MAX && has('salve')) return salveOr(ctx, () => drag('salve', raster(lac.pos, lac.length / 2 + 6), 900));
-    return drag('thread', zigzag([lac.a, lac.b], Math.max(1, lac.stitch.needed - lac.stitch.count) + 1), 380);
+    return stitchWound(lac);
   }
   const re = find(Reopened);
   if (re) return drag('thread', zigzag([re.a, re.b], re.needed + 1), 380);
@@ -350,13 +419,18 @@ function plan(ctx: BotContext): Action | null {
   return null;
 }
 
-const KNOWN = [BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, Sigil, Venom, Wadding, ChoirVoice, EggSac, LaudsMalison, SpiderlingGrub, Malison, MalisonShard, MalisonAsh, Reopened, SimpleBurn];
+function tendLaceration(lac: Laceration, salve: boolean): Action {
+  if (lac.length <= SALVE_MAX && salve) return drag('salve', raster(lac.pos, lac.length / 2 + 6), 900);
+  return stitchWound(lac);
+}
+
+// Boss-framework kinds (MalisonBase cores and elites, their wounds and overlays) are planned by tests/bot-hours.ts.
+const KNOWN = [BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, Sigil, Venom, Wadding, ChoirVoice, EggSac, LaudsMalison, SpiderlingGrub, Malison, MalisonShard, MalisonAsh, Reopened, SimpleBurn, MalisonBase, BossDeath, DawnOverlay, LaudsBody, LightThread, MatinsHerald];
 const WOUND_FEVER = 'WoundFever';
 
 function isKnown(e: Entity): boolean {
   return KNOWN.some((k) => e instanceof k) || e.constructor.name === WOUND_FEVER || isAlphaEntity(e);
 }
-
 export interface BotResult {
   op: Operation;
   frames: number;
@@ -498,25 +572,46 @@ export function applyBotEvents(op: Operation, events: readonly BotEvent[]): void
   }
 }
 
-/** Play an operation to completion (or failure) with the bot. */
-export function playWithBot(def: OperationDef, opts: BotOptions = {}): BotResult {
+/** A bot playthrough driven one frame at a time (offline audio renders interleave it with rendering). */
+export interface BotStepper extends BotResult {
+  /** Simulate one frame; false once the operation is over (or the time cap is reached). */
+  step(): boolean;
+  /** Run to the end. */
+  finish(): BotResult;
+}
+
+export function botStepper(def: OperationDef, opts: BotOptions = {}): BotStepper {
   const maxSeconds = opts.maxSeconds ?? 900;
   const op = new Operation(def, opts);
   opts.onOp?.(op);
   const bot = new BotDriver(op, opts);
-  let frames = 0;
   let last: Pointer | null = null;
-  while ((op.status === 'intro' || op.status === 'running') && frames < maxSeconds * 60) {
-    frames++;
-    const j0 = op.journal.length;
-    const evs = bot.tick();
-    applyBotEvents(op, evs);
-    for (const ev of evs) if (ev.kind === 'pointer') last = ev.ptr;
-    op.update(DT);
-    if (opts.collect) for (const e of op.journal.slice(Math.min(j0, op.journal.length))) opts.collect(e);
-    opts.onFrame?.(op, last, DT);
-  }
-  return { op, frames };
+  const s: BotStepper = {
+    op,
+    frames: 0,
+    step() {
+      if (!(op.status === 'intro' || op.status === 'running') || s.frames >= maxSeconds * 60) return false;
+      s.frames++;
+      const j0 = op.journal.length;
+      const evs = bot.tick();
+      applyBotEvents(op, evs);
+      for (const ev of evs) if (ev.kind === 'pointer') last = ev.ptr;
+      op.update(DT);
+      if (opts.collect) for (const e of op.journal.slice(Math.min(j0, op.journal.length))) opts.collect(e);
+      opts.onFrame?.(op, last, DT);
+      return true;
+    },
+    finish() {
+      while (s.step());
+      return { op, frames: s.frames };
+    },
+  };
+  return s;
+}
+
+/** Play an operation to completion (or failure) with the bot. */
+export function playWithBot(def: OperationDef, opts: BotOptions = {}): BotResult {
+  return botStepper(def, opts).finish();
 }
 
 /**

@@ -36,6 +36,11 @@ import { settings } from '../core/settings';
 import { OptionsScene } from './options';
 import { litanyMode, OperationInput } from '../input/opinput';
 import { dragGlyphFor, glyphFor, toolKeyLabel } from '../input/glyphs';
+import { calmWave, drawBossHud, drawLitanyTheft, drawTorpor, ecgCalm, toolBlinded } from '../surgery/bosses/hud';
+import { BossAudio, withBossAssists } from './bossAudio';
+import { watchEncounters } from '../surgery/bosses/codex';
+import { loadProgress, storeProgress } from '../surgery/progress';
+import { codexId } from './codex';
 import { operationOptions } from '../surgery/session';
 import type { OperationOptions } from '../surgery/operation';
 import { drawDebug, drawDialogue, drawDrainArrow, drawFieldOverlays, drawLitanyPractice, drawSecondaryVitals, drawTrayState, drawTutorial } from './gameplayHud';
@@ -144,6 +149,14 @@ export class OperationScene implements Scene {
       this.calloutLog.push(...lines);
       if (this.calloutLog.length > 20) this.calloutLog.splice(0, this.calloutLog.length - 20);
     });
+    this.bossAudio.listen(op);
+    // The first meeting with an Hour opens its codex page.
+    watchEncounters(op, (boss) => {
+      const p = loadProgress();
+      if (p.codex.includes(codexId(boss))) return;
+      p.codex.push(codexId(boss));
+      storeProgress(p);
+    });
     if (!this.runOpts.practice) attachBarkDirector(op);
   }
 
@@ -154,6 +167,8 @@ export class OperationScene implements Scene {
     if (game.clock) game.clock.paused = true;
     game.push!(new PauseScene(this.op, this.calloutLog, (r) => this.closePause(r)));
   }
+  /** Boss sounds, ambience and adaptive-music hooks (BOS-0008/0017/0020). */
+  private bossAudio = new BossAudio();
 
   private closePause(r: PauseResult): void {
     if (r === 'restart') return this.restart();
@@ -165,10 +180,11 @@ export class OperationScene implements Scene {
   /** Apply player assists, difficulty and kit to the operation definition. */
   private static create(def: OperationDef, runOpts: OperationOptions = {}): Operation {
     const d = settings.timerAssist === 1 || runOpts.challenge ? def : { ...def, timeLimit: Math.round(def.timeLimit * settings.timerAssist) };
-    return new Operation(d, operationOptions(def, runOpts));
+    return new Operation(withBossAssists(d), operationOptions(def, runOpts));
   }
 
   dispose(): void {
+    this.bossAudio.dispose();
     this.op.events.clear();
   }
 
@@ -188,6 +204,8 @@ export class OperationScene implements Scene {
 
   private restart(): void {
     this.op.events.clear();
+    // A repeat attempt skips the bosses’ phase-transition beats (BOS-0004).
+    this.def = { ...this.def, skipCinematics: true } as OperationDef;
     this.op = OperationScene.create(this.def, this.runOpts);
     this.presRng = new Rng(this.def.seed ?? 1);
     this.popups.length = 0;
@@ -296,7 +314,7 @@ export class OperationScene implements Scene {
     const samples = Math.max(1, Math.round(dt * 120));
     for (let i = 0; i < samples; i++) {
       this.ecg.shift();
-      this.ecg.push(bpm === 0 ? 0 : ecgWave(this.beatPhase) * (op.vitals < 25 ? 0.6 + this.presRng.next() * 0.4 : 1));
+      this.ecg.push(bpm === 0 ? 0 : ecgCalm(op) ? calmWave(this.beatPhase) : ecgWave(this.beatPhase) * (op.vitals < 25 ? 0.6 + this.presRng.next() * 0.4 : 1));
     }
 
     const cursed = op.entities.some((e) => e instanceof Malison || e instanceof MalisonShard) ? 0.7 : op.entities.some((e) => e instanceof Sigil) ? 0.25 : 0;
@@ -489,6 +507,7 @@ export class OperationScene implements Scene {
     const p = game.input.pos;
     this.hoverPos = p;
     if (op.tool === 'tincture' && op.injectT > 0) g.arc(p.x, p.y, 18, 3, hex(PALETTE.good), op.injectT / TINCTURE_TIME);
+    drawTorpor(g, op, p, viewRect());
     toolIcon(g, op.tool, p.x + 20, p.y - 20, 0.8 + this.toolFlash * 0.3, t);
     const aim = op.status === 'running' && !this.paused ? cursorTarget(op, p) : { kind: 'none' as const };
     const cpal = palette();
@@ -617,6 +636,7 @@ export class OperationScene implements Scene {
       caps(g, lbl, bx + 16, by + 16, 10, hex(INK.gold));
       g.text(body, bx + 16, by + 34, { size: 16, color: hex(INK.text), shadow: false });
     }
+    drawBossHud(g, op);
 
     // ---- Score, patient and chain: right.
     const S = { x: VIEW_W - 16 - 250, y: 14, w: 250, h: 70 };
@@ -698,6 +718,7 @@ export class OperationScene implements Scene {
       toolIcon(g, id, r.x + r.w / 2 + 2, r.y + r.h / 2 + 2, sel ? 1.12 : 1.02, g.time, sel ? 'selected' : 'idle');
       // Key number: small engraved numeral in the corner.
       g.text(toolKeyLabel(TOOL_INFO.findIndex((ti) => ti.id === id) + 1), r.x + 8, r.y + 16, { size: 12, font: 'display', tracking: 0.05, color: hex(sel ? INK.goldHi : INK.dim), shadow: hex('#000000', 0.8) });
+      if (toolBlinded(op, id)) g.rect(r.x + 2, r.y + 2, r.w - 4, r.h - 4, hex('#8a8a8a', 0.6));
       if (id === 'tincture' && op.injectCooldown > 0) {
         const f = op.injectCooldown / TINCTURE_COOLDOWN;
         g.rect(r.x + 2, r.y + 2 + (r.h - 4) * (1 - f), r.w - 4, (r.h - 4) * f, hex('#000000', 0.5));
@@ -736,6 +757,7 @@ export class OperationScene implements Scene {
       g.arc(lx, ly, 36, 2, hex('#ffd070', 0.9 * fl));
       caps(g, tr('hud.litany.ending', { s: Math.ceil(op.litanyTime) }), lx - 52, ly + 34, 11, hex('#ffd070', fl), 'right');
     }
+    drawLitanyTheft(g, op, lx, ly);
     const label = ready ? { draw: `${dragGlyphFor('litany.draw')} ★`, key: glyphFor('litany.key'), both: `${dragGlyphFor('litany.draw')} ★ / ${glyphFor('litany.key')}` }[litanyMode()] : op.litanyTime > 0 ? tr('hud.litany.active') : tr('hud.litany.spent');
     caps(g, tr('hud.litany'), lx - 52, ly - 8, 11, hex(ready ? INK.gold : INK.faint), 'right');
     g.text(label, lx - 52, ly + 14, { size: 16, font: 'italic', color: hex(ready ? INK.text : INK.faint, 0.9), align: 'right', shadow: hex('#000000', 0.8), soft: true });

@@ -65,7 +65,7 @@ function extras(e: Entity): Record<string, unknown> {
   if (e instanceof Malison) return { hp: e.hp, open: e.open, radius: e.radius };
   if (e instanceof MalisonShard) return {};
   if (e instanceof LaudsMalison) return { hp: e.hp, submerged: e.submerged, voices: e.livingVoices.length, radius: e.radius };
-  if (e instanceof ChoirVoice) return { silence: e.silence };
+  if (e instanceof ChoirVoice) return { traced: e.traced };
   if (e instanceof EggSac) return { brood: e.brood };
   return {};
 }
