@@ -977,5 +977,11 @@
   "steam.timeline.op_lost": "{title} — lost",
   "steam.timeline.malison": "The Malison stirs",
   "steam.timeline.state_operating": "Operating: {patient}",
-  "steam.timeline.state_menu": "Between operations"
+  "steam.timeline.state_menu": "Between operations",
+  "ui.options.input_buffer": "Keep recent input",
+  "ui.options.input_buffer_note": "Keeps your last 30 s of strokes for bug reports.",
+  "ui.options.support_export": "Support files…",
+  "ui.options.support_export_note": "Zips settings, logs, journal and last recording.",
+  "ui.options.support_done": "Support files saved: {where}",
+  "ui.options.support_failed": "The support files could not be written."
 }

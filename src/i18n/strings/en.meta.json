@@ -8039,5 +8039,53 @@
     "size": 20,
     "maxPx": 600,
     "context": "Steam Timeline tooltip outside operations."
+  },
+  "ui.options.input_buffer": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.input_buffer_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.support_export": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.support_export_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.support_done": {
+    "scene": "options",
+    "font": "body",
+    "size": 18,
+    "maxPx": 700,
+    "context": "Notice after exporting support files; {where} is the zip file name.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.support_failed": {
+    "scene": "options",
+    "font": "body",
+    "size": 18,
+    "maxPx": 700,
+    "context": "Notice when the support export failed.",
+    "screenshot": "docs/loc/screens/options.png"
   }
 }

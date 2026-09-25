@@ -28,6 +28,8 @@ import { ControlsCardScene } from './controlsCard';
 import { CalibrateScene } from './calibrate';
 import { AudioOptionsScene } from '../audio/options-scene';
 import { GameplayOptionsScene } from './gameplayOptions';
+import { exportSupportBundle } from '../platform/support';
+import { showNotice } from '../platform/ui';
 
 export type OptionsTab = 'gameplay' | 'controls' | 'display' | 'audio' | 'access' | 'language';
 export const OPTION_TABS: readonly OptionsTab[] = ['gameplay', 'controls', 'display', 'audio', 'access', 'language'];
@@ -232,6 +234,8 @@ export function optionRows(tabId: OptionsTab): OptionRow[] {
         toggle('chroma', 'chromaticAberration'),
         slider('chroma_amount', 'chromaAmount', 0, 100, 5, (v) => `${v}%`),
         slider('shake', 'shake', 0, 1, 0.05, (v) => (v <= 0 ? t('ui.options.shake_off') : pct(v)), 'ui.options.shake'),
+        toggle('input_buffer', 'supportInputBuffer'),
+        { id: 'support_export', label: 'ui.options.support_export', kind: 'action', run: () => void exportSupportBundle().then((where) => showNotice(where ? t('ui.options.support_done', { where }) : t('ui.options.support_failed'), where ? 'info' : 'warning')) },
       ];
     case 'audio':
       return [

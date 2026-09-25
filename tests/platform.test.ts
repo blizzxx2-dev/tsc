@@ -318,6 +318,6 @@ describe('Steam overlay gate (PLT-0042)', () => {
     expect(EVENT_CHANNELS).toContain('ss:overlay');
     expect(SEND_CHANNELS).toContain('ss:steam-timeline');
     expect(INVOKE_CHANNELS).toContain('ss:window-size');
-    expect(() => new NoSteam().timeline({ kind: 'op-start', title: 'x', icon: 'steam_marker', priority: 1 })).not.toThrow();
+    expect(() => (new NoSteam() as SteamPlatform).timeline({ kind: 'op-start', title: 'x', icon: 'steam_marker', priority: 1 })).not.toThrow();
   });
 });
