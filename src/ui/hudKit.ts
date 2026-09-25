@@ -6,6 +6,8 @@
 import { hex, withAlpha, type RGBA } from '../render/color';
 import type { Align, Gfx, PlateOpts } from '../render/gfx';
 import type { Rect } from './widgets';
+import { glyphContext } from '../input/glyphs';
+import { padGlyph, padIndexOf } from '../art/padGlyphs';
 
 export const INK = {
   text: '#efe6d2',
@@ -106,6 +108,21 @@ export function band(g: Gfx, y: number, h: number, a: number, viewX: number, vie
 
 /** Keycap chip for key prompts (`E`, `1`, `Space`). */
 export function keycap(g: Gfx, label: string, x: number, y: number, size = 12, a = 1): number {
+  // A pad is in use: draw the button-prompt glyph art (ART-0273) instead of a lettered key.
+  const ctx = glyphContext();
+  if (ctx.device === 'pad') {
+    const parts = label.split('+');
+    const idx = parts.map((p) => padIndexOf(p, ctx.glyphs));
+    if (idx.every((i) => i >= 0)) {
+      let w = 0;
+      idx.forEach((i, n) => {
+        if (n) w += g.measure('+', size, 'display') + 4;
+        if (n) g.text('+', x + w - g.measure('+', size, 'display') - 2, y + size * 0.4, { size, font: 'display', color: hex(INK.goldHi, a), shadow: false });
+        w += padGlyph(g, ctx.glyphs, i, x + w, y, size, a);
+      });
+      return w;
+    }
+  }
   const w = Math.max(size * 1.5, g.measure(label, size, 'display', 0.06) + size * 0.9);
   g.plate(x, y - size * 0.8, w, size * 1.55, {
     radius: 3,

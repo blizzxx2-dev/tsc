@@ -1,6 +1,6 @@
 /**
  * Prints the VFX spec table (ART-0294) from `VFX_SPECS` in src/art/vfx.ts as Markdown rows, for
- * docs/art/vfx/README.md. Run: `npx tsx scripts/art/vfx-specs.ts`.
+ * docs/art/vfx/README.md. Run: `npx vite-node scripts/art/vfx-specs.ts`.
  */
 import { VFX_SPECS } from '../../src/art/vfx';
 

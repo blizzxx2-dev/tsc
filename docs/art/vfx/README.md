@@ -3,7 +3,7 @@
 Every Demo effect, filled in on the spec template below. The operation effects are procedural:
 the "sprite" column names the function that draws them (`src/art/vfx.ts`, `src/render/particles.ts`,
 `src/art/bossVfx.ts`) rather than a PNG, so there is nothing to atlas. The **Operation effects**
-table is generated from `VFX_SPECS` (`npx tsx scripts/art/vfx-specs.ts`), and
+table is generated from `VFX_SPECS` (`npx vite-node scripts/art/vfx-specs.ts`), and
 `tests/unit/art/vfx.test.ts` fails if an effect in code is missing here. Every effect loops on
 `?scene=vfxlab` for review (`?scene=vfxlab&t=0.4` freezes the board for a screenshot).
 

@@ -8,6 +8,14 @@ import type { Gfx } from '../render/gfx';
 import { Particles, type FxKind } from '../render/particles';
 import { VIEW_H, VIEW_W } from '../ui/layout';
 import { drawVfxSample, VFX_SPECS } from './vfx';
+import { drawFieldTool, drawTipDebug } from './toolSprites';
+import { busyCursor, padCursorRing } from './cursors';
+import { padGlyph } from './padGlyphs';
+import { PAD_GLYPHS } from '../input/glyphs';
+import { reticle } from '../ui/widgets';
+import type { ToolId } from '../surgery/types';
+
+const TOOLS: ToolId[] = ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture', 'brand', 'lens'];
 
 const COLS = 7;
 const PARTICLE_FX: Record<string, { kind: FxKind; n: number; dir?: number }> = {
@@ -24,9 +32,11 @@ export class VfxLabScene implements Scene {
   private frozen = false;
   private parts = new Particles();
   private spawnT = 0;
+  private page: 'vfx' | 'tools' = 'vfx';
 
   constructor() {
     const q = new URLSearchParams(location.search);
+    if (q.get('page') === 'tools') this.page = 'tools';
     if (q.get('t')) {
       this.t = Number(q.get('t'));
       this.frozen = true;
@@ -63,6 +73,7 @@ export class VfxLabScene implements Scene {
 
   render(g: Gfx, _game: Game): void {
     g.beginScreen([0.05, 0.03, 0.03]);
+    if (this.page === 'tools') return this.tools(g);
     VFX_SPECS.forEach((s, i) => {
       const c = this.cell(i);
       g.rect(c.x + 2, c.y + 2, c.w - 4, c.h - 4, hex(i % 2 ? '#6a2a24' : '#5a2420'));
@@ -74,6 +85,39 @@ export class VfxLabScene implements Scene {
       g.text(`${s.task} · ${s.frames || '∞'}f @${s.fps} · ${s.blend}`, c.x + 8, c.y + c.h - 8, { size: 16, color: hex('#c8b890', 0.9), shadow: hex('#000000', 0.9) });
     });
     this.parts.draw(g);
+    g.endFrame();
+  }
+
+  /** ART-0269/0270/0271/0273: in-field instruments with their tip debug, cursors and pad glyphs. */
+  private tools(g: Gfx): void {
+    const t = this.t;
+    g.rect(0, 0, VIEW_W, 300, hex('#6a2a24'));
+    TOOLS.forEach((tool, i) => {
+      const p = { x: 90 + i * 150, y: 150 };
+      const trail = tool === 'thread' ? Array.from({ length: 12 }, (_, k) => ({ x: p.x - 60 + k * 5, y: p.y + 30 - Math.sin(k * 0.6) * 20 })) : undefined;
+      drawFieldTool(g, tool, p, { closed: false, heat: 0.8, trail }, t);
+      drawTipDebug(g, tool, p);
+      g.text(tool, p.x, 250, { size: 16, color: hex('#f0e4c8'), align: 'center' });
+      if (tool === 'tongs') {
+        drawFieldTool(g, tool, { x: p.x, y: 70 }, { closed: true }, t);
+        g.text('closed', p.x + 40, 60, { size: 16, color: hex('#f0e4c8') });
+      }
+    });
+    // Cursors: quill, crosshair, busy hourglass, the pad ring round each.
+    reticle(g, { x: 80, y: 360 });
+    reticle(g, { x: 180, y: 360 }, '#9fe0a8');
+    busyCursor(g, { x: 280, y: 360 }, t);
+    padCursorRing(g, { x: 420, y: 360 }, t);
+    reticle(g, { x: 420, y: 360 });
+    g.text('quill · crosshair · busy · pad ring', 60, 420, { size: 16, color: hex('#f0e4c8') });
+    // Glyph sets.
+    (['xbox', 'playstation', 'deck'] as const).forEach((fam, row) => {
+      let x = 40;
+      const y = 480 + row * 70;
+      g.text(fam, x, y - 26, { size: 16, color: hex('#f0e4c8') });
+      for (let i = 0; i < 16; i++) x += padGlyph(g, fam, i, x, y, 16) + 8;
+      void PAD_GLYPHS;
+    });
     g.endFrame();
   }
 }

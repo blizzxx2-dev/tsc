@@ -13,7 +13,7 @@ import { EggSac } from '../surgery/lauds';
 import { Particles } from '../render/particles';
 import { FlashLimiter } from '../render/flashLimiter';
 import { Malison, MalisonShard } from '../surgery/malison';
-import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOWN, TINCTURE_TIME, type OperationDef, type Popup } from '../surgery/operation';
+import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOWN, TINCTURE_TIME, TINCTURE_HEX, type OperationDef, type Popup } from '../surgery/operation';
 import { TOOL_INFO, type ToolId } from '../surgery/types';
 import { anchorShift, PALETTE, viewRect, VIEW_W } from '../ui/layout';
 import { button, reticle, toolIcon } from '../ui/widgets';
@@ -52,6 +52,7 @@ import type { OperationOptions } from '../surgery/operation';
 import { drawDebug, drawDialogue, drawDrainArrow, drawFieldOverlays, drawLitanyPractice, drawSecondaryVitals, drawTrayState, drawTutorial } from './gameplayHud';
 import { PauseScene, type PauseResult } from './pause';
 import { VfxLayer } from '../art/vfx';
+import { drawFieldTool, drawTipDebug } from '../art/toolSprites';
 
 export interface OperationOutcome {
   op: Operation;
@@ -84,6 +85,8 @@ export class OperationScene implements Scene {
   /** Procedural VFX over the particles (ART-0275…0293). */
   private vfx = new VfxLayer(this.particles);
   /** The star that just read, handed to the Litany burn-in when the `litany` event follows. */
+  /** Recent pointer positions while the Gut Thread works, for the trailing thread. */
+  private threadTrail: { x: number; y: number }[] = [];
   private pendingStar: { pts: { x: number; y: number }[]; c: { x: number; y: number } } | null = null;
   private flashLimit = new FlashLimiter();
   private comboT = 0;
@@ -587,7 +590,15 @@ export class OperationScene implements Scene {
     if (op.tool === 'tincture' && op.injectT > 0) g.arc(p.x, p.y, 18, 3, hex(PALETTE.good), op.injectT / TINCTURE_TIME);
     this.drawHoldRing(g, p);
     drawTorpor(g, op, p, viewRect());
-    toolIcon(g, op.tool, p.x + 20, p.y - 20, 0.8 + this.toolFlash * 0.3, t);
+    // In use on the field, the instrument itself is drawn with its tip on the pointer (ART-0269/0270); otherwise its icon rides beside.
+    const working = game.input.down && op.status === 'running' && !this.paused && onBody(this.ctl.toWorld(p));
+    if (op.tool === 'thread' && working) {
+      this.threadTrail.push({ x: p.x, y: p.y });
+      if (this.threadTrail.length > 24) this.threadTrail.shift();
+    } else this.threadTrail.length = 0;
+    if (working) drawFieldTool(g, op.tool, p, { closed: !!op.held, heat: Math.min(1, 0.45 + op.brandHeat / 3), trail: this.threadTrail, tint: TINCTURE_HEX[op.tinctureColor] }, t);
+    else toolIcon(g, op.tool, p.x + 20, p.y - 20, 0.8 + this.toolFlash * 0.3, t);
+    if (this.debug) drawTipDebug(g, op.tool, p);
     const aim = op.status === 'running' && !this.paused ? cursorTarget(op, p) : { kind: 'none' as const };
     const cpal = palette();
     const tint = aim.kind === 'valid' ? '#9fe0a8' : aim.kind === 'needs' ? '#ff9a6a' : cursorTint(op, p);

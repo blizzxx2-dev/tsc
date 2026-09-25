@@ -7,6 +7,7 @@ import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { VIEW_W } from '../ui/layout';
 import { hourglass, UI } from '../ui/ornaments';
+import { applyHardwareCursor, busyCursor } from '../art/cursors';
 
 const PLATES = [woundManPlate, leechJarPlate, pyrePlate, choirMaskPlate] as const;
 const CAPTIONS = ['ui.loading.wound_man', 'ui.loading.leech_jar', 'ui.loading.pyre', 'ui.loading.choir'] as const;
@@ -46,7 +47,7 @@ export class LoadingScene implements Scene {
     }
   }
 
-  render(g: Gfx): void {
+  render(g: Gfx, game?: Game): void {
     g.beginScreen([0.03, 0.02, 0.015]);
     const a = Math.max(0, Math.min(1, (this.t - SHOW_AFTER) * 3));
     if (a > 0) {
@@ -56,6 +57,9 @@ export class LoadingScene implements Scene {
       hourglass(g, VIEW_W / 2, 590, 40, settings.reduceMotion ? this.frac : (this.t * 0.4) % 1);
       g.text(t('ui.loading.label'), VIEW_W / 2, 650, { size: 20, font: 'italic', color: hex(UI.parchLo, a), align: 'center' });
     }
+    // Busy cursor (ART-0271).
+    if (settings.hardwareCursor) applyHardwareCursor('busy');
+    else if (game) busyCursor(g, game.input.pos, this.t);
     g.endFrame();
   }
 }

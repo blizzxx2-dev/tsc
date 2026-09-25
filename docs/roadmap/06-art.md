@@ -428,11 +428,11 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [ ] ART-0268 · Alpha · P2 · S · Discipline-tool icons (splint, bone saw, triage tag, evidence tongs, magnifier) in the same style
 
 ### Cursors & in-field tool sprites
-- [ ] ART-0269 · Demo · P0 · M · In-field tool sprites for all 8 tools, drawn at the pointer during use (lancet blade, tong jaws open/closed, pipe nozzle, needle + thread trail, salve spatula, syringe, glowing brand, lens rim)
-- [ ] ART-0270 · Demo · P0 · S · Tool hotspot definitions (tip pixel) for each tool sprite, verified with a debug crosshair so hits land where the tip is
-- [ ] ART-0271 · Demo · P0 · S · Menu cursor (quill) and a busy cursor (hourglass), plus the hardware-cursor fallback PNGs at 32² and 64²
+- [x] ART-0269 · Demo · P0 · M · In-field tool sprites for all 8 tools, drawn at the pointer during use (lancet blade, tong jaws open/closed, pipe nozzle, needle + thread trail, salve spatula, syringe, glowing brand, lens rim)
+- [x] ART-0270 · Demo · P0 · S · Tool hotspot definitions (tip pixel) for each tool sprite, verified with a debug crosshair so hits land where the tip is
+- [x] ART-0271 · Demo · P0 · S · Menu cursor (quill) and a busy cursor (hourglass), plus the hardware-cursor fallback PNGs at 32² and 64²
 - [x] ART-0272 · Demo · P1 · S · Replace `reticle()` with a brass crosshair and a context tint (green valid target, red invalid)
-- [ ] ART-0273 · Demo · P1 · S · Gamepad/Steam Deck virtual-cursor art (larger ring, 1.5× size) and the button-prompt glyph set (Xbox, PlayStation, Deck)
+- [x] ART-0273 · Demo · P1 · S · Gamepad/Steam Deck virtual-cursor art (larger ring, 1.5× size) and the button-prompt glyph set (Xbox, PlayStation, Deck)
 - [x] ART-0274 · Demo · P1 · S · Litany star-trace cursor trail: a gilt ink stroke that fades over 0.6 s
 
 ---
