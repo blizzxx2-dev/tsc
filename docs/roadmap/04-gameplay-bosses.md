@@ -70,7 +70,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0036 · Demo · P0 · M · Zig-zag stitch detection — each crossing of the wound axis counts one stitch; stitch spacing 10–28 px COOL, 6–40 px GOOD; sparse lines leave "gaps" that keep bleeding at 30 % (test)
 - [x] GAM-0037 · Demo · P1 · S · Minimum stitches per wound = ceil(length/22) — fewer never closes the wound
 - [x] GAM-0038 · Demo · P1 · S · Final incision closure — long closing suture rated as one action with bonus 200 on COOL; stitched line persists visually to results
-- [ ] GAM-0039 · Demo · P2 · S · Thread tension visual — (taut line from last stitch to cursor) and knot tie flourish on completion
+- [x] GAM-0039 · Demo · P2 · S · Thread tension visual — (taut line from last stitch to cursor) and knot tie flourish on completion
 
 ### Saint's Salve
 - [x] GAM-0040 · Demo · P0 · S · Salve capacity `SALVE_MAX = 46` covers one medium rot; refill is automatic after 3 s idle — document and expose in HUD as a meter
@@ -647,7 +647,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [ ] BOS-0174 · Beta · P1 · S · Boss audio mix pass — tells audible over music at all volume presets (loudness test −3 dB margin)
 - [ ] BOS-0175 · Release · P0 · S · Final bot sweep — all bosses/elites × 3 difficulties × 50 seeds pass on release candidate build
 - [ ] BOS-0176 · Release · P1 · S · Replay-verified boss speedrun leaderboards — (fastest clear per Hour) enabled
-- [ ] BOS-0177 · Release · P1 · S · Crash/soft-lock audit — each boss run with random-input fuzz bot for 10 min × 20 seeds; no exceptions, no stuck phases
+- [x] BOS-0177 · Release · P1 · S · Crash/soft-lock audit — each boss run with random-input fuzz bot for 10 min × 20 seeds; no exceptions, no stuck phases
 - [ ] BOS-0178 · Post · P2 · M · Boss Rush mode — all 8 Hours back-to-back with carried vitals, one Litany total
 - [ ] BOS-0179 · Post · P3 · L · Free update boss "Lauds Reprised" — Ilse-as-patient variant with new antiphon mechanic
 - [ ] BOS-0180 · Post · P2 · S · Post-launch balance patch — tune from Steam telemetry fail rates per boss phase (any phase > 40 % fail on Surgeon adjusted)

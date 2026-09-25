@@ -2,7 +2,10 @@ import type { Vec } from '../core/math';
 import { hex } from './color';
 import type { Gfx } from './gfx';
 
-export type FxKind = 'blood' | 'pus' | 'spark' | 'smoke' | 'mote' | 'gold' | 'dust' | 'curl';
+export type FxKind = 'blood' | 'pus' | 'spark' | 'smoke' | 'mote' | 'gold' | 'dust' | 'curl' | 'knot';
+
+/** Seconds of the knot-tie flourish when a stitch line is finished (GAM-0039). */
+export const KNOT_SECONDS = 0.6;
 
 /** Seconds a seared grub takes to curl up and char (GAM-0085). */
 export const CURL_SECONDS = 0.4;
@@ -48,11 +51,12 @@ export class Particles {
       gold: { speed: 90, life: 0.9, size: 2, spread: 3.14 },
       dust: { speed: 20, life: 3, size: 1.5, spread: 3.14 },
       curl: { speed: 0, life: CURL_SECONDS, size: 9, spread: 0 },
+      knot: { speed: 0, life: KNOT_SECONDS, size: 8, spread: 0 },
     };
     const b = base[e.kind];
-    if (e.kind === 'curl') {
-      // One still body that curls on the spot for exactly CURL_SECONDS; `dir` is its heading.
-      if (this.ps.length < MAX) this.ps.push({ kind: 'curl', x: e.pos.x, y: e.pos.y, vx: 0, vy: 0, life: b.life, max: b.life, size: b.size, seed: e.dir ?? 0 });
+    if (e.kind === 'curl' || e.kind === 'knot') {
+      // One still flourish on the spot for exactly its life; `dir` is its heading.
+      if (this.ps.length < MAX) this.ps.push({ kind: e.kind, x: e.pos.x, y: e.pos.y, vx: 0, vy: 0, life: b.life, max: b.life, size: b.size, seed: e.dir ?? 0 });
       return;
     }
     for (let i = 0; i < e.n && this.ps.length < MAX; i++) {
@@ -99,6 +103,9 @@ export class Particles {
         case 'curl':
           drawCurl(g, p.x, p.y, p.seed, 1 - t);
           break;
+        case 'knot':
+          drawKnot(g, p.x, p.y, p.seed, 1 - t);
+          break;
         default:
           break;
       }
@@ -127,6 +134,23 @@ export class Particles {
   get count(): number {
     return this.ps.length;
   }
+}
+
+/**
+ * The knot-tie flourish (GAM-0039): a loop of gut thread throws round the last stitch, cinches
+ * tight (0 → 0.6), and the tails are snipped with a glint (0.6 → 1).
+ */
+export function drawKnot(g: Gfx, x: number, y: number, heading: number, k: number): void {
+  const cinch = Math.min(1, k / 0.6);
+  const r = 11 * (1 - cinch) + 3;
+  g.arc(x, y, r, 1.6, hex('#efe6c4', 0.95), Math.min(1, cinch * 1.4 + 0.3));
+  g.circle(x, y, 2.5 + cinch * 1.5, hex('#efe6c4'));
+  const tail = 16 * (k < 0.6 ? 1 : 1 - (k - 0.6) / 0.4 * 0.7);
+  for (const s of [-1, 1]) {
+    const a = heading + s * 0.7;
+    g.line({ x, y }, { x: x + Math.cos(a) * tail, y: y + Math.sin(a) * tail }, 1.2, hex('#d9cfa8', 0.9));
+  }
+  if (k > 0.6) g.circle(x + Math.cos(heading) * 10, y + Math.sin(heading) * 10, 3 * (1 - k) / 0.4 + 0.5, hex('#fff6d0', 0.8));
 }
 
 /**

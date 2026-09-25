@@ -15,6 +15,7 @@ import { flashScale, presentation } from '../src/render/presentation';
 import { alphaOf } from '../src/render/color';
 import type { Gfx } from '../src/render/gfx';
 import { DEFAULT_SETTINGS } from '../src/core/settings/schema';
+import { NoneMalison, NONE_DEFAULT } from '../src/surgery/bosses/none';
 
 const byId = (id: string) => allCampaignOperations().find((d) => d.id === id)!;
 const boss = (o: Partial<BossOpDef>) => o as Partial<OperationDef>;
@@ -109,5 +110,22 @@ describe('GAM-0239: shake and flash sliders reach the boss effects', () => {
     expect(DEFAULT_SETTINGS.flashIntensity).toBe(1);
     expect(optionRows('display').flatMap((r) => r.keys ?? [])).toContain('shake');
     expect(optionRows('access').flatMap((r) => r.keys ?? [])).toContain('flashIntensity');
+  });
+});
+
+describe('BOS-0090 / BOS-0177: None and the no-fail floor', () => {
+  it('with the no-fail assist the burrower strikes the heart and burrows out again; without it, the patient is lost', () => {
+    let n!: NoneMalison;
+    const op = start((o) => [(n = new NoneMalison(o, NONE_DEFAULT))]);
+    op.assists.noFail = true;
+    n.s = n.total - 1;
+    wait(op, 0.5);
+    expect(op.status).toBe('running');
+    expect(n.s).toBeLessThan(n.total / 2);
+    let m!: NoneMalison;
+    const op2 = start((o) => [(m = new NoneMalison(o, NONE_DEFAULT))]);
+    m.s = m.total - 1;
+    wait(op2, 0.5);
+    expect(op2.status).toBe('lost');
   });
 });

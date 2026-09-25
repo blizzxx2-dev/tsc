@@ -73,15 +73,23 @@ export function bossPhaseIndex(e: Entity): number | null {
   return null;
 }
 
+/**
+ * Is this entity an Hour itself — a phased boss core that is not an elite? (The later Hours are
+ * plain entities: an HP pool and a stage; the Office counts its lit hour-sigils instead of HP.)
+ */
+export function isHour(e: Entity): boolean {
+  const b = e as unknown as { hp?: unknown; maxHp?: unknown; elite?: boolean; lit?: unknown };
+  if (!e.alive || b.elite || bossPhaseIndex(e) === null) return false;
+  return (typeof b.hp === 'number' && typeof b.maxHp === 'number') || b.lit instanceof Set;
+}
+
 /** Ilse's hint for the phase of the Hour an operation was lost in (null when not a boss operation). */
 export function bossPhaseHint(op: Operation): string | null {
   const boss = BOSS_OPS[op.def.id.replace(/-x\d$/, '')];
   if (!boss) return null;
   const sheet = BOSS_SHEET[boss];
   for (const e of op.entities) {
-    // The Hour itself: an HP-bearing boss core that is not an elite (the later Hours are plain entities).
-    const b = e as unknown as { hp?: unknown; maxHp?: unknown; elite?: boolean };
-    if (!e.alive || typeof b.hp !== 'number' || typeof b.maxHp !== 'number' || b.elite) continue;
+    if (!isHour(e)) continue;
     const ix = bossPhaseIndex(e);
     if (ix !== null && sheet[ix]) return sheet[ix].hint;
   }

@@ -621,6 +621,8 @@ export class Laceration extends Entity {
         this.kill();
         op.scars.push([{ ...this.a }, { ...this.b }]);
         op.rate(this.stitch.quality(op), this.pos, 'Stitched');
+        // The knot is tied off at the far end of the line (GAM-0039).
+        op.emit('knot', this.b, 1, Math.atan2(this.b.y - this.a.y, this.b.x - this.a.x));
       }
     } else if (tool === 'salve') {
       if (!this.cov) {
