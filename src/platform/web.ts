@@ -48,6 +48,10 @@ class BrowserWindowPlatform implements WindowPlatform {
       // needs a user gesture; ignored
     }
   }
+  setSize(): Promise<void> {
+    // The browser owns its window; the preset is kept for the desktop build.
+    return Promise.resolve();
+  }
   toggleFullscreen(): void {
     void this.setMode(globalThis.document?.fullscreenElement ? 'windowed' : 'fullscreen');
   }

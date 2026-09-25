@@ -100,6 +100,8 @@ export interface InvokeContract {
   'ss:fs-write': [[name: string, data: string], WriteResult];
   'ss:fs-remove': [[name: string], WriteResult];
   'ss:window-set': [[mode: DisplayMode, displayId: number | null], WindowState];
+  /** Windowed-mode content size preset, centred on the current display (UIX-0105). */
+  'ss:window-size': [[width: number, height: number], WindowState];
   'ss:displays': [[], DisplayInfo[]];
   'ss:steam-achievement': [[id: string, unlock: boolean], boolean];
   'ss:steam-overlay': [[kind: 'store' | 'web', target: string], boolean];
@@ -138,6 +140,7 @@ export const INVOKE_CHANNELS = [
   'ss:fs-write',
   'ss:fs-remove',
   'ss:window-set',
+  'ss:window-size',
   'ss:displays',
   'ss:steam-achievement',
   'ss:steam-overlay',

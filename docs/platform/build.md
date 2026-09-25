@@ -82,6 +82,11 @@ integrity validation **on** (enforced on Windows/macOS), cookie encryption on, f
   windows; on macOS *fullscreen* is a native Space and *borderless* is simple fullscreen (no Space). A mode or
   monitor change reverts after 15 s unless confirmed. Size, position, mode and monitor persist in
   `<cache>/window.json` and are clamped to a visible work area on launch.
+- **Window size preset** (Options → Display, `windowSize`): `ss:window-size` sets the *content* size and centres
+  the window on the display it is on (windowed mode only; in borderless/fullscreen the size is kept and applied
+  when the mode returns to windowed). Presets larger than the monitor's work area shrink to it. The last bounds
+  persist in `window.json`; with no `window.json` (fresh cache) the settings preset is applied on launch
+  (`desktop/src/windowstate.ts` `sizedState`/`parseWindowSize`).
 - **VSync:** Chromium cannot toggle vsync at runtime; the setting writes `<cache>/launch-switches.json` and the next
   launch adds `--disable-gpu-vsync --disable-frame-rate-limit`.
 - **Quit:** closing the window, Alt+F4 and Cmd+Q ask for confirmation during an operation, then wait (≤5 s) for the

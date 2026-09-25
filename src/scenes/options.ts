@@ -266,19 +266,14 @@ export function optionRows(tabId: OptionsTab): OptionRow[] {
 }
 
 /**
- * Windowed-mode size preset (UIX-0105). The desktop bridge has no resize channel yet, so this asks
- * the window itself; Electron honours `resizeTo` for the main window only when the platform allows it,
- * and the setting is kept for the desktop shell to apply on launch.
+ * Windowed-mode size preset (UIX-0105): the desktop shell resizes and centres its window through
+ * `ss:window-size` (windowed mode only) and applies the stored preset again on launch.
  */
 export function applyWindowSize(size: WindowSize): void {
   settings.windowSize = size;
   if (platform.kind !== 'desktop' || settings.displayMode !== 'windowed') return;
   const { w, h } = windowSizeOf(size);
-  try {
-    (globalThis as { resizeTo?: (w: number, h: number) => void }).resizeTo?.(w, h);
-  } catch {
-    // The shell may refuse: the preset still persists for the next launch.
-  }
+  void platform.window.setSize(w, h);
 }
 
 /** Restore a tab's options to their defaults (UIX-0104 per-tab Defaults). */

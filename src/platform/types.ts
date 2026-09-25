@@ -39,6 +39,8 @@ export interface WindowPlatform {
   /** Null on the web, where the browser owns the window. */
   state(): WindowState | null;
   setMode(mode: DisplayMode, displayId?: number | null): Promise<void>;
+  /** Windowed-mode size preset (UIX-0105): resizes and centres the desktop window; no-op on the web. */
+  setSize(width: number, height: number): Promise<void>;
   toggleFullscreen(): void;
   displays(): Promise<DisplayInfo[]>;
   onFocus(cb: (focused: boolean) => void): void;

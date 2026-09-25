@@ -103,6 +103,9 @@ class DesktopWindow implements WindowPlatform {
   async setMode(mode: DisplayMode, displayId: number | null = null): Promise<void> {
     this.current = await this.bridge.invoke('ss:window-set', mode, displayId);
   }
+  async setSize(width: number, height: number): Promise<void> {
+    this.current = await this.bridge.invoke('ss:window-size', width, height);
+  }
   toggleFullscreen(): void {
     void this.setMode(this.current.mode === 'windowed' ? 'fullscreen' : 'windowed');
   }
