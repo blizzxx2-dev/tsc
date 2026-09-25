@@ -40,7 +40,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] NAR-0013 · Demo · P0 · S · Rename `'warpshard'` embedded kind to `'hexshard'` in `chapter2.ts` and entities — no "warp-" coinages anywhere; grep test asserts zero matches for /warp/i in src
 - [x] NAR-0014 · Demo · P0 · M · Name register `docs/narrative/names.csv` — every proper noun in Ch1–2 (people, places, orgs, items, diseases) with origin note, IP-check status and checker initials
 - [x] NAR-0015 · Demo · P0 · S · Blocklist test — Vitest scans `src/content` and localisation strings against the §7 avoid-list (Sigmar, Shallya, Morrslieb, Skaven, turnskin, swain, Nurgle, Reikland, etc.) and fails on any hit
-- [ ] NAR-0016 · Demo · P0 · S · Review "beast-folk"/"horned raiders" (STORY_1_2) against GW "Beastmen" — replace with "horned folk" and give them one original cultural detail (antler-tallies) in codex
+- [x] NAR-0016 · Demo · P0 · S · Review "beast-folk"/"horned raiders" (STORY_1_2) against GW "Beastmen" — replace with "horned folk" and give them one original cultural detail (antler-tallies) in codex
 - [x] NAR-0017 · Demo · P1 · S · Review "dwarf" usage for Orsa (STORY_2_2) — keep generic word, strip any grudge/rune/slayer/beard-oath tropes; add original "debt-knots in the beard" detail
 - [x] NAR-0018 · Demo · P1 · S · Review "Gravehound" and "corpse-eaters" (STORY_2_1) — confirm not GW unit names; document in names.csv
 - [x] NAR-0019 · Demo · P1 · S · Collision check for place names Kessendorf, Weissburg, Grauwald, Tanners' Rows, Gilded Goose — search games/novels; rename any exact fantasy-IP hit
@@ -80,14 +80,14 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] NAR-0045 · Demo · P1 · S · s1-4 rewrite — Stroh's entrance: silence beat, then line; plague quarantine rumour planted for Ch3
 - [x] NAR-0046 · Demo · P1 · S · s1-5 rewrite — Haller's Litany explanation cut to 3 lines; the "Do not do it where the Inquisitor can see" line kept as the chapter's hook
 - [x] NAR-0047 · Demo · P1 · S · s1-end rewrite — Stroh's "time itself were obliging you" beat triggered only if the player used the Litany in op1-5; alternate line if not
-- [ ] NAR-0048 · Demo · P1 · S · Plant the crestless carriage — one line identifies its livery as absent on purpose; codex entry "The Carriage Without a Crest" unlocks (pays off in Ch4 patron betrayal)
+- [x] NAR-0048 · Demo · P1 · S · Plant the crestless carriage — one line identifies its livery as absent on purpose; codex entry "The Carriage Without a Crest" unlocks (pays off in Ch4 patron betrayal)
 - [x] NAR-0049 · Demo · P2 · S · Emmerich's sigil detail — describe one sigil shape in s1-end that reappears on the cantor in op2-4 (continuity hook)
 - [x] NAR-0050 · Demo · P2 · S · Drover payment joke (turnips) extended into s1-3 opener callback — one line only
 
 ### Tutorial dialogue split
 - [x] NAR-0051 · Demo · P0 · M · Separate instructional lines from story lines in Ch1 — tutorial text moves to tutorial prompts keyed by tool; story lines keep flavour only
 - [x] NAR-0052 · Demo · P1 · S · Control-agnostic tutorial wording — every instruction uses input-glyph tokens ({TOOL_LANCET}, {LITANY_GESTURE}) so mouse, pad and Deck show correct prompts
-- [ ] NAR-0053 · Demo · P1 · S · Litany tutorial copy — star gesture explained in-fiction by Haller and in UI copy; ≤ 2 prompts; re-openable from pause "Remembered Teachings"
+- [x] NAR-0053 · Demo · P1 · S · Litany tutorial copy — star gesture explained in-fiction by Haller and in UI copy; ≤ 2 prompts; re-openable from pause "Remembered Teachings"
 
 ## NAR · Epic 3 — Chapter II "The Hour of Lauds": demo-quality rewrite
 
@@ -111,34 +111,34 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ### Demo-exclusive framing
 - [x] NAR-0067 · Demo · P0 · S · Demo end card copy — "The Office is not finished. Prime is sung next." + wishlist call to action (≤ 25 words)
 - [ ] NAR-0068 · Demo · P1 · S · Chapter III teaser script — 6-line VN teaser (foundry smoke, raised bridges, Haller's licence vote, Stroh's "After Prime") shown after the end card
-- [ ] NAR-0069 · Demo · P2 · S · Demo main-menu flavour lines — 8 rotating title-screen epigraphs (hymn fragments, guild notices) all IP-cleared
+- [x] NAR-0069 · Demo · P2 · S · Demo main-menu flavour lines — 8 rotating title-screen epigraphs (hymn fragments, guild notices) all IP-cleared
 
 ## NAR · Epic 4 — Demo barks, codex and case notes
 
 ### Operation barks (Ilse, Haller, patients)
-- [ ] NAR-0070 · Demo · P0 · S · Bark taxonomy doc — trigger list (op start, COOL/GOOD/BAD/MISS, combo 5/10/20, vitals < 30, < 15, tincture used, Litany cast, phase change, boss enraged, op success, op fail, time < 30 s) with max frequency per trigger
-- [ ] NAR-0071 · Demo · P0 · M · Sister Ilse bark set — ≥ 6 variants per trigger above (≈ 90 lines), in `src/content/barks.ts` keyed by trigger id
-- [ ] NAR-0072 · Demo · P1 · M · Master Haller bark set (Ch1 observer) — ≥ 3 variants per trigger, dry and critical; replaces Ilse on ops where Haller supervises (op1-1, op1-2)
-- [ ] NAR-0073 · Demo · P1 · S · Captain Mauer bark set (Ch2 camp ops) — 30 lines; military impatience ("Is he fit to march?")
-- [ ] NAR-0074 · Demo · P1 · S · Inquisitor Stroh observer barks — 20 lines fired only on Litany cast/boss phases when he is present (op1-4, op1-5, op2-4, op2-5)
-- [ ] NAR-0075 · Demo · P1 · M · Patient pain/relief barks — 4–6 per demo patient (Jost, Pieter, Anno, vagrant, Emmerich, Tomas, Orsa, Henning, cantor, Jorg); fire on first incision, extraction, closing
-- [ ] NAR-0076 · Demo · P1 · S · Malison voice lines — Matins (whispered vigil verses, 8 lines) and Lauds (two-voice call and response, 12 lines) keyed to boss phases
-- [ ] NAR-0077 · Demo · P1 · S · Bark anti-repeat rule — same line not repeated within 3 fires of its trigger; unit test over 1000 simulated triggers
-- [ ] NAR-0078 · Demo · P2 · S · Rank-card quips — one line per rank (XS/S/A/B/C) per speaker shown on the results screen
+- [x] NAR-0070 · Demo · P0 · S · Bark taxonomy doc — trigger list (op start, COOL/GOOD/BAD/MISS, combo 5/10/20, vitals < 30, < 15, tincture used, Litany cast, phase change, boss enraged, op success, op fail, time < 30 s) with max frequency per trigger
+- [x] NAR-0071 · Demo · P0 · M · Sister Ilse bark set — ≥ 6 variants per trigger above (≈ 90 lines), in `src/content/barks.ts` keyed by trigger id
+- [x] NAR-0072 · Demo · P1 · M · Master Haller bark set (Ch1 observer) — ≥ 3 variants per trigger, dry and critical; replaces Ilse on ops where Haller supervises (op1-1, op1-2)
+- [x] NAR-0073 · Demo · P1 · S · Captain Mauer bark set (Ch2 camp ops) — 30 lines; military impatience ("Is he fit to march?")
+- [x] NAR-0074 · Demo · P1 · S · Inquisitor Stroh observer barks — 20 lines fired only on Litany cast/boss phases when he is present (op1-4, op1-5, op2-4, op2-5)
+- [x] NAR-0075 · Demo · P1 · M · Patient pain/relief barks — 4–6 per demo patient (Jost, Pieter, Anno, vagrant, Emmerich, Tomas, Orsa, Henning, cantor, Jorg); fire on first incision, extraction, closing
+- [x] NAR-0076 · Demo · P1 · S · Malison voice lines — Matins (whispered vigil verses, 8 lines) and Lauds (two-voice call and response, 12 lines) keyed to boss phases
+- [x] NAR-0077 · Demo · P1 · S · Bark anti-repeat rule — same line not repeated within 3 fires of its trigger; unit test over 1000 simulated triggers
+- [x] NAR-0078 · Demo · P2 · S · Rank-card quips — one line per rank (XS/S/A/B/C) per speaker shown on the results screen
 
 ### Codex (demo set)
-- [ ] NAR-0079 · Demo · P0 · S · Codex schema — entry id, title, category (People, Places, Afflictions, Instruments, The Hours, Orders), unlock condition, body ≤ 180 words, woodcut image id
-- [ ] NAR-0080 · Demo · P1 · M · People entries — Kreuzer, Ilse, Haller, Stroh, Mauer, Orsa (6 entries), each with a second paragraph unlocked by an S rank or chapter completion
-- [ ] NAR-0081 · Demo · P1 · M · Instrument entries — Lancet, Tongs, Leech-Pipe, Gut Thread, Saint's Salve, Tincture, Cautery Brand, Scrying Lens, Litany of Stillness (9 entries) with in-world origin and period-flavoured usage note
-- [ ] NAR-0082 · Demo · P1 · M · Affliction entries — blade wounds, barbed arrows, powder burns, pestilent humours/buboes, rot, grubs, gravehound bite, hexstone, web-spinner venom and brood, curse-sigils (10 entries)
-- [ ] NAR-0083 · Demo · P1 · S · Places and orders — Kessendorf, Hospice of Saint Ildra, Merciful Order, Ash Tribunal, Kessendorf Watch, the Grauwald, the barrow-fields (7 entries)
-- [ ] NAR-0084 · Demo · P1 · S · The Hours entries — Matins and Lauds (full), plus six locked silhouettes titled with hour names only
-- [ ] NAR-0085 · Demo · P2 · S · Folk-remedy sidebars — 5 black-humour quack cures (beef on a flagpole, penitent's whip for fever, etc.) attached to affliction entries
-- [ ] NAR-0086 · Demo · P2 · S · Codex unlock audit — every demo entry reachable in a normal playthrough; test walks campaign steps and asserts unlock ids exist
+- [x] NAR-0079 · Demo · P0 · S · Codex schema — entry id, title, category (People, Places, Afflictions, Instruments, The Hours, Orders), unlock condition, body ≤ 180 words, woodcut image id
+- [x] NAR-0080 · Demo · P1 · M · People entries — Kreuzer, Ilse, Haller, Stroh, Mauer, Orsa (6 entries), each with a second paragraph unlocked by an S rank or chapter completion
+- [x] NAR-0081 · Demo · P1 · M · Instrument entries — Lancet, Tongs, Leech-Pipe, Gut Thread, Saint's Salve, Tincture, Cautery Brand, Scrying Lens, Litany of Stillness (9 entries) with in-world origin and period-flavoured usage note
+- [x] NAR-0082 · Demo · P1 · M · Affliction entries — blade wounds, barbed arrows, powder burns, pestilent humours/buboes, rot, grubs, gravehound bite, hexstone, web-spinner venom and brood, curse-sigils (10 entries)
+- [x] NAR-0083 · Demo · P1 · S · Places and orders — Kessendorf, Hospice of Saint Ildra, Merciful Order, Ash Tribunal, Kessendorf Watch, the Grauwald, the barrow-fields (7 entries)
+- [x] NAR-0084 · Demo · P1 · S · The Hours entries — Matins and Lauds (full), plus six locked silhouettes titled with hour names only
+- [x] NAR-0085 · Demo · P2 · S · Folk-remedy sidebars — 5 black-humour quack cures (beef on a flagpole, penitent's whip for fever, etc.) attached to affliction entries
+- [x] NAR-0086 · Demo · P2 · S · Codex unlock audit — every demo entry reachable in a normal playthrough; test walks campaign steps and asserts unlock ids exist
 
 ### Patient case notes
-- [ ] NAR-0087 · Demo · P1 · S · Case-note template — Kreuzer's hand: patient, presenting complaint, procedure, outcome, one personal observation; outcome line varies by rank
-- [ ] NAR-0088 · Demo · P1 · M · Write 10 demo case notes — op1-1…op2-5; each ≤ 120 words with rank-variant outcome sentence
+- [x] NAR-0087 · Demo · P1 · S · Case-note template — Kreuzer's hand: patient, presenting complaint, procedure, outcome, one personal observation; outcome line varies by rank
+- [x] NAR-0088 · Demo · P1 · M · Write 10 demo case notes — op1-1…op2-5; each ≤ 120 words with rank-variant outcome sentence
 - [ ] NAR-0089 · Demo · P2 · S · "Where are they now" footnotes — one-line follow-up per demo patient shown after chapter completion (Jost breaks his promise by Friday, etc.)
 
 ## NAR · Epic 5 — Character arcs (full game)
