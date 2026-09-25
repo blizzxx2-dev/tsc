@@ -10,6 +10,7 @@ import type { SimEvent } from './events';
 import { rankThresholds } from './ranks';
 import { upgradeTuning, type TinctureColor } from './progress';
 import { OP_TUNING } from './optuning';
+import { FIRST_HINTS, TUTORIALS, type TutorialStep } from './tutorial';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 
@@ -104,6 +105,10 @@ export interface OperationOptions {
   hintsSeen?: readonly string[];
   /** Challenge mutators (Candle-Only, Moving Cart, Field Tent in Rain, Stroh Watches). */
   mutators?: readonly MutatorId[];
+  /** Run the guided tutorial steps for this op (and the Litany practice before a first boss). */
+  tutorial?: boolean;
+  /** Practice Theatre: nothing is scored and the patient cannot die. */
+  practice?: boolean;
 }
 
 export type MutatorId = 'candle' | 'cart' | 'rain' | 'stroh';
@@ -336,6 +341,15 @@ export class Operation {
   /** End-bonus multiplier adjustments (antiparasitic finish, pinned misalignment). */
   endBonusMult = 1;
   endPenalty = 0;
+  /** First-time hints shown this run (the save records them). */
+  hintsShown: string[] = [];
+  /** Guided tutorial: the step waiting for its first correct action. */
+  tutorialStep = 0;
+  private tutorialSaid = -1;
+  /** Litany practice before the first boss: attempts left (null = not practising). */
+  litanyPractice: { attempts: number } | null = null;
+  private practiced = false;
+  private labels = new Map<string, number>();
   private wheelT = -1;
   /** Radial tool wheel open (slows world time). */
   wheelOpen = false;
@@ -378,7 +392,7 @@ export class Operation {
     Entity.resetIds();
     this.rng = new Rng(opts.seed ?? def.seed ?? 1);
     this.difficulty = opts.difficulty ?? 'surgeon';
-    this.assists = { ...NO_ASSISTS, ...(opts.challenge ? {} : opts.assists) };
+    this.assists = { ...NO_ASSISTS, ...(opts.challenge ? {} : opts.assists), ...(opts.practice ? { noFail: true } : {}) };
     this.mods = combineMods(NO_MODS, opts.mods ?? {});
     this.upgrades = new Set(opts.challenge ? [] : (opts.upgrades ?? []));
     this.tuning = mergeTuning(OP_TUNING[def.id], def.tuning, this.mods.tuning, upgradeTuning(this.upgrades));
@@ -489,9 +503,10 @@ export class Operation {
       this.combo = 0;
     }
     this.comboIdle = 0;
+    if (label) this.labels.set(label, (this.labels.get(label) ?? 0) + 1);
     let pts = Math.round(T[r] * (1 + Math.min(this.combo, T.comboCap) * T.comboStep));
     let capped = false;
-    if (origin === 'penalty' || !pay) pts = 0;
+    if (origin === 'penalty' || !pay || this.opts.practice) pts = 0;
     else if (origin === 'boss') {
       pts = Math.round(pts * T.addPointsFactor);
       const cap = Math.round(this.ranks.S * T.addScoreCapFrac);
@@ -532,7 +547,9 @@ export class Operation {
       pri = last;
       args = args.slice(0, -1);
     }
-    for (const line of args) {
+    for (let line of args) {
+      // Master: Ilse keeps it terse — the first sentence only.
+      if (this.difficulty === 'master') line = terse(line);
       if (this.callouts.length === 0) this.calloutT = 0;
       // Never displace the line currently showing; insert after lines of equal or higher priority.
       let i = this.callouts.length;
@@ -580,6 +597,7 @@ export class Operation {
     for (const e of es) {
       if (a && e.spawnedBy === 'content') e.spawnedBy = a.boss || a.spawnedBy === 'boss' ? 'boss' : a.spawnedBy === 'penalty' ? 'penalty' : 'self';
       if (e.boss) this.onBossSpawn(e);
+      this.firstHint(e);
       this.event({ kind: 'spawned', entity: e.constructor.name, id: e.id, origin: e.spawnedBy });
     }
     this.entities.push(...es);
@@ -591,7 +609,21 @@ export class Operation {
     this.spawn(...es);
   }
 
+  /** One-shot contextual hint the first time a mechanic appears (on this save). */
+  private firstHint(e: Entity): void {
+    if (e.hidden) return;
+    const h = FIRST_HINTS.find((x) => x.match(e));
+    if (!h || this.opts.hintsSeen?.includes(h.id) || this.hintsShown.includes(h.id)) return;
+    this.hintsShown.push(h.id);
+    this.sayOnce(`first-${h.id}`, h.text);
+  }
+
   private onBossSpawn(e: Entity): void {
+    if (this.opts.tutorial && !this.practiced && this.litanyAllowed > 0 && this.litanyUses === 0) {
+      this.practiced = true;
+      this.litanyPractice = { attempts: 3 };
+      this.say('Now, Doctor — the Litany. Draw the five-pointed star with the right hand.', 'instruction');
+    }
     if (!this.bossOp) this.bossPhase = this.phase;
     this.bossOp = true;
     const b = e as unknown as { hp?: number; maxHp?: number };
@@ -653,6 +685,56 @@ export class Operation {
   /** The patient's average vitals so far — the vitals bonus pays for this, so a last-second tincture buys nothing. */
   get averageVitals(): number {
     return this.runT > 0 ? this.vitalsInt / this.runT : this.vitals;
+  }
+
+  /** How many times an action with this label has been rated this run. */
+  labelCount(label: string): number {
+    return this.labels.get(label) ?? 0;
+  }
+
+  /** The guided-tutorial step in force (null when none, or all done). */
+  get tutorial(): TutorialStep | null {
+    if (!this.opts.tutorial) return null;
+    const steps = TUTORIALS[this.def.id];
+    const s = steps?.[this.tutorialStep];
+    return s && this.phase >= s.phase ? s : null;
+  }
+
+  private advanceTutorial(): void {
+    const steps = TUTORIALS[this.def.id];
+    if (!this.opts.tutorial || !steps) return;
+    for (;;) {
+      // A step whose phase has already ended was done some other way: move on.
+      while (steps[this.tutorialStep] && steps[this.tutorialStep].phase < this.phase) this.tutorialStep++;
+      const s = this.tutorial;
+      if (!s) return;
+      if (this.tutorialSaid !== this.tutorialStep) {
+        this.tutorialSaid = this.tutorialStep;
+        this.say(s.say, 'instruction');
+      }
+      if (!s.done(this)) return;
+      this.tutorialStep++;
+    }
+  }
+
+  /** Litany practice: a drawn star (recognised or not). Success invokes the Litany for real. */
+  practiceStar(ok: boolean): void {
+    if (!this.litanyPractice) return;
+    if (ok) {
+      this.litanyPractice = null;
+      this.invokeLitany();
+      return;
+    }
+    this.litanyPractice.attempts--;
+    this.popup('The words falter — try again.', { x: FIELD.cx, y: FIELD.cy - 120 }, '#e8dcc0');
+    if (this.litanyPractice.attempts <= 0) this.skipPractice();
+  }
+
+  /** Skip the practice: the rite is spoken for you. */
+  skipPractice(): void {
+    if (!this.litanyPractice) return;
+    this.litanyPractice = null;
+    this.invokeLitany();
   }
 
   /** Candle-Only: the vignette closes to 45 % of the view. */
@@ -801,7 +883,7 @@ export class Operation {
   /** Player input: uses real time so the Litany does not slow the surgeon. */
   handlePointer(ptr: Pointer, dt: number): void {
     this.log?.push(['p', ptr.pos.x, ptr.pos.y, ptr.prev.x, ptr.prev.y, ptr.down ? 1 : 0, ptr.pressed ? 1 : 0, ptr.released ? 1 : 0, dt]);
-    if (this.status !== 'running' || this.paused || this.dialogue.length) return;
+    if (this.status !== 'running' || this.paused || this.dialogue.length || this.litanyPractice) return;
     dt *= this.assists.gameSpeed;
     this.cursor = { ...ptr.pos };
     // Tremor from a tincture overdose jitters the hand (deterministically).
@@ -1076,7 +1158,7 @@ export class Operation {
       }
     }
     if (this.status === 'won' || this.status === 'lost') return;
-    if (this.dialogue.length) return;
+    if (this.dialogue.length || this.litanyPractice) return;
 
     this.injectCooldown = Math.max(0, this.injectCooldown - dt);
     this.tremorT = Math.max(0, this.tremorT - dt);
@@ -1152,7 +1234,9 @@ export class Operation {
       this.temperature += (37 - this.temperature) * Math.min(1, wdt * 0.05);
       drain += Math.abs(this.temperature - 37) * 0.1;
     }
-    const frozen = this.inBreather || this.mercy || this.graceT > 0;
+    this.advanceTutorial();
+    // The guided tutorial pauses the bleeding until each step's first correct action.
+    const frozen = this.inBreather || this.mercy || this.graceT > 0 || this.tutorial !== null;
     if (!frozen) {
       const total = drain + (this.def.baseDrain ?? 0);
       if (drain === 0) this.heal(T.vitals.passiveRecovery * wdt);
@@ -1448,6 +1532,14 @@ export class Operation {
 }
 
 export const clampVitals = (v: number, max = MAX_VITALS): number => clamp(v, 0, max);
+
+/** The first sentence (or clause before a dash) of a callout: Master-mode terseness. */
+export function terse(line: string): string {
+  const m = line.match(/^(.+?[.!?])(\s|$)/);
+  const first = m ? m[1] : line;
+  const dash = first.indexOf(' — ');
+  return dash > 12 ? `${first.slice(0, dash)}.` : first;
+}
 
 // ---------------------------------------------------------------- shared helpers
 

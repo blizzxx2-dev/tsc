@@ -428,6 +428,7 @@ export class BloodPool extends Entity {
     this.r -= rate * falloff * mult * dt;
     if (this.r < Math.max(3, this.startR * B.autoClear)) {
       this.kill();
+      op.flags.add('drained-any');
       op.cues.push('squelch');
       const took = op.elapsed - this.contactT;
       // Only pools that were there to begin with pay: blood from a wound left
