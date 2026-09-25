@@ -78,6 +78,13 @@ export function buildCommands(api: DebugApi, hooks: ConsoleHooks = {}): CommandR
       run: (a, [why]) => (a.lose(why === 'time' ? 'Time has run out.' : undefined), brief(a)),
     },
     { name: 'vitals', usage: '<0-99>', min: 1, help: 'set vitals', run: (a, [v]) => (a.setVitals(numArg(v, 'vitals')), brief(a)) },
+    {
+      name: 'botplay',
+      usage: '<op id> [profile] [speed]',
+      min: 1,
+      help: 'watch the bot play an operation (profiles: novice, steady, expert, farm, sloppy)',
+      run: (a, [id, p, sp]) => (a.botPlay(id, p ?? 'steady', sp ? numArg(sp, 'speed') : 1), brief(a)),
+    },
     { name: 'nodrain', usage: '[on|off]', help: 'freeze (or release) all vitals drain', run: (a, [v]) => (a.freezeDrain(boolArg(v)), brief(a)) },
     { name: 'spawn', usage: '<entity id>', min: 1, help: `spawn an entity at the cursor (${SPAWN_IDS.join(', ')})`, run: (a, [id]) => (a.spawn(id), brief(a)) },
     { name: 'time', usage: '<seconds>', min: 1, help: 'set time left', run: (a, [v]) => (a.setTime(numArg(v, 'seconds')), brief(a)) },

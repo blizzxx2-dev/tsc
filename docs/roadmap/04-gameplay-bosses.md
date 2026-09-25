@@ -299,7 +299,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0186 · Demo · P1 · S · Balance report CLI `npm run balance` — CSV per op/profile/seed: score, rank, time used, min vitals, Litany used; diffed against committed baseline in CI (> 10 % shift flags)
 - [x] GAM-0187 · Demo · P1 · S · Bot uses Litany at its heuristic best moment (largest simultaneous drain) — expert XS reachable on every demo op (test)
 - [x] GAM-0188 · Demo · P1 · S · Bot-harness perf — full 10-op × 5-profile × 20-seed sweep < 60 s in CI
-- [ ] GAM-0189 · Demo · P2 · S · Bot visual playback — dev scene that replays a bot run with the real renderer for eyeballing
+- [x] GAM-0189 · Demo · P2 · S · Bot visual playback — dev scene that replays a bot run with the real renderer for eyeballing
 - [x] GAM-0190 · Alpha · P1 · M · Bot extensions for Alpha mechanics — fracture alignment, stone chipping order, frost tap-thaw, amputation saw rhythm, antidote colour matching
 
 ### Per-operation tuning (demo)

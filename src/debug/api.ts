@@ -34,6 +34,7 @@ import { TOOL_INFO, type Pointer, type Rank, type ToolId } from '../surgery/type
 import { isPresetName, PRESET_NAMES, presetSave } from './presets';
 import { opView, stateHash, type OpView } from './state';
 import { freezeDrain, spawnAt } from './cheats';
+import { BotPlaybackScene, isProfile } from './botPlayback';
 
 export const DEBUG_API_VERSION = 1;
 
@@ -297,7 +298,7 @@ export class DebugApi {
   /** The live operation, when an operation scene is active. */
   op(): Operation | null {
     const s = this.game.scene;
-    return s instanceof OperationScene ? s.op : null;
+    return s instanceof OperationScene || s instanceof BotPlaybackScene ? s.op : null;
   }
 
   private requireOp(): Operation {
@@ -465,6 +466,15 @@ export class DebugApi {
 
   title(): void {
     this.game.go(new TitleScene());
+  }
+
+  /** Watch the bot surgeon play an operation with the real renderer (GAM-0189). */
+  botPlay(id: string, profile = 'steady', speed = 1): DebugState {
+    const def = allOperations().find((d) => d.id === id);
+    if (!def) throw new Error(`unknown operation ${id}`);
+    if (!isProfile(profile)) throw new Error(`unknown bot profile ${profile}`);
+    this.game.go(new BotPlaybackScene(def, profile, speed, () => this.title()));
+    return this.state();
   }
 
   /** Play the campaign from chapter/step (both 0-based, as stored in the save). */
