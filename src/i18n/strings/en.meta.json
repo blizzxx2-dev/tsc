@@ -6226,5 +6226,14 @@
     "maxPx": 260,
     "context": "Beside the cursor over a target the instrument in hand cannot treat; {tool} is the instrument it needs.",
     "screenshot": "docs/loc/screens/operation.png"
+  },
+  "ui.briefing.litany_sealed": {
+    "scene": "briefing",
+    "font": "display",
+    "size": 12,
+    "maxPx": 220,
+    "context": "Small capitals tag on the patient chart when the Litany of Stillness cannot be used in this operation (not yet learned, or sealed for story reasons).",
+    "screenshot": "docs/loc/screens/briefing.png",
+    "note": "\"Litany\" = the Litany of Stillness, the surgeon's time-slowing rite; see termbase."
   }
 }

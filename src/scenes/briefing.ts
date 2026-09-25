@@ -47,6 +47,8 @@ export class BriefingScene implements Scene {
     g.textBlock(d.diagnosis, vx, r.y + 210, r.w - 440, { size: 19, font: 'italic', color: hex('#d8ccb4'), shadow: false }, 1.35);
     caps(g, t('ui.briefing.time_allowed'), lx, r.y + 326, 12);
     numerals(g, formatClock(d.timeLimit), vx, r.y + 330, 22, '#ffffff', '#d8ccb4');
+    // The Litany is sealed for this patient (GAM-0170): a red tag beside the clock, so the player knows before the star fails.
+    if (d.litany === false) caps(g, t('ui.briefing.litany_sealed'), vx + (this.best ? 300 : 110), r.y + 326, 12, hex('#e06050'));
     if (this.best) {
       caps(g, t('ui.briefing.best'), vx + 110, r.y + 326, 12);
       g.text(t('ui.briefing.best_value', { rank: this.best.rank, score: this.best.score }), vx + 170, r.y + 330, { size: 20, color: hex(INK.gold), shadow: false });

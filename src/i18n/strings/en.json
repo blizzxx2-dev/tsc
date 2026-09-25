@@ -737,5 +737,6 @@
   "ui.notice.footer": "This notice appears on first launch only.",
   "ui.notice.continue": "Continue",
   "ui.notice.comfort": "Comfort Options",
-  "hud.needs": "Needs: {tool}"
+  "hud.needs": "Needs: {tool}",
+  "ui.briefing.litany_sealed": "Litany sealed"
 }
