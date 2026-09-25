@@ -373,7 +373,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 
 ### Lauds (Chapter 2 — demo)
 - [ ] ART-0235 · Demo · P0 · M · Lauds concept: two antiphonal bodies (a "choir" of mouths each) joined by a light-thread, with a fused phase-3 form — callout sheet
-- [ ] ART-0236 · Demo · P0 · L · Lauds sprites: body A and body B idle loops, "call" and "answer" singing flipbooks (8 frames each), hurt and heal-answer states
+- [x] ART-0236 · Demo · P0 · L · Lauds sprites: body A and body B idle loops, "call" and "answer" singing flipbooks (8 frames each), hurt and heal-answer states
 - [x] ART-0237 · Demo · P0 · M · Lauds light-thread VFX: a stretchable beam sprite with travelling pulses, a sever animation (Lancet) and a tie-off (Thread)
 - [x] ART-0238 · Demo · P0 · M · Lauds dawn-flare VFX spec: full-screen gold bloom burst that blinds the Scrying Lens view, with an ENG shader-parameter table (intensity curve, duration)
 - [ ] ART-0239 · Demo · P0 · L · Lauds phase-3 fused form: merge transition (20 frames), fused idle loop and death sequence
@@ -425,7 +425,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [ ] ART-0265 · Demo · P0 · S · Silhouette test: all 8 icons distinguishable in pure black at 48 px (5-tester hallway test, ≥ 95% correct)
 - [x] ART-0266 · Demo · P1 · S · Small 32 px icon variants for the tutorial text inline glyphs and the keybind options page
 - [ ] ART-0267 · Demo · P1 · S · Leech-Pipe live-leech detail: a 4-frame squirm loop on the tray icon
-- [ ] ART-0268 · Alpha · P2 · S · Discipline-tool icons (splint, bone saw, triage tag, evidence tongs, magnifier) in the same style
+- [x] ART-0268 · Alpha · P2 · S · Discipline-tool icons (splint, bone saw, triage tag, evidence tongs, magnifier) in the same style
 
 ### Cursors & in-field tool sprites
 - [x] ART-0269 · Demo · P0 · M · In-field tool sprites for all 8 tools, drawn at the pointer during use (lancet blade, tong jaws open/closed, pipe nozzle, needle + thread trail, salve spatula, syringe, glowing brand, lens rim)
@@ -463,7 +463,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 ### Feedback & HUD VFX
 - [x] ART-0290 · Demo · P0 · S · COOL rating burst: gilt stamp with a halo of leaf flakes; GOOD, BAD and MISS each with their own lighter treatment
 - [x] ART-0291 · Demo · P1 · S · Low-vitals VFX art: a cracked-glass overlay on the vitals gauge and blood-vessel creep at the screen edges, in sync with the red pulse
-- [ ] ART-0292 · Demo · P1 · S · Operation success and failure transitions: a woodcut page-turn wipe (success) and an ink-flood to a Holbein skeleton (failure)
+- [x] ART-0292 · Demo · P1 · S · Operation success and failure transitions: a woodcut page-turn wipe (success) and an ink-flood to a Holbein skeleton (failure)
 - [x] ART-0293 · Demo · P2 · S · Combo milestone VFX at ×5 and ×10 (a ribbon unfurl with gilt edges)
 
 ### VFX system standards

@@ -155,6 +155,60 @@ export function drawTipDebug(g: Gfx, tool: ToolId, p: Vec): void {
   g.rectLine(o.x, o.y, TOOL_SPRITE_SIZE, TOOL_SPRITE_SIZE, 1, hex('#40ffff', 0.35));
 }
 
+/** The discipline instruments (ART-0268): fractures, amputation, field triage and forensics. */
+export type DisciplineTool = 'splint' | 'bonesaw' | 'triageTag' | 'evidenceTongs' | 'magnifier';
+export const DISCIPLINE_TOOLS: readonly DisciplineTool[] = ['splint', 'bonesaw', 'triageTag', 'evidenceTongs', 'magnifier'];
+
+/**
+ * A discipline instrument drawn in the same roundel style as `toolGlyph` (brass rim, soot ground,
+ * the instrument in steel, oak, linen and brass), centred on (x, y), `size` px across.
+ */
+export function disciplineGlyph(g: Gfx, tool: DisciplineTool, x: number, y: number, size = 64, a = 1): void {
+  const r = size / 2;
+  g.circle(x, y, r, hex(SWATCHES.soot, 0.92 * a));
+  g.arc(x, y, r - 1, Math.max(1.5, size / 30), hex(SWATCHES.brass, 0.9 * a));
+  const k = size / 64;
+  const P = (px: number, py: number) => ({ x: x + px * k, y: y + py * k });
+  const L = (ax: number, ay: number, bx: number, by: number, w: number, c: number) => g.line(P(ax, ay), P(bx, by), w * k, c);
+  switch (tool) {
+    case 'splint':
+      // Two oak slats bound with linen.
+      L(-14, 20, 10, -22, 6, hex(SWATCHES.oak, a));
+      L(-6, 22, 18, -20, 6, hex(SWATCHES.oak, a));
+      for (const t of [-8, 4, 14]) L(-14 + t * 0.6 + 4, 12 - t, -2 + t * 0.6 + 4, 16 - t, 3, hex(SWATCHES.linen, a));
+      break;
+    case 'bonesaw':
+      // A bow frame with a toothed blade and a turned handle.
+      L(-18, 10, 16, -14, 2.5, hex('#d8dce0', a));
+      for (let i = 0; i < 8; i++) L(-16 + i * 4, 8 - i * 3, -15 + i * 4, 11 - i * 3, 1.2, hex('#9aa0a6', a));
+      g.quadCurve(P(-18, 10), P(-10, -20), P(16, -14), 2 * k, hex(SWATCHES.brass, a), 10);
+      L(-18, 10, -24, 22, 5, hex(SWATCHES.oak, a));
+      break;
+    case 'triageTag':
+      // A paper tag on a string, with a coloured priority band.
+      g.poly([P(-12, -16), P(12, -16), P(16, -10), P(16, 20), P(-12, 20)], hex(SWATCHES.vellum, a));
+      g.rect(P(-12, 6).x, P(-12, 6).y, 28 * k, 7 * k, hex(SWATCHES.oxblood, a));
+      g.circle(P(10, -11).x, P(10, -11).y, 2.2 * k, hex(SWATCHES.soot, a));
+      g.quadCurve(P(10, -11), P(20, -22), P(8, -26), 1.2 * k, hex(SWATCHES.linen, a), 8);
+      L(-8, -6, 8, -6, 1, hex(SWATCHES.inkDark, a));
+      L(-8, -1, 4, -1, 1, hex(SWATCHES.inkDark, a));
+      break;
+    case 'evidenceTongs':
+      // Fine brass-tipped tongs holding a small evidence scrap.
+      L(-18, 18, 16, -16, 2.2, hex('#d8dce0', a));
+      L(-14, 20, 18, -12, 2.2, hex('#d8dce0', a));
+      L(-18, 18, -14, 20, 3, hex(SWATCHES.brass, a));
+      g.poly([P(16, -22), P(24, -18), P(20, -10), P(12, -14)], hex(SWATCHES.vellumLo, a));
+      break;
+    case 'magnifier':
+      L(6, 6, 22, 22, 5, hex(SWATCHES.oak, a));
+      g.arc(P(-4, -4).x, P(-4, -4).y, 13 * k, 3.5 * k, hex(SWATCHES.brass, a));
+      g.circle(P(-4, -4).x, P(-4, -4).y, 11 * k, hex(SWATCHES.frost, 0.18 * a));
+      g.arc(P(-4, -4).x, P(-4, -4).y, 8 * k, 1.4 * k, hex('#ffffff', 0.5 * a), 0.2, -2.4);
+      break;
+  }
+}
+
 /** Small-icon size (ART-0266): tutorial inline glyphs and the keybind page. */
 export const TOOL_GLYPH_SIZE = 32;
 

@@ -8,10 +8,11 @@ import type { Gfx } from '../render/gfx';
 import { Particles, type FxKind } from '../render/particles';
 import { VIEW_H, VIEW_W } from '../ui/layout';
 import { drawVfxSample, VFX_SPECS } from './vfx';
-import { drawFieldTool, drawTipDebug, toolGlyph } from './toolSprites';
+import { disciplineGlyph, DISCIPLINE_TOOLS, drawFieldTool, drawTipDebug, toolGlyph } from './toolSprites';
 import { busyCursor, padCursorRing } from './cursors';
 import { padGlyph } from './padGlyphs';
-import { dawnFlare, flareIntensity, lightThread, MATINS_DEATH_FRAMES, matinsDeathEye, matinsUnravel } from './bossVfx';
+import { inkFlood } from './outcomeArt';
+import { dawnFlare, flareIntensity, laudsChoir, lightThread, MATINS_DEATH_FRAMES, matinsDeathEye, matinsUnravel } from './bossVfx';
 import { PAD_GLYPHS } from '../input/glyphs';
 import { reticle } from '../ui/widgets';
 import type { ToolId } from '../surgery/types';
@@ -33,11 +34,11 @@ export class VfxLabScene implements Scene {
   private frozen = false;
   private parts = new Particles();
   private spawnT = 0;
-  private page: 'vfx' | 'tools' | 'bosses' = 'vfx';
+  private page: 'vfx' | 'tools' | 'bosses' | 'outcome' = 'vfx';
 
   constructor() {
     const q = new URLSearchParams(location.search);
-    if (q.get('page') === 'tools' || q.get('page') === 'bosses') this.page = q.get('page') as 'tools' | 'bosses';
+    if (['tools', 'bosses', 'outcome'].includes(q.get('page') ?? '')) this.page = q.get('page') as 'tools' | 'bosses' | 'outcome';
     if (q.get('t')) {
       this.t = Number(q.get('t'));
       this.frozen = true;
@@ -76,6 +77,12 @@ export class VfxLabScene implements Scene {
     g.beginScreen([0.05, 0.03, 0.03]);
     if (this.page === 'tools') return this.tools(g);
     if (this.page === 'bosses') return this.bosses(g);
+    if (this.page === 'outcome') {
+      // ART-0292: the lost-operation ink flood at t (s after the loss), over a flesh-red stand-in.
+      g.rect(0, 0, VIEW_W, VIEW_H, hex('#6a2a24'));
+      inkFlood(g, { x: 0, y: 0, w: VIEW_W, h: VIEW_H }, 0.9 + (this.t % 1.6));
+      return g.endFrame();
+    }
     VFX_SPECS.forEach((s, i) => {
       const c = this.cell(i);
       g.rect(c.x + 2, c.y + 2, c.w - 4, c.h - 4, hex(i % 2 ? '#6a2a24' : '#5a2420'));
@@ -114,6 +121,8 @@ export class VfxLabScene implements Scene {
     g.text('quill · crosshair · busy · pad ring', 60, 420, { size: 16, color: hex('#f0e4c8') });
     TOOLS.forEach((tool, i) => toolGlyph(g, tool, 640 + i * 40, 360));
     g.text('32 px glyphs', 640, 400, { size: 16, color: hex('#f0e4c8') });
+    DISCIPLINE_TOOLS.forEach((d, i) => disciplineGlyph(g, d, 1000 + (i % 3) * 70, 340 + Math.floor(i / 3) * 70, 60));
+    g.text('discipline tools', 1000, 430, { size: 16, color: hex('#f0e4c8') });
     // Glyph sets.
     (['xbox', 'playstation', 'deck'] as const).forEach((fam, row) => {
       let x = 40;
@@ -154,6 +163,13 @@ export class VfxLabScene implements Scene {
     dawnFlare(g, { x: 700, y: 260, w: 560, h: 300 }, { x: 980, y: 300 }, flareIntensity(0.25, 2), 0, 1, { x: 1100, y: 440 }, 60);
     g.popClip();
     g.text('dawn flare (peak) + lens white-out', 710, 580, { size: 16, color: hex('#f0e4c8') });
+    // Lauds choir states (ART-0236).
+    (['idle', 'call', 'answer', 'hurt', 'heal'] as const).forEach((st, i) => {
+      const x = 80 + i * 120;
+      g.creature(1, x, 640, 150, { seed: 5 + i, open: 1, health: 1, flash: st === 'hurt' ? 1 : 0 });
+      laudsChoir(g, x, 640, 38, st, t, { x: x + 200, y: 640 });
+      g.text(st, x, 705, { size: 16, color: hex('#f0e4c8'), align: 'center' });
+    });
     g.endFrame();
   }
 }

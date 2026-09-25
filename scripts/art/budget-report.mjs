@@ -60,6 +60,10 @@ for (const sc of SCENES.filter((x) => x.name.includes(only))) {
   await page.goto(`${url}?${sc.query}`, { timeout: 240000, waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => window.__game?.clock.frames > 2 && !window.__game.transition?.busy, null, { timeout: 120000 });
   if (sc.op) {
+    // Wait for the briefing, then Scrub In (a case that introduces an instrument shows its card first).
+    await page.waitForFunction(() => window.__game?.scene && typeof window.__game.scene.onBegin === 'function' && !window.__game.transition?.busy, null, {
+      timeout: 240000,
+    });
     for (let tries = 0; tries < 6; tries++) {
       await page.keyboard.press('Enter');
       if (

@@ -122,6 +122,73 @@ export function dawnFlare(g: Gfx, view: { x: number; y: number; w: number; h: nu
   g.setBlend('alpha');
 }
 
+/** Lauds body states (ART-0236). */
+export type ChoirState = 'idle' | 'call' | 'answer' | 'hurt' | 'heal';
+/** Mouths in each body's choir, and frames in the call/answer flipbooks. */
+export const CHOIR_MOUTHS = 7;
+export const CHOIR_FRAMES = 8;
+
+/** Openness 0..1 of mouth `i` in `state` at flipbook `frame` (idle breathes smoothly on `t`). */
+export function choirMouth(state: ChoirState, i: number, frame: number, t: number): number {
+  // Where the singing wave is on the ring this frame: the call runs clockwise, the answer back.
+  const at = (frame / CHOIR_FRAMES) * CHOIR_MOUTHS;
+  const d = (k: number) => Math.min(Math.abs(k - at), CHOIR_MOUTHS - Math.abs(k - at));
+  switch (state) {
+    case 'call':
+      return 0.15 + 0.85 * Math.max(0, 1 - d(i) / 1.5);
+    case 'answer':
+      return 0.15 + 0.85 * Math.max(0, 1 - d(CHOIR_MOUTHS - 1 - i) / 1.5);
+    case 'hurt':
+      return 0.05;
+    case 'heal':
+      return 0.9;
+    default:
+      return 0.25 + 0.15 * Math.sin(t * 1.5 + i * 0.9);
+  }
+}
+
+/**
+ * The choir of mouths round a Lauds body (ART-0236): seven lipped mouths on the rim. Idle they
+ * breathe; "call" and "answer" are 8-frame flipbooks at 12 fps (a singing wave running round the
+ * ring one way, then back), "hurt" clenches every mouth and jolts the ring, and "heal" (the
+ * heal-answer) opens them all in a gold glow. `toward` aims the sound arcs of the call and answer.
+ */
+export function laudsChoir(g: Gfx, x: number, y: number, r: number, state: ChoirState, t: number, toward?: Vec): void {
+  const frame = Math.floor(t * 12) % CHOIR_FRAMES;
+  const jolt = state === 'hurt' ? Math.sin(t * 60) * 3 : 0;
+  if (state === 'heal') {
+    g.setBlend('add');
+    g.circleGrad(x, y, r * 2.2, hex(SWATCHES.gilt, 0.35), hex(SWATCHES.gilt, 0));
+    g.setBlend('alpha');
+  }
+  for (let i = 0; i < CHOIR_MOUTHS; i++) {
+    const a = (i / CHOIR_MOUTHS) * Math.PI * 2 - Math.PI / 2;
+    const mx = x + Math.cos(a) * r * 0.82 + jolt;
+    const my = y + Math.sin(a) * r * 0.82;
+    const open = choirMouth(state, i, frame, t);
+    const w = r * 0.24;
+    g.ellipse(mx, my, w, w * (0.2 + 0.55 * open), a + Math.PI / 2, hex('#e8c8c8', 0.9), hex('#b08890', 0.9));
+    g.ellipse(mx, my, w * 0.75, w * 0.55 * open, a + Math.PI / 2, hex('#1a0408', 0.95));
+  }
+  // Sound arcs leave the singing side toward the other body.
+  if ((state === 'call' || state === 'answer') && toward) {
+    const ang = Math.atan2(toward.y - y, toward.x - x);
+    g.setBlend('add');
+    for (let k = 0; k < 3; k++) {
+      const u = ((t * 1.6 + k / 3) % 1) * 1;
+      const rr = r * (1.1 + u * 1.4);
+      const c = state === 'call' ? '#ffe0a0' : '#f0d8ff';
+      for (let s = -3; s <= 3; s++) {
+        const a0 = ang + (s / 3) * 0.45;
+        const a1 = ang + ((s + 1) / 3) * 0.45;
+        if (s === 3) break;
+        g.line({ x: x + Math.cos(a0) * rr, y: y + Math.sin(a0) * rr }, { x: x + Math.cos(a1) * rr, y: y + Math.sin(a1) * rr }, 2, hex(c, 0.6 * (1 - u)));
+      }
+    }
+    g.setBlend('alpha');
+  }
+}
+
 /** Matins' death (ART-0233): 24 woodcut frames at 12 fps. */
 export const MATINS_DEATH_FRAMES = 24;
 

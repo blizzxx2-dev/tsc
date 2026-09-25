@@ -52,6 +52,8 @@ import type { OperationOptions } from '../surgery/operation';
 import { drawDebug, drawDialogue, drawDrainArrow, drawFieldOverlays, drawLitanyPractice, drawSecondaryVitals, drawTrayState, drawTutorial } from './gameplayHud';
 import { PauseScene, type PauseResult } from './pause';
 import { VfxLayer } from '../art/vfx';
+import { inkFlood } from '../art/outcomeArt';
+import { nextTransitionStyle } from '../ui/transition';
 import { pushWarp, tissueWarp } from '../art/tissueWarp';
 import { drawFieldTool, drawTipDebug } from '../art/toolSprites';
 
@@ -408,7 +410,11 @@ export class OperationScene implements Scene {
 
     if (op.status === 'won' || op.status === 'lost') {
       this.endT += dt;
-      if (this.endT > 2.2) this.onEnd({ op, won: op.status === 'won' });
+      if (this.endT > 2.2) {
+        // A saved patient leaves by the woodcut page turn (ART-0292); a lost one is already under the ink.
+        if (op.status === 'won') nextTransitionStyle('page');
+        this.onEnd({ op, won: op.status === 'won' });
+      }
     }
   }
 
@@ -584,6 +590,8 @@ export class OperationScene implements Scene {
       // Ink spreading from the centre of the band.
       for (let i = 0; i < 6; i++) g.circle(VIEW_W / 2 + (i - 2.5) * 90, 356 + Math.sin(i * 2.1) * 20, (30 + i * 8) * k, hex('#1a0406', 0.35 * k));
       g.rect(vr2.x, 296, vr2.w, 128, hex('#2a0608', 0.25 * k));
+      // Ink floods in from the edges until a Dance-of-Death skeleton stands in it (ART-0292).
+      inkFlood(g, vr2, this.endT, settings.reduceMotion);
       card(tr('hud.patient_lost'), tSource(op.lostReason), k, '#ffb0a8', '#c0282c');
     }
 
