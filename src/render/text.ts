@@ -18,6 +18,8 @@ export interface Glyph {
   adv: number;
 }
 
+import type { GlRegistry } from './registry';
+
 const SIZE = 2048;
 const PAD = 6;
 
@@ -27,7 +29,7 @@ const PAD = 6;
  */
 export class GlyphAtlas {
   readonly baseSize = 56;
-  readonly texture: WebGLTexture;
+  texture: WebGLTexture;
   readonly white = { u: 1 / SIZE, v: 1 / SIZE };
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
@@ -36,17 +38,44 @@ export class GlyphAtlas {
   private penY = 0;
   private rowH = 0;
   private dirty = true;
+  /** Region changed since the last upload (ENG-0171); `full` forces a whole-page upload. */
+  private dirtyRect = { x0: SIZE, y0: SIZE, x1: 0, y1: 0 };
+  private full = true;
   private metrics = new Map<FontId, { ascent: number; descent: number }>();
 
-  constructor(private gl: WebGL2RenderingContext) {
+  constructor(
+    private gl: WebGL2RenderingContext,
+    private registry?: GlRegistry,
+  ) {
     this.canvas = document.createElement('canvas');
     this.canvas.width = this.canvas.height = SIZE;
-    this.ctx = this.canvas.getContext('2d', { willReadFrequently: false })!;
+    this.ctx = this.canvas.getContext('2d', { willReadFrequently: true })!;
     // Solid white block in the corner for untextured primitives.
     this.ctx.fillStyle = '#fff';
     this.ctx.fillRect(0, 0, 4, 4);
-    this.texture = gl.createTexture()!;
+    this.texture = this.createTexture();
     this.upload();
+    // After a context loss the page is re-uploaded whole from the retained canvas.
+    registry?.onRestore(() => {
+      this.texture = this.createTexture();
+      this.full = this.dirty = true;
+      this.upload();
+    }, 5);
+  }
+
+  private createTexture(): WebGLTexture {
+    const t = this.registry ? this.registry.createTexture('glyph-atlas') : this.gl.createTexture()!;
+    this.registry?.setBytes(t, Math.round(SIZE * SIZE * 4 * (4 / 3)));
+    return t;
+  }
+
+  private markDirty(x: number, y: number, w: number, h: number): void {
+    const d = this.dirtyRect;
+    d.x0 = Math.min(d.x0, x);
+    d.y0 = Math.min(d.y0, y);
+    d.x1 = Math.max(d.x1, Math.min(SIZE, x + w));
+    d.y1 = Math.max(d.y1, Math.min(SIZE, y + h));
+    this.dirty = true;
   }
 
   private font(f: FontId): string {
@@ -99,6 +128,7 @@ export class GlyphAtlas {
       this.penX = 8;
       this.penY = 8;
       this.rowH = 0;
+      this.full = true;
     }
     ctx.fillStyle = '#fff';
     ctx.textBaseline = 'alphabetic';
@@ -114,10 +144,10 @@ export class GlyphAtlas {
       oy: -PAD,
       adv,
     };
+    this.markDirty(this.penX, this.penY, w, h);
     this.penX += w + 2;
     this.rowH = Math.max(this.rowH, h);
     this.glyphs.set(key, g);
-    this.dirty = true;
     return g;
   }
 
@@ -128,17 +158,33 @@ export class GlyphAtlas {
     return w;
   }
 
-  /** Upload pending glyphs. Called lazily before drawing. */
-  upload(): void {
-    if (!this.dirty) return;
+  /**
+   * Upload pending glyphs; returns true if anything was uploaded. Only the
+   * changed rectangle goes up via texSubImage2D (ENG-0171) — the whole page
+   * is sent just once, and again after the atlas wraps or the context returns.
+   */
+  upload(): boolean {
+    if (!this.dirty) return false;
     const gl = this.gl;
     gl.bindTexture(gl.TEXTURE_2D, this.texture);
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.canvas);
+    const d = this.dirtyRect;
+    if (this.full) {
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.canvas);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    } else if (d.x1 > d.x0 && d.y1 > d.y0) {
+      const w = d.x1 - d.x0;
+      const h = d.y1 - d.y0;
+      const px = this.ctx.getImageData(d.x0, d.y0, w, h);
+      gl.texSubImage2D(gl.TEXTURE_2D, 0, d.x0, d.y0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, px.data);
+    }
     gl.generateMipmap(gl.TEXTURE_2D);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    this.full = false;
     this.dirty = false;
+    d.x0 = d.y0 = SIZE;
+    d.x1 = d.y1 = 0;
+    return true;
   }
 
   /** Rasterise the common character set up front so play never hitches. */

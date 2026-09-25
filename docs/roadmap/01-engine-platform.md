@@ -47,26 +47,26 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0019 · Demo · P1 · M · Batch key = (program, texture set, blend, layer); `flush()` fires only when the key changes — unit test with a mock `WebGL2RenderingContext` asserts ≤6 draw calls for the op1-5 HUD frame
 - [ ] ENG-0020 · Demo · P2 · M · Add a static quad index buffer so rects/glyphs/sprites cost 4 vertices instead of 6 — vertex count on the results screen drops ≥30% (`gfx.stats`)
 - [ ] ENG-0021 · Demo · P2 · M · Replace full-range `bufferSubData` each flush with a 3-segment orphaned ring buffer — Chrome GPU trace shows no implicit sync stalls during an operation
-- [ ] ENG-0022 · Demo · P1 · S · Guard against `MAX_VERTS` overflow for single primitives larger than the buffer (split or grow) — drawing a 200k-vertex polyline renders correctly in a test
-- [ ] ENG-0023 · Demo · P2 · S · Precomputed unit-circle cos/sin tables per segment count for `ellipse`/`arc`/`circleGrad` — micro-benchmark shows ≥2× faster tessellation
-- [ ] ENG-0024 · Demo · P1 · S · `gfx.stats` per frame — draw calls, vertices, flushes by reason (blend/texture/program/overflow), texture uploads
+- [x] ENG-0022 · Demo · P1 · S · Guard against `MAX_VERTS` overflow for single primitives larger than the buffer (split or grow) — drawing a 200k-vertex polyline renders correctly in a test
+- [x] ENG-0023 · Demo · P2 · S · Precomputed unit-circle cos/sin tables per segment count for `ellipse`/`arc`/`circleGrad` — micro-benchmark shows ≥2× faster tessellation
+- [x] ENG-0024 · Demo · P1 · S · `gfx.stats` per frame — draw calls, vertices, flushes by reason (blend/texture/program/overflow), texture uploads
 - [ ] ENG-0025 · Demo · P1 · M · Premultiplied-alpha pipeline (colour packing, atlas, blend `ONE, ONE_MINUS_SRC_ALPHA`) — golden image shows no dark fringes around `glow()` and glyph edges on light parchment
-- [ ] ENG-0026 · Demo · P2 · S · `multiply` and `screen` blend modes — plus `withBlend(mode, fn)` that restores the previous mode even if `fn` throws
-- [ ] ENG-0027 · Demo · P1 · S · Scissor clip stack `pushClip(rect)`/`popClip()` — virtual coords converted to device px (unit test for letterbox + DPR) for scrolling text panels
+- [x] ENG-0026 · Demo · P2 · S · `multiply` and `screen` blend modes — plus `withBlend(mode, fn)` that restores the previous mode even if `fn` throws
+- [x] ENG-0027 · Demo · P1 · S · Scissor clip stack `pushClip(rect)`/`popClip()` — virtual coords converted to device px (unit test for letterbox + DPR) for scrolling text panels
 - [ ] ENG-0028 · Demo · P1 · M · Stencil mask API (`beginMask`/`endMask`/`clearMask`) on the world target (depth-stencil attachment) — entities inside an incision are clipped to the opening outline
 - [ ] ENG-0029 · Demo · P2 · S · GL state cache (program, VAO, bound textures per unit, blend, framebuffer) — WebGL inspector reports 0 redundant state calls in a steady-state operation frame
 
 ### Textures & sprite sheets
-- [ ] ENG-0030 · Demo · P0 · M · `Texture` wrapper — load from `ImageBitmap` (`createImageBitmap`, premultiply option), filtering/wrap/mip settings, byte size tracked for the VRAM budget
-- [ ] ENG-0031 · Demo · P0 · M · Multi-texture batching: `PRIM_FS` samples up to 8 units selected by a per-vertex texture index — text + 3 sprite pages render in one draw call (draw-call counter test)
-- [ ] ENG-0032 · Demo · P0 · M · Sprite API — `sprite(frameId, x, y, {rot, scale, tint, flipX, pivot, alpha})` renders atlas sub-rects from a frame table; golden image test
-- [ ] ENG-0033 · Demo · P0 · M · Build-time atlas packer `scripts/pack-atlas.ts` — MaxRects packing of `assets/sprites/<sheet>/*.png` into 2048² pages with 2 px extruded borders + JSON frame table; byte-identical output for identical input
-- [ ] ENG-0034 · Demo · P1 · M · Sprite-sheet animation — frame sequences with per-frame durations from JSON; `AnimPlayer` supports loop/once/ping-pong and completion callbacks (unit tests)
-- [ ] ENG-0035 · Demo · P1 · S · `nineSlice(frame, rect, insets)` for parchment panels, buttons and dialogue boxes — corners unscaled at any rect size
-- [ ] ENG-0036 · Demo · P2 · S · Texture filtering — mipmapped trilinear sampling for downscaled art, anisotropic filtering when `EXT_texture_filter_anisotropic` exists
+- [x] ENG-0030 · Demo · P0 · M · `Texture` wrapper — load from `ImageBitmap` (`createImageBitmap`, premultiply option), filtering/wrap/mip settings, byte size tracked for the VRAM budget
+- [x] ENG-0031 · Demo · P0 · M · Multi-texture batching: `PRIM_FS` samples up to 8 units selected by a per-vertex texture index — text + 3 sprite pages render in one draw call (draw-call counter test)
+- [x] ENG-0032 · Demo · P0 · M · Sprite API — `sprite(frameId, x, y, {rot, scale, tint, flipX, pivot, alpha})` renders atlas sub-rects from a frame table; golden image test
+- [x] ENG-0033 · Demo · P0 · M · Build-time atlas packer `scripts/pack-atlas.ts` — MaxRects packing of `assets/sprites/<sheet>/*.png` into 2048² pages with 2 px extruded borders + JSON frame table; byte-identical output for identical input
+- [x] ENG-0034 · Demo · P1 · M · Sprite-sheet animation — frame sequences with per-frame durations from JSON; `AnimPlayer` supports loop/once/ping-pong and completion callbacks (unit tests)
+- [x] ENG-0035 · Demo · P1 · S · `nineSlice(frame, rect, insets)` for parchment panels, buttons and dialogue boxes — corners unscaled at any rect size
+- [x] ENG-0036 · Demo · P2 · S · Texture filtering — mipmapped trilinear sampling for downscaled art, anisotropic filtering when `EXT_texture_filter_anisotropic` exists
 - [ ] ENG-0037 · Demo · P2 · M · Spike: KTX2/Basis Universal (wasm transcoder) vs PNG for sprite pages — report VRAM, load time and artefacts on organ art; adopt only if VRAM saving ≥50% with art sign-off
 - [ ] ENG-0038 · Demo · P2 · M · Lit sprites — optional normal-map page per sprite sheet sampled in a lit sprite shader using the same light rig as the flesh field (tools, embedded objects, organs)
-- [ ] ENG-0039 · Demo · P1 · M · Textured mesh draw — `mesh(verts, uvs, indices, tex)` for deformable organ sprites, draped cloth strips and suture thread
+- [x] ENG-0039 · Demo · P1 · M · Textured mesh draw — `mesh(verts, uvs, indices, tex)` for deformable organ sprites, draped cloth strips and suture thread
 - [ ] ENG-0040 · Demo · P2 · M · Deformable sprite grid — N×M mesh with per-vertex offsets for heartbeat squash/stretch, grub bulges and Malison flinches
 
 ### Render layers & ordering
@@ -76,37 +76,37 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0044 · Demo · P2 · S · WorldUI layer — callouts/popups anchored to world positions drawn after post but through the camera transform (stay attached when zoomed)
 
 ### Camera & close-ups
-- [ ] ENG-0045 · Demo · P0 · M · `Camera2D` view matrix — position/zoom/rotation applied as a uniform in `PRIM_VS` instead of CPU vertex transforms, so zooming does not re-tessellate or rebuild batches
-- [ ] ENG-0046 · Demo · P0 · S · Pointer → world mapping through the camera inverse (`camera.toWorld(input.pos)`); entity hit tests use world coords — test clicks land on the right entity at 2× zoom and offset pan
-- [ ] ENG-0047 · Demo · P1 · M · Close-up camera tweens — `camera.focus(target, zoom, seconds, ease)` for Malison reveals, fine suturing and lens scrying; easing curves unit-tested
+- [x] ENG-0045 · Demo · P0 · M · `Camera2D` view matrix — position/zoom/rotation applied as a uniform in `PRIM_VS` instead of CPU vertex transforms, so zooming does not re-tessellate or rebuild batches
+- [x] ENG-0046 · Demo · P0 · S · Pointer → world mapping through the camera inverse (`camera.toWorld(input.pos)`); entity hit tests use world coords — test clicks land on the right entity at 2× zoom and offset pan
+- [x] ENG-0047 · Demo · P1 · M · Close-up camera tweens — `camera.focus(target, zoom, seconds, ease)` for Malison reveals, fine suturing and lens scrying; easing curves unit-tested
 - [ ] ENG-0048 · Demo · P1 · M · Flesh shader and decal maps take the camera transform so procedural detail is resampled at zoom — screenshot at 2.5× shows sharp veins, not a magnified blur
-- [ ] ENG-0049 · Demo · P1 · S · Camera bounds clamp — zoomed view never reveals beyond the drape edge or the virtual safe area
-- [ ] ENG-0050 · Demo · P1 · S · Tessellation LOD from on-screen radius (after camera zoom and DPR) — circles stay smooth at 2.5× zoom and cheap at 1×
+- [x] ENG-0049 · Demo · P1 · S · Camera bounds clamp — zoomed view never reveals beyond the drape edge or the virtual safe area
+- [x] ENG-0050 · Demo · P1 · S · Tessellation LOD from on-screen radius (after camera zoom and DPR) — circles stay smooth at 2.5× zoom and cheap at 1×
 - [ ] ENG-0051 · Demo · P1 · M · Camera shake moved from post UV offset (`u_shake`) to a trauma-based camera offset/rotation using smooth noise, scaled by the screen-shake setting — `op.shake` jitter no longer uses `Math.random`
 - [x] ENG-0052 · Demo · P1 · M · Anti-aliasing for the world layer: 4× MSAA renderbuffer resolved with `blitFramebuffer` into the post input; fall back to an FXAA pass when `MAX_SAMPLES < 4` — edge crawl on lancet lines eliminated in capture
 
 ## ENG-C · Frame loop, timing & scene state machine (Demo)
 
 ### Frame loop & clocks
-- [ ] ENG-0053 · Demo · P0 · M · Fixed-step simulation: 120 Hz accumulator calling `update(FIXED_DT)` up to 8×/frame, then `render(alpha)`; excess time dropped (no spiral of death) — op outcomes identical at 30/60/144 fps render rates (test)
+- [x] ENG-0053 · Demo · P0 · M · Fixed-step simulation: 120 Hz accumulator calling `update(FIXED_DT)` up to 8×/frame, then `render(alpha)`; excess time dropped (no spiral of death) — op outcomes identical at 30/60/144 fps render rates (test)
 - [ ] ENG-0054 · Demo · P1 · M · Render interpolation — entities keep `prevPos`/`prevAngle`, views lerp by `alpha`; helper for interpolated scalars (tool heat, Malison orbit)
-- [ ] ENG-0055 · Demo · P1 · S · Sub-step input distribution — `Input.path` samples spread across a frame's fixed steps by timestamp, so lancet strokes sample identically at any frame rate (test at 30/60/144)
-- [ ] ENG-0056 · Demo · P0 · M · Single `Clock` service — `real`, `sim` (stops on pause/hitstop) and `world` (Litany-scaled) times replace `gfx.time += dt` and scene-local timers
+- [x] ENG-0055 · Demo · P1 · S · Sub-step input distribution — `Input.path` samples spread across a frame's fixed steps by timestamp, so lancet strokes sample identically at any frame rate (test at 30/60/144)
+- [x] ENG-0056 · Demo · P0 · M · Single `Clock` service — `real`, `sim` (stops on pause/hitstop) and `world` (Litany-scaled) times replace `gfx.time += dt` and scene-local timers
 - [ ] ENG-0057 · Demo · P1 · S · Pause semantics: sim and world clocks stop, UI animation and audio ducking continue — unit test that vitals/time do not change across a 10 s pause
 - [ ] ENG-0058 · Demo · P2 · S · Hitstop — `clock.hitstop(ms)` freezes world time on impacts (Malison hit, barb tear, chain milestone), capped at 120 ms, disabled by reduce-motion
-- [ ] ENG-0059 · Demo · P1 · S · Hidden-window handling — on `visibilitychange` (minimised/occluded) the loop stops ticking and the audio context suspends; returning resumes with no dt spike (dt clamp test)
-- [ ] ENG-0060 · Demo · P1 · M · Frame limiter (30/40/60/90/120/144/uncapped) in the loop using rAF skipping aligned to measured refresh — frame pacing jitter <1 ms at a 60 cap on a 144 Hz display
-- [ ] ENG-0061 · Demo · P2 · S · Display refresh estimator (median of rAF deltas) exposed to settings/profiler — handles 59.94/75/120/144/165 Hz
+- [x] ENG-0059 · Demo · P1 · S · Hidden-window handling — on `visibilitychange` (minimised/occluded) the loop stops ticking and the audio context suspends; returning resumes with no dt spike (dt clamp test)
+- [x] ENG-0060 · Demo · P1 · M · Frame limiter (30/40/60/90/120/144/uncapped) in the loop using rAF skipping aligned to measured refresh — frame pacing jitter <1 ms at a 60 cap on a 144 Hz display
+- [x] ENG-0061 · Demo · P2 · S · Display refresh estimator (median of rAF deltas) exposed to settings/profiler — handles 59.94/75/120/144/165 Hz
 
 ### Scene state machine
-- [ ] ENG-0062 · Demo · P0 · M · Scene lifecycle `enter/exit/pause/resume/dispose`; `go()` disposes the outgoing scene — 50 operation restarts leave GL object and listener counts unchanged (leak test)
-- [ ] ENG-0063 · Demo · P0 · M · Scene stack — push/pop overlays (pause, options, confirm dialog, glossary) over a live scene that stops updating but keeps rendering underneath
+- [x] ENG-0062 · Demo · P0 · M · Scene lifecycle `enter/exit/pause/resume/dispose`; `go()` disposes the outgoing scene — 50 operation restarts leave GL object and listener counts unchanged (leak test)
+- [x] ENG-0063 · Demo · P0 · M · Scene stack — push/pop overlays (pause, options, confirm dialog, glossary) over a live scene that stops updating but keeps rendering underneath
 - [ ] ENG-0064 · Demo · P1 · M · Transition system — fade, iris and ink-bleed wipes rendered on the Overlay layer; `go(scene, {transition:'ink', ms:600})`; input blocked during transitions
 - [ ] ENG-0065 · Demo · P1 · M · Async scene loading — `LoadingScene` awaits the next scene's asset bundle with a progress quill; skipped when already resident, never flashes for <300 ms
 - [ ] ENG-0066 · Demo · P1 · S · Global overlay host — toasts, autosave quill, achievement popups, FPS counter and Steam-overlay pause veil render independently of the active scene
 - [ ] ENG-0067 · Demo · P1 · M · Typed scene router — routes for title, story, briefing, operation, results, options, chapterSelect, credits, demoEnd with `?scene=` dev deep links, replacing ad-hoc constructors in `flow.ts`
 - [ ] ENG-0068 · Demo · P1 · M · Service container — replace the module-level `save` singleton in `scenes/flow.ts` with injected `game.services` (save, settings, audio, platform, assets) so scenes run in tests with fakes
-- [ ] ENG-0069 · Demo · P0 · M · Error boundary — exceptions in `update`/`render` are caught, logged with scene + frame context, and routed to an in-fiction "The ink has run" screen with Return to Title, instead of killing the rAF loop
+- [x] ENG-0069 · Demo · P0 · M · Error boundary — exceptions in `update`/`render` are caught, logged with scene + frame context, and routed to an in-fiction "The ink has run" screen with Return to Title, instead of killing the rAF loop
 
 ## ENG-D · Flesh shader overhaul & Chapter 1–2 shader library (Demo)
 
@@ -158,10 +158,10 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ## ENG-E · Render-to-texture: cut masks & persistent wound/blood maps (Demo)
 
 ### Render-target infrastructure
-- [ ] ENG-0107 · Demo · P0 · M · `RenderTargetPool`: create/resize/release targets by key with format (RGBA8, R8, RG8, RGBA16F), optional depth-stencil, and byte accounting — replaces private `makeTarget`/`freeTarget`
+- [x] ENG-0107 · Demo · P0 · M · `RenderTargetPool`: create/resize/release targets by key with format (RGBA8, R8, RG8, RGBA16F), optional depth-stencil, and byte accounting — replaces private `makeTarget`/`freeTarget`
 - [ ] ENG-0108 · Demo · P0 · S · Field-space UV convention — decal/mask maps cover the field bounding rect independent of camera zoom and window size (2048×1152 High, 1024×576 Low)
 - [ ] ENG-0109 · Demo · P0 · M · Batched `stampDecal(map, brush, pos, rot, scale, color, mode)` API — all stamps to one map per frame go out in a single draw; 500 stamps ≤0.5 ms
-- [ ] ENG-0110 · Demo · P1 · S · Brush textures in the effects atlas — soft round, splatter ×4, drag streak, scorch, stitch mark, erase
+- [x] ENG-0110 · Demo · P1 · S · Brush textures in the effects atlas — soft round, splatter ×4, drag streak, scorch, stitch mark, erase
 
 ### Cut masks
 - [ ] ENG-0111 · Demo · P0 · M · Cut mask map (R8) — `Incision`/`Laceration` stamp open width along their path; flesh shader renders parted tissue with inner-wall shading and depth darkening
@@ -246,7 +246,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0168 · Demo · P1 · S · Kerning pairs applied in layout (currently per-glyph advance only) — "AV", "To", "Wa" measured narrower than unkerned
 - [ ] ENG-0169 · Demo · P1 · M · Shader text effects: outline, soft drop shadow, outer glow, embossed display style — replaces drawing a second shadow copy in `Gfx.text()`
 - [ ] ENG-0170 · Demo · P1 · M · Dynamic fallback for glyphs outside the prebuilt set (player-entered text, rare punctuation) via the existing canvas rasteriser on a separate page — mixed-string render test
-- [ ] ENG-0171 · Demo · P1 · S · Fix upload hitch: `GlyphAtlas.upload()` re-uploads the full 2048² canvas and regenerates mips per new glyph — switch to `texSubImage2D` of dirty rects (no frame >4 ms when new glyphs appear)
+- [x] ENG-0171 · Demo · P1 · S · Fix upload hitch: `GlyphAtlas.upload()` re-uploads the full 2048² canvas and regenerates mips per new glyph — switch to `texSubImage2D` of dirty rects (no frame >4 ms when new glyphs appear)
 - [ ] ENG-0172 · Demo · P2 · S · Multi-page dynamic glyph atlas — LRU eviction instead of clearing every glyph when the page fills
 
 ### Layout
@@ -260,12 +260,12 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 
 ## ENG-I · Resolution, DPI & aspect ratio (Demo)
 
-- [ ] ENG-0180 · Demo · P0 · S · Remove the hard DPR cap of 2 in `Main.resize()` — resolution is governed by the render-scale setting so 4K/HiDPI UI renders at native pixels
-- [ ] ENG-0181 · Demo · P0 · M · Render scale (50–100% + native) for the world target independent of UI resolution; UI and text always native — world upscaled with bilinear or FSR1-style EASU on Low
-- [ ] ENG-0182 · Demo · P0 · M · Aspect policy — 1280×720 virtual safe area; on 21:9/32:9 the world extends horizontally (drape, backdrops fill the extra width) instead of pillarboxing; HUD anchors to safe-area edges
-- [ ] ENG-0183 · Demo · P0 · S · 16:10 (Steam Deck 1280×800, MacBook) extends the view vertically with no letterbox bars — HUD anchors verified
-- [ ] ENG-0184 · Demo · P0 · M · Anchor-based layout helpers (`anchor('top-left', offset)`, safe-area insets) replacing absolute coordinates in HUD/menus — layout verified at 16:9, 16:10, 21:9, 32:9, 4:3
-- [ ] ENG-0185 · Demo · P0 · S · Pointer mapping correct under every aspect mode, letterbox and render scale — unit tests with synthetic bounding rects replace the plain `getBoundingClientRect` ratio in `Input.move`
+- [x] ENG-0180 · Demo · P0 · S · Remove the hard DPR cap of 2 in `Main.resize()` — resolution is governed by the render-scale setting so 4K/HiDPI UI renders at native pixels
+- [x] ENG-0181 · Demo · P0 · M · Render scale (50–100% + native) for the world target independent of UI resolution; UI and text always native — world upscaled with bilinear or FSR1-style EASU on Low
+- [x] ENG-0182 · Demo · P0 · M · Aspect policy — 1280×720 virtual safe area; on 21:9/32:9 the world extends horizontally (drape, backdrops fill the extra width) instead of pillarboxing; HUD anchors to safe-area edges
+- [x] ENG-0183 · Demo · P0 · S · 16:10 (Steam Deck 1280×800, MacBook) extends the view vertically with no letterbox bars — HUD anchors verified
+- [x] ENG-0184 · Demo · P0 · M · Anchor-based layout helpers (`anchor('top-left', offset)`, safe-area insets) replacing absolute coordinates in HUD/menus — layout verified at 16:9, 16:10, 21:9, 32:9, 4:3
+- [x] ENG-0185 · Demo · P0 · S · Pointer mapping correct under every aspect mode, letterbox and render scale — unit tests with synthetic bounding rects replace the plain `getBoundingClientRect` ratio in `Input.move`
 - [ ] ENG-0186 · Demo · P1 · S · `ResizeObserver` with `devicePixelContentBoxSize` for exact backbuffer sizing — re-evaluate DPR when the window moves between monitors of different scale
 - [ ] ENG-0187 · Demo · P1 · S · Minimum supported window 1024×576 — below that the UI scales down uniformly and remains usable (test at 800×450)
 - [ ] ENG-0188 · Demo · P1 · S · UI scale setting — 80–130% applied to HUD and menu panels within the safe area for large monitors and Steam Deck legibility
@@ -274,58 +274,58 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ## ENG-J · GPU capabilities, fallbacks & context loss (Demo)
 
 ### Capability detection & tiers
-- [ ] ENG-0190 · Demo · P0 · S · `GpuCaps` probe at boot: `MAX_TEXTURE_SIZE`, `MAX_SAMPLES`, float/half-float renderability, anisotropy, timer queries, parallel shader compile, highp FS precision, unmasked renderer/vendor — logged once per launch
-- [ ] ENG-0191 · Demo · P0 · M · GPU tier classification (Low/Medium/High) from caps plus a 2 s first-launch micro-benchmark of the flesh pass — stored in settings and user-overridable
-- [ ] ENG-0192 · Demo · P1 · S · Driver quirks table — renderer regex → forced tier/workarounds shipped as JSON so fixes need no code change
-- [ ] ENG-0193 · Demo · P0 · M · Fallback matrix implemented and tested — no float RT → RGBA8 bloom; no MSAA → FXAA; `MAX_TEXTURE_SIZE` 4096 → split atlas pages; no timer query → CPU-only profiler; mediump-only FS → simplified flesh variant
+- [x] ENG-0190 · Demo · P0 · S · `GpuCaps` probe at boot: `MAX_TEXTURE_SIZE`, `MAX_SAMPLES`, float/half-float renderability, anisotropy, timer queries, parallel shader compile, highp FS precision, unmasked renderer/vendor — logged once per launch
+- [x] ENG-0191 · Demo · P0 · M · GPU tier classification (Low/Medium/High) from caps plus a 2 s first-launch micro-benchmark of the flesh pass — stored in settings and user-overridable
+- [x] ENG-0192 · Demo · P1 · S · Driver quirks table — renderer regex → forced tier/workarounds shipped as JSON so fixes need no code change
+- [x] ENG-0193 · Demo · P0 · M · Fallback matrix implemented and tested — no float RT → RGBA8 bloom; no MSAA → FXAA; `MAX_TEXTURE_SIZE` 4096 → split atlas pages; no timer query → CPU-only profiler; mediump-only FS → simplified flesh variant
 - [ ] ENG-0194 · Demo · P1 · S · Software-rendering detection — SwiftShader/llvmpipe renderer strings force Low tier and show a one-time "hardware acceleration is off" notice with help link
 - [ ] ENG-0195 · Demo · P1 · S · Request the discrete GPU on hybrid laptops (`powerPreference: 'high-performance'` + desktop wrapper switch) — verified on an Optimus laptop via renderer string
 - [ ] ENG-0196 · Demo · P1 · M · ANGLE backend test matrix for the desktop build (D3D11 on Windows, Metal on macOS, GL/Vulkan on Linux/Deck) — documented defaults and a `--gl-backend` override for support
 - [ ] ENG-0197 · Demo · P1 · S · Desktop-build fatal screen when WebGL2 fails — GPU/driver info, "update your graphics driver" guidance, log folder button, safe-mode relaunch button
 
 ### Context loss & resource registry
-- [ ] ENG-0198 · Demo · P0 · M · GL resource registry: every buffer, VAO, program, texture and target created through it with a recreate callback — enables restore and leak counting
-- [ ] ENG-0199 · Demo · P0 · S · `webglcontextlost` — `preventDefault()`, pause sim and audio, show a "Restoring the lamps…" overlay drawn without GL (DOM)
-- [ ] ENG-0200 · Demo · P0 · M · `webglcontextrestored`: recreate programs, VAOs, buffers, textures (from retained `ImageBitmap`s/URLs), glyph/MSDF atlases, render targets and decal maps from the stamp log, then resume — Playwright test with `WEBGL_lose_context` mid-operation continues correctly
-- [ ] ENG-0201 · Demo · P1 · S · Repeated context loss — 3 losses within 60 s drop to Low tier and log a GPU-instability event for crash reporting
+- [x] ENG-0198 · Demo · P0 · M · GL resource registry: every buffer, VAO, program, texture and target created through it with a recreate callback — enables restore and leak counting
+- [x] ENG-0199 · Demo · P0 · S · `webglcontextlost` — `preventDefault()`, pause sim and audio, show a "Restoring the lamps…" overlay drawn without GL (DOM)
+- [x] ENG-0200 · Demo · P0 · M · `webglcontextrestored`: recreate programs, VAOs, buffers, textures (from retained `ImageBitmap`s/URLs), glyph/MSDF atlases, render targets and decal maps from the stamp log, then resume — Playwright test with `WEBGL_lose_context` mid-operation continues correctly
+- [x] ENG-0201 · Demo · P1 · S · Repeated context loss — 3 losses within 60 s drop to Low tier and log a GPU-instability event for crash reporting
 - [ ] ENG-0202 · Demo · P1 · M · Parallel shader compilation via `KHR_parallel_shader_compile` during the boot screen — readable compile errors with variant defines and source line numbers
 - [ ] ENG-0203 · Demo · P1 · S · Shader pre-warm — every program/variant drawn once off-screen during loading so first use in an operation causes no hitch (no frame >25 ms on first Malison appearance)
 
 ## ENG-K · Asset pipeline & preloading (Demo)
 
 ### Pipeline
-- [ ] ENG-0204 · Demo · P0 · S · `assets/` source layout (sprites, backdrops, portraits, luts, fonts, particles, shaders, audio) and generated output under `public/` — conventions documented in `docs/assets.md`
-- [ ] ENG-0205 · Demo · P0 · M · Build-generated asset manifest (id → hashed path, bytes, type, bundle) plus a generated `AssetId` union type — referencing a missing asset is a compile error
+- [x] ENG-0204 · Demo · P0 · S · `assets/` source layout (sprites, backdrops, portraits, luts, fonts, particles, shaders, audio) and generated output under `public/` — conventions documented in `docs/assets.md`
+- [x] ENG-0205 · Demo · P0 · M · Build-generated asset manifest (id → hashed path, bytes, type, bundle) plus a generated `AssetId` union type — referencing a missing asset is a compile error
 - [ ] ENG-0206 · Demo · P0 · M · Vite plugin for `.glsl` files — `#include` resolution, `#define` variants, `#line` mapping for error messages; shaders move out of template strings in `shaders.ts`
 - [ ] ENG-0207 · Demo · P1 · S · Image optimisation in the build — oxipng lossless (optional lossy for backdrops) with a per-bundle size report printed by `npm run build`
 - [ ] ENG-0208 · Demo · P1 · S · Font subsetting of shipped fonts to supported-language coverage (Latin-1 + Latin Extended-A for demo) — size delta reported
-- [ ] ENG-0209 · Demo · P0 · S · Asset validation step in CI — referenced ids exist, no unused asset >50 KB, textures within 4096 px, atlas pages power-of-two, LUTs correct size
-- [ ] ENG-0210 · Demo · P1 · S · Missing/failed asset fallback: magenta checker texture and silent audio with a logged warning — never an exception in release builds
+- [x] ENG-0209 · Demo · P0 · S · Asset validation step in CI — referenced ids exist, no unused asset >50 KB, textures within 4096 px, atlas pages power-of-two, LUTs correct size
+- [x] ENG-0210 · Demo · P1 · S · Missing/failed asset fallback: magenta checker texture and silent audio with a logged warning — never an exception in release builds
 
 ### Loading
-- [ ] ENG-0211 · Demo · P0 · M · Typed asset loader `assets.load(id)` with de-duplication, reference counting and `release()` — images decoded via `createImageBitmap` off the main thread
-- [ ] ENG-0212 · Demo · P0 · M · Bundles `boot`, `title`, `story-common`, `ops-common`, `chapter1`, `chapter2` — next bundle prefetched during story scenes; chapter bundles unloaded when leaving a chapter
-- [ ] ENG-0213 · Demo · P0 · S · Boot sequence — fonts → boot bundle → shader compile/pre-warm → title, with progress on a DOM splash so the window never shows a blank canvas; cold start to title ≤5 s on SATA SSD
-- [ ] ENG-0214 · Demo · P1 · S · Font loading in the boot bundle — replaces `document.fonts.load` in `boot()`, with timeout and logged fallback to system serif
+- [x] ENG-0211 · Demo · P0 · M · Typed asset loader `assets.load(id)` with de-duplication, reference counting and `release()` — images decoded via `createImageBitmap` off the main thread
+- [x] ENG-0212 · Demo · P0 · M · Bundles `boot`, `title`, `story-common`, `ops-common`, `chapter1`, `chapter2` — next bundle prefetched during story scenes; chapter bundles unloaded when leaving a chapter
+- [x] ENG-0213 · Demo · P0 · S · Boot sequence — fonts → boot bundle → shader compile/pre-warm → title, with progress on a DOM splash so the window never shows a blank canvas; cold start to title ≤5 s on SATA SSD
+- [x] ENG-0214 · Demo · P1 · S · Font loading in the boot bundle — replaces `document.fonts.load` in `boot()`, with timeout and logged fallback to system serif
 - [ ] ENG-0215 · Demo · P1 · M · Asset hot reload in dev — changed PNG/JSON/GLSL/LUT reloads live via Vite HMR without restarting the running operation
 - [ ] ENG-0216 · Demo · P1 · S · Desktop builds load all assets from the local package (no network) — web builds use content-hashed URLs for cache busting
-- [ ] ENG-0217 · Demo · P1 · S · Demo install-size budget — game assets ≤150 MB (so the Windows depot stays ≤250 MB with the runtime), tracked per bundle in CI with a failing threshold
+- [x] ENG-0217 · Demo · P1 · S · Demo install-size budget — game assets ≤150 MB (so the Windows depot stays ≤250 MB with the runtime), tracked per bundle in CI with a failing threshold
 
 ## ENG-L · Performance, memory budgets & profiling (Demo)
 
 ### Targets & measurement
-- [ ] ENG-0218 · Demo · P0 · S · Performance targets doc — 60 fps at 1080p Medium on Intel UHD 620/Iris Xe and at 1280×800 on Steam Deck; ≥144 fps High on GTX 1060; CPU frame ≤6 ms; per-system budgets (sim 1.5, batching 2, flesh 3, particles 2, post 2 ms)
-- [ ] ENG-0219 · Demo · P0 · M · Profiler overlay (F3) — CPU scopes per system, GPU pass timings via `EXT_disjoint_timer_query_webgl2`, draw calls, vertices, texture MB, JS heap, frame-time graph with budget lines
-- [ ] ENG-0220 · Demo · P1 · S · Frame capture — dump the last 600 frames of scope timings to CSV (dev key) for offline analysis
+- [x] ENG-0218 · Demo · P0 · S · Performance targets doc — 60 fps at 1080p Medium on Intel UHD 620/Iris Xe and at 1280×800 on Steam Deck; ≥144 fps High on GTX 1060; CPU frame ≤6 ms; per-system budgets (sim 1.5, batching 2, flesh 3, particles 2, post 2 ms)
+- [x] ENG-0219 · Demo · P0 · M · Profiler overlay (F3) — CPU scopes per system, GPU pass timings via `EXT_disjoint_timer_query_webgl2`, draw calls, vertices, texture MB, JS heap, frame-time graph with budget lines
+- [x] ENG-0220 · Demo · P1 · S · Frame capture — dump the last 600 frames of scope timings to CSV (dev key) for offline analysis
 - [ ] ENG-0221 · Demo · P0 · M · Automated perf benchmark — scripted playback of the op1-5 Matins fight and the Lauds fight in a real-GPU runner, recording mean/p99 frame time; CI job flags regressions >10%
 - [ ] ENG-0222 · Demo · P0 · M · Integrated-GPU pass on the reference Intel UHD 620 laptop — every Ch1–2 operation holds 60 fps at Medium, with captures attached to the ticket
 - [ ] ENG-0223 · Demo · P0 · M · Steam Deck pass — 60 fps at 1280×800 Medium across Ch1–2; 40 fps preset holds with ≥25% lower APU power (Deck performance overlay readings)
 - [ ] ENG-0224 · Demo · P1 · S · Hitch audit: no frame >50 ms during any operation (shader first use, atlas upload, GC, save write) — asserted by the perf benchmark
 
 ### CPU & memory
-- [ ] ENG-0225 · Demo · P0 · M · Remove per-frame allocations in hot paths: `entities.filter` in `Operation.update`, `visibleEntities().sort` per pointer event, `{...pos}` copies in `Input`, `tf.slice()` in `save()`, point arrays in `quadCurve`/`dashed` — steady-state allocation <50 KB/s in a Chrome allocation profile
+- [x] ENG-0225 · Demo · P0 · M · Remove per-frame allocations in hot paths: `entities.filter` in `Operation.update`, `visibleEntities().sort` per pointer event, `{...pos}` copies in `Input`, `tf.slice()` in `save()`, point arrays in `quadCurve`/`dashed` — steady-state allocation <50 KB/s in a Chrome allocation profile
 - [ ] ENG-0226 · Demo · P1 · S · Scratch-vector pool — in-place math variants for draw code; zero `Vec` allocations in `Gfx` shape calls (allocation profile)
-- [ ] ENG-0227 · Demo · P0 · S · Memory budgets — VRAM ≤384 MB (Low) / ≤768 MB (High), JS heap ≤300 MB, tracked live by the resource registry; exceeding budget logs a warning with the top 10 consumers
+- [x] ENG-0227 · Demo · P0 · S · Memory budgets — VRAM ≤384 MB (Low) / ≤768 MB (High), JS heap ≤300 MB, tracked live by the resource registry; exceeding budget logs a warning with the top 10 consumers
 - [ ] ENG-0228 · Demo · P1 · M · Soak test — 2-hour automated loop through all Ch1–2 operations with JS heap growth <5% and GL object count stable
 - [ ] ENG-0229 · Demo · P1 · S · Idle throttling — menus and paused states drop to 30 fps when nothing animates; resumes instantly on input (laptop/Deck battery)
 - [ ] ENG-0230 · Demo · P2 · S · Web Worker evaluation — move save serialisation and replay compression off the main thread only if the measured saving is ≥1 ms per operation
@@ -338,7 +338,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0234 · Demo · P1 · M · Dev console (backtick) — `op <id>`, `phase <n>`, `vitals <n>`, `litany`, `win`, `lose`, `timescale <x>`, `seed <n>`, `god`, `tier <low|med|high>`, `lose-context`
 - [ ] ENG-0235 · Demo · P2 · M · Tweakables panel — shader/post/particle uniforms editable live, save-to-JSON writes back into content/preset files in dev
 - [ ] ENG-0236 · Demo · P1 · S · Time controls in dev — pause, single-step one fixed tick, 0.25× slow-mo, 4× fast-forward
-- [ ] ENG-0237 · Demo · P0 · S · Dev-only code behind `import.meta.env.DEV` and stripped from release bundles — CI greps the release bundle for dev console strings and `window.__game`
+- [x] ENG-0237 · Demo · P0 · S · Dev-only code behind `import.meta.env.DEV` and stripped from release bundles — CI greps the release bundle for dev console strings and `window.__game`
 - [ ] ENG-0238 · Demo · P0 · M · Visual regression harness — Playwright + SwiftShader renders fixed-seed scenes (title, story, each Ch1–2 operation at set ticks) and pixel-diffs against goldens with per-test tolerance; runs on every PR
 - [ ] ENG-0239 · Demo · P1 · S · Screenshot capture (F12) of the backbuffer (`preserveDrawingBuffer`-free via readPixels after the final pass) saved as PNG — hook reused by Steam screenshots
 - [ ] ENG-0240 · Demo · P2 · S · Build stamp — version, git sha, tier and renderer shown in dev/QA builds and in the release pause menu
@@ -346,8 +346,8 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ## ENG-N · Entity model evolution & sim/render separation (Demo)
 
 - [ ] ENG-0241 · Demo · P0 · L · Move rendering out of `Entity.draw(g, op)` into view classes registered per entity type (`IncisionView`, `MalisonView`…) — `src/surgery/**` imports no `render/*` modules (lint rule enforced)
-- [ ] ENG-0242 · Demo · P0 · S · Per-operation entity id allocator replacing the module-level `nextId` counter in `entity.ts` — ids identical across runs of the same seed (test)
-- [ ] ENG-0243 · Demo · P0 · M · Typed sim event bus (`op.events`: cut, stitch, bleed, drain, burn, extract, hurt, heal, rate, phase, litany, malisonHit…) consumed by views, particles, decals, audio and achievements — replaces `op.cues` strings and sim-owned popups
+- [x] ENG-0242 · Demo · P0 · S · Per-operation entity id allocator replacing the module-level `nextId` counter in `entity.ts` — ids identical across runs of the same seed (test)
+- [x] ENG-0243 · Demo · P0 · M · Typed sim event bus (`op.events`: cut, stitch, bleed, drain, burn, extract, hurt, heal, rate, phase, litany, malisonHit…) consumed by views, particles, decals, audio and achievements — replaces `op.cues` strings and sim-owned popups
 - [ ] ENG-0244 · Demo · P1 · M · Shared behaviour components — Transform, Bleeds, Revealable, Drains, HitShape as composable data/mixins, deduplicating the 950-line `entities.ts` with no behaviour change (tests + golden replays pass)
 - [ ] ENG-0245 · Demo · P1 · M · Shape-based hit testing — circle/capsule/polyline/polygon with layer priority, replacing per-entity ad-hoc distance checks in `onPress`
 - [ ] ENG-0246 · Demo · P2 · S · Spatial index — uniform grid over the field for picking and sweep tools when entity count >64; benchmark with 300 entities
@@ -355,7 +355,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0248 · Demo · P1 · M · Tuning tables — bleed rates, radii, timers and damage move from constants in `entities.ts`/`malison.ts` into typed content tables, hot-reloadable in dev
 - [ ] ENG-0249 · Demo · P1 · M · Operation state serialisation (entities, rng state, timers, phase, score) to JSON with a round-trip test — used by the debug "save state/restore state" keys and crash reports
 - [ ] ENG-0250 · Demo · P1 · S · Extended `Pointer` — `pressure`, `tilt`, `source` (mouse/pen/touch/gamepad-cursor) so pens, Deck touchscreen and the gamepad cursor feed the same sim API
-- [ ] ENG-0251 · Demo · P1 · S · Remove remaining `Math.random` from `OperationScene` (ECG jitter at low vitals) — presentation noise uses a seeded presentation RNG so golden screenshots are stable
+- [x] ENG-0251 · Demo · P1 · S · Remove remaining `Math.random` from `OperationScene` (ECG jitter at low vitals) — presentation noise uses a seeded presentation RNG so golden screenshots are stable
 
 ## ENG-O · Determinism & replays (Demo → Alpha)
 

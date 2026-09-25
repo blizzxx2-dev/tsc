@@ -57,6 +57,15 @@ export class Audio {
     }
   }
 
+  /** Suspend output (hidden window, context loss); `resume` restarts it. */
+  suspend(): void {
+    if (this.ctx && this.ctx.state === 'running') void this.ctx.suspend();
+  }
+
+  resume(): void {
+    if (this.ctx && this.ctx.state === 'suspended') void this.ctx.resume();
+  }
+
   private tone(freq: number, dur: number, type: OscillatorType, gain = 0.3, slideTo?: number, delay = 0): void {
     if (!this.ctx || !this.master || this._muted) return;
     const t = this.ctx.currentTime + delay;

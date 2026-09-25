@@ -1,3 +1,4 @@
+import type { BundleId } from '../assets/manifest.gen';
 import type { Game } from '../core/scene';
 import { advance, load, recordBest, store, type SaveData } from '../core/save';
 import { CAMPAIGN } from '../content/campaign';
@@ -33,6 +34,7 @@ export function playStep(game: Game, chapter: number, step: number): void {
   const ch = CAMPAIGN[chapter];
   // Past the last chapter of the demo: the thank-you / wishlist screen.
   if (!ch) return game.go(new DemoEndScene());
+  syncChapterBundles(game, chapter, step);
   const s = ch.steps[step];
   if (!s) return playStep(game, chapter + 1, 0);
   advance(save, chapter, step);
@@ -44,4 +46,21 @@ export function playStep(game: Game, chapter: number, step: number): void {
   };
   if (s.kind === 'story') game.go(new StoryScene(s.story, next));
   else playOperation(game, s.op, next, () => game.go(new TitleScene()));
+}
+
+/**
+ * Chapter bundles (ENG-0212): hold the current chapter's bundle, prefetch the
+ * next one during the chapter's story scenes, and unload chapters left behind.
+ */
+function syncChapterBundles(game: Game, chapter: number, step: number): void {
+  const a = game.assets;
+  if (!a) return;
+  const id = (c: number) => `chapter${c + 1}` as BundleId;
+  a.prefetch(id(chapter));
+  const s = CAMPAIGN[chapter].steps[step];
+  if (s?.kind === 'story' && CAMPAIGN[chapter + 1]) a.prefetch(id(chapter + 1));
+  for (const held of a.heldBundles()) {
+    const m = /^chapter(\d+)$/.exec(held);
+    if (m && Number(m[1]) - 1 < chapter) a.unloadBundle(held);
+  }
 }
