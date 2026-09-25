@@ -8943,5 +8943,33 @@
     "maxPx": 600,
     "context": "Loss reason: in a two-patient triage operation, the second patient's vitals reached zero.",
     "screenshot": "docs/loc/screens/operation.png"
+  },
+  "ui.replay.playing": {
+    "scene": "replay",
+    "font": "display",
+    "size": 16,
+    "maxPx": 160,
+    "context": "Replay player controls bar (small caps)."
+  },
+  "ui.replay.paused": {
+    "scene": "replay",
+    "font": "display",
+    "size": 16,
+    "maxPx": 160,
+    "context": "Replay player controls bar (small caps)."
+  },
+  "ui.replay.keys": {
+    "scene": "replay",
+    "font": "display",
+    "size": 16,
+    "maxPx": 480,
+    "context": "Replay player controls bar (small caps)."
+  },
+  "ui.replay.drift": {
+    "scene": "replay",
+    "font": "display",
+    "size": 16,
+    "maxPx": 500,
+    "context": "Replay player controls bar (small caps)."
   }
 }

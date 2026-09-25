@@ -1094,5 +1094,9 @@
   "ui.codex.fastest_value": "{time} · rank {rank} · verified by replay",
   "ui.codex.fastest_none": "Not yet cleared",
   "hud.view_switch": "{key} — switch view",
-  "loss.the_second_patient_has_died": "The second patient has died."
+  "loss.the_second_patient_has_died": "The second patient has died.",
+  "ui.replay.playing": "Playing",
+  "ui.replay.paused": "Paused",
+  "ui.replay.keys": "Space play · ↑↓ speed · ←→ 5 s · H hide",
+  "ui.replay.drift": "Replay drifted from the recording"
 }

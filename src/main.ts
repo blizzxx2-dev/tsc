@@ -42,6 +42,7 @@ import { backbufferSize, computeView, watchDevicePixelRatio, type ResizeEntryLik
 import { createAssets, withTimeout } from './assets/browser';
 import type { AssetLoader } from './assets/loader';
 import { allOperations } from './content/campaign';
+import { ReplayPlayerScene } from './scenes/replayPlayer';
 import { SHOWCASE, SHOWCASE_BOSS, showcaseOrgan } from './content/dev';
 import type { OperationDef } from './surgery/operation';
 import { playOperation } from './scenes/flow';
@@ -522,9 +523,13 @@ async function boot(): Promise<void> {
       if (!rdef) throw new Error(`unknown operation ${rec.opId}`);
       settings.timerAssist = rec.timerAssist as typeof settings.timerAssist;
       Object.assign(bindings.prefs, JSON.parse(JSON.stringify(rec.prefs)));
-      game.input.replay = new Replayer(rec);
       const back = () => game.go(new TitleScene());
-      game.go(new OperationScene(rdef, back, back));
+      // &player=1 opens the replay player (ENG-0258) instead of driving the live game.
+      if (params.get('player') === '1') game.go(new ReplayPlayerScene(rdef, rec, back));
+      else {
+        game.input.replay = new Replayer(rec);
+        game.go(new OperationScene(rdef, back, back));
+      }
     } catch (err) {
       console.error('Replay failed', err);
     }

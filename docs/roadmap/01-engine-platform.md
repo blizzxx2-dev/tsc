@@ -365,7 +365,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0255 · Demo · P1 · M · Golden-run regression suite — one recorded run per Ch1–2 operation re-simulated headlessly in CI; final score, rank, vitals and hash must match exactly
 - [x] ENG-0256 · Demo · P2 · S · Replay in bug reports — last operation's replay attached automatically to crash reports and in-game bug reports
 - [x] ENG-0257 · Alpha · P1 · S · Replay file header with format version, build id and content hash — incompatible replays refuse to load with a clear message
-- [ ] ENG-0258 · Alpha · P2 · M · Replay player scene — play/pause, 0.25×–4× speed, scrub via keyframe snapshots every 5 s, HUD toggle
+- [x] ENG-0258 · Alpha · P2 · M · Replay player scene — play/pause, 0.25×–4× speed, scrub via keyframe snapshots every 5 s, HUD toggle
 - [ ] ENG-0260 · Alpha · P2 · S · Golden runs for Chapters 3–5 — suite extended to every new operation and challenge-mode variant as content lands
 
 ## ENG-P · Shader & VFX library for Chapters 3–5 (Alpha)
