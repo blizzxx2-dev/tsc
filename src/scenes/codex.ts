@@ -3,6 +3,8 @@
  * `progress.codex` ids `hour.<boss>`), read from the i18n tables `codex.<boss>.title|body`.
  * Locked Hours show as sealed pages. Reached from the Operating Theatre.
  */
+import { hourRecord } from '../surgery/hourRecords';
+import { formatSplit } from '../surgery/timeAttack';
 import type { Game, Scene } from '../core/scene';
 import { t } from '../i18n';
 import { hex } from '../render/color';
@@ -62,6 +64,10 @@ export class CodexScene implements Scene {
       heading(g, title(b), R.x + R.w / 2, R.y + 58, R.w - 80);
       const lines = wrapLines((s) => g.measure(s, 20, 'body'), body(b), R.w - 90);
       lines.forEach((l, i) => g.text(l, R.x + 45, R.y + 130 + i * 30, { size: 20, color: hex(INK.text), shadow: false }));
+      // The fastest replay-verified clear of this Hour (BOS-0176).
+      const rec = hourRecord(b);
+      caps(g, t('ui.codex.fastest'), R.x + 45, R.y + R.h - 44, 12, hex(INK.gold));
+      g.text(rec ? t('ui.codex.fastest_value', { time: formatSplit(rec.time), rank: rec.rank }) : t('ui.codex.fastest_none'), R.x + 200, R.y + R.h - 40, { size: 18, font: rec ? 'body' : 'italic', color: hex(rec ? INK.text : INK.dim), shadow: false });
     } else g.text(t('ui.codex.locked'), R.x + R.w / 2, R.y + 280, { size: 20, font: 'italic', color: hex(INK.dim), align: 'center', shadow: false });
     if (button(g, game.input, t('ui.common.back'), VIEW_W / 2, 676, 24)) this.back();
     reticle(g, game.input.pos);

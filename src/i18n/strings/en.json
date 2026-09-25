@@ -1089,5 +1089,8 @@
   "boss.ghoulclaw.phase.main": "Spread",
   "boss.magus.name": "The Magus Remnant",
   "boss.magus.phase.main": "Shells",
-  "popup.sext.stone": "Stone!"
+  "popup.sext.stone": "Stone!",
+  "ui.codex.fastest": "Fastest clear",
+  "ui.codex.fastest_value": "{time} · rank {rank} · verified by replay",
+  "ui.codex.fastest_none": "Not yet cleared"
 }

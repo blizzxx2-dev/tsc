@@ -646,7 +646,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [ ] BOS-0173 · Beta · P1 · S · Boss consistency pass — all 8 Hours + Office share tell lead-time rules, HUD, checkpoint behaviour, results "Hour defeated" stamp
 - [ ] BOS-0174 · Beta · P1 · S · Boss audio mix pass — tells audible over music at all volume presets (loudness test −3 dB margin)
 - [ ] BOS-0175 · Release · P0 · S · Final bot sweep — all bosses/elites × 3 difficulties × 50 seeds pass on release candidate build
-- [ ] BOS-0176 · Release · P1 · S · Replay-verified boss speedrun leaderboards — (fastest clear per Hour) enabled
+- [x] BOS-0176 · Release · P1 · S · Replay-verified boss speedrun leaderboards — (fastest clear per Hour) enabled
 - [x] BOS-0177 · Release · P1 · S · Crash/soft-lock audit — each boss run with random-input fuzz bot for 10 min × 20 seeds; no exceptions, no stuck phases
 - [x] BOS-0178 · Post · P2 · M · Boss Rush mode — all 8 Hours back-to-back with carried vitals, one Litany total
 - [ ] BOS-0179 · Post · P3 · L · Free update boss "Lauds Reprised" — Ilse-as-patient variant with new antiphon mechanic

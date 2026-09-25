@@ -8906,5 +8906,26 @@
     "maxPx": 160,
     "context": "Floating popup: Sext's spreading stone reached an organ glyph and petrified it.",
     "screenshot": "docs/loc/screens/operation.png"
+  },
+  "ui.codex.fastest": {
+    "scene": "codex",
+    "font": "display",
+    "size": 12,
+    "maxPx": 150,
+    "context": "Codex boss page: label for the fastest replay-verified clear of this Hour."
+  },
+  "ui.codex.fastest_value": {
+    "scene": "codex",
+    "font": "body",
+    "size": 18,
+    "maxPx": 420,
+    "context": "Codex boss page: the fastest clear time, its rank and that it was re-simulated from its input log."
+  },
+  "ui.codex.fastest_none": {
+    "scene": "codex",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 420,
+    "context": "Codex boss page: no clear of this Hour has been recorded."
   }
 }

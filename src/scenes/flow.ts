@@ -1,3 +1,5 @@
+import { BOSS_OPS } from '../surgery/bosses/codex';
+import { submitHourClear } from '../surgery/hourRecords';
 import type { BundleId } from '../assets/manifest.gen';
 import { LoadingScene } from './loading';
 import type { Game } from '../core/scene';
@@ -34,6 +36,9 @@ export function playOperation(game: Game, def: OperationDef, onWin: () => void, 
         def,
         ({ op, won }) => {
           const legacyBest = won && !op.opts.challenge ? recordBest(save, def.id, op.rank(), op.score) : false;
+          // Hour speedruns (BOS-0176): a won Hour is replayed from its log and kept if fastest.
+          const hour = BOSS_OPS[def.id];
+          if (won && hour && !op.opts.challenge) submitHourClear(hour, op);
           if (story && won) {
             applyOpFlags(def.id, op.rank());
             // How often the Inquisitor may have seen the star drawn (CON-0093).
