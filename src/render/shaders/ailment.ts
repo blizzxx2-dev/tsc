@@ -385,6 +385,10 @@ vec4 fireBurn(vec2 q) {
   vec3 cc = lit(vec3(0.07, 0.05, 0.04) * (0.8 + 0.4 * noise(q * 0.3)), bumpN(q * 0.08, 3.0), 0.25, 12.0);
   cc = mix(cc, mix(vec3(0.15, 0.1, 0.08), vec3(1.0, 0.35, 0.06), 1.0 - cool), crack * 0.8);
   cc += vec3(1.0, 0.45, 0.1) * ember * 0.5;
+  // Ember speckle (ENG-0101): sparse sparks winking in the char until it cools.
+  vec2 sp = floor(q * 0.35);
+  float spark = step(0.93, hash(sp + u_seed)) * rsmooth(0.35, 0.1, length(fract(q * 0.35) - 0.5));
+  cc += vec3(1.0, 0.55, 0.15) * spark * (0.5 + 0.5 * sin(u_time * 7.0 + hash(sp) * 30.0)) * (1.0 - cool);
   acc = over(paint(cc, ch), acc);
   return acc * (1.0 - 0.3 * cool);
 }
@@ -414,6 +418,9 @@ vec4 acidBurn(vec2 q) {
   float bub = rsmooth(br, br - 0.05, length(bf - bc)) * step(0.4, hash(bi + 3.3)) * (1.0 - neu) * m;
   vec3 bcol = lit(vec3(0.8, 0.9, 0.35), domeN((bf - bc) * 3.0, br * 3.0), 1.4, 60.0);
   acc = over(paint(bcol, bub * 0.9), acc);
+  // Froth (ENG-0101): a fine yellow-green foam scum over the live bed, gone once neutralised.
+  float froth = smoothstep(0.55, 0.8, noise(q * 0.45 + u_time * 0.6)) * smoothstep(0.45, 0.7, fbm(q * 0.08 + u_seed + 2.0));
+  acc = over(paint(vec3(0.86, 0.94, 0.55), froth * m * (1.0 - neu) * 0.55), acc);
   return acc;
 }
 
@@ -445,6 +452,9 @@ vec4 bubo(vec2 q) {
   float wr = sin(r * 0.9 + atan(q.y, q.x) * 3.0) * drained;
   n = normalize(n + vec3(normalize(q + 0.001) * wr * 0.4, 0.0));
   vec3 skin = mix(vec3(0.72, 0.28, 0.24), vec3(0.95, 0.8, 0.5), rsmooth(R * (0.35 + 0.25 * ripe), 0.0, r) * (1.0 - drained));
+  // Pus shadow (ENG-0102): the pus pools low under the taut skin, a murky yellow-grey crescent.
+  float pool = rsmooth(R * 0.7, R * 0.15, length(q - vec2(0.0, R * 0.3))) * step(r, R) * ripe * (1.0 - drained);
+  skin = mix(skin, vec3(0.5, 0.42, 0.2), pool * 0.4);
   // Taut veins crawl across the swelling as it ripens.
   float vein = pow(1.0 - abs(fbm(q * 0.12 + u_seed) * 2.0 - 1.0), 12.0) * ripe * (1.0 - drained);
   skin = mix(skin, vec3(0.4, 0.05, 0.12), vein * 0.8);
@@ -477,7 +487,11 @@ vec4 rot(vec2 q) {
   // Pus-slick wet map: glossy yellow-green sheets over the necrosis.
   float slick = smoothstep(0.5, 0.72, fbm(q * 0.06 + 9.0)) * rsmooth(0.8, 0.3, r);
   bed = mix(bed, vec3(0.7, 0.66, 0.24), slick * 0.45);
-  vec3 c = lit(bed, bumpN(q * 0.09, 2.0), 0.2 + 1.4 * slick, 50.0);
+  // Stage ramp (ENG-0102): angry red → bruised purple → black as it deepens, drying as it goes.
+  vec3 ramp = stage < 0.4 ? vec3(0.55, 0.1, 0.1) : stage < 0.6 ? vec3(0.3, 0.08, 0.28) : vec3(0.04, 0.03, 0.04);
+  bed = mix(bed, ramp, rsmooth(0.9, 0.2, r) * mix(0.55, 0.35, stage));
+  float wetness = mix(1.2, 0.35, stage);
+  vec3 c = lit(bed, bumpN(q * 0.09, 2.0), (0.2 + 1.4 * slick) * wetness, 50.0);
   // Crusted edge: a raised, flaking brown rind.
   float crust = rsmooth(0.16, 0.02, abs(r - 0.86)) * (0.55 + 0.45 * noise(q * 0.4));
   vec3 cc = lit(vec3(0.42, 0.26, 0.12) * (0.7 + 0.5 * noise(q * 0.8)), bumpN(q * 0.3, 5.0), 0.2, 10.0);
@@ -529,6 +543,8 @@ vec4 venomWeb(vec2 q) {
   float halo = rsmooth(R * 1.1, 0.0, rr) * 0.3;
   vec3 ink = u_col;
   vec3 c = mix(ink, vec3(0.75, 0.68, 0.35), neu);
+  // Green-black cores (ENG-0102): the venom tracks along the vein centres.
+  c = mix(c, vec3(0.03, 0.08, 0.03), smoothstep(0.6, 0.95, web) * (1.0 - neu) * 0.7);
   vec4 acc = paint(mix(vec3(0.3, 0.4, 0.15), vec3(0.6, 0.55, 0.3), neu), halo * 0.6);
   return over(paint(c, smoothstep(0.25, 0.7, web) * reach), acc) * (1.0 - neu * 0.85);
 }
