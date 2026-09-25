@@ -80,8 +80,11 @@ interface Rows {
  * of non-gameplay effects scales with the tier (ENG-0145). Blood and pus droplets also feed the fluid
  * layer (so spray merges into pools) and leave stains where they land.
  */
-/** Live-particle caps per emitter family (ART-0373): a burst past the cap is trimmed, never the oldest. */
-export const PARTICLE_CAPS: Partial<Record<string, number>> = { blood: 64, spark: 48, mote: 32, leaf: 40, ember: 40, pus: 48, gold: 48 };
+/**
+ * Live-particle caps per decorative family (ART-0373): a burst past the cap is trimmed, never the
+ * oldest. Gameplay-readable emitters (blood, pus) are never trimmed; the tier budget governs them.
+ */
+export const PARTICLE_CAPS: Partial<Record<string, number>> = { spark: 48, mote: 32, leaf: 40, ember: 40, gold: 48 };
 
 export class Particles {
   /** One pool per priority class; eviction takes the lowest class first. */
@@ -92,6 +95,8 @@ export class Particles {
   private rows = new Map<string, Rows>();
   private inst = { alpha: new Float32Array(0), add: new Float32Array(0) };
   quality: Quality = 'high';
+  /** Per-family live caps (ART-0373); an empty table measures raw tier scaling. */
+  caps: Partial<Record<string, number>> = PARTICLE_CAPS;
   /** Particles refused or evicted because the budget was full, per class (debug overlay). */
   readonly culled: Record<FxPriority, number> = { ambient: 0, feedback: 0, gameplay: 0 };
 
@@ -152,7 +157,7 @@ export class Particles {
       const want = count * PARTICLE_EMISSION[this.quality];
       count = Math.floor(want) + (rng.next() < want - Math.floor(want) ? 1 : 0);
     }
-    const cap = PARTICLE_CAPS[id];
+    const cap = this.caps[id];
     if (cap !== undefined) count = Math.min(count, Math.max(0, cap - this.countOf(id)));
     const [j0, j1] = def.speedJitter ?? [1, 1];
     const dir = o.dir ?? def.dir;

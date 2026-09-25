@@ -68,7 +68,8 @@ describe('GAM-0039 thread tension and the knot', () => {
     op.cursor = at(0, 30);
     lac.stitch.draw(g, op);
     expect(lac.stitch.count).toBeGreaterThan(0);
-    expect(calls.filter((c) => c === 'line').length).toBeGreaterThanOrEqual(lac.stitch.count);
+    // Each stitch is painted (ART-0188 stitch art: curves and strokes), plus the taut line to the needle.
+    expect(calls.filter((c) => c === 'line' || c === 'quadCurve' || c === 'polyline' || c === 'ailment').length).toBeGreaterThanOrEqual(lac.stitch.count);
     for (let i = 0; i < 4 && lac.alive; i++) h.drag('thread', zig, 300);
     expect(lac.alive).toBe(false);
     const knot = fx.find((e) => e.kind === 'knot');

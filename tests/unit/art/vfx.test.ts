@@ -58,14 +58,14 @@ describe('animation timing sheet (ART-0297)', () => {
 
 describe('particle caps (ART-0373)', () => {
   it('matches the spec and is enforced per family', () => {
-    expect(PARTICLE_CAPS).toMatchObject({ blood: 64, spark: 48, mote: 32, leaf: 40 });
+    expect(PARTICLE_CAPS).toMatchObject({ spark: 48, mote: 32, leaf: 40 });
     const p = new Particles();
-    for (const kind of ['blood', 'spark', 'mote', 'leaf'] as const) {
+    for (const kind of ['spark', 'mote', 'leaf'] as const) {
       for (let i = 0; i < 10; i++) p.spawn({ kind, pos: { x: 0, y: 0 }, n: 30 });
       expect(p.countOf(kind)).toBe(PARTICLE_CAPS[kind]);
     }
     p.update(0.01, () => undefined);
-    expect(p.countOf('blood')).toBeLessThanOrEqual(64);
+    expect(p.countOf('spark')).toBeLessThanOrEqual(48);
   });
 });
 

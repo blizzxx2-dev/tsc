@@ -160,6 +160,7 @@ describe('budget and priority classes (ENG-0128, ENG-0145)', () => {
   it('scales non-gameplay emission with the tier but keeps gameplay bursts whole', () => {
     const count = (q: 'high' | 'low', kind: 'spark' | 'blood') => {
       const p = new Particles(undefined, 3);
+      p.caps = {}; // tier scaling alone, without the per-family caps (ART-0373)
       p.quality = q;
       for (let i = 0; i < 50; i++) p.spawn({ kind, pos: { x: 0, y: 0 }, n: 10 });
       return p.count;

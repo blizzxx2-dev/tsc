@@ -56,7 +56,7 @@ let applied: string | null = null;
 
 /** Show the OS cursor with the fallback art (or hide it again with `null`). Cheap to call every frame. */
 export function applyHardwareCursor(kind: CursorKind | null): void {
-  if (typeof document === 'undefined') return;
+  if (typeof document === 'undefined' || typeof document.querySelector !== 'function') return;
   const canvas = document.querySelector('canvas');
   if (!canvas) return;
   const css = kind ? cursorCss(kind, window.devicePixelRatio || 1) : 'none';
