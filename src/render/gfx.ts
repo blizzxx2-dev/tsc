@@ -11,6 +11,7 @@ import { SpriteBank, type SpriteOpts } from './sprites';
 import { RenderTargetPool, type Target } from './targets';
 import { checkerPixels, Texture } from './texture';
 import { scissorRect } from './viewport';
+import type { DisplayPrefs } from '../ui/display';
 
 const TAU = Math.PI * 2;
 const MAX_VERTS = 60000;
@@ -135,6 +136,8 @@ export class Gfx {
   readonly gl: WebGL2RenderingContext;
   /** Every GL object, for leak counts, VRAM budget and context restore (ENG-0198). */
   readonly registry: GlRegistry;
+  /** Player display options as renderer multipliers (UIX-0105); the shell refreshes it every frame. */
+  readonly displayPrefs: DisplayPrefs = { bloom: 1, grain: 1, vignette: 1, gamma: 1, flicker: 1, chroma: 1 };
   readonly caps: GpuCaps;
   readonly plan: FallbackPlan;
   readonly targets: RenderTargetPool;
