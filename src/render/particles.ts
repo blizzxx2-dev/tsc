@@ -121,12 +121,24 @@ export class Particles {
   }
 
   /** Continuous emitters: `rate × dt` particles this tick (fractions carried on the RNG). */
-  emitContinuous(id: string, pos: Vec, dt: number, scale = 1): void {
+  emitContinuous(id: string, pos: Vec, dt: number, scale = 1, o: { dir?: number; spread?: number; speed?: number } = {}): void {
     const def = this.defs[id];
     if (!def?.rate) return;
     const want = def.rate * dt * scale;
     const n = Math.floor(want) + (this.rng(id).next() < want - Math.floor(want) ? 1 : 0);
-    if (n > 0) this.burst(id, pos, n);
+    if (n > 0) this.burst(id, pos, n, o);
+  }
+
+  /** Shorten every live particle of emitter `id` to at most `seconds` of remaining life (effects that end). */
+  expire(id: string, seconds: number): void {
+    for (const pool of Object.values(this.pools))
+      for (const p of pool)
+        if (p.id === id && p.life > seconds) {
+          // Keep the age fraction continuous so the fade curve carries on from where it was.
+          const age = 1 - p.life / p.max;
+          p.life = seconds;
+          p.max = seconds / Math.max(0.05, 1 - age);
+        }
   }
 
   /** Make room for one particle of class `p`: evict the oldest of a lower class, or refuse (ENG-0128). */

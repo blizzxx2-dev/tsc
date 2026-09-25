@@ -194,16 +194,16 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0132 · Demo · P2 · M · Dev particle panel — live-tweak emitter parameters on a running operation, preview in isolation, copy JSON to clipboard
 
 ### Effects for Chapters 1–2
-- [ ] ENG-0133 · Demo · P0 · M · Arterial spray — pulsing jet synced to the heartbeat clock from severe lacerations, strength ∝ bleed rate, droplets stamping decals
-- [ ] ENG-0134 · Demo · P0 · S · Cut spatter — lancet strokes and barb tears emit a directional burst scaled by severity (MISS cut on healthy flesh is visibly worse)
-- [ ] ENG-0135 · Demo · P0 · M · Cautery — white-hot sparks, rising smoke wisps and ember glow while the Brand touches tissue; smoke drifts toward the light rig
-- [ ] ENG-0136 · Demo · P1 · M · Hexfire flames — violet/green flame and spark emitters, with curse motes drifting toward live Sigils
+- [x] ENG-0133 · Demo · P0 · M · Arterial spray — pulsing jet synced to the heartbeat clock from severe lacerations, strength ∝ bleed rate, droplets stamping decals
+- [x] ENG-0134 · Demo · P0 · S · Cut spatter — lancet strokes and barb tears emit a directional burst scaled by severity (MISS cut on healthy flesh is visibly worse)
+- [x] ENG-0135 · Demo · P0 · M · Cautery — white-hot sparks, rising smoke wisps and ember glow while the Brand touches tissue; smoke drifts toward the light rig
+- [x] ENG-0136 · Demo · P1 · M · Hexfire flames — violet/green flame and spark emitters, with curse motes drifting toward live Sigils
 - [x] ENG-0137 · Demo · P0 · M · Malison motes and ash — dark motes orbit Matins/Lauds, bursts on hit, shard dissolve into ash on defeat
 - [x] ENG-0138 · Demo · P1 · S · Bubo lancing splash — pus or black-bile burst coloured from the pool type
-- [ ] ENG-0139 · Demo · P1 · S · Venom mist rising from `Venom` entities — stops when neutralised
-- [ ] ENG-0140 · Demo · P1 · S · Grub extraction gore — squish burst and twitching segment particles on extraction
-- [ ] ENG-0141 · Demo · P2 · S · Tincture and Salve VFX — injection shimmer at the needle, droplets along the salve stroke
-- [ ] ENG-0142 · Demo · P1 · S · Litany dust — gold motes along the star trail, suspended "held time" motes drifting at 0.15× until the Litany ends
+- [x] ENG-0139 · Demo · P1 · S · Venom mist rising from `Venom` entities — stops when neutralised
+- [x] ENG-0140 · Demo · P1 · S · Grub extraction gore — squish burst and twitching segment particles on extraction
+- [x] ENG-0141 · Demo · P2 · S · Tincture and Salve VFX — injection shimmer at the needle, droplets along the salve stroke
+- [x] ENG-0142 · Demo · P1 · S · Litany dust — gold motes along the star trail, suspended "held time" motes drifting at 0.15× until the Litany ends
 - [ ] ENG-0143 · Demo · P2 · S · Ambient backdrop particles — candle flames, dust in light shafts, chapel incense (story scenes)
 - [ ] ENG-0144 · Demo · P2 · S · UI particles — COOL rating sparkle, rank-reveal ink splash, chain-milestone flare
 - [ ] ENG-0145 · Demo · P1 · S · Particle quality setting scales emission and max count — Low reduces particle GPU time ≥50% on the Malison fight (profiler capture)

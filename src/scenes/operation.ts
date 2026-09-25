@@ -11,6 +11,7 @@ import { organPalette } from '../render/organs';
 import { Bubo, Sigil, surfDisc, surfLine } from '../surgery/entities';
 import { EggSac } from '../surgery/lauds';
 import { Particles } from '../render/particles';
+import { OperationVfx } from './opVfx';
 import { FlashLimiter } from '../render/flashLimiter';
 import { Malison, MalisonShard } from '../surgery/malison';
 import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOWN, TINCTURE_TIME, type OperationDef, type Popup } from '../surgery/operation';
@@ -80,6 +81,8 @@ export class OperationScene implements Scene {
   /** Phase banner (ART-0078 / UIX-0061): a ribbon that slides in at each phase start. */
   private banner: { phase: number; t: number; boss: boolean | null } | null = null;
   private particles = new Particles();
+  /** Emitters driven by the operation's state and events (ENG-0133–0142). */
+  private vfx = new OperationVfx(() => this.particles);
   private flashLimit = new FlashLimiter();
   private comboT = 0;
   private lastCombo = 0;
@@ -190,6 +193,8 @@ export class OperationScene implements Scene {
       storeProgress(p);
     });
     if (!this.runOpts.practice) attachBarkDirector(op);
+    this.vfx = new OperationVfx(() => this.particles);
+    this.vfx.listen(op, () => bloodScale(presentation.gore));
   }
 
   /** Open the "Respite" overlay (UIX-0100). The operation stops updating until it closes. */
@@ -376,7 +381,7 @@ export class OperationScene implements Scene {
     this.particles.update(dt * op.timeScale, (p, kind, size) => {
       if (kind === 'blood' && onBody(p)) op.stain(p, size * 2.6, 0.3);
     });
-    if (op.litanyTime > 0 && Math.random() < dt * 30) this.particles.spawn({ kind: 'dust', pos: { x: FIELD.cx + (Math.random() - 0.5) * FIELD.rx * 2, y: FIELD.cy + (Math.random() - 0.5) * FIELD.ry * 2 }, n: 1 });
+    this.vfx.update(op, dt * op.timeScale, { beat: this.beatPhase, pointer: game.input.pos, down: game.input.down, light: { x: FIELD.cx - 220, y: 60 }, starTrail: this.ctl.starTrail, gore: bloodScale(presentation.gore) });
 
     // op.cues are drained by the audio director (src/audio/director.ts) right after this update.
     // Popups are presentation: they age in real time here, not in the sim.
