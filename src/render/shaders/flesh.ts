@@ -118,6 +118,10 @@ uniform vec3 u_bloodDeep;
 uniform float u_sheen;
 // Curse corruption (ART-0181–0183): where it flows to, and the Hour's vein and necrosis colours.
 uniform vec2 u_corruptAt;
+// Per-pixel corruption painted by the curse's sources (ENG-0099); view px → map UV.
+uniform sampler2D u_curseMap;
+uniform float u_curseOn;
+uniform mat3 u_curseXf;
 uniform vec3 u_curseVein;
 uniform vec3 u_curseAccent;
 out vec4 o;
@@ -332,15 +336,26 @@ void main() {
 
   // Curse corruption (ART-0181): bruising creeps in from the rim; violet veins, bruise-black
   // necrosis and woodcut-hatched sigil scars spread from the Malison, driven by u_corrupt 0..1.
-  float cor = u_corrupt * smoothstep(0.3, 1.0, r + fbm(uv * 1.7 + u_time * 0.1) * 0.4);
+  // With a curse map (ENG-0099) the corruption lies where its sources painted it, not rim-in.
+  float cmap = 0.0;
+  if (u_curseOn > 0.5) {
+    vec2 muv = (u_curseXf * vec3(px, 1.0)).xy;
+    vec2 inMap = step(vec2(0.0), muv) * step(muv, vec2(1.0));
+    cmap = texture(u_curseMap, muv).r * inMap.x * inMap.y;
+  }
+  float cmapN = cmap + (fbm(q * 2.3 + 5.0) - 0.5) * 0.3 * step(0.01, cmap);
+  float cor = u_curseOn > 0.5 ? smoothstep(0.1, 0.9, cmapN) * 0.8 : u_corrupt * smoothstep(0.3, 1.0, r + fbm(uv * 1.7 + u_time * 0.1) * 0.4);
   col = mix(col, mix(vec3(0.16, 0.05, 0.2), u_curseAccent, 0.5), cor * 0.4);
-  if (u_corrupt > 0.001) {
+  float cAmt = u_curseOn > 0.5 ? cmap : u_corrupt;
+  if (cAmt > 0.001) {
     vec2 toM = u_corruptAt - px;
     float dM = length(toM);
     vec2 dirM = toM / max(dM, 1.0);
-    // Reach: the corruption spreads out from the Malison as it grows.
-    float reach = u_corrupt * u_corrupt * 700.0;
-    float cm = rsmooth(reach, reach * 0.35, dM + (fbm(q * 2.3 + 5.0) - 0.5) * 160.0);
+    // Reach: the corruption spreads out from the Malison as it grows (or as far as it was painted).
+    float reach = u_curseOn > 0.5 ? 700.0 : u_corrupt * u_corrupt * 700.0;
+    float cm = u_curseOn > 0.5 ? smoothstep(0.08, 0.45, cmapN) : rsmooth(reach, reach * 0.35, dM + (fbm(q * 2.3 + 5.0) - 0.5) * 160.0);
+    // The corruption front: the thin band where the map is still rising.
+    float cfront = u_curseOn > 0.5 ? smoothstep(0.03, 0.12, cmapN) * rsmooth(0.4, 0.18, cmapN) : 0.0;
     // Flow map (ART-0182): two-phase advection so the veins crawl toward the Malison without stretching.
     float ft = u_time * 0.4;
     float ph0 = fract(ft);
@@ -355,14 +370,17 @@ void main() {
     // Fine capillary branching off the main veins.
     float fine = smoothstep(0.9, 0.98, 1.0 - abs(fbm(cuv * 2.7 - flow * ph0 * 2.0 + 9.0) * 2.0 - 1.0)) * 0.6;
     float vk = max(cveins, fine) * cm;
+    // Veins blacken along the advancing front (ENG-0099).
+    float vfront = max(cveins, fine * 1.4) * cfront;
+    col = mix(col, vec3(0.03, 0.01, 0.03), clamp(vfront, 0.0, 1.0) * 0.85);
     // Bruise-black necrosis in blotches nearest the Malison.
-    float nec = smoothstep(0.58, 0.72, fbm(px * 0.006 + 13.0) + (1.0 - dM / max(reach, 1.0)) * 0.25) * cm * u_corrupt;
+    float nec = smoothstep(0.58, 0.72, fbm(px * 0.006 + 13.0) + (1.0 - dM / max(reach, 1.0)) * 0.25) * cm * max(u_corrupt, cAmt);
     col = mix(col, u_curseAccent * 0.35 + vec3(0.02, 0.01, 0.02), nec * 0.6);
     // Woodcut-hatched sigil scarring: raised scar patches cut by parallel hatch strokes.
     // Scar patches are narrow welts (ridges of low-frequency noise); the hatching follows the lamp
     // side of each welt and breaks up like a cut woodblock line.
     float welt = 1.0 - abs(fbm(px * 0.0045 + 21.0) * 2.0 - 1.0);
-    float scarM = smoothstep(0.9, 0.96, welt) * cm * smoothstep(0.35, 0.8, u_corrupt);
+    float scarM = smoothstep(0.9, 0.96, welt) * cm * smoothstep(0.35, 0.8, max(u_corrupt, cAmt));
     float hatch = rsmooth(0.18, 0.04, abs(fract((px.x - px.y * 0.6) * 0.2) - 0.5)) * step(0.35, noise(px * 0.05));
     col = mix(col, mix(u_skin * 0.9, u_curseAccent, 0.3), scarM * 0.5);
     col = mix(col, u_curseAccent * 0.2, scarM * hatch * 0.7);

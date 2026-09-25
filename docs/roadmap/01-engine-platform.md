@@ -146,7 +146,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0098 · Demo · P1 · M · Opening shape from a mask texture instead of the fixed `FIELD` ellipse, with retractor/clamp sprites around the rim — supports irregular openings per operation def
 
 ### Wound, curse & boss surfaces needed by Chapters 1–2
-- [ ] ENG-0099 · Demo · P0 · M · Curse corruption v2 — per-pixel corruption map (render target) painted by `Sigil`/Malison entities instead of the uniform rim-in `u_corrupt`; veins blacken along the corruption front
+- [x] ENG-0099 · Demo · P0 · M · Curse corruption v2 — per-pixel corruption map (render target) painted by `Sigil`/Malison entities instead of the uniform rim-in `u_corrupt`; veins blacken along the corruption front
 - [x] ENG-0100 · Demo · P0 · M · Hexfire burn shader — violet-green emissive flame tongues over char, flickering with world time, bloom-friendly HDR emissive, dims as it is treated
 - [ ] ENG-0101 · Demo · P1 · M · Fire and acid burn surfaces: blistered char with ember speckle (fire), yellow-green etched froth (acid) — replace flat `circleGrad` burns
 - [ ] ENG-0102 · Demo · P1 · M · Bubo, rot and venom surfaces — taut glossy bubo dome with pus shadow; necrotic rot ramp red→purple→black with wetness loss; green-black venom tracking along veins

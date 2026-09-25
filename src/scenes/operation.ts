@@ -1,4 +1,4 @@
-import { curseSource } from '../art/curse';
+import { curseSource, hourOf } from '../art/curse';
 import { VanishFx } from '../art/vanishFx';
 import { ExtractionTray } from '../art/extractionTray';
 import { scarArt } from '../art/ailmentArt';
@@ -107,6 +107,8 @@ const roman = (n: number): string => ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 
 /** Seconds a Salve stroke stays glossy after it is laid (GAM-0043). */
 export const SALVE_GLOSS_S = 4;
 /** Seconds a frost patch takes to rime over (ENG-0262). */
+/** Furthest a Malison's corruption is painted from it, px (ENG-0099). */
+export const CURSE_REACH = 360;
 export const FROST_GROW_S = 1.5;
 /** Tray tips stay above this line, clear of the callout plate (UIX-0051). */
 const TIP_FLOOR = 612;
@@ -662,6 +664,8 @@ export class OperationScene implements Scene {
   private stainT = 0;
   /** Frost patches already rimed, with the thaw last seen. */
   private rimed = new Map<object, { thaw: number; grown: number }>();
+  /** Seconds each curse source has been painting corruption (ENG-0099). */
+  private cursing = new WeakMap<object, number>();
   /** Petrify plates already chiselled out of the stone. */
   private chiselled = new WeakSet<object>();
 
@@ -676,6 +680,16 @@ export class OperationScene implements Scene {
     this.stainT = 0.1;
     const t = op.elapsed;
     for (const e of op.entities) {
+      // Curse corruption (ENG-0099): a Malison paints a widening stain of corruption with tendrils; a sigil a small one.
+      const malison = e.alive && hourOf(e) !== null;
+      if (malison || (e.alive && e instanceof Sigil)) {
+        const age = (this.cursing.get(e) ?? 0) + 0.1;
+        this.cursing.set(e, age);
+        const reach = malison ? Math.min(CURSE_REACH, 60 + age * 14) : Math.min(110, 30 + age * 8);
+        d.stamp({ map: 'curse', brush: 'soft', x: e.pos.x, y: e.pos.y, r: reach, value: [malison ? 0.06 : 0.035, 0, 0], mode: 'add', t });
+        const a = this.presRng.next() * Math.PI * 2;
+        d.stamp({ map: 'curse', brush: 'splat', x: e.pos.x + Math.cos(a) * reach * 0.7, y: e.pos.y + Math.sin(a) * reach * 0.7, r: reach * 0.45, rot: a, value: [0.05, 0, 0], mode: 'add', t, seed: this.presRng.next() });
+      }
       if (e instanceof PetrifyFront) {
         if (e.alive) d.stamp({ map: 'stain', brush: 'soft', x: e.frontPos.x, y: e.frontPos.y, r: 30, value: [0.22, 0, 0], mode: 'add', t });
         for (const p of e.plates)
@@ -782,6 +796,7 @@ export class OperationScene implements Scene {
       light: vc(light),
       corrupt: this.fleshCurse,
       corruptAt: curse ? vc(curse.at) : undefined,
+      curseMap: this.decals.curseSampler(),
       curse: curse?.look,
       cellSoft: pal.cellSoft,
       rough: paleRough(pal.rough, pallor),

@@ -201,6 +201,12 @@ void main() {
     // Blood that seeped in carries the time of the blood it came from.
     float t = dens > m.r + 0.004 ? max(m.a, max(max(l.a, r.a), max(d.a, u.a))) : m.a;
     o = vec4(dens, m.g * exp(-u_dt / 12.0), m.b, t);
+  } else if (u_kind == 3) {
+    // Curse (ENG-0099): corruption (R) creeps a little way past what its sources paint, and slowly
+    // recedes where nothing sustains it (a cleansed Malison lets the flesh recover).
+    float cN = max(max(l.r, r.r), max(d.r, u.r));
+    float creep = cN > 0.2 ? (cN - 0.2) * clamp(u_dt * 0.35, 0.0, 0.1) : 0.0;
+    o = vec4(max(0.0, min(1.0, m.r + creep) - u_dt * 0.025), m.g, m.b, m.a);
   } else if (u_kind == 2) {
     // Stain (ENG-0264): necrosis (B) spreads slowly into living flesh around it; stone and frost
     // (R, G) are laid and lifted by stamps only.

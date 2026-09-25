@@ -134,3 +134,35 @@ describe('stain map: stone, frost and necrosis (ENG-0261, ENG-0262, ENG-0264)', 
     expect(rime[rime.length - 1].r).toBeGreaterThan(rime[0].r);
   });
 });
+
+describe('curse corruption map (ENG-0099)', () => {
+  it('a Malison paints a widening stain of corruption; a sigil a small one', async () => {
+    const { Malison } = await import('../../../src/surgery/malison');
+    const { Sigil, SIGILS } = await import('../../../src/surgery/entities');
+    const { CURSE_REACH } = await import('../../../src/scenes/operation');
+    const { stamps } = await run((op) => [new Malison(at(0, 0), op), new Sigil(at(-250, 100), SIGILS.eye, 60, 99)], 1200);
+    const curse = stamps.filter((s) => s.map === 'curse' && s.brush === 'soft');
+    const fromM = curse.filter((s) => s.value[0] === 0.06);
+    const fromS = curse.filter((s) => s.value[0] === 0.035);
+    expect(fromM.length).toBeGreaterThan(20);
+    expect(fromM[fromM.length - 1].r).toBeGreaterThan(fromM[0].r);
+    expect(fromM[fromM.length - 1].r).toBeLessThanOrEqual(CURSE_REACH);
+    expect(fromS.length).toBeGreaterThan(20);
+    expect(Math.max(...fromS.map((s) => s.r))).toBeLessThan(Math.max(...fromM.map((s) => s.r)));
+  });
+
+  it('maps view pixels back to map UV through the camera', async () => {
+    const { viewToMapUV, fieldToMapUV } = await import('../../../src/render/decals');
+    const apply = (m: Float32Array, x: number, y: number) => [m[0] * x + m[3] * y + m[6], m[1] * x + m[4] * y + m[7]];
+    const p = at(120, -40);
+    const [u, v] = fieldToMapUV(p);
+    const id = viewToMapUV([1, 0, 0, 0, 1, 0, 0, 0, 1]);
+    expect(apply(id, p.x, p.y)[0]).toBeCloseTo(u, 5);
+    expect(apply(id, p.x, p.y)[1]).toBeCloseTo(v, 5);
+    // A 2× camera with an offset: world p lands at view 2p + (30, -12).
+    const zoom = viewToMapUV([2, 0, 0, 0, 2, 0, 30, -12, 1]);
+    const [zu, zv] = apply(zoom, p.x * 2 + 30, p.y * 2 - 12);
+    expect(zu).toBeCloseTo(u, 5);
+    expect(zv).toBeCloseTo(v, 5);
+  });
+});

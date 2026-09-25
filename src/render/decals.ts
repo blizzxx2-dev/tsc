@@ -24,8 +24,11 @@ import type { Quality } from './quality';
 import { BLOOD_DECAL_FS, BRUSHES, COVERAGE_FS, COVERAGE_VS, DECAL_UPDATE_FS, DECAL_UPDATE_VS, DECAL_VS, STAIN_DECAL_FS, SCORCH_DECAL_FS, STAMP_FS, STAMP_VS, type Brush } from './shaders/decal';
 import { RenderTargetPool, type Target } from './targets';
 
-export type DecalMapId = 'blood' | 'scorch' | 'stain';
-export const DECAL_MAPS: readonly DecalMapId[] = ['blood', 'scorch', 'stain'];
+export type DecalMapId = 'blood' | 'scorch' | 'stain' | 'curse';
+export const DECAL_MAPS: readonly DecalMapId[] = ['blood', 'scorch', 'stain', 'curse'];
+
+/** Update-pass kind per map (DECAL_UPDATE_FS `u_kind`). */
+const UPDATE_KIND: Record<DecalMapId, number> = { blood: 0, scorch: 1, stain: 2, curse: 3 };
 
 /** Map resolution per quality tier (16:9, the aspect of FIELD_MAP_RECT). */
 export const DECAL_MAP_SIZE: Record<Quality, [number, number]> = { high: [2048, 1152], medium: [1536, 864], low: [1024, 576] };
@@ -41,6 +44,25 @@ export function fieldToMapUV(p: Vec): [number, number] {
 /** Map UV → world point. */
 export function mapUVToField(u: number, v: number): Vec {
   return { x: FIELD_MAP_RECT.x + u * FIELD_MAP_RECT.w, y: FIELD_MAP_RECT.y + (1 - v) * FIELD_MAP_RECT.h };
+}
+
+/**
+ * Column-major mat3 taking view px → map UV: the inverse of the world → view transform `xf`
+ * (an affine mat3), followed by the field → map UV mapping.
+ */
+export function viewToMapUV(xf: ArrayLike<number>): Float32Array {
+  const [a, b, , c, d, , tx, ty] = [xf[0], xf[1], xf[2], xf[3], xf[4], xf[5], xf[6], xf[7]];
+  const det = a * d - b * c || 1;
+  // Inverse affine: world = M · (view − t).
+  const ia = d / det;
+  const ib = -b / det;
+  const ic = -c / det;
+  const id = a / det;
+  const itx = -(ia * tx + ic * ty);
+  const ity = -(ib * tx + id * ty);
+  const R = FIELD_MAP_RECT;
+  // u = (wx − R.x)/R.w; v = 1 − (wy − R.y)/R.h.
+  return new Float32Array([ia / R.w, -ib / R.h, 0, ic / R.w, -id / R.h, 0, (itx - R.x) / R.w, 1 - (ity - R.y) / R.h, 1]);
 }
 
 export interface Stamp {
@@ -356,7 +378,7 @@ export class DecalMaps {
       gl.viewport(0, 0, tmp.w, tmp.h);
       gl.bindTexture(gl.TEXTURE_2D, t.tex);
       gl.uniform2f(this.u(p, 'u_texel'), 1 / t.w, 1 / t.h);
-      gl.uniform1i(this.u(p, 'u_kind'), id === 'blood' ? 0 : id === 'stain' ? 2 : 1);
+      gl.uniform1i(this.u(p, 'u_kind'), UPDATE_KIND[id]);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       // Back into the map (same size and format, so a plain blit).
       gl.bindFramebuffer(gl.READ_FRAMEBUFFER, tmp.fb);
@@ -430,6 +452,16 @@ export class DecalMaps {
     gl.bindTexture(gl.TEXTURE_2D, null);
     g.resyncBlend();
   }
+  /**
+   * The curse map for the flesh pass (ENG-0099): its texture and a transform from view pixels
+   * (top-left origin, as the flesh shader's `px`) to map UV, through the current camera. Null
+   * until something has painted corruption.
+   */
+  curseSampler(): { tex: WebGLTexture; xf: Float32Array } | null {
+    if (!this.maps.has('curse')) return null;
+    return { tex: this.map('curse').tex, xf: viewToMapUV(this.g.viewTransform()) };
+  }
+
   /** Shade the stain map (stone, frost, necrosis — ENG-0261/0262/0264) onto the field. */
   drawStain(time: number): void {
     if (!this.maps.has('stain')) return;

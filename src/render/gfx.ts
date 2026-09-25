@@ -133,6 +133,8 @@ export interface FleshParams {
   species?: SpeciesLook;
   /** Where the curse flows to (the Malison, virtual px); the corruption veins crawl toward it. Defaults to the field centre. */
   corruptAt?: Vec;
+  /** Per-pixel corruption painted by the curse's sources (ENG-0099): the map and its view px → UV transform. Replaces the rim-in `corrupt` spread. */
+  curseMap?: { tex: WebGLTexture; xf: Float32Array } | null;
   /** The Hour's corruption palette (src/art/curse.ts): vein glow and secondary (necrosis/scar) colour. */
   curse?: { vein: readonly [number, number, number]; accent: readonly [number, number, number] };
 }
@@ -1499,6 +1501,13 @@ export class Gfx {
     this.bindTex(this.surface.tex, 1);
     gl.uniform1i(this.u(pr, 'u_surface'), 1);
     gl.uniform2f(this.u(pr, 'u_surfTexel'), 1 / this.surface.w, 1 / this.surface.h);
+    // The curse map (ENG-0099); with none, the sampler points at the surface layer and is ignored.
+    if (f.curseMap) {
+      this.bindTex(f.curseMap.tex, 4);
+      gl.uniformMatrix3fv(this.u(pr, 'u_curseXf'), false, f.curseMap.xf);
+    }
+    gl.uniform1i(this.u(pr, 'u_curseMap'), f.curseMap ? 4 : 1);
+    gl.uniform1f(this.u(pr, 'u_curseOn'), f.curseMap ? 1 : 0);
     // Baked tiling noise (ENG-0081); the live variant ignores the samplers.
     if (this.noiseTex && this.cellsTex) {
       this.bindTex(this.noiseTex, 2);
