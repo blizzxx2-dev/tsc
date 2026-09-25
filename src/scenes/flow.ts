@@ -8,6 +8,8 @@ import { ResultsScene } from './results';
 import { StoryScene } from './story';
 import { TitleScene } from './title';
 import { DemoEndScene } from './demoend';
+import { emitGameEvent } from '../platform/events';
+import { assisted } from '../core/settings';
 
 export const save: SaveData = load();
 
@@ -20,6 +22,7 @@ export function playOperation(game: Game, def: OperationDef, onWin: () => void, 
         ({ op, won }) => {
           const best = won ? recordBest(save, def.id, op.rank(), op.score) : false;
           store(save);
+          emitGameEvent({ type: 'operation-end', opId: def.id, won, rank: won ? op.rank() : null, score: op.score, assisted: assisted(), litanyUsed: op.litanyUsed });
           game.go(new ResultsScene(op, won, best, { next: won ? onWin : undefined, retry: begin, quit: onLeave }));
         },
         onLeave,
@@ -32,9 +35,15 @@ export function playOperation(game: Game, def: OperationDef, onWin: () => void, 
 export function playStep(game: Game, chapter: number, step: number): void {
   const ch = CAMPAIGN[chapter];
   // Past the last chapter of the demo: the thank-you / wishlist screen.
-  if (!ch) return game.go(new DemoEndScene());
+  if (!ch) {
+    emitGameEvent({ type: 'edition-complete' });
+    return game.go(new DemoEndScene());
+  }
   const s = ch.steps[step];
-  if (!s) return playStep(game, chapter + 1, 0);
+  if (!s) {
+    emitGameEvent({ type: 'chapter-complete', chapter });
+    return playStep(game, chapter + 1, 0);
+  }
   advance(save, chapter, step);
   store(save);
   const next = () => {

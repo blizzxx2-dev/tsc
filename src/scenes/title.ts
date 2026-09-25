@@ -10,6 +10,10 @@ import { drawBackdrop } from './backdrop';
 import { playStep, save } from './flow';
 import { OperationsScene } from './operations';
 import { OptionsScene } from './options';
+import { platform } from '../platform';
+import { buildLabel, IS_DEMO } from '../platform/build';
+import { EDITIONS } from '../platform/editions';
+import { flag } from '../platform/flags';
 
 export class TitleScene implements Scene {
   private t = 0;
@@ -54,10 +58,15 @@ export class TitleScene implements Scene {
       if (button(g, game.input, 'Operating Theatre', VIEW_W / 2, y, 30, started)) game.go(new OperationsScene());
       y += 60;
       if (button(g, game.input, 'Options', VIEW_W / 2, y)) game.go(new OptionsScene(() => game.go(new TitleScene())));
+      if (IS_DEMO && flag('wishlistPrompts')) {
+        // Owned-full-game notice (PLT-0064) replaces the wishlist prompt (PLT-0063).
+        if (platform.steam.ownsFullGame) g.text('The full game is in your library.', VIEW_W / 2, 630, { size: 20, font: 'italic', color: hex(UI.parch), align: 'center' });
+        else if (button(g, game.input, 'Wishlist the Full Game', VIEW_W / 2, 630, 22)) platform.steam.openStore(EDITIONS.full.steamAppId);
+      }
       if (done) g.text('The demo is complete — thank you for playing. The Hours continue in the full game.', VIEW_W / 2, 660, { size: 20, font: 'italic', color: hex(PALETTE.inkDim), align: 'center' });
     }
     g.text('F11: fullscreen', 20, VIEW_H - 14, { size: 14, color: hex(PALETTE.inkDim, 0.6), shadow: false });
-    g.text('v0.1 prototype', VIEW_W - 20, VIEW_H - 14, { size: 14, color: hex(PALETTE.inkDim, 0.6), align: 'right', shadow: false });
+    g.text(buildLabel(), VIEW_W - 20, VIEW_H - 14, { size: 14, color: hex(PALETTE.inkDim, 0.6), align: 'right', shadow: false });
     reticle(g, game.input.pos);
     g.endFrame();
   }

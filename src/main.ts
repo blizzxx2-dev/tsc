@@ -13,6 +13,8 @@ import { TitleScene } from './scenes/title';
 import { StoryScene } from './scenes/story';
 import type { Backdrop } from './content/story';
 import { VIEW_H, VIEW_W } from './ui/layout';
+import { platform } from './platform';
+import { installPlatform, platformFrame, sceneChanged } from './platform/session';
 
 class Main implements Game {
   input: Input;
@@ -32,11 +34,11 @@ class Main implements Game {
       this.audio.unlock();
       if (e.code === 'F11' || (e.code === 'Enter' && e.altKey)) {
         e.preventDefault();
-        if (document.fullscreenElement) void document.exitFullscreen();
-        else void document.documentElement.requestFullscreen();
+        platform.window.toggleFullscreen();
       }
     });
     this.resize();
+    installPlatform(this);
   }
 
   /** Keep a 16:9 canvas as large as the window allows, at device resolution. */
@@ -58,6 +60,7 @@ class Main implements Game {
   go(scene: Scene): void {
     this.scene = scene;
     scene.enter?.(this);
+    sceneChanged(scene);
   }
 
   start(first: Scene): void {
@@ -67,6 +70,7 @@ class Main implements Game {
       this.last = now;
       this.gfx.time += dt;
       this.input.beginFrame();
+      platformFrame(dt);
       this.scene?.update(dt, this);
       this.scene?.render(this.gfx, this);
       this.input.endFrame();
