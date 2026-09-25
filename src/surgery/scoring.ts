@@ -212,6 +212,9 @@ export const SCORING: readonly ScoringRule[] = [
   { label: 'The bond left be', action: 'Leave a blood-bond untouched', tools: [], criteria: { good: 'when the story allows' } },
   { label: 'Wrong plate', action: 'Pry the wrong petrified plate', tools: ['tongs'], criteria: { bad: 'always' } },
   { label: 'Plate cracked', action: 'Crack a petrified plate free', tools: ['tongs'], criteria: { good: 'always' } },
+  // Brood silk (ART-0217, CON-0066).
+  { label: 'Strand cut', action: 'Cut a strand of brood silk', tools: ['lancet'], criteria: { good: 'always' } },
+  { label: 'Web cut away', action: 'Cut the last strand of the silk', tools: ['lancet'], criteria: { cool: 'always' } },
   { label: 'The stone halts', action: 'Halt the spreading stone', tools: ['tincture'], criteria: { cool: 'always' } },
   { label: 'Silence broken', action: 'Break a silence-node', tools: ['brand'], criteria: { cool: 'always' } },
   { label: 'Echo silenced', action: 'Silence an echo', tools: ['brand'], criteria: { cool: 'always' } },

@@ -9,6 +9,7 @@
  *
  * Positions are `[dx, dy]` offsets from the centre of the operating field (the `at()` convention).
  */
+import { WebSilk } from '../surgery/ailments/silk';
 import type { PoisonId } from './poisons';
 import { ChoirMagus, DeadPulse, FrostWight, GhoulClaw, Sellsword, WormMatriarch } from '../surgery/bosses/alphaElites';
 import type { Vec } from '../core/math';
@@ -42,6 +43,7 @@ export type EntitySpec =
   | ({ e: 'sigil'; at: Pt; shape: keyof typeof SIGILS; size?: number; lashEvery?: number } & Common)
   | ({ e: 'pool'; at: Pt; r: number; ichor?: 'blood' | 'pus' | 'blackbile' } & Common)
   | ({ e: 'eggsac'; at: Pt; brood?: number; hatchIn?: number } & Common)
+  | ({ e: 'silk'; at: Pt; strands?: number; r?: number } & Common)
   | ({ e: 'malison-matins'; at: Pt; hp?: number } & Common)
   | ({ e: 'malison-lauds'; at: Pt } & Common)
   | ({ e: 'elite-broodcluster'; at: Pt; hatchIn?: number } & Common)
@@ -170,6 +172,12 @@ export const ENTITY_REGISTRY: { [K in EntityId]: Entry<K> } = {
     params: { at: { type: 'pt' }, brood: num(true, [1, 8]), hatchIn: num(true, [2, 9999]) },
     needs: () => [['lancet'], ['brand']],
     make: (s) => new EggSac(P(s.at), s.brood, s.hatchIn),
+  },
+  // Brood silk over the field (ART-0217, CON-0066): every strand cut with a lancet stroke.
+  silk: {
+    params: { at: { type: 'pt' }, strands: num(true, [1, 9]), r: num(true, [30, 200]) },
+    needs: () => [['lancet']],
+    make: (s, op) => new WebSilk(P(s.at), op, s.strands, s.r),
   },
   'malison-matins': {
     params: { at: { type: 'pt' }, hp: num(true, [1, 1000]) },

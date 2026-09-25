@@ -115,6 +115,12 @@ export const OP_2_3 = defineOp({
   seed: 23,
   phases: [
     {
+      objective: 'Cut away the silk',
+
+      callout: ['Silk over the bites. Cut each strand with one stroke of the Lancet.'],
+      spawn: [{ e: 'silk', at: [0, -40], strands: 5, r: 120 }],
+    },
+    {
       objective: 'Treat the bites',
 
       callout: ['Venom from two bites. Tincture on each, quickly.'],

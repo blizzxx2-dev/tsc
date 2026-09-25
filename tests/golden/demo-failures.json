@@ -315,15 +315,35 @@
  },
  "op2-3": {
   "vitals": {
-   "via": "idle",
+   "via": "butcher",
    "status": "lost",
    "lostCause": "vitals",
    "lostReason": "The patient has died.",
-   "score": 0,
+   "score": 405,
    "vitals": 0,
-   "timeLeft": 222433,
-   "elapsed": 19583,
-   "frames": 1175,
+   "timeLeft": 221717,
+   "elapsed": 20300,
+   "frames": 1218,
+   "phase": 0,
+   "counts": {
+    "cool": 0,
+    "good": 0,
+    "bad": 27,
+    "miss": 0
+   },
+   "litanyUses": 0,
+   "maxCombo": 0
+  },
+  "timer": {
+   "via": "stall",
+   "status": "lost",
+   "lostCause": "time",
+   "lostReason": "Time has run out.",
+   "score": 0,
+   "vitals": 51000,
+   "timeLeft": 0,
+   "elapsed": 242017,
+   "frames": 14521,
    "phase": 0,
    "counts": {
     "cool": 0,
@@ -333,26 +353,6 @@
    },
    "litanyUses": 0,
    "maxCombo": 0
-  },
-  "timer": {
-   "via": "short×0.125",
-   "status": "lost",
-   "lostCause": "time",
-   "lostReason": "Time has run out.",
-   "score": 3008,
-   "vitals": 49971,
-   "timeLeft": 0,
-   "elapsed": 32033,
-   "frames": 1922,
-   "phase": 2,
-   "counts": {
-    "cool": 17,
-    "good": 4,
-    "bad": 0,
-    "miss": 0
-   },
-   "litanyUses": 0,
-   "maxCombo": 21
   }
  },
  "op2-4": {

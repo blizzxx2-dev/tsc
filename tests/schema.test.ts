@@ -17,6 +17,7 @@ import {
 import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, SALVE_MAX, Sigil, Venom } from '../src/surgery/entities';
 import { ChoirVoice, EggSac, LaudsMalison, SpiderlingGrub } from '../src/surgery/lauds';
 import { Malison, MalisonShard } from '../src/surgery/malison';
+import { WebSilk } from '../src/surgery/ailments/silk';
 import { Operation, type OperationDef } from '../src/surgery/operation';
 import type { ToolId } from '../src/surgery/types';
 import { playWithBot } from './bot';
@@ -51,6 +52,7 @@ describe('entity registry (CON-0002)', () => {
     [{ e: 'sigil', at: [0, 0], shape: 'eye' }, Sigil],
     [{ e: 'pool', at: [0, 0], r: 20 }, BloodPool],
     [{ e: 'eggsac', at: [0, 0] }, EggSac],
+    [{ e: 'silk', at: [0, 0] }, WebSilk],
     [{ e: 'malison-matins', at: [0, 0] }, Malison],
     [{ e: 'malison-lauds', at: [0, 0] }, LaudsMalison],
     [{ e: 'elite-broodcluster', at: [0, 0] }, EggCluster],
@@ -249,6 +251,7 @@ const RESOLVES = new Map<unknown, (e: never) => ToolId[][]>([
   [Sigil, () => [['brand']]],
   [BloodPool, () => [['leech']]],
   [EggSac, () => [['lancet']]],
+  [WebSilk, () => [['lancet']]],
   [Malison, () => [['brand']]],
   [MalisonShard, () => [['tongs']]],
   [LaudsMalison, () => [['brand'], ['lens']]],

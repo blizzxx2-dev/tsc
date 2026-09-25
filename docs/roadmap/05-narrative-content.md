@@ -391,7 +391,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ### op2-3 "Brood-Mother's Kiss" (Henning, forager) — venom, egg sacs, grubs
 - [x] CON-0064 · Demo · P0 · S · Egg-sac hatch timer shown as swelling — lanced sacs spill grubs to be branded; unlanced hatch scatters 3× grubs (test)
 - [ ] CON-0065 · Demo · P1 · S · Venom spread along drawn veins — tincture targets the vein head
-- [ ] CON-0066 · Demo · P1 · S · Web-silk wrapping overlay that must be cut — with the lancet before the field is accessible
+- [x] CON-0066 · Demo · P1 · S · Web-silk wrapping overlay that must be cut — with the lancet before the field is accessible
 - [x] CON-0067 · Demo · P2 · S · Grub AI flees toward nearest open wound — not random; so good play closes wounds first
 
 ### op2-4 "The Silenced Cantor" (lay-cantor of the Hollow Choir) — igniting sigils, swallowed object

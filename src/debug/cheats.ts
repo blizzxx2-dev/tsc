@@ -30,6 +30,7 @@ const SPAWN_DEFAULTS: { [K in EntityId]: Omit<Extract<EntitySpec, { e: K }>, 'e'
   grub: { speed: 40 },
   sigil: { shape: 'eye', size: 70 },
   pool: { r: 28 },
+  silk: { strands: 5, r: 100 },
   eggsac: { brood: 3, hatchIn: 16 },
   'malison-matins': {},
   'malison-lauds': {},

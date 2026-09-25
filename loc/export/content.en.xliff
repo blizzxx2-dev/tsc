@@ -1538,38 +1538,43 @@
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op2-3.p0.1" resname="op2-3.p0.1">
-        <source>Venom from two bites. Tincture on each, quickly.</source>
-        <note from="context">Assistant callout when phase 1 of 4 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
+        <source>Silk over the bites. Cut each strand with one stroke of the Lancet.</source>
+        <note from="context">Assistant callout when phase 1 of 5 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op2-3.p1.1" resname="op2-3.p1.1">
-        <source>The sacs — lance each with one touch, then sear the hatchlings with the Cautery Brand.</source>
-        <note from="context">Assistant callout when phase 2 of 4 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
-        <note from="speaker">Sister Ilse</note>
-      </trans-unit>
-      <trans-unit id="op2-3.p1.2" resname="op2-3.p1.2">
-        <source>Mind the ones that are close to hatching.</source>
-        <note from="context">Assistant callout when phase 2 of 4 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
+        <source>Venom from two bites. Tincture on each, quickly.</source>
+        <note from="context">Assistant callout when phase 2 of 5 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op2-3.p2.1" resname="op2-3.p2.1">
-        <source>Her brood-cluster — three sacs under one skin.</source>
-        <note from="context">Assistant callout when phase 3 of 4 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
+        <source>The sacs — lance each with one touch, then sear the hatchlings with the Cautery Brand.</source>
+        <note from="context">Assistant callout when phase 3 of 5 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op2-3.p2.2" resname="op2-3.p2.2">
-        <source>Cut the membrane right around them with the Lancet first, or they’ll wake as one.</source>
-        <note from="context">Assistant callout when phase 3 of 4 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
+        <source>Mind the ones that are close to hatching.</source>
+        <note from="context">Assistant callout when phase 3 of 5 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op2-3.p3.1" resname="op2-3.p3.1">
-        <source>One more sac, deeper. Use the Scrying Lens to find it, then open it.</source>
-        <note from="context">Assistant callout when phase 4 of 4 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
+        <source>Her brood-cluster — three sacs under one skin.</source>
+        <note from="context">Assistant callout when phase 4 of 5 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op2-3.p3.2" resname="op2-3.p3.2">
+        <source>Cut the membrane right around them with the Lancet first, or they’ll wake as one.</source>
+        <note from="context">Assistant callout when phase 4 of 5 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="op2-3.p4.1" resname="op2-3.p4.1">
+        <source>One more sac, deeper. Use the Scrying Lens to find it, then open it.</source>
+        <note from="context">Assistant callout when phase 5 of 5 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="op2-3.p4.2" resname="op2-3.p4.2">
         <source>And he’s taken a fever-bubo from the bite — lance and cleanse it.</source>
-        <note from="context">Assistant callout when phase 4 of 4 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
+        <note from="context">Assistant callout when phase 5 of 5 of &quot;Brood-Mother’s Kiss&quot; begins.</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
       <trans-unit id="op2-4.p0.1" resname="op2-4.p0.1">
@@ -2469,7 +2474,7 @@
       </trans-unit>
       <trans-unit id="bark.operation.instruments_ready_doctor" resname="bark.operation.instruments_ready_doctor">
         <source>Instruments ready, Doctor.</source>
-        <note from="context">Assistant bark spoken during operations (src/scenes/operation.ts:399).</note>
+        <note from="context">Assistant bark spoken during operations (src/scenes/operation.ts:400).</note>
         <note from="speaker">Sister Ilse</note>
       </trans-unit>
     </group>

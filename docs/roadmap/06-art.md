@@ -338,7 +338,7 @@ Ailment standard: painted sprite(s) in the woodcut-over-paint style at 2× virtu
 - [x] ART-0214 · Demo · P0 · M · Venom: a spreading vein-web decal (green-black) with a tincture-neutralised fade, driven by the `Venom` entity's spread value
 - [x] ART-0215 · Demo · P0 · M · Grub: a segmented larva sprite with an 8-frame crawl cycle, a burrow-in/burrow-out pair and a squirm-in-tongs loop
 - [x] ART-0216 · Demo · P0 · M · Egg sac: translucent cluster with visible embryos (3 sizes), a pulsing loop, a hatch flipbook (grubs emerge) and a Tongs-removal state — op2-3
-- [ ] ART-0217 · Demo · P1 · S · Brood silk strands (tileable web decal) that must be cut with the Lancet
+- [x] ART-0217 · Demo · P1 · S · Brood silk strands (tileable web decal) that must be cut with the Lancet
 - [x] ART-0218 · Alpha · P2 · M · Parasite worm (long, whip-like) with a 12-frame ripple for Chapter 3 marsh ops
 
 ### Curses & sigils

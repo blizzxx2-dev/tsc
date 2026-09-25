@@ -6699,6 +6699,20 @@
         <note from="context">Content-note card before a chapter (NAR-0034).</note>
         <note from="layout">font=italic; size=17px; max=760px</note>
       </trans-unit>
+      <trans-unit id="label.strand_cut" resname="label.strand_cut" maxwidth="220" size-unit="pixel">
+        <source>Strand cut</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
+      <trans-unit id="label.web_cut_away" resname="label.web_cut_away" maxwidth="220" size-unit="pixel">
+        <source>Web cut away</source>
+        <note from="context">Small caption above a rating popup naming what was done.</note>
+        <note from="translator">Past participle / short noun; ≤ 16 characters where possible.</note>
+        <note from="layout">font=italic; size=16px; max=220px</note>
+        <note from="screenshot">docs/loc/screens/operation.png</note>
+      </trans-unit>
     </group>
   </body>
   </file>

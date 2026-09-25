@@ -20,9 +20,11 @@ import { GlassCluster, WoodSplinter } from '../src/surgery/ailments/splinters';
 import { Spill, Ulcer, ULCER } from '../src/surgery/ailments/ulcer';
 import { BiteChannel, DonorBowl } from '../src/surgery/ailments/vampire';
 import { RainDrips } from '../src/surgery/ailments/environment';
+import { WebSilk } from '../src/surgery/ailments/silk';
 import { DT, drag, hold, raster, still, tap, zigzag, type Action, type BotContext, type Frame } from './bot';
 
 const ALPHA = [
+  WebSilk,
   AlchemicalAcid,
   CompoundPoison,
   GasPocket,
@@ -116,6 +118,26 @@ export function botPlanAlpha(ctx: BotContext): Action | null {
     vis.find((e): e is T => e instanceof cls && pred(e as T));
   const has = ctx.has;
 
+  // Brood silk: one lancet stroke across the middle of each strand.
+  const silk = find(WebSilk);
+  if (silk) {
+    const st = silk.strands.find((x) => x.cutAt < 0);
+    if (st) {
+      const m = { x: (st.a.x + st.b.x) / 2, y: (st.a.y + st.b.y) / 2 };
+      const dx = st.b.x - st.a.x;
+      const dy = st.b.y - st.a.y;
+      const l = Math.hypot(dx, dy) || 1;
+      const n = { x: (-dy / l) * 24, y: (dx / l) * 24 };
+      return drag(
+        'lancet',
+        [
+          { x: m.x - n.x, y: m.y - n.y },
+          { x: m.x + n.x, y: m.y + n.y },
+        ],
+        300,
+      );
+    }
+  }
   const artery = find(Artery, (a) => !a.clamped);
   if (artery) return still('tongs', artery.pos, 0.7);
 

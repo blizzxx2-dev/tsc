@@ -1258,53 +1258,60 @@
     "context": "Findings paragraph on the patient chart."
   },
   "op2-3.p0.1": {
+    "text": "Silk over the bites. Cut each strand with one stroke of the Lancet.",
+    "scope": "callouts",
+    "chapter": "ch2",
+    "speaker": "Sister Ilse",
+    "context": "Assistant callout when phase 1 of 5 of \"Brood-Mother’s Kiss\" begins."
+  },
+  "op2-3.p1.1": {
     "text": "Venom from two bites. Tincture on each, quickly.",
     "scope": "callouts",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Assistant callout when phase 1 of 4 of \"Brood-Mother’s Kiss\" begins."
+    "context": "Assistant callout when phase 2 of 5 of \"Brood-Mother’s Kiss\" begins."
   },
-  "op2-3.p1.1": {
+  "op2-3.p2.1": {
     "text": "The sacs — lance each with one touch, then sear the hatchlings with the Cautery Brand.",
     "scope": "callouts",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Assistant callout when phase 2 of 4 of \"Brood-Mother’s Kiss\" begins."
+    "context": "Assistant callout when phase 3 of 5 of \"Brood-Mother’s Kiss\" begins."
   },
-  "op2-3.p1.2": {
+  "op2-3.p2.2": {
     "text": "Mind the ones that are close to hatching.",
     "scope": "callouts",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Assistant callout when phase 2 of 4 of \"Brood-Mother’s Kiss\" begins."
+    "context": "Assistant callout when phase 3 of 5 of \"Brood-Mother’s Kiss\" begins."
   },
-  "op2-3.p2.1": {
+  "op2-3.p3.1": {
     "text": "Her brood-cluster — three sacs under one skin.",
     "scope": "callouts",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Assistant callout when phase 3 of 4 of \"Brood-Mother’s Kiss\" begins."
+    "context": "Assistant callout when phase 4 of 5 of \"Brood-Mother’s Kiss\" begins."
   },
-  "op2-3.p2.2": {
+  "op2-3.p3.2": {
     "text": "Cut the membrane right around them with the Lancet first, or they’ll wake as one.",
     "scope": "callouts",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Assistant callout when phase 3 of 4 of \"Brood-Mother’s Kiss\" begins."
+    "context": "Assistant callout when phase 4 of 5 of \"Brood-Mother’s Kiss\" begins."
   },
-  "op2-3.p3.1": {
+  "op2-3.p4.1": {
     "text": "One more sac, deeper. Use the Scrying Lens to find it, then open it.",
     "scope": "callouts",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Assistant callout when phase 4 of 4 of \"Brood-Mother’s Kiss\" begins."
+    "context": "Assistant callout when phase 5 of 5 of \"Brood-Mother’s Kiss\" begins."
   },
-  "op2-3.p3.2": {
+  "op2-3.p4.2": {
     "text": "And he’s taken a fever-bubo from the bite — lance and cleanse it.",
     "scope": "callouts",
     "chapter": "ch2",
     "speaker": "Sister Ilse",
-    "context": "Assistant callout when phase 4 of 4 of \"Brood-Mother’s Kiss\" begins."
+    "context": "Assistant callout when phase 5 of 5 of \"Brood-Mother’s Kiss\" begins."
   },
   "s2-4.place": {
     "text": "The muster camp — before midnight",
@@ -3477,6 +3484,6 @@
     "scope": "barks",
     "chapter": "global",
     "speaker": "Sister Ilse",
-    "context": "Assistant bark spoken during operations (src/scenes/operation.ts:399)."
+    "context": "Assistant bark spoken during operations (src/scenes/operation.ts:400)."
   }
 }
