@@ -74,6 +74,12 @@ export abstract class Entity {
   /** What the surgeon would call it in a hint ("a grub", "the arrow"). */
   noun = 'that';
 
+  /**
+   * How far from `pos` this entity can answer a press or sweep (ENG-0246). Declared by small,
+   * numerous things so a crowded field can skip them by position; undefined = always checked.
+   */
+  pickReach?: number;
+
   /** Is the point over this entity (for "nothing there" MISS checks and hints)? */
   hitTest(p: Vec, pad = 0): boolean {
     return dist(p, this.pos) < 28 + pad;

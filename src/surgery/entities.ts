@@ -1807,6 +1807,8 @@ export class Venom extends Entity {
  * 6 s it burrows (the lens finds it again).
  */
 export class Grub extends Entity {
+  /** Small and numerous: indexed by position on crowded fields (ENG-0246). */
+  override pickReach = 48;
   heat = 0;
   private heading: number;
   private grabbed = false;

@@ -350,7 +350,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0243 · Demo · P0 · M · Typed sim event bus (`op.events`: cut, stitch, bleed, drain, burn, extract, hurt, heal, rate, phase, litany, malisonHit…) consumed by views, particles, decals, audio and achievements — replaces `op.cues` strings and sim-owned popups
 - [ ] ENG-0244 · Demo · P1 · M · Shared behaviour components — Transform, Bleeds, Revealable, Drains, HitShape as composable data/mixins, deduplicating the 950-line `entities.ts` with no behaviour change (tests + golden replays pass)
 - [ ] ENG-0245 · Demo · P1 · M · Shape-based hit testing — circle/capsule/polyline/polygon with layer priority, replacing per-entity ad-hoc distance checks in `onPress`
-- [ ] ENG-0246 · Demo · P2 · S · Spatial index — uniform grid over the field for picking and sweep tools when entity count >64; benchmark with 300 entities
+- [x] ENG-0246 · Demo · P2 · S · Spatial index — uniform grid over the field for picking and sweep tools when entity count >64; benchmark with 300 entities
 - [x] ENG-0247 · Demo · P1 · S · Entity lifecycle hooks — `onSpawn`/`onDeath` emit events so VFX and achievements never poll entity arrays
 - [ ] ENG-0248 · Demo · P1 · M · Tuning tables — bleed rates, radii, timers and damage move from constants in `entities.ts`/`malison.ts` into typed content tables, hot-reloadable in dev
 - [x] ENG-0249 · Demo · P1 · M · Operation state serialisation (entities, rng state, timers, phase, score) to JSON with a round-trip test — used by the debug "save state/restore state" keys and crash reports

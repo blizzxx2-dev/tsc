@@ -1,3 +1,4 @@
+import { SpatialGrid, SPATIAL_THRESHOLD } from './spatial';
 import { bloodOf } from './species';
 import { seedFx } from './fxRandom';
 import { clamp, dist, pointSegment, Rng, side, type Vec } from '../core/math';
@@ -928,6 +929,19 @@ export class Operation {
     if (this.tool === t) this.releaseCapture();
   }
 
+  /** Use the spatial index on crowded fields (ENG-0246); tests may turn it off to compare. */
+  spatialIndex = true;
+
+  /**
+   * Entities that could answer a stroke from `a` to `b`, top layer first. On a crowded field the
+   * uniform grid (ENG-0246) skips small things too far away; otherwise every visible entity.
+   */
+  candidates(a: Vec, b: Vec): Entity[] {
+    const live = this.visibleEntities().sort((x, y) => y.layer - x.layer);
+    if (!this.spatialIndex || live.length <= SPATIAL_THRESHOLD) return live;
+    return new SpatialGrid(live).query(a, b, this.hitPad + 8, live);
+  }
+
   /** Assist suggestion: which instrument the thing under the point needs. */
   suggestTool(p: Vec): ToolId | null {
     const live = this.visibleEntities().sort((a, b) => b.layer - a.layer);
@@ -990,7 +1004,7 @@ export class Operation {
       return;
     }
     if (ptr.down || ptr.pressed) this.telemetryData.tools.add(tool);
-    const live = this.visibleEntities().sort((a, b) => b.layer - a.layer);
+    const live = this.candidates(ptr.prev, ptr.pos);
     // Frozen flesh and the like make some instruments skid: no effect, no rating.
     if ((ptr.down || ptr.pressed) && !this.captured) {
       let why: string | null = null;

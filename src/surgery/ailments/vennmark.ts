@@ -104,6 +104,8 @@ export class Artery extends Entity {
  * burrows beneath the skin, and must be found with the lens first.
  */
 export class Tick extends Entity {
+  /** Small and numerous: indexed by position on crowded fields (ENG-0246). */
+  override pickReach = 30;
   life = 0;
   burrowed = false;
   private heading: number;

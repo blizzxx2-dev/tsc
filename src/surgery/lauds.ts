@@ -748,6 +748,8 @@ export class ChoirVoice extends Entity {
 
 /** A spider's egg sac under the skin. Lance it and sear what spills out — or it hatches on its own. */
 export class EggSac extends Entity {
+  /** Small and numerous: indexed by position on crowded fields (ENG-0246). */
+  override pickReach = 32;
   hatchT: number;
   private readonly hatchIn: number;
   constructor(
@@ -827,6 +829,8 @@ export class EggSac extends Entity {
 
 /** A hatchling: faster than a grub, same cure. It makes for the nearest open wound. */
 export class SpiderlingGrub extends Entity {
+  /** Small and numerous: indexed by position on crowded fields (ENG-0246). */
+  override pickReach = 30;
   heat = 0;
   private heading: number;
   constructor(pos: Vec, op: Operation) {

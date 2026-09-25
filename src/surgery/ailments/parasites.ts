@@ -106,6 +106,8 @@ export class GutWorm extends Entity {
  * burrows in (hidden, a slow drain the lens can find).
  */
 export class Tick extends Entity {
+  /** Small and numerous: indexed by position on crowded fields (ENG-0246). */
+  override pickReach = 30;
   private heading: number;
   burrowed = false;
   noun = 'the tick';
