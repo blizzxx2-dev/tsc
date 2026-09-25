@@ -97,7 +97,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 
 ### Tool switching
 - [x] GAM-0055 · Demo · P0 · S · Tool switch latency: hotkeys 1–8 immediate, mouse wheel 80 ms step debounce — switching mid-drag cancels the drag without rating
-- [ ] GAM-0056 · Demo · P1 · M · Radial tool wheel (hold Q or middle mouse) with 8 slots, 0.35× time while open (not stacking with Litany) — also used for controller
+- [x] GAM-0056 · Demo · P1 · M · Radial tool wheel (hold Q or middle mouse) with 8 slots, 0.35× time while open (not stacking with Litany) — also used for controller
 - [x] GAM-0057 · Demo · P1 · S · Context auto-suggest (Assist only) — tool icon pulses when cursor hovers an entity that needs it
 - [x] GAM-0058 · Demo · P2 · S · Wrong-tool feedback — using a tool on an entity it cannot affect shows a one-shot hint (e.g. "Tongs won't sear a grub") without rating MISS
 
@@ -385,7 +385,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0249 · Demo · P0 · S · Phase transitions — phase ends when all required entities cleared; 1.5 s breather with drain frozen and Ilse line; unit test that phase N+1 spawns only after
 - [x] GAM-0250 · Demo · P0 · S · Pause (Esc) freezes sim completely, blurs field (prevents planning exploit on hidden entities — Lens reveal off while paused)
 - [x] GAM-0251 · Demo · P1 · S · Ilse callout priority queue — max 1 line per 2.5 s, priority (danger > instruction > praise); `sayOnce` keys persisted per op run
-- [ ] GAM-0252 · Demo · P1 · S · Callout audit — every demo op callout ≤ 90 chars, references tools by display name from `TOOL_INFO` (test scans content)
+- [x] GAM-0252 · Demo · P1 · S · Callout audit — every demo op callout ≤ 90 chars, references tools by display name from `TOOL_INFO` (test scans content)
 - [x] GAM-0253 · Demo · P1 · S · Timer rules — timer out = loss; last 30 s timer turns red with ticking; time bonus 0 below 10 s
 - [x] GAM-0254 · Demo · P1 · S · Operation intro — 2 s "Begin" beat where input is ignored; first-frame drain = 0 (test)
 - [x] GAM-0255 · Demo · P1 · S · Closing step — every op ends with final suture of the initial incision unless op declares `noClose`; skipped closure impossible
