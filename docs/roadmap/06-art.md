@@ -594,8 +594,8 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 ## ART-R · Performance budgets for art
 
 ### Budgets
-- [ ] ART-0365 · Demo · P0 · S · Texture-memory budget: ≤ 256 MB GPU texture memory in any scene on the min-spec (integrated GPU), documented per scene type
-- [ ] ART-0366 · Demo · P0 · S · Atlas budget: ≤ 6 2048² atlas pages resident in an operation (UI, tools, ailments, VFX, boss, portraits-callout)
+- [x] ART-0365 · Demo · P0 · S · Texture-memory budget: ≤ 256 MB GPU texture memory in any scene on the min-spec (integrated GPU), documented per scene type
+- [x] ART-0366 · Demo · P0 · S · Atlas budget: ≤ 6 2048² atlas pages resident in an operation (UI, tools, ailments, VFX, boss, portraits-callout)
 - [ ] ART-0367 · Demo · P0 · S · Flesh texture budget: 1 organ set resident at a time at 1024² (KTX2/BasisU, ~5.3 MB with mips), with a 512² fallback for low settings
 - [ ] ART-0368 · Demo · P0 · S · Draw-budget rule for art: an operation frame ≤ 3 texture binds and ≤ 20k batched verts at peak VFX, measured with the ENG profiler overlay
 - [ ] ART-0369 · Demo · P0 · S · Overdraw budget: additive VFX ≤ 4× overdraw on the hot area at peak (Litany + motes + sparks), verified on the Steam Deck
