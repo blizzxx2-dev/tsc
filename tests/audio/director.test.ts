@@ -9,6 +9,7 @@ import { countCorners, HeartbeatScheduler, QRS_PHASE } from '../../src/audio/hea
 import { RECIPES } from '../../src/audio/sfx';
 import { AudioSystem } from '../../src/audio/system';
 import { lineId } from '../../src/audio/vo';
+import { captionFor, registerAudioStrings, setAudioLanguage, subtitleCards, subtitleFor } from '../../src/audio/i18n';
 import { allOperations } from '../../src/content/campaign';
 import { LaudsMalison } from '../../src/surgery/lauds';
 import { LITANY_DURATION, Operation } from '../../src/surgery/operation';
@@ -216,5 +217,31 @@ describe('helpers', () => {
     expect(lineId('It’s singing!')).toBe(lineId("It's  singing!"));
     expect(lineId('Stitch it.')).not.toBe(lineId('Stitch it!'));
     expect(lineId('x')).toMatch(/^line\.[0-9a-f]{8}$/);
+  });
+});
+
+describe('localised captions and subtitles', () => {
+  it('look up per-language tables by event id and VO line id, falling back to English', () => {
+    registerAudioStrings('de', { captions: { 'sfx.bell.matins': '[Die Glocke läutet zur Mette]' }, subtitles: { [lineId('Hold still.')]: 'Halt still.' } });
+    setAudioLanguage('de');
+    expect(captionFor('sfx.bell.matins', '[Bell tolls for Matins]')).toBe('[Die Glocke läutet zur Mette]');
+    expect(captionFor('sfx.bell.lauds', '[Bells peal for Lauds]')).toBe('[Bells peal for Lauds]');
+    expect(subtitleFor(lineId('Hold still.'), 'Hold still.')).toBe('Halt still.');
+    setAudioLanguage('en');
+    expect(captionFor('sfx.bell.matins', '[Bell tolls for Matins]')).toBe('[Bell tolls for Matins]');
+  });
+
+  it('split a translation ≥ 30 % longer into two timed cards of ≤ 2 lines', () => {
+    const en = 'It is singing, and every verse tears him open. Stitch the cuts as they come.';
+    const de = 'Es singt, und jeder Vers reißt ihn auf. Nähen Sie die Schnitte, sobald sie entstehen, Herr Doktor, schnell!';
+    expect(de.length / en.length).toBeGreaterThan(1.3);
+    expect(subtitleCards(en, 4, 44)).toHaveLength(1);
+    const cards = subtitleCards(de, 4, 44);
+    expect(cards.length).toBe(2);
+    for (const c of cards) expect(c.lines.length).toBeLessThanOrEqual(2);
+    expect(cards[0].start).toBe(0);
+    expect(cards[1].start).toBeCloseTo(cards[0].duration);
+    expect(cards[0].duration + cards[1].duration).toBeCloseTo(4);
+    expect(cards.flatMap((c) => c.lines).join(' ')).toBe(de);
   });
 });

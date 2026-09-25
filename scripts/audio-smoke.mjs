@@ -79,6 +79,15 @@ try {
   log('op-intro', await run(2, "g.scene.onBegin();"));
   log('running', await run(4));
   log('low', await run(4, 'g.scene.op.vitals = 25;'));
+  // Screenshot the overlays: captions, visual heartbeat (heartbeat audio off) and the F4 debug panel.
+  await run(1, "g.audio.engine.prefs.heartbeat = 'off'; g.sceneAudio.debug = true;");
+  await page.evaluate(() => {
+    const g = window.__game;
+    g.scene.render(g.gfx, g);
+    g.sceneAudio.overlay(g.gfx);
+  });
+  await page.screenshot({ path: `${out}/audio-overlays.png` });
+  await run(0.1, "g.audio.engine.prefs.heartbeat = 'low'; g.sceneAudio.debug = false;");
   log('litany', await run(3, 'g.scene.op.invokeLitany();'));
   log('paused', await run(1.5, 'g.scene.paused = true;'));
   log('resumed', await run(1, 'g.scene.paused = false;'));

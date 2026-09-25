@@ -73,6 +73,7 @@ class FakeSource extends FakeNode {
   stop() {
     this.stopped = true;
   }
+  setPeriodicWave() {}
 }
 
 export class FakeContext {

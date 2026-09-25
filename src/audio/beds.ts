@@ -7,7 +7,10 @@
 import { GLASS, WOOD, type Synth } from './synth';
 import type { LoopRecipe, LoopVoice } from './sfx';
 
-export type AmbienceId = 'hospice' | 'street' | 'theatre' | 'chapel' | 'night' | 'camp';
+export type DemoAmbience = 'hospice' | 'street' | 'theatre' | 'chapel' | 'night' | 'camp';
+/** Chapters 3–5 locations (beds in sfx-later.ts). */
+export type LaterAmbience = 'pyre' | 'cathedral' | 'catacombs' | 'armycamp' | 'flooded';
+export type AmbienceId = DemoAmbience | LaterAmbience;
 
 function bedLoop(build: (s: Synth, out: GainNode, srcs: AudioScheduledSourceNode[], grains: ((now: number) => void)[]) => void): LoopRecipe {
   return (s) => {
@@ -123,7 +126,7 @@ function crickets(s: Synth, out: AudioNode, grains: ((now: number) => void)[], l
   );
 }
 
-export const AMBIENCE_LOOPS: Record<`loop.amb.${AmbienceId}`, LoopRecipe> = {
+export const AMBIENCE_LOOPS: Record<`loop.amb.${DemoAmbience}`, LoopRecipe> = {
   'loop.amb.hospice': bedLoop((s, out, srcs, grains) => {
     roomTone(s, out, srcs, 0.05);
     rain(s, out, srcs, grains, 0.018);

@@ -80,6 +80,7 @@ export class AudioSystem {
 
   update(dt: number): void {
     this.engine.update(dt);
+    this.vo.tick(dt);
     this.music.update();
     this.amb.update(dt);
   }

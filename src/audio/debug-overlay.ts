@@ -16,10 +16,10 @@ export function drawAudioDebug(g: Gfx, sys: AudioSystem): void {
   const eng = sys.engine;
   const x = 16;
   let y = 120;
-  g.rect(x - 8, y - 22, 430, 560, hex('#000000', 0.78));
-  const line = (s: string, c = '#d8e8d0', size = 14) => {
+  g.rect(x - 8, y - 22, 430, 604, hex('#000000', 0.78));
+  const line = (s: string, c = '#d8e8d0', size = 14, gap = 4) => {
     g.text(s, x, y, { size, color: hex(c), shadow: false, font: 'body' });
-    y += size + 4;
+    y += size + gap;
   };
   line('AUDIO  (F4)', '#f5d76e', 16);
   const lat = eng.latency();
@@ -49,5 +49,5 @@ export function drawAudioDebug(g: Gfx, sys: AudioSystem): void {
   line(`fallback plays: ${eng.fallbackPlays}`, eng.fallbackPlays ? '#ff9060' : '#a0b0a0');
   y += 4;
   line('last events:', '#f5d76e');
-  for (const e of [...eng.log].reverse()) line(`${e.t.toFixed(2).padStart(7)}  ${e.bus.padEnd(8)} ${e.id}${e.fallback ? '  [FALLBACK]' : ''}`, e.fallback ? '#ff9060' : '#b0c0b0', 12);
+  for (const e of [...eng.log].reverse()) line(`${e.t.toFixed(2).padStart(7)}  ${e.bus.padEnd(8)} ${e.id}${e.fallback ? '  [FALLBACK]' : ''}`, e.fallback ? '#ff9060' : '#b0c0b0', 11, 2);
 }

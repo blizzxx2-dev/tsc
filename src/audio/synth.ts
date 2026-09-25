@@ -206,6 +206,39 @@ export class NoiseBank {
     return buf;
   }
 
+  private waves = new Map<string, PeriodicWave>();
+  private textures = new Map<string, AudioBuffer>();
+
+  /**
+   * A cached PeriodicWave from a harmonic amplitude function (k = 1, 2, …).
+   * Cheap stand-in for oscillator + filter chains: one oscillator carries a
+   * fixed spectrum (filtered saw, formant vowel, organ registration).
+   */
+  wave(key: string, harmonics: number, amp: (k: number) => number): PeriodicWave {
+    const hit = this.waves.get(key);
+    if (hit) return hit;
+    const n = Math.max(2, Math.min(256, harmonics)) + 1;
+    const real = new Float32Array(n);
+    const imag = new Float32Array(n);
+    for (let k = 1; k < n; k++) imag[k] = amp(k);
+    const w = this.ctx.createPeriodicWave(real, imag);
+    this.waves.set(key, w);
+    return w;
+  }
+
+  /**
+   * A cached, loopable texture buffer rendered in JS (dense click textures such as
+   * grub chitter), so a loop is one buffer source instead of a stream of grains.
+   */
+  texture(key: string, seconds: number, fill: (d: Float32Array, sr: number) => void): AudioBuffer {
+    const hit = this.textures.get(key);
+    if (hit) return hit;
+    const buf = this.ctx.createBuffer(1, Math.floor(this.ctx.sampleRate * seconds), this.ctx.sampleRate);
+    fill(buf.getChannelData(0), this.ctx.sampleRate);
+    this.textures.set(key, buf);
+    return buf;
+  }
+
   /** Soft-clip curve for distortion. */
   shape(amount: number): Float32Array<ArrayBuffer> {
     const k = Math.round(amount);

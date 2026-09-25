@@ -34,7 +34,11 @@ export const EMPTY_MANIFEST: Manifest = { version: 1, files: {}, banks: {} };
 /** Decoded-memory budget for the demo. */
 export const DEMO_MEMORY_BUDGET = 150 * 1024 * 1024;
 
-/** Which banks a scene needs, by scene kind (see scenes.ts). */
+/**
+ * Which banks a scene needs, by scene kind (see scenes.ts). Bank = the folder under
+ * assets-src/audio/<category>/: boot (UI), title, story, operation (common operation SFX),
+ * <operation id> (per-operation and boss sets), vo-ops (Ilse's barks), vo-story (VN lines).
+ */
 export function banksFor(kind: string, extra?: string): string[] {
   const base = ['boot'];
   switch (kind) {
@@ -43,11 +47,11 @@ export function banksFor(kind: string, extra?: string): string[] {
     case 'demoend':
       return [...base, 'title'];
     case 'story':
-      return [...base, 'story'];
+      return [...base, 'story', 'vo-story'];
     case 'briefing':
     case 'operation':
     case 'results':
-      return [...base, 'operation', ...(extra ? [extra] : [])];
+      return [...base, 'operation', 'vo-ops', ...(extra ? [extra] : [])];
     default:
       return base;
   }

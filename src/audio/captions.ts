@@ -2,6 +2,7 @@
  * Visual cues for sound: closed captions for sound events, subtitles for voice
  * lines, and the pure models behind them. Drawing lives in `captions-view.ts`.
  */
+import { subtitleCards, type SubtitleCard } from './i18n';
 
 export interface Caption {
   text: string;
@@ -46,12 +47,16 @@ export interface Subtitle {
   text: string;
   born: number;
   until: number;
+  /** Cards (≤ 2 lines each) timed across the line. */
+  cards: SubtitleCard[];
 }
 
 /** Voice-line subtitles: one card at a time, timed to the line. */
 export class SubtitleFeed {
   current: Subtitle | null = null;
   now = 0;
+  /** Characters per subtitle line (set from the text size). */
+  width = 60;
 
   update(dt: number): void {
     this.now += dt;
@@ -59,7 +64,17 @@ export class SubtitleFeed {
   }
 
   show(speaker: string, color: string, text: string, duration: number): void {
-    this.current = { speaker, color, text, born: this.now, until: this.now + Math.max(1.2, duration) };
+    const d = Math.max(1.2, duration);
+    this.current = { speaker, color, text, born: this.now, until: this.now + d, cards: subtitleCards(text, d, this.width) };
+  }
+
+  /** Lines of the card on screen now. */
+  lines(): string[] {
+    const c = this.current;
+    if (!c) return [];
+    const t = this.now - c.born;
+    const card = c.cards.find((k) => t >= k.start && t < k.start + k.duration) ?? c.cards[c.cards.length - 1];
+    return card?.lines ?? [];
   }
 
   clear(): void {

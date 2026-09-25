@@ -143,6 +143,7 @@ export class MusicPlayer {
     glide(tr.main.gain, on ? 0.25 : 1, now, tau * 3);
     glide(tr.lpf.frequency, on ? 1500 : this.engine.nyquistSafe, now, tau * 3);
     glide(tr.layers.stillness.gain, on ? 1 : this.targets.stillness, now, tau * 3);
+    if (!on) this.audibleUntil.stillness = now + 0.7;
   }
 
   /** 1.5 s before Stillness ends: a reverse swell on the Stillness stem. */
@@ -241,11 +242,14 @@ export class MusicPlayer {
     this.state = 'silent';
   }
 
+  private audibleUntil: Partial<Record<LayerId, number>> = {};
+
   private pushLayers(ramp: number): void {
     const tr = this.track;
     if (!tr || !this.ctx) return;
     const now = this.now();
     for (const l of LAYERS) {
+      if (this.targets[l] < 0.001) this.audibleUntil[l] = Math.max(this.audibleUntil[l] ?? 0, now + ramp + 0.1);
       if (l === 'stillness' && this.litany) continue;
       glide(tr.layers[l].gain, this.targets[l], now, ramp);
     }
@@ -288,7 +292,8 @@ export class MusicPlayer {
     for (const l of LAYERS) {
       const g = tr.layers[l];
       const target = l === 'stillness' && this.litany ? 1 : this.targets[l];
-      if (target < 0.001 && g.gain.value < 0.001) continue;
+      // Skip silent stems (still render while a fade-out is in progress).
+      if (target < 0.001 && t > (this.audibleUntil[l] ?? 0)) continue;
       const pat = sec.layers?.[l] ?? theme.layers[l];
       if (!pat) continue;
       for (const ev of pat(c)) {
@@ -320,7 +325,7 @@ export class MusicPlayer {
     const tr = this.track;
     if (!tr) return;
     let guard = 0;
-    while (tr.nextBarTime < now + horizon && guard++ < 256) {
+    while (tr.nextBarTime < now + horizon && guard++ < 2048) {
       if (tr.nextBarTime < now - tr.spb * tr.theme.beats) {
         // Fell behind (tab hidden): skip ahead rather than burst-playing missed bars.
         const bars = Math.floor((now - tr.nextBarTime) / (tr.spb * tr.theme.beats));

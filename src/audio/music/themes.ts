@@ -500,6 +500,122 @@ export const THEMES: Record<string, Theme> = {
   },
 };
 
+// ---------------------------------------------------------------- full game (Alpha–Release)
+
+const OP_C_HOOK: [number | null, number][] = [
+  [0, 0.5], [2, 0.5], [3, 0.5], [4, 0.5], [3, 1], [2, 1],
+  [1, 0.5], [0, 0.5], [-1, 1], [0, 2],
+  [4, 0.5], [5, 0.5], [6, 0.5], [7, 0.5], [6, 1], [4, 1],
+  [3, 1], [2, 1], [1, 2],
+];
+const OP_D_HOOK: [number | null, number][] = [
+  [0, 1], [1, 0.5], [0, 0.5], [4, 1], [3, 1],
+  [1, 1], [0, 1], [-2, 2],
+  [0, 0.5], [1, 0.5], [3, 0.5], [4, 0.5], [5, 1], [4, 1],
+  [1, 3], [null, 1],
+];
+const CREDITS: [number | null, number][] = [
+  [0, 2], [1, 1], [0, 1],
+  [4, 3], [3, 1],
+  [1, 2], [2, 2],
+  [0, 4],
+  [4, 2], [5, 1], [4, 1],
+  [7, 3], [6, 1],
+  [4, 2], [2, 2],
+  [0, 4],
+];
+
+/** A faster, busier variant of a theme (challenge mode). */
+function remix(base: Theme, id: string, bpmScale: number): Theme {
+  return {
+    ...base,
+    id,
+    bpm: Math.round(base.bpm * bpmScale),
+    defaults: { ...base.defaults, clock: 0.6, melody: 0.8 },
+    layers: { ...base.layers, pulse: both(base.layers.pulse ?? (() => []), perc('tabor', 52, [0.5, 1.5, 2.5, 3.5], 0.45)) },
+  };
+}
+
+function discipline(id: string, root: number, mode: readonly number[], bpm: number, layers: Partial<Record<LayerId, Pattern>>, chords: readonly number[], defaults: Partial<Record<LayerId, number>>): Theme {
+  return { id, bpm, beats: 4, root, mode, sections: { A: { chords } }, order: ['A'], defaults: { stillness: 0, ...defaults }, layers: { stillness: sus('pad', [0, 4], 0, 0.7), ...layers } };
+}
+
+export const LATER_THEMES: Record<string, Theme> = {
+  opC: {
+    id: 'opC',
+    bpm: 132,
+    beats: 4,
+    root: 55,
+    mode: MODES.aeolian,
+    sections: {
+      A: { chords: [0, 0, 5, 5, 3, 3, 4, 4, 0, 0, 5, 5, 6, 6, 4, 4] },
+      B: { chords: [3, 3, 4, 4, 0, 0, 5, 5, 3, 3, 1, 1, 4, 4, 4, 4] },
+      C: { chords: [0, 5, 3, 4, 0, 5, 1, 4, 5, 6, 0, 4, 5, 6, 4, 4], layers: { melody: tune('shawm', OP_C_HOOK, 1, 0.35) } },
+    },
+    order: ['A', 'B', 'A', 'C'],
+    defaults: { bed: 1, pulse: 1, melody: 0.6, tension: 0, danger: 0, clock: 0, flow: 0, stillness: 0 },
+    layers: opLayers({ bed: 'viol', pulse: 'violPizz', drumLo: 'tabor', tension: 'violTrem', brass: 'sackbut', flow: 'recorder', hook: OP_C_HOOK, hookInst: 'gurdy' }),
+  },
+  opD: {
+    id: 'opD',
+    bpm: 138,
+    beats: 4,
+    root: 49,
+    mode: MODES.phrygianDom,
+    sections: {
+      A: { chords: [0, 0, 1, 1, 0, 0, 6, 6, 0, 0, 1, 1, 5, 5, 1, 1] },
+      B: { chords: [3, 3, 1, 1, 6, 6, 0, 0, 3, 3, 1, 1, 4, 4, 0, 0] },
+      C: { chords: [0, 1, 0, 1, 6, 1, 0, 1, 3, 1, 6, 1, 5, 1, 0, 0], layers: { melody: tune('sackbut', OP_D_HOOK, 0, 0.4) } },
+    },
+    order: ['A', 'B', 'A', 'C'],
+    defaults: { bed: 1, pulse: 1, melody: 0.6, tension: 0.2, danger: 0, clock: 0, flow: 0, stillness: 0 },
+    layers: opLayers({ bed: 'shawm', pulse: 'lute', drumLo: 'tabor', tension: 'violTrem', brass: 'sackbut', flow: 'shawm', hook: OP_D_HOOK, hookInst: 'shawm' }),
+  },
+  // Disciplines: field triage (distant battle drums), diagnosis (sparse viol),
+  // forensic/inquisition (tense low strings), bone-setting (rhythmic, percussive).
+  triage: discipline('triage', 50, MODES.dorian, 100, {
+    bed: both(pedal('drone', [0], -1, 0.5), sus('viol', [0, 4], -1, 0.4)),
+    pulse: both(perc('drum', 38, [0, 0.75, 1.5, 2, 3], 0.7), perc('tabor', 55, [1, 2.5, 3.5], 0.45)),
+    melody: every(2, tune('sackbut', OP_A_HOOK, -1, 0.35)),
+    tension: sus('violTrem', [2, 6], 0, 0.4),
+  }, [0, 0, 6, 6, 3, 3, 4, 4], { bed: 1, pulse: 1, melody: 0.5, tension: 0 }),
+  diagnosis: discipline('diagnosis', 57, MODES.dorian, 64, {
+    bed: sus('viol', [0], -1, 0.35),
+    pulse: arp('violPizz', [0, 4, 2, 4], 1, 0, 0.35),
+    melody: every(2, tune('recorder', HOSPICE, 1, 0.3)),
+  }, [0, 0, 3, 3, 5, 5, 4, 4], { bed: 1, pulse: 1, melody: 0.6 }),
+  forensic: discipline('forensic', 45, MODES.phrygian, 58, {
+    bed: both(pedal('drone', [0], -1, 0.5), sus('viol', [0, 1], -1, 0.45)),
+    pulse: perc('drum', 34, [0, 0.35], 0.55),
+    tension: clash('violTrem', 0, 0.3),
+  }, [0, 0, 1, 0, 6, 6, 1, 1], { bed: 1, pulse: 1, tension: 0.6 }),
+  boneset: discipline('boneset', 52, MODES.mixolydian, 108, {
+    bed: sus('organ', [0, 4], -1, 0.35),
+    pulse: both(perc('tabor', 55, [0, 0.5, 1, 1.75, 2, 2.5, 3, 3.75], 0.55), perc('tick', 80, [0.25, 1.25, 2.25, 3.25], 0.5), arp('lute', [0, 4, 7, 4], 0.5, -1, 0.35)),
+    melody: every(4, tune('gurdy', OP_A_HOOK, 0, 0.35)),
+  }, [0, 0, 3, 3, 4, 4, 0, 0], { bed: 1, pulse: 1, melody: 0.5 }),
+  credits: {
+    id: 'credits',
+    bpm: 66,
+    beats: 4,
+    root: 50,
+    mode: MODES.dorian,
+    sections: { A: { chords: [0, 0, 5, 5, 3, 4, 0, 0, 3, 3, 4, 4, 5, 6, 0, 0] }, B: { chords: [0, 3, 4, 0, 5, 3, 4, 0], layers: { melody: both(tune('choir', CREDITS, 1, 0.55), leit('chant', 0, 0.4)) } } },
+    order: ['A', 'B'],
+    defaults: { bed: 1, pulse: 0.7, melody: 1 },
+    layers: {
+      bed: both(pedal('drone', [0], -1, 0.45), sus('choirU', [0, 2, 4], 0, 0.5), sus('organ', [0, 4], -1, 0.3)),
+      pulse: both(every(4, pedal('bell', [0], -1, 0.5)), arp('lute', [0, 4, 7, 9], 1, 0, 0.3)),
+      // The Hollow Choir's motif, resolved: the ♭2 lifted to the natural 2nd and home to a major third.
+      melody: tune('choir', CREDITS, 1, 0.55),
+      stillness: sus('pad', [0, 4], 0, 0.6),
+    },
+  },
+};
+LATER_THEMES.opAChallenge = remix(THEMES.opA, 'opAChallenge', 1.18);
+LATER_THEMES.opBChallenge = remix(THEMES.opB, 'opBChallenge', 1.18);
+Object.assign(THEMES, LATER_THEMES);
+
 /** The Malison hours in canonical order, each with its theme id. */
 export const HOURS = ['matins', 'lauds', 'prime', 'terce', 'sext', 'none', 'vespers', 'compline'] as const;
 export type HourId = (typeof HOURS)[number];

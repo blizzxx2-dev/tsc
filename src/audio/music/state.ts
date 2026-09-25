@@ -18,9 +18,10 @@ export type MusicState =
   | 'victory'
   | 'failure'
   | 'results'
-  | 'demo-end';
+  | 'demo-end'
+  | 'credits';
 
-export const MUSIC_STATES: readonly MusicState[] = ['silent', 'title', 'story-calm', 'story-tense', 'story-sorrow', 'briefing', 'op-intro', 'operation', 'boss', 'victory', 'failure', 'results', 'demo-end'];
+export const MUSIC_STATES: readonly MusicState[] = ['silent', 'title', 'story-calm', 'story-tense', 'story-sorrow', 'briefing', 'op-intro', 'operation', 'boss', 'victory', 'failure', 'results', 'demo-end', 'credits'];
 
 /**
  * - `bar`: quantised to the next bar of the playing track (tempo metadata)
@@ -55,6 +56,10 @@ export interface MusicContext {
   /** Boss hour when the operation (or the phase) is a Malison. */
   hour?: HourId;
   won?: boolean;
+  /** Discipline operations (Trauma Team-style chapters). */
+  discipline?: 'triage' | 'diagnosis' | 'forensic' | 'boneset';
+  /** Challenge mode plays the faster remixes. */
+  challenge?: boolean;
 }
 
 /** Theme id for a state, or null for silence. */
@@ -74,8 +79,13 @@ export function themeFor(state: MusicState, ctx: MusicContext = {}): string | nu
     case 'briefing':
       return 'briefing';
     case 'op-intro':
-    case 'operation':
-      return ctx.hour ? ctx.hour : (ctx.chapter ?? 1) >= 2 ? 'opB' : 'opA';
+    case 'operation': {
+      if (ctx.hour) return ctx.hour;
+      if (ctx.discipline) return ctx.discipline;
+      const ch = ctx.chapter ?? 1;
+      const base = ch >= 4 ? 'opD' : ch === 3 ? 'opC' : ch === 2 ? 'opB' : 'opA';
+      return ctx.challenge && (base === 'opA' || base === 'opB') ? `${base}Challenge` : base;
+    }
     case 'boss':
       return ctx.hour ?? 'matins';
     case 'victory':
@@ -84,5 +94,7 @@ export function themeFor(state: MusicState, ctx: MusicContext = {}): string | nu
       return ctx.won === false ? 'resultsLoss' : 'resultsWin';
     case 'demo-end':
       return 'demoEnd';
+    case 'credits':
+      return 'credits';
   }
 }

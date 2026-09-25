@@ -7,7 +7,6 @@
 import { hex, type RGBA } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { VIEW_H, VIEW_W } from '../ui/layout';
-import { wrapSubtitle } from './captions';
 import type { AudioSystem } from './system';
 
 const SUB_SIZE = { S: 18, M: 22, L: 27, XL: 33 } as const;
@@ -27,7 +26,9 @@ export function drawSoundCues(g: Gfx, sys: AudioSystem, baseY = 630): void {
   let y = baseY;
   if (sub && prefs.subtitles) {
     const size = SUB_SIZE[prefs.subtitleSize];
-    const lines = wrapSubtitle(`${sub.speaker}: ${sub.text}`, Math.round(1100 / (size * 0.5)));
+    eng.subtitles.width = Math.round(1000 / (size * 0.5));
+    const card = eng.subtitles.lines();
+    const lines = card.map((l, i) => (i === 0 ? `${sub.speaker}: ${l}` : l));
     const h = lines.length * size * 1.3 + 14;
     const w = Math.max(...lines.map((l) => g.measure(l, size))) + 40;
     g.rect(VIEW_W / 2 - w / 2, y - h, w, h, hex('#000000', prefs.subtitleBg / 100));

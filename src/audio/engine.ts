@@ -13,6 +13,7 @@
 import { AssetStore } from './assets';
 import { CaptionFeed, SubtitleFeed } from './captions';
 import { eventDef, isEventId, resolveEvent, type BusId, type EventDef, type EventId } from './events';
+import { captionFor } from './i18n';
 import { dbToGain, Ducker, MUTE_DB, SnapshotStack, volToGain, type MixState } from './mixer';
 import { audioPrefs, type AudioPrefs } from './prefs';
 import { LOOPS, RECIPES, type LoopVoice, type Params } from './sfx';
@@ -20,6 +21,9 @@ import { glide, NoiseBank, Synth } from './synth';
 import { pickVariation, VoiceManager, type Voice } from './voices';
 
 export type Space = 'none' | 'theatre' | 'chapel';
+
+/** Sample-peak ceiling of the master (dBFS). */
+export const CEILING_DB = -1.5;
 
 export interface PlayOpts {
   /** −1..1 stereo position. */
@@ -162,9 +166,9 @@ export class AudioEngine {
     this.monoNode.channelCountMode = 'explicit';
     this.monoNode.channelInterpretation = 'speakers';
     this.monoNode.connect(this.balance);
-    // Safety chain: brick-wall-ish limiter, then a soft ceiling at −0.5 dBFS.
+    // Safety chain: fast limiter, then a soft sample ceiling (−1.5 dBFS keeps true peak ≤ −1 dBTP).
     this.ceiling = ctx.createWaveShaper();
-    this.ceiling.curve = ceilingCurve(dbToGain(-0.5));
+    this.ceiling.curve = ceilingCurve(dbToGain(CEILING_DB));
     this.ceiling.connect(this.monoNode);
     this.limiter = ctx.createDynamicsCompressor();
     this.limiter.threshold.value = -6;
@@ -421,7 +425,7 @@ export class AudioEngine {
       if (last !== undefined && clock - last < def.cooldown) return null;
     }
     this.lastPlay.set(key, clock);
-    if (def?.caption && this.prefs.captions && !o.noCaption) this.captions.push(def.caption, o.pan ?? 0);
+    if (def?.caption && this.prefs.captions && !o.noCaption) this.captions.push(captionFor(key, def.caption), o.pan ?? 0);
     const bus: BusId = def?.bus ?? 'hud';
     const recipe = id ? RECIPES[id] : undefined;
     const assetKeys = def?.assets?.filter((k) => this.assets.has(k)) ?? [];
@@ -470,9 +474,9 @@ export class AudioEngine {
       end = now + src.buffer.duration / pitch;
     } else if (recipe) {
       end = recipe(this.synth.begin(now, g, pitch, stretch), v, o.params ?? {});
-    } else {
+    } else if (import.meta.env?.DEV !== false) {
       end = this.legacySynth(now, g);
-    }
+    } else end = now;
     const voice = this.voices.add({
       event: key,
       prio,
@@ -490,7 +494,7 @@ export class AudioEngine {
     return voice;
   }
 
-  /** Dev fallback for ids with no recipe or asset: a neutral wooden tick, so builds never go silent. */
+  /** Dev fallback for ids with no recipe or asset: a neutral wooden tick, so dev builds never go silent (compiled out of release builds). */
   private legacySynth(t: number, out: AudioNode): number {
     const s = this.synth!.begin(t, out);
     s.burst({ dur: 0.03, f: 1500, q: 2, gain: 0.15 });
@@ -520,7 +524,7 @@ export class AudioEngine {
     const rec: LoopRec = { id: this.nextLoop++, event: id, alive: true, voice, gain, panner, bus: def.bus, rec: null };
     rec.rec = this.voices.add({ event: id, prio: def.prio ?? 40, start: now, end: Infinity, bus: def.bus, stop: () => this.stopLoop(rec, 30) });
     this.loops.add(rec);
-    if (def.caption && this.prefs.captions) this.captions.push(def.caption, o.pan ?? 0);
+    if (def.caption && this.prefs.captions) this.captions.push(captionFor(id, def.caption), o.pan ?? 0);
     return rec;
   }
 

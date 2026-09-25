@@ -3,6 +3,9 @@ import { MusicPlayer } from '../../src/audio/music/player';
 import { MUSIC_STATES, themeFor, transition } from '../../src/audio/music/state';
 import { HOURS, LAYERS, loopSeconds, THEMES, type LayerId } from '../../src/audio/music/themes';
 import { offlineEngine, stats } from './offline';
+import { AudioEngine } from '../../src/audio/engine';
+import { INSTRUMENTS, type InstId } from '../../src/audio/music/instruments';
+import { FakeContext } from './fake-context';
 
 async function renderTheme(id: string, layers: Partial<Record<LayerId, number>>, seconds: number): Promise<Float32Array[]> {
   const { ctx, engine } = offlineEngine(seconds);
@@ -77,5 +80,40 @@ describe('procedural themes render', () => {
       const chs = await renderTheme('opA', { [l]: 1 }, 4);
       expect(stats(chs, 0.2, 4).rms, l).toBeGreaterThan(0.001);
     }
+  });
+});
+
+describe('stem sync', () => {
+  it('every stem stays on one bar clock: no drift after 20 minutes', () => {
+    const ctx = new FakeContext();
+    const engine = new AudioEngine(() => ctx as unknown as BaseAudioContext);
+    engine.offline = true;
+    engine.unlock();
+    const player = new MusicPlayer(engine);
+    const notes: { t: number; layer: unknown }[] = [];
+    const saved = { ...INSTRUMENTS };
+    for (const k of Object.keys(INSTRUMENTS) as InstId[]) INSTRUMENTS[k] = (s, _f, _d, _v, dest) => void notes.push({ t: s.t0, layer: dest });
+    try {
+      (player as unknown as { startTrack(id: string, at: number, fade: number): void }).startTrack('opA', 0.5, 0.01);
+      for (const l of LAYERS) player.setLayer(l, 1);
+      player.update(20 * 60);
+    } finally {
+      Object.assign(INSTRUMENTS, saved);
+    }
+    const spb = 60 / THEMES.opA.bpm;
+    const bar = spb * THEMES.opA.beats;
+    expect(notes.length).toBeGreaterThan(5000);
+    // Every note, on every stem, falls on the shared sixteenth/triplet grid of its bar.
+    const grid = spb / 12;
+    for (const n of notes) {
+      const k = Math.floor((n.t - 0.5) / bar + 1e-9);
+      const within = n.t - 0.5 - k * bar;
+      expect(Math.abs(within / grid - Math.round(within / grid)) * grid).toBeLessThan(0.001);
+    }
+    const last = Math.max(...notes.map((n) => n.t));
+    expect(last).toBeGreaterThan(19 * 60);
+    // All eight stems produced notes in the final minute.
+    const lateLayers = new Set(notes.filter((n) => n.t > 19 * 60).map((n) => n.layer));
+    expect(lateLayers.size).toBe(8);
   });
 });

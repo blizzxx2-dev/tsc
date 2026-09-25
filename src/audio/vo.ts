@@ -7,6 +7,13 @@
  * ducks music and ambience so the text lands.
  */
 import type { AudioEngine } from './engine';
+import { audioLanguage, subtitleFor } from './i18n';
+import { pickVariation } from './voices';
+
+/** Seconds before the same bark may be voiced again (AUD-0099). */
+export const BARK_COOLDOWN = 20;
+/** Recorded takes per line: vo/<id>, vo/<id>.2, vo/<id>.3. */
+export const VARIANTS = 3;
 
 /** FNV-1a hash of the normalised line text → `line.xxxxxxxx`. */
 export function lineId(text: string): string {
@@ -31,6 +38,29 @@ export class VoiceOver {
   private current: Playing | null = null;
   /** Lines requested without a recording (dev report). */
   readonly textOnly = new Set<string>();
+  /**
+   * VO language folder: assets are looked up as vo/<lang>/<id> first, then vo/<id>
+   * (English), so localised VO can be dropped in without code changes.
+   */
+  get language(): string {
+    return audioLanguage();
+  }
+  private lastVariant = new Map<string, number>();
+  private lastPlayed = new Map<string, number>();
+  private clock = 0;
+
+  /** Advance the cooldown clock (real seconds). */
+  tick(dt: number): void {
+    this.clock += dt;
+  }
+
+  /** The recorded takes available for a line id, localised first. */
+  takes(id: string): AudioBuffer[] {
+    const a = this.engine.assets;
+    const names = Array.from({ length: VARIANTS }, (_, i) => (i === 0 ? id : `${id}.${i + 1}`));
+    const loc = this.language !== 'en' ? names.map((n) => a.get(`vo/${this.language}/${n}`)).filter((b): b is AudioBuffer => !!b) : [];
+    return loc.length ? loc : names.map((n) => a.get(`vo/${n}`)).filter((b): b is AudioBuffer => !!b);
+  }
 
   constructor(private engine: AudioEngine) {}
 
@@ -47,13 +77,22 @@ export class VoiceOver {
   line(text: string, hold: number, urgent = false, speaker = 'Sister Ilse', color = '#9fd3a8'): number {
     const eng = this.engine;
     const id = lineId(text);
-    const buf = eng.assets.get(`vo/${id}`);
+    const takes = this.takes(id);
+    const last = this.lastPlayed.get(id);
+    const cooling = last !== undefined && this.clock - last < BARK_COOLDOWN;
+    let buf: AudioBuffer | undefined;
+    if (takes.length && !cooling) {
+      const v = pickVariation(takes.length, this.lastVariant.get(id));
+      this.lastVariant.set(id, v);
+      buf = takes[v];
+    }
     if (!buf || !eng.ctx) {
       this.textOnly.add(id);
       if (hold > 0) eng.ducker.trigger('bark', eng.now, hold);
       return hold;
     }
     const now = eng.now;
+    this.lastPlayed.set(id, this.clock);
     if (this.current && this.current.until > now) {
       // An urgent line cuts a tip short; otherwise the new line replaces the old one the same way.
       const g = this.current.gain.gain;
@@ -72,7 +111,7 @@ export class VoiceOver {
     src.start(start);
     this.current = { src, gain, urgent, until: start + buf.duration, id };
     eng.ducker.trigger('bark', now, buf.duration + 0.1);
-    if (eng.prefs.subtitles) eng.subtitles.show(speaker, color, text, buf.duration);
+    if (eng.prefs.subtitles) eng.subtitles.show(speaker, color, subtitleFor(id, text), buf.duration);
     return buf.duration;
   }
 

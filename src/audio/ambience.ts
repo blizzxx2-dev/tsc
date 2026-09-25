@@ -47,6 +47,31 @@ export const EMITTERS: Record<AmbienceId, Emitter[]> = {
     { id: 'amb.drunk', min: 40, max: 90, vol: 0.7 },
     { id: 'amb.bell', min: 45, max: 90, vol: 0.6 },
   ],
+  pyre: [
+    { id: 'amb.crowd', min: 6, max: 14 },
+    { id: 'amb.bell', min: 25, max: 50, vol: 0.8 },
+    { id: 'amb.crow', min: 15, max: 30, vol: 0.6 },
+  ],
+  cathedral: [
+    { id: 'amb.choirHum', min: 18, max: 35 },
+    { id: 'amb.bell', min: 30, max: 60 },
+    { id: 'amb.cough', min: 30, max: 60, vol: 0.3 },
+  ],
+  catacombs: [
+    { id: 'amb.rats', min: 8, max: 20 },
+    { id: 'amb.drip', min: 3, max: 9 },
+  ],
+  armycamp: [
+    { id: 'amb.sentry', min: 25, max: 50 },
+    { id: 'amb.armour', min: 10, max: 22 },
+    { id: 'amb.horse', min: 20, max: 40 },
+    { id: 'amb.battle', min: 30, max: 70, vol: 0.7 },
+  ],
+  flooded: [
+    { id: 'amb.slosh', min: 5, max: 12 },
+    { id: 'amb.drip', min: 3, max: 8 },
+    { id: 'amb.rats', min: 20, max: 45, vol: 0.6 },
+  ],
   camp: [
     { id: 'amb.armour', min: 8, max: 18 },
     { id: 'amb.horse', min: 15, max: 35 },
@@ -101,6 +126,11 @@ export function ambienceFor(backdrop: string): AmbienceId {
     case 'chapel':
     case 'night':
     case 'camp':
+    case 'pyre':
+    case 'cathedral':
+    case 'catacombs':
+    case 'armycamp':
+    case 'flooded':
       return backdrop;
     case 'results':
       return 'hospice';
@@ -126,7 +156,7 @@ export class AmbienceManager {
     this.bed = null;
     this.emitters = id ? new EmitterScheduler(EMITTERS[id]) : null;
     if (id) this.bed = this.engine.startLoop(`loop.amb.${id}` as EventId, {}, { fadeIn: 1, vol: this.bedGain });
-    this.engine.setSpace(id === 'chapel' ? 'chapel' : id === 'theatre' || id === 'hospice' ? 'theatre' : 'none');
+    this.engine.setSpace(id === 'chapel' || id === 'cathedral' ? 'chapel' : id === 'theatre' || id === 'hospice' || id === 'catacombs' ? 'theatre' : 'none');
   }
 
   /** Bed level (the theatre bed ducks as tension rises). */

@@ -570,12 +570,50 @@ export class OperationAudio {
     }
     for (const src of [0, 1, 2]) this.loop(`burn${src}`, 'loop.burn.bed', running && burns.has(src), { source: src }, 0, 600);
     this.loop('rot', 'loop.rot.creep', running && rot > 0, {}, 0, 600);
+
+    // Pools growing: drips (rate-limited by the event's voice limit and a short gap).
+    this.dripT -= dt;
+    for (const e of live) {
+      if (!(e instanceof BloodPool) || e.ichor !== 'blood') continue;
+      const r0 = this.poolR.get(e) ?? e.r;
+      if (e.r > r0 + 0.5 && this.dripT <= 0) {
+        this.play('sfx.blood.drip', { pan: panOf(e.pos.x), vol: 0.7 });
+        this.dripT = 0.35 + Math.random() * 0.4;
+      }
+      this.poolR.set(e, e.r);
+    }
+
+    // Triage by ear: the entity draining the most vitals gets a subtly louder loop.
+    let worst: Entity | null = null;
+    let worstDrain = 0;
+    for (const e of live) {
+      if (e.hidden) continue;
+      const d = e.drain(op);
+      if (d > worstDrain) {
+        worstDrain = d;
+        worst = e;
+      }
+    }
+    const loud = worst instanceof Laceration ? 'bleed' : worst;
+    for (const [k, h] of this.loops) {
+      // Only ailment loops (per-entity, and the shared bleed bed); tool loops keep their level.
+      if (!h || (typeof k === 'string' && k !== 'bleed')) continue;
+      this.engine.setLoopGain(h, k === loud ? 1.5 : 1, 0.3);
+    }
   }
+  private dripT = 0;
+  private poolR = new Map<Entity, number>();
 
   // ------------------------------------------------------------------ bosses
 
+  private chapelT = 0;
+
   private bosses(op: Operation, dt: number): void {
     const wdt = dt * op.timeScale;
+    if (this.chapelT > 0) {
+      this.chapelT -= dt;
+      if (this.chapelT <= 0) this.engine.setSpace('theatre');
+    }
     const matins = op.entities.find((e): e is Malison => e instanceof Malison && e.alive);
     const lauds = op.entities.find((e): e is LaudsMalison => e instanceof LaudsMalison && e.alive);
     const shards = op.entities.filter((e) => e instanceof MalisonShard && e.alive);
@@ -584,7 +622,10 @@ export class OperationAudio {
       this.boss = hour;
       this.sys.music.setState('boss', { hour });
       this.sys.music.stinger('bossReveal');
+      // The hour bell rings through the chapel, then the theatre returns.
+      this.engine.setSpace('chapel');
       this.play(`sfx.bell.${hour}` as EventId);
+      this.chapelT = hour === 'none' ? 15 : 7;
     }
 
     if (matins) {
@@ -739,11 +780,14 @@ export class OperationAudio {
 
     // Barks duck the music and ambience while the line is on screen (and voiced when recorded).
     const line = op.callouts[0] ?? '';
+    const hold = Math.max(2.4, line.length * 0.055);
     if (line && line !== this.lastCallout) {
-      const hold = Math.max(2.4, line.length * 0.055);
       const urgent = /!/.test(line);
       this.sys.vo.bark(line, hold, urgent);
     }
+    // When the line is voiced, keep its panel up until the voice finishes.
+    const left = line ? this.sys.vo.remaining() : 0;
+    if (left > 0 && op.calloutT > hold - left - 0.1) op.calloutT = Math.max(0, hold - left - 0.1);
     this.lastCallout = line;
 
     if (op.status !== this.lastStatus) {

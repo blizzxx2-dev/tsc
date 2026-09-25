@@ -166,6 +166,7 @@ export class SceneAudio {
         snaps.push('results');
         const won = peek<boolean>(scene!, 'won');
         setMusic('results', { won });
+        sys.play('ui.save');
         this.rows = 0;
         this.sealed = false;
         this.best = false;

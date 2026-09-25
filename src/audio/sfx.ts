@@ -8,6 +8,7 @@
  * Math.random. `p` carries event parameters (intensity, pan-independent data).
  */
 import { AMBIENCE_LOOPS } from './beds';
+import { LATER_LOOPS, LATER_RECIPES } from './sfx-later';
 import { BELL, CLAY, GLASS, glide, HANDBELL, PLATE, rnd, STEEL, WOOD, type Synth, type Vowel } from './synth';
 
 export type Params = Record<string, number>;
@@ -445,6 +446,7 @@ export const RECIPES: Record<string, Recipe> = {
   'amb.armour': (s, v) => max(...Array.from({ length: 3 }, (_, i) => steelTick(s, i * 0.09 + Math.random() * 0.03, 1400 + vr(v, i) * 900, 0.04))),
   'amb.horse': (s, v) => max(s.burst({ dur: 0.5, f: 500 + vr(v) * 100, q: 1.2, gain: 0.05, color: 'pink', a: 0.05 }), s.vox(210, 'e', { at: 0.2, dur: 0.5, a: 0.02, r: 0.3, gain: 0.02, rough: 1.2, glide: [[0.5, 150]] })),
   'amb.choirHum': (s, v) => choir(s, pick([131, 147, 110], v), [0, 7, 12], 0, 3, 0.05, 'u', 1.5, 2),
+  ...LATER_RECIPES,
 };
 
 // ---------------------------------------------------------------- loops
@@ -542,6 +544,43 @@ class Grains {
     fn(this.s);
     this.s.begin(t0, out, k, st);
   }
+}
+
+/** Clicks: a short ringing decaying sinusoid added into `d` at sample `at`. */
+function click(d: Float32Array, at: number, sr: number, f: number, amp: number, ms: number): void {
+  const n = Math.floor((sr * ms) / 1000);
+  const w = (2 * Math.PI * f) / sr;
+  for (let i = 0; i < n && at + i < d.length; i++) d[at + i] += amp * Math.sin(w * i) * Math.exp((-5 * i) / n);
+}
+
+/** Grub chitter: bursts of 3–5 clicks, irregular gaps. */
+function chitterTexture(s: Synth): AudioBuffer {
+  return s.bank.texture('chitter', 3, (d, sr) => {
+    let t = 0;
+    while (t < 2.9) {
+      const clicks = 3 + Math.floor(Math.random() * 3);
+      for (let c = 0; c < clicks; c++) click(d, Math.floor((t + c * (0.006 + Math.random() * 0.004)) * sr), sr, 3200 + Math.random() * 1800, 0.5 + Math.random() * 0.5, 2.5);
+      t += 0.04 + Math.random() * 0.06 + (Math.random() < 0.15 ? 0.25 + Math.random() * 0.2 : 0);
+    }
+  });
+}
+
+/** Spiderling skitter: a patter of tiny leg clicks. */
+function skitterTexture(s: Synth): AudioBuffer {
+  return s.bank.texture('skitter', 2, (d, sr) => {
+    for (let t = 0; t < 1.98; t += 0.012 + Math.random() * 0.05) click(d, Math.floor(t * sr), sr, 2400 + Math.random() * 2500, 0.3 + Math.random() * 0.7, 1.2);
+  });
+}
+
+function textureLoop(s: Synth, k: LoopKit, buf: AudioBuffer, dest: AudioNode, rate = 1): AudioBufferSourceNode {
+  const src = s.ctx.createBufferSource();
+  src.buffer = buf;
+  src.loop = true;
+  src.playbackRate.value = rate;
+  src.connect(dest);
+  src.start(s.at(0), Math.random() * buf.duration);
+  k.sources.push(src);
+  return src;
 }
 
 function simpleLoop(s: Synth, build: (k: LoopKit, params: Params) => { set?: (n: string, v: number, now: number) => void; grains?: Grains[] }, init: Params, level = 1): LoopVoice {
@@ -777,20 +816,15 @@ export const LOOPS: Record<string, LoopRecipe> = {
   'loop.grub.chitter': (s, p) =>
     simpleLoop(s, (k) => {
       bed(s, k, 'brown', s.filt('lowpass', 600, 0.7, s.gain(0.02, k.master)));
-      let burst = 0;
-      const gr = new Grains(s, (t) =>
-        gr.at(t, k.master, (x) => {
-          burst = (burst + 1) % 7;
-          x.burst({ dur: 0.008, f: 3200 + Math.random() * 1800, q: 4, gain: burst < 4 ? 0.07 : 0.02 });
-        }), () => 22);
-      return { grains: [gr] };
+      textureLoop(s, k, chitterTexture(s), s.gain(0.5, k.master), 0.9 + Math.random() * 0.2);
+      return {};
     }, p),
 
   // Spiderling skitter.
   'loop.spider.skitter': (s, p) =>
     simpleLoop(s, (k) => {
-      const gr = new Grains(s, (t) => gr.at(t, k.master, (x) => x.burst({ dur: 0.006, f: 2400 + Math.random() * 2500, q: 2, gain: 0.05 })), () => 30);
-      return { grains: [gr] };
+      textureLoop(s, k, skitterTexture(s), s.gain(0.45, k.master), 0.9 + Math.random() * 0.25);
+      return {};
     }, p),
 
   // Curse-sigil whispering.
@@ -916,4 +950,5 @@ export const LOOPS: Record<string, LoopRecipe> = {
       return {};
     }, p),
   ...AMBIENCE_LOOPS,
+  ...LATER_LOOPS,
 };

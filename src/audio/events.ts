@@ -42,7 +42,35 @@ export interface EventDef {
 
 const E = <T extends Record<string, EventDef>>(t: T): T => t;
 
-export const EVENTS = E({
+const LATER_HOURS = ['prime', 'terce', 'sext', 'none', 'vespers', 'compline'] as const;
+const HOUR_KINDS = ['intro', 'telegraph', 'attack', 'hit', 'phase', 'summon', 'shield', 'shieldBreak', 'submerge', 'weaken', 'death'] as const;
+type HourEventId = `sfx.hour.${(typeof LATER_HOURS)[number]}.${(typeof HOUR_KINDS)[number]}` | `loop.hour.${(typeof LATER_HOURS)[number]}`;
+const HOUR_TEXT: Record<(typeof HOUR_KINDS)[number], [string, number, boolean?]> = {
+  intro: ['a choir swells as it wakes', 95],
+  telegraph: ['it gathers itself — a blow is coming', 92, true],
+  attack: ['it strikes', 88],
+  hit: ['it shrieks', 75],
+  phase: ['it changes', 90, true],
+  summon: ['it sheds its brood', 85, true],
+  shield: ['a ward rises', 85, true],
+  shieldBreak: ['the ward shatters', 85],
+  submerge: ['it sinks beneath the skin', 85, true],
+  weaken: ['it weakens', 80],
+  death: ['it is unmade', 95],
+};
+/** The six later Malison hours: eleven events and a drone each, one processing chain per hour (AUD-0132). */
+const HOUR_EVENTS = Object.fromEntries(
+  LATER_HOURS.flatMap((h) => [
+    ...HOUR_KINDS.map((k) => {
+      const [text, prio, gameplay] = HOUR_TEXT[k];
+      const name = `Malison of ${h[0].toUpperCase()}${h.slice(1)}`;
+      return [`sfx.hour.${h}.${k}`, { bus: 'world', limit: 1, prio, caption: `[The ${name}: ${text}]`, gameplay, duck: k === 'attack' || k === 'death' || k === 'phase' ? 'boss' : undefined } satisfies EventDef];
+    }),
+    [`loop.hour.${h}`, { bus: 'world', loop: true, prio: 70 } satisfies EventDef],
+  ]),
+) as Record<HourEventId, EventDef>;
+
+const BASE_EVENTS = E({
   // ------------------------------------------------ legacy cue names (pre-AUD-0007), kept as aliases
   cool: { bus: 'hud', alias: 'sfx.rate.cool' },
   good: { bus: 'hud', alias: 'sfx.rate.good' },
@@ -257,7 +285,41 @@ export const EVENTS = E({
   'amb.armour': { bus: 'ambience', limit: 1, prio: 10 },
   'amb.horse': { bus: 'ambience', limit: 1, prio: 10 },
   'amb.choirHum': { bus: 'ambience', limit: 1, prio: 10 },
+
+  // ------------------------------------------------ Chapters 3–5 and disciplines (full game)
+  'loop.burn.dragon': { bus: 'world', loop: true, prio: 25, caption: '[Dragon-fire embers roar]' },
+  'sfx.burn.blister': { bus: 'world', limit: 3, prio: 45, cents: 100 },
+  'loop.gangrene': { bus: 'world', loop: true, prio: 25, caption: '[Gangrene crackles wetly]' },
+  'sfx.gangrene.debride': { bus: 'world', limit: 2, prio: 55, cents: 60 },
+  'loop.saw.bone': { bus: 'world', loop: true, prio: 60, caption: '[A bone saw rasps]' },
+  'loop.growth.encircle': { bus: 'world', loop: true, prio: 45 },
+  'sfx.growth.severed': { bus: 'world', limit: 2, prio: 65, cents: 50 },
+  'sfx.growth.remove': { bus: 'world', limit: 2, prio: 65, cents: 50 },
+  'loop.stone.creep': { bus: 'world', loop: true, prio: 35, caption: '[Stone creeps over the flesh]', gameplay: true },
+  'sfx.stone.chip': { bus: 'world', limit: 3, prio: 55, cents: 30 },
+  'sfx.stone.crumble': { bus: 'world', limit: 1, prio: 70, caption: '[The stone crust crumbles]' },
+  'sfx.stone.reveal': { bus: 'world', limit: 2, prio: 55 },
+  'sfx.fang.grind': { bus: 'world', limit: 2, prio: 60, cents: 60 },
+  'sfx.claw.rake': { bus: 'world', limit: 2, prio: 70, cents: 60, caption: '[Claws rake the flesh]' },
+  'loop.larvae.swarm': { bus: 'world', loop: true, prio: 35, caption: '[Larvae swarm]', gameplay: true },
+  'sfx.larva.pop': { bus: 'world', limit: 4, prio: 45, cents: 150 },
+  'sfx.triage.tag': { bus: 'hud', limit: 2, prio: 50, cents: 40 },
+  'loop.eartrumpet': { bus: 'world', loop: true, prio: 60 },
+  'sfx.bone.crepitus': { bus: 'world', limit: 2, prio: 55, cents: 60, caption: '[Bone grates]' },
+  'sfx.bone.snap': { bus: 'world', limit: 2, prio: 70, cents: 40, caption: '[The bone snaps into place]' },
+  'loop.amb.pyre': { bus: 'ambience', loop: true, prio: 15 },
+  'loop.amb.cathedral': { bus: 'ambience', loop: true, prio: 15 },
+  'loop.amb.catacombs': { bus: 'ambience', loop: true, prio: 15 },
+  'loop.amb.armycamp': { bus: 'ambience', loop: true, prio: 15 },
+  'loop.amb.flooded': { bus: 'ambience', loop: true, prio: 15 },
+  'amb.battle': { bus: 'ambience', limit: 1, prio: 10, caption: '[Distant gunfire]' },
+  'amb.rats': { bus: 'ambience', limit: 1, prio: 10, cents: 150 },
+  'amb.slosh': { bus: 'ambience', limit: 2, prio: 10, cents: 100 },
+  'amb.crowd': { bus: 'ambience', limit: 1, prio: 10, caption: '[A crowd murmurs]' },
+  'amb.sentry': { bus: 'ambience', limit: 1, prio: 10, caption: '[A sentry calls out]' },
 });
+
+export const EVENTS = { ...BASE_EVENTS, ...HOUR_EVENTS };
 
 export type EventId = keyof typeof EVENTS;
 

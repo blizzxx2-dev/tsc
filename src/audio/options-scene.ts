@@ -92,7 +92,7 @@ export class AudioOptionsScene implements Scene {
                   value: () => (this.devices.find((x) => x.id === p.sinkId)?.label ?? 'System default').slice(0, 28),
                   change: (d: number) => {
                     p.sinkId = cycle(this.devices.map((x) => x.id), p.sinkId, d);
-                    void sys.engine.setSink(p.sinkId);
+                    void sys.engine.setSink(p.sinkId).then((ok) => ok || sys.play('ui.error'));
                   },
                   test: () => sys.play('ui.confirm'),
                 },
@@ -145,9 +145,10 @@ export class AudioOptionsScene implements Scene {
       } else if (this.hover >= 0) {
         const r = this.rowRect(this.hover);
         const row = rows[this.hover];
+        const was = row.value();
         row.change(input.pos.x < r.x + r.w * 0.55 ? -1 : 1);
         sys.commitPrefs();
-        sys.play('ui.slider');
+        sys.play(was === 'On' || was === 'Off' ? 'ui.toggle' : 'ui.slider');
         row.test?.();
       }
     }
