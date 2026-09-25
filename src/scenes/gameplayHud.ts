@@ -15,7 +15,8 @@ import { FIELD, TINCTURE_HEX, type Operation } from '../surgery/operation';
 import { humming } from '../surgery/ailments/organs';
 import { LarynxFold } from '../surgery/ailments/organs';
 import { VIEW_W } from '../ui/layout';
-import { UI, scroll } from '../ui/ornaments';
+import { UI } from '../ui/ornaments';
+import { band, glass, heading, INK } from '../ui/hudKit';
 import { button, type Rect } from '../ui/widgets';
 import { TOOL_INFO } from '../surgery/types';
 import { glyphFor } from '../input/glyphs';
@@ -86,11 +87,11 @@ export function drawTutorial(g: Gfx, op: Operation): void {
     g.glow(p.x, p.y, r * 1.5, hex(UI.gilt, 0.12));
   }
   const tool = s.tool ? t('hud.tutorial.tool', { tool: t(`tool.${s.tool}.name`), key: glyphFor(`tool.select.${TOOL_INFO.findIndex((ti) => ti.id === s.tool) + 1}` as ActionId) }) : '';
-  const w = Math.max(g.measure(s.say, 18), g.measure(tool, 16)) + 40;
-  g.rect(700 - w / 2, 588, w, 56, hex('#000000', 0.55));
-  g.rectLine(700 - w / 2, 588, w, 56, 1, hex(UI.gilt, 0.5));
-  g.text(s.say, 700, 612, { size: 18, font: 'italic', color: hex(UI.gilt), align: 'center' });
-  if (tool) g.text(tool, 700, 632, { size: 16, color: hex(UI.parchLo), align: 'center' });
+  const w = Math.max(g.measure(s.say, 18, 'italic'), g.measure(tool, 16)) + 56;
+  const r = { x: 640 - w / 2, y: 520, w, h: tool ? 62 : 44 };
+  glass(g, r, { glow: hex(INK.gold, 0.18), glowR: 14 });
+  g.text(s.say, 640, r.y + 28, { size: 18, font: 'italic', color: hex(INK.goldHi), align: 'center', shadow: hex('#000000', 0.8), soft: true });
+  if (tool) g.text(tool, 640, r.y + 50, { size: 16, color: hex(INK.dim), align: 'center', shadow: false });
 }
 
 /** The Litany practice frame: prompt, attempts, and a skip button. Returns true if skipped. */
@@ -98,9 +99,10 @@ export function drawLitanyPractice(g: Gfx, op: Operation, input: Input): boolean
   const p = op.litanyPractice;
   if (!p) return false;
   g.rect(0, 0, VIEW_W, 720, hex('#000000', 0.45));
-  g.text(t('hud.practice.title'), VIEW_W / 2, 250, { size: 44, font: 'display', color: hex(UI.gilt), align: 'center' });
-  g.text(t('hud.practice.help', { draw: dragGlyphFor('litany.draw') }), VIEW_W / 2, 300, { size: 22, color: hex(UI.parch), align: 'center' });
-  g.text(t('hud.practice.attempts', { n: p.attempts }), VIEW_W / 2, 336, { size: 18, font: 'italic', color: hex(UI.parchLo), align: 'center' });
+  band(g, 196, 170, 1, 0, VIEW_W);
+  heading(g, t('hud.practice.title'), VIEW_W / 2, 252, 420, 1, 34);
+  g.text(t('hud.practice.help', { draw: dragGlyphFor('litany.draw') }), VIEW_W / 2, 304, { size: 21, color: hex(INK.text), align: 'center', shadow: hex('#000000', 0.8), soft: true });
+  g.text(t('hud.practice.attempts', { n: p.attempts }), VIEW_W / 2, 336, { size: 18, font: 'italic', color: hex(INK.dim), align: 'center', shadow: false });
   return button(g, input, t('hud.practice.skip'), VIEW_W / 2, 420, 24);
 }
 
@@ -108,10 +110,10 @@ export function drawLitanyPractice(g: Gfx, op: Operation, input: Input): boolean
 export function drawDialogue(g: Gfx, op: Operation, input: Input): boolean {
   const line = op.dialogue[0];
   if (!line) return false;
-  const r = { x: 240, y: 520, w: 800, h: 70 };
-  scroll(g, r);
-  g.text(line, r.x + 24, r.y + 44, { size: 21, color: hex(UI.inkDark), shadow: false });
-  g.text(t('hud.dialogue.continue'), r.x + r.w - 20, r.y + r.h - 8, { size: 16, font: 'italic', color: hex(UI.inkDark, 0.6), align: 'right', shadow: false });
+  const r = { x: 240, y: 510, w: 800, h: 80 };
+  glass(g, r, { strength: 1.12 });
+  g.text(line, r.x + 28, r.y + 40, { size: 21, color: hex(INK.text), shadow: hex('#000000', 0.8), soft: true });
+  g.text(t('hud.dialogue.continue'), r.x + r.w - 24, r.y + r.h - 14, { size: 16, font: 'italic', color: hex(INK.dim), align: 'right', shadow: false });
   return input.pressed || input.actPressed('litany.key') || input.actPressed('ui.confirm');
 }
 

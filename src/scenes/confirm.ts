@@ -1,10 +1,10 @@
 import type { Game, Scene } from '../core/scene';
+import { glass, heading, INK } from '../ui/hudKit';
 import { t } from '../i18n';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { Ui } from '../ui/kit';
 import { menuEntry, sealButton } from '../ui/controls';
-import { leatherPanel, divider, UI } from '../ui/ornaments';
 import { MOTION, tween } from '../ui/motion';
 import { VIEW_W } from '../ui/layout';
 import { uiEvents } from '../ui/events';
@@ -68,15 +68,14 @@ export class ConfirmScene implements Scene {
     const vr = g.viewRect();
     g.rect(vr.x, vr.y, vr.w, vr.h, hex('#000000', 0.55 * k));
     const r = { x: VIEW_W / 2 - 300, y: 230 + (1 - k) * 20, w: 600, h: 270 };
-    leatherPanel(g, r, { alpha: 0.97 * k });
+    glass(g, r, { alpha: k, strength: 1.15 });
     let y = r.y + 58;
     if (this.o.title) {
-      g.text(this.o.title, VIEW_W / 2, y, { size: 34, font: 'display', color: hex(UI.gilt, k), color2: hex(UI.giltLo, k), align: 'center' });
-      divider(g, VIEW_W / 2, y + 16, 300, hex(UI.brass, k));
-      y += 56;
+      heading(g, this.o.title, VIEW_W / 2, y, 300, k, 24);
+      y += 58;
     }
-    const lines = wrapLines((s) => g.measure(s, 24, 'body'), this.o.message, r.w - 80);
-    lines.slice(0, 4).forEach((l, i) => g.text(l, VIEW_W / 2, y + i * 32, { size: 24, color: hex(UI.parch, k), align: 'center' }));
+    const lines = wrapLines((s) => g.measure(s, 22, 'body'), this.o.message, r.w - 80);
+    lines.slice(0, 4).forEach((l, i) => g.text(l, VIEW_W / 2, y + i * 30, { size: 22, color: hex(INK.text, k), align: 'center', shadow: hex('#000000', 0.8), soft: true }));
     for (const n of this.ui.nodes) {
       const s = this.ui.state(n.id);
       if (n.style === 'seal') sealButton(g, n, s, g.time, 26);

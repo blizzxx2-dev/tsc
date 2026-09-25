@@ -14,17 +14,16 @@ import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOW
 import { TOOL_INFO, toolInfo, type ToolId } from '../surgery/types';
 import { anchorShift, PALETTE, viewRect, VIEW_W } from '../ui/layout';
 import { button, inRect, reticle, toolIcon } from '../ui/widgets';
-import { divider, giltText, UI } from '../ui/ornaments';
-import { buttonSurface } from '../ui/widgets';
+import { giltText, UI } from '../ui/ornaments';
 import type { ActionId } from '../input/actions';
 import { DamageAggregator, ToolHints } from '../ui/hudPrefs';
-import { band, caps, diamond, glass, INK, keycap, meter, numerals, titleRule, well } from '../ui/hudKit';
+import { band, caps, heading, ratingCallout, diamond, glass, INK, keycap, meter, numerals, titleRule, well } from '../ui/hudKit';
 import { localeInfo } from '../i18n/locales';
 import { getLocale } from '../i18n';
 import { bloodScale, GORE_LEVEL, presentation } from '../render/presentation';
 import { highContrast, palette } from '../ui/theme';
-import { giltNumerals, snuffedVeil } from '../ui/ornaments';
-import { ledgerArt, ratingStamp, ribbonArt, starReliquary, vialArt } from '../art/kit';
+import { giltNumerals } from '../ui/ornaments';
+import { RATING_INK, starReliquary, vialArt } from '../art/kit';
 import { cursorTint, vialLevel } from '../art/hud';
 import { CAST } from '../content/characters';
 import { ASSISTANT_NAME } from '../content/characters';
@@ -639,7 +638,7 @@ export class OperationScene implements Scene {
       const pop = still ? 1 : 1 + Math.max(0, 0.22 - p.t) * 2.2;
       const word = tr(`rating.${p.rating}`);
       // Colour filters swap the stamp inks; the stamp shapes and tilt still tell the ratings apart (UIX-0147).
-      ratingStamp(g, p.rating, word, x, y, still ? 1 : p.t, a, 30, settings.colorFilter === 'none' ? undefined : palette()[p.rating]);
+      ratingCallout(g, word, x, y, still ? 1 : p.t, a, settings.colorFilter === 'none' ? RATING_INK[p.rating] : palette()[p.rating], 30);
       if (p.label) g.text(tSource(p.label), x, y - 36 * pop, { size: 16, font: 'italic', color: hex(UI.parch, a * 0.9), align: 'center' });
       if (p.combo && p.combo > 1 && (p.rating === 'cool' || p.rating === 'good')) g.text(tr('hud.chain_combo', { combo: p.combo }), x, y + 20, { size: 16, color: hex(UI.gilt, a * 0.9), align: 'center' });
     }
@@ -648,12 +647,9 @@ export class OperationScene implements Scene {
   private drawPause(g: Gfx, game: Game): void {
     const vr = viewRect();
     g.rect(vr.x, vr.y, vr.w, vr.h, hex('#000000', 0.3));
-    snuffedVeil(g, VIEW_W, 720, g.time);
-    ledgerArt(g, { x: 430, y: 150, w: 420, h: 400 });
-    ribbonArt(g, VIEW_W / 2, 186, 330, 44, '#4a0a0e');
-    buttonSurface('parchment');
-    giltText(g, tr('hud.pause.title'), VIEW_W / 2, 222, { size: 50, align: 'center' });
-    divider(g, VIEW_W / 2, 248, 260);
+    g.rect(vr.x, vr.y, vr.w, vr.h, hex('#050303', 0.4));
+    glass(g, { x: 430, y: 150, w: 420, h: 400 }, { strength: 1.12 });
+    heading(g, tr('hud.pause.title'), VIEW_W / 2, 214, 280, 1, 28);
     if (button(g, game.input, tr('hud.pause.resume'), VIEW_W / 2, 310)) this.paused = false;
     if (button(g, game.input, tr('hud.pause.restart'), VIEW_W / 2, 370)) this.restart();
     if (button(g, game.input, tr('hud.pause.options'), VIEW_W / 2, 430)) {
@@ -662,7 +658,6 @@ export class OperationScene implements Scene {
       else game.go(new OptionsScene(() => game.go(this)));
     }
     if (button(g, game.input, tr('hud.pause.abandon'), VIEW_W / 2, 490)) this.onQuit();
-    buttonSurface('dark');
   }
 }
 

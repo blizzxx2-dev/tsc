@@ -7,7 +7,7 @@ import type { Vec } from '../core/math';
 import { hex, type RGBA } from '../render/color';
 import type { Gfx, TextOpts } from '../render/gfx';
 import type { Rect } from './widgets';
-import { debossText, leatherArt, medallionArt, oakArt, parchmentArt, plaqueArt, ribbonArt, sandGlassArt, sealArt } from '../art/kit';
+import { debossText, medallionArt, oakArt, parchmentArt, plaqueArt, ribbonArt, sandGlassArt, sealArt } from '../art/kit';
 
 const TAU = Math.PI * 2;
 
@@ -32,8 +32,11 @@ function grain(seed: number, i: number): number {
 }
 
 /** Gilt blackletter/serif text: vertical gold gradient with a dark under-stroke. */
+/** Gold-leaf title lettering: engraved Cinzel capitals, tracked, with a soft shadow. Numerals stay as they are. */
 export function giltText(g: Gfx, str: string, x: number, y: number, o: TextOpts = {}): void {
-  g.text(str, x, y, { font: 'display', ...o, color: hex(UI.gilt, 1), color2: hex(UI.giltLo, 1), shadow: hex('#1a0c04', 0.9) });
+  const words = /\p{L}/u.test(str);
+  const size = (o.size ?? 20) * (words ? 0.82 : 1);
+  g.text(words ? str.toUpperCase() : str, x, y, { font: 'display', tracking: words ? 0.12 : 0.02, ...o, size, color: hex('#fff1c4', 1), color2: hex('#c9a55c', 1), shadow: hex('#000000', 0.9), soft: true });
 }
 
 export function rivet(g: Gfx, x: number, y: number, r = 3.5): void {
@@ -64,25 +67,19 @@ export function brassBorder(g: Gfx, r: Rect, w = 5): void {
 
 /** Tooled leather panel with brass edging, rivets and optional filigree corners. */
 export function leatherPanel(g: Gfx, r: Rect, o: { alpha?: number; corners?: boolean; border?: number; seed?: number } = {}): void {
-  const a = o.alpha ?? 0.96;
-  const seed = o.seed ?? r.x * 0.37 + r.y * 1.13;
-  g.rect(r.x + 5, r.y + 7, r.w, r.h, hex('#000000', 0.45 * a));
-  // Pebbled, blind-tooled, saddle-stitched leather (UI_ART_FS).
-  leatherArt(g, r, a, seed);
-  if (o.border !== 0) brassBorder(g, r, o.border ?? 4);
-  if (o.corners !== false && r.w > 120 && r.h > 70) {
-    filigree(g, r.x + 6, r.y + 6, 1, 1, 0.9);
-    filigree(g, r.x + r.w - 6, r.y + 6, -1, 1, 0.9);
-    filigree(g, r.x + 6, r.y + r.h - 6, 1, -1, 0.9);
-    filigree(g, r.x + r.w - 6, r.y + r.h - 6, -1, -1, 0.9);
-  }
-  for (const [cx, cy] of [
-    [r.x - 2, r.y - 2],
-    [r.x + r.w + 2, r.y - 2],
-    [r.x - 2, r.y + r.h + 2],
-    [r.x + r.w + 2, r.y + r.h + 2],
-  ])
-    rivet(g, cx, cy, 4.5);
+  // Superseded by the glass plate: every panel shares one material now.
+  g.plate(r.x, r.y, r.w, r.h, {
+    radius: 3,
+    top: hex('#1a1411', 0.95 * (o.alpha ?? 1)),
+    bottom: hex('#0a0807', 0.97 * (o.alpha ?? 1)),
+    border: hex('#c9a55c', 0.75),
+    borderW: 1.1,
+    inset: hex('#f3d9a0', 0.1),
+    insetD: 4,
+    bevel: 0.7,
+    shadow: [0.6, 16, 5],
+    alpha: o.alpha ?? 1,
+  });
 }
 
 /** Soot-stained oak bound with iron straps: the dark panel for the HUD and pause menus. */
@@ -111,22 +108,14 @@ export function scroll(g: Gfx, r: Rect): void {
 }
 
 /** Ornamental divider: rule, diamond, flourishes. */
-export function divider(g: Gfx, cx: number, y: number, w: number, c: RGBA = hex(UI.brass)): void {
-  g.line({ x: cx - w / 2, y }, { x: cx - 14, y }, 1.5, c);
-  g.line({ x: cx + 14, y }, { x: cx + w / 2, y }, 1.5, c);
-  g.poly(
-    [
-      { x: cx, y: y - 7 },
-      { x: cx + 9, y },
-      { x: cx, y: y + 7 },
-      { x: cx - 9, y },
-    ],
-    c,
-  );
-  g.circle(cx - w / 2, y, 2.5, c);
-  g.circle(cx + w / 2, y, 2.5, c);
-  g.quadCurve({ x: cx - 14, y }, { x: cx - 30, y: y - 10 }, { x: cx - 44, y: y - 2 }, 1.2, c);
-  g.quadCurve({ x: cx + 14, y }, { x: cx + 30, y: y - 10 }, { x: cx + 44, y: y - 2 }, 1.2, c);
+export function divider(g: Gfx, cx: number, y: number, w: number, c: RGBA = hex('#c9a55c')): void {
+  const clear = c & 0x00ffffff;
+  const h = w / 2;
+  for (const [x0, x1, ca, cb] of [[cx - h, cx - 10, clear, c], [cx + 10, cx + h, c, clear]] as const) {
+    g.tri(x0, y, x1, y, x1, y + 1, ca, cb, cb);
+    g.tri(x0, y, x1, y + 1, x0, y + 1, ca, cb, ca);
+  }
+  g.poly([{ x: cx, y: y - 3.5 }, { x: cx + 3.5, y: y + 0.5 }, { x: cx, y: y + 4.5 }, { x: cx - 3.5, y: y + 0.5 }], c);
 }
 
 /** Round brass-rimmed medallion with a dark inset. */

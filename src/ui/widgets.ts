@@ -1,5 +1,5 @@
 import { cursorColour } from './hudPrefs';
-import { menuItem } from './hudKit';
+import { glass, menuItem } from './hudKit';
 import { nineSlice } from './nineSlice';
 import { settings } from '../core/settings';
 import type { Input } from '../core/input';
@@ -7,7 +7,7 @@ import type { Vec } from '../core/math';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import type { ToolId } from '../surgery/types';
-import { leatherPanel, parchmentSheet, UI } from './ornaments';
+import { parchmentSheet, UI } from './ornaments';
 import { uiButton } from '../audio/ui-hooks';
 import { crosshairArt, toolArt, type ToolState } from '../art/kit';
 
@@ -24,7 +24,7 @@ export const inRect = (p: Vec, r: Rect): boolean => p.x >= r.x && p.x <= r.x + r
 
 /** A tooled leather panel with brass edging (see ui/ornaments). */
 export function panel(g: Gfx, r: Rect, alpha = 0.96): void {
-  if (!nineSlice(g, 'ui/panel-oak', r, { alpha })) leatherPanel(g, r, { alpha });
+  if (!nineSlice(g, 'ui/panel-oak', r, { alpha })) glass(g, r, { alpha, strength: 1.12 });
 }
 
 /** An aged parchment sheet. */

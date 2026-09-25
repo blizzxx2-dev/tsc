@@ -189,3 +189,17 @@ export function heading(g: Gfx, s: string, cx: number, y: number, w: number, a =
   g.text(s.toUpperCase(), cx, y, { size, font: 'display', color: hex(INK.goldHi, a), color2: hex(INK.gold, a), align: 'center', tracking: 0.16, shadow: hex('#000000', 0.9 * a), soft: true });
   titleRule(g, cx, y + 18, w, a);
 }
+
+/**
+ * An action rating over the field: the word in tracked caps (light→dark gradient in the rating's
+ * inks), punching in over the first 0.15 s and settling, with a rule that draws out beneath.
+ */
+export function ratingCallout(g: Gfx, word: string, x: number, y: number, t: number, a: number, inks: [string, string], size = 30): void {
+  const pop = t < 0.15 ? 1.35 - (t / 0.15) * 0.35 : 1;
+  const s = size * pop;
+  const up = word.toUpperCase();
+  g.text(up, x, y, { size: s, font: 'display', color: hex('#ffffff', a), color2: hex(inks[0], a), align: 'center', tracking: 0.12, shadow: hex('#000000', 0.9 * a), soft: true });
+  const w = g.measure(up, s, 'display', 0.12) * Math.min(1, t / 0.25);
+  rule(g, x, y + s * 0.3, w + 20, hex(inks[0], 0.8 * a), 1.5);
+  if (t < 0.3) g.glow(x, y - s * 0.3, s * 2, hex(inks[0], 0.25 * (1 - t / 0.3) * a));
+}

@@ -4,7 +4,7 @@ import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { CAMPAIGN } from '../content/campaign';
 import { VIEW_W } from '../ui/layout';
-import { divider, leatherPanel, UI, waxSeal, woodcutCorner } from '../ui/ornaments';
+import { divider, leatherPanel, UI, waxSeal } from '../ui/ornaments';
 import { chapterSeal } from '../art/kit';
 import { settings } from '../core/settings';
 import { kilnRowsPlate } from '../art/plates';
@@ -35,7 +35,7 @@ export class DemoEndScene implements Scene {
       const vr = g.viewRect();
       g.rect(vr.x, vr.y, vr.w, vr.h, hex('#000000', 0.45));
     }
-    g.text(t('ui.game.title'), VIEW_W / 2, 100, { size: 72, font: 'display', color: hex('#fff0c0', a), color2: hex(UI.giltLo, a), align: 'center' });
+    g.text(t('ui.game.title').toUpperCase(), VIEW_W / 2, 96, { size: 56, font: 'display', color: hex('#fff4d0', a), color2: hex('#c8923c', a), align: 'center', tracking: 0.09, shadow: hex('#000000', 0.9 * a), soft: true });
     divider(g, VIEW_W / 2, 124, 420, hex(UI.brass, a));
     g.text(t('ui.demoend.thanks'), VIEW_W / 2, 166, { size: 28, font: 'italic', color: hex(UI.parch, a), align: 'center' });
     g.text(t('ui.demoend.teaser'), VIEW_W / 2, 200, { size: 22, color: hex('#c8b890', a), align: 'center' });
@@ -44,8 +44,7 @@ export class DemoEndScene implements Scene {
     CAMPAIGN.forEach((c, i) => chapterSeal(g, VIEW_W / 2 + (i === 0 ? -330 : 330), 150, 38, c.numeral, this.t - 0.6 - i * 0.25));
     const panelR = { x: 70, y: 232, w: 680, h: 330 };
     leatherPanel(g, panelR, { alpha: 0.94 * a });
-    for (const [x, y, dx, dy] of [[panelR.x, panelR.y, 1, 1], [panelR.x + panelR.w, panelR.y, -1, 1], [panelR.x, panelR.y + panelR.h, 1, -1], [panelR.x + panelR.w, panelR.y + panelR.h, -1, -1]] as const) woodcutCorner(g, x, y, dx, dy, 0, hex(UI.brass, a), 1, '#2a1812');
-    g.text(t('ui.demoend.ledger'), panelR.x + panelR.w / 2, panelR.y + 42, { size: 24, color: hex(UI.gilt), align: 'center' });
+    g.text(t('ui.demoend.ledger').toUpperCase(), panelR.x + panelR.w / 2, panelR.y + 44, { size: 18, font: 'display', color: hex('#e6c77a'), align: 'center', tracking: 0.16, shadow: hex('#000000', 0.8), soft: true });
     const ops = CAMPAIGN.flatMap((c) => c.steps.flatMap((s) => (s.kind === 'op' ? [{ ch: c.numeral, op: s.op }] : [])));
     ops.forEach(({ ch, op }, i) => {
       const col = i < 5 ? 0 : 1;
