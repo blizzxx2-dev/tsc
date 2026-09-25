@@ -83,7 +83,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0049 · Demo · P1 · S · Camera bounds clamp — zoomed view never reveals beyond the drape edge or the virtual safe area
 - [ ] ENG-0050 · Demo · P1 · S · Tessellation LOD from on-screen radius (after camera zoom and DPR) — circles stay smooth at 2.5× zoom and cheap at 1×
 - [ ] ENG-0051 · Demo · P1 · M · Camera shake moved from post UV offset (`u_shake`) to a trauma-based camera offset/rotation using smooth noise, scaled by the screen-shake setting — `op.shake` jitter no longer uses `Math.random`
-- [ ] ENG-0052 · Demo · P1 · M · Anti-aliasing for the world layer: 4× MSAA renderbuffer resolved with `blitFramebuffer` into the post input; fall back to an FXAA pass when `MAX_SAMPLES < 4` — edge crawl on lancet lines eliminated in capture
+- [x] ENG-0052 · Demo · P1 · M · Anti-aliasing for the world layer: 4× MSAA renderbuffer resolved with `blitFramebuffer` into the post input; fall back to an FXAA pass when `MAX_SAMPLES < 4` — edge crawl on lancet lines eliminated in capture
 
 ## ENG-C · Frame loop, timing & scene state machine (Demo)
 
@@ -188,7 +188,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0126 · Demo · P0 · M · Emitter definitions as data (JSON) — rate/burst, spawn shape (point, line, arc, ellipse, path), velocity cone, gravity, drag, size/colour/alpha-over-life curves, frame sequence, blend, layer
 - [ ] ENG-0127 · Demo · P1 · S · Curve/gradient utilities — baked 64-sample LUTs uploaded as a texture; unit tests for curve sampling
 - [ ] ENG-0128 · Demo · P0 · S · Particle budget per quality tier (High 16k, Medium 8k, Low 4k) with priority classes — gameplay-readable effects never culled before ambient ones
-- [ ] ENG-0129 · Demo · P1 · M · Collision against the field — blood droplets that land stamp the blood decal map (splat size ∝ velocity); sparks bounce once off the field plane
+- [x] ENG-0129 · Demo · P1 · M · Collision against the field — blood droplets that land stamp the blood decal map (splat size ∝ velocity); sparks bounce once off the field plane
 - [ ] ENG-0130 · Demo · P0 · S · Particles in world time slow to 0.15× during the Litany — UI particles run on real time (unit test on clock routing)
 - [ ] ENG-0131 · Demo · P1 · S · Deterministic spawn — emitter RNG seeded from operation seed + emitter id so replays and golden screenshots are reproducible
 - [ ] ENG-0132 · Demo · P2 · M · Dev particle panel — live-tweak emitter parameters on a running operation, preview in isolation, copy JSON to clipboard

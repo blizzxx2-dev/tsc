@@ -44,7 +44,7 @@ export function isStar(raw: Vec[]): boolean {
   const size = Math.max(maxX - minX, maxY - minY);
   if (size < 60) return false;
   // Closed shape.
-  if (dist(pts[0], pts[pts.length - 1]) > size * 0.35) return false;
+  if (dist(pts[0], pts[pts.length - 1]) > size * 0.45) return false;
   // Count self-intersections between non-adjacent segments.
   let crossings = 0;
   for (let i = 1; i < pts.length; i++)
@@ -65,5 +65,7 @@ export function isStar(raw: Vec[]): boolean {
       lastCorner = i;
     }
   }
-  return crossings >= 4 && crossings <= 8 && corners >= 3;
+  // Lenient, like the original: a closed stroke with star-like sharp turns. Clean stars cross
+  // themselves five times; hurried ones may cross less, so sharp corners can stand in.
+  return (crossings >= 3 && crossings <= 9 && corners >= 3) || (crossings >= 1 && corners >= 5);
 }

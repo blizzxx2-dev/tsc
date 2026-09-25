@@ -83,6 +83,7 @@ export class OperationScene implements Scene {
     if (input.wheel) op.cycleTool(input.wheel);
     if (input.keyPressed('KeyQ')) op.cycleTool(-1);
     if (input.keyPressed('KeyE')) op.cycleTool(1);
+    if (input.keyPressed('Tab')) op.quickSwap();
     let trayClick = false;
     op.def.tools.forEach((id, i) => {
       if (input.pressed && inRect(input.pos, this.slot(i))) {

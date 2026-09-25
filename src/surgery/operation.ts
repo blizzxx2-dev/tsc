@@ -190,11 +190,19 @@ export class Operation {
     return true;
   }
 
+  /** The previously held instrument, for quick-swap. */
+  lastTool: ToolId | null = null;
+
   setTool(t: ToolId): void {
     if (!this.def.tools.includes(t) || this.tool === t) return;
+    this.lastTool = this.tool;
     this.tool = t;
     this.cues.push('select');
     this.releaseCapture();
+  }
+
+  quickSwap(): void {
+    if (this.lastTool) this.setTool(this.lastTool);
   }
 
   cycleTool(dir: number): void {

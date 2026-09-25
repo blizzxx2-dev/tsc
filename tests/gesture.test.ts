@@ -34,4 +34,11 @@ describe('isStar', () => {
     expect(isStar(densify([{ x: 0, y: 0 }, { x: 50, y: 100 }, { x: 100, y: 0 }, { x: 150, y: 100 }, { x: 200, y: 0 }]))).toBe(false);
   });
   it('rejects a tiny scribble', () => expect(isStar(star(100, 100, 20))).toBe(false));
+  it('accepts a hurried, unclosed star', () => {
+    const s = star(400, 300, 110, 18);
+    expect(isStar(s.slice(0, Math.floor(s.length * 0.93)))).toBe(true);
+  });
+  it('rejects a triangle', () => {
+    expect(isStar(densify([{ x: 300, y: 100 }, { x: 420, y: 300 }, { x: 180, y: 300 }, { x: 300, y: 100 }]))).toBe(false);
+  });
 });

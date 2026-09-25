@@ -23,7 +23,7 @@ export interface ToolInfo {
 }
 
 export const TOOL_INFO: readonly ToolInfo[] = [
-  { id: 'lancet', name: 'Lancet', key: '1', code: 'Digit1', hint: 'Trace incision lines. Encircle growths to excise them.' },
+  { id: 'lancet', name: 'Lancet', key: '1', code: 'Digit1', hint: 'Trace incision lines, lance buboes and egg sacs, nick barbed arrows free.' },
   { id: 'tongs', name: 'Tongs', key: '2', code: 'Digit2', hint: 'Seize shards and grubs, and drag them off the body.' },
   { id: 'leech', name: 'Leech-Pipe', key: '3', code: 'Digit3', hint: 'Hold over pooled blood to draw it off.' },
   { id: 'thread', name: 'Gut Thread', key: '4', code: 'Digit4', hint: 'Zig-zag across a wound to stitch it closed.' },
