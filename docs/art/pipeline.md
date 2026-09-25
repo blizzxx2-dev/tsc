@@ -68,3 +68,62 @@ sheet's `_sheet.json`:
 `{ "anims": { "splash": { "frames": ["splash-1", "splash-2"], "ms": 60, "mode": "once" } } }`.
 Frame order is explicit. `ms` is per frame (a number or a list), and `mode` is `loop`, `once` or
 `pingpong` (`src/render/sprites.ts`).
+
+## Hot reload (ART-0039)
+
+With `npm run dev` running, saving any file under `assets/` rebuilds the hashed outputs and
+manifest in about 200 ms (the `assets-hot-reload` plugin in `vite.config.ts`). The page then
+swaps every changed asset that is already loaded without reloading (`AssetLoader.hotSwap`).
+Backdrop layers and 9-slice frames pick up the new hash the next time they draw. The console
+logs `[assets] hot-swapped N asset(s)`.
+
+## Art metadata: status, 9-slice, pivots, layers (ART-0041/0045/0047/0048)
+
+`assets/_meta.json` holds ordered `{ match, … }` rules, each with a regex matched against the
+asset id. Every matching rule merges its fields onto the manifest entry, so broad rules go
+first and narrow ones after.
+
+| Field | Meaning |
+| --- | --- |
+| `status` | `placeholder`, `wip` or `final`. Every asset must have one. The build prints a count per status and **fails if any asset in a demo bundle is `placeholder`**. |
+| `nine` | 9-slice margins `[left, top, right, bottom]` in source px. `nineSlice()` (`src/ui/nineSlice.ts`) keeps the corners native and stretches the rest. `panel()` uses `ui/panel-oak` and `parchment()` uses `ui/parchment-frame` when they exist, and fall back to the procedural kit otherwise. |
+| `pivot` | `[x, y]` in 0..1 of the image. For ailment sprites this is the wound centre. |
+| `angle0` | The embed direction the sprite was painted at, in radians (0 = pointing right, clockwise positive in screen space). `Embedded` entities are procedural today. When painted shafts replace them, they draw rotated by `entity.angle - angle0`, so paint them in whatever direction reads best. |
+| `layer`, `parallax` | Backdrop layers. Name files `backdrops/<key>-far|mid|near|fx.png`, where `<key>` is a `Backdrop` id (`hospice`, `street`…). The build sets `layer` from the name, and default parallax factors are 0.1 / 0.35 / 0.7 / 1. When any layer exists for a key, `drawBackdrop` draws the layers far to near in place of the procedural scene. |
+
+## Per-chapter bundles (ART-0043)
+
+Art prefixed `ch1-` … `ch5-` routes to the `chapter1` … `chapter5` bundles (`assets/bundles.json`).
+The campaign flow holds the current chapter, prefetches the next during story scenes and unloads
+chapters left behind. The demo build ships the manifest ids but never requests the Chapter 3–5
+bundles, and `npm run check:demo-bundle` guards the code side.
+
+## Flesh texture input spec (ART-0046, agreed with ENG)
+
+The operating-field flesh is procedural (`FLESH_FS`). Painted detail textures, if added, layer
+over it with this packing, per organ kind, at 1024² and tileable:
+
+| Map | Space | Channels |
+| --- | --- | --- |
+| Albedo | sRGB | RGB. Alpha unused |
+| Normal | linear, tangent space, OpenGL +Y (green up) | RGB |
+| Mask | linear | R wet/spec, G vein mask, B cavity/AO, A height |
+
+Name them `sprites/flesh/<organ>-albedo|normal|mask.png`. This is the contract for the
+shader hookup: the albedo is a multiplier around mid-grey (0.5 = no change), so the procedural
+species tint and gore level still apply. The normal map adds to the procedural bumps. Mask R
+scales the wet specular, G scales the vein glow and pulse, B darkens creases and A feeds the
+parallax offset. Author at 2048² and export at 1024².
+
+## Colour management (ART-0049)
+
+- Author and export everything in **sRGB** (no embedded wide-gamut profiles; strip ICC on
+  export). Normal maps and masks are linear data and must be exported without colour
+  conversion.
+- Check previews on a display calibrated to sRGB, D65, gamma 2.2, 120 cd/m² (ΔE00 < 3 on a
+  test chart). Record the calibration date in the review sheet.
+- Flesh albedo is judged **through the grade**: open `?scene=fleshlab`, which shows the flesh
+  under every grade LUT including candlelit, and approve it there, never in the painting app.
+- Palette matches use the master swatches (`src/render/palette.ts`, `docs/art/palette.gpl`).
+  `nearestSwatch()` and the ΔE test enforce UI tokens, and the same ΔE 6 tolerance is the
+  review bar for painted UI.

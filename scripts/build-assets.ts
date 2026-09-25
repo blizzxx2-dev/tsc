@@ -33,9 +33,31 @@ interface Entry {
   font?: { family: string; style: string; weight: string };
   w?: number;
   h?: number;
+  status?: Status;
+  nine?: [number, number, number, number];
+  pivot?: [number, number];
+  angle0?: number;
+  parallax?: number;
+  layer?: string;
+}
+type Status = 'placeholder' | 'wip' | 'final';
+interface MetaRule {
+  match: string;
+  status?: Status;
+  nine?: [number, number, number, number];
+  pivot?: [number, number];
+  angle0?: number;
+  parallax?: number;
+  layer?: string;
 }
 
 const rules: Rules = JSON.parse(readFileSync(join(SRC, 'bundles.json'), 'utf8'));
+// Per-asset art metadata (ART-0041/0045/0047/0048): every rule whose regex matches an id merges in
+// order, so a broad status rule can be refined by a narrower 9-slice or pivot rule below it.
+const META_FILE = join(SRC, '_meta.json');
+const meta: { rules: MetaRule[] } = existsSync(META_FILE) ? JSON.parse(readFileSync(META_FILE, 'utf8')) : { rules: [] };
+/** Bundles that ship in the demo: a placeholder in any of them fails the build (ART-0041). */
+const DEMO_BUNDLES = new Set(['boot', 'title', 'story-common', 'ops-common', 'chapter1', 'chapter2']);
 const errors: string[] = [];
 const files = new Map<string, Buffer>(); // output file name → bytes
 const entries: Record<string, Entry> = {};
@@ -144,6 +166,25 @@ for (const p of walk(SRC)) {
   entries[id] = e;
 }
 
+// ---- art metadata: status, 9-slice margins, pivots, embed angle, parallax layers.
+for (const [id, e] of Object.entries(entries)) {
+  for (const r of meta.rules) {
+    if (!new RegExp(r.match).test(id)) continue;
+    const { match: _m, ...fields } = r;
+    Object.assign(e, fields);
+  }
+  const layer = /^backdrops\/(.+)-(far|mid|near|fx)$/.exec(id);
+  if (layer && !e.layer) e.layer = layer[1];
+  if (!e.status) errors.push(`${id}: no status (placeholder|wip|final) — add a rule to assets/_meta.json`);
+  if (e.status === 'placeholder' && DEMO_BUNDLES.has(e.bundle)) errors.push(`${id}: placeholder art in demo bundle '${e.bundle}'`);
+  if (e.nine) {
+    const [l, t, r, b] = e.nine;
+    if (e.w !== undefined && e.h !== undefined && (l + r >= e.w || t + b >= e.h))
+      errors.push(`${id}: 9-slice margins ${e.nine.join(',')} leave no centre in ${e.w}×${e.h}`);
+  }
+  if (e.parallax !== undefined && (e.parallax < 0 || e.parallax > 2)) errors.push(`${id}: parallax ${e.parallax} outside 0..2`);
+}
+
 // ---- validation (ENG-0209): referenced ids exist, big assets are used, bundles are known.
 const srcText = walk(join(ROOT, 'src'))
   .filter((f) => f.endsWith('.ts') && !f.endsWith('.gen.ts'))
@@ -190,6 +231,8 @@ if (CHECK) {
 }
 
 console.log(`assets: ${ids.length} ids, ${files.size} files, ${(total / 1024).toFixed(0)} KB`);
+const byStatus = (st: Status) => ids.filter((i) => entries[i].status === st).length;
+console.log(`  status: ${byStatus('final')} final, ${byStatus('wip')} wip, ${byStatus('placeholder')} placeholder`);
 for (const b of rules.bundles)
   console.log(`  ${b.padEnd(13)} ${((perBundle.get(b) ?? 0) / 1024).toFixed(1).padStart(8)} KB  (${ids.filter((i) => entries[i].bundle === b).length} assets)`);
 if (errors.length) {

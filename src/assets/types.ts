@@ -15,4 +15,15 @@ export interface AssetEntry {
   /** Images: pixel size. */
   w?: number;
   h?: number;
+  /** Art status (ART-0041): the demo build refuses `placeholder` in demo bundles. */
+  status?: 'placeholder' | 'wip' | 'final';
+  /** 9-slice margins in px: left, top, right, bottom (ART-0048). */
+  nine?: [number, number, number, number];
+  /** Pivot in 0..1 of the image (ART-0047: the wound centre for ailment sprites). */
+  pivot?: [number, number];
+  /** Embed direction in radians the art is drawn at, so `Embedded` entities rotate by `angle - angle0` (ART-0047). */
+  angle0?: number;
+  /** Backdrop layers (ART-0045): which `Backdrop` a layer belongs to, and its parallax factor (0 fixed … 1 camera speed). */
+  layer?: string;
+  parallax?: number;
 }

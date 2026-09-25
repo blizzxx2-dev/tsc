@@ -1,14 +1,11 @@
 {
   "$comment": "Asset bundles (ENG-0212). An asset id is its path under assets/ without extension (sprite sheets: sprites/<sheet>). The first matching rule (regex on the id) picks its bundle. See docs/assets.md.",
-  "bundles": [
-    "boot",
-    "title",
-    "story-common",
-    "ops-common",
-    "chapter1",
-    "chapter2"
-  ],
+  "bundles": ["boot", "title", "story-common", "ops-common", "chapter1", "chapter2", "chapter3", "chapter4", "chapter5"],
   "rules": [
+    {
+      "match": "^ui/",
+      "bundle": "boot"
+    },
     {
       "match": "^fonts/",
       "bundle": "boot"
@@ -24,6 +21,18 @@
     {
       "match": "^(sprites|backdrops|portraits|luts|audio)/ch2-",
       "bundle": "chapter2"
+    },
+    {
+      "match": "^(sprites|backdrops|portraits|luts|audio)/ch3-",
+      "bundle": "chapter3"
+    },
+    {
+      "match": "^(sprites|backdrops|portraits|luts|audio)/ch4-",
+      "bundle": "chapter4"
+    },
+    {
+      "match": "^(sprites|backdrops|portraits|luts|audio)/ch5-",
+      "bundle": "chapter5"
     },
     {
       "match": "^sprites/(ui|title)",

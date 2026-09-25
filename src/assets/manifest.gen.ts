@@ -9,7 +9,7 @@ export type AssetId =
   | 'fonts/unifrakturmaguntia-latin-400-normal'
   | 'sprites/fx';
 
-export type BundleId = 'boot' | 'title' | 'story-common' | 'ops-common' | 'chapter1' | 'chapter2';
+export type BundleId = 'boot' | 'title' | 'story-common' | 'ops-common' | 'chapter1' | 'chapter2' | 'chapter3' | 'chapter4' | 'chapter5';
 
 export const MANIFEST: Record<AssetId, AssetEntry> = {
   "fonts/atkinson-hyperlegible-latin-400-italic": {
@@ -22,7 +22,8 @@ export const MANIFEST: Record<AssetId, AssetEntry> = {
       "family": "Atkinson Hyperlegible",
       "style": "italic",
       "weight": "400"
-    }
+    },
+    "status": "final"
   },
   "fonts/atkinson-hyperlegible-latin-400-normal": {
     "type": "font",
@@ -34,7 +35,8 @@ export const MANIFEST: Record<AssetId, AssetEntry> = {
       "family": "Atkinson Hyperlegible",
       "style": "normal",
       "weight": "400"
-    }
+    },
+    "status": "final"
   },
   "fonts/im-fell-english-latin-400-italic": {
     "type": "font",
@@ -46,7 +48,8 @@ export const MANIFEST: Record<AssetId, AssetEntry> = {
       "family": "IM Fell English",
       "style": "italic",
       "weight": "400"
-    }
+    },
+    "status": "final"
   },
   "fonts/im-fell-english-latin-400-normal": {
     "type": "font",
@@ -58,7 +61,8 @@ export const MANIFEST: Record<AssetId, AssetEntry> = {
       "family": "IM Fell English",
       "style": "normal",
       "weight": "400"
-    }
+    },
+    "status": "final"
   },
   "fonts/unifrakturmaguntia-latin-400-normal": {
     "type": "font",
@@ -70,7 +74,8 @@ export const MANIFEST: Record<AssetId, AssetEntry> = {
       "family": "UnifrakturMaguntia",
       "style": "normal",
       "weight": "400"
-    }
+    },
+    "status": "final"
   },
   "sprites/fx": {
     "type": "sheet",
@@ -80,7 +85,8 @@ export const MANIFEST: Record<AssetId, AssetEntry> = {
     "hash": "b1133c6138",
     "pages": [
       "assets/sprites_fx-0.353e239b33.png"
-    ]
+    ],
+    "status": "final"
   }
 };
 
@@ -98,7 +104,10 @@ export const BUNDLES: Record<BundleId, readonly AssetId[]> = {
     "sprites/fx"
   ],
   "chapter1": [],
-  "chapter2": []
+  "chapter2": [],
+  "chapter3": [],
+  "chapter4": [],
+  "chapter5": []
 };
 
 /** Sprite frame ids across every sheet. */

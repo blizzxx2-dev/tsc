@@ -1,4 +1,5 @@
 import { cursorColour } from './hudPrefs';
+import { nineSlice } from './nineSlice';
 import { settings } from '../core/settings';
 import type { Input } from '../core/input';
 import type { Vec } from '../core/math';
@@ -23,12 +24,12 @@ export const inRect = (p: Vec, r: Rect): boolean => p.x >= r.x && p.x <= r.x + r
 
 /** A tooled leather panel with brass edging (see ui/ornaments). */
 export function panel(g: Gfx, r: Rect, alpha = 0.96): void {
-  leatherPanel(g, r, { alpha });
+  if (!nineSlice(g, 'ui/panel-oak', r, { alpha })) leatherPanel(g, r, { alpha });
 }
 
 /** An aged parchment sheet. */
 export function parchment(g: Gfx, r: Rect): void {
-  parchmentSheet(g, r, r.x + r.y);
+  if (!nineSlice(g, 'ui/parchment-frame', r)) parchmentSheet(g, r, r.x + r.y);
 }
 
 let surface: 'dark' | 'parchment' = 'dark';

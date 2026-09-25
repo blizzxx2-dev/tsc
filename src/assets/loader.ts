@@ -145,6 +145,30 @@ export class AssetLoader {
     return [...this.bundlesHeld];
   }
 
+  /**
+   * Dev hot reload (ART-0039): adopt a rebuilt manifest and re-fetch every resident asset whose
+   * content hash changed, swapping it in place so `get(id)` returns the new version. Reference
+   * counts and held bundles carry over. Resolves to the ids that were swapped.
+   */
+  async hotSwap(manifest: Record<string, AssetEntry>, bundles: Record<string, readonly string[]>): Promise<AssetId[]> {
+    const old = this.manifest;
+    this.manifest = manifest;
+    this.bundles = bundles;
+    const changed = [...this.loaded.keys()].filter((id) => manifest[id] && manifest[id].hash !== old[id]?.hash);
+    await Promise.all(
+      changed.map(async (id) => {
+        const fresh = await this.fetchAsset(id);
+        const prev = this.loaded.get(id);
+        if (!this.refs.get(id)) return fresh.dispose?.();
+        this.loaded.set(id, fresh);
+        prev?.dispose?.();
+      }),
+    );
+    // Bundles held before the swap pick up assets that were added to them.
+    for (const b of this.bundlesHeld) for (const id of (bundles[b] ?? []) as AssetId[]) if (!this.refs.has(id)) void this.load(id);
+    return changed;
+  }
+
   private async fetchAsset(id: AssetId): Promise<LoadedAsset> {
     const entry = this.manifest[id];
     const be = this.backend;

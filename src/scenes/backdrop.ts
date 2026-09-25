@@ -4,6 +4,15 @@ import type { Backdrop } from '../content/story';
 import type { Character } from '../content/characters';
 import { VIEW_H, VIEW_W } from '../ui/layout';
 import type { Vec } from '../core/math';
+import { MANIFEST } from '../assets/manifest.gen';
+import type { AssetEntry } from '../assets/types';
+
+/** Painted backdrop layers for a key, far to near (manifest `layer` + `parallax`, ART-0045). */
+export function backdropLayers(key: string, manifest: Record<string, AssetEntry> = MANIFEST): AssetEntry[] {
+  return Object.values(manifest)
+    .filter((e) => e.layer === key && e.type === 'image')
+    .sort((a, b) => (a.parallax ?? 0) - (b.parallax ?? 0));
+}
 
 /** SCENE_FS program per location (see src/render/shaders/scene.ts). */
 export const SCENE_KIND: Record<Backdrop | 'title', number> = {
@@ -88,7 +97,17 @@ export function drawBackdrop(g: Gfx, kind: Backdrop | 'title' | 'results', t: nu
   const p = opts.pointer;
   const parallax: [number, number] = p ? [Math.max(-1, Math.min(1, (p.x / VIEW_W) * 2 - 1)), Math.max(-1, Math.min(1, 1 - (p.y / VIEW_H) * 2))] : [0, 0];
   const tier = QUALITY[quality];
-  g.sceneField(SCENE_KIND[key] ?? 0, { light: LIGHT[lighting], parallax, variant: PREVIEW_VARIANT || opts.variant || 0, scale: PREVIEW_SCALE || tier.sceneScale });
+  // Painted layers (ART-0045) replace the procedural scene when the manifest has them for this key.
+  const layers = backdropLayers(key);
+  if (layers.length) {
+    for (const l of layers) {
+      const img = g.image(import.meta.env.BASE_URL + l.url);
+      const k = l.parallax ?? 0;
+      // Overscan by the largest shift so parallax never reveals an edge.
+      const pad = 24 * k;
+      g.drawImage(img, -pad - parallax[0] * 24 * k, -pad + parallax[1] * 12 * k, VIEW_W + pad * 2, VIEW_H + pad * 2);
+    }
+  } else g.sceneField(SCENE_KIND[key] ?? 0, { light: LIGHT[lighting], parallax, variant: PREVIEW_VARIANT || opts.variant || 0, scale: PREVIEW_SCALE || tier.sceneScale });
   if (!EMBERS.has(key)) return;
   g.setBlend('add');
   for (let i = 0; i < tier.embers; i++) {

@@ -72,19 +72,19 @@ Cross-refs: ENG (texture loading, atlases, shader inputs), UX (layouts and widge
 - [x] ART-0036 · Demo · P0 · M · Texture-atlas packer (`tools/pack-atlas.ts`) for UI, icons, ailments and VFX: 2048² pages, 2 px extrude, max-rects packing, a JSON frame map consumed by `gfx.ts`
 - [ ] ART-0037 · Demo · P0 · S · Premultiplied-alpha export for all atlased sprites; no dark halos when drawn on parchment and on flesh (visual test page)
 - [x] ART-0038 · Demo · P1 · S · Spritesheet and flipbook convention (row-major, fixed cell, `fps` in the manifest) for ailment and VFX animation
-- [ ] ART-0039 · Demo · P1 · M · Hot-reload of `assets/` in the Vite dev server: changing an exported PNG updates the running game within 2 s without restart
+- [x] ART-0039 · Demo · P1 · M · Hot-reload of `assets/` in the Vite dev server: changing an exported PNG updates the running game within 2 s without restart
 - [x] ART-0040 · Demo · P1 · S · Art viewer debug scene (`?scene=artview`) listing every manifest entry, with zoom, frame-stepping and a background swatch toggle
-- [ ] ART-0041 · Demo · P1 · M · Placeholder-tracking: every asset in the manifest tagged `placeholder|wip|final`, with a build report counting each; the demo build fails if any demo asset is `placeholder`
+- [x] ART-0041 · Demo · P1 · M · Placeholder-tracking: every asset in the manifest tagged `placeholder|wip|final`, with a build report counting each; the demo build fails if any demo asset is `placeholder`
 - [ ] ART-0042 · Demo · P2 · S · Photoshop/Krita export actions shared in `art-src/tools/` so every artist exports identically
-- [ ] ART-0043 · Alpha · P2 · M · Per-chapter asset bundles (lazy-loaded atlas pages per chapter) with the manifest split so Chapter 3–5 art doesn't load in the demo
+- [x] ART-0043 · Alpha · P2 · M · Per-chapter asset bundles (lazy-loaded atlas pages per chapter) with the manifest split so Chapter 3–5 art doesn't load in the demo
 
 ### Engine integration (with ENG)
 - [ ] ART-0044 · Demo · P0 · M · Portrait layer format: base body + expression overlay + blink + mouth frames as named layers, loaded by a `PortraitRig` in the story scene, replacing `drawPortrait()`
-- [ ] ART-0045 · Demo · P0 · M · Background layer format: far / mid / near / FX layers with parallax factors in the manifest, replacing `drawBackdrop()` per `Backdrop` key
-- [ ] ART-0046 · Demo · P0 · M · Flesh texture input spec agreed with ENG: albedo (sRGB), normal (tangent-space, OpenGL +Y), wet/spec mask (R), vein mask (G), cavity/AO (B) and height (A), 1024² tileable — `FLESH_FS` samples these on top of the procedural base
-- [ ] ART-0047 · Demo · P0 · S · Ailment sprite anchor convention: pivot at the wound centre, with the embed direction encoded in the manifest (`angle0`) so `Embedded` entities rotate correctly
-- [ ] ART-0048 · Demo · P1 · S · 9-slice metadata for every UI frame (margins in the manifest) consumed by `panel()` / `parchment()` replacements
-- [ ] ART-0049 · Demo · P1 · S · Colour-management rule: all authoring in sRGB, previews checked on a calibrated display (ΔE < 3), and flesh albedo validated through the candlelit grade LUT
+- [x] ART-0045 · Demo · P0 · M · Background layer format: far / mid / near / FX layers with parallax factors in the manifest, replacing `drawBackdrop()` per `Backdrop` key
+- [x] ART-0046 · Demo · P0 · M · Flesh texture input spec agreed with ENG: albedo (sRGB), normal (tangent-space, OpenGL +Y), wet/spec mask (R), vein mask (G), cavity/AO (B) and height (A), 1024² tileable — `FLESH_FS` samples these on top of the procedural base
+- [x] ART-0047 · Demo · P0 · S · Ailment sprite anchor convention: pivot at the wound centre, with the embed direction encoded in the manifest (`angle0`) so `Embedded` entities rotate correctly
+- [x] ART-0048 · Demo · P1 · S · 9-slice metadata for every UI frame (margins in the manifest) consumed by `panel()` / `parchment()` replacements
+- [x] ART-0049 · Demo · P1 · S · Colour-management rule: all authoring in sRGB, previews checked on a calibrated display (ΔE < 3), and flesh albedo validated through the candlelit grade LUT
 
 ---
 

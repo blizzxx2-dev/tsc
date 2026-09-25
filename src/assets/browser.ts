@@ -53,7 +53,16 @@ export function browserBackend(gfx: Gfx): LoaderBackend {
 }
 
 export function createAssets(gfx: Gfx): AssetLoader {
-  return new AssetLoader(browserBackend(gfx), import.meta.env.BASE_URL);
+  const loader = new AssetLoader(browserBackend(gfx), import.meta.env.BASE_URL);
+  // ART-0039: the dev server rebuilds assets/ on change (vite.config.ts assetsHotReload) and
+  // announces it; swap the changed assets into the running game without a reload.
+  if (import.meta.hot)
+    import.meta.hot.on('assets:rebuilt', async () => {
+      const m = await import(/* @vite-ignore */ `./manifest.gen.ts?t=${Date.now()}`);
+      const ids = await loader.hotSwap(m.MANIFEST, m.BUNDLES);
+      console.info(`[assets] hot-swapped ${ids.length} asset(s)`, ids);
+    });
+  return loader;
 }
 
 /** Resolve `p`, or give up after `ms` (returns false) — font/bundle loads must never block boot forever. */
