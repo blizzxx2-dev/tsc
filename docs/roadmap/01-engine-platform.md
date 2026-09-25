@@ -114,8 +114,8 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0070 · Demo · P0 · S · Shader lab dev route `?shaderlab` — all organ kinds × species side by side, light sweep, zoom 1×/2.5×, frozen time; baseline screenshots checked in for review
 - [x] ENG-0071 · Demo · P0 · S · First-pass de-sparkle — finite-difference normal from a low-frequency height field replaces screen-space `dFdx/dFdy`×40; spec exponent 40→18 and intensity 0.55→0.22
 - [ ] ENG-0072 · Demo · P0 · M · Energy-normalised Blinn-Phong/GGX specular with per-organ roughness (0.35–0.6) and intensity clamp — temporal flicker metric (mean |Δluma| between consecutive frames of a static scene) <1% and art sign-off in the shader lab
-- [ ] ENG-0073 · Demo · P0 · M · Specular anti-aliasing — fade noise octaves by pixel footprint (`fwidth`) and widen roughness from normal variance (Toksvig) so sparkle does not return at 4K, 2.5× zoom or 0.5× render scale
-- [ ] ENG-0074 · Demo · P0 · M · Smooth voronoi — replace `cells()` hard `d2 - d1` edges with a smooth-minimum voronoi (k uniform) plus per-kind edge-softness uniform; lung, liver and flesh edges signed off as membranes, not cracks
+- [x] ENG-0073 · Demo · P0 · M · Specular anti-aliasing — fade noise octaves by pixel footprint (`fwidth`) and widen roughness from normal variance (Toksvig) so sparkle does not return at 4K, 2.5× zoom or 0.5× render scale
+- [x] ENG-0074 · Demo · P0 · M · Smooth voronoi — replace `cells()` hard `d2 - d1` edges with a smooth-minimum voronoi (k uniform) plus per-kind edge-softness uniform; lung, liver and flesh edges signed off as membranes, not cracks
 - [ ] ENG-0075 · Demo · P1 · S · Irregular voronoi cells — domain-warp input with low-frequency fbm and randomised jitter so the grid regularity disappears (shader lab A/B)
 - [ ] ENG-0076 · Demo · P1 · S · Wetness-masked glints — replace the sparse "wet glint" noise term so glints appear only on wet tissue and never shimmer when the light rig flickers
 
@@ -226,8 +226,8 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0156 · Demo · P2 · S · Candle flicker on the light rig — luminance amplitude ≤3%, disabled by the reduce-flashing setting
 
 ### Gameplay feedback effects
-- [ ] ENG-0157 · Demo · P0 · M · Litany v2 — star-shaped ripple radiating from the gesture centroid, sepia with gold highlight retention, radial "clock-hand" blur on onset, smooth ramp driven by the `litanyTime` curve
-- [ ] ENG-0158 · Demo · P0 · S · Damage feedback — directional red edge flash on `hurt` (intensity ∝ amount, direction from hurt position), capped repetition rate
+- [x] ENG-0157 · Demo · P0 · M · Litany v2 — star-shaped ripple radiating from the gesture centroid, sepia with gold highlight retention, radial "clock-hand" blur on onset, smooth ramp driven by the `litanyTime` curve
+- [x] ENG-0158 · Demo · P0 · S · Damage feedback — directional red edge flash on `hurt` (intensity ∝ amount, direction from hurt position), capped repetition rate
 - [ ] ENG-0159 · Demo · P1 · S · Low-vitals treatment — red edge pulse synced to the ECG beat (not a fixed `sin(t*6)`), progressive desaturation below 15 vitals
 - [ ] ENG-0160 · Demo · P1 · S · Chromatic aberration pass — radial, strength uniform, used on Malison phase shifts and heavy damage, scaled by the accessibility slider
 - [ ] ENG-0161 · Demo · P1 · M · Malison curse screen effect — ink tendrils creeping from screen edges via noise mask plus slight warp, intensity from boss phase

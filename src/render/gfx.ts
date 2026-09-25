@@ -53,6 +53,8 @@ export interface FleshParams {
   pulse: number;
   light: Vec;
   corrupt: number;
+  /** Voronoi edge softness per organ (smaller = crisper membranes). */
+  cellSoft?: number;
 }
 
 export interface PostParams {
@@ -65,6 +67,11 @@ export interface PostParams {
   /** Colour grade: multiplicative tint and lift, per chapter/location. */
   tint?: [number, number, number];
   lift?: [number, number, number];
+  /** Litany ripple origin (0..1 screen, y up) and seconds since invoked. */
+  litanyCenter?: [number, number];
+  litanyAge?: number;
+  /** Damage flash: direction from screen centre (virtual px) and intensity 0..1. */
+  hurt?: [number, number, number];
 }
 
 interface Target {
@@ -315,6 +322,9 @@ export class Gfx {
     gl.uniform3fv(this.u(this.post, 'u_tint'), p.tint ?? [1, 1, 1]);
     gl.uniform3fv(this.u(this.post, 'u_lift'), p.lift ?? [0, 0, 0]);
     gl.uniform2f(this.u(this.post, 'u_res'), this.canvas.width, this.canvas.height);
+    gl.uniform2fv(this.u(this.post, 'u_litanyCenter'), p.litanyCenter ?? [0.5, 0.5]);
+    gl.uniform1f(this.u(this.post, 'u_litanyAge'), p.litanyAge ?? 10);
+    gl.uniform3fv(this.u(this.post, 'u_hurt'), p.hurt ?? [0, 0, 0]);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     gl.activeTexture(gl.TEXTURE0);
 
@@ -536,6 +546,7 @@ export class Gfx {
     gl.uniform1f(this.u(pr, 'u_pulse'), f.pulse);
     gl.uniform2f(this.u(pr, 'u_light'), f.light.x, f.light.y);
     gl.uniform1f(this.u(pr, 'u_corrupt'), f.corrupt);
+    gl.uniform1f(this.u(pr, 'u_cellSoft'), f.cellSoft ?? 0.08);
     this.bindTex(this.surface.tex, 1);
     gl.uniform1i(this.u(pr, 'u_surface'), 1);
     gl.uniform2f(this.u(pr, 'u_surfTexel'), 1 / this.surface.w, 1 / this.surface.h);

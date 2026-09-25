@@ -160,8 +160,12 @@ export class Operation {
     this.say(line);
   }
 
+  /** Most recent damage, for directional feedback. */
+  lastHurt = { x: FIELD.cx, y: FIELD.cy, amount: 0, at: -10 };
+
   hurt(amount: number, pos?: Vec): void {
     if (this.status !== 'running') return;
+    if (amount >= 1) this.lastHurt = { x: pos?.x ?? FIELD.cx, y: pos?.y ?? FIELD.cy, amount, at: this.elapsed };
     this.vitals = Math.max(0, this.vitals - amount);
     this.shake = Math.min(12, this.shake + amount * 1.5);
     if (pos && amount >= 1) this.popup(`-${Math.round(amount)}`, pos, '#c0392b');

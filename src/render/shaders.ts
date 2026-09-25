@@ -51,16 +51,22 @@ float fbm(vec2 p) {
   return v + a * 0.5;
 }
 // Distance to nearest cell edge: membranes, alveoli, fat lobules.
+// Smooth voronoi edge distance: d2 - d1 with a soft minimum so membranes never form hard creases.
+uniform float u_cellSoft;
 float cells(vec2 p) {
   vec2 i = floor(p), f = fract(p);
   float d1 = 8.0, d2 = 8.0;
+  float k = max(u_cellSoft, 0.02);
+  float sm = 0.0;
   for (int y = -1; y <= 1; y++) for (int x = -1; x <= 1; x++) {
     vec2 g = vec2(x, y);
     vec2 o = vec2(hash(i + g), hash(i + g + 7.7));
     float d = length(g + o - f);
+    sm += exp(-d / k);
     if (d < d1) { d2 = d1; d1 = d; } else if (d < d2) d2 = d;
   }
-  return d2 - d1;
+  float smoothD1 = -k * log(sm);
+  return max(d2 - max(d1, smoothD1), 0.0) * smoothstep(0.0, 0.08, d2 - d1);
 }`;
 
 /**
@@ -163,7 +169,10 @@ void main() {
   vec3 nrm = normalize(vec3(-grad * 0.35, 1.0));
   vec3 L = normalize(vec3((u_light - px) / 700.0, 0.9));
   float diff = max(dot(nrm, L), 0.0);
-  float spec = pow(max(dot(reflect(-L, nrm), vec3(0, 0, 1)), 0.0), 18.0);
+  // Specular anti-aliasing (Toksvig-style): widen the lobe where the normal varies within a pixel.
+  float nVar = clamp(length(fwidth(nrm)) * 6.0, 0.0, 1.0);
+  float specPow = mix(18.0, 6.0, nVar);
+  float spec = pow(max(dot(reflect(-L, nrm), vec3(0, 0, 1)), 0.0), specPow) * mix(1.0, 0.45, nVar);
   float cut = smoothstep(0.05, 0.7, sf.r);
   // Subsurface scattering: light bleeds red through flesh on the shadowed side.
   vec3 sss = u_base * vec3(1.25, 0.35, 0.28) * pow(1.0 - diff, 2.0) * 0.32;
@@ -186,7 +195,8 @@ void main() {
   // Swelling: inflamed, taut and shiny.
   col = mix(col, col * vec3(1.25, 0.88, 0.78) + spec * 0.25, clamp(sf.a * 1.2, 0.0, 1.0) * 0.75);
   // Fine wet glints, sparse and soft.
-  col += vec3(1.0, 0.95, 0.9) * smoothstep(0.82, 0.95, noise(uv * 6.0 + 3.0)) * spec * 0.25;
+  float glintFoot = 1.0 - smoothstep(0.02, 0.12, fwidth(uv.x * 6.0));
+  col += vec3(1.0, 0.95, 0.9) * smoothstep(0.82, 0.95, noise(uv * 6.0 + 3.0)) * spec * 0.25 * glintFoot;
 
   // Curse corruption: purple-black bruising that creeps in from the rim.
   float cor = u_corrupt * smoothstep(0.3, 1.0, r + fbm(uv * 1.7 + u_time * 0.1) * 0.4);
@@ -242,17 +252,34 @@ uniform float u_chroma;
 uniform vec3 u_tint;
 uniform vec3 u_lift;
 uniform vec2 u_res;
+uniform vec2 u_litanyCenter;
+uniform float u_litanyAge;
+uniform vec3 u_hurt; // xy: direction from screen centre, z: intensity
 out vec4 o;
 // smoothstep with edge0 > edge1 is undefined in GLSL; this is the portable falling edge.
 float rsmooth(float hi, float lo, float x) { return 1.0 - smoothstep(lo, hi, x); }
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+// Five-pointed star distance (for the Litany ripple).
+float starShape(vec2 p) {
+  float a = atan(p.y, p.x) + 1.5708;
+  float seg = 6.28318 / 5.0;
+  float m = mod(a, seg) - seg * 0.5;
+  float r = length(p);
+  return r * (0.75 + 0.35 * abs(m) / (seg * 0.5));
+}
 void main() {
   vec2 uv = v_uv + u_shake;
-  // Litany: the world ripples as time is held still.
+  float aspect = u_res.x / max(u_res.y, 1.0);
+  // Litany: a star-shaped ripple radiates from where the sign was drawn; the world holds still.
+  float lring = 0.0;
   if (u_litany > 0.0) {
-    float d = length(uv - 0.5);
-    uv += (uv - 0.5) * sin(d * 40.0 - u_time * 3.0) * 0.003 * u_litany;
+    vec2 lp = (uv - u_litanyCenter) * vec2(aspect, 1.0);
+    float sd = starShape(lp);
+    float front = u_litanyAge * 0.9;
+    lring = exp(-pow((sd - front) * 14.0, 2.0)) * exp(-u_litanyAge * 1.2);
+    uv += normalize(lp + 1e-4) / vec2(aspect, 1.0) * lring * 0.012;
+    uv += (uv - u_litanyCenter) * sin(sd * 40.0 - u_time * 3.0) * 0.002 * u_litany;
   }
   vec3 c;
   // Chromatic aberration grows toward the frame edge (curses, trauma).
@@ -272,8 +299,12 @@ void main() {
   c *= 1.0 - u_flicker * 0.05;
 
   if (u_litany > 0.0) {
+    // Sepia, but gold highlights survive — the Litany gilds what it touches.
     vec3 sepia = vec3(l * 1.1, l * 0.95, l * 0.7) + vec3(0.06, 0.04, 0.0);
-    c = mix(c, sepia, u_litany * 0.7);
+    float keep = smoothstep(0.55, 0.9, l);
+    vec3 gilded = mix(sepia, c * vec3(1.15, 0.95, 0.55), keep);
+    c = mix(c, gilded, u_litany * 0.75);
+    c += vec3(1.0, 0.8, 0.4) * lring * 0.6;
   }
 
   vec2 vq = v_uv - 0.5;
@@ -281,6 +312,13 @@ void main() {
   c *= mix(0.35, 1.0, vig);
   // Failing vitals: the edges pulse red.
   c = mix(c, vec3(0.5, 0.0, 0.02), (1.0 - vig) * u_danger * (0.5 + 0.5 * sin(u_time * 6.0)));
+  // Damage: a red flash from the edge nearest the wound.
+  if (u_hurt.z > 0.0) {
+    vec2 hd = normalize(u_hurt.xy + 1e-4);
+    float side = max(dot(normalize(vq * vec2(aspect, 1.0) + 1e-4), hd), 0.0);
+    float edgeW = smoothstep(0.25, 0.75, length(vq * vec2(1.0, 0.8)));
+    c = mix(c, vec3(0.6, 0.02, 0.03), clamp(u_hurt.z, 0.0, 1.0) * edgeW * (0.35 + 0.65 * side) * 0.8);
+  }
 
   c += (hash(v_uv * 900.0 + u_time) - 0.5) * 0.035;
   o = vec4(c, 1.0);

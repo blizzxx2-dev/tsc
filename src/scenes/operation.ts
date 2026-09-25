@@ -41,6 +41,7 @@ export class OperationScene implements Scene {
   private entered = false;
   private hintT = 0;
   private particles = new Particles();
+  private litanyCenter: [number, number] = [0.5, 0.5];
   private comboT = 0;
   private lastCombo = 0;
 
@@ -110,6 +111,9 @@ export class OperationScene implements Scene {
     if (input.rightDown) this.starTrail.push({ ...input.pos });
     else if (this.starTrail.length) {
       if (isStar(this.starTrail)) {
+        const cx = this.starTrail.reduce((a, p) => a + p.x, 0) / this.starTrail.length;
+        const cy = this.starTrail.reduce((a, p) => a + p.y, 0) / this.starTrail.length;
+        this.litanyCenter = [cx / VIEW_W, 1 - cy / 720];
         if (!op.invokeLitany()) op.popup(op.litanyUsed ? 'The Litany is spent.' : 'Not now.', input.pos, PALETTE.inkDim);
       } else if (this.starTrail.length > 8) op.popup('The sign falters…', input.pos, PALETTE.inkDim);
       this.starTrail = [];
@@ -210,6 +214,7 @@ export class OperationScene implements Scene {
       pulse: this.pulse,
       light,
       corrupt: this.corrupt,
+      cellSoft: pal.cellSoft,
     });
     g.fluidComposite(light);
     for (const e of ents) e.draw(g, op);
@@ -241,6 +246,13 @@ export class OperationScene implements Scene {
       shake,
       bloom: 0.7,
       chroma: (this.corrupt * 1.2 + danger * 0.8 + Math.min(1, op.shake / 10) * 0.6) * soften,
+      litanyCenter: this.litanyCenter,
+      litanyAge: op.litanyTime > 0 ? LITANY_DURATION - op.litanyTime : 10,
+      hurt: (() => {
+        const age = op.elapsed - op.lastHurt.at;
+        const k = Math.max(0, 1 - age / 0.45) * Math.min(1, op.lastHurt.amount / 6) * soften;
+        return [op.lastHurt.x - VIEW_W / 2, -(op.lastHurt.y - 360), k] as [number, number, number];
+      })(),
       tint: ch2 ? [0.95, 0.98, 1.05] : [1.03, 0.99, 0.94],
       lift: ch2 ? [0.0, 0.004, 0.012] : [0.012, 0.004, 0.0],
     });
