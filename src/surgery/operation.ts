@@ -318,6 +318,8 @@ export class Operation {
   /** How many things the brand touched this frame (a grub seared alongside a Malison doesn't split). */
   brandTargets = 0;
   private fleshBrandT = 0;
+  /** Continuous brand contact with bare flesh (s), for the grace (INP-0035). */
+  private fleshContactT = 0;
   private emptyHoldT = 0;
   private emptyMissed = false;
   private toggleLatch = false;
@@ -809,6 +811,11 @@ export class Operation {
   /** The previously held instrument, for quick-swap. */
   lastTool: ToolId | null = null;
 
+  /** The entity the current stroke seized (a grabbed object, an incision being traced), if any. */
+  get held(): Entity | null {
+    return this.captured;
+  }
+
   setTool(t: ToolId): void {
     this.log?.push(['t', t]);
     if (!this.def.tools.includes(t) || this.tool === t) return;
@@ -990,7 +997,7 @@ export class Operation {
       const c = this.captured;
       if (c?.alive) this.as(c, () => c.onRelease(this, ptr, tool));
       this.releaseCapture();
-      this.fleshBrandT = 0;
+      this.fleshBrandT = this.fleshContactT = 0;
     }
   }
 
@@ -1040,15 +1047,22 @@ export class Operation {
     } else if (this.tool === 'brand' && onFlesh) {
       // Searing healthy flesh hurts; entities that absorb the brand set this flag.
       if (!live.some((e) => e.alive && e.branded)) {
-        this.hurt(T.brand.fleshHurt * dt);
+        // A short grace (INP-0035): the first `fleshGrace` s of contact do no harm, so brief contact while
+        // moving between targets is not penalised. The grace runs once per contact; a scorch does not re-arm it.
+        const was = this.fleshContactT;
+        this.fleshContactT += dt;
         this.fleshBrandT += dt;
-        this.sayOnce('brand-flesh', 'Careful! The brand is searing healthy flesh!', 'danger');
+        const past = Math.max(0, this.fleshContactT - Math.max(was, T.brand.fleshGrace));
+        if (past > 0) {
+          this.hurt(T.brand.fleshHurt * past);
+          this.sayOnce('brand-flesh', 'Careful! The brand is searing healthy flesh!', 'danger');
+        }
         if (this.fleshBrandT > T.brand.fleshBurnAfter) {
           this.fleshBrandT = 0;
           this.rate('bad', ptr.pos, 'Scorched');
           this.spawnPenalty(new SimpleBurn(ptr.pos));
         }
-      } else this.fleshBrandT = 0;
+      } else this.fleshBrandT = this.fleshContactT = 0;
     }
   }
 

@@ -282,7 +282,8 @@ describe('QAT-0026 brand on healthy flesh', () => {
     const { op } = runningOp();
     const v = op.vitals;
     holdAt(op, 'brand', at(-200, -100), 1, false);
-    expect(v - op.vitals).toBeCloseTo(4, 1);
+    // The first 120 ms of contact are free (INP-0035); the rest drains at 4/s.
+    expect(v - op.vitals).toBeCloseTo(4 * (1 - op.tuning.brand.fleshGrace), 1);
     holdAt(op, 'brand', at(-200, -100), 1, false);
     expect(op.callouts.filter((l) => l.includes('searing healthy flesh'))).toHaveLength(1);
     expect(op.flags.has('brand-flesh')).toBe(true);
