@@ -40,7 +40,7 @@ export function playOperation(game: Game, def: OperationDef, onWin: () => void, 
             if (op.litanyUsed) flags.count('litanySeenCount');
           }
           store(save);
-          emitGameEvent({ type: 'operation-end', opId: def.id, won, rank: won ? op.rank() : null, score: op.score, assisted: assisted(), litanyUsed: op.litanyUsed });
+          emitGameEvent({ type: 'operation-end', opId: def.id, won, rank: won ? op.rank() : null, score: op.score, assisted: assisted(), litanyUsed: op.litanyUsed, maxCombo: op.maxCombo });
           const summary = finishOperation(op);
           const cp = op.checkpointPhase();
           noteOutcome(def.id, won ? op.rank() : null, op.litanyUsed);

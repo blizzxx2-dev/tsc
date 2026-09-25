@@ -41,6 +41,11 @@ export type DisplayModeSetting = 'windowed' | 'borderless' | 'fullscreen';
 export type Quality = 'low' | 'medium' | 'high';
 export type Preset = Quality | 'custom';
 
+/** Windowed-mode size presets (UIX-0105). */
+export const WINDOW_SIZES = ['1280x720', '1600x900', '1920x1080', '2560x1440'] as const;
+export type WindowSize = (typeof WINDOW_SIZES)[number];
+export const windowSizeOf = (s: WindowSize): { w: number; h: number } => ({ w: Number(s.split('x')[0]), h: Number(s.split('x')[1]) });
+
 export interface Settings {
   version: number;
   // display
@@ -145,6 +150,10 @@ export interface Settings {
   // privacy
   crashReports: Consent;
   telemetry: Consent;
+  /** Windowed-mode size preset (desktop, UIX-0105). */
+  windowSize: WindowSize;
+  /** Bloom intensity 0..1 when bloom is on (UIX-0105). */
+  bloomAmount: number;
 }
 
 interface Base<K extends keyof Settings> {
@@ -184,7 +193,7 @@ export const SETTINGS_SCHEMA: readonly SettingDef[] = [
   d('grain', 'graphics', 'toggle', { type: 'bool' }),
   d('chromaticAberration', 'graphics', 'toggle', { type: 'bool' }),
   d('flicker', 'graphics', 'toggle', { type: 'bool' }),
-  d('shake', 'accessibility', 'choice', { type: 'number', min: 0, max: 1, step: 0.5, options: [0, 0.5, 1] }),
+  d('shake', 'accessibility', 'slider', { type: 'number', min: 0, max: 1, step: 0.05 }),
   vol('volume'),
   vol('music'),
   vol('sfx'),
@@ -228,6 +237,9 @@ export const SETTINGS_SCHEMA: readonly SettingDef[] = [
   d('language', 'language', 'choice', { type: 'enum', options: ['auto', ...SHIPPED_LANGUAGES] }),
   d('crashReports', 'privacy', 'choice', { type: 'enum', options: ['ask', 'on', 'off'] }),
   d('telemetry', 'privacy', 'choice', { type: 'enum', options: ['ask', 'on', 'off'] }),
+  // UIX-0105: appended after the privacy keys so existing schema order is kept.
+  d('windowSize', 'display', 'choice', { type: 'enum', options: WINDOW_SIZES }),
+  d('bloomAmount', 'graphics', 'slider', { type: 'number', min: 0, max: 1, step: 0.05 }),
 ];
 
 export const DEFAULT_SETTINGS: Readonly<Settings> = Object.freeze({
@@ -291,6 +303,8 @@ export const DEFAULT_SETTINGS: Readonly<Settings> = Object.freeze({
   language: 'auto',
   crashReports: 'ask',
   telemetry: 'ask',
+  windowSize: '1280x720',
+  bloomAmount: 1,
 });
 
 /** Graphics preset contents (PLT-0098). Safe mode uses `low` (PLT-0021). */

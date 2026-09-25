@@ -10,6 +10,11 @@ import { ControlsScene } from './input/controlsScene';
 import { GameplayOptionsScene } from './scenes/gameplayOptions';
 import { OperationsScene } from './scenes/operations';
 import { DemoEndScene } from './scenes/demoend';
+import { ChapterSelectScene } from './scenes/chapterSelect';
+import { SaveSlotsScene } from './scenes/saveSlots';
+import { CreditsScene, NoticesScene } from './scenes/credits';
+import { ExtrasScene } from './scenes/extras';
+import { DamagedRecordsScene } from './scenes/title';
 import { NoticeScene, noticesDue } from './scenes/notice';
 import { Audio } from './core/audio';
 import { ErrorBoundary, type CrashRecord } from './core/boundary';
@@ -431,10 +436,17 @@ async function boot(): Promise<void> {
       controls: () => new ControlsScene(back),
       audio: () => new AudioOptionsScene(back),
       calibrate: () => new CalibrateScene(back),
+      chapters: () => new ChapterSelectScene(),
+      slots: () => new SaveSlotsScene('new'),
+      credits: () => new CreditsScene(),
+      extras: () => new ExtrasScene(),
+      display: () => new OptionsScene(back, true, 'display'),
     };
     const make = screens[params.get('ui') ?? ''];
     if (make) game.instant(() => game.go(make()));
     if (params.get('ui') === 'card') game.instant(() => game.push?.(new ControlsCardScene()));
+    if (params.get('ui') === 'notices') game.instant(() => game.push?.(new NoticesScene()));
+    if (params.get('ui') === 'damaged') game.instant(() => game.push?.(new DamagedRecordsScene()));
   }
   // ?ui=gallery shows every widget for visual review (UIX-0006).
   if (params.get('ui') === 'gallery') game.instant(() => game.go(new GalleryScene(() => game.go(new TitleScene()))));

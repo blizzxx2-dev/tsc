@@ -1,16 +1,26 @@
 import type { Game, Scene } from '../core/scene';
 import { t } from '../i18n';
+import { formatNumber } from '../i18n/format';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { CAMPAIGN } from '../content/campaign';
 import { VIEW_W } from '../ui/layout';
-import { divider, leatherPanel, UI, waxSeal } from '../ui/ornaments';
+import { Ui } from '../ui/kit';
+import { drawTooltip, menuEntry, sealButton } from '../ui/controls';
+import { caps, glass, heading, INK, numerals, rule, well } from '../ui/hudKit';
 import { chapterSeal } from '../art/kit';
 import { settings } from '../core/settings';
 import { kilnRowsPlate } from '../art/plates';
-import { button, reticle } from '../ui/widgets';
+import { reticle } from '../ui/widgets';
+import { MOTION, tween } from '../ui/motion';
+import { fitBlock } from '../ui/text';
+import { uiEvents } from '../ui/events';
 import { drawBackdrop } from './backdrop';
 import { save } from './flow';
+import { rankSeal } from './rankArt';
+import { campaignStarted, countRank, formatPlaytime, statsOf } from './campaignState';
+import { ExtrasScene } from './extras';
+import { OperationsScene } from './operations';
 import { TitleScene } from './title';
 import { platform } from '../platform';
 import { EDITIONS, storeUrl } from '../platform/editions';
@@ -18,12 +28,44 @@ import { EDITIONS, storeUrl } from '../platform/editions';
 /** Store page for the wishlist call-to-action (the full game's app id lives in src/platform/editions.ts). */
 export const STORE_URL = storeUrl(EDITIONS.full.steamAppId);
 
-/** Shown after the last demo chapter: thanks, the player's case ledger, and a wishlist call-to-action. */
+/** Every operation of the shipped chapters, in campaign order, with its chapter numeral. */
+export const demoOperations = () => CAMPAIGN.flatMap((c) => c.steps.flatMap((s) => (s.kind === 'op' ? [{ chapter: c.numeral, op: s.op }] : [])));
+
+/**
+ * Shown after the last demo chapter (UIX-0168) and again from Extras (UIX-0173): thanks, a grid of
+ * rank seals for every operation, the ledger totals (play time, XS seals, longest chain, Litany
+ * uses), a wishlist seal, and a way back into the Operating Theatre for better seals.
+ */
 export class DemoEndScene implements Scene {
+  readonly ui = new Ui('demoend');
   private t = 0;
+
+  /** `replay`: opened from Extras — Back returns there instead of the title. */
+  constructor(private replay = false) {}
+
+  private layout(game: Game): void {
+    const ui = this.ui;
+    ui.begin();
+    const ready = this.t > 0.8;
+    ui.button('wishlist', { x: VIEW_W / 2 - 150, y: 592, w: 300, h: 52 }, t('ui.demoend.wishlist'), () => platform.steam.openStore(EDITIONS.full.steamAppId), { style: 'seal', enabled: ready });
+    ui.button('replay', { x: 120, y: 596, w: 330, h: 44 }, t('ui.demoend.replay'), () => game.go(new OperationsScene()), { enabled: ready && campaignStarted(), tip: t('ui.demoend.replay_note') });
+    ui.button('return', { x: VIEW_W - 450, y: 596, w: 330, h: 44 }, t(this.replay ? 'ui.common.back' : 'ui.demoend.return'), () => this.leave(game), { enabled: ready });
+    if (!ui.focus) ui.focusFirst('wishlist');
+  }
+
+  private leave(game: Game): void {
+    if (this.replay) game.go(new ExtrasScene());
+    else game.go(new TitleScene());
+  }
+
   update(dt: number, game: Game): void {
     this.t += dt;
-    if (game.input.actPressed('ui.back')) game.go(new TitleScene());
+    this.layout(game);
+    this.ui.update(game.input, dt);
+    if (game.input.actPressed('ui.back')) {
+      uiEvents.emit('ui.back', { id: 'demoend' });
+      this.leave(game);
+    }
   }
 
   render(g: Gfx, game: Game): void {
@@ -31,39 +73,64 @@ export class DemoEndScene implements Scene {
     drawBackdrop(g, 'night', g.time);
     g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1.1, defocus: 8 });
     const a = Math.min(1, this.t);
-    {
-      const vr = g.viewRect();
-      g.rect(vr.x, vr.y, vr.w, vr.h, hex('#000000', 0.45));
-    }
-    g.text(t('ui.game.title').toUpperCase(), VIEW_W / 2, 96, { size: 56, font: 'display', color: hex('#fff4d0', a), color2: hex('#c8923c', a), align: 'center', tracking: 0.09, shadow: hex('#000000', 0.9 * a), soft: true });
-    divider(g, VIEW_W / 2, 124, 420, hex(UI.brass, a));
-    g.text(t('ui.demoend.thanks'), VIEW_W / 2, 166, { size: 28, font: 'italic', color: hex(UI.parch, a), align: 'center' });
-    g.text(t('ui.demoend.teaser'), VIEW_W / 2, 200, { size: 22, color: hex('#c8b890', a), align: 'center' });
-
+    const vr = g.viewRect();
+    g.rect(vr.x, vr.y, vr.w, vr.h, hex('#000000', 0.5));
+    g.text(t('ui.game.title').toUpperCase(), VIEW_W / 2, 84, { size: 52, font: 'display', color: hex('#fff4d0', a), color2: hex('#c8923c', a), align: 'center', tracking: 0.09, shadow: hex('#000000', 0.9 * a), soft: true });
+    rule(g, VIEW_W / 2, 100, 520, hex(INK.gilt, 0.8 * a));
+    g.text(t('ui.demoend.thanks'), VIEW_W / 2, 136, { size: 24, font: 'italic', color: hex(INK.text, a), align: 'center', shadow: hex('#000000', 0.8 * a) });
+    g.text(t('ui.demoend.teaser'), VIEW_W / 2, 164, { size: 19, color: hex(INK.dim, a), align: 'center', shadow: hex('#000000', 0.8 * a) });
     // A pressed seal for each chapter finished (ART-0067).
-    CAMPAIGN.forEach((c, i) => chapterSeal(g, VIEW_W / 2 + (i === 0 ? -330 : 330), 150, 38, c.numeral, this.t - 0.6 - i * 0.25));
-    const panelR = { x: 70, y: 232, w: 680, h: 330 };
-    leatherPanel(g, panelR, { alpha: 0.94 * a });
-    g.text(t('ui.demoend.ledger').toUpperCase(), panelR.x + panelR.w / 2, panelR.y + 44, { size: 18, font: 'display', color: hex('#e6c77a'), align: 'center', tracking: 0.16, shadow: hex('#000000', 0.8), soft: true });
-    const ops = CAMPAIGN.flatMap((c) => c.steps.flatMap((s) => (s.kind === 'op' ? [{ ch: c.numeral, op: s.op }] : [])));
-    ops.forEach(({ ch, op }, i) => {
-      const col = i < 5 ? 0 : 1;
-      const row = i % 5;
-      const x = panelR.x + 36 + col * 322;
-      const y = panelR.y + 90 + row * 48;
+    CAMPAIGN.forEach((c, i) => chapterSeal(g, VIEW_W / 2 + (i === 0 ? -400 : 400), 120, 36, c.numeral, this.t - 0.6 - i * 0.25));
+
+    const k = tween(Math.max(0, this.t - 0.3), MOTION.panel);
+    // ---- the ledger: seal grid and totals (left)
+    const pr = { x: 60, y: 190, w: 720, h: 386 };
+    glass(g, pr, { alpha: k, strength: 1.1 });
+    heading(g, t('ui.demoend.ledger'), pr.x + pr.w / 2, pr.y + 46, 300, k, 22);
+    const ops = demoOperations();
+    const cols = 5;
+    const pitch = 128;
+    const x0 = pr.x + pr.w / 2 - ((Math.min(cols, ops.length) - 1) * pitch) / 2;
+    ops.forEach(({ chapter, op }, i) => {
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      const x = x0 + col * pitch;
+      const y = pr.y + 112 + row * 108;
       const best = save.best[op.id];
-      g.text(t('ui.demoend.ledger_entry', { chapter: ch, index: row + 1, title: op.title }), x, y, { size: 20, color: hex(UI.parch) });
-      if (best) waxSeal(g, x + 284, y - 7, 17, '#8a1016', best.rank, best.rank === 'XS' ? 14 : 20);
-      else g.text('—', x + 284, y, { size: 20, color: hex('#6a5a40'), align: 'center' });
+      const reveal = Math.min(1, Math.max(0, (this.t - 0.5 - i * 0.08) * 3)) * k;
+      caps(g, t('ui.theatre.entry', { chapter, index: (i % cols) + 1 }), x, y - 36, 12, hex(INK.dim, reveal), 'center');
+      if (best) rankSeal(g, x, y, 26, best.rank, reveal);
+      else {
+        well(g, { x: x - 26, y: y - 26, w: 52, h: 52 }, 0.7 * reveal);
+        g.arc(x, y, 22, 1, hex(INK.gilt, 0.35 * reveal));
+      }
+      fitBlock(g, `demoend.${op.id}`, op.title, x, y + 46, pitch - 10, 2, { size: 16, color: hex(INK.text, 0.9 * reveal), align: 'center', shadow: false }, 1.15);
+    });
+    // Totals as a ledger row along the bottom of the plate.
+    const s = statsOf();
+    const totals: [string, string][] = [
+      [t('ui.demoend.playtime'), formatPlaytime(save.playtime)],
+      [t('ui.demoend.xs_count'), t('ui.demoend.of_total', { n: countRank('XS'), total: ops.length })],
+      [t('ui.demoend.longest_chain'), formatNumber(s.longestChain)],
+      [t('ui.demoend.litany_uses'), formatNumber(s.litanyUses)],
+    ];
+    const tw = (pr.w - 60) / totals.length;
+    rule(g, pr.x + pr.w / 2, pr.y + 302, pr.w - 80, hex(INK.gilt, 0.6 * k));
+    totals.forEach(([label, value], i) => {
+      const cx = pr.x + 30 + tw * (i + 0.5);
+      caps(g, label, cx, pr.y + 330, 12, hex(INK.dim, k), 'center');
+      numerals(g, value, cx, pr.y + 362, 22, '#ffffff', '#d8ccb4', 'center', k);
     });
 
-    // A woodcut plate of what comes next (ART-0060).
-    kilnRowsPlate(g, { x: 780, y: 232, w: 430, h: 330 }, settings.reduceMotion ? 0 : this.t, t('ui.demoend.plate'), a);
+    // ---- a woodcut plate of what comes next (ART-0060), right
+    kilnRowsPlate(g, { x: 810, y: 190, w: 410, h: 386 }, settings.reduceMotion ? 0 : this.t, t('ui.demoend.plate'), a * k);
 
-    if (this.t > 0.8) {
-      if (button(g, game.input, t('ui.demoend.wishlist'), VIEW_W / 2, 620, 32)) platform.steam.openStore(EDITIONS.full.steamAppId);
-      if (button(g, game.input, t('ui.demoend.return'), VIEW_W / 2, 675, 24)) game.go(new TitleScene());
+    for (const n of this.ui.nodes) {
+      const st = this.ui.state(n.id);
+      if (n.style === 'seal') sealButton(g, n, st, g.time, 26);
+      else menuEntry(g, n, st, g.time, 22);
     }
+    drawTooltip(g, this.ui);
     reticle(g, game.input.pos);
     g.endFrame();
   }
