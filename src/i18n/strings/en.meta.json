@@ -7966,5 +7966,29 @@
     "maxPx": 260,
     "context": "Hint under the operation title card: any press skips the card.",
     "screenshot": "docs/loc/screens/operation.png"
+  },
+  "ui.options.ui_scale": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.ui_scale_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.ui_scale_value": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 280,
+    "context": "Value of the interface-scale row when the window cannot show the chosen scale: the setting, then in brackets the scale in force.",
+    "screenshot": "docs/loc/screens/options.png"
   }
 }

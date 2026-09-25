@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { mapPointer } from '../src/core/input';
 import { Camera2D, EASE, Shake } from '../src/render/camera';
-import { computeView } from '../src/render/viewport';
+import { computeView, effectiveUiScale } from '../src/render/viewport';
 import { anchor, anchorShift, viewRect } from '../src/ui/layout';
 import { Entity } from '../src/surgery/entity';
 import { Operation, type OperationDef } from '../src/surgery/operation';
@@ -58,6 +58,47 @@ describe('aspect policy and pointer mapping (ENG-0182–0185)', () => {
     }
   });
 
+  it('UI scale (UIX-0015/ENG-0188): 0.8 zooms out around the safe area, 1.0 is the base view, 1.25 is clamped so the safe area still fits', () => {
+    for (const [, w, h] of cases) {
+      const base = computeView(w, h);
+      const small = computeView(w, h, 1280, 720, 0.8);
+      const large = computeView(w, h, 1280, 720, 1.25);
+      // 80 %: the HUD is four fifths the size and the view shows the extra world symmetrically around the safe area.
+      expect(small.scale).toBeCloseTo(base.scale * 0.8, 9);
+      expect(small.w).toBeCloseTo(base.w / 0.8, 6);
+      expect(small.h).toBeCloseTo(base.h / 0.8, 6);
+      expect(small.ox).toBeCloseTo((small.w - 1280) / 2, 6);
+      expect(small.oy).toBeCloseTo((small.h - 720) / 2, 6);
+      // The canvas box does not change with the UI scale, and the safe area is always inside the view.
+      for (const v of [small, large]) {
+        expect(v.w * v.scale).toBeCloseTo(base.w * base.scale, 6);
+        expect(v.h * v.scale).toBeCloseTo(base.h * base.scale, 6);
+        expect(v.w).toBeGreaterThanOrEqual(1280 - 1e-9);
+        expect(v.h).toBeGreaterThanOrEqual(720 - 1e-9);
+        expect(v.ox).toBeGreaterThanOrEqual(-1e-9);
+        expect(v.oy).toBeGreaterThanOrEqual(-1e-9);
+      }
+      // 100 % is exactly the base policy; 125 % never crops: the safe area already fills one axis, so it is clamped.
+      expect(computeView(w, h, 1280, 720, 1)).toEqual(base);
+      expect(large.scale).toBeLessThanOrEqual(Math.min(w / 1280, h / 720) + 1e-9);
+      expect(effectiveUiScale(w, h, 0.8)).toBeCloseTo(0.8, 9);
+      expect(effectiveUiScale(w, h, 1)).toBeCloseTo(1, 9);
+      expect(effectiveUiScale(w, h, 1.25)).toBeLessThanOrEqual(1.25 + 1e-9);
+    }
+    // 16:10 (Steam Deck 1280×800) at 0.8: 1600×1000 virtual units with 160/140 margins, HUD anchors on the screen edges.
+    const deck = computeView(1280, 800, 1280, 720, 0.8);
+    expect(deck).toMatchObject({ w: 1600, h: 1000, ox: 160, oy: 140 });
+    expect(deck.scale).toBeCloseTo(0.8, 9);
+    expect(anchor('top-left', 0, 0, deck)).toEqual({ x: 0, y: -140 });
+    expect(anchor('bottom-right', 0, 0, deck)).toEqual({ x: 1280, y: 860 });
+    expect(anchorShift('bottom', deck)).toBe(140);
+    expect(computeView(1280, 800, 1280, 720, 1.25)).toEqual(computeView(1280, 800));
+    expect(effectiveUiScale(1280, 800, 1.25)).toBeCloseTo(1, 9);
+    // Out-of-range values are clamped to the setting's range; a non-number means 100 %.
+    expect(computeView(1920, 1080, 1280, 720, 0.1)).toEqual(computeView(1920, 1080, 1280, 720, 0.8));
+    expect(computeView(1920, 1080, 1280, 720, NaN)).toEqual(computeView(1920, 1080));
+  });
+
   it('anchors: horizontal edges stay on the safe area, vertical edges follow the visible view (ENG-0184)', () => {
     const tall = { ...computeView(1024, 768) };
     expect(anchor('top-left', 14, 10, tall)).toEqual({ x: 14, y: -120 + 10 });
@@ -106,7 +147,17 @@ describe('Camera2D (ENG-0045/0046/0047/0049)', () => {
   });
 
   it('a click at 2× zoom with an offset pan lands on the entity under the cursor', () => {
-    const def = { id: 't', title: 't', patient: 'p', diagnosis: 'd', organ: 'flesh', timeLimit: 99, tools: ['tongs'], phases: [{ spawn: () => [] }], ranks: { S: 1, A: 1, B: 1 } } as unknown as OperationDef;
+    const def = {
+      id: 't',
+      title: 't',
+      patient: 'p',
+      diagnosis: 'd',
+      organ: 'flesh',
+      timeLimit: 99,
+      tools: ['tongs'],
+      phases: [{ spawn: () => [] }],
+      ranks: { S: 1, A: 1, B: 1 },
+    } as unknown as OperationDef;
     const op = new Operation(def);
     for (let i = 0; i < 200 && op.status !== 'running'; i++) op.update(1 / 60);
     const a = new Target({ x: 600, y: 400 }, 12);

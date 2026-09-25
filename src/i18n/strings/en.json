@@ -967,5 +967,8 @@
   "ui.briefing.targets_value": "S {s, number} · A {a, number} · B {b, number}",
   "ui.briefing.new": "New",
   "ui.briefing.ilse_note": "Sister Ilse writes",
-  "hud.intro.skip": "Press to begin"
+  "hud.intro.skip": "Press to begin",
+  "ui.options.ui_scale": "Interface scale",
+  "ui.options.ui_scale_note": "HUD and menu size. Under 100 % shows more theatre.",
+  "ui.options.ui_scale_value": "{value, number, percent} ({shown, number, percent})"
 }

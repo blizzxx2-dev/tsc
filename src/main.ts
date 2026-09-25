@@ -19,7 +19,7 @@ import { NoticeScene, noticesDue } from './scenes/notice';
 import { Audio } from './core/audio';
 import { ErrorBoundary, type CrashRecord } from './core/boundary';
 import { Clock } from './core/clock';
-import { settings, saveSettings } from './core/settings';
+import { onSettingChange, settings, saveSettings } from './core/settings';
 import { SceneAudio } from './audio/scenes';
 import { bindUiAudio } from './audio/ui-hooks';
 import { Input } from './core/input';
@@ -101,6 +101,7 @@ class Main implements Game {
       (rec) => this.fatal(rec),
     );
     window.addEventListener('resize', () => this.resize());
+    onSettingChange('uiScale', () => this.resize());
     canvas.addEventListener('pointerdown', () => this.audio.unlock());
     window.addEventListener('keydown', (e) => {
       this.audio.unlock();
@@ -156,11 +157,11 @@ class Main implements Game {
     installPlatform(this);
   }
 
-  /** Fill the window; the view grows past 16:9 instead of letterboxing (ENG-0180–0183). DPR is not capped. */
+  /** Fill the window; the view grows past 16:9 instead of letterboxing (ENG-0180–0183). DPR is not capped. UI scale: UIX-0015. */
   private resize(): void {
     const w = window.innerWidth;
     const h = window.innerHeight;
-    const v = computeView(w, h, VIEW_W, VIEW_H);
+    const v = computeView(w, h, VIEW_W, VIEW_H, settings.uiScale);
     const cssW = Math.floor(v.w * v.scale);
     const cssH = Math.floor(v.h * v.scale);
     const dpr = window.devicePixelRatio || 1;
