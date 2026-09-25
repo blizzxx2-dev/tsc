@@ -2,8 +2,18 @@ import { SPECIES } from '../src/surgery/species';
 import { describe, expect, it } from 'vitest';
 import { allCampaignOperations, FULL_CAMPAIGN } from '../src/content/campaign';
 import { CantorKnot, EggCluster, FangNest, MatinsHerald } from '../src/surgery/bosses/elites';
-import { ENTITY_REGISTRY, makeEntity, opData, spawnAll, validateOp, validateSpec, type EntitySpec, type OperationData } from '../src/content/schema';
-import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, Sigil, Venom } from '../src/surgery/entities';
+import {
+  ENTITY_REGISTRY,
+  makeEntity,
+  opData,
+  opWarnings,
+  spawnAll,
+  validateOp,
+  validateSpec,
+  type EntitySpec,
+  type OperationData,
+} from '../src/content/schema';
+import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, SALVE_MAX, Sigil, Venom } from '../src/surgery/entities';
 import { ChoirVoice, EggSac, LaudsMalison, SpiderlingGrub } from '../src/surgery/lauds';
 import { Malison, MalisonShard } from '../src/surgery/malison';
 import { Operation, type OperationDef } from '../src/surgery/operation';
@@ -44,7 +54,18 @@ describe('entity registry (CON-0002)', () => {
     [{ e: 'malison-lauds', at: [0, 0] }, LaudsMalison],
     [{ e: 'elite-broodcluster', at: [0, 0] }, EggCluster],
     [{ e: 'elite-cantor', at: [0, -60] }, CantorKnot],
-    [{ e: 'elite-fangnest', path: [[-40, 0], [0, 0], [40, 0]], angles: [0.9, 1.2, 0.6] }, FangNest],
+    [
+      {
+        e: 'elite-fangnest',
+        path: [
+          [-40, 0],
+          [0, 0],
+          [40, 0],
+        ],
+        angles: [0.9, 1.2, 0.6],
+      },
+      FangNest,
+    ],
     [{ e: 'herald', at: [0, 0] }, MatinsHerald],
   ];
 
@@ -56,10 +77,36 @@ describe('entity registry (CON-0002)', () => {
 
   it('an elite spec spawns its core followed by the wounds it binds', () => {
     const op = start();
-    const nest = spawnAll([{ e: 'elite-fangnest', path: [[-40, 0], [0, 0], [40, 0]], angles: [0.9, 1.2, 0.6] }], op);
+    const nest = spawnAll(
+      [
+        {
+          e: 'elite-fangnest',
+          path: [
+            [-40, 0],
+            [0, 0],
+            [40, 0],
+          ],
+          angles: [0.9, 1.2, 0.6],
+        },
+      ],
+      op,
+    );
     expect(nest[0]).toBeInstanceOf(FangNest);
     expect(nest.slice(1).map((e) => e.constructor.name)).toEqual(['Embedded', 'Embedded', 'Embedded']);
-    expect(validateSpec({ e: 'elite-fangnest', path: [[0, 0], [10, 0]], angles: 'x' }, ['tongs'], 'p')).toEqual(['p (elite-fangnest): "angles" must be a list of numbers']);
+    expect(
+      validateSpec(
+        {
+          e: 'elite-fangnest',
+          path: [
+            [0, 0],
+            [10, 0],
+          ],
+          angles: 'x',
+        },
+        ['tongs'],
+        'p',
+      ),
+    ).toEqual(['p (elite-fangnest): "angles" must be a list of numbers']);
   });
 
   it('applies the common hidden/required parameters', () => {
@@ -94,6 +141,16 @@ describe('operation data validation (CON-0003)', () => {
   it('every demo operation is written as data and validates cleanly', () => {
     expect(demoOps).toHaveLength(10);
     for (const def of demoOps) expect(validateOp(dataOf(def)), def.id).toEqual([]);
+  });
+
+  it('warns when a briefing sends the Salve to a cut too long to salve (GAM-0062)', () => {
+    for (const def of demoOps) expect(opWarnings(dataOf(def)), def.id).toEqual([]);
+    const cut = (len: number) => ({
+      ...base,
+      phases: [{ callout: ['Salve that cut shut.'], spawn: [{ e: 'laceration', at: [0, 0], angle: 0, len }] as EntitySpec[] }],
+    });
+    expect(opWarnings(cut(SALVE_MAX + 20)).join()).toMatch(/needs the Thread/);
+    expect(opWarnings(cut(SALVE_MAX - 6))).toEqual([]);
   });
 
   const base: OperationData = {

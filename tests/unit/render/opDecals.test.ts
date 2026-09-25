@@ -4,7 +4,7 @@ import { Input } from '../../../src/core/input';
 import type { Game } from '../../../src/core/scene';
 import { Bindings } from '../../../src/input/bindings';
 import type { DecalMaps, Stamp } from '../../../src/render/decals';
-import { OperationScene } from '../../../src/scenes/operation';
+import { OperationScene, SALVE_GLOSS_S } from '../../../src/scenes/operation';
 import { Burn, Laceration } from '../../../src/surgery/entities';
 import { FIELD } from '../../../src/surgery/operation';
 import { fakeCanvas, fakeGl, installFakeDom } from '../../fakegl';
@@ -85,5 +85,33 @@ describe('operation decals', () => {
     const snap = g.fieldSnapshot;
     scene.render(g, game);
     expect(g.fieldSnapshot).toBe(snap);
+  });
+});
+
+describe('salve gloss (GAM-0043)', () => {
+  it('a salved spot stays glossy for 4 s after the last stroke over it, then dries', async () => {
+    const { scene } = await run(() => [new Laceration(at(0, 0), 0, 30, 0.2)], 1);
+    const s = scene as unknown as {
+      op: { status: string; elapsed: number; cursor: { x: number; y: number }; setTool(t: string): void; tool: string };
+      tickGloss(op: unknown, down: boolean): void;
+      gloss: unknown[];
+    };
+    const op = s.op;
+    op.status = 'running';
+    op.setTool('salve');
+    op.cursor = at(0, 0);
+    s.tickGloss(op, true);
+    expect(s.gloss).toHaveLength(1);
+    // Stroking the same spot keeps it fresh.
+    op.elapsed += 3;
+    s.tickGloss(op, true);
+    expect(s.gloss).toHaveLength(1);
+    op.elapsed += 3.9;
+    s.tickGloss(op, false);
+    expect(s.gloss).toHaveLength(1);
+    op.elapsed += 0.2;
+    s.tickGloss(op, false);
+    expect(s.gloss).toHaveLength(0);
+    expect(SALVE_GLOSS_S).toBe(4);
   });
 });

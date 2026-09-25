@@ -345,6 +345,23 @@ export function validateSpec(spec: unknown, tools: readonly ToolId[], where: str
   return errs;
 }
 
+/**
+ * Briefing mismatches (GAM-0062): only small lacerations (length ≤ SALVE_MAX, under 25 px from the
+ * centre to either end) close under the Salve; larger ones need the Thread. A phase whose callout
+ * sends the surgeon to the Salve for a cut that is too long to salve gets a warning (not an error:
+ * the op still plays, the briefing is just wrong).
+ */
+export function opWarnings(data: OperationData): string[] {
+  const warns: string[] = [];
+  data.phases.forEach((ph, i) => {
+    const text = (ph.callout ?? []).join(' ');
+    if (!/salve/i.test(text) || !/\b(cut|cuts|laceration|lacerations|gash|slash)\b/i.test(text)) return;
+    const cuts = (ph.spawn ?? []).filter((s): s is EntitySpec & { len: number } => s.e === 'laceration' && typeof (s as { len?: unknown }).len === 'number');
+    if (cuts.length && cuts.every((c) => c.len > SALVE_MAX)) warns.push(`${data.id}.p${i}: the callout sends the Salve to a cut, but every laceration here is longer than ${SALVE_MAX} px and needs the Thread`);
+  });
+  return warns;
+}
+
 /** Every problem in an operation's data (empty = valid). */
 export function validateOp(data: OperationData): string[] {
   const errs: string[] = [];

@@ -92,6 +92,9 @@ const bossPlates = (op: Operation) => {
 /** 1 → I, 2 → II … for phase banners. */
 const roman = (n: number): string => ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'][n - 1] ?? String(n);
 
+/** Seconds a Salve stroke stays glossy after it is laid (GAM-0043). */
+export const SALVE_GLOSS_S = 4;
+
 export class OperationScene implements Scene {
   op: Operation;
   private paused = false;
@@ -195,6 +198,8 @@ export class OperationScene implements Scene {
   /** The Respite button in the HUD (UIX-0102): registered each frame, drawn beside the score plate. */
   private pauseRect = { x: VIEW_W - 16 - 250 - 8 - 44, y: 14, w: 44, h: 44 };
   private pauseHover = 0;
+  /** Salve gloss (GAM-0043): where the Salve was spread and when; each spot stays wet for SALVE_GLOSS_S. */
+  private gloss: { x: number; y: number; t: number }[] = [];
   /** Time attack (GAM-0217): the live clock, the personal best it races and whether this run beat it. */
   private ta: TimeAttackClock | null = null;
   private ghost: TimeAttackRun | null = null;
@@ -367,6 +372,7 @@ export class OperationScene implements Scene {
     }
     this.presRng = new Rng(this.def.seed ?? 1);
     this.popups.length = 0;
+    this.gloss.length = 0;
     this.listen(this.op);
     this.camera.reset();
     this.particles = new Particles(undefined, this.runOpts.seed ?? this.def.seed ?? 1);
@@ -482,6 +488,7 @@ export class OperationScene implements Scene {
     this.toolFlash = Math.max(0, this.toolFlash - dt * 3);
 
     op.update(dt);
+    this.tickGloss(op, input.down);
     if (this.ta) {
       this.ta.tick(op, dt);
       if (op.status === 'won' && this.taBest === null) this.taBest = recordTimeAttack(op.def.id, this.ta.run(op));
@@ -673,6 +680,7 @@ export class OperationScene implements Scene {
     g.fluidComposite(light, { blood: speciesBlood(colours.blood, pal.species), pus: colours.pus, bile: colours.bile, gore: presentation.gore });
     // Entities, particles and world FX go through the world camera (ENG-0045); endWorld resets it.
     g.setCamera(this.camera.isIdentity ? null : this.camera.matrix());
+    this.drawGloss(g, op);
     this.tray.update(op.entities, op.elapsed);
     this.tray.draw(g, op.elapsed, { tray: op.def.tools.includes('tongs'), lead: op.entities.some((e) => e instanceof Embedded && e.kind === 'hexstone') });
     // Closed wounds: the sutured scar (ART-0188) over the carved channel; it also appears on the results card.
@@ -1136,6 +1144,33 @@ export class OperationScene implements Scene {
     live.push({ x: X(ta.time), y: Y(op.vitals / op.maxVitals) });
     if (live.length > 1) g.polyline(live, 2, hex('#e04040', 0.95));
     if (this.taBest) caps(g, tr('hud.timeattack.new_best'), r.x + r.w / 2, r.y + r.h + 20, 14, hex(INK.goldHi), 'center');
+  }
+
+  /** Lay salve gloss where the Salve is being spread, and let spots older than SALVE_GLOSS_S go. */
+  private tickGloss(op: Operation, down: boolean): void {
+    const now = op.elapsed;
+    if (op.status === 'running' && op.tool === 'salve' && down && onBody(op.cursor)) {
+      const last = this.gloss[this.gloss.length - 1];
+      if (!last || Math.hypot(last.x - op.cursor.x, last.y - op.cursor.y) > 9) this.gloss.push({ x: op.cursor.x, y: op.cursor.y, t: now });
+      else last.t = now;
+      if (this.gloss.length > 200) this.gloss.shift();
+    }
+    let w = 0;
+    for (const s of this.gloss) if (now - s.t < SALVE_GLOSS_S) this.gloss[w++] = s;
+    this.gloss.length = w;
+  }
+
+  /**
+   * Salve gloss (GAM-0043): a pale, wet film with a lamp highlight over every spot the Salve
+   * touched, holding its shine for 4 s after the last stroke over it, then drying off.
+   */
+  private drawGloss(g: Gfx, op: Operation): void {
+    for (const s of this.gloss) {
+      const age = op.elapsed - s.t;
+      const k = age < SALVE_GLOSS_S - 1 ? 1 : Math.max(0, SALVE_GLOSS_S - age);
+      g.circleGrad(s.x, s.y, 20, hex('#f2ead2', 0.2 * k), hex('#f2ead2', 0));
+      g.circle(s.x - 5, s.y - 6, 2.2, hex('#ffffff', 0.4 * k));
+    }
   }
 
   /** The Respite button (UIX-0102): a small glass cap with a pause glyph beside the score plate. */

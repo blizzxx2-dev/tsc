@@ -76,7 +76,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0040 · Demo · P0 · S · Salve capacity `SALVE_MAX = 46` covers one medium rot; refill is automatic after 3 s idle — document and expose in HUD as a meter
 - [x] GAM-0041 · Demo · P1 · S · Coverage-based rating using `coverage.ts` grid: ≥ 95 % in one stroke COOL, ≥ 80 % GOOD — unsalved remainder regrows at 20 %/s
 - [x] GAM-0042 · Demo · P1 · S · Salve on large wounds — Salve over open lacerations > 20 px does nothing and shows "Stitch it first" callout once per op
-- [ ] GAM-0043 · Demo · P2 · S · Salve gloss persists 4 s after application — (shader wetness param)
+- [x] GAM-0043 · Demo · P2 · S · Salve gloss persists 4 s after application — (shader wetness param)
 
 ### Tincture
 - [x] GAM-0044 · Demo · P0 · S · Tincture rating — injected while vitals < 40 COOL (needed), 40–70 GOOD, > 85 BAD ("wasteful") to stop spam
@@ -109,7 +109,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 
 ### Laceration
 - [x] GAM-0061 · Demo · P0 · S · Laceration bleed scales with length (0.01 vitals/s per px) and spawns a BloodPool every 4 s until stitched — unit test on 40/70 px cuts
-- [ ] GAM-0062 · Demo · P1 · S · Small lacerations (< 25 px) are Salve-closable — larger require Thread (content validator warns on mismatched briefings)
+- [x] GAM-0062 · Demo · P1 · S · Small lacerations (< 25 px) are Salve-closable — larger require Thread (content validator warns on mismatched briefings)
 - [x] GAM-0063 · Demo · P2 · S · Laceration edge shader — jagged vs clean variants for claw vs blade sources
 
 ### Embedded objects
