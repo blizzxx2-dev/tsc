@@ -201,9 +201,82 @@ void main() {
     // Blood that seeped in carries the time of the blood it came from.
     float t = dens > m.r + 0.004 ? max(m.a, max(max(l.a, r.a), max(d.a, u.a))) : m.a;
     o = vec4(dens, m.g * exp(-u_dt / 12.0), m.b, t);
+  } else if (u_kind == 2) {
+    // Stain (ENG-0264): necrosis (B) spreads slowly into living flesh around it; stone and frost
+    // (R, G) are laid and lifted by stamps only.
+    float bN = max(max(l.b, r.b), max(d.b, u.b));
+    float spread = bN > 0.35 ? (bN - 0.35) * clamp(u_dt * 0.12, 0.0, 0.05) : 0.0;
+    o = vec4(m.r, m.g, min(1.0, m.b + spread), m.a);
   } else {
     float hxN = max(max(l.g, r.g), max(d.g, u.g));
     float creep = hxN * (1.0 - clamp(u_dt * 0.3, 0.0, 0.2)) * step(0.05, m.r);
     o = vec4(m.r, max(m.g, creep), m.b, m.a);
   }
+}`;
+
+/**
+ * Stain composite (ENG-0261, ENG-0262, ENG-0264): R petrification — grey granite with voronoi
+ * fissures and no wet shine; G frost — dendritic rime, icy glints; B necrosis — a ramp from angry
+ * red through purple to black, drying as it deepens.
+ */
+export const STAIN_DECAL_FS = /* glsl */ `#version 300 es
+precision highp float;
+in vec2 v_uv;
+uniform sampler2D u_map;
+uniform vec2 u_texel;
+uniform float u_time;
+out vec4 o;
+vec2 hash2(vec2 p) {
+  p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+  return fract(sin(p) * 43758.5453);
+}
+// Distance to the nearest cell edge of a voronoi pattern (fissures).
+float fissure(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  float d1 = 8.0, d2 = 8.0;
+  for (int y = -1; y <= 1; y++)
+    for (int x = -1; x <= 1; x++) {
+      vec2 g = vec2(float(x), float(y));
+      vec2 c = g + hash2(i + g) - f;
+      float d = dot(c, c);
+      if (d < d1) { d2 = d1; d1 = d; } else if (d < d2) d2 = d;
+    }
+  return sqrt(d2) - sqrt(d1);
+}
+void main() {
+  vec4 m = texture(u_map, v_uv);
+  float stone = clamp(m.r, 0.0, 1.0);
+  float frost = clamp(m.g, 0.0, 1.0);
+  float nec = clamp(m.b, 0.0, 1.0);
+  if (stone < 0.02 && frost < 0.02 && nec < 0.02) discard;
+  vec2 px = v_uv / u_texel;
+  vec3 col = vec3(0.0);
+  float a = 0.0;
+  // Necrosis: red, purple, then black and dry.
+  if (nec > 0.02) {
+    vec3 ramp = nec < 0.5 ? mix(vec3(0.55, 0.12, 0.1), vec3(0.32, 0.1, 0.28), nec * 2.0) : mix(vec3(0.32, 0.1, 0.28), vec3(0.05, 0.03, 0.04), (nec - 0.5) * 2.0);
+    float na = smoothstep(0.02, 0.4, nec) * 0.85;
+    col = ramp * na;
+    a = na;
+  }
+  // Frost: rime in branching needles with sparkles.
+  if (frost > 0.02) {
+    float needles = abs(sin(px.x * 0.21 + sin(px.y * 0.13) * 3.0)) * abs(sin(px.y * 0.17 + sin(px.x * 0.11) * 3.0));
+    float rime = smoothstep(0.02, 0.6, frost) * (0.55 + 0.45 * needles);
+    float glint = step(0.985, fract(sin(dot(floor(px * 0.5), vec2(12.9898, 78.233))) * 43758.5453)) * (0.6 + 0.4 * sin(u_time * 3.0 + px.x));
+    vec3 ice = vec3(0.78, 0.88, 1.0) + vec3(glint);
+    col = col * (1.0 - rime) + ice * rime * 0.8;
+    a = max(a, rime * 0.8);
+  }
+  // Stone: granite over everything, cracked.
+  if (stone > 0.02) {
+    float cracks = 1.0 - smoothstep(0.0, 0.06, fissure(px * 0.05));
+    float grain = fract(sin(dot(floor(px * 0.7), vec2(12.9898, 78.233))) * 43758.5453) * 0.12;
+    vec3 granite = vec3(0.47, 0.46, 0.44) + grain - cracks * 0.28;
+    float sa = smoothstep(0.02, 0.5, stone);
+    col = col * (1.0 - sa) + granite * sa;
+    a = max(a, sa * 0.95);
+  }
+  o = vec4(col, a);
 }`;

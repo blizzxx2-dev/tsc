@@ -61,6 +61,9 @@ import { SalveFilm } from '../render/salveFilm';
 import { RuneScars } from '../render/runeScars';
 import { Closures } from '../render/closure';
 import { drawInterpolated } from '../render/interp';
+import { PetrifyFront } from '../surgery/ailments/vennmark';
+import { FrostPatch } from '../surgery/ailments/frost';
+import { Gangrene } from '../surgery/ailments/gangrene';
 import { addTray, HudLayer, inRect, trayFrame, traySide, traySlot } from '../input/hud';
 import { drawGraspOutline } from '../input/hover';
 import { HoldToRetry } from '../input/retry';
@@ -416,6 +419,7 @@ export class OperationScene implements Scene {
     this.popups.length = 0;
     this.gloss.length = 0;
     this.film.clear();
+    this.rimed.clear();
     this.runes.clear();
     this.closures.clear();
     this.frost = this.frostPeak = 0;
@@ -616,6 +620,7 @@ export class OperationScene implements Scene {
     // Cautery (ENG-0117): the Brand sears where it touches tissue.
     if (op.tool === 'brand' && game.input.down && op.status === 'running' && onBody(game.input.pos))
       d.stamp({ map: 'scorch', brush: 'soft', x: game.input.pos.x, y: game.input.pos.y, r: 11, value: [0.035, 0, 0], mode: 'add', t });
+    this.stampStains(op, d);
     // Fresh cuts weep along their length until they are sutured (ENG-0113).
     this.weepT -= op.timeScale / 120;
     const weep = this.weepT <= 0 && op.status === 'running';
@@ -646,6 +651,50 @@ export class OperationScene implements Scene {
         d.stamp({ map: 'blood', brush: 'soft', x: e.pos.x, y: e.pos.y, r: e.r * 1.15, value: [0.05, 0, 0], mode: 'erase', t: op.elapsed });
         d.stamp({ map: 'blood', brush: 'soft', x: game.input.pos.x, y: game.input.pos.y, r: 34, value: [0.12, 0, 0], mode: 'erase', t: op.elapsed });
         this.poolStains.set(e, Math.min(stained, e.r));
+      }
+    }
+  }
+
+  /** Seconds to the next stain stamp; stone, frost and necrosis are laid at 10 Hz. */
+  private stainT = 0;
+  /** Frost patches already rimed, with the thaw last seen. */
+  private rimed = new Map<object, number>();
+  /** Petrify plates already chiselled out of the stone. */
+  private chiselled = new WeakSet<object>();
+
+  /**
+   * The stain map (ENG-0261/0262/0264): the petrify front lays granite as it creeps and a cracked
+   * plate chisels it out; a frost patch lays rime once and each thaw lifts some of it; gangrene
+   * lays necrosis along its line until debrided, then it recedes.
+   */
+  private stampStains(op: Operation, d: DecalMaps): void {
+    this.stainT -= op.timeScale / 120;
+    if (this.stainT > 0 || op.status !== 'running') return;
+    this.stainT = 0.1;
+    const t = op.elapsed;
+    for (const e of op.entities) {
+      if (e instanceof PetrifyFront) {
+        if (e.alive) d.stamp({ map: 'stain', brush: 'soft', x: e.frontPos.x, y: e.frontPos.y, r: 30, value: [0.22, 0, 0], mode: 'add', t });
+        for (const p of e.plates)
+          if (p.cracked && !this.chiselled.has(p)) {
+            this.chiselled.add(p);
+            d.stamp({ map: 'stain', brush: 'splat', x: p.pos.x, y: p.pos.y, r: 28, value: [0.85, 0, 0], mode: 'erase', t, seed: this.presRng.next() });
+          }
+      } else if (e instanceof FrostPatch) {
+        const seen = this.rimed.get(e);
+        if (seen === undefined) {
+          this.rimed.set(e, e.thaw);
+          d.stamp({ map: 'stain', brush: 'splat', x: e.pos.x, y: e.pos.y, r: e.radius * 1.15, value: [0, 1, 0], mode: 'add', t, seed: this.presRng.next() });
+        } else if (e.thaw > seen || !e.alive) {
+          this.rimed.set(e, e.thaw);
+          const lift = e.alive ? Math.min(1, (e.thaw - seen) / Math.max(0.05, 1 - seen)) : 1;
+          d.stamp({ map: 'stain', brush: 'soft', x: e.pos.x, y: e.pos.y, r: e.radius * 1.25, value: [0, lift, 0], mode: 'erase', t });
+        }
+      } else if (e instanceof Gangrene && e.alive) {
+        const f = e.frontPos;
+        const ang = Math.atan2(f.y - e.tip.y, f.x - e.tip.x);
+        if (!e.debrided) d.stamp({ map: 'stain', brush: 'streak', x: (e.tip.x + f.x) / 2, y: (e.tip.y + f.y) / 2, r: Math.max(12, Math.hypot(f.x - e.tip.x, f.y - e.tip.y) / 2), rot: ang, value: [0, 0, 0.12], mode: 'add', t });
+        else d.stamp({ map: 'stain', brush: 'soft', x: (e.tip.x + f.x) / 2, y: (e.tip.y + f.y) / 2, r: Math.max(20, Math.hypot(f.x - e.tip.x, f.y - e.tip.y) / 2 + 14), value: [0, 0, 0.12], mode: 'erase', t });
       }
     }
   }
@@ -736,6 +785,7 @@ export class OperationScene implements Scene {
     });
     const colours = palette();
     this.decals.drawScorch(t);
+    this.decals.drawStain(t);
     this.decals.drawBlood(op.elapsed, { fresh: vec3(speciesBlood(colours.blood, pal.species)), light: { x: (light.x - FIELD.cx) / FIELD.rx, y: -(light.y - FIELD.cy) / FIELD.ry } });
     g.fluidComposite(light, { blood: speciesBlood(colours.blood, pal.species), pus: colours.pus, bile: colours.bile, gore: presentation.gore });
     // Entities, particles and world FX go through the world camera (ENG-0045); endWorld resets it.

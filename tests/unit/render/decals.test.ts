@@ -72,7 +72,7 @@ describe('batched stamps (ENG-0109)', () => {
       shaderCatalog()
         .filter((v) => v.name.startsWith('decal-'))
         .map((v) => v.name),
-    ).toEqual(['decal-stamp', 'decal-blood', 'decal-coverage', 'decal-scorch', 'decal-update']);
+    ).toEqual(['decal-stamp', 'decal-blood', 'decal-coverage', 'decal-scorch', 'decal-update', 'decal-stain']);
   });
 
   it('draws erases (the Leech-Pipe, ENG-0115) with a subtractive blend after that frame’s blood', async () => {

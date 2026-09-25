@@ -21,11 +21,11 @@
 import type { Vec } from '../core/math';
 import type { Gfx } from './gfx';
 import type { Quality } from './quality';
-import { BLOOD_DECAL_FS, BRUSHES, COVERAGE_FS, COVERAGE_VS, DECAL_UPDATE_FS, DECAL_UPDATE_VS, DECAL_VS, SCORCH_DECAL_FS, STAMP_FS, STAMP_VS, type Brush } from './shaders/decal';
+import { BLOOD_DECAL_FS, BRUSHES, COVERAGE_FS, COVERAGE_VS, DECAL_UPDATE_FS, DECAL_UPDATE_VS, DECAL_VS, STAIN_DECAL_FS, SCORCH_DECAL_FS, STAMP_FS, STAMP_VS, type Brush } from './shaders/decal';
 import { RenderTargetPool, type Target } from './targets';
 
-export type DecalMapId = 'blood' | 'scorch';
-export const DECAL_MAPS: readonly DecalMapId[] = ['blood', 'scorch'];
+export type DecalMapId = 'blood' | 'scorch' | 'stain';
+export const DECAL_MAPS: readonly DecalMapId[] = ['blood', 'scorch', 'stain'];
 
 /** Map resolution per quality tier (16:9, the aspect of FIELD_MAP_RECT). */
 export const DECAL_MAP_SIZE: Record<Quality, [number, number]> = { high: [2048, 1152], medium: [1536, 864], low: [1024, 576] };
@@ -81,6 +81,7 @@ export class DecalMaps {
   private covProg: WebGLProgram | null = null;
   private scorchProg: WebGLProgram | null = null;
   private updateProg: WebGLProgram | null = null;
+  private stainProg: WebGLProgram | null = null;
   /** World time of the last update pass (ENG-0119), or -1 before the first. */
   private lastUpdate = -1;
   /** Update passes run so far (tests and the debug overlay). */
@@ -108,7 +109,7 @@ export class DecalMaps {
     this.unRestore = reg.onRestore(() => {
       this.pool.forget();
       this.maps.clear();
-      this.stampProg = this.bloodProg = this.covProg = this.scorchProg = this.updateProg = null;
+      this.stampProg = this.bloodProg = this.covProg = this.scorchProg = this.updateProg = this.stainProg = null;
       this.vao = null;
       this.inst = null;
       this.instBytes = 0;
@@ -191,7 +192,8 @@ export class DecalMaps {
     reg.release(this.covProg);
     reg.release(this.scorchProg);
     reg.release(this.updateProg);
-    this.covProg = this.scorchProg = this.updateProg = null;
+    reg.release(this.stainProg);
+    this.covProg = this.scorchProg = this.updateProg = this.stainProg = null;
     reg.release(this.vao);
     reg.release(this.inst);
     reg.release(this.corners);
@@ -354,7 +356,7 @@ export class DecalMaps {
       gl.viewport(0, 0, tmp.w, tmp.h);
       gl.bindTexture(gl.TEXTURE_2D, t.tex);
       gl.uniform2f(this.u(p, 'u_texel'), 1 / t.w, 1 / t.h);
-      gl.uniform1i(this.u(p, 'u_kind'), id === 'blood' ? 0 : 1);
+      gl.uniform1i(this.u(p, 'u_kind'), id === 'blood' ? 0 : id === 'stain' ? 2 : 1);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       // Back into the map (same size and format, so a plain blit).
       gl.bindFramebuffer(gl.READ_FRAMEBUFFER, tmp.fb);
@@ -412,6 +414,31 @@ export class DecalMaps {
     if (!this.scorchProg) this.scorchProg = g.registry.createProgram('decal-scorch', DECAL_VS, SCORCH_DECAL_FS);
     const p = this.scorchProg;
     const t = this.map('scorch');
+    gl.useProgram(p);
+    gl.bindVertexArray(null);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, t.tex);
+    gl.uniform1i(this.u(p, 'u_map'), 0);
+    gl.uniform2f(this.u(p, 'u_texel'), 1 / t.w, 1 / t.h);
+    gl.uniform4f(this.u(p, 'u_rect'), FIELD_MAP_RECT.x, FIELD_MAP_RECT.y, FIELD_MAP_RECT.w, FIELD_MAP_RECT.h);
+    gl.uniform2f(this.u(p, 'u_view'), g.vw, g.vh);
+    gl.uniformMatrix3fv(this.u(p, 'u_xf'), false, g.viewTransform());
+    gl.uniform1f(this.u(p, 'u_time'), time);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    g.resyncBlend();
+  }
+  /** Shade the stain map (stone, frost, necrosis — ENG-0261/0262/0264) onto the field. */
+  drawStain(time: number): void {
+    if (!this.maps.has('stain')) return;
+    const g = this.g;
+    g.flush('program');
+    const gl = g.gl;
+    if (!this.stainProg) this.stainProg = g.registry.createProgram('decal-stain', DECAL_VS, STAIN_DECAL_FS);
+    const p = this.stainProg;
+    const t = this.map('stain');
     gl.useProgram(p);
     gl.bindVertexArray(null);
     gl.activeTexture(gl.TEXTURE0);

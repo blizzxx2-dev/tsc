@@ -115,3 +115,20 @@ describe('salve gloss (GAM-0043)', () => {
     expect(SALVE_GLOSS_S).toBe(4);
   });
 });
+
+describe('stain map: stone, frost and necrosis (ENG-0261, ENG-0262, ENG-0264)', () => {
+  it('the petrify front lays stone, a frost patch rimes once and thaws off, gangrene lays necrosis', async () => {
+    const { PetrifyFront } = await import('../../../src/surgery/ailments/vennmark');
+    const { FrostPatch } = await import('../../../src/surgery/ailments/frost');
+    let frost!: InstanceType<typeof FrostPatch>;
+    const { stamps } = await run(
+      () => [new PetrifyFront([at(-300, 0), at(-100, 0), at(0, 0)], 3, 4), (frost = new FrostPatch(at(150, 80), 30)), new Laceration(at(0, 200), 0, 30, 0.1)],
+      720,
+    );
+    const stain = stamps.filter((s) => s.map === 'stain');
+    expect(stain.filter((s) => s.value[0] > 0 && s.mode === 'add').length).toBeGreaterThan(5);
+    const rime = stain.filter((s) => s.value[1] > 0 && s.mode === 'add');
+    expect(rime).toHaveLength(1);
+    expect(rime[0].x).toBeCloseTo(frost.pos.x);
+  });
+});
