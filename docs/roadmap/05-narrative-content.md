@@ -60,7 +60,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] NAR-0031 · Alpha · P1 · M · Sensitivity read for Ch3 — flagellants and penitential self-harm treated without glamour; plague quarantine class politics
 - [ ] NAR-0032 · Alpha · P1 · M · Sensitivity read for Ch4 — war violence, the thirst/blood-debt courtesan (consent and agency in her choice)
 - [ ] NAR-0033 · Beta · P0 · M · Sensitivity read for Ch5 — obstetric operation (consult with a midwife/obstetrician), trial/witch-pricking scene, assisted-death themes of Compline
-- [ ] NAR-0034 · Beta · P1 · S · Content-warning toggles text — per-chapter warnings shown before Ch4 and Ch5 when "Show content notes" option is on
+- [x] NAR-0034 · Beta · P1 · S · Content-warning toggles text — per-chapter warnings shown before Ch4 and Ch5 when "Show content notes" option is on
 
 ## NAR · Epic 2 — Chapter I "The Hour of Matins": demo-quality rewrite
 

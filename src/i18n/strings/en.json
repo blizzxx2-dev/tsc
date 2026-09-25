@@ -1098,5 +1098,12 @@
   "ui.replay.playing": "Playing",
   "ui.replay.paused": "Paused",
   "ui.replay.keys": "Space play · Up/Down speed · Left/Right 5 s · H hide",
-  "ui.replay.drift": "Replay drifted from the recording"
+  "ui.replay.drift": "Replay drifted from the recording",
+  "ui.options.content_notes": "Show content notes",
+  "ui.options.content_notes_note": "A short card before Chapters IV and V names what they depict.",
+  "ui.content_notes.heading": "Before Chapter {numeral}",
+  "ui.content_notes.depicts": "This chapter depicts",
+  "ui.content_notes.ch4": "War wounds and battlefield surgery; a dying man kept conscious; a noble's blood-debt to a courtesan who feeds on it, and her choice; amputation; a corpse examined for a verdict.",
+  "ui.content_notes.ch5": "A trial for witchcraft, with witch-pricking described; an operation in childbirth; imprisonment; a mass sickness of a city; and a curse that offers a perfect, painless death.",
+  "ui.content_notes.footer": "You can turn these notes off in Options, under Accessibility."
 }

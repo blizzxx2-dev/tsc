@@ -6664,6 +6664,41 @@
         <note from="context">Replay player controls bar (small caps).</note>
         <note from="layout">font=display; size=16px; max=500px</note>
       </trans-unit>
+      <trans-unit id="ui.options.content_notes" resname="ui.options.content_notes" maxwidth="420" size-unit="pixel">
+        <source>Show content notes</source>
+        <note from="context">Accessibility option: per-chapter content notes.</note>
+        <note from="layout">font=body; size=22px; max=420px</note>
+      </trans-unit>
+      <trans-unit id="ui.options.content_notes_note" resname="ui.options.content_notes_note" maxwidth="820" size-unit="pixel">
+        <source>A short card before Chapters IV and V names what they depict.</source>
+        <note from="context">Options row description.</note>
+        <note from="layout">font=italic; size=18px; max=820px</note>
+      </trans-unit>
+      <trans-unit id="ui.content_notes.heading" resname="ui.content_notes.heading" maxwidth="760" size-unit="pixel">
+        <source>Before Chapter {numeral}</source>
+        <note from="context">Content-note card before a chapter (NAR-0034).</note>
+        <note from="layout">font=display; size=30px; max=760px</note>
+      </trans-unit>
+      <trans-unit id="ui.content_notes.depicts" resname="ui.content_notes.depicts" maxwidth="760" size-unit="pixel">
+        <source>This chapter depicts</source>
+        <note from="context">Content-note card before a chapter (NAR-0034).</note>
+        <note from="layout">font=display; size=14px; max=760px</note>
+      </trans-unit>
+      <trans-unit id="ui.content_notes.ch4" resname="ui.content_notes.ch4" maxwidth="760" size-unit="pixel">
+        <source>War wounds and battlefield surgery; a dying man kept conscious; a noble's blood-debt to a courtesan who feeds on it, and her choice; amputation; a corpse examined for a verdict.</source>
+        <note from="context">Content-note card before a chapter (NAR-0034). Wraps to several lines; plain, factual, no spoilers beyond the themes.</note>
+        <note from="layout">font=body; size=22px; max=760px; lines=7</note>
+      </trans-unit>
+      <trans-unit id="ui.content_notes.ch5" resname="ui.content_notes.ch5" maxwidth="760" size-unit="pixel">
+        <source>A trial for witchcraft, with witch-pricking described; an operation in childbirth; imprisonment; a mass sickness of a city; and a curse that offers a perfect, painless death.</source>
+        <note from="context">Content-note card before a chapter (NAR-0034). Wraps to several lines; plain, factual, no spoilers beyond the themes.</note>
+        <note from="layout">font=body; size=22px; max=760px; lines=7</note>
+      </trans-unit>
+      <trans-unit id="ui.content_notes.footer" resname="ui.content_notes.footer" maxwidth="760" size-unit="pixel">
+        <source>You can turn these notes off in Options, under Accessibility.</source>
+        <note from="context">Content-note card before a chapter (NAR-0034).</note>
+        <note from="layout">font=italic; size=17px; max=760px</note>
+      </trans-unit>
     </group>
   </body>
   </file>

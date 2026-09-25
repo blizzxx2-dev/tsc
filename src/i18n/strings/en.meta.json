@@ -8971,5 +8971,56 @@
     "size": 16,
     "maxPx": 500,
     "context": "Replay player controls bar (small caps)."
+  },
+  "ui.options.content_notes": {
+    "scene": "options",
+    "font": "body",
+    "size": 22,
+    "maxPx": 420,
+    "context": "Accessibility option: per-chapter content notes."
+  },
+  "ui.options.content_notes_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description."
+  },
+  "ui.content_notes.heading": {
+    "scene": "chapterNote",
+    "font": "display",
+    "size": 30,
+    "maxPx": 760,
+    "context": "Content-note card before a chapter (NAR-0034)."
+  },
+  "ui.content_notes.depicts": {
+    "scene": "chapterNote",
+    "font": "display",
+    "size": 14,
+    "maxPx": 760,
+    "context": "Content-note card before a chapter (NAR-0034)."
+  },
+  "ui.content_notes.ch4": {
+    "scene": "chapterNote",
+    "font": "body",
+    "size": 22,
+    "maxPx": 760,
+    "context": "Content-note card before a chapter (NAR-0034). Wraps to several lines; plain, factual, no spoilers beyond the themes.",
+    "maxLines": 7
+  },
+  "ui.content_notes.ch5": {
+    "scene": "chapterNote",
+    "font": "body",
+    "size": 22,
+    "maxPx": 760,
+    "context": "Content-note card before a chapter (NAR-0034). Wraps to several lines; plain, factual, no spoilers beyond the themes.",
+    "maxLines": 7
+  },
+  "ui.content_notes.footer": {
+    "scene": "chapterNote",
+    "font": "italic",
+    "size": 17,
+    "maxPx": 760,
+    "context": "Content-note card before a chapter (NAR-0034)."
   }
 }

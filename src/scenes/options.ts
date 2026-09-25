@@ -258,6 +258,7 @@ export function optionRows(tabId: OptionsTab): OptionRow[] {
         choice('cursor_colour', 'cursorColor', ['brass', 'white', 'cyan', 'magenta'] as const, () => [t('ui.options.cursor_brass'), t('ui.options.cursor_white'), t('ui.options.cursor_cyan'), t('ui.options.cursor_magenta')]),
         toggle('resume_countdown', 'resumeCountdown'),
         toggle('skip_unread', 'skipUnread'),
+        toggle('content_notes', 'contentNotes'),
         // Boss accessibility (BOS-0069, BOS-0082, BOS-0085, BOS-0112).
         toggle('boss_reduced_lag', 'bossReducedLag'),
         toggle('boss_lag_readout', 'bossLagReadout'),

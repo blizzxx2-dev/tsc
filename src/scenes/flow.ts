@@ -1,3 +1,4 @@
+import { CHAPTER_NOTES, ChapterNoteScene } from './chapterNote';
 import { footnoteStory } from '../content/footnotes';
 import { BOSS_OPS } from '../surgery/bosses/codex';
 import { submitHourClear } from '../surgery/hourRecords';
@@ -15,7 +16,7 @@ import { StoryScene } from './story';
 import { TitleScene } from './title';
 import { DemoEndScene } from './demoend';
 import { emitGameEvent } from '../platform/events';
-import { assisted } from '../core/settings';
+import { assisted, settings } from '../core/settings';
 import { finishChapter, finishOperation } from '../surgery/session';
 import type { OperationOptions } from '../surgery/operation';
 import { lastOutcome, noteOutcome, resolveStory } from '../content/conditions';
@@ -83,6 +84,9 @@ export function playOperation(game: Game, def: OperationDef, onWin: () => void, 
 }
 
 /** Play the campaign from a given chapter/step, saving progress as it goes. */
+/** Chapters whose content note has been shown this session. */
+const noted = new Set<string>();
+
 export function playStep(game: Game, chapter: number, step: number, loaded = false): void {
   const ch = CAMPAIGN[chapter];
   // Past the last chapter of the demo: the thank-you / wishlist screen.
@@ -105,6 +109,11 @@ export function playStep(game: Game, chapter: number, step: number, loaded = fal
     const notes = footnoteStory(ch.id, ch.numeral, ch.steps.flatMap((x) => (x.kind === 'op' ? [x.op.id] : [])));
     if (notes) return game.go(new StoryScene(notes, () => playStep(game, chapter + 1, 0)));
     return playStep(game, chapter + 1, 0);
+  }
+  // Content notes (NAR-0034): once per session, as Chapters IV and V open.
+  if (step === 0 && settings.contentNotes && CHAPTER_NOTES.includes(ch.id) && !noted.has(ch.id)) {
+    noted.add(ch.id);
+    return game.go(new ChapterNoteScene(ch.id, ch.numeral, () => playStep(game, chapter, step, loaded)));
   }
   advance(save, chapter, step);
   store(save);

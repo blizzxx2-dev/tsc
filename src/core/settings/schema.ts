@@ -129,6 +129,8 @@ export interface Settings {
   goreLevel: 'full' | 'reduced' | 'minimal';
   /** Abstract insect/spider art and muted chitter (UIX-0156). */
   creatureFilter: boolean;
+  /** Per-chapter content notes before Chapters IV and V (NAR-0034). */
+  contentNotes: boolean;
   /** Body text in a hyperlegible face instead of IM Fell English (UIX-0150). */
   readableFont: boolean;
   /** Reticle colour (UIX-0056). */
@@ -237,6 +239,7 @@ export const SETTINGS_SCHEMA: readonly SettingDef[] = [
   d('skipUnread', 'accessibility', 'toggle', { type: 'bool' }),
   d('goreLevel', 'accessibility', 'choice', { type: 'enum', options: ['full', 'reduced', 'minimal'] }),
   d('creatureFilter', 'accessibility', 'toggle', { type: 'bool' }),
+  d('contentNotes', 'accessibility', 'toggle', { type: 'bool' }),
   d('readableFont', 'accessibility', 'toggle', { type: 'bool' }),
   d('cursorColor', 'accessibility', 'choice', { type: 'enum', options: ['brass', 'white', 'cyan', 'magenta'] }),
   d('brightness', 'display', 'slider', { type: 'number', min: 0.7, max: 1.3, step: 0.05 }),
@@ -310,6 +313,7 @@ export const DEFAULT_SETTINGS: Readonly<Settings> = Object.freeze({
   skipUnread: false,
   goreLevel: 'full',
   creatureFilter: false,
+  contentNotes: true,
   readableFont: false,
   cursorColor: 'brass',
   brightness: 1,
