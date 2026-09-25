@@ -3,6 +3,7 @@ import { Malison } from '../surgery/malison';
 import { FIELD, type Operation, type OperationDef } from '../surgery/operation';
 import type { Vec } from '../core/math';
 import { n, say, type StoryDef } from './story';
+import { when } from './conditions';
 
 /** Position relative to the centre of the operating field. */
 export const at = (dx: number, dy: number): Vec => ({ x: FIELD.cx + dx, y: FIELD.cy + dy });
@@ -25,15 +26,19 @@ export const PROLOGUE: StoryDef = {
   place: 'Kessendorf — the Hospice of Saint Ildra the Merciful',
   backdrop: 'hospice',
   lines: [
+    n('An old surgeon’s woodcut hangs by the hospice door: a man stuck with every blade, bolt and fang in the world — and standing.'),
+    n('Beneath it, in faded ink: “Here is the battlefield. Hold it.”'),
     n('The Free City of Kessendorf. Winter, in the ninth year of the Long Muster.'),
     n('The river has frozen twice. The pyres outside the east gate have not gone out since autumn.'),
     say('haller', 'So. You are the new sawbones the Guild sent me. Kreuzer, is it?'),
     say('kreuzer', 'Apothecary-surgeon, sworn at Weissburg. I have my letters, Master Haller—'),
     say('haller', 'Letters. Letters don’t stop a man bleeding into the straw. Hands do. Show me your hands.'),
-    say('haller', '…Steady enough. Sister! Our young doctor has arrived just in time for the Tuesday knife-fights.'),
+    say('haller', '…Steady enough. Why would a sworn Weissburg man take a charity bed in a city that burns its sick?'),
+    say('kreuzer', 'Weissburg taught me the rules, Master. I came somewhere too poor to afford them.'),
+    say('haller', 'Hm. Sister! Our young doctor has arrived just in time for the Tuesday knife-fights.'),
     say('ilse', 'Sister Ilse, of the Merciful Order. I keep the instruments, the ledgers, and the Master’s temper.'),
     say('ilse', 'There’s a drover on the table already. Somebody at the Gilded Goose disagreed with his dice.'),
-    say('haller', 'Knife wounds. Simple work. Stitch him, drain him, salve him. I’ll watch.'),
+    say('haller', 'Knife wounds. Simple work. I’ll watch.'),
     say('haller', 'And Kreuzer — in this hospice we do not lose patients to simple work.'),
   ],
 };
@@ -43,12 +48,15 @@ export const STORY_1_2: StoryDef = {
   place: 'The Hospice — the next morning',
   backdrop: 'hospice',
   lines: [
-    n('The drover lived. He paid in turnips and a promise not to gamble again. He will break it by Friday.'),
+    n('The next morning the Watch arrives before the bread does.'),
     say('mauer', 'Make way! Make way, damn you! Surgeon! Where’s the surgeon?'),
     say('ilse', 'Captain Mauer of the Watch. Lower your voice, Captain, this is a house of mercy.'),
-    say('mauer', 'Horned raiders hit the timber-road caravan at dawn. We drove them off, but young Pieter took a shaft in the side.'),
-    say('haller', 'Beast-folk fletch their arrows with barbed heads. Rip one straight out and you’ll tear half his side with it.'),
-    say('haller', 'Nick the flesh at the entry with the lancet — twice — to free the barbs. Then pull. Cleanly.'),
+    say('mauer', 'Twelve went out with the timber-road caravan. Twelve came back, eleven walking. Horned folk hit us at dawn.'),
+    say('mauer', 'Young Pieter took a shaft in the side. Twelve, Doctor. I’d like it to stay twelve.'),
+    say('kreuzer', 'Then put him down gently, Captain, and stop counting him among the dead.'),
+    say('haller', 'Horned-folk heads are barbed like fish-hooks. They cut a notch in their antlers for every one that sticks in a man.'),
+    say('haller', 'Rip it straight out and you’ll take half his side with it. Free the barbs first, then pull. Cleanly.'),
+    say('mauer', 'Twelve. Say it with me, Doctor. Twelve.'),
   ],
 };
 
@@ -57,12 +65,14 @@ export const STORY_1_3: StoryDef = {
   place: 'The Hospice — noon',
   backdrop: 'hospice',
   lines: [
-    n('Pieter will keep his side, and his opinion of beast-folk.'),
+    n('Noon. A second sack of turnips arrives at the gate. The drover has told his friends about us.'),
     say('ilse', 'Doctor, the gunsmiths’ quarter. An apprentice was proving a new handgun barrel and it burst in his hands.'),
-    say('ilse', 'Burns across the chest and lead fragments driven under the skin.'),
-    say('haller', 'Powder burns. The charred skin is dead — pluck the eschar away with tongs before you salve, or it festers.'),
-    say('haller', 'The shot is in deep. You’ll have to open him. Trace the line I’ve inked, and keep your hand true.'),
-    say('haller', 'He’s lost blood already. If his pulse flags, the tincture — hold it to the flesh and let it take.'),
+    say('ilse', 'Burns across the chest, lead driven under the skin — and a note from the Gunsmiths’ Guild pinned to his shirt.'),
+    say('ilse', 'The Guild will pay for his care. Once we have paid the Guild’s fee for inspecting its own burst barrel.'),
+    say('haller', 'Naturally. In Kessendorf a man pays the Guild for the privilege of being shot by its work.'),
+    say('kreuzer', 'Then we send the Guild a bill for the lead we take out of him. Itemised, by the ounce.'),
+    say('haller', 'Powder burns. The black crust is dead meat: off with it before any salve, or it festers underneath.'),
+    say('haller', 'The shot is deep. You’ll open him along the line I’ve inked. And if his pulse flags — the tincture.'),
   ],
 };
 
@@ -72,12 +82,15 @@ export const STORY_1_4: StoryDef = {
   backdrop: 'street',
   lines: [
     n('Word travels fast in Kessendorf. By dusk, there is a queue at the hospice door.'),
-    say('ilse', 'Doctor… this one was found in the Tanners’ Rows. Swellings at the neck and groin. Fever. Maggots in a sore.'),
-    say('haller', 'Buboes. Lance them before they burst, draw off the pus, and salve the wound. Rot-patches creep back if you dawdle.'),
-    say('haller', 'And the grubs — the cautery brand. Hold it on them until they stop wriggling. Mind you don’t sear good flesh.'),
+    say('ilse', 'This one was found in the Tanners’ Rows. Swellings at the neck and groin. Fever. Maggots in an old sore.'),
+    say('patient', 'Matthis Kolb. Twenty years a tanner’s man. Write that, Sister, not “vagrant”. I had a trade before I had a fever.', 'Matthis Kolb'),
+    say('ilse', 'Matthis Kolb, tanner’s man. Written, and underlined.'),
+    say('haller', 'Buboes, and a rotting sore. He’s slept in the Rows among the hides. Burn the grubs, Kreuzer — not the man.'),
+    n('Nobody hears the door. There is simply a man in black standing in the ward, where a moment ago there was not.'),
     say('stroh', 'A plague case. In the city. How very interesting.'),
     say('ilse', '…Inquisitor Stroh. Of the Ash Tribunal.'),
-    say('stroh', 'Please, do carry on, Doctor. I only wish to watch. Pestilence so often has a sponsor.'),
+    say('stroh', 'Carry on, Doctor. I only wish to watch. Pestilence so often has a sponsor — and I hear the Kilnrows are coughing too.'),
+    say('kreuzer', 'Then stand back from the table, Inquisitor. Whoever sponsors it, it isn’t particular whom it takes.'),
   ],
 };
 
@@ -86,13 +99,13 @@ export const STORY_1_5: StoryDef = {
   place: 'The Hospice — the small hours',
   backdrop: 'night',
   lines: [
-    n('Near midnight a carriage without a crest stops at the gate. A page-boy is carried in, raving.'),
+    n('Near midnight a carriage stops at the gate. Its door panel has been planed smooth where a crest should be — on purpose.'),
     say('patient', 'The choir… they’re singing in me… make them stop singing…', 'Page-boy Emmerich'),
-    say('ilse', 'Doctor, look at his chest. Those marks — they’re moving.'),
+    say('ilse', 'Doctor, look at his chest. Those marks — they’re moving. That one is an eye, with a stroke drawn through it.'),
     say('haller', '…That is no disease. Those are sigils. Someone has written on this boy.'),
-    say('haller', 'Kreuzer. Listen to me carefully. Sear the sigils out with the brand — trace every stroke.'),
-    say('haller', 'And if something… answers… when you do — there is an old apothecary’s rite. The Litany of Stillness.'),
-    say('haller', 'Trace the five-pointed star and still your heart. For a few breaths, the world will wait for you.'),
+    say('kreuzer', 'Then we unwrite him. The brand, Sister. And more light.'),
+    say('haller', 'If something answers when you do — there is an old apothecary’s rite. The Litany of Stillness.'),
+    say('haller', 'Draw the five-pointed star and still your heart. For a few breaths, the world will wait for you.'),
     say('haller', 'Do not do it where the Inquisitor can see. The Tribunal does not distinguish between a prayer and a spell.'),
   ],
 };
@@ -103,14 +116,23 @@ export const STORY_1_END: StoryDef = {
   backdrop: 'chapel',
   lines: [
     n('The thing in the boy’s chest came apart like wet ash. The boy sleeps. He no longer hears singing.'),
-    say('ilse', 'Doctor… after it broke, a word was left seared into the flesh. Matins.'),
+    say('ilse', 'Doctor… after it broke, a word was left seared into the flesh. Matins. And beside it, fading: the struck-through eye.'),
     say('haller', 'The first of the canonical hours. The first prayer of the night.'),
     say('haller', 'A curse that lives and fights like a beast, and signs itself like a psalm. A Malison.'),
     say('haller', 'And if this was Matins… then somewhere, someone is already writing Lauds.'),
+    n('In the yard, the carriage without a crest pulls away before anyone thinks to ask whose it is.'),
     say('stroh', 'A remarkable recovery, Doctor. Remarkable.'),
-    say('stroh', 'Tell me — at the end, your hands moved so very quickly. Almost as if time itself were… obliging you.'),
-    say('kreuzer', 'Practice, Inquisitor. And the grace of Saint Ildra.'),
-    say('stroh', 'Of course. The grace of the Saint. I shall pray on it.'),
+    ...when(
+      { litany: true },
+      say('stroh', 'Tell me — at the end, your hands moved so very quickly. Almost as if time itself were… obliging you.'),
+      say('kreuzer', 'Practice, Inquisitor. And the grace of Saint Ildra.'),
+      say('stroh', 'Of course. The grace of the Saint. I shall pray on it.'),
+    ),
+    ...when(
+      { litany: false },
+      say('stroh', 'I watched every stroke. No tricks, no prayers. Only a surgeon, working. I find it almost disappointing.'),
+      say('kreuzer', 'Surgery usually is, Inquisitor. That is how you know it worked.'),
+    ),
     n('END OF CHAPTER I — THE HOUR OF MATINS'),
   ],
 };
@@ -202,7 +224,7 @@ export const OP_1_3: OperationDef = {
 export const OP_1_4: OperationDef = {
   id: 'op1-4',
   title: 'Pestilent Humours',
-  patient: 'Unknown vagrant, Tanners’ Rows',
+  patient: 'Matthis Kolb, tanner’s man, Tanners’ Rows',
   diagnosis: 'Plague buboes, spreading rot and an infested sore. High fever.',
   organ: 'flesh',
   timeLimit: 240,

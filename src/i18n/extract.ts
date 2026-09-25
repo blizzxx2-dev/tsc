@@ -16,6 +16,8 @@
  */
 import { CAMPAIGN } from '../content/campaign';
 import { CAST, type CharacterId } from '../content/characters';
+import { conditionOf, describeWhen } from '../content/conditions';
+import { narrativeEntries } from '../content/export';
 
 export type Scope = 'story' | 'callouts' | 'ops' | 'names' | 'barks';
 
@@ -48,7 +50,8 @@ export function contentEntries(): ContentEntry[] {
           const id = `${s.id}.${pad3(i + 1)}`;
           const who = CAST[line.who];
           const speaker = line.who === 'narrator' ? 'Narrator' : (line.as ?? who.name);
-          out.push({ id, text: line.text, scope: 'story', chapter: ch.id, speaker, context: `Story scene "${s.id}" (${s.place}), line ${i + 1} of ${s.lines.length}.` });
+          const cond = conditionOf(line);
+          out.push({ id, text: line.text, scope: 'story', chapter: ch.id, speaker, context: `Story scene "${s.id}" (${s.place}), line ${i + 1} of ${s.lines.length}.${cond ? ` ${describeWhen(cond)}` : ''}` });
           if (line.as) out.push({ id: `${id}.as`, text: line.as, scope: 'names', chapter: ch.id, context: `Speaker name shown for ${id}.` });
         });
       } else {
@@ -64,5 +67,7 @@ export function contentEntries(): ContentEntry[] {
       }
     }
   }
+  // Aftermath/failure scenes, barks, codex, case notes (NAR): see src/content/export.ts.
+  out.push(...narrativeEntries());
   return out;
 }
