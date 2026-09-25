@@ -3,6 +3,7 @@ import type { Input } from '../core/input';
 import { settings } from '../core/settings';
 import { dist, type Vec } from '../core/math';
 import { hex } from '../render/color';
+import { quantizeDt, quantizePointer } from '../core/replayCodec';
 import type { Gfx } from '../render/gfx';
 import { analyzeStar, STAR_FAILURE_HINT } from '../surgery/gesture';
 import { onBody, type Operation } from '../surgery/operation';
@@ -115,7 +116,7 @@ export class OperationInput {
     const prefs = this.b.prefs;
     this.pad = f.device === 'pad';
     this.cursor = { ...f.start };
-    if (!this.opDown) this.sent = this.toWorld(f.start);
+    if (!this.opDown) this.sent = quantizePointer(this.toWorld(f.start));
     this.lastT = f.t0;
     const span = f.t - f.t0;
     this.k = span > 0 ? dt / span : 0;
@@ -150,7 +151,7 @@ export class OperationInput {
       this.suppressed = true;
       this.latched = false;
       this.cursor = p;
-      this.sent = this.toWorld(p);
+      this.sent = quantizePointer(this.toWorld(p));
       return;
     }
     const d = Math.max(0, t - this.lastT) * this.k;
@@ -386,6 +387,7 @@ export class OperationInput {
 
   /** Build the `Pointer` the Operation sees, with assists applied, and dispatch it. */
   private send(op: Operation, kind: 'hold' | 'press' | 'release', view: Vec, dt: number): void {
+    dt = quantizeDt(dt);
     const prefs = this.b.prefs;
     const scale = prefs.hitScale;
     const down = kind === 'release' ? false : this.opDown;
@@ -395,6 +397,8 @@ export class OperationInput {
     else if (down && this.strokeZone) p = magnet(p, [this.strokeZone], scale, ['trace'], true).p;
     else if (down && HOLD_TOOLS.includes(op.tool)) p = magnet(p, zonesFor(op, op.tool), scale, ['hold']).p;
     else if (op.tool === 'lens') p = magnet(p, zonesFor(op, op.tool), scale, ['hover']).p;
+    // Positions reach the simulation on the replay grid (1/8 px, ENG-0253) so recordings stay compact and exact.
+    p = quantizePointer(p);
     if (this.latched && down && !onBody(raw)) {
       // Toggle-hold stops when the cursor leaves the body.
       this.latched = false;
@@ -407,9 +411,14 @@ export class OperationInput {
     op.handlePointer(ptr, dt);
     this.sent = p;
     if (!down || kind !== 'hold') return;
-    if (op.tool === 'salve') for (const q of brushRing(p, scale)) op.handlePointer({ pos: q, prev: q, down: true, pressed: false, released: false }, 0);
+    if (op.tool === 'salve')
+      for (const r of brushRing(p, scale)) {
+        const q = quantizePointer(r);
+        op.handlePointer({ pos: q, prev: q, down: true, pressed: false, released: false }, 0);
+      }
     if (op.tool === 'thread' && this.stitchAssistOn()) {
-      const c = this.stitch.step(op, p);
+      const s = this.stitch.step(op, p);
+      const c = s && { from: quantizePointer(s.from), to: quantizePointer(s.to) };
       if (c) {
         op.handlePointer({ pos: c.from, prev: c.from, down: true, pressed: false, released: false }, 0);
         op.handlePointer({ pos: c.to, prev: c.from, down: true, pressed: false, released: false }, 0);

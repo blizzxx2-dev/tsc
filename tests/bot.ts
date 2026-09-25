@@ -627,6 +627,7 @@ export function playWithBotThroughInput(def: OperationDef, input: Input, opts: B
     def,
     () => undefined,
     () => undefined,
+    opts.record ? { record: true } : {},
   );
   const game: Game = { input, audio: { play: () => undefined } as unknown as Game['audio'], gfx: null as unknown as Game['gfx'], go: () => undefined };
   scene.enter();

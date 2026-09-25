@@ -33,6 +33,8 @@ import { MAX_VITALS, Operation, type OperationDef, type Status } from '../surger
 import { TOOL_INFO, type Pointer, type Rank, type ToolId } from '../surgery/types';
 import { isPresetName, PRESET_NAMES, presetSave } from './presets';
 import { opView, stateHash, type OpView } from './state';
+import { checkpoint, describeDesync, firstDesync, HASH_EVERY, replayHashes, type Checkpoint } from './desync';
+import { takeLog } from '../surgery/replay';
 
 export const DEBUG_API_VERSION = 1;
 
@@ -179,6 +181,7 @@ export class DebugApi {
       if (op) op.vitals = MAX_VITALS;
       update(dt, game);
       if (op) op.vitals = MAX_VITALS;
+      if (scene instanceof OperationScene) this.trackHashes(scene.op);
     };
     // Frozen means frozen: the canvas keeps its last frame, so a slow software renderer (CI) is not
     // kept busy drawing an unchanging scene while automation steps the game frame by frame.
@@ -414,6 +417,27 @@ export class DebugApi {
     if (op.status === 'intro') this.skipPhase();
     op.lose(reason);
     return this.state();
+  }
+
+  /** Live checkpoints of the running operation, one every HASH_EVERY logged ticks (ENG-0254). */
+  private hashes: { op: Operation; seen: number; ticks: number; list: Checkpoint[] } | null = null;
+  private trackHashes(op: Operation): void {
+    const log = op.log;
+    if (!log) return;
+    let h = this.hashes;
+    if (!h || h.op !== op) h = this.hashes = { op, seen: 0, ticks: 0, list: [] };
+    for (; h.seen < log.length; h.seen++) if (log[h.seen][0] === 'u' && ++h.ticks % HASH_EVERY === 0) h.list.push(checkpoint(op, h.ticks));
+  }
+
+  /**
+   * Desync detector (ENG-0254): re-simulate the running operation from its input log and compare
+   * checkpoint hashes with the live run; reports the first divergent tick and entity.
+   */
+  desync(): string {
+    const op = this.requireOp();
+    if (!op.log || !this.hashes || this.hashes.op !== op) throw new Error('no live checkpoints yet for this operation');
+    const replayed = replayHashes(op.def, takeLog(op));
+    return `${describeDesync(firstDesync(this.hashes.list, replayed))} (${this.hashes.list.length} checkpoints)`;
   }
 
   /** Advance to phase `n` (1-based) by clearing the phases before it (ENG-0234). */

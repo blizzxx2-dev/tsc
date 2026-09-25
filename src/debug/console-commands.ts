@@ -124,6 +124,7 @@ export function buildCommands(api: DebugApi, hooks: ConsoleHooks = {}): CommandR
     { name: 'thaw', help: 'resume normal updates', run: (a) => (a.thaw(), 'running') },
     { name: 'step', usage: '[frames]', help: 'run whole frames while frozen', run: (a, [n]) => (a.step(n ? intArg(n, 'frames') : 1), brief(a)) },
     { name: 'hash', help: 'state hash of the running operation', run: (a) => a.hash() },
+    { name: 'desync', help: 're-simulate the running operation from its inputs and report the first divergent tick/entity', run: (a) => a.desync() },
     // Rendering (ENG-0146)
     {
       name: 'post',

@@ -70,10 +70,10 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0040 · Demo · P2 · M · Deformable sprite grid — N×M mesh with per-vertex offsets for heartbeat squash/stretch, grub bulges and Malison flinches
 
 ### Render layers & ordering
-- [ ] ENG-0041 · Demo · P1 · M · Explicit render layers — enum (Backdrop, Field, Decals, Entities, Particles, WorldFX, WorldUI, UI, Overlay, Debug) with per-layer command lists submitted in order regardless of call order
-- [ ] ENG-0042 · Demo · P1 · S · Stable sort of the Entities layer by `Entity.layer` then spawn order — replaces the implicit array draw order in `OperationScene.render`
-- [ ] ENG-0043 · Demo · P1 · S · Documented layer contract + test — UI and Overlay layers never receive grain, vignette, LUT or shake
-- [ ] ENG-0044 · Demo · P2 · S · WorldUI layer — callouts/popups anchored to world positions drawn after post but through the camera transform (stay attached when zoomed)
+- [x] ENG-0041 · Demo · P1 · M · Explicit render layers — enum (Backdrop, Field, Decals, Entities, Particles, WorldFX, WorldUI, UI, Overlay, Debug) with per-layer command lists submitted in order regardless of call order
+- [x] ENG-0042 · Demo · P1 · S · Stable sort of the Entities layer by `Entity.layer` then spawn order — replaces the implicit array draw order in `OperationScene.render`
+- [x] ENG-0043 · Demo · P1 · S · Documented layer contract + test — UI and Overlay layers never receive grain, vignette, LUT or shake
+- [x] ENG-0044 · Demo · P2 · S · WorldUI layer — callouts/popups anchored to world positions drawn after post but through the camera transform (stay attached when zoomed)
 
 ### Camera & close-ups
 - [x] ENG-0045 · Demo · P0 · M · `Camera2D` view matrix — position/zoom/rotation applied as a uniform in `PRIM_VS` instead of CPU vertex transforms, so zooming does not re-tessellate or rebuild batches
@@ -360,11 +360,11 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ## ENG-O · Determinism & replays (Demo → Alpha)
 
 - [ ] ENG-0252 · Demo · P1 · S · Determinism lint rule — bans `Math.random`, `Date.now`, `performance.now` and DOM access inside `src/surgery` and `src/content`
-- [ ] ENG-0253 · Demo · P1 · M · Input recording — per-tick pointer/tool/key events delta+varint encoded; a 5-minute operation replay file ≤50 KB
-- [ ] ENG-0254 · Demo · P1 · M · State hashing every 60 ticks — replaying a recording reproduces identical hashes, and the dev desync detector reports the first divergent tick and entity
+- [x] ENG-0253 · Demo · P1 · M · Input recording — per-tick pointer/tool/key events delta+varint encoded; a 5-minute operation replay file ≤50 KB
+- [x] ENG-0254 · Demo · P1 · M · State hashing every 60 ticks — replaying a recording reproduces identical hashes, and the dev desync detector reports the first divergent tick and entity
 - [x] ENG-0255 · Demo · P1 · M · Golden-run regression suite — one recorded run per Ch1–2 operation re-simulated headlessly in CI; final score, rank, vitals and hash must match exactly
-- [ ] ENG-0256 · Demo · P2 · S · Replay in bug reports — last operation's replay attached automatically to crash reports and in-game bug reports
-- [ ] ENG-0257 · Alpha · P1 · S · Replay file header with format version, build id and content hash — incompatible replays refuse to load with a clear message
+- [x] ENG-0256 · Demo · P2 · S · Replay in bug reports — last operation's replay attached automatically to crash reports and in-game bug reports
+- [x] ENG-0257 · Alpha · P1 · S · Replay file header with format version, build id and content hash — incompatible replays refuse to load with a clear message
 - [ ] ENG-0258 · Alpha · P2 · M · Replay player scene — play/pause, 0.25×–4× speed, scrub via keyframe snapshots every 5 s, HUD toggle
 - [ ] ENG-0259 · Alpha · P1 · M · Cross-platform determinism test — recordings made on Windows re-simulate with identical hashes on macOS and Linux builds (same runtime version)
 - [ ] ENG-0260 · Alpha · P2 · S · Golden runs for Chapters 3–5 — suite extended to every new operation and challenge-mode variant as content lands

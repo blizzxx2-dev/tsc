@@ -20,6 +20,7 @@ import { BUILD } from './build';
 import { log } from './log';
 import { platform } from './index';
 import { zip } from './zip';
+import { replayForReport } from './lastReplay';
 
 /** Length of the rolling input buffer. */
 export const INPUT_BUFFER_S = 30;
@@ -129,6 +130,9 @@ export function collectSupportFiles(): Record<string, string> {
   };
   const rec = inputBuffer.snapshot();
   if (rec) files['input-recording.json'] = JSON.stringify(rec);
+  // The running or last operation's full replay (ENG-0256), base64 of the binary .ssrp file.
+  const rp = replayForReport();
+  if (rp) files[`replay-${rp.opId.replace(/[^a-z0-9-]/gi, '_')}.ssrp.b64`] = rp.base64;
   return files;
 }
 

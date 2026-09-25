@@ -12,6 +12,11 @@ import { Bubo, Sigil, surfDisc, surfLine } from '../surgery/entities';
 import { EggSac } from '../surgery/lauds';
 import { Particles } from '../render/particles';
 import { OperationVfx } from './opVfx';
+import { drawOrder } from '../render/layers';
+import { contentHash } from '../core/replayCodec';
+import { rememberReplay, setLiveReplay } from '../platform/lastReplay';
+import { BUILD } from '../platform/build';
+import { takeLog } from '../surgery/replay';
 import { FlashLimiter } from '../render/flashLimiter';
 import { Malison, MalisonShard } from '../surgery/malison';
 import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOWN, TINCTURE_TIME, type OperationDef, type Popup } from '../surgery/operation';
@@ -198,6 +203,16 @@ export class OperationScene implements Scene {
     this.vfx = new OperationVfx(() => this.particles);
     this.vfx.listen(op, () => bloodScale(presentation.gore));
     op.events.on('rate', ({ rating, pos }) => rating === 'cool' && this.uiFx.burst('uiSparkle', pos));
+    // Replay for bug reports (ENG-0256): live while the operation runs, packed once it ends.
+    const header = () => ({ build: BUILD.id, content: contentHash(op.def) });
+    setLiveReplay(() => (op.log && this.op === op ? { log: takeLog(op), header: header() } : null));
+    const done = () => {
+      if (!op.log) return;
+      setLiveReplay(null);
+      void rememberReplay(takeLog(op), header()).catch(() => undefined);
+    };
+    op.events.on('win', done);
+    op.events.on('lose', done);
   }
 
   /** Open the "Respite" overlay (UIX-0100). The operation stops updating until it closes. */
@@ -220,7 +235,8 @@ export class OperationScene implements Scene {
   /** Apply player assists, difficulty and kit to the operation definition. */
   private static create(def: OperationDef, runOpts: OperationOptions = {}): Operation {
     const d = settings.timerAssist === 1 || runOpts.challenge ? def : { ...def, timeLimit: Math.round(def.timeLimit * settings.timerAssist) };
-    return new Operation(withBossAssists(d), operationOptions(def, runOpts));
+    // Every run records its inputs (ENG-0256): bug reports carry the replay of the run that went wrong.
+    return new Operation(withBossAssists(d), { ...operationOptions(def, runOpts), record: true });
   }
 
   /** Unsubscribes the hitstop binding (ENG-0058); set on the first update that has a clock. */
@@ -423,7 +439,8 @@ export class OperationScene implements Scene {
     const trauma = sk > 0 ? Math.min(1, sk / 12) : undefined;
 
     // ---------------------------------------------------------------- data layers
-    const ents = op.visibleEntities().sort((a, b) => a.layer - b.layer);
+    // Entities layer order (ENG-0042): by layer, then spawn order.
+    const ents = drawOrder(op.visibleEntities());
     const light = { x: FIELD.cx - 220 + Math.sin(t * 0.7) * 30, y: 60 + Math.sin(t * 1.3) * 10 };
     g.beginLayer('surface');
     for (const sc of op.scars) {
@@ -463,6 +480,8 @@ export class OperationScene implements Scene {
     });
     const colours = palette();
     g.fluidComposite(light, { blood: speciesBlood(colours.blood, pal.species), pus: colours.pus, bile: colours.bile, gore: presentation.gore });
+    // Entities, particles and world FX go through the world camera (ENG-0045); endWorld resets it.
+    g.setCamera(this.camera.isIdentity ? null : this.camera.matrix());
     for (const e of ents) e.draw(g, op);
     // High contrast: a 2 px ring around everything that takes an instrument.
     if (highContrast()) for (const e of ents) if (e.required) g.arc(e.pos.x, e.pos.y, 28, 2, hex('#ffffff', 0.85), 1);
@@ -520,7 +539,10 @@ export class OperationScene implements Scene {
     drawFieldOverlays(g, op);
     if (!settings.minimalHud) this.drawThreatRings(g);
     drawTutorial(g, op);
+    // WorldUI (ENG-0044): popups and hurt rings after post, through the world camera.
+    g.setCamera(this.camera.isIdentity ? null : this.camera.matrix());
     this.drawPopups(g);
+    g.setCamera(null);
     // HUD bars anchor to the visible top/bottom edges on 16:10 and 4:3 (ENG-0184).
     g.save();
     g.translate(0, anchorShift('top'));
