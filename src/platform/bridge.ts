@@ -79,6 +79,23 @@ export interface BootInfo {
   folders: { saves: string; logs: string; screenshots: string };
 }
 
+/**
+ * Steam Timeline marker (PLT-0050): labels Game Recording clips. `range` events open at op start and
+ * close at op end; instantaneous ones (Malison appears, patient lost, XS rank) are single markers.
+ */
+export interface TimelineMarker {
+  kind: 'op-start' | 'op-end' | 'malison' | 'patient-lost' | 'rank-xs';
+  /** Player-facing title and description (already localised). */
+  title: string;
+  description?: string;
+  /** Steam icon name (`steam_marker`, `steam_death`, `steam_star` …). */
+  icon: string;
+  /** 0–1000; Steam shows higher priorities first when clips are crowded. */
+  priority: number;
+  /** Current game-mode description for the timeline bar (`Operating: <patient>`, `Story`, `Menu`). */
+  state?: string;
+}
+
 export interface WriteResult {
   ok: boolean;
   error?: string;
@@ -100,6 +117,8 @@ export interface InvokeContract {
   'ss:fs-write': [[name: string, data: string], WriteResult];
   'ss:fs-remove': [[name: string], WriteResult];
   'ss:window-set': [[mode: DisplayMode, displayId: number | null], WindowState];
+  /** Windowed-mode content size preset, centred on the current display (UIX-0105). */
+  'ss:window-size': [[width: number, height: number], WindowState];
   'ss:displays': [[], DisplayInfo[]];
   'ss:steam-achievement': [[id: string, unlock: boolean], boolean];
   'ss:steam-overlay': [[kind: 'store' | 'web', target: string], boolean];
@@ -122,6 +141,7 @@ export interface SendContract {
   'ss:consent': [crashReports: boolean];
   'ss:heartbeat': [];
   'ss:settings-restart': [switches: { vsync: boolean; glBackend: string | null }];
+  'ss:steam-timeline': [marker: TimelineMarker];
 }
 
 /** Main → game events. */
@@ -131,6 +151,8 @@ export interface EventContract {
   'ss:quit-request': [];
   'ss:suspend': [suspended: boolean];
   'ss:steam-connected': [connected: boolean];
+  /** Steam overlay opened/closed (`GameOverlayActivated`, PLT-0042). */
+  'ss:overlay': [active: boolean];
 }
 
 export const INVOKE_CHANNELS = [
@@ -138,6 +160,7 @@ export const INVOKE_CHANNELS = [
   'ss:fs-write',
   'ss:fs-remove',
   'ss:window-set',
+  'ss:window-size',
   'ss:displays',
   'ss:steam-achievement',
   'ss:steam-overlay',
@@ -159,9 +182,10 @@ export const SEND_CHANNELS = [
   'ss:consent',
   'ss:heartbeat',
   'ss:settings-restart',
+  'ss:steam-timeline',
 ] as const satisfies readonly (keyof SendContract)[];
 
-export const EVENT_CHANNELS = ['ss:focus', 'ss:window-state', 'ss:quit-request', 'ss:suspend', 'ss:steam-connected'] as const satisfies readonly (keyof EventContract)[];
+export const EVENT_CHANNELS = ['ss:focus', 'ss:window-state', 'ss:quit-request', 'ss:suspend', 'ss:steam-connected', 'ss:overlay'] as const satisfies readonly (keyof EventContract)[];
 
 /** What the preload script puts on `window.ssBridge`. */
 export interface RawBridge {

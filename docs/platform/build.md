@@ -82,6 +82,11 @@ integrity validation **on** (enforced on Windows/macOS), cookie encryption on, f
   windows; on macOS *fullscreen* is a native Space and *borderless* is simple fullscreen (no Space). A mode or
   monitor change reverts after 15 s unless confirmed. Size, position, mode and monitor persist in
   `<cache>/window.json` and are clamped to a visible work area on launch.
+- **Window size preset** (Options → Display, `windowSize`): `ss:window-size` sets the *content* size and centres
+  the window on the display it is on (windowed mode only; in borderless/fullscreen the size is kept and applied
+  when the mode returns to windowed). Presets larger than the monitor's work area shrink to it. The last bounds
+  persist in `window.json`; with no `window.json` (fresh cache) the settings preset is applied on launch
+  (`desktop/src/windowstate.ts` `sizedState`/`parseWindowSize`).
 - **VSync:** Chromium cannot toggle vsync at runtime; the setting writes `<cache>/launch-switches.json` and the next
   launch adds `--disable-gpu-vsync --disable-frame-rate-limit`.
 - **Quit:** closing the window, Alt+F4 and Cmd+Q ask for confirmation during an operation, then wait (≤5 s) for the
@@ -89,6 +94,14 @@ integrity validation **on** (enforced on Windows/macOS), cookie encryption on, f
 - **Display sleep** is blocked during operations (unless paused) and story scenes.
 - **Focus loss** pauses an operation (setting), mutes if "mute when unfocused" is on, and releases held mouse
   buttons. OS suspend (Deck sleep) pauses the operation.
+- **Steam overlay** (PLT-0042): `GameOverlayActivated` → `ss:overlay` → the operation pauses (independently of
+  the focus-loss setting) and input is silenced while the overlay is up: held keys/buttons are released as
+  cancels and the input facade is fed empty frames, so nothing reaches the scenes; closing the overlay restores
+  live input, the pause stays until the player resumes. steamworks.js 0.4 lacks the callback (probed at runtime,
+  see `docs/handoff/PLT/README.md` PLT-0042), so today the overlay pauses through focus loss only.
+- **Steam Timeline** (PLT-0050): `platform.steam.timeline()` marks operation start/end, the Malison's
+  appearance, a lost patient and an XS rank for Game Recording clips; dropped with one log line until
+  steamworks.js binds ISteamTimeline (handoff README).
 - **Crash handling:** renderer crash → reload straight back to the last autosave; second crash within ten minutes →
   "Suture & Steel has stopped" dialog (Restart / Restart in safe mode / Open log folder / Quit). Renderer silent for
   >10 s → "not responding" dialog; Restart forces a renderer crash so Crashpad captures it, then recovers.

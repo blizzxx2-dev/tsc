@@ -17,19 +17,24 @@ import { StoryScene } from '../scenes/story';
 import { BriefingScene } from '../scenes/briefing';
 import { ResultsScene } from '../scenes/results';
 import { TitleScene } from '../scenes/title';
+import { OptionsScene } from '../scenes/options';
 import { playStep, save } from '../scenes/flow';
 import { VIEW_H, VIEW_W } from '../ui/layout';
+import { t } from '../i18n';
 import { platform } from './index';
 import { Achievements, type AchievementState } from './achievements';
 import { BUILD, EDITION, buildLabel } from './build';
 import { IMPORT_DIALOG, importDemoProfile, indexCampaign, readDemoProfile } from './carryover';
 import { installErrorCapture, markFrame, parseDsn } from './crash';
 import { DisplayChangeGuard, type DisplayConfig } from './display';
-import { onGameEvent } from './events';
+import { onGameEvent, type GameEvent } from './events';
 import { flag } from './flags';
 import { GamepadController } from './gamepad';
 import { addScrubSecret, log } from './log';
 import { attachPresenter, notify, setBusyHandler } from './notify';
+import { OverlayGate } from './overlay';
+import { exportSupportBundle, inputBuffer, InputBufferHook } from './support';
+import { bindings } from '../input/bindings';
 import { presenceFor, type Activity } from './richpresence';
 import { prompt, SaveIndicator, showNotice, showWatermark } from './ui';
 
@@ -51,6 +56,13 @@ let heartbeatT = 0;
 let started = false;
 let achievements: Achievements | null = null;
 let gamepad: GamepadController | null = null;
+let overlay: OverlayGate | null = null;
+let bufferHook: InputBufferHook | null = null;
+/** The operation the rolling input buffer is recording (PLT-0131). */
+let bufferOp: OperationScene | null = null;
+/** Steam Timeline (PLT-0050): the operation whose start marker was sent, and whether its Malison marker was. */
+let timelineOp: OperationScene | null = null;
+let timelineBoss = false;
 let lastActivityKey = '';
 let lastPresence = '';
 const refreshSamples: number[] = [];
@@ -195,6 +207,35 @@ function installFocus(): void {
     if (s) pauseOperation();
     log.info('platform', s ? 'suspended' : 'resumed');
   });
+  // Steam overlay (PLT-0042): pause and silence input while it is up, whatever the display mode.
+  platform.window.onOverlay((active) => {
+    overlay?.set(active);
+    log.info('platform', active ? 'steam overlay opened' : 'steam overlay closed');
+  });
+}
+
+/** Steam Timeline markers (PLT-0050): operation start/end, the Malison's appearance, a lost patient, an XS rank. */
+function timelineOperationEnd(e: Extract<GameEvent, { type: 'operation-end' }>): void {
+  const op = timelineOp?.op;
+  if (!op || op.def.id !== e.opId) return;
+  const patient = op.def.patient;
+  if (!e.won) platform.steam.timeline({ kind: 'patient-lost', title: t('steam.timeline.patient_lost'), description: patient, icon: 'steam_death', priority: 800 });
+  else if (e.rank === 'XS') platform.steam.timeline({ kind: 'rank-xs', title: t('steam.timeline.rank_xs'), description: patient, icon: 'steam_star', priority: 900 });
+  platform.steam.timeline({ kind: 'op-end', title: t(e.won ? 'steam.timeline.op_won' : 'steam.timeline.op_lost', { title: op.def.title }), description: patient, icon: e.won ? 'steam_checkmark' : 'steam_x', priority: 600, state: t('steam.timeline.state_menu') });
+  timelineOp = null;
+}
+
+function timelineFrame(): void {
+  if (!(scene instanceof OperationScene)) return;
+  if (scene !== timelineOp) {
+    timelineOp = scene;
+    timelineBoss = false;
+    platform.steam.timeline({ kind: 'op-start', title: scene.op.def.title, description: scene.op.def.patient, icon: 'steam_marker', priority: 500, state: t('steam.timeline.state_operating', { patient: scene.op.def.patient }) });
+  }
+  if (!timelineBoss && scene.op.bossOp) {
+    timelineBoss = true;
+    platform.steam.timeline({ kind: 'malison', title: t('steam.timeline.malison'), description: scene.op.def.title, icon: 'steam_bolt', priority: 700 });
+  }
 }
 
 async function firstRunPrompts(): Promise<void> {
@@ -297,6 +338,11 @@ export function installPlatform(g: Game): void {
     onGameEvent((e) => achievements?.handle(e));
     void achievements.flush();
   }
+  onGameEvent((e) => {
+    if (e.type === 'operation-end') timelineOperationEnd(e);
+  });
+  overlay = new OverlayGate(g.input, pauseOperation);
+  bufferHook = new InputBufferHook(g.input, inputBuffer);
   if (platform.args.kiosk) {
     // Show-floor build: every demo operation selectable, nothing persisted.
     save.progress = { chapter: CAMPAIGN.length - 1, step: CAMPAIGN[CAMPAIGN.length - 1].steps.length - 1 };
@@ -317,8 +363,22 @@ export function installPlatform(g: Game): void {
   (globalThis as { __platform?: unknown }).__platform = { platform, achievements, settings, build: BUILD };
 }
 
+/** Rolling input buffer (PLT-0131): one buffer per operation; leaving it keeps the buffer as the last recording. */
+function bufferSceneChanged(s: Scene): void {
+  if (bufferOp && s !== bufferOp && (s instanceof OperationScene || !(s instanceof OptionsScene))) {
+    const op = bufferOp.op;
+    inputBuffer.finish({ status: op.status, score: op.score, vitals: op.vitals, timeLeft: op.timeLeft });
+    bufferOp = null;
+  }
+  if (s instanceof OperationScene && s !== bufferOp && settings.supportInputBuffer) {
+    bufferOp = s;
+    inputBuffer.begin(s.op.def.id, s.op.def.seed ?? 1, settings.timerAssist, bindings.prefs);
+  }
+}
+
 export function sceneChanged(s: Scene): void {
   scene = s;
+  bufferSceneChanged(s);
   updateActivity();
   if (!started) {
     started = true;
@@ -330,7 +390,9 @@ export function platformFrame(dt: number): void {
   if (!game) return;
   markFrame();
   log.frame++;
+  bufferHook?.sync(settings.supportInputBuffer);
   maybeCaptureThumbnail(dt);
+  timelineFrame();
   gamepad?.poll(game.input, dt, settings.gamepadCursorSpeed, settings.gamepadCursorAccel);
   if (gamepad?.lastDevice === 'gamepad' && (game.input.down || game.input.pressed || game.input.wheel)) idle = 0;
   idle += dt;
@@ -374,16 +436,7 @@ function installQaTools(): void {
   window.addEventListener('keydown', (e) => {
     if (e.code === 'F8') {
       e.preventDefault();
-      void (async () => {
-        const extra: Record<string, string> = {
-          'log.txt': log.lines().join('\n'),
-          'settings.json': JSON.stringify(settings, null, 2),
-          'profile.json': JSON.stringify(activeSave(), null, 2),
-          'build.txt': `${BUILD.id}\n${platform.kind}/${platform.os}\n${navigator.userAgent}`,
-        };
-        const where = await platform.exportSupport(extra);
-        showNotice(where ? `Bug report saved: ${where}` : 'Bug reports need the desktop build.', where ? 'info' : 'warning');
-      })();
+      void exportSupportBundle().then((where) => showNotice(where ? t('ui.options.support_done', { where }) : t('ui.options.support_failed'), where ? 'info' : 'warning'));
     }
     if (e.code === 'F9' && e.ctrlKey && e.shiftKey) void achievements?.resetAll().then(() => showNotice('Achievements reset (QA).'));
   });

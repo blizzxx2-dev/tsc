@@ -31,6 +31,7 @@ export class NoSteam implements SteamPlatform {
     return Promise.resolve(false);
   }
   onConnected(): void {}
+  timeline(): void {}
 }
 
 class BrowserWindowPlatform implements WindowPlatform {
@@ -47,6 +48,10 @@ class BrowserWindowPlatform implements WindowPlatform {
     } catch {
       // needs a user gesture; ignored
     }
+  }
+  setSize(): Promise<void> {
+    // The browser owns its window; the preset is kept for the desktop build.
+    return Promise.resolve();
   }
   toggleFullscreen(): void {
     void this.setMode(globalThis.document?.fullscreenElement ? 'windowed' : 'fullscreen');
@@ -66,6 +71,7 @@ class BrowserWindowPlatform implements WindowPlatform {
   onModeChange(cb: (mode: DisplayMode) => void): void {
     globalThis.document?.addEventListener('fullscreenchange', () => cb(globalThis.document.fullscreenElement ? 'fullscreen' : 'windowed'));
   }
+  onOverlay(): void {}
 }
 
 /** The browser build (press/itch web demo) and the headless test environment. */

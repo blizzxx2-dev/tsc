@@ -7,7 +7,7 @@ import { build } from 'esbuild';
 import { resolvePaths, userNamespace, isSafeName } from '../desktop/src/paths';
 import { parseArgs } from '../desktop/src/args';
 import { onCrash, onHealthy, onLaunch, parseHealth, initialHealth, CRASH_WINDOW_MS } from '../desktop/src/health';
-import { restoreState, type Screen } from '../desktop/src/windowstate';
+import { parseWindowSize, restoreState, sizedState, type Screen } from '../desktop/src/windowstate';
 import { buildCsp, dsnOrigin, resolveAppFile } from '../desktop/src/csp';
 import { crc32, zip } from '../desktop/src/zip';
 import { atomicWrite, readAll } from '../desktop/src/fsstore';
@@ -132,6 +132,21 @@ describe('window state', () => {
 
   it('defaults to fullscreen centred on the primary display', () => {
     expect(restoreState(null, [primary])).toEqual({ mode: 'fullscreen', displayId: 1, maximized: false, bounds: { x: 320, y: 160, width: 1280, height: 720 } });
+  });
+
+  it("size presets (UIX-0105): parsed from the setting, centred on the window's display, shrunk to its work area", () => {
+    expect(parseWindowSize('1600x900')).toEqual({ w: 1600, h: 900 });
+    expect(parseWindowSize('800x600')).toBeNull();
+    expect(parseWindowSize('1600 x 900')).toBeNull();
+    expect(parseWindowSize(1600)).toBeNull();
+    const base = restoreState({ mode: 'windowed', displayId: 2, maximized: true, bounds: { x: 2000, y: 100, width: 1280, height: 720 } }, [primary, second]);
+    const s = sizedState(base, 1600, 900, [primary, second]);
+    expect(s).toEqual({ mode: 'windowed', displayId: 2, maximized: false, bounds: { x: 1920 + 480, y: 250, width: 1600, height: 900 } });
+    // A preset larger than the monitor fills its work area instead of spilling off screen.
+    const big = sizedState(restoreState(null, [primary]), 2560, 1440, [primary]);
+    expect(big.bounds).toEqual({ x: 0, y: 0, width: 1920, height: 1040 });
+    // Unknown display id: the primary display.
+    expect(sizedState({ ...base, displayId: 99 }, 1280, 720, [primary, second]).displayId).toBe(1);
   });
 });
 

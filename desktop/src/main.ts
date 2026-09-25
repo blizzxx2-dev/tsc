@@ -22,7 +22,7 @@ import { HEALTHY_AFTER_MS, onCleanQuit, onCrash, onHealthy, onLaunch, parseHealt
 import { RotatingLog } from './logfile';
 import { isSafeName, resolvePaths, userNamespace, type AppPaths } from './paths';
 import { loadSteamworks, SteamService } from './steam';
-import { parseState, restoreState, type Screen } from './windowstate';
+import { parseState, parseWindowSize, restoreState, sizedState, type Screen } from './windowstate';
 import { zip } from './zip';
 
 /* ───────────── build constants (scripts/build-desktop.mjs) ───────────── */
@@ -196,6 +196,24 @@ function applyMode(next: DisplayMode, displayId: number | null): WindowState {
   return st;
 }
 
+/** Windowed-mode size preset (UIX-0105): content size, centred on the window's display; other modes keep it for later. */
+function applyWindowSize(width: number, height: number): WindowState {
+  if (!win) return currentState();
+  const size = parseWindowSize(`${Math.round(width)}x${Math.round(height)}`);
+  if (!size) return currentState();
+  const sized = sizedState(currentState(), size.w, size.h, screen.getAllDisplays().map(toScreen));
+  windowed = sized.bounds;
+  if (mode === 'windowed' && !win.isFullScreen() && !win.isSimpleFullScreen()) {
+    if (win.isMaximized()) win.unmaximize();
+    win.setContentBounds(sized.bounds);
+    windowed = win.getNormalBounds();
+  }
+  const st = currentState();
+  win.webContents.send('ss:window-state', st);
+  persistWindow();
+  return st;
+}
+
 /* ───────────── bootstrap for the renderer ───────────── */
 function snapshot(): Record<string, string> {
   const files = readAll(paths.saves);
@@ -271,6 +289,7 @@ function registerIpc(): void {
     }
   });
   handle('ss:window-set', (_e, m, displayId) => applyMode(['windowed', 'borderless', 'fullscreen'].includes(m) ? m : 'windowed', typeof displayId === 'number' ? displayId : null));
+  handle('ss:window-size', (_e, w, h) => applyWindowSize(Number(w), Number(h)));
   handle('ss:displays', () => displayInfo());
   handle('ss:steam-achievement', (_e, id, unlock) => (ACHIEVEMENTS.some((a) => a.id === id) ? steam.setAchievement(id, !!unlock) : false));
   handle('ss:steam-overlay', (_e, kind, target) => steam.overlay(kind === 'store' ? 'store' : 'web', String(target)));
@@ -304,6 +323,9 @@ function registerIpc(): void {
     }
   });
   on('ss:rich-presence', (_e, v) => steam.setRichPresence(v ?? {}));
+  on('ss:steam-timeline', (_e, m) => {
+    if (m && typeof m === 'object' && typeof m.kind === 'string' && typeof m.title === 'string') steam.timeline(m);
+  });
   on('ss:open', (_e, t) => {
     if (t === 'saves') void shell.openPath(paths.saves);
     else if (t === 'logs') void shell.openPath(paths.logs);
@@ -488,9 +510,13 @@ function watchRenderer(w: BrowserWindow): void {
 /* ───────────── window ───────────── */
 function createWindow(): void {
   const screens = screen.getAllDisplays().map(toScreen);
-  const st = restoreState(parseState(existsSync(windowFile) ? readFileSync(windowFile, 'utf8') : null), screens);
-  windowed = st.bounds;
+  const stored = parseState(existsSync(windowFile) ? readFileSync(windowFile, 'utf8') : null);
+  let st = restoreState(stored, screens);
   const s = storedSettings();
+  // No window.json yet (fresh cache): the windowed size comes from the settings preset (UIX-0105).
+  const preset = stored ? null : parseWindowSize(s.windowSize);
+  if (preset) st = sizedState(st, preset.w, preset.h, screens);
+  windowed = st.bounds;
   const wanted: DisplayMode = args.windowed || safeMode ? 'windowed' : args.fullscreen ? 'fullscreen' : ['windowed', 'borderless', 'fullscreen'].includes(s.displayMode as string) ? (s.displayMode as DisplayMode) : st.mode;
   win = new BrowserWindow({
     ...st.bounds,
@@ -570,6 +596,10 @@ function createWindow(): void {
     }, HEALTHY_AFTER_MS);
   });
   watchRenderer(w);
+  // Steam overlay (PLT-0042): the game pauses and drops input while it is up.
+  steam.onOverlay((active) => {
+    if (!w.isDestroyed()) w.webContents.send('ss:overlay', active);
+  });
   void w.loadURL('app://game/index.html');
   if (SMOKE_OUT) runSmoke(w);
 }

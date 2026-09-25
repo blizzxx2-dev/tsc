@@ -7951,6 +7951,127 @@
     "context": "Hint under the operation title card: any press skips the card.",
     "screenshot": "docs/loc/screens/operation.png"
   },
+  "ui.options.ui_scale": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.ui_scale_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.ui_scale_value": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 280,
+    "context": "Value of the interface-scale row when the window cannot show the chosen scale: the setting, then in brackets the scale in force.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "steam.timeline.patient_lost": {
+    "scene": "steam",
+    "font": "body",
+    "size": 20,
+    "maxPx": 600,
+    "context": "Steam Timeline marker title (Game Recording clip label): the patient died."
+  },
+  "steam.timeline.rank_xs": {
+    "scene": "steam",
+    "font": "body",
+    "size": 20,
+    "maxPx": 600,
+    "context": "Steam Timeline marker title: an XS rank was earned."
+  },
+  "steam.timeline.op_won": {
+    "scene": "steam",
+    "font": "body",
+    "size": 20,
+    "maxPx": 600,
+    "context": "Steam Timeline marker closing an operation that was won; {title} is the operation title."
+  },
+  "steam.timeline.op_lost": {
+    "scene": "steam",
+    "font": "body",
+    "size": 20,
+    "maxPx": 600,
+    "context": "Steam Timeline marker closing an operation that was lost; {title} is the operation title."
+  },
+  "steam.timeline.malison": {
+    "scene": "steam",
+    "font": "body",
+    "size": 20,
+    "maxPx": 600,
+    "context": "Steam Timeline marker title: the Malison boss appeared in the patient."
+  },
+  "steam.timeline.state_operating": {
+    "scene": "steam",
+    "font": "body",
+    "size": 20,
+    "maxPx": 600,
+    "context": "Steam Timeline tooltip while operating; {patient} is the patient's name."
+  },
+  "steam.timeline.state_menu": {
+    "scene": "steam",
+    "font": "body",
+    "size": 20,
+    "maxPx": 600,
+    "context": "Steam Timeline tooltip outside operations."
+  },
+  "ui.options.input_buffer": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.input_buffer_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.support_export": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.support_export_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.support_done": {
+    "scene": "options",
+    "font": "body",
+    "size": 18,
+    "maxPx": 700,
+    "context": "Notice after exporting support files; {where} is the zip file name.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.support_failed": {
+    "scene": "options",
+    "font": "body",
+    "size": 18,
+    "maxPx": 700,
+    "context": "Notice when the support export failed.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
   "ui.title.operated_title": {
     "scene": "title",
     "font": "display",

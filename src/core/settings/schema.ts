@@ -157,6 +157,12 @@ export interface Settings {
   grainAmount: number;
   chromaAmount: number;
   flickerAmount: number;
+  /** Keep the last 30 s of input of the current operation for bug reports (PLT-0131). */
+  supportInputBuffer: boolean;
+  /** OS cursor with a custom image instead of the software-drawn reticle (PLT-0114). */
+  hardwareCursor: boolean;
+  /** Confine the cursor to the window with Pointer Lock and a virtual cursor (PLT-0115 / INP-0012). */
+  confineCursor: boolean;
 }
 
 interface Base<K extends keyof Settings> {
@@ -246,6 +252,9 @@ export const SETTINGS_SCHEMA: readonly SettingDef[] = [
   d('grainAmount', 'graphics', 'slider', { type: 'number', min: 0, max: 100, step: 5 }),
   d('chromaAmount', 'graphics', 'slider', { type: 'number', min: 0, max: 100, step: 5 }),
   d('flickerAmount', 'graphics', 'slider', { type: 'number', min: 0, max: 100, step: 5 }),
+  d('supportInputBuffer', 'privacy', 'toggle', { type: 'bool' }),
+  d('hardwareCursor', 'controls', 'toggle', { type: 'bool' }),
+  d('confineCursor', 'controls', 'toggle', { type: 'bool' }),
 ];
 
 export const DEFAULT_SETTINGS: Readonly<Settings> = Object.freeze({
@@ -314,6 +323,9 @@ export const DEFAULT_SETTINGS: Readonly<Settings> = Object.freeze({
   grainAmount: 100,
   chromaAmount: 100,
   flickerAmount: 100,
+  supportInputBuffer: false,
+  hardwareCursor: false,
+  confineCursor: false,
 });
 
 /** Graphics preset contents (PLT-0098). Safe mode uses `low` (PLT-0021). */

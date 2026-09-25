@@ -1,4 +1,4 @@
-import type { ConfirmOptions, DisplayInfo, DisplayMode, LaunchArgs, OsKind, WindowState, WriteResult } from './bridge';
+import type { ConfirmOptions, DisplayInfo, DisplayMode, LaunchArgs, OsKind, TimelineMarker, WindowState, WriteResult } from './bridge';
 
 /**
  * A flat namespace of small text files (profile.json, settings.json, slot1.json …).
@@ -33,18 +33,24 @@ export interface SteamPlatform {
   /** Deck on-screen keyboard over a text field (PLT-0162). Resolves false when not shown. */
   showKeyboard(rect: { x: number; y: number; w: number; h: number }): Promise<boolean>;
   onConnected(cb: (connected: boolean) => void): void;
+  /** Steam Timeline marker for Game Recording clips (PLT-0050); a no-op without the binding. */
+  timeline(marker: TimelineMarker): void;
 }
 
 export interface WindowPlatform {
   /** Null on the web, where the browser owns the window. */
   state(): WindowState | null;
   setMode(mode: DisplayMode, displayId?: number | null): Promise<void>;
+  /** Windowed-mode size preset (UIX-0105): resizes and centres the desktop window; no-op on the web. */
+  setSize(width: number, height: number): Promise<void>;
   toggleFullscreen(): void;
   displays(): Promise<DisplayInfo[]>;
   onFocus(cb: (focused: boolean) => void): void;
   onSuspend(cb: (suspended: boolean) => void): void;
   /** Mode changed outside the settings (F11, OS full-screen button). */
   onModeChange(cb: (mode: DisplayMode) => void): void;
+  /** The Steam overlay opened (true) or closed (PLT-0042). Never fires on the web. */
+  onOverlay(cb: (active: boolean) => void): void;
 }
 
 export type OpenTarget = 'saves' | 'logs' | 'screenshots' | 'notices' | { url: string };

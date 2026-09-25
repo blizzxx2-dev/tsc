@@ -6,6 +6,7 @@ import { platform } from '../platform';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { VIEW_W } from '../ui/layout';
+import { effectiveUiScale, UI_SCALE_MAX, UI_SCALE_MIN } from '../render/viewport';
 import { reticle } from '../ui/widgets';
 import { drawBackdrop } from './backdrop';
 import { getLocale, menuLocales, t } from '../i18n';
@@ -27,6 +28,8 @@ import { ControlsCardScene } from './controlsCard';
 import { CalibrateScene } from './calibrate';
 import { AudioOptionsScene } from '../audio/options-scene';
 import { GameplayOptionsScene } from './gameplayOptions';
+import { exportSupportBundle } from '../platform/support';
+import { showNotice } from '../platform/ui';
 
 export type OptionsTab = 'gameplay' | 'controls' | 'display' | 'audio' | 'access' | 'language';
 export const OPTION_TABS: readonly OptionsTab[] = ['gameplay', 'controls', 'display', 'audio', 'access', 'language'];
@@ -66,6 +69,14 @@ const rowNote = (row: OptionRow): string => (row.label === `ui.options.${row.id}
 
 const onOff = (on: boolean): string => t(on ? 'ui.common.on' : 'ui.common.off');
 const pct = (v: number) => t('ui.options.volume_value', { value: v });
+
+/** UI scale value (UIX-0015): the setting, plus the scale the current window can actually show when it differs. */
+function uiScaleLabel(v: number): string {
+  const w = globalThis.innerWidth || VIEW_W;
+  const h = globalThis.innerHeight || 720;
+  const shown = Math.round(effectiveUiScale(w, h, v) * 100) / 100;
+  return Math.abs(shown - v) < 0.005 ? pct(v) : t('ui.options.ui_scale_value', { value: v, shown });
+}
 
 const toggle = (id: string, key: keyof Settings, label = `ui.options.${id}`): OptionRow => ({
   id,
@@ -210,6 +221,7 @@ export function optionRows(tabId: OptionsTab): OptionRow[] {
         toggle('vsync', 'vsync'),
         choice('frame_limit', 'frameCap', [0, 30, 60, 120, 144] as const, () => [t('ui.options.frame_display'), '30', '60', '120', '144'], 'ui.options.frame_limit'),
         choice('render_scale', 'renderScale', [0.5, 0.75, 0.85, 1] as const, () => ['50%', '75%', '85%', t('ui.options.render_native')], 'ui.options.render_scale'),
+        slider('ui_scale', 'uiScale', UI_SCALE_MIN, UI_SCALE_MAX, 0.05, uiScaleLabel),
         slider('brightness', 'brightness', 0.7, 1.3, 0.05, (v) => pct(v)),
         { id: 'calibrate', label: 'ui.options.calibrate', kind: 'action', run: (g) => g.push?.(new CalibrateScene(() => g.pop!())) },
         toggle('bloom', 'bloom'),
@@ -222,6 +234,8 @@ export function optionRows(tabId: OptionsTab): OptionRow[] {
         toggle('chroma', 'chromaticAberration'),
         slider('chroma_amount', 'chromaAmount', 0, 100, 5, (v) => `${v}%`),
         slider('shake', 'shake', 0, 1, 0.05, (v) => (v <= 0 ? t('ui.options.shake_off') : pct(v)), 'ui.options.shake'),
+        toggle('input_buffer', 'supportInputBuffer'),
+        { id: 'support_export', label: 'ui.options.support_export', kind: 'action', run: () => void exportSupportBundle().then((where) => showNotice(where ? t('ui.options.support_done', { where }) : t('ui.options.support_failed'), where ? 'info' : 'warning')) },
       ];
     case 'audio':
       return [
@@ -266,19 +280,14 @@ export function optionRows(tabId: OptionsTab): OptionRow[] {
 }
 
 /**
- * Windowed-mode size preset (UIX-0105). The desktop bridge has no resize channel yet, so this asks
- * the window itself; Electron honours `resizeTo` for the main window only when the platform allows it,
- * and the setting is kept for the desktop shell to apply on launch.
+ * Windowed-mode size preset (UIX-0105): the desktop shell resizes and centres its window through
+ * `ss:window-size` (windowed mode only) and applies the stored preset again on launch.
  */
 export function applyWindowSize(size: WindowSize): void {
   settings.windowSize = size;
   if (platform.kind !== 'desktop' || settings.displayMode !== 'windowed') return;
   const { w, h } = windowSizeOf(size);
-  try {
-    (globalThis as { resizeTo?: (w: number, h: number) => void }).resizeTo?.(w, h);
-  } catch {
-    // The shell may refuse: the preset still persists for the next launch.
-  }
+  void platform.window.setSize(w, h);
 }
 
 /** Restore a tab's options to their defaults (UIX-0104 per-tab Defaults). */

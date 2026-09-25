@@ -18,7 +18,20 @@ export interface View {
 export const MAX_ASPECT = 32 / 9;
 export const MIN_ASPECT = 4 / 3;
 
-export function computeView(winW: number, winH: number, safeW = 1280, safeH = 720): View {
+/** Range of the `uiScale` setting the view honours (UIX-0015 / ENG-0188). */
+export const UI_SCALE_MIN = 0.8;
+export const UI_SCALE_MAX = 1.5;
+
+/**
+ * @param uiScale UI scale (UIX-0015 / ENG-0188): the view is fitted at `uiScale` times the base
+ * scale, so HUD and menus grow while the anchors keep them on the real screen edges — or shrink,
+ * revealing more of the world around the safe area. The effective scale is clamped so the whole
+ * 1280×720 safe area always fits: it never crops the HUD, and the canvas box is unchanged (the
+ * aspect policy still letterboxes beyond 32:9 / 4:3). Above 100 % only takes effect where the window
+ * has more room than the safe area needs, which the base policy already uses up on ordinary
+ * displays; see `effectiveUiScale`.
+ */
+export function computeView(winW: number, winH: number, safeW = 1280, safeH = 720, uiScale = 1): View {
   winW = Math.max(1, winW);
   winH = Math.max(1, winH);
   const aspect = Math.min(MAX_ASPECT, Math.max(MIN_ASPECT, winW / winH));
@@ -32,8 +45,21 @@ export function computeView(winW: number, winH: number, safeW = 1280, safeH = 72
     w = safeW;
     h = safeW / aspect;
   }
-  const scale = Math.min(winW / w, winH / h);
-  return { w, h, ox: (w - safeW) / 2, oy: (h - safeH) / 2, scale };
+  const base = Math.min(winW / w, winH / h);
+  const ui = Number.isFinite(uiScale) ? Math.min(UI_SCALE_MAX, Math.max(UI_SCALE_MIN, uiScale)) : 1;
+  // The safe area must stay fully visible: the scale never exceeds the one at which it exactly fits.
+  const fit = Math.min(winW / safeW, winH / safeH);
+  const scale = Math.min(fit, base * ui);
+  // The canvas box (w·base × h·base CSS px) is unchanged; a smaller scale shows more virtual units in it.
+  const vw = (w * base) / scale;
+  const vh = (h * base) / scale;
+  return { w: vw, h: vh, ox: (vw - safeW) / 2, oy: (vh - safeH) / 2, scale };
+}
+
+/** The UI scale actually in force for a window (the setting after the fits-on-screen clamp). */
+export function effectiveUiScale(winW: number, winH: number, uiScale: number, safeW = 1280, safeH = 720): number {
+  const base = computeView(winW, winH, safeW, safeH, 1).scale;
+  return computeView(winW, winH, safeW, safeH, uiScale).scale / base;
 }
 
 /**

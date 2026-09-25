@@ -23,6 +23,16 @@ export const MIN_H = 540;
 export const DEFAULT_W = 1280;
 export const DEFAULT_H = 720;
 
+/** `"1600x900"` (the `windowSize` setting) → content size, or null for anything else. */
+export function parseWindowSize(v: unknown): { w: number; h: number } | null {
+  if (typeof v !== 'string') return null;
+  const m = /^(\d{3,5})x(\d{3,5})$/.exec(v);
+  if (!m) return null;
+  const w = Number(m[1]);
+  const h = Number(m[2]);
+  return w >= MIN_W && h >= MIN_H ? { w, h } : null;
+}
+
 const intersectArea = (a: Rect, b: Rect) => Math.max(0, Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x)) * Math.max(0, Math.min(a.y + a.height, b.y + b.height) - Math.max(a.y, b.y));
 
 export function defaultState(primary: Screen): WindowState {
@@ -63,4 +73,21 @@ export function restoreState(stored: Partial<WindowState> | null, screens: Scree
   const x = Math.min(Math.max(wa.x, Math.round(b!.x)), wa.x + wa.width - width);
   const y = Math.min(Math.max(wa.y, Math.round(b!.y)), wa.y + wa.height - height);
   return { mode, displayId: screen.id, maximized: stored.maximized === true, bounds: { x, y, width, height } };
+}
+
+/**
+ * Windowed bounds of a size preset (UIX-0105): `w`×`h` centred in the work area of the display the
+ * state is on (or the primary), shrunk to the work area when the monitor is smaller than the preset.
+ */
+export function sizedState(state: WindowState, w: number, h: number, screens: Screen[]): WindowState {
+  const screen = screens.find((s) => s.id === state.displayId) ?? screens.find((s) => s.primary) ?? screens[0];
+  const wa = screen.workArea;
+  const width = Math.min(Math.max(MIN_W, Math.round(w)), wa.width);
+  const height = Math.min(Math.max(MIN_H, Math.round(h)), wa.height);
+  return {
+    ...state,
+    displayId: screen.id,
+    maximized: false,
+    bounds: { x: wa.x + Math.round((wa.width - width) / 2), y: wa.y + Math.round((wa.height - height) / 2), width, height },
+  };
 }

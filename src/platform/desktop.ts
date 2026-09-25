@@ -1,4 +1,4 @@
-import type { BootInfo, ConfirmOptions, DisplayInfo, DisplayMode, RawBridge, WindowState, WriteResult } from './bridge';
+import type { BootInfo, ConfirmOptions, DisplayInfo, DisplayMode, RawBridge, TimelineMarker, WindowState, WriteResult } from './bridge';
 import { storeUrl } from './editions';
 import type { FileStorage, OpenTarget, Platform, SteamPlatform, WindowPlatform } from './types';
 
@@ -88,6 +88,9 @@ class DesktopSteam implements SteamPlatform {
   onConnected(cb: (connected: boolean) => void): void {
     this.bridge.on('ss:steam-connected', cb);
   }
+  timeline(marker: TimelineMarker): void {
+    if (this.available) this.bridge.send('ss:steam-timeline', marker);
+  }
 }
 
 class DesktopWindow implements WindowPlatform {
@@ -103,6 +106,9 @@ class DesktopWindow implements WindowPlatform {
   async setMode(mode: DisplayMode, displayId: number | null = null): Promise<void> {
     this.current = await this.bridge.invoke('ss:window-set', mode, displayId);
   }
+  async setSize(width: number, height: number): Promise<void> {
+    this.current = await this.bridge.invoke('ss:window-size', width, height);
+  }
   toggleFullscreen(): void {
     void this.setMode(this.current.mode === 'windowed' ? 'fullscreen' : 'windowed');
   }
@@ -117,6 +123,9 @@ class DesktopWindow implements WindowPlatform {
   }
   onModeChange(cb: (mode: DisplayMode) => void): void {
     this.bridge.on('ss:window-state', (s) => cb(s.mode));
+  }
+  onOverlay(cb: (active: boolean) => void): void {
+    this.bridge.on('ss:overlay', cb);
   }
 }
 

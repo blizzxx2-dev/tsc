@@ -10,6 +10,9 @@ import { BTN, PadMapper, stickToVelocity, type PadState } from '../src/platform/
 import { BUILD, buildLabel, makeBuildInfo } from '../src/platform/build';
 import { storeUrl } from '../src/platform/editions';
 import { platform } from '../src/platform';
+import { OverlayGate } from '../src/platform/overlay';
+import { EVENT_CHANNELS, INVOKE_CHANNELS, SEND_CHANNELS } from '../src/platform/bridge';
+import type { FrameSource } from '../src/core/input';
 import type { SteamPlatform } from '../src/platform/types';
 
 describe('PII scrubbing', () => {
@@ -57,7 +60,13 @@ describe('build info and flags', () => {
   });
 
   it('parses flag overrides, ignoring unknown flags', () => {
-    expect(parseFlagOverrides([['watermark', '1'], ['qaTools', 'false'], ['nope', '1']])).toEqual({ watermark: true, qaTools: false });
+    expect(
+      parseFlagOverrides([
+        ['watermark', '1'],
+        ['qaTools', 'false'],
+        ['nope', '1'],
+      ]),
+    ).toEqual({ watermark: true, qaTools: false });
     expect(FLAG_DEFAULTS.challengeMode).toBe(false);
   });
 
@@ -93,6 +102,7 @@ class FakeSteam implements SteamPlatform {
   openStore = (id: number) => this.base.openStore(id);
   openWebPage = (u: string) => this.base.openWebPage(u);
   showKeyboard = () => Promise.resolve(false);
+  timeline = () => undefined;
   setAchievement(id: string, on: boolean): Promise<boolean> {
     if (!this.available) return Promise.resolve(false);
     if (on) this.unlocked.add(id);
@@ -109,7 +119,15 @@ class FakeSteam implements SteamPlatform {
 }
 
 describe('achievements', () => {
-  const win = (opId: string, rank: 'S' | 'XS' = 'S', litanyUsed = true) => ({ type: 'operation-end' as const, opId, won: true, rank, score: 1, assisted: false, litanyUsed });
+  const win = (opId: string, rank: 'S' | 'XS' = 'S', litanyUsed = true) => ({
+    type: 'operation-end' as const,
+    opId,
+    won: true,
+    rank,
+    score: 1,
+    assisted: false,
+    litanyUsed,
+  });
 
   it('unlocks from game events, queues offline, flushes when Steam connects', async () => {
     const steam = new FakeSteam();
@@ -141,7 +159,11 @@ describe('achievements', () => {
 describe('rich presence', () => {
   it('maps activities to tokens with substitutions', () => {
     expect(presenceFor({ kind: 'menu' })).toEqual({ steam_display: '#Status_Menu', chapter: null, patient: null });
-    expect(presenceFor({ kind: 'operating', chapter: 'II', patient: 'Gravehound' })).toEqual({ steam_display: '#Status_Operating', chapter: 'II', patient: 'Gravehound' });
+    expect(presenceFor({ kind: 'operating', chapter: 'II', patient: 'Gravehound' })).toEqual({
+      steam_display: '#Status_Operating',
+      chapter: 'II',
+      patient: 'Gravehound',
+    });
     expect(presenceFor({ kind: 'story', chapter: 'I' }).steam_display).toBe('#Status_Story');
   });
 
@@ -193,7 +215,10 @@ describe('display-change confirmation', () => {
 
   it('keeps a confirmed change and ignores no-op changes', async () => {
     const applied: DisplayConfig[] = [];
-    const g = new DisplayChangeGuard(async (c) => void applied.push(c), async () => true);
+    const g = new DisplayChangeGuard(
+      async (c) => void applied.push(c),
+      async () => true,
+    );
     expect(await g.change(W, F)).toEqual(F);
     expect(await g.change(F, F)).toEqual(F);
     expect(applied).toEqual([F]);
@@ -231,5 +256,68 @@ describe('gamepad backend', () => {
     f = m.frame([pad([0, 0], [BTN.LT, BTN.Y])], 0.016, 1000, 0);
     expect(f).toMatchObject({ left: false, right: true, keys: ['Tab'] });
     expect(m.frame([null, { ...pad([1, 1]), connected: false }], 1, 1000, 0).active).toBe(false);
+  });
+});
+
+describe('Steam overlay gate (PLT-0042)', () => {
+  const fakeInput = () => {
+    const calls: [boolean, number | undefined][] = [];
+    const input = {
+      replay: null as FrameSource | null,
+      pos: { x: 640, y: 360 },
+      device: 'kbm' as const,
+      notifyOverlay: (active: boolean, t?: number) => calls.push([active, t]),
+    };
+    return { input, calls };
+  };
+
+  it('pauses, releases held input and feeds empty frames while the overlay is up, then restores the devices', () => {
+    const { input, calls } = fakeInput();
+    let paused = 0;
+    let now = 1000;
+    const gate = new OverlayGate(
+      input,
+      () => paused++,
+      () => now,
+    );
+    expect(gate.up).toBe(false);
+    gate.set(true);
+    expect(paused).toBe(1);
+    expect(calls).toEqual([[true, 1000]]);
+    expect(input.replay).not.toBeNull();
+    now = 1016;
+    const f = input.replay!.next()!;
+    expect(f).toMatchObject({ t: 1016, events: [], sticks: { lx: 0, ly: 0, rx: 0, ry: 0 }, device: 'kbm', start: { x: 640, y: 360 } });
+    expect(f.dt).toBeGreaterThan(0);
+    // Repeated activations are idempotent; closing restores live input without a second pause.
+    gate.set(true);
+    expect(paused).toBe(1);
+    gate.set(false);
+    expect(gate.up).toBe(false);
+    expect(input.replay).toBeNull();
+    expect(calls.at(-1)).toEqual([false, 1016]);
+    expect(paused).toBe(1);
+  });
+
+  it('leaves a recording replay in place', () => {
+    const { input } = fakeInput();
+    const replay: FrameSource = { next: () => null };
+    input.replay = replay;
+    const gate = new OverlayGate(
+      input,
+      () => undefined,
+      () => 0,
+    );
+    gate.set(true);
+    expect(input.replay).toBe(replay);
+    gate.set(false);
+    expect(input.replay).toBe(replay);
+  });
+
+  it('the bridge allow-lists carry the overlay event and the timeline channel', () => {
+    expect(EVENT_CHANNELS).toContain('ss:overlay');
+    expect(SEND_CHANNELS).toContain('ss:steam-timeline');
+    expect(INVOKE_CHANNELS).toContain('ss:window-size');
+    expect(() => (new NoSteam() as SteamPlatform).timeline({ kind: 'op-start', title: 'x', icon: 'steam_marker', priority: 1 })).not.toThrow();
   });
 });
