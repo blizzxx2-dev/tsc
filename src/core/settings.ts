@@ -10,6 +10,8 @@ export interface Settings {
   litanyKey: boolean;
   /** Dampen full-screen flashes and pulses. */
   reduceFlashing: boolean;
+  /** Interface language (BCP 47, see src/i18n/locales.ts); '' follows the system language. */
+  language: string;
 }
 
 const KEY = 'suture-and-steel.settings';
@@ -21,6 +23,7 @@ export const DEFAULT_SETTINGS: Settings = {
   timerAssist: 1,
   litanyKey: false,
   reduceFlashing: false,
+  language: '',
 };
 
 function load(): Settings {

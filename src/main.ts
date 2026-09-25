@@ -13,6 +13,7 @@ import { TitleScene } from './scenes/title';
 import { StoryScene } from './scenes/story';
 import type { Backdrop } from './content/story';
 import { VIEW_H, VIEW_W } from './ui/layout';
+import { initLocale } from './i18n/boot';
 
 class Main implements Game {
   input: Input;
@@ -87,6 +88,7 @@ async function boot(): Promise<void> {
   } catch {
     // Fall back to system serif fonts.
   }
+  await initLocale();
   let game: Main;
   try {
     game = new Main(canvas);

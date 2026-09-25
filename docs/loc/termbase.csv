@@ -1,0 +1,53 @@
+term,pos,type,dnt,status,de,fr,es-ES,pl,pt-BR,ru,zh-Hans,it,ja,ko,notes
+Suture & Steel,proper noun,title,yes,approved,Suture & Steel,Suture & Steel,Suture & Steel,Suture & Steel,Suture & Steel,Suture & Steel,Suture & Steel,Suture & Steel,Suture & Steel,Suture & Steel,Game title; never translated; store pages may add a native subtitle only with marketing approval
+The Malison Hours,proper noun,title,no,proposed,,,,,,,,,,,Subtitle; keep English unless a localised logo is approved (OPS)
+Kreuzer,proper noun,character,latin,proposed,Kreuzer,Kreuzer,Kreuzer,Kreuzer,Kreuzer,Кройцер,克罗伊策,Kreuzer,クロイツァー,크로이처,Protagonist; Dr. Kreuzer; apothecary-surgeon; male
+Ilse,proper noun,character,latin,proposed,Ilse,Ilse,Ilse,Ilse,Ilse,Ильза,伊尔莎,Ilse,イルゼ,일제,Sister Ilse; nursing sister; assistant; female
+Stroh,proper noun,character,latin,proposed,Stroh,Stroh,Stroh,Stroh,Stroh,Штро,施特罗,Stroh,シュトロー,슈트로,Inquisitor Stroh of the Ash Tribunal; male
+Haller,proper noun,character,latin,proposed,Haller,Haller,Haller,Haller,Haller,Халлер,哈勒,Haller,ハラー,할러,Master Haller; retired guild surgeon; male
+Mauer,proper noun,character,latin,proposed,Mauer,Mauer,Mauer,Mauer,Mauer,Мауэр,毛尔,Mauer,マウアー,마우어,Captain Mauer of the Kessendorf Watch; male
+Kessendorf,proper noun,place,latin,proposed,Kessendorf,Kessendorf,Kessendorf,Kessendorf,Kessendorf,Кессендорф,凯森多夫,Kessendorf,ケッセンドルフ,케센도르프,Free city where the game is set
+Saint Ildra,proper noun,saint,no,proposed,Sankt Ildra,sainte Ildra,santa Ildra,święta Ildra,santa Ildra,святая Ильдра,圣伊尔德拉,santa Ildra,聖イルドラ,성 일드라,Fictional saint; patron of the hospice; female; never substitute a real saint
+Weissburg,proper noun,place,latin,proposed,Weissburg,Weissburg,Weissburg,Weissburg,Weissburg,Вайсбург,魏斯堡,Weissburg,ヴァイスブルク,바이스부르크,City where Kreuzer was sworn
+Grauwald,proper noun,place,latin,proposed,Grauwald,Grauwald,Grauwald,Grauwald,Grauwald,Граувальд,格劳瓦尔德,Grauwald,グラウヴァルト,그라우발트,Forest region
+Pieter,proper noun,character,latin,proposed,Pieter,Pieter,Pieter,Pieter,Pieter,Питер,彼得,Pieter,ピーテル,피터,Patient op1-2; militiaman; male
+Jost,proper noun,character,latin,proposed,Jost,Jost,Jost,Jost,Jost,Йост,约斯特,Jost,ヨースト,요스트,Patient op1-1; drover; male
+Anno,proper noun,character,latin,proposed,Anno,Anno,Anno,Anno,Anno,Анно,安诺,Anno,アンノ,안노,Patient op1-3; gunsmith's apprentice; male
+Emmerich,proper noun,character,latin,proposed,Emmerich,Emmerich,Emmerich,Emmerich,Emmerich,Эммерих,埃默里希,Emmerich,エメリッヒ,에머리히,Patient op1-5; page-boy; male
+Tomas,proper noun,character,latin,proposed,Tomas,Tomas,Tomas,Tomas,Tomas,Томас,托马斯,Tomas,トーマス,토마스,Patient op2-1; scout; male
+Orsa Flintvein,proper noun,character,latin,proposed,Orsa Flintvein,Orsa Flintvein,Orsa Flintvein,Orsa Flintvein,Orsa Flintvein,Орса Флинтвейн,奥尔莎·弗林特文,Orsa Flintvein,オルサ・フリントヴェイン,오르사 플린트베인,Patient op2-2; dwarf prospector; female
+Henning,proper noun,character,latin,proposed,Henning,Henning,Henning,Henning,Henning,Хеннинг,亨宁,Henning,ヘニング,헤닝,Patient op2-3; forager; male
+Jorg,proper noun,character,latin,proposed,Jorg,Jorg,Jorg,Jorg,Jorg,Йорг,约尔格,Jorg,ヨルク,요르크,Patient op2-5; standard-bearer; male
+Malison,proper noun,boss,no,proposed,Malison,Malison,Malison,Malison,Malison,Малисон,马利森,Malison,マリソン,말리손,The living curse (boss); archaic English 'curse'; keep as a name in Latin scripts
+Hollow Choir,proper noun,faction,no,proposed,der Hohle Chor,le Chœur creux,el Coro Hueco,Pusty Chór,o Coro Oco,Полый хор,空洞圣咏团,il Coro Cavo,虚ろなる聖歌隊,공허한 성가대,Heretic coven that weaves the Malison
+Ash Tribunal,proper noun,faction,no,proposed,das Aschetribunal,le Tribunal de Cendre,el Tribunal de Ceniza,Trybunał Popiołu,o Tribunal das Cinzas,Пепельный трибунал,灰烬裁判所,il Tribunale della Cenere,灰の審問院,잿빛 심판정,Witch-hunting inquisition; Stroh's order
+Merciful Order,proper noun,faction,no,proposed,der Barmherzige Orden,l'Ordre miséricordieux,la Orden Misericordiosa,Zakon Miłosierny,a Ordem Misericordiosa,Милосердный орден,慈悲修会,l'Ordine Misericordioso,慈悲修道会,자비 수도회,Nursing order of Sister Ilse
+Litany of Stillness,proper noun,mechanic,no,proposed,Litanei der Stille,Litanie de la Quiétude,Letanía de la Quietud,Litania Bezruchu,Ladainha da Quietude,Литания Покоя,静止祷文,Litania della Quiete,静寂の連祷,정적의 연도,Time-slowing rite (star gesture); also popup THE LITANY OF STILLNESS
+Matins,proper noun,hour,no,proposed,Matutin,Matines,Maitines,Jutrznia,Matinas,,,Mattutino,,,Canonical hour; also boss name and Chapter I title; RU/JA/KO from lead translators
+Lauds,proper noun,hour,no,proposed,Laudes,Laudes,Laudes,Laudesy,Laudes,,,Lodi,,,Canonical hour; boss and Chapter II
+Prime,proper noun,hour,no,proposed,Prim,Prime,Prima,Pryma,Prima,,,Prima,,,Canonical hour; Chapter III boss
+Terce,proper noun,hour,no,proposed,Terz,Tierce,Tercia,Tercja,Terça,,,Terza,,,Canonical hour
+Sext,proper noun,hour,no,proposed,Sext,Sexte,Sexta,Seksta,Sexta,,,Sesta,,,Canonical hour
+None,proper noun,hour,no,proposed,Non,None,Nona,Nona,Noa,,,Nona,,,Canonical hour; beware the English word 'none' in context
+Vespers,proper noun,hour,no,proposed,Vesper,Vêpres,Vísperas,Nieszpory,Vésperas,,,Vespri,,,Canonical hour
+Compline,proper noun,hour,no,proposed,Komplet,Complies,Completas,Kompleta,Completas,,,Compieta,,,Canonical hour; finale boss
+Lancet,noun,instrument,no,proposed,Lanzette,Lancette,Lanceta,Lancet,Lanceta,,,Lancetta,,,Tool 1 (scalpel); tray/tooltip width
+Tongs,noun,instrument,no,proposed,Zange,Pinces,Tenazas,Szczypce,Tenaz,,,Pinze,,,Tool 2 (forceps)
+Leech-Pipe,noun,instrument,no,proposed,Egelrohr,Pipe à sangsue,Caño de sanguijuela,Rurka pijawkowa,Tubo-sanguessuga,,,Cannula a sanguisuga,,,Tool 3 (drain)
+Gut Thread,noun,instrument,no,proposed,Darmfaden,Fil de boyau,Hilo de tripa,Nić jelitowa,Fio de tripa,,,Filo di budello,,,Tool 4 (suture); catgut
+Saint's Salve,noun,instrument,no,proposed,Heiligensalbe,Baume du Saint,Ungüento del Santo,Maść Świętego,Unguento do Santo,,,Unguento del Santo,,,Tool 5 (gel); source uses ’ (U+2019)
+Tincture,noun,instrument,no,proposed,Tinktur,Teinture,Tintura,Nalewka,Tintura,,,Tintura,,,Tool 6 (syringe/stabiliser)
+Cautery Brand,noun,instrument,no,proposed,Brenneisen,Fer à cautère,Hierro de cauterio,Żelazo kauteryzacyjne,Ferro de cautério,,,Ferro da cauterio,,,Tool 7 (laser)
+Scrying Lens,noun,instrument,no,proposed,Seherlinse,Lentille de divination,Lente adivinatoria,Soczewka wróżebna,Lente de vidência,,,Lente divinatoria,,,Tool 8 (ultrasound)
+Hexstone,noun,ailment,no,proposed,Hexenstein,pierre-maléfice,piedra maldita,klątwokamień,pedra-maldita,,,pietra stregata,,,Cursed mineral shard; id 'hexstone' (decision D-0007)
+hexfire,noun,ailment,no,proposed,Hexenfeuer,feu maléfique,fuego maldito,klątwogień,fogo maldito,,,fuoco stregato,,,Burn type
+Cool,interjection,rating,no,proposed,,,,,,,,,,,Rating word; follows OPS rating-word decision (OPS-0050); ≤ 6 characters where possible
+Good,adjective,rating,no,proposed,,,,,,,,,,,Rating word
+Bad,adjective,rating,no,proposed,,,,,,,,,,,Rating word
+Miss,noun,rating,no,proposed,,,,,,,,,,,Rating word
+XS,abbreviation,rank,yes,approved,XS,XS,XS,XS,XS,XS,XS,XS,XS,XS,Rank letters XS/S/A/B/C stay Latin capitals in every language (LOC-0010)
+Doctor,noun,address,no,proposed,Doktor,Docteur,Doctor,Doktorze,Doutor,,,Dottore,,,Form of address to Kreuzer; vocative in PL
+Apothecary-Surgeon,noun,title,no,proposed,Apotheker-Chirurg,apothicaire-chirurgien,boticario-cirujano,aptekarz-chirurg,boticário-cirurgião,,,speziale-chirurgo,,,Kreuzer's profession; period term
+beast-folk,noun,creature,no,proposed,Tiervolk,gens-bêtes,gente bestia,zwierzoludzie,povo-fera,,,popolo-bestia,,,Generic horned raiders; never 'Beastmen'
+black bile,noun,humour,no,proposed,schwarze Galle,bile noire,bilis negra,czarna żółć,bile negra,,,bile nera,,,Galenic humour (melancholia); see docs/loc/period-medicine.md
+bubo,noun,ailment,no,proposed,Beule,bubon,bubón,dymienica,bubão,,,bubbone,,,Plague swelling; plural buboes
