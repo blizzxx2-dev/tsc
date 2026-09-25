@@ -2270,20 +2270,12 @@
     "context": "Button on the options screen that opens key bindings.",
     "screenshot": "docs/loc/screens/options.png"
   },
-  "ui.story.click_prefix": {
-    "scene": "story",
-    "font": "body",
-    "size": 13,
-    "maxPx": 700,
-    "context": "Prefix before the advance key in the story footer (mouse users only).",
-    "screenshot": "docs/loc/screens/story.png"
-  },
   "ui.story.controls_fmt": {
     "scene": "story",
     "font": "body",
     "size": 13,
     "maxPx": 700,
-    "context": "Story footer; placeholders are key labels.",
+    "context": "Story footer for controller players; placeholders are button labels.",
     "screenshot": "docs/loc/screens/story.png"
   },
   "label.acid_drawn": {
@@ -6022,5 +6014,143 @@
     "maxPx": 360,
     "context": "Options row label, left-aligned.",
     "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.story.menu.heading": {
+    "scene": "story",
+    "font": "display",
+    "size": 30,
+    "maxPx": 340,
+    "context": "Title of the pause menu opened during a story scene.",
+    "screenshot": "docs/loc/screens/story.png"
+  },
+  "ui.story.menu.resume": {
+    "scene": "story",
+    "font": "display",
+    "size": 26,
+    "maxPx": 340,
+    "context": "Story pause menu entry: close the menu.",
+    "screenshot": "docs/loc/screens/story.png"
+  },
+  "ui.story.menu.skip": {
+    "scene": "story",
+    "font": "display",
+    "size": 26,
+    "maxPx": 340,
+    "context": "Story pause menu entry: skip the rest of this story scene (asks to confirm).",
+    "screenshot": "docs/loc/screens/story.png"
+  },
+  "ui.story.menu.backlog": {
+    "scene": "story",
+    "font": "display",
+    "size": 26,
+    "maxPx": 340,
+    "context": "Story pause menu entry: open the log of lines shown in this scene.",
+    "screenshot": "docs/loc/screens/story.png"
+  },
+  "ui.story.menu.title": {
+    "scene": "story",
+    "font": "display",
+    "size": 26,
+    "maxPx": 340,
+    "context": "Story pause menu entry: leave to the title screen (asks to confirm).",
+    "screenshot": "docs/loc/screens/story.png"
+  },
+  "ui.story.menu.confirm_skip": {
+    "scene": "story",
+    "font": "body",
+    "size": 24,
+    "maxPx": 520,
+    "context": "Confirm dialog before skipping a story scene.",
+    "screenshot": "docs/loc/screens/story.png",
+    "maxLines": 3
+  },
+  "ui.story.menu.confirm_title": {
+    "scene": "story",
+    "font": "body",
+    "size": 24,
+    "maxPx": 520,
+    "context": "Confirm dialog before leaving a story scene for the title screen.",
+    "screenshot": "docs/loc/screens/story.png",
+    "maxLines": 3
+  },
+  "ui.story.backlog.title": {
+    "scene": "story",
+    "font": "display",
+    "size": 30,
+    "maxPx": 500,
+    "context": "Heading of the dialogue log overlay in story scenes.",
+    "screenshot": "docs/loc/screens/story.png"
+  },
+  "ui.story.backlog.empty": {
+    "scene": "story",
+    "font": "italic",
+    "size": 19,
+    "maxPx": 700,
+    "context": "Shown in the dialogue log when no line has appeared yet.",
+    "screenshot": "docs/loc/screens/story.png"
+  },
+  "ui.story.backlog.newer": {
+    "scene": "story",
+    "font": "display",
+    "size": 11,
+    "maxPx": 400,
+    "context": "Hint at the bottom of the dialogue log when scrolled up.",
+    "screenshot": "docs/loc/screens/story.png"
+  },
+  "ui.story.backlog.hint": {
+    "scene": "story",
+    "font": "body",
+    "size": 16,
+    "maxPx": 600,
+    "context": "Footer of the dialogue log; {close} is a key label.",
+    "screenshot": "docs/loc/screens/story.png"
+  },
+  "ui.story.strip.auto": {
+    "scene": "story",
+    "font": "display",
+    "size": 13,
+    "maxPx": 76,
+    "context": "Control strip: toggle auto-advance.",
+    "screenshot": "docs/loc/screens/story.png"
+  },
+  "ui.story.strip.skip": {
+    "scene": "story",
+    "font": "display",
+    "size": 13,
+    "maxPx": 76,
+    "context": "Control strip: toggle fast-forward through read text.",
+    "screenshot": "docs/loc/screens/story.png"
+  },
+  "ui.story.strip.log": {
+    "scene": "story",
+    "font": "display",
+    "size": 13,
+    "maxPx": 76,
+    "context": "Control strip: open the dialogue backlog.",
+    "screenshot": "docs/loc/screens/story.png"
+  },
+  "ui.story.strip.hide": {
+    "scene": "story",
+    "font": "display",
+    "size": 13,
+    "maxPx": 76,
+    "context": "Control strip: hide the text box to see the scene.",
+    "screenshot": "docs/loc/screens/story.png"
+  },
+  "ui.story.strip.menu": {
+    "scene": "story",
+    "font": "display",
+    "size": 13,
+    "maxPx": 76,
+    "context": "Control strip: open the story pause menu.",
+    "screenshot": "docs/loc/screens/story.png"
+  },
+  "ui.story.strip.key": {
+    "scene": "story",
+    "font": "body",
+    "size": 18,
+    "maxPx": 300,
+    "context": "Tooltip body under a control-strip button; {key} is the bound key.",
+    "screenshot": "docs/loc/screens/story.png"
   }
 }

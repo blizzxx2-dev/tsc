@@ -312,12 +312,12 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ### Text box & controls
 - [x] UIX-0120 · M0 · P0 · S · Story scene — backdrop, procedural portrait, name plate in speaker colour, typewriter at 48 cps, click/Space/Enter advance, Ctrl fast-forward, Esc skips the scene, ▼ continue marker, place caption
-- [ ] UIX-0121 · Demo · P0 · M · Backlog — wheel-up or `vn.log` opens a scrollable log of every line shown in the current scene (speaker + text, VO replay icon when VO exists); Esc/B closes; supports gamepad scrolling
-- [ ] UIX-0122 · Demo · P0 · S · Story pause menu — Esc no longer skips instantly; it opens Resume / Skip Scene (confirm) / Backlog / Options / Return to Title
-- [ ] UIX-0123 · Demo · P1 · S · Auto mode — toggle advances after the line completes plus max(1.2 s, 30 ms/char) or when VO ends; auto icon lit while active; any manual input pauses auto
+- [x] UIX-0121 · Demo · P0 · M · Backlog — wheel-up or `vn.log` opens a scrollable log of every line shown in the current scene (speaker + text, VO replay icon when VO exists); Esc/B closes; supports gamepad scrolling
+- [x] UIX-0122 · Demo · P0 · S · Story pause menu — Esc no longer skips instantly; it opens Resume / Skip Scene (confirm) / Backlog / Options / Return to Title
+- [x] UIX-0123 · Demo · P1 · S · Auto mode — toggle advances after the line completes plus max(1.2 s, 30 ms/char) or when VO ends; auto icon lit while active; any manual input pauses auto
 - [x] UIX-0124 · Demo · P1 · M · Read-text tracking — seen line ids stored per save; Ctrl skip passes only seen lines unless "Skip unread text" is on; skip stops at unseen lines with a flash
-- [ ] UIX-0125 · Demo · P1 · S · Text-box control strip — clickable Auto / Skip / Log / Hide / Menu icons at the box's bottom-right, with binding tooltips; replaces the 13 px footer hint
-- [ ] UIX-0126 · Demo · P1 · S · Hide UI — `vn.hide` (H / right-click / Y) hides the text box to view art; any input restores
+- [x] UIX-0125 · Demo · P1 · S · Text-box control strip — clickable Auto / Skip / Log / Hide / Menu icons at the box's bottom-right, with binding tooltips; replaces the 13 px footer hint
+- [x] UIX-0126 · Demo · P1 · S · Hide UI — `vn.hide` (H / right-click / Y) hides the text box to view art; any input restores
 - [ ] UIX-0127 · Demo · P1 · S · Text speed option — 24/48/72 cps/instant, shared by story text and operation callouts
 - [x] UIX-0128 · Demo · P1 · S · Text-box readability — optional box opacity 60–100 %, line spacing 1.3, max 3 lines at 125 % text scale without overflow on 1280×800
 
