@@ -8962,7 +8962,7 @@
     "scene": "replay",
     "font": "display",
     "size": 16,
-    "maxPx": 480,
+    "maxPx": 720,
     "context": "Replay player controls bar (small caps)."
   },
   "ui.replay.drift": {

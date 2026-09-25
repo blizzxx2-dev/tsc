@@ -263,4 +263,4 @@ export class SceneAudio {
   }
 }
 
-const BLIP_F0: Partial<Record<CharacterId, number>> = { kreuzer: 120, ilse: 220, haller: 105, stroh: 95, mauer: 110, patient: 150, choir: 180 };
+const BLIP_F0: Partial<Record<CharacterId, number>> = { kreuzer: 120, ilse: 220, haller: 105, stroh: 95, mauer: 110, patient: 150, choir: 180, precentor: 140, orsa: 170, reiss: 200, tallert: 125, motherSuperior: 190, burgomaster: 100 };

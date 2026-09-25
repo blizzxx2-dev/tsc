@@ -1097,6 +1097,6 @@
   "loss.the_second_patient_has_died": "The second patient has died.",
   "ui.replay.playing": "Playing",
   "ui.replay.paused": "Paused",
-  "ui.replay.keys": "Space play · ↑↓ speed · ←→ 5 s · H hide",
+  "ui.replay.keys": "Space play · Up/Down speed · Left/Right 5 s · H hide",
   "ui.replay.drift": "Replay drifted from the recording"
 }
