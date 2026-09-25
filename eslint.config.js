@@ -28,7 +28,7 @@ const skipNeedsIssue = {
 };
 
 export default tseslint.config(
-  { ignores: ['dist/**', 'dist-*/**', 'node_modules/**', 'reports/**', 'coverage/**', 'test-results/**', '.stryker-tmp/**', 'docs/**'] },
+  { ignores: ['dist/**', 'dist-*/**', 'node_modules/**', 'reports/**', 'coverage/**', 'test-results/**', '.stryker-tmp/**', 'docs/**', 'scripts/.*'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -69,6 +69,8 @@ export default tseslint.config(
         Buffer: 'readonly',
         localStorage: 'readonly',
         location: 'readonly',
+        requestAnimationFrame: 'readonly',
+        navigator: 'readonly',
       },
     },
     rules: { 'no-unused-vars': ['error', { argsIgnorePattern: '^_', caughtErrors: 'none' }] },

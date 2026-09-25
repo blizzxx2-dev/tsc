@@ -20,7 +20,7 @@ export default defineConfig({
         test: {
           name: 'unit',
           environment: 'node',
-          include: ['tests/unit/**/*.test.ts', 'tests/characterisation/**/*.test.ts', 'tests/gesture.test.ts'],
+          include: ['tests/unit/**/*.test.ts', 'tests/telemetry/**/*.test.ts', 'tests/characterisation/**/*.test.ts', 'tests/gesture.test.ts'],
           testTimeout: 10_000,
         },
       },

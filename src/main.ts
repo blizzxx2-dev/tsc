@@ -13,6 +13,8 @@ import { TitleScene } from './scenes/title';
 import { StoryScene } from './scenes/story';
 import type { Backdrop } from './content/story';
 import { VIEW_H, VIEW_W } from './ui/layout';
+import { installTelemetry } from './telemetry';
+import { installQaHooks } from './debug/hooks';
 
 class Main implements Game {
   input: Input;
@@ -102,6 +104,7 @@ async function boot(): Promise<void> {
   game.start(new TitleScene());
   // Dev/QA hooks: ?op=<id> jumps straight into an operation; window.__game exposes the game for automation.
   (window as unknown as { __game: Main }).__game = game;
+  installQaHooks(game, { telemetry: installTelemetry(game) });
   const opId = new URLSearchParams(location.search).get('op');
   const def = opId ? [...allOperations(), ...(import.meta.env.DEV || opId === 'showcase' ? [SHOWCASE] : [])].find((o) => o.id === opId) : undefined;
   if (def) {
