@@ -1,4 +1,5 @@
 import type { Game, Scene } from '../core/scene';
+import { heading } from '../ui/hudKit';
 import { t } from '../i18n';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
@@ -32,7 +33,7 @@ export class OperationsScene implements Scene {
     drawBackdrop(g, 'theatre', g.time);
     g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1, defocus: 8 });
     panel(g, { x: 200, y: 40, w: 880, h: 640 });
-    g.text(t('ui.theatre.title'), VIEW_W / 2, 110, { size: 50, font: 'display', color: hex(PALETTE.ink), align: 'center' });
+    heading(g, t('ui.theatre.title'), VIEW_W / 2, 96, 420, 1, 30);
     this.list.forEach(({ chapter, def }, i) => {
       const y = 180 + i * 64;
       const r = { x: 240, y: y - 34, w: 800, h: 54 };

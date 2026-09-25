@@ -34,3 +34,11 @@ describe('LOC-0018 reading time per locale', () => {
     for (const l of LOCALES) expect(l.reading, l.code).toBeGreaterThan(0);
   });
 });
+
+describe('action labels', () => {
+  it('every rebindable action has an action.<id> string', async () => {
+    const { ACTIONS } = await import('../../../src/input/actions');
+    const en = (await import('../../../src/i18n/strings/en.json')).default as Record<string, string>;
+    expect(ACTIONS.map((a) => a.id).filter((id) => !en[`action.${id}`])).toEqual([]);
+  });
+});

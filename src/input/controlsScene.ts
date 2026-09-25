@@ -1,4 +1,6 @@
 import { t as tr } from '../i18n';
+import { caps, glass, heading, hglow, INK, menuItem, rule } from '../ui/hudKit';
+import { arrow } from '../ui/controls';
 import type { Game, Scene } from '../core/scene';
 import { settings, saveSettings } from '../core/settings';
 import { hex } from '../render/color';
@@ -124,11 +126,17 @@ export class ControlsScene implements Scene {
     return this.actions().length;
   }
 
+  /** First visible row; the list scrolls so the focused row stays in view. */
+  private scroll = 0;
+  private static readonly VISIBLE = 13;
+  private visible(i: number): boolean {
+    return i >= this.scroll && i < this.scroll + ControlsScene.VISIBLE;
+  }
   private rowRect(i: number): Rect {
-    return { x: 190, y: 170 + i * 30, w: 900, h: 28 };
+    return { x: 190, y: 178 + (i - this.scroll) * 31, w: 900, h: 29 };
   }
   private cellRect(i: number, c: number): Rect {
-    return { x: 560 + c * 176, y: 170 + i * 30, w: 168, h: 28 };
+    return { x: 560 + c * 176, y: 178 + (i - this.scroll) * 31, w: 168, h: 29 };
   }
   private tabRect(i: number): Rect {
     return { x: 190 + i * 150, y: 112, w: 146, h: 36 };
@@ -166,8 +174,15 @@ export class ControlsScene implements Scene {
     // Mouse hover.
     this.hoverRow = -1;
     this.hoverCol = -1;
+    const maxScroll = Math.max(0, rows - ControlsScene.VISIBLE);
+    if (input.wheel) this.scroll = Math.max(0, Math.min(maxScroll, this.scroll + Math.sign(input.wheel)));
+    if (this.row < rows) {
+      if (this.row < this.scroll) this.scroll = this.row;
+      if (this.row >= this.scroll + ControlsScene.VISIBLE) this.scroll = this.row - ControlsScene.VISIBLE + 1;
+    }
+    this.scroll = Math.max(0, Math.min(maxScroll, this.scroll));
     for (let i = 0; i < rows; i++) {
-      if (!inRect(input.pos, this.rowRect(i))) continue;
+      if (!this.visible(i) || !inRect(input.pos, this.rowRect(i))) continue;
       this.hoverRow = i;
       if (!handling) for (let c = 0; c < 3; c++) if (inRect(input.pos, this.cellRect(i, c))) this.hoverCol = c;
     }
@@ -296,82 +311,98 @@ export class ControlsScene implements Scene {
       g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1 });
     } else g.beginScreen();
     panel(g, { x: 160, y: 30, w: 960, h: 660 });
-    g.text(tr('ctl.title'), VIEW_W / 2, 92, { size: 46, font: 'display', color: hex(PALETTE.ink), align: 'center' });
+    heading(g, tr('ctl.title'), VIEW_W / 2, 84, 360, 1, 30);
     const pad = glyphContext().glyphs;
 
     TABS.forEach((t, i) => {
       const r = this.tabRect(i);
       const on = i === this.tab;
-      g.rect(r.x, r.y, r.w, r.h, hex(on ? PALETTE.blood : '#000000', on ? 0.5 : 0.25));
-      g.text(tr(t.label), r.x + r.w / 2, r.y + 25, { size: 16, color: hex(on ? PALETTE.gold : PALETTE.inkDim), align: 'center' });
+      const hov = inRect(game.input.pos, r);
+      if (on) {
+        hglow(g, r, hex('#7a5626', 0.3));
+        rule(g, r.x + r.w / 2, r.y + r.h - 2, r.w * 0.9, hex(INK.gold, 0.95), 2);
+      } else if (hov) rule(g, r.x + r.w / 2, r.y + r.h - 2, r.w * 0.7, hex(INK.gilt, 0.5), 1);
+      g.text(tr(t.label).toUpperCase(), r.x + r.w / 2, r.y + 23, { size: 12, font: 'display', tracking: 0.12, color: hex(on ? INK.goldHi : hov ? '#f0e2c0' : INK.dim), align: 'center', shadow: hex('#000000', 0.8) });
     });
 
     const rows = this.rowCount();
+    const rowLabel = (s: string, r: Rect, focus: boolean) => g.text(s, r.x + 18, r.y + 20, { size: 18, color: hex(focus ? '#fff4dc' : '#d8ccb4'), shadow: hex('#000000', 0.7) });
+    const rowGlow = (r: Rect, focus: boolean) => {
+      if (!focus) return;
+      hglow(g, { x: r.x - 60, y: r.y, w: r.w + 120, h: r.h }, hex('#7a5626', 0.26));
+      g.rect(r.x, r.y + 5, 2, r.h - 10, hex(INK.gold, 0.95));
+    };
     if (this.tabId === 'deck') {
-      g.text(tr('ctl.deck.title'), 190, 190, { size: 22, color: hex(PALETTE.gold) });
+      caps(g, tr('ctl.deck.title'), 200, 196, 14, hex(INK.gold));
       DECK_LAYOUT.forEach(([k, v], i) => {
-        g.text(tr(k), 210, 226 + i * 32, { size: 19, color: hex(PALETTE.gold) });
-        g.text(tr(v), 450, 226 + i * 32, { size: 19, color: hex(PALETTE.ink) });
+        caps(g, tr(k), 210, 236 + i * 34, 12, hex(INK.dim));
+        g.text(tr(v), 470, 238 + i * 34, { size: 18, color: hex(INK.text), shadow: false });
+        g.rect(210, 246 + i * 34, 860, 1, hex(INK.gilt, 0.1));
       });
     } else if (this.tabId === 'handling') {
       const list = prefRows(bindings.prefs);
       list.forEach((row, i) => {
+        if (!this.visible(i)) return;
         const r = this.rowRect(i);
         const focus = i === this.row || i === this.hoverRow;
-        if (focus) g.rect(r.x, r.y, r.w, r.h, hex(PALETTE.blood, 0.28));
-        g.text(row.label, r.x + 16, r.y + 21, { size: 19, color: hex(focus ? PALETTE.gold : PALETTE.ink) });
-        g.text(`‹  ${row.value()}  ›`, r.x + r.w - 16, r.y + 21, { size: 19, color: hex(PALETTE.gold), align: 'right' });
+        rowGlow(r, focus);
+        rowLabel(row.label, r, focus);
+        g.text(row.value().toUpperCase(), r.x + r.w - 40, r.y + 19, { size: 12, font: 'display', tracking: 0.12, color: hex(INK.gold), align: 'right', shadow: hex('#000000', 0.8) });
+        arrow(g, r.x + r.w - 20, r.y + r.h / 2, 1, 7, hex(INK.gold, focus ? 1 : 0.5));
+        g.rect(r.x + 10, r.y + r.h + 1, r.w - 20, 1, hex(INK.gilt, 0.1));
       });
       const note = list[this.hoverRow >= 0 ? this.hoverRow : this.row]?.note;
-      if (note) g.text(note, VIEW_W / 2, 614, { size: 16, font: 'italic', color: hex(PALETTE.inkDim), align: 'center' });
+      if (note) g.text(note, VIEW_W / 2, 604, { size: 16, font: 'italic', color: hex(INK.dim), align: 'center', shadow: false });
     } else {
-      g.text(tr('ctl.col.kbm'), this.cellRect(0, 0).x + 172, 162, { size: 16, color: hex(PALETTE.inkDim), align: 'center' });
-      g.text(tr('ctl.col.pad'), this.cellRect(0, 2).x + 84, 162, { size: 16, color: hex(PALETTE.inkDim), align: 'center' });
+      caps(g, tr('ctl.col.kbm'), this.cellRect(0, 0).x + 172, 166, 11, hex(INK.dim), 'center');
+      caps(g, tr('ctl.col.pad'), this.cellRect(0, 2).x + 84, 166, 11, hex(INK.dim), 'center');
+      g.pushClip({ x: 170, y: 172, w: 940, h: ControlsScene.VISIBLE * 31 + 4 });
       this.actions().forEach((id, i) => {
+        if (!this.visible(i)) return;
         const r = this.rowRect(i);
         const set = bindings.get(id);
         const def = ACTIONS.find((a) => a.id === id)!;
-        g.text(tr(`action.${def.id}`), r.x + 16, r.y + 21, { size: 19, color: hex(i === this.row ? PALETTE.gold : PALETTE.ink) });
+        rowGlow(r, i === this.row);
+        rowLabel(tr(`action.${def.id}`), r, i === this.row);
         SLOTS.forEach((slot, c) => {
           const cr = this.cellRect(i, c);
           const code = set[slot.kind][slot.index];
           const focused = (i === this.row && c === this.col) || (i === this.hoverRow && c === this.hoverCol);
           const capturing = this.capture?.action === id && this.capture.slot.kind === slot.kind && this.capture.slot.index === slot.index;
-          g.rect(cr.x, cr.y, cr.w, cr.h, hex(focused ? PALETTE.blood : '#000000', focused ? 0.45 : 0.3));
-          if (focused) g.rectLine(cr.x, cr.y, cr.w, cr.h, 1.5, hex(PALETTE.gold, 0.8));
+          g.plate(cr.x + 4, cr.y + 2, cr.w - 8, cr.h - 4, { radius: 2, top: hex(focused ? '#3a2a18' : '#0c0a08', 0.9), bottom: hex(focused ? '#1e150d' : '#141009', 0.9), border: hex(focused ? INK.gold : '#3a3024', focused ? 1 : 0.8), borderW: focused ? 1.3 : 1, bevel: focused ? 0.6 : -0.3, shadow: [0, 0, 0], glow: focused ? hex(INK.gold, 0.2) : undefined, glowR: 10 });
           const locked = code && reservedFor(code)?.action === id;
           const label = capturing ? tr('ctl.capture_short', { s: Math.ceil(this.capture!.t) }) : code ? codeLabel(code, slot.kind === 'pad' ? pad : 'xbox') + (locked ? ' •' : '') : '—';
-          g.text(label, cr.x + cr.w / 2, cr.y + 20, { size: 17, color: hex(capturing ? PALETTE.gold : code ? PALETTE.ink : PALETTE.inkDim), align: 'center' });
+          g.text(label, cr.x + cr.w / 2, cr.y + 20, { size: 16, color: hex(capturing ? INK.goldHi : code ? INK.text : INK.faint), align: 'center', shadow: false });
         });
       });
-      g.text(tr('ctl.help'), VIEW_W / 2, 614, { size: 16, font: 'italic', color: hex(PALETTE.inkDim), align: 'center' });
+      g.popClip();
+      if (rows > ControlsScene.VISIBLE) {
+        const trackH = ControlsScene.VISIBLE * 31;
+        g.rect(1098, 176, 2, trackH, hex(INK.gilt, 0.15));
+        g.rect(1097, 176 + (trackH * this.scroll) / rows, 4, (trackH * ControlsScene.VISIBLE) / rows, hex(INK.gold, 0.7));
+      }
+      g.text(tr('ctl.help'), VIEW_W / 2, 604, { size: 16, font: 'italic', color: hex(INK.dim), align: 'center', shadow: false });
     }
 
     const foot = [this.tabId === 'handling' ? tr('ctl.foot.reset_these') : tr('ctl.foot.reset_row'), tr('ctl.foot.reset_all'), tr('ui.common.back')];
     foot.forEach((label, i) => {
       const r = this.footRect(i);
       const focus = (this.row >= rows && this.col === i) || inRect(game.input.pos, r);
-      g.rect(r.x, r.y, r.w, r.h, hex(focus ? PALETTE.blood : '#000000', focus ? 0.5 : 0.3));
-      g.text(label, r.x + r.w / 2, r.y + 26, { size: 20, color: hex(focus ? PALETTE.gold : PALETTE.ink), align: 'center' });
+      menuItem(g, r, label, focus ? 1 : 0, true, 24);
     });
 
     if (this.capture) this.drawOverlay(g, tr('ctl.capture', { action: tr(`action.${this.capture.action}`) }), tr('ctl.capture_note', { s: Math.ceil(this.capture.t) }));
     if (this.prompt) this.drawOverlay(g, tr('ctl.conflict', { input: codeLabel(this.prompt.code, pad), others: this.prompt.others }), tr('ctl.prompt.swap_q'), [tr('ctl.prompt.swap'), tr('ctl.prompt.cancel')]);
-    if (this.messageT > 0) g.text(this.message, VIEW_W / 2, 700, { size: 17, color: hex(PALETTE.bad), align: 'center' });
+    if (this.messageT > 0) g.text(this.message, VIEW_W / 2, 700, { size: 17, color: hex(PALETTE.bad), align: 'center', shadow: hex('#000000', 0.8) });
     reticle(g, game.input.pos);
     g.endFrame();
   }
 
   private drawOverlay(g: Gfx, title: string, sub: string, buttons: string[] = []): void {
     g.rect(0, 0, VIEW_W, 720, hex('#000000', 0.55));
-    g.rect(340, 270, 600, 180, hex('#140a08', 0.96));
-    g.rectLine(340, 270, 600, 180, 2, hex(PALETTE.gold, 0.7));
-    g.text(title, VIEW_W / 2, 330, { size: 22, color: hex(PALETTE.ink), align: 'center' });
-    g.text(sub, VIEW_W / 2, 370, { size: 18, font: 'italic', color: hex(PALETTE.inkDim), align: 'center' });
-    buttons.forEach((b, i) => {
-      const r = this.footRect(i);
-      g.rect(r.x, r.y, r.w, r.h, hex(PALETTE.blood, 0.5));
-      g.text(b, r.x + r.w / 2, r.y + 26, { size: 20, color: hex(PALETTE.gold), align: 'center' });
-    });
+    glass(g, { x: 340, y: 270, w: 600, h: 180 }, { strength: 1.15, glow: hex(INK.gold, 0.15), glowR: 18 });
+    g.text(title, VIEW_W / 2, 330, { size: 22, color: hex(INK.text), align: 'center', shadow: hex('#000000', 0.8), soft: true });
+    g.text(sub, VIEW_W / 2, 370, { size: 18, font: 'italic', color: hex(INK.dim), align: 'center', shadow: false });
+    buttons.forEach((b, i) => menuItem(g, this.footRect(i), b, 1, true, 24));
   }
 }

@@ -1,3 +1,9 @@
+import { CalibrateScene } from './scenes/calibrate';
+import { ControlsCardScene } from './scenes/controlsCard';
+import { AudioOptionsScene } from './audio/options-scene';
+import { ControlsScene } from './input/controlsScene';
+import { GameplayOptionsScene } from './scenes/gameplayOptions';
+import { OperationsScene } from './scenes/operations';
 import { DemoEndScene } from './scenes/demoend';
 import { Audio } from './core/audio';
 import { ErrorBoundary, type CrashRecord } from './core/boundary';
@@ -391,8 +397,21 @@ async function boot(): Promise<void> {
   // ?scene=artview|fleshlab opens an art dev page.
   const artScene = DEV_TOOLS ? artDevScene(params.get('scene')) : null;
   if (artScene) game.go(artScene);
-  // ?ui=demoend opens the end-of-demo screen for art review.
-  if (DEV_TOOLS && params.get('ui') === 'demoend') game.instant(() => game.go(new DemoEndScene()));
+  // ?ui=<screen> opens a screen directly for art review (dev/QA builds).
+  if (DEV_TOOLS) {
+    const back = () => game.go(new TitleScene());
+    const screens: Record<string, () => Scene> = {
+      demoend: () => new DemoEndScene(),
+      theatre: () => new OperationsScene(),
+      gameplay: () => new GameplayOptionsScene(back),
+      controls: () => new ControlsScene(back),
+      audio: () => new AudioOptionsScene(back),
+      calibrate: () => new CalibrateScene(back),
+    };
+    const make = screens[params.get('ui') ?? ''];
+    if (make) game.instant(() => game.go(make()));
+    if (params.get('ui') === 'card') game.instant(() => game.push?.(new ControlsCardScene()));
+  }
   // ?ui=gallery shows every widget for visual review (UIX-0006).
   if (params.get('ui') === 'gallery') game.instant(() => game.go(new GalleryScene(() => game.go(new TitleScene()))));
   // ?story=<backdrop> previews a story environment.

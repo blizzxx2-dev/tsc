@@ -1,4 +1,5 @@
 import type { Game, Scene } from '../core/scene';
+import { caps, glass, heading, INK, keycap, well } from '../ui/hudKit';
 import { t } from '../i18n';
 import { hex, type RGBA } from '../render/color';
 import type { Gfx } from '../render/gfx';
@@ -6,9 +7,9 @@ import { TOOL_INFO, type ToolId } from '../surgery/types';
 import { dragGlyphFor, glyphFor, toolKeyLabel } from '../input/glyphs';
 import { Ui } from '../ui/kit';
 import { menuEntry } from '../ui/controls';
-import { divider, giltText, leatherPanel, medallion, UI } from '../ui/ornaments';
+import { UI } from '../ui/ornaments';
 import { MOTION, pulse, tween } from '../ui/motion';
-import { fitBlock, fitText } from '../ui/text';
+import { fitBlock } from '../ui/text';
 import { VIEW_W } from '../ui/layout';
 import { uiEvents } from '../ui/events';
 import { reticle, star, toolIcon } from '../ui/widgets';
@@ -111,9 +112,8 @@ export class ControlsCardScene implements Scene {
     const vr = g.viewRect();
     g.rect(vr.x, vr.y, vr.w, vr.h, hex('#040202', 0.7 * k));
     const r = { x: 90, y: 24, w: 1100, h: 672 };
-    leatherPanel(g, r, { alpha: 0.98 });
-    giltText(g, t('ui.card.title'), VIEW_W / 2, r.y + 58, { size: 42, align: 'center' });
-    divider(g, VIEW_W / 2, r.y + 78, 360);
+    glass(g, r, { strength: 1.15, alpha: k });
+    heading(g, t('ui.card.title'), VIEW_W / 2, r.y + 56, 420, k, 28);
     const tools = TOOL_INFO.filter((i) => this.tools.includes(i.id));
     const cols = 2;
     const cw = (r.w - 80) / cols;
@@ -121,23 +121,22 @@ export class ControlsCardScene implements Scene {
     tools.forEach((info, i) => {
       const cx = r.x + 40 + (i % cols) * cw;
       const cy = r.y + 100 + Math.floor(i / cols) * rh;
-      medallion(g, cx + 38, cy + 40, 30);
-      toolIcon(g, info.id, cx + 38, cy + 40, 0.9, g.time);
+      g.plate(cx + 8, cy + 10, 64, 64, { radius: 3, top: hex('#16110d', 0.95), bottom: hex('#0a0806', 0.95), border: hex('#5a4a34', 0.8), borderW: 1, bevel: 0.5, shadow: [0.5, 6, 2] });
+      toolIcon(g, info.id, cx + 41, cy + 43, 1.0, g.time);
       const key = toolKeyLabel(TOOL_INFO.indexOf(info) + 1);
-      fitText(g, `card.${info.id}`, t(`tool.${info.id}.name`), cx + 84, cy + 28, cw - 250, { size: 24, color: hex(UI.gilt) });
-      g.text(key, cx + cw - 150, cy + 28, { size: 20, color: hex(UI.brassHi), align: 'right' });
-      fitBlock(g, `card.${info.id}.hint`, t(`tool.${info.id}.hint`), cx + 84, cy + 56, cw - 250, 2, { size: 17, color: hex('#d8c8a8') }, 1.25);
-      g.rect(cx + cw - 132, cy + 6, 112, 76, hex('#0a0604', 0.6));
-      g.rectLine(cx + cw - 132, cy + 6, 112, 76, 1, hex(UI.brass, 0.6));
+      caps(g, t(`tool.${info.id}.name`), cx + 90, cy + 30, 14, hex(INK.gold));
+      keycap(g, key, cx + cw - 190, cy + 26, 12);
+      fitBlock(g, `card.${info.id}.hint`, t(`tool.${info.id}.hint`), cx + 90, cy + 56, cw - 250, 2, { size: 17, color: hex(INK.text), shadow: false }, 1.25);
+      well(g, { x: cx + cw - 132, y: cy + 8, w: 112, h: 74 });
       gestureDiagram(g, info.id, cx + cw - 76, cy + 44, 40, g.time + i * 0.13);
     });
     // The Litany of Stillness.
     const ly = r.y + 100 + Math.ceil(tools.length / cols) * rh;
     {
-      star(g, r.x + 78, ly + 36, 24, hex(UI.gilt));
-      g.text(t('ui.card.litany'), r.x + 124, ly + 30, { size: 24, color: hex(UI.gilt) });
+      star(g, r.x + 78, ly + 36, 24, hex(INK.gold));
+      caps(g, t('ui.card.litany'), r.x + 124, ly + 32, 14, hex(INK.gold));
       const how = t('ui.card.litany_how', { draw: dragGlyphFor('litany.draw'), key: glyphFor('litany.key') });
-      fitBlock(g, 'card.litany', how, r.x + 124, ly + 58, r.w - 200, 2, { size: 17, color: hex('#d8c8a8') }, 1.25);
+      fitBlock(g, 'card.litany', how, r.x + 124, ly + 58, r.w - 200, 2, { size: 17, color: hex(INK.text), shadow: false }, 1.25);
     }
     for (const n of this.ui.nodes) menuEntry(g, n, this.ui.state(n.id), g.time, 24);
     reticle(g, game.input.pos);

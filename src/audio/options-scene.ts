@@ -4,10 +4,12 @@ import { t as tr } from '../i18n';
  * range, focus muting, output device, comfort toggles and captions/subtitles.
  * Opened from the Options screen; preferences persist in their own store.
  */
+import { diamond, heading, hglow, INK, meter, rule } from '../ui/hudKit';
+import { arrow } from '../ui/controls';
 import type { Game, Scene } from '../core/scene';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
-import { PALETTE, VIEW_W } from '../ui/layout';
+import { VIEW_W } from '../ui/layout';
 import { button, inRect, panel, reticle } from '../ui/widgets';
 import { drawBackdrop } from '../scenes/backdrop';
 import { AudioEngine } from './engine';
@@ -17,6 +19,8 @@ import type { AudioSystem } from './system';
 interface Row {
   label: string;
   value: () => string;
+  /** Sliders: the fill 0..1 (drawn as a meter instead of a stepper). */
+  frac?: () => number;
   change: (dir: number) => void;
   note?: string;
   /** Played after a change (test sound). */
@@ -55,6 +59,7 @@ export class AudioOptionsScene implements Scene {
     const vol = (label: string, key: 'master' | 'music' | 'sfx' | 'voice' | 'ambience' | 'ui', test: () => void, note?: string): Row => ({
       label,
       value: () => `${p[key]}`,
+      frac: () => p[key] / 100,
       change: (d) => (p[key] = Math.max(0, Math.min(100, p[key] + d * 5))),
       test,
       note,
@@ -173,23 +178,40 @@ export class AudioOptionsScene implements Scene {
       g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1 });
     } else g.beginScreen();
     panel(g, { x: 260, y: 30, w: 760, h: 660 });
-    g.text(tr('snd.title'), VIEW_W / 2, 100, { size: 50, font: 'display', color: hex(PALETTE.ink), align: 'center' });
+    heading(g, tr('snd.title'), VIEW_W / 2, 90, 380, 1, 30);
     TABS.forEach((t, i) => {
       const r = this.tabRect(i);
       const on = t === this.tab;
-      if (on) g.rect(r.x + 8, r.y + r.h - 4, r.w - 16, 3, hex(PALETTE.gold, 0.8));
-      g.text(tr(`snd.tab.${t.toLowerCase()}`), r.x + r.w / 2, r.y + 28, { size: 22, color: hex(on ? PALETTE.gold : PALETTE.inkDim), align: 'center' });
+      if (on) {
+        hglow(g, r, hex('#7a5626', 0.3));
+        rule(g, r.x + r.w / 2, r.y + r.h - 2, r.w * 0.9, hex(INK.gold, 0.95), 2);
+      }
+      g.text(tr(`snd.tab.${t.toLowerCase()}`).toUpperCase(), r.x + r.w / 2, r.y + 27, { size: 13, font: 'display', tracking: 0.14, color: hex(on ? INK.goldHi : INK.dim), align: 'center', shadow: hex('#000000', 0.8) });
     });
     const rows = this.rows(sys);
     rows.forEach((row, i) => {
       const r = this.rowRect(i);
       const hover = i === this.hover;
-      if (hover) g.rect(r.x, r.y, r.w, r.h, hex(PALETTE.blood, 0.28));
-      g.text(row.label, r.x + 20, r.y + 32, { size: 23, color: hex(hover ? PALETTE.gold : PALETTE.ink) });
-      g.text(`‹  ${row.value()}  ›`, r.x + r.w - 20, r.y + 32, { size: 23, color: hex(PALETTE.gold), align: 'right' });
+      if (hover) {
+        hglow(g, { x: r.x - 40, y: r.y + 2, w: r.w + 80, h: r.h - 4 }, hex('#7a5626', 0.26));
+        g.rect(r.x, r.y + 8, 2, r.h - 16, hex(INK.gold, 0.95));
+      }
+      g.text(row.label, r.x + 20, r.y + 31, { size: 20, color: hex(hover ? '#fff4dc' : '#d8ccb4'), shadow: hex('#000000', 0.7) });
+      const vy = r.y + r.h / 2;
+      if (row.frac) {
+        const tr0 = { x: r.x + r.w - 300, y: vy - 3, w: 220, h: 6 };
+        const f = row.frac();
+        meter(g, tr0, f, INK.goldHi, INK.goldLo, 10);
+        diamond(g, tr0.x + tr0.w * f, vy, 7, hex(hover ? INK.goldHi : INK.gold), hex('#000000', 0.8));
+        g.text(row.value(), r.x + r.w - 20, vy + 5, { size: 14, font: 'display', tracking: 0.08, color: hex(INK.gold), align: 'right', shadow: hex('#000000', 0.8) });
+      } else {
+        g.text(row.value().toUpperCase(), r.x + r.w - 44, vy + 5, { size: 13, font: 'display', tracking: 0.12, color: hex(INK.gold), align: 'right', shadow: hex('#000000', 0.8) });
+        arrow(g, r.x + r.w - 26, vy, 1, 7, hex(INK.gold, hover ? 1 : 0.5));
+      }
+      g.rect(r.x + 10, r.y + r.h - 1, r.w - 20, 1, hex(INK.gilt, 0.1));
     });
     const note = this.hover >= 0 ? rows[this.hover]?.note : undefined;
-    if (note) g.text(note, VIEW_W / 2, 612, { size: 18, font: 'italic', color: hex(PALETTE.inkDim), align: 'center' });
+    if (note) g.text(note, VIEW_W / 2, 612, { size: 17, font: 'italic', color: hex(INK.dim), align: 'center', shadow: false });
     if (button(g, game.input, tr('ui.common.back'), VIEW_W / 2, 662, 28)) this.back(sys);
     reticle(g, game.input.pos);
     g.endFrame();

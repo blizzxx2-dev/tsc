@@ -708,5 +708,9 @@
   "ui.loading.pyre": "The Pyre, which burns what it cannot cure",
   "ui.loading.choir": "The Hollow Choir, who have no faces",
   "hud.score": "Score",
-  "hud.litany": "Litany"
+  "hud.litany": "Litany",
+  "action.tool.quickSwap": "Swap to last instrument",
+  "action.op.leechReverse": "Reverse the leech",
+  "action.ui.tabPrev": "Previous tab",
+  "action.ui.tabNext": "Next tab"
 }

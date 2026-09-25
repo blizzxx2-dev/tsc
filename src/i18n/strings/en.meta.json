@@ -5990,5 +5990,37 @@
     "maxPx": 120,
     "context": "Small caps label beside the Litany (holy rite) medallion in the operation HUD.",
     "screenshot": "docs/loc/screens/operation.png"
+  },
+  "action.tool.quickSwap": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.op.leechReverse": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.ui.tabPrev": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.ui.tabNext": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
   }
 }
