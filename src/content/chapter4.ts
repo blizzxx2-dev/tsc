@@ -233,6 +233,39 @@ export const OP_4_1: OperationDef = {
   ],
 };
 
+/**
+ * The Two Cots (GAM-0248): triage. Two brought in from the Gorget together, one on each cot; Tab
+ * goes between them, each has vitals of their own, and losing either loses the operation.
+ */
+export const OP_4_10: OperationDef = {
+  id: 'op4-10',
+  title: 'The Two Cots',
+  patient: 'Jorgen, pikeman of the Ostrau company',
+  second: { patient: 'Wendel, drummer boy', vitals: 80 },
+  diagnosis: 'Two brought in from the Gorget together: a pikeman with a spear-rent thigh, and the drummer boy trampled in the rout. Keep them both.',
+  organ: 'flesh',
+  regions: [
+    { kind: 'flesh', ...at(-200, 0), rx: 200, ry: 200 },
+    { kind: 'flesh', ...at(200, 0), rx: 200, ry: 200 },
+  ],
+  timeLimit: 300,
+  baseDrain: 0.05,
+  tools: ALL,
+  ranks: { S: 5200, A: 4160, B: 3120 },
+  litany: true,
+  seed: 410,
+  phases: [
+    {
+      callout: ['Two at once. Tab takes you between the cots — and watch both of them, not just the one in front of you.', 'The pikeman’s thigh first. Stitch it.'],
+      spawn: () => [new Laceration(at(-200, -20), 0.3, 90, 0.55), new Laceration(at(200, 30), -0.5, 40, 0.3)],
+    },
+    {
+      callout: ['The boy is fading. Draw the blood off his chest and close him — then the splinter in the pikeman.'],
+      spawn: () => [new BloodPool(at(210, -30), 30), new Laceration(at(180, 50), 1.2, 70, 0.7), new Embedded(at(-180, 60), 'shard', 0.4, false)],
+    },
+  ],
+};
+
 export const OP_4_2: OperationDef = {
   id: 'op4-2',
   title: 'Tusk and Hoof',
@@ -423,7 +456,7 @@ export const OP_4_7: OperationDef = {
   timeLimit: 420,
   baseDrain: 0.05,
   tools: ALL,
-  ranks: { S: 7010, A: 5610, B: 4210 },
+  ranks: { S: 6990, A: 5590, B: 4190 },
   litany: true,
   seed: 47,
   phases: [
@@ -515,6 +548,7 @@ export const CHAPTER_4: Chapter = {
   steps: [
     { kind: 'story', story: STORY_4_1 },
     { kind: 'op', op: OP_4_1 },
+    { kind: 'op', op: OP_4_10 },
     { kind: 'story', story: STORY_4_2 },
     { kind: 'op', op: OP_4_2 },
     { kind: 'story', story: STORY_4_3 },

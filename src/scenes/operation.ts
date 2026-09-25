@@ -54,6 +54,7 @@ import { OptionsScene } from './options';
 import { litanyMode, OperationInput } from '../input/opinput';
 import { formatSplit, ghostAt, GHOST_STEP, recordTimeAttack, TimeAttackClock, timeAttackBest, type TimeAttackRun } from '../surgery/timeAttack';
 import { anaemia, coldTint, drawBreathFog, frostArea, paleFlesh, paleRough } from '../render/fleshMood';
+import { fitText } from '../ui/text';
 import { addTray, HudLayer, inRect, trayFrame, traySide, traySlot } from '../input/hud';
 import { drawGraspOutline } from '../input/hover';
 import { HoldToRetry } from '../input/retry';
@@ -997,6 +998,7 @@ export class OperationScene implements Scene {
     }
     drawBossHud(g, op);
     if (this.ta) this.drawTimeAttack(g);
+    if (op.vitals2 !== null) this.drawSecondPatient(g);
 
     // ---- Score, patient and chain: right.
     const S = { ...HUD_SCORE };
@@ -1196,6 +1198,24 @@ export class OperationScene implements Scene {
       g.circleGrad(s.x, s.y, 20, hex('#f2ead2', 0.2 * k), hex('#f2ead2', 0));
       g.circle(s.x - 5, s.y - 6, 2.2, hex('#ffffff', 0.4 * k));
     }
+  }
+
+  /**
+   * Triage (GAM-0248): the second patient's plate between the vitals and the timer — name, vitals
+   * and a meter — lit gold while their cot is the one in view.
+   */
+  private drawSecondPatient(g: Gfx): void {
+    const op = this.op;
+    const v = op.vitals2 ?? 0;
+    const r = { x: HUD_VITALS.x + HUD_VITALS.w + 8, y: HUD_VITALS.y, w: 150, h: HUD_VITALS.h };
+    const inView = this.view === 1;
+    glass(g, r, { strength: inView ? 1.2 : 1 });
+    if (inView) g.rect(r.x + 2, r.y + r.h - 4, r.w - 4, 2, hex(INK.gold, 0.8));
+    const name = op.def.second?.patient ?? '';
+    fitText(g, 'patient2', name, r.x + 12, r.y + 22, r.w - 24, { size: 16, font: 'italic', color: hex(INK.dim), shadow: false });
+    const col = v > 60 ? palette().vitalsGood : v > 30 ? palette().vitalsWarn : palette().vitalsDanger;
+    numerals(g, formatNumber(Math.ceil(v)), r.x + 12, r.y + 62, 30, col, col, 'left');
+    meter(g, { x: r.x + 70, y: r.y + 50, w: r.w - 84, h: 8 }, v / op.maxVitals, col, col);
   }
 
   /** Multi-organ fields (GAM-0247): with two or more regions, the camera frames one at a time. */

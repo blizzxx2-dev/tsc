@@ -378,7 +378,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0245 · Alpha · P2 · S · Talking patient interruptions — VN overlay mid-op pauses sim; resumes with 1 s grace
 - [x] GAM-0246 · Alpha · P2 · S · Arterial spray event — unclamped artery adds pool every 1 s; clamp with Tongs hold 0.5 s before extracting nearby objects
 - [x] GAM-0247 · Alpha · P2 · S · Multi-organ fields — camera pan between two regions (Tab), off-screen entities keep draining with edge arrows
-- [ ] GAM-0248 · Beta · P2 · M · Two-patient triage op (Ch4) — switch patient with Tab; each has separate vitals; fail if either dies
+- [x] GAM-0248 · Beta · P2 · M · Two-patient triage op (Ch4) — switch patient with Tab; each has separate vitals; fail if either dies
 
 ## GAM-P · Operation flow, phases & assistant
 

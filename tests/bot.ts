@@ -729,7 +729,15 @@ export function playWithBotThroughInput(def: OperationDef, input: Input, opts: B
           input.push({ t: t + 2.5, type: 'up', code });
         }
         if (ev.tincture) for (let i = 0; i < 4 && op.tinctureColor !== ev.tincture; i++) op.cycleTincture();
-        const p = ev.ptr.pos;
+        // Multi-region ops (GAM-0247/0248): pan to the region the target is in (as Tab would, between
+        // gestures), then aim through the camera.
+        const views = op.def.regions && op.def.regions.length >= 2 ? op.def.regions : null;
+        const sc = scene as unknown as { view: number; frameView(i: number, s: number): void; camera: { toView(p: Vec): Vec } };
+        if (views && !wasDown) {
+          const want = views.reduce((best, r, i) => (Math.hypot(ev.ptr.pos.x - r.x, ev.ptr.pos.y - r.y) < Math.hypot(ev.ptr.pos.x - views[best].x, ev.ptr.pos.y - views[best].y) ? i : best), 0);
+          if (want !== sc.view) sc.frameView(want, 0);
+        }
+        const p = views ? sc.camera.toView(ev.ptr.pos) : ev.ptr.pos;
         if (p.x !== prev.x || p.y !== prev.y) input.push({ t: t + 3, type: 'move', x: p.x, y: p.y, src: 'kbm' });
         if (ev.ptr.down && !wasDown) {
           const bounce = lastUp && t + 4 - lastUp.t <= CHATTER_MS && Math.hypot(p.x - lastUp.pos.x, p.y - lastUp.pos.y) <= CHATTER_PX;

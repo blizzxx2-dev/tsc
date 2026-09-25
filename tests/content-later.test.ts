@@ -6,7 +6,8 @@ import { Operation } from '../src/surgery/operation';
 import { playWithBot } from './bot';
 
 /** Proper nouns and coinages from other fantasy IP that must never appear in our text. */
-const AVOID = /\b(sigmar|shallya|morrslieb|skaven|nurgle|khorne|slaanesh|tzeentch|reikland|altdorf|warpstone|warp|beastmen|turnskin|chaos god|guilt|healing touch|caduceus|delphi)\b/i;
+const AVOID =
+  /\b(sigmar|shallya|morrslieb|skaven|nurgle|khorne|slaanesh|tzeentch|reikland|altdorf|warpstone|warp|beastmen|turnskin|chaos god|guilt|healing touch|caduceus|delphi)\b/i;
 
 describe('Chapters III–V script', () => {
   const stories = LATER_CHAPTERS.flatMap((c) => c.steps.flatMap((s) => (s.kind === 'story' ? [s.story] : [])));
@@ -23,10 +24,10 @@ describe('Chapters III–V script', () => {
     expect(new Set(opIds).size).toBe(opIds.length);
   });
 
-  it('the campaign runs to five chapters, 12 + 12 + 14 scenes and 11 + 9 + 9 operations after the demo', () => {
+  it('the campaign runs to five chapters, 12 + 12 + 14 scenes and 11 + 10 + 9 operations after the demo', () => {
     expect(CAMPAIGN.length).toBe(5);
     expect(LATER_CHAPTERS.map((c) => c.steps.filter((s) => s.kind === 'story').length)).toEqual([12, 12, 14]);
-    expect(LATER_CHAPTERS.map((c) => c.steps.filter((s) => s.kind === 'op').length)).toEqual([11, 9, 9]);
+    expect(LATER_CHAPTERS.map((c) => c.steps.filter((s) => s.kind === 'op').length)).toEqual([11, 10, 9]);
   });
 
   it('no avoid-list names or franchise terms in any line, briefing, callout or boss voice', () => {

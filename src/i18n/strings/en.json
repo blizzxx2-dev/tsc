@@ -1072,7 +1072,7 @@
   "popup.sellsword.acid": "Acid on the instruments!",
   "popup.deadpulse.beat": "The beat — cut now!",
   "label.frostwight.order": "In order",
-  "popup.frostwight.refreeze": "Out of order — it will refreeze",
+  "popup.frostwight.refreeze": "Out of order — it refreezes",
   "label.ghoul.seared": "Line seared",
   "label.ghoul.lost": "The arm is lost",
   "label.magus.anchor": "Anchor pulled",
@@ -1093,5 +1093,6 @@
   "ui.codex.fastest": "Fastest clear",
   "ui.codex.fastest_value": "{time} · rank {rank} · verified by replay",
   "ui.codex.fastest_none": "Not yet cleared",
-  "hud.view_switch": "{key} — switch view"
+  "hud.view_switch": "{key} — switch view",
+  "loss.the_second_patient_has_died": "The second patient has died."
 }

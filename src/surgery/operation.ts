@@ -77,6 +77,11 @@ export interface OperationDef {
   secondary?: { bloodVolume?: boolean; temperature?: boolean };
   /** Frail patients have 0.8× max vitals; hardy ones shrug off 1/1.2 of the drain. */
   constitution?: 'frail' | 'hardy';
+  /**
+   * Two-patient triage (GAM-0248): a second patient on the second region's cot, with vitals of
+   * their own. Wounds in that region drain them, not the first; the op is lost if either dies.
+   */
+  second?: { patient: string; vitals?: number };
   /** Multi-organ fields: regions with their own sensitivity; with two or more, the camera frames one at a time (GAM-0247). */
   regions?: readonly OrganRegion[];
   events?: readonly ScriptedEvent[];
@@ -239,6 +244,9 @@ export class Operation {
   readonly upgrades: ReadonlySet<string>;
   entities: Entity[] = [];
   vitals: number;
+  /** The second patient's vitals in a triage op (GAM-0248), else null. */
+  vitals2: number | null = null;
+  minVitals2 = Infinity;
   /** Current ceiling on vitals (bites, collapsed lungs lower it). */
   vitalsCap: number;
   readonly maxVitals: number;
@@ -413,6 +421,7 @@ export class Operation {
     this.maxVitals = Math.round(this.tuning.vitals.max * (def.constitution === 'frail' ? 0.8 : 1));
     this.vitalsCap = this.maxVitals;
     this.vitals = Math.min(this.maxVitals, def.vitals ?? this.maxVitals);
+    if (def.second && (def.regions?.length ?? 0) >= 2) this.vitals2 = this.minVitals2 = Math.min(this.maxVitals, def.second.vitals ?? this.maxVitals);
     this.shownVitals = this.vitals;
     this.minVitals = this.vitals;
     const diff = DIFFICULTIES[this.difficulty];
@@ -586,15 +595,33 @@ export class Operation {
   /** Most recent damage, for directional feedback. */
   lastHurt = { x: FIELD.cx, y: FIELD.cy, amount: 0, at: -10 };
 
+  /** Which patient a point belongs to in a triage op (GAM-0248): the nearer of the two cots. */
+  patientAt(p: Vec): 1 | 2 {
+    const r = this.def.regions;
+    if (this.vitals2 === null || !r || r.length < 2) return 1;
+    return dist(p, r[1]) < dist(p, r[0]) ? 2 : 1;
+  }
+
   /** Lose vitals. Every loss (drain, lashes, bursts) is scaled by the difficulty multiplier. */
   hurt(amount: number, pos?: Vec): void {
     if (this.status !== 'running') return;
+    if (pos && this.vitals2 !== null && this.patientAt(pos) === 2) return this.hurt2(amount, pos);
     amount *= this.drainMult;
     if (amount >= 1) this.lastHurt = { x: pos?.x ?? FIELD.cx, y: pos?.y ?? FIELD.cy, amount, at: this.elapsed };
     this.vitals = Math.max(this.assists.noFail ? 1 : 0, this.vitals - amount);
     this.minVitals = Math.min(this.minVitals, this.vitals);
     this.shake = Math.min(12, this.shake + amount * 1.5);
     if (amount > 0) this.events.emit('hurt', { amount, pos, vitals: this.vitals });
+    if (pos && amount >= 1) this.popup(`-${Math.round(amount)}`, pos, '#c0392b');
+  }
+
+  /** The second patient's losses (GAM-0248), scaled like the first's. */
+  hurt2(amount: number, pos?: Vec): void {
+    if (this.status !== 'running' || this.vitals2 === null) return;
+    amount *= this.drainMult;
+    this.vitals2 = Math.max(this.assists.noFail ? 1 : 0, this.vitals2 - amount);
+    this.minVitals2 = Math.min(this.minVitals2, this.vitals2);
+    if (amount > 0) this.events.emit('hurt', { amount, pos, vitals: this.vitals2 });
     if (pos && amount >= 1) this.popup(`-${Math.round(amount)}`, pos, '#c0392b');
   }
 
@@ -1267,12 +1294,17 @@ export class Operation {
 
     const bossDt = wdt * this.mods.tellSpeed / (this.assists.slowTells ? SLOW_TELLS : 1);
     let drain = 0;
+    let drain2 = 0;
     for (const e of this.entities) {
       if (!e.alive) continue;
       const edt = e.boss ? bossDt : e.spawnedBy === 'boss' ? wdt * this.mods.addCadence : wdt;
       e.age += edt;
       this.as(e, () => e.update(this, edt));
-      if (e.alive) drain += e.drain(this);
+      if (e.alive) {
+        // Triage (GAM-0248): a wound on the second cot drains the second patient.
+        if (this.vitals2 !== null && this.patientAt(e.pos) === 2) drain2 += e.drain(this);
+        else drain += e.drain(this);
+      }
       // The auto-lens clock runs while a thing stays hidden, and starts over whenever it hides again.
       if (this.assists.autoLens && e.alive && !e.hidden) this.hiddenT.delete(e);
       if (e.alive && e.hidden && this.assists.autoLens) {
@@ -1300,6 +1332,11 @@ export class Operation {
       // A patient already at 0 is lost below — recovery never revives them.
       if (drain === 0 && this.vitals > 0) this.heal(T.vitals.passiveRecovery * wdt);
       this.hurt(total * wdt);
+      if (this.vitals2 !== null) {
+        const total2 = drain2 + (this.def.baseDrain ?? 0);
+        if (drain2 === 0 && this.vitals2 > 0) this.vitals2 = Math.min(this.maxVitals, this.vitals2 + T.vitals.passiveRecovery * wdt);
+        this.hurt2(total2 * wdt);
+      }
     }
     // Compact dead entities in place (stable order, no per-tick allocation).
     let k = 0;
@@ -1322,6 +1359,7 @@ export class Operation {
     this.runScripted();
 
     if (this.vitals <= 0) return this.lose('The patient has died.', 'vitals');
+    if (this.vitals2 !== null && this.vitals2 <= 0) return this.lose('The second patient has died.', 'vitals2');
     if (this.timeLeft <= 0) {
       this.timeLeft = 0;
       return this.lose('Time has run out.', 'time');

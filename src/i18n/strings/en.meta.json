@@ -8935,5 +8935,13 @@
     "maxPx": 300,
     "context": "Hint under the field on multi-organ operations: the key that pans the camera to the other region.",
     "screenshot": "docs/loc/screens/operation.png"
+  },
+  "loss.the_second_patient_has_died": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 24,
+    "maxPx": 600,
+    "context": "Loss reason: in a two-patient triage operation, the second patient's vitals reached zero.",
+    "screenshot": "docs/loc/screens/operation.png"
   }
 }

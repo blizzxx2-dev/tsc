@@ -423,7 +423,7 @@ export class FrostWight extends MalisonBase {
         op.rate('good', this.ring[i], 'In order');
       } else {
         this.refreeze.set(i, FROST_WIGHT.refreezeAfter);
-        op.popup('Out of order — it will refreeze', { x: this.ring[i].x, y: this.ring[i].y - 30 }, '#b8d8ff');
+        op.popup('Out of order — it refreezes', { x: this.ring[i].x, y: this.ring[i].y - 30 }, '#b8d8ff');
       }
     });
     for (const [i, s] of this.refreeze) {

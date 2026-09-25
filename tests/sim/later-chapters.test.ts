@@ -5,6 +5,7 @@
  * default path with each flag the chapter reads set either way; and Chapter V runs through the
  * campaign step model to its ending and on to the credits (the end of the campaign).
  */
+import { isTeaching } from '../../src/content/teach';
 import { describe, expect, it } from 'vitest';
 import { FULL_CAMPAIGN, nextOpenStep, stepId, type Chapter } from '../../src/content/campaign';
 import { resolveStory } from '../../src/content/conditions';
@@ -71,12 +72,14 @@ for (const [ci, ch] of LATER_CHAPTERS.map((c, i) => [i + 2, c] as const)) {
         // Some ailments end the operation on their own terms (petrification or a burrower reaching the heart).
         if (idle.lostCause === 'other') expect(idle.lostReason).toMatch(/reached (her|the) heart/);
         else expect(['vitals', 'time']).toContain(idle.lostCause);
-        const vitals: FailureFingerprint = runVitalsLoss(def);
+        // A teaching phase (GAM-0212) cannot be lost by vitals: the loss must be reachable after it.
+        const vdef = isTeaching(def.phases[0]) ? { ...def, phases: def.phases.slice(1) } : def;
+        const vitals: FailureFingerprint = runVitalsLoss(vdef);
         expect(vitals.status).toBe('lost');
         expect(vitals.lostCause).toBe('vitals');
         expect(vitals.vitals).toBe(0);
         // The same driver on the same seed loses the same way (loss handling is deterministic).
-        expect(runVitalsLoss(def)).toEqual(vitals);
+        expect(runVitalsLoss(vdef)).toEqual(vitals);
       });
 
       it(`${def.id}${boss}: the timer runs out with the patient alive`, () => {
