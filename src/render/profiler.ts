@@ -3,6 +3,8 @@ import type { GlRegistry } from './registry';
 
 /** Per-system CPU budgets in ms (docs/perf-targets.md, ENG-0218). */
 export const CPU_BUDGETS: Record<string, number> = { sim: 1.5, batch: 2, frame: 6 };
+/** A frame longer than this is a hitch (docs/perf-targets.md, ENG-0224): none allowed during an operation. */
+export const HITCH_MS = 50;
 /** Per-pass GPU budgets in ms. */
 export const GPU_BUDGETS: Record<string, number> = { layers: 1, world: 3, post: 2, ui: 1 };
 
@@ -105,8 +107,27 @@ export class Profiler {
   private head = 0;
   private count = 0;
   private frameScopes = new Map<string, number>();
+  /** Hitch audit (ENG-0224): frames over HITCH_MS since the last `resetHitches`, and the worst frame seen. */
+  hitches = 0;
+  worstMs = 0;
+  /** Frame index (since `resetHitches`) of the worst frame, for pairing with a log or replay. */
+  worstFrame = -1;
+  private framesSinceReset = 0;
 
   constructor(private now: () => number = () => performance.now()) {}
+
+  /** Start a hitch-audit window (e.g. when an operation begins). */
+  resetHitches(): void {
+    this.hitches = 0;
+    this.worstMs = 0;
+    this.worstFrame = -1;
+    this.framesSinceReset = 0;
+  }
+
+  /** The hitch audit as a plain object (debug API, soak/perf scripts). */
+  hitchReport(): { hitches: number; worstMs: number; worstFrame: number; frames: number; hitchMs: number } {
+    return { hitches: this.hitches, worstMs: this.worstMs, worstFrame: this.worstFrame, frames: this.framesSinceReset, hitchMs: HITCH_MS };
+  }
 
   begin(name: string): void {
     this.starts.set(name, this.now());
@@ -122,6 +143,12 @@ export class Profiler {
   /** Close the frame: record frame time and scope totals. */
   frame(frameMs: number): void {
     this.frameMs[this.head] = frameMs;
+    if (frameMs > HITCH_MS) this.hitches++;
+    if (frameMs > this.worstMs) {
+      this.worstMs = frameMs;
+      this.worstFrame = this.framesSinceReset;
+    }
+    this.framesSinceReset++;
     for (const [name, ms] of this.frameScopes) {
       const prev = this.cpu.get(name);
       this.cpu.set(name, prev === undefined ? ms : prev * 0.9 + ms * 0.1);
@@ -163,6 +190,7 @@ export class Profiler {
     const heap = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize;
     const avg = this.count ? this.frameMs.reduce((a, b) => a + b, 0) / this.count : 0;
     lines.push([`frame ${avg.toFixed(2)} ms  p99 ${this.percentile(99).toFixed(1)}  (${avg ? Math.round(1000 / avg) : 0} fps)`, 0xffe0e0e0]);
+    lines.push([`worst ${this.worstMs.toFixed(1)} ms @${this.worstFrame}  hitches>${HITCH_MS} ${this.hitches}`, this.hitches ? 0xff5050ff : 0xffb0e0b0]);
     for (const [n, ms] of this.cpu) lines.push([`cpu ${n.padEnd(8)} ${ms.toFixed(2)} ms`, ms > (CPU_BUDGETS[n] ?? 99) ? 0xff5050ff : 0xffb0e0b0]);
     if (gpu?.available) for (const [n, ms] of gpu.ms) lines.push([`gpu ${n.padEnd(8)} ${ms.toFixed(2)} ms`, ms > (GPU_BUDGETS[n] ?? 99) ? 0xff5050ff : 0xffe0c090]);
     else lines.push(['gpu timers unavailable (CPU-only)', 0xff808080]);

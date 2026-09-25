@@ -15,6 +15,14 @@ profiler overlay (F3) draws its budget lines and colours from the same numbers
 
 Frame pacing: with a frame cap below the display refresh, frame-to-frame jitter stays under 1 ms.
 No frame may exceed 50 ms during an operation (shader first use, atlas upload, GC, save write).
+The profiler counts frames over `HITCH_MS` (50) and keeps the worst frame (`Profiler.hitchReport()`,
+shown on the F3 overlay as `worst … hitches>50 …`); `scripts/qa/soak.mjs` records both per minute and
+fails on any hitch with `--assert-hitch` (ENG-0224). The assertion is opt-in because the CI software
+rasteriser (SwiftShader) cannot hold 50 ms frames; run it on real hardware.
+
+The flesh field samples baked 512² tiling noise textures (fbm + gradient, voronoi distances; ENG-0081)
+instead of evaluating fbm per pixel. Measured in SwiftShader at 1080p (relative only): 3.3–3.7 s per
+pass before, 1.2–1.5 s after (≈2.5–3×). Baking costs ~0.3–0.7 s of CPU once at boot, before any scene.
 
 ## CPU budget (per frame, main thread)
 

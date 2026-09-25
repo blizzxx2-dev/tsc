@@ -1,6 +1,7 @@
 import { t as tr, tSource } from '../i18n';
 import { formatClock, formatNumber, formatVitals } from '../i18n/format';
 import { dist, Rng } from '../core/math';
+import { bindHitstop } from '../core/clock';
 import { Camera2D } from '../render/camera';
 import type { Game, Scene } from '../core/scene';
 import { attachBarkDirector } from '../content/barkDirector';
@@ -209,7 +210,12 @@ export class OperationScene implements Scene {
     return new Operation(withBossAssists(d), operationOptions(def, runOpts));
   }
 
+  /** Unsubscribes the hitstop binding (ENG-0058); set on the first update that has a clock. */
+  private unbindHitstop: (() => void) | null = null;
+
   dispose(): void {
+    this.unbindHitstop?.();
+    this.unbindHitstop = null;
     this.bossAudio.dispose();
     this.op.events.clear();
   }
@@ -318,6 +324,7 @@ export class OperationScene implements Scene {
       this.banner.t += dt;
       if (this.banner.t > 2.2) this.banner.t = Math.min(this.banner.t, 99);
     }
+    if (!this.unbindHitstop && game.clock) this.unbindHitstop = bindHitstop(game.clock, op.events);
     // A press skips the title card (UIX-0069) and, once seen, the Malison card (UIX-0063).
     if (input.pressed || input.actPressed('ui.confirm')) {
       if (op.status === 'intro') op.skipIntro();
@@ -389,7 +396,9 @@ export class OperationScene implements Scene {
     const t = g.time;
     const sk = settings.reduceMotion ? 0 : op.shake * settings.shake;
     const sway = op.sway();
-    const shake = sk > 0 ? { x: (Math.random() - 0.5) * sk + sway.x, y: (Math.random() - 0.5) * sk + sway.y } : sway;
+    // Trauma shake (ENG-0051): deterministic smooth noise in the post pass; the patient's sway stays as an offset.
+    const shake = sway;
+    const trauma = sk > 0 ? Math.min(1, sk / 12) : undefined;
 
     // ---------------------------------------------------------------- data layers
     const ents = op.visibleEntities().sort((a, b) => a.layer - b.layer);
@@ -460,6 +469,7 @@ export class OperationScene implements Scene {
     const litany = op.litanyTime > 0 ? Math.min(1, op.litanyTime, (LITANY_DURATION - op.litanyTime) * 3) * soften : 0;
     const ch2 = op.def.id.startsWith('op2');
     g.endWorld({
+      trauma,
       spot: { cx: FIELD.cx, cy: FIELD.cy, rx: FIELD.rx, ry: FIELD.ry, k: 0.62 },
       litany,
       danger,

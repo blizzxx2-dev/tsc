@@ -180,6 +180,14 @@ export class DebugOverlay {
         sub: () => ['XS', 'S', 'A', 'B', 'C'].map((r) => this.cmd(`Rank ${r}`, `results ${r}`)).concat([this.cmd('Lost', 'results C op1-1 lost')]),
       },
       this.cmd('Unlock all operations', 'unlockall'),
+      {
+        label: 'Post passes ▸',
+        sub: () => [
+          ...this.api.postPasses().map((p) => this.cmd(`${p.enabled ? '[x]' : '[ ]'} ${p.label}`, `post ${p.id}`)),
+          this.cmd('All on', 'post all on'),
+          this.cmd('All off', 'post all off'),
+        ],
+      },
       st.frozen ? this.cmd('Thaw (resume updates)', 'thaw') : this.cmd('Freeze updates', 'freeze'),
       { label: 'Close', run: () => this.toggleMenu() },
     );

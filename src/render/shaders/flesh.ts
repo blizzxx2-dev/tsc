@@ -1,6 +1,22 @@
 /** GLSL ES 3.00 sources: flesh. */
+import { NOISE_PERIOD } from '../noiseBake';
 
-const NOISE = /* glsl */ `
+/** Shader-side options behind the quality tiers (ENG-0081/0082); see ../quality.ts. */
+export interface FleshShaderOpts {
+  /** `baked`: sample the tiling fbm/voronoi textures; `live`: evaluate the noise per pixel. */
+  noise: 'baked' | 'live';
+  /** fbm octaves for the live variant (2–4). */
+  octaves: number;
+  /** Subsurface scattering term. */
+  sss: boolean;
+  /** Toksvig-style specular anti-aliasing (uses fwidth). */
+  specAA: boolean;
+}
+
+/** The original, full-cost flesh shader: live 4-octave fbm, SSS and spec AA. */
+export const FLESH_LIVE_FULL: FleshShaderOpts = { noise: 'live', octaves: 4, sss: true, specAA: true };
+
+const NOISE_COMMON = /* glsl */ `
 float hash(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float noise(vec2 p) {
   vec2 i = floor(p), f = fract(p);
@@ -8,16 +24,35 @@ float noise(vec2 p) {
   vec2 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
   return mix(mix(hash(i), hash(i + vec2(1, 0)), u.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), u.x), u.y);
 }
+// Smooth voronoi edge distance: d2 - d1 with a soft minimum so membranes never form hard creases.
+uniform float u_cellSoft;`;
+
+/**
+ * Baked noise (ENG-0081): the fbm and its gradient, and the three nearest voronoi feature
+ * distances, come from tiling textures baked at load (src/render/noiseBake.ts).
+ */
+const NOISE_BAKED = /* glsl */ `
+uniform sampler2D u_noise;  // x fbm, yz d(fbm)/dp
+uniform sampler2D u_cells;  // xyz nearest voronoi distances d1 <= d2 <= d3
+const float NOISE_PERIOD = ${NOISE_PERIOD.toFixed(1)};
+float fbm(vec2 p) { return texture(u_noise, p / NOISE_PERIOD).x; }
+vec2 fbmGrad(vec2 p) { return texture(u_noise, p / NOISE_PERIOD).yz; }
+float cells(vec2 p) {
+  vec3 d = texture(u_cells, p / NOISE_PERIOD).xyz;
+  float k = max(u_cellSoft, 0.02);
+  float smoothD1 = -k * log(exp(-d.x / k) + exp(-d.y / k) + exp(-d.z / k));
+  return max(d.y - max(d.x, smoothD1), 0.0) * smoothstep(0.0, 0.08, d.y - d.x);
+}`;
+
+const NOISE_LIVE = /* glsl */ `
 // Each octave is rotated so the value-noise lattices never line up into visible squares.
 const mat2 OCT = mat2(1.6, 1.2, -1.2, 1.6);
 float fbm(vec2 p) {
   float v = 0.0, a = 0.5;
-  for (int i = 0; i < 4; i++) { v += a * noise(p); p = OCT * p + 17.1; a *= 0.5; }
+  for (int i = 0; i < FBM_OCTAVES; i++) { v += a * noise(p); p = OCT * p + 17.1; a *= 0.5; }
   return v + a * 0.5;
 }
 // Distance to nearest cell edge: membranes, alveoli, fat lobules.
-// Smooth voronoi edge distance: d2 - d1 with a soft minimum so membranes never form hard creases.
-uniform float u_cellSoft;
 float cells(vec2 p) {
   // Domain-warp the input so the lattice regularity never shows.
   p += vec2(noise(p * 0.35 + 11.0), noise(p * 0.35 + 23.0)) * 1.2 - 0.6;
@@ -40,8 +75,14 @@ float cells(vec2 p) {
  * The operating field: a procedurally textured body region framed by a linen
  * drape. Kinds: 0 flesh, 1 heart, 2 lung, 3 gut, 4 liver, 5 brain, 6 bone.
  */
-export const FLESH_FS = /* glsl */ `#version 300 es
+export function fleshShaderSource(opts: FleshShaderOpts = FLESH_LIVE_FULL): string {
+  const noise = opts.noise === 'baked' ? NOISE_BAKED : NOISE_LIVE;
+  return /* glsl */ `#version 300 es
 precision highp float;
+#define FBM_OCTAVES ${Math.max(1, Math.min(4, Math.round(opts.octaves)))}
+#define NOISE_BAKED ${opts.noise === 'baked' ? 1 : 0}
+#define SSS ${opts.sss ? 1 : 0}
+#define SPEC_AA ${opts.specAA ? 1 : 0}
 in vec2 v_uv;
 uniform vec2 u_view;
 uniform vec2 u_center;
@@ -75,7 +116,8 @@ out vec4 o;
 // smoothstep with edge0 > edge1 is undefined in GLSL; this is the portable falling edge.
 float rsmooth(float hi, float lo, float x) { return 1.0 - smoothstep(lo, hi, x); }
 
-${NOISE}
+${NOISE_COMMON}
+${noise}
 // Height contributed by wounds (negative) and swelling (positive).
 float surfH(vec2 uv) {
   vec4 s = texture(u_surface, uv);
@@ -178,9 +220,13 @@ void main() {
   // Wet specular from a smooth, low-frequency height field (finite differences, not dFdx,
   // so the highlight rolls over broad swells instead of sparkling on every noise texel).
   vec2 hp = q * 2.2 + vec2(0.0, u_time * 0.02);
+#if NOISE_BAKED
+  vec2 grad = fbmGrad(hp);
+#else
   float e = 0.02;
   float h0 = fbm(hp);
   vec2 grad = vec2(fbm(hp + vec2(e, 0.0)) - h0, fbm(hp + vec2(0.0, e)) - h0) / e;
+#endif
   // Dome the field so light wraps around the organ's bulk.
   grad += q * 0.9;
   // Wounds and swellings from the surface layer shape the normal: cuts read as carved channels.
@@ -194,7 +240,11 @@ void main() {
   float wet = clamp(0.35 + 0.35 * fbm(q * 1.3 + 7.0) + sf.r * 0.8 + sf.g * 0.6 + sf.a * 0.3, 0.0, 1.0);
   // Specular anti-aliasing (Toksvig-style): widen the lobe where the normal varies within a pixel.
   // fwidth is evaluated per 2x2 quad; keep its influence gentle so it never reads as blocks.
+#if SPEC_AA
   float nVar = smoothstep(0.0, 1.0, clamp(length(fwidth(nrm)) * 2.0, 0.0, 0.5));
+#else
+  float nVar = 0.0;
+#endif
   float rough = clamp(mix(u_rough + u_sheen + 0.25, u_rough + u_sheen - 0.15, wet) + nVar * 0.3, 0.12, 0.9);
   float specPow = 2.0 / (rough * rough) - 2.0;
   float norm = (specPow + 8.0) / 25.13; // energy-normalised Blinn-Phong
@@ -219,7 +269,11 @@ void main() {
   diff = clamp(diff, 0.0, 1.5);
   float cut = smoothstep(0.05, 0.7, sf.r);
   // Subsurface scattering: light bleeds red through flesh on the shadowed side.
+#if SSS
   vec3 sss = u_base * u_sssCol.rgb * pow(1.0 - diff, 2.0) * 0.32 * u_sssCol.a;
+#else
+  vec3 sss = vec3(0.0);
+#endif
   float fres = pow(1.0 - clamp(nrm.z, 0.0, 1.0), 3.0);
   col = col * (vec3(0.28, 0.27, 0.3) + 0.52 * lit) + sss + specCol * (0.08 + 0.22 * wet) + vec3(1.0, 0.75, 0.7) * fres * 0.12;
 
@@ -299,3 +353,7 @@ void main() {
   outc = mix(outc, skinCol, inCollar);
   o = vec4(mix(outc, col, inside), 1.0);
 }`;
+}
+
+/** The reference variant (live noise, every feature on): the shader lab and the mediump fallback build from it. */
+export const FLESH_FS = fleshShaderSource(FLESH_LIVE_FULL);

@@ -13,7 +13,19 @@ import { fresh } from '../../../src/core/save';
 import { DEFAULT_SETTINGS, WINDOW_SIZES, windowSizeOf } from '../../../src/core/settings/schema';
 import { validateSettings } from '../../../src/core/settings/validate';
 import { displayPrefs } from '../../../src/ui/display';
-import { campaignComplete, campaignStarted, chapterCompletion, chapterReached, countRank, formatDate, formatPlaytime, recordStats, sealCount, statsOf, stepLabel } from '../../../src/scenes/campaignState';
+import {
+  campaignComplete,
+  campaignStarted,
+  chapterCompletion,
+  chapterReached,
+  countRank,
+  formatDate,
+  formatPlaytime,
+  recordStats,
+  sealCount,
+  statsOf,
+  stepLabel,
+} from '../../../src/scenes/campaignState';
 import { save } from '../../../src/scenes/flow';
 import { TitleScene } from '../../../src/scenes/title';
 import { cardRect, ChapterSelectScene, LOCKED_CHAPTERS } from '../../../src/scenes/chapterSelect';
@@ -26,11 +38,32 @@ import { VIEW_W } from '../../../src/ui/layout';
 
 function fakeInput(): UiInput & { acts: Set<ActionId> } {
   const acts = new Set<ActionId>();
-  return { pos: { x: -100, y: -100 }, down: false, pressed: false, released: false, wheel: 0, device: 'kbm', acts, actPressed: (id) => acts.has(id), actRepeated: (id) => acts.has(id) };
+  return {
+    pos: { x: -100, y: -100 },
+    down: false,
+    pressed: false,
+    released: false,
+    wheel: 0,
+    device: 'kbm',
+    acts,
+    actPressed: (id) => acts.has(id),
+    actRepeated: (id) => acts.has(id),
+  };
 }
-const fakeGame = (): Game => ({ input: fakeInput() as unknown as Game['input'], audio: {} as Game['audio'], gfx: {} as Game['gfx'], go: () => undefined, push: () => undefined, pop: () => undefined });
+const fakeGame = (): Game => ({
+  input: fakeInput() as unknown as Game['input'],
+  audio: {} as Game['audio'],
+  gfx: {} as Game['gfx'],
+  go: () => undefined,
+  push: () => undefined,
+  pop: () => undefined,
+});
 
-const withSave = (progress: { chapter: number; step: number }, best: Record<string, { rank: 'C' | 'B' | 'A' | 'S' | 'XS'; score: number }> = {}, fn: () => void) => {
+const withSave = (
+  progress: { chapter: number; step: number },
+  best: Record<string, { rank: 'C' | 'B' | 'A' | 'S' | 'XS'; score: number }> = {},
+  fn: () => void,
+) => {
   const prev = { progress: { ...save.progress }, best: { ...save.best }, stats: save.stats };
   Object.assign(save, { progress: { ...progress }, best: { ...best } });
   try {
@@ -231,9 +264,9 @@ describe('Display tab (UIX-0105)', () => {
   });
 
   it('shake values between the old three steps survive validation', () => {
-    const r = validateSettings({ shake: 0.35, bloomAmount: 0.4, windowSize: '1920x1080' });
+    const r = validateSettings({ shake: 0.35, bloomAmount: 40, windowSize: '1920x1080' });
     expect(r.settings.shake).toBeCloseTo(0.35);
-    expect(r.settings.bloomAmount).toBeCloseTo(0.4);
+    expect(r.settings.bloomAmount).toBeCloseTo(40);
     expect(r.settings.windowSize).toBe('1920x1080');
     expect(validateSettings({ windowSize: '640x480' }).settings.windowSize).toBe(DEFAULT_SETTINGS.windowSize);
     for (const s of WINDOW_SIZES) expect(windowSizeOf(s).w).toBeGreaterThan(windowSizeOf(s).h);
@@ -241,8 +274,8 @@ describe('Display tab (UIX-0105)', () => {
 
   it('bloom intensity scales the post-process bloom; the toggle still switches it off', () => {
     const base = { ...DEFAULT_SETTINGS };
-    expect(displayPrefs({ ...base, bloom: true, bloomAmount: 0.5 }).bloom).toBeCloseTo(0.5);
-    expect(displayPrefs({ ...base, bloom: false, bloomAmount: 0.5 }).bloom).toBe(0);
-    expect(displayPrefs({ ...base, bloom: true, bloomAmount: 7 }).bloom).toBe(1);
+    expect(displayPrefs({ ...base, bloom: true, bloomAmount: 50 }).bloom).toBeCloseTo(0.5);
+    expect(displayPrefs({ ...base, bloom: false, bloomAmount: 50 }).bloom).toBe(0);
+    expect(displayPrefs({ ...base, bloom: true, bloomAmount: 700 }).bloom).toBe(1);
   });
 });

@@ -262,9 +262,11 @@ class Main implements Game {
     p.begin('sim');
     for (let i = 0; i < steps; i++) {
       this.input.beginStep(ends[i]);
-      clock.tick(FIXED_DT);
+      const advanced = clock.tick(FIXED_DT);
       this.transition.update(FIXED_DT);
       if (this.transition.busy) continue;
+      // Hitstop (ENG-0058): world time stands still for a few frames after a heavy blow; the frame still renders.
+      if (!advanced && clock.inHitstop) continue;
       const top = this.scenes.top;
       if (!this.boundary.run('update', sceneName(top), clock.frames, clock.ticks, () => this.scenes.update(FIXED_DT))) break;
     }

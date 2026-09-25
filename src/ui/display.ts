@@ -15,18 +15,29 @@ export interface DisplayPrefs {
   chroma: number;
   /** Reduced Motion: no Litany ripple or screen-space wobble (the sepia tint stays). */
   still: number;
+  /** Reduce Flashing (ENG-0164): 1 = full-screen pulses and damage flashes as authored, 0 = held steady. */
+  flash?: number;
+  /** Shader quality tier (ENG-0082); the renderer applies it lazily when it changes. */
+  quality?: 'low' | 'medium' | 'high';
 }
 
-export function displayPrefs(s: Pick<Settings, 'bloom' | 'grain' | 'vignette' | 'brightness' | 'flicker' | 'chromaticAberration' | 'reduceMotion' | 'reduceFlashing'> & Partial<Pick<Settings, 'bloomAmount'>>): DisplayPrefs {
+type PrefKeys = 'bloom' | 'grain' | 'vignette' | 'brightness' | 'flicker' | 'chromaticAberration' | 'reduceMotion' | 'reduceFlashing';
+type AmountKeys = 'bloomAmount' | 'grainAmount' | 'chromaAmount' | 'flickerAmount' | 'shaderQuality';
+
+/** 0–100 % amount behind a toggle (ENG-0164): the toggle switches the effect, the slider scales it. */
+const amount = (on: boolean, pct: number | undefined): number => (on ? Math.min(100, Math.max(0, pct ?? 100)) / 100 : 0);
+
+export function displayPrefs(s: Pick<Settings, PrefKeys> & Partial<Pick<Settings, AmountKeys>>): DisplayPrefs {
   return {
-    // Bloom intensity (UIX-0105) scales the pass; the toggle still switches it off entirely.
-    bloom: s.bloom ? Math.max(0, Math.min(1, s.bloomAmount ?? 1)) : 0,
-    grain: s.grain ? 1 : 0,
+    bloom: amount(s.bloom, s.bloomAmount),
+    grain: amount(s.grain, s.grainAmount),
     vignette: s.vignette ? 1 : 0,
     gamma: s.brightness,
     // Reduced Motion / Reduced Flashing hold the candle flicker still (UIX-0152/0027).
-    flicker: s.flicker && !s.reduceMotion && !s.reduceFlashing ? 1 : 0,
-    chroma: s.chromaticAberration ? 1 : 0,
+    flicker: amount(s.flicker && !s.reduceMotion && !s.reduceFlashing, s.flickerAmount),
+    chroma: amount(s.chromaticAberration, s.chromaAmount),
     still: s.reduceMotion ? 1 : 0,
+    flash: s.reduceFlashing ? 0 : 1,
+    quality: s.shaderQuality,
   };
 }

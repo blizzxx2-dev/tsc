@@ -17,6 +17,8 @@ import type { Gfx } from '../render/gfx';
 
 export type OrganKind = 'flesh' | 'heart' | 'lung' | 'gut' | 'liver' | 'brain' | 'bone';
 
+/** Vitals lost to one mistake at or above which the sim announces an `impact` (hitstop, ENG-0058). */
+export const IMPACT_HARM = 5;
 /** Per-organ multiplier on the harm done by mistakes (stray cuts, slips, tears). */
 export const ORGAN_SENSITIVITY: Record<OrganKind, number> = { flesh: 1, heart: 2, lung: 1.5, gut: 1.2, liver: 1.4, brain: 2, bone: 0.8 };
 
@@ -597,7 +599,11 @@ export class Operation {
   /** Harm caused by a surgeon's mistake: scaled by the organ's sensitivity. */
   harm(amount: number, pos: Vec): void {
     this.penalties += amount;
-    this.hurt(amount * ORGAN_SENSITIVITY[this.organAt(pos)], pos);
+    const scaled = amount * ORGAN_SENSITIVITY[this.organAt(pos)];
+    this.hurt(scaled, pos);
+    // Heavy blows (barb tears, deep stray cuts, bursts) announce an impact for the presentation's
+    // hitstop (ENG-0058); the sim itself never pauses, so outcomes stay identical.
+    if (this.status === 'running' && scaled * this.drainMult >= IMPACT_HARM) this.events.emit('impact', { kind: 'harm', amount: scaled * this.drainMult, pos: { x: pos.x, y: pos.y } });
   }
 
   heal(amount: number): void {

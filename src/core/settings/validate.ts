@@ -53,9 +53,29 @@ export function rebind(b: Bindings, action: Action, code: string): Action | null
   return other;
 }
 
+/** Toggle → 0–100 % amount pairs (ENG-0164). */
+const AMOUNT_OF = { bloom: 'bloomAmount', grain: 'grainAmount', chromaticAberration: 'chromaAmount', flicker: 'flickerAmount' } as const;
+
+/**
+ * Backwards compatibility for post-effect strengths (ENG-0164): a file that stored a toggle as a
+ * number (0..1 or 0..100, from dev builds that trialled sliders) becomes toggle + amount, and an
+ * amount is never invented for a file that only knew the toggle (the default 100 % applies).
+ */
+export function normaliseLegacyAmounts(d: Record<string, unknown>, warnings: string[]): Record<string, unknown> {
+  const out = { ...d };
+  for (const [toggle, amount] of Object.entries(AMOUNT_OF)) {
+    const v = out[toggle];
+    if (typeof v !== 'number' || !Number.isFinite(v)) continue;
+    out[toggle] = v > 0;
+    if (out[amount] === undefined && v > 0) out[amount] = Math.round(v <= 1 ? v * 100 : v);
+    warnings.push(`settings.${toggle}: numeric strength migrated to ${amount}`);
+  }
+  return out;
+}
+
 export function validateSettings(raw: unknown): { settings: Settings; warnings: string[] } {
   const warnings: string[] = [];
-  const src = isObj(raw) ? raw : {};
+  const src = isObj(raw) ? normaliseLegacyAmounts(raw, warnings) : {};
   if (!isObj(raw)) warnings.push('settings: not an object, using defaults');
   const out: Settings = { ...DEFAULT_SETTINGS, bindings: { ...DEFAULT_BINDINGS } };
   const known = new Set<string>(['version', ...SETTINGS_SCHEMA.map((s) => s.key)]);

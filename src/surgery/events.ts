@@ -33,6 +33,8 @@ export interface SimEvents {
   malisonHit: { pos: Vec; damage: number };
   /** Boss phases, tells, attacks, music intensity and boss sounds (src/surgery/bosses/signals.ts). */
   boss: BossEvent;
+  /** A heavy blow worth a hitstop (ENG-0058): a mistake costing ≥5 vitals (barb tears, stray cuts, bursts). */
+  impact: { kind: 'harm'; amount: number; pos: Vec };
   win: { score: number; vitals: number; timeLeft: number };
   lose: { reason: string };
 }

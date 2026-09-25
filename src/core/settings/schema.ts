@@ -152,8 +152,11 @@ export interface Settings {
   telemetry: Consent;
   /** Windowed-mode size preset (desktop, UIX-0105). */
   windowSize: WindowSize;
-  /** Bloom intensity 0..1 when bloom is on (UIX-0105). */
+  // post-process amounts (ENG-0164): 0–100 % behind the matching toggle
   bloomAmount: number;
+  grainAmount: number;
+  chromaAmount: number;
+  flickerAmount: number;
 }
 
 interface Base<K extends keyof Settings> {
@@ -239,7 +242,10 @@ export const SETTINGS_SCHEMA: readonly SettingDef[] = [
   d('telemetry', 'privacy', 'choice', { type: 'enum', options: ['ask', 'on', 'off'] }),
   // UIX-0105: appended after the privacy keys so existing schema order is kept.
   d('windowSize', 'display', 'choice', { type: 'enum', options: WINDOW_SIZES }),
-  d('bloomAmount', 'graphics', 'slider', { type: 'number', min: 0, max: 1, step: 0.05 }),
+  d('bloomAmount', 'graphics', 'slider', { type: 'number', min: 0, max: 100, step: 5 }),
+  d('grainAmount', 'graphics', 'slider', { type: 'number', min: 0, max: 100, step: 5 }),
+  d('chromaAmount', 'graphics', 'slider', { type: 'number', min: 0, max: 100, step: 5 }),
+  d('flickerAmount', 'graphics', 'slider', { type: 'number', min: 0, max: 100, step: 5 }),
 ];
 
 export const DEFAULT_SETTINGS: Readonly<Settings> = Object.freeze({
@@ -304,7 +310,10 @@ export const DEFAULT_SETTINGS: Readonly<Settings> = Object.freeze({
   crashReports: 'ask',
   telemetry: 'ask',
   windowSize: '1280x720',
-  bloomAmount: 1,
+  bloomAmount: 100,
+  grainAmount: 100,
+  chromaAmount: 100,
+  flickerAmount: 100,
 });
 
 /** Graphics preset contents (PLT-0098). Safe mode uses `low` (PLT-0021). */

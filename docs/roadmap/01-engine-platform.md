@@ -82,7 +82,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0048 · Demo · P1 · M · Flesh shader and decal maps take the camera transform so procedural detail is resampled at zoom — screenshot at 2.5× shows sharp veins, not a magnified blur
 - [x] ENG-0049 · Demo · P1 · S · Camera bounds clamp — zoomed view never reveals beyond the drape edge or the virtual safe area
 - [x] ENG-0050 · Demo · P1 · S · Tessellation LOD from on-screen radius (after camera zoom and DPR) — circles stay smooth at 2.5× zoom and cheap at 1×
-- [ ] ENG-0051 · Demo · P1 · M · Camera shake moved from post UV offset (`u_shake`) to a trauma-based camera offset/rotation using smooth noise, scaled by the screen-shake setting — `op.shake` jitter no longer uses `Math.random`
+- [x] ENG-0051 · Demo · P1 · M · Camera shake moved from post UV offset (`u_shake`) to a trauma-based camera offset/rotation using smooth noise, scaled by the screen-shake setting — `op.shake` jitter no longer uses `Math.random`
 - [x] ENG-0052 · Demo · P1 · M · Anti-aliasing for the world layer: 4× MSAA renderbuffer resolved with `blitFramebuffer` into the post input; fall back to an FXAA pass when `MAX_SAMPLES < 4` — edge crawl on lancet lines eliminated in capture
 
 ## ENG-C · Frame loop, timing & scene state machine (Demo)
@@ -93,7 +93,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0055 · Demo · P1 · S · Sub-step input distribution — `Input.path` samples spread across a frame's fixed steps by timestamp, so lancet strokes sample identically at any frame rate (test at 30/60/144)
 - [x] ENG-0056 · Demo · P0 · M · Single `Clock` service — `real`, `sim` (stops on pause/hitstop) and `world` (Litany-scaled) times replace `gfx.time += dt` and scene-local timers
 - [x] ENG-0057 · Demo · P1 · S · Pause semantics: sim and world clocks stop, UI animation and audio ducking continue — unit test that vitals/time do not change across a 10 s pause
-- [ ] ENG-0058 · Demo · P2 · S · Hitstop — `clock.hitstop(ms)` freezes world time on impacts (Malison hit, barb tear, chain milestone), capped at 120 ms, disabled by reduce-motion
+- [x] ENG-0058 · Demo · P2 · S · Hitstop — `clock.hitstop(ms)` freezes world time on impacts (Malison hit, barb tear, chain milestone), capped at 120 ms, disabled by reduce-motion
 - [x] ENG-0059 · Demo · P1 · S · Hidden-window handling — on `visibilitychange` (minimised/occluded) the loop stops ticking and the audio context suspends; returning resumes with no dt spike (dt clamp test)
 - [x] ENG-0060 · Demo · P1 · M · Frame limiter (30/40/60/90/120/144/uncapped) in the loop using rAF skipping aligned to measured refresh — frame pacing jitter <1 ms at a 60 cap on a 144 Hz display
 - [x] ENG-0061 · Demo · P2 · S · Display refresh estimator (median of rAF deltas) exposed to settings/profiler — handles 59.94/75/120/144/165 Hz
@@ -124,8 +124,8 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0078 · Demo · P1 · M · Wetness field — specular and gloss modulated by a low-frequency wetness map plus the blood/salve decal maps so dry tissue reads matte and fresh blood glistens
 - [x] ENG-0079 · Demo · P1 · M · Subsurface-scattering approximation (wrap diffuse + red-shifted translucency) for flesh, lung and gut so tissue reads as meat, not plastic — art sign-off
 - [x] ENG-0080 · Demo · P2 · S · Cavity depth cues — Fresnel rim toward the opening edge plus ambient-occlusion falloff under the retractor rim
-- [ ] ENG-0081 · Demo · P0 · M · Bake static fbm/voronoi into 512² tiling noise textures at load; `FLESH_FS` samples textures instead of evaluating 5-octave fbm up to 6× per pixel — flesh pass ≤1.5 ms at 1080p on Intel UHD 620 (GPU timer)
-- [ ] ENG-0082 · Demo · P1 · M · Shader quality tiers High/Medium/Low (octaves, SSS, spec AA, baked vs live noise) chosen by GPU tier and overridable in settings — Low renders the field at 0.75× internal resolution
+- [x] ENG-0081 · Demo · P0 · M · Bake static fbm/voronoi into 512² tiling noise textures at load; `FLESH_FS` samples textures instead of evaluating 5-octave fbm up to 6× per pixel — flesh pass ≤1.5 ms at 1080p on Intel UHD 620 (GPU timer)
+- [x] ENG-0082 · Demo · P1 · M · Shader quality tiers High/Medium/Low (octaves, SSS, spec AA, baked vs live noise) chosen by GPU tier and overridable in settings — Low renders the field at 0.75× internal resolution
 - [x] ENG-0083 · Demo · P0 · S · CI shader compile check — every shader variant × tier compiled and linked in headless Chromium (SwiftShader) during `npm test`; any error fails the build with the variant name
 - [x] ENG-0084 · Demo · P1 · M · Light rig — up to 3 lights (surgeon's lamp, 2 candles) with colour, radius and flicker uniforms shared by flesh, lit sprites, particles and backdrops
 
@@ -211,7 +211,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ## ENG-G · Post-processing (Demo)
 
 ### Pipeline
-- [ ] ENG-0146 · Demo · P0 · M · Post pipeline as an ordered pass list (bloom, CA, Litany, damage, LUT, vignette, grain, dither) with per-pass enable flags and uniforms, replacing the monolithic `POST_FS` — toggleable from the debug overlay
+- [x] ENG-0146 · Demo · P0 · M · Post pipeline as an ordered pass list (bloom, CA, Litany, damage, LUT, vignette, grain, dither) with per-pass enable flags and uniforms, replacing the monolithic `POST_FS` — toggleable from the debug overlay
 - [x] ENG-0147 · Demo · P1 · M · HDR scene target (RGBA16F via `EXT_color_buffer_float`) with a filmic tonemap — RGBA8 fallback path keeps visual parity within tolerance
 - [x] ENG-0148 · Demo · P1 · M · Bloom v2: 5-level downsample/upsample mip-chain bloom with soft-knee threshold (replacing 2× 5-tap quarter-res blur and the hard-coded threshold in `endWorld`) — no bloom shimmer on small highlights in a static scene
 - [ ] ENG-0149 · Demo · P1 · S · Bloom presets per scene type (operation, story, menu, Malison) as data — `PostParams.bloom` becomes a preset id + intensity override
@@ -235,7 +235,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 
 ### Safety & settings plumbing
 - [x] ENG-0163 · Demo · P0 · M · Photosensitivity flash limiter: full-screen luminance changes limited to <3 flashes/s (Harding-style check) — unit test feeds worst-case post-param timelines (Malison + damage + Litany)
-- [ ] ENG-0164 · Demo · P0 · S · Post settings plumbed to uniforms — screen shake, chromatic aberration, grain, flicker, bloom (0–100%) and reduce-flashing
+- [x] ENG-0164 · Demo · P0 · S · Post settings plumbed to uniforms — screen shake, chromatic aberration, grain, flicker, bloom (0–100%) and reduce-flashing
 - [ ] ENG-0165 · Demo · P1 · S · Post budget — all passes ≤2.0 ms at 1080p on Intel UHD 620 measured with GPU timer queries in the perf replay
 
 ## ENG-H · Text rendering: MSDF upgrade (Demo)
@@ -320,7 +320,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0221 · Demo · P0 · M · Automated perf benchmark — scripted playback of the op1-5 Matins fight and the Lauds fight in a real-GPU runner, recording mean/p99 frame time; CI job flags regressions >10%
 - [ ] ENG-0222 · Demo · P0 · M · Integrated-GPU pass on the reference Intel UHD 620 laptop — every Ch1–2 operation holds 60 fps at Medium, with captures attached to the ticket
 - [ ] ENG-0223 · Demo · P0 · M · Steam Deck pass — 60 fps at 1280×800 Medium across Ch1–2; 40 fps preset holds with ≥25% lower APU power (Deck performance overlay readings)
-- [ ] ENG-0224 · Demo · P1 · S · Hitch audit: no frame >50 ms during any operation (shader first use, atlas upload, GC, save write) — asserted by the perf benchmark
+- [x] ENG-0224 · Demo · P1 · S · Hitch audit: no frame >50 ms during any operation (shader first use, atlas upload, GC, save write) — asserted by the perf benchmark
 
 ### CPU & memory
 - [x] ENG-0225 · Demo · P0 · M · Remove per-frame allocations in hot paths: `entities.filter` in `Operation.update`, `visibleEntities().sort` per pointer event, `{...pos}` copies in `Input`, `tf.slice()` in `save()`, point arrays in `quadCurve`/`dashed` — steady-state allocation <50 KB/s in a Chrome allocation profile
@@ -620,7 +620,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] PLT-0142 · Demo · P1 · S · Nightly job — build all flavours, upload to the Steam `qa` branch, post the build id and changelog to the team channel
 - [ ] PLT-0143 · Demo · P1 · S · Coverage gate — ≥80% line coverage for `src/surgery` and `src/core/save`
 - [x] PLT-0144 · Demo · P1 · S · Dependency hygiene — Renovate/Dependabot, `npm audit` failing on high severity, licence allowlist check (MIT/BSD/Apache/ISC/OFL/CC-BY)
-- [ ] PLT-0145 · Demo · P0 · S · Third-party notices — runtime/Chromium, npm deps and OFL fonts generated, shipped in the package and viewable from the credits
+- [x] PLT-0145 · Demo · P0 · S · Third-party notices — runtime/Chromium, npm deps and OFL fonts generated, shipped in the package and viewable from the credits
 
 ### Versioning & releases
 - [x] PLT-0146 · Demo · P0 · S · Versioning scheme — SemVer per edition (`demo 1.0.x`, full `0.x` until 1.0); build id `version+sha.date` shown on the title screen corner, in logs and crash reports

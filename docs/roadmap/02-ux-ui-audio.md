@@ -254,29 +254,29 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ### Title screen
 - [x] UIX-0078 · M0 · P0 · S · Title — Continue / Take the Oath (new game, with forswear-progress confirm) / Operating Theatre / Sound toggle; fullscreen hint and version string
-- [ ] UIX-0079 · Demo · P0 · M · Title v2 — key-art backdrop (Kessendorf woodcut skyline, animated rain and candlelight), "Suture & Steel — The Malison Hours" logo lockup, menu: Continue, New Game, Chapter Select, Operating Theatre, Options, Credits, Quit; "DEMO" ribbon and Wishlist seal in demo builds
+- [x] UIX-0079 · Demo · P0 · M · Title v2 — key-art backdrop (Kessendorf woodcut skyline, animated rain and candlelight), "Suture & Steel — The Malison Hours" logo lockup, menu: Continue, New Game, Chapter Select, Operating Theatre, Options, Credits, Quit; "DEMO" ribbon and Wishlist seal in demo builds
 - [x] UIX-0080 · Demo · P0 · S · Stale end-of-content text — replace "Chapter I complete. Chapter II is being written…" with build-appropriate messaging (demo: routes to the demo-complete flow; full: nothing)
 - [x] UIX-0081 · M0 · P0 · S · Rename to Suture & Steel — title logo, `index.html` title, WebGL2 failure message and save key `suture-and-steel.save`
-- [ ] UIX-0082 · Demo · P1 · S · Continue preview — tooltip/card shows chapter, next step title, total play time and last-played date
+- [x] UIX-0082 · Demo · P1 · S · Continue preview — tooltip/card shows chapter, next step title, total play time and last-played date
 - [x] UIX-0083 · Demo · P1 · S · Quit to desktop — confirm dialog, calls Electron `app.quit()`; hidden in browser builds
 - [x] UIX-0084 · Demo · P1 · S · Build string — "Demo v0.x.y (build hash)" bottom-right replaces "v0.1 prototype", read from Vite `define`
-- [ ] UIX-0085 · Demo · P1 · M · Credits — scrolling credits (team, voice cast, music, OFL font attributions for IM Fell English and UnifrakturMaguntia, third-party licences), speed-up on hold, skippable
+- [x] UIX-0085 · Demo · P1 · M · Credits — scrolling credits (team, voice cast, music, OFL font attributions for IM Fell English and UnifrakturMaguntia, third-party licences), speed-up on hold, skippable
 
 ### Chapter select & operating theatre
 - [x] UIX-0086 · M0 · P1 · S · Operating Theatre list — replay any reached operation with best rank/score (`OperationsScene`)
-- [ ] UIX-0087 · Demo · P0 · M · Chapter select — chapter cards (illustration, numeral, title, completion %, rank seals per operation); demo shows Chapters I–II playable and III–V as locked parchment "In the full game" cards
+- [x] UIX-0087 · Demo · P0 · M · Chapter select — chapter cards (illustration, numeral, title, completion %, rank seals per operation); demo shows Chapters I–II playable and III–V as locked parchment "In the full game" cards
 - [ ] UIX-0088 · Demo · P1 · M · Chapter step list — replay any reached story scene or operation from a chapter; replays never move `save.progress` backwards (unit test on `advance`)
 - [ ] UIX-0089 · Demo · P1 · M · Operating Theatre v2 — scrollable grouped list by chapter, keyboard/gamepad navigation, details panel (best rank, best score, best time, clear date, assisted flag), rank-seal art
 - [ ] UIX-0090 · Demo · P2 · S · Rank collection summary — "Seals earned: 7/10 S or better" per chapter on the chapter card
 
 ### Save & load
 - [x] UIX-0091 · M0 · P0 · S · Progress autosave — localStorage save after each step plus best rank/score per operation (`save.ts`: `advance`, `recordBest`, `store`)
-- [ ] UIX-0092 · Demo · P0 · M · Save slots — three slots with cards (chapter, next step, play time, seal count, last played); New Game asks for a slot; overwrite needs confirm
+- [x] UIX-0092 · Demo · P0 · M · Save slots — three slots with cards (chapter, next step, play time, seal count, last played); New Game asks for a slot; overwrite needs confirm
 - [x] UIX-0093 · Demo · P0 · S · Autosave indicator — quill/seal icon in a corner for ≥ 1 s whenever a save is written; tip on first boot "Do not quit while the seal turns"
-- [ ] UIX-0094 · Demo · P0 · S · Corrupt save handling — today `load()` silently returns `fresh()` on parse failure; instead show "Your records are damaged" with Restore backup / Start fresh, and keep the bad file aside (test with a truncated JSON fixture)
+- [x] UIX-0094 · Demo · P0 · S · Corrupt save handling — today `load()` silently returns `fresh()` on parse failure; instead show "Your records are damaged" with Restore backup / Start fresh, and keep the bad file aside (test with a truncated JSON fixture)
 - [x] UIX-0095 · M0 · P0 · S · Settings file — volume, mute, screen shake, reduce flashing and assists persist under `suture-and-steel.settings`, separate from campaign progress (`src/core/settings.ts`)
 - [x] UIX-0096 · Demo · P1 · S · Dead save field — remove the unused `SaveData.volume` (settings own volume now) through a v1 → v2 save migration with a fixture test
-- [ ] UIX-0097 · Demo · P1 · S · Delete slot — double confirm, plays a page-burn animation; cannot delete the slot currently loaded mid-session
+- [x] UIX-0097 · Demo · P1 · S · Delete slot — double confirm, plays a page-burn animation; cannot delete the slot currently loaded mid-session
 - [x] UIX-0098 · Demo · P1 · S · Demo → full-game carry-over — demo save format is forward compatible; a fixture test imports a demo save into the full-game loader and keeps progress and best ranks
 
 ### Pause
@@ -381,14 +381,14 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ### Demo-complete scene
 - [ ] UIX-0167 · Demo · P0 · M · "Here the demo ends" sequence — illuminated card, teaser of the next Malison hour (Prime) as a silhouette with "The Hours are not yet done…", music sting, then the summary; skippable after first view
-- [ ] UIX-0168 · Demo · P0 · M · Demo summary — grid of rank seals for all 10 operations, total play time, XS count, longest chain, Litany uses; "Replay operations for better seals" button to the Operating Theatre
+- [x] UIX-0168 · Demo · P0 · M · Demo summary — grid of rank seals for all 10 operations, total play time, XS count, longest chain, Litany uses; "Replay operations for better seals" button to the Operating Theatre
 - [ ] UIX-0169 · Demo · P0 · M · Wishlist call-to-action — wax-seal "Wishlist on Steam" button opens the full game's store page via steamworks.js overlay (`overlay.activateToStore(appId)`), falling back to `steam://store/<appid>` via `shell.openExternal` when the overlay is disabled; tested with overlay on and off and on Deck
 - [ ] UIX-0170 · Demo · P1 · S · Feedback link — "Tell us what you think" opens the survey URL with build id and play time as query parameters
 - [ ] UIX-0171 · Demo · P2 · S · Community row — Discord and newsletter links (small woodcut icons) under the wishlist button; hidden in kiosk builds
 - [ ] UIX-0172 · Demo · P1 · S · Save-carry message — "Your progress and seals will carry over to the full game" shown only once carry-over is verified by the fixture test
 
 ### After the demo
-- [ ] UIX-0173 · Demo · P0 · S · Post-demo title state — after completion the title shows a "Demo complete" banner and Wishlist seal, Continue becomes Chapter Select, and the demo-complete scene is replayable from Extras
+- [x] UIX-0173 · Demo · P0 · S · Post-demo title state — after completion the title shows a "Demo complete" banner and Wishlist seal, Continue becomes Chapter Select, and the demo-complete scene is replayable from Extras
 - [ ] UIX-0174 · Demo · P1 · S · Title wishlist seal — always visible on the demo title (not a pop-up nag); click-through tracked in the local stats file
 - [ ] UIX-0175 · Demo · P2 · M · Event kiosk mode — `--kiosk` flag: returns to title after 90 s idle, disables Quit and save slots, resets progress each session, shows controls card on title (for Next Fest streams and conventions)
 - [ ] UIX-0176 · Demo · P0 · M · Demo-complete E2E test — Playwright drives the demo build via debug `skipTo` hooks through the Lauds operation to `DemoCompleteScene`, asserts the summary values and that the wishlist handler is invoked (mocked steamworks)
