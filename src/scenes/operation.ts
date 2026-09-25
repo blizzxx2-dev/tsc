@@ -220,7 +220,8 @@ export class OperationScene implements Scene {
     const out = this.worldPtr;
     while (out.length < path.length) out.push({ x: 0, y: 0 });
     for (let i = 0; i < path.length; i++) this.camera.toWorld(path[i], out[i]);
-    return out.length === path.length ? out : out.slice(0, path.length);
+    out.length = path.length;
+    return out;
   }
 
   private slot(i: number) {

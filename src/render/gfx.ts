@@ -3,7 +3,7 @@ import { alphaOf, type RGBA } from './color';
 import { GlyphAtlas, type FontId } from './text';
 import { BLUR_FS, BRIGHT_FS, FLESH_FS, FLUID_FS, FULL_VS, IMAGE_FS, IMAGE_VS, PORTRAIT_FS, POST_FS, RECT_VS, SCENE_FS } from './shaders';
 import { BATCH_FS, BATCH_UNITS, BATCH_VS, FALLBACK_VS, FXAA_FS } from './batch-shaders';
-import { describeCaps, fallbackPlan, FULL_CAPS, probeCaps, toMediump, type FallbackPlan, type GpuCaps } from './caps';
+import { fallbackPlan, FULL_CAPS, probeCaps, toMediump, type FallbackPlan, type GpuCaps } from './caps';
 import { emptyStats, GpuTimer, type FlushReason, type FrameStats } from './profiler';
 import { GlRegistry } from './registry';
 import { SpriteBank, type SpriteOpts } from './sprites';
@@ -187,7 +187,6 @@ export class Gfx {
     this.registry = new GlRegistry(gl);
     this.caps = opts.caps ?? (gl.isContextLost() ? FULL_CAPS : probeCaps(gl));
     this.plan = { ...fallbackPlan(this.caps), ...opts.plan };
-    console.info(describeCaps(this.caps));
     this.floatTargets = this.plan.bloomFormat === 'rgba16f';
     this.targets = new RenderTargetPool(this.registry, this.floatTargets);
     this.gpuTimer = new GpuTimer(this.registry);
@@ -202,6 +201,8 @@ export class Gfx {
     const gl = this.gl;
     const reg = this.registry;
     this.uniforms.clear();
+    // Extensions are per context: re-enable them after a restore or float targets come back incomplete.
+    for (const e of ['EXT_color_buffer_float', 'EXT_color_buffer_half_float', 'EXT_texture_filter_anisotropic', 'OES_texture_float_linear']) gl.getExtension(e);
     this.prim = reg.createProgram('batch', BATCH_VS, BATCH_FS);
     this.flesh = reg.createProgram('flesh', FULL_VS, this.plan.fleshVariant === 'mediump' ? toMediump(FLESH_FS) : FLESH_FS);
     this.bright = reg.createProgram('bright', FULL_VS, BRIGHT_FS);
@@ -300,6 +301,7 @@ export class Gfx {
   /** Call on `webglcontextrestored`: recreate programs, buffers, textures, targets and images (ENG-0200). */
   contextRestored(): void {
     this.registry.contextRestored();
+    this.gpuTimer.rebind();
     for (const [h, src] of this.imageSources) this.uploadImage(h, src);
   }
 

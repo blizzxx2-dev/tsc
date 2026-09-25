@@ -1,3 +1,4 @@
+import type { AssetLoader } from '../assets/loader';
 import type { Audio } from './audio';
 import type { Clock } from './clock';
 import type { Input } from './input';
@@ -9,6 +10,8 @@ export interface Game {
   gfx: Gfx;
   /** Shared real/sim/world time (optional so headless fakes need not provide it). */
   clock?: Clock;
+  /** Asset loader (bundles are prefetched/unloaded as the campaign moves between chapters). */
+  assets?: AssetLoader;
   /** Replace the whole scene stack; outgoing scenes are exited and disposed. */
   go(scene: Scene): void;
   /** Push an overlay (pause, options, confirm) over the live scene. */

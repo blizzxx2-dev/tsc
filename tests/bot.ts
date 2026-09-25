@@ -197,6 +197,8 @@ export interface BotOptions {
   /** Seconds of "look, pick tool, aim" before each gesture — models human pacing. */
   think?: number;
   maxSeconds?: number;
+  /** Called with the fresh operation before play starts (subscribe to its events). */
+  onOp?: (op: Operation) => void;
 }
 
 /** Idle frames at the current pointer (pointer up). */
@@ -209,6 +211,7 @@ export function playWithBot(def: OperationDef, opts: BotOptions = {}): BotResult
   const maxSeconds = opts.maxSeconds ?? 900;
   const think = opts.think ?? 0;
   const op = new Operation(def);
+  opts.onOp?.(op);
   let prev: Vec = { x: FIELD.cx, y: FIELD.cy };
   let wasDown = false;
   let action: Action | null = null;

@@ -7,7 +7,7 @@ import { FIXED_DT, FixedStep, FrameLimiter, RefreshEstimator, stepEndTimes } fro
 import { SceneStack, sceneName, type Game, type Scene } from './core/scene';
 import { lampsVeil, splashDone, splashProgress } from './core/splash';
 import { Gfx } from './render/gfx';
-import { classifyTier } from './render/caps';
+import { classifyTier, describeCaps } from './render/caps';
 import { Profiler } from './render/profiler';
 import { HEAP_BUDGET, VRAM_BUDGET } from './render/registry';
 import { computeView } from './render/viewport';
@@ -41,11 +41,13 @@ class Main implements Game {
   private last = performance.now();
   private contextLost = false;
   private hidden = false;
+  private losses: number[] = [];
 
   constructor(private canvas: HTMLCanvasElement) {
     this.audio.volume = settings.volume;
     this.audio.muted = settings.muted;
     this.gfx = new Gfx(canvas, VIEW_W, VIEW_H);
+    console.info(describeCaps(this.gfx.caps));
     this.gfx.renderScale = settings.renderScale;
     this.input = new Input(canvas, VIEW_W, VIEW_H);
     this.assets = createAssets(this.gfx);
@@ -88,6 +90,15 @@ class Main implements Game {
       this.audio.suspend();
       lampsVeil(true);
       console.warn(`WebGL context lost (${this.gfx.registry.losses}× this session)`);
+      // Repeated losses (3 within 60 s) mean an unstable GPU/driver: drop to Low tier (ENG-0201).
+      const now = performance.now();
+      this.losses = this.losses.filter((t) => now - t < 60000);
+      this.losses.push(now);
+      if (this.losses.length >= 3) {
+        settings.gpuTier = 'low';
+        saveSettings();
+        console.error(`[gpu-instability] ${this.losses.length} context losses within 60 s on ${this.gfx.caps.renderer}; forcing Low tier`);
+      }
     });
     canvas.addEventListener('webglcontextrestored', () => {
       this.gfx.contextRestored();

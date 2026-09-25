@@ -64,6 +64,11 @@ export class GpuTimer {
     }
   }
 
+  /** Context restored: re-enable the extension on the new context. */
+  rebind(): void {
+    this.ext = this.reg.gl.getExtension('EXT_disjoint_timer_query_webgl2') as { TIME_ELAPSED_EXT: number; GPU_DISJOINT_EXT: number } | null;
+  }
+
   /** Context lost: every query handle is gone. */
   reset(): void {
     this.pending.length = 0;

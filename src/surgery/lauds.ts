@@ -156,6 +156,7 @@ export class LaudsMalison extends Entity {
       return;
     }
     this.hp -= 50 * dt;
+    op.events.emit('malisonHit', { pos: this.pos, damage: 50 * dt });
     this.hurtFlash = 1;
     if (op.rng.next() < dt * 6) op.cues.push('burn');
     if (!this.submergedOnce && this.hp <= this.maxHp / 2) {
