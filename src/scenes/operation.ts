@@ -13,10 +13,9 @@ import { TOOL_INFO, toolInfo, type Pointer, type ToolId } from '../surgery/types
 import { PALETTE, VIEW_W } from '../ui/layout';
 import { button, inRect, reticle, star, toolIcon } from '../ui/widgets';
 import { banner, brassBorder, divider, giltText, hourglass, leatherPanel, medallion, plaque, scroll, UI, waxSeal } from '../ui/ornaments';
-import { drawPortrait } from './backdrop';
 import { CAST } from '../content/characters';
 import { ASSISTANT_NAME } from '../content/characters';
-import type { RGBA } from '../render/color';
+import { vec3, type RGBA } from '../render/color';
 import { settings } from '../core/settings';
 import { OptionsScene } from './options';
 
@@ -401,11 +400,16 @@ export class OperationScene implements Scene {
     const mx = 238;
     const my = 676;
     medallion(g, mx, my, 30, hex('#1a2a20'));
-    g.save();
-    g.translate(mx, my + 34);
-    g.scale(0.2);
-    drawPortrait(g, CAST.ilse, 0, 0, t, true);
-    g.restore();
+    const talking = this.op.calloutT * 60 < line.length;
+    g.portrait(mx - 34, my - 44, 68, 86, {
+      style: 1,
+      rim: vec3(CAST.ilse.color),
+      cloth: vec3(CAST.ilse.cloth ?? '#3e454e'),
+      skin: vec3(CAST.ilse.skin ?? '#d8b098'),
+      active: 1,
+      seed: 3,
+      talk: talking ? 0.5 + 0.5 * Math.sin(t * 16) : 0,
+    });
     const r = { x: mx + 44, y: 652, w: 840, h: 50 };
     scroll(g, r);
     g.text(ASSISTANT_NAME, r.x + 16, r.y + 20, { size: 15, color: hex('#6a0a10'), shadow: false });

@@ -12,6 +12,7 @@ import { playOperation } from './scenes/flow';
 import { TitleScene } from './scenes/title';
 import { StoryScene } from './scenes/story';
 import type { Backdrop } from './content/story';
+import type { CharacterId } from './content/characters';
 import { VIEW_H, VIEW_W } from './ui/layout';
 
 class Main implements Game {
@@ -110,7 +111,7 @@ async function boot(): Promise<void> {
   }
   // ?story=<backdrop> previews a story environment.
   const storyBg = new URLSearchParams(location.search).get('story');
-  if (storyBg) game.go(new StoryScene({ id: 'preview', place: 'Preview', backdrop: storyBg as Backdrop, lines: [{ who: 'narrator', text: 'Environment preview.' }] }, () => game.go(new TitleScene())));
+  if (storyBg) game.go(new StoryScene({ id: 'preview', place: 'Preview', backdrop: storyBg as Backdrop, lines: [{ who: (new URLSearchParams(location.search).get('who') ?? 'narrator') as CharacterId, text: 'The Free City of Kessendorf. Winter, in the ninth year of the Long Muster.' }] }, () => game.go(new TitleScene())));
 }
 
 void boot();

@@ -54,7 +54,7 @@ export class StoryScene implements Scene {
     const who = CAST[line.who];
     g.beginWorld();
     drawBackdrop(g, this.story.backdrop, g.time);
-    if (who.silhouette !== 'none') drawPortrait(g, who, 330, 470, g.time, true);
+    if (who.silhouette !== 'none') drawPortrait(g, who, 330, 500, g.time, true, this.shown < line.text.length);
     g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1 });
 
     if (this.fadeIn < 1) g.rect(0, 0, VIEW_W, VIEW_H, hex('#000000', 1 - this.fadeIn));

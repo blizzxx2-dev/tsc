@@ -1,4 +1,4 @@
-import { hex } from '../render/color';
+import { hex, vec3 } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import type { Backdrop } from '../content/story';
 import type { Character } from '../content/characters';
@@ -109,47 +109,23 @@ function drawProceduralBackdrop(g: Gfx, kind: Backdrop, t: number): void {
   g.setBlend('alpha');
 }
 
-/** A placeholder portrait: a backlit silhouette bust with headwear by character type. */
-export function drawPortrait(g: Gfx, c: Character, x: number, y: number, t: number, active: boolean): void {
+const STYLE: Record<Character['silhouette'], number> = { hood: 0, coif: 1, cap: 2, hat: 3, helm: 4, bare: 5, none: 5 };
+
+/** A character portrait: a raymarched, candle-lit bust (PORTRAIT_FS). */
+export function drawPortrait(g: Gfx, c: Character, x: number, y: number, t: number, active: boolean, talking = false): void {
   if (c.silhouette === 'none') return;
-  const a = active ? 1 : 0.55;
-  const bob = Math.sin(t * 1.5 + x) * 2;
-  g.glow(x, y - 120, 240, hex(c.color, 0.22 * a));
-  const body = hex('#0a0806', 0.95);
-  // Shoulders and head.
-  g.ellipse(x, y + 40, 150, 120, 0, body);
-  g.rect(x - 150, y + 40, 300, 200, body);
-  g.circle(x, y - 110 + bob, 62, body);
-  g.rect(x - 26, y - 60 + bob, 52, 60, body);
-  switch (c.silhouette) {
-    case 'hood':
-      g.ellipse(x, y - 110 + bob, 84, 96, 0, body);
-      g.tri(x - 84, y - 90 + bob, x + 84, y - 90 + bob, x, y - 230 + bob, body);
-      break;
-    case 'coif':
-      g.ellipse(x, y - 105 + bob, 78, 82, 0, body);
-      g.rect(x - 78, y - 110 + bob, 156, 110, body);
-      g.rect(x - 90, y - 176 + bob, 180, 16, hex('#d8d0c0', 0.25 * a));
-      break;
-    case 'cap':
-      g.ellipse(x, y - 160 + bob, 70, 24, 0, body);
-      break;
-    case 'hat':
-      g.ellipse(x, y - 158 + bob, 130, 20, 0, body);
-      g.rect(x - 56, y - 240 + bob, 112, 84, body);
-      g.rect(x - 58, y - 172 + bob, 116, 10, hex(c.color, 0.35 * a));
-      break;
-    case 'helm':
-      g.ellipse(x, y - 130 + bob, 76, 60, 0, body);
-      g.ellipse(x, y - 150 + bob, 110, 14, 0, body);
-      g.tri(x - 10, y - 185 + bob, x + 10, y - 185 + bob, x, y - 215 + bob, body);
-      break;
-    default:
-      break;
-  }
-  // Eyes catch the light.
-  g.circle(x - 20, y - 112 + bob, 3, hex(c.color, 0.5 * a));
-  g.circle(x + 20, y - 112 + bob, 3, hex(c.color, 0.5 * a));
-  // Rim light.
-  g.arc(x, y - 110 + bob, 63, 2, hex(c.color, 0.35 * a), 0.35, -Math.PI * 0.95);
+  const w = 420;
+  const h = 540;
+  g.glow(x, y - 200, 260, hex(c.color, 0.16 * (active ? 1 : 0.5)));
+  g.portrait(x - w / 2, y - h + 70, w, h, {
+    style: STYLE[c.silhouette],
+    rim: vec3(c.color),
+    cloth: vec3(c.cloth ?? '#3a3028'),
+    skin: vec3(c.skin ?? '#c89a80'),
+    active: active ? 1 : 0,
+    seed: c.name.length * 1.7,
+    talk: talking ? 0.5 + 0.5 * Math.sin(t * 16) : 0,
+    beard: c.beard ?? 0,
+    hair: vec3(c.hair ?? '#2a1c14'),
+  });
 }

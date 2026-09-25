@@ -1,7 +1,7 @@
 import type { Vec } from '../core/math';
 import { alphaOf, type RGBA } from './color';
 import { GlyphAtlas, type FontId } from './text';
-import { BLUR_FS, BRIGHT_FS, FLESH_FS, FLUID_FS, FULL_VS, IMAGE_FS, IMAGE_VS, POST_FS, PRIM_FS, PRIM_VS, SCENE_FS } from './shaders';
+import { BLUR_FS, BRIGHT_FS, FLESH_FS, FLUID_FS, FULL_VS, IMAGE_FS, IMAGE_VS, PORTRAIT_FS, POST_FS, PRIM_FS, PRIM_VS, RECT_VS, SCENE_FS } from './shaders';
 
 const TAU = Math.PI * 2;
 const MAX_VERTS = 60000;
@@ -125,6 +125,7 @@ export class Gfx {
   private fluidProg: WebGLProgram;
   private imageProg: WebGLProgram;
   private sceneProg: WebGLProgram;
+  private portraitProg: WebGLProgram;
   private images = new Map<string, ImageHandle>();
   private pw = 0;
   private ph = 0;
@@ -151,6 +152,7 @@ export class Gfx {
     this.fluidProg = compile(gl, FULL_VS, FLUID_FS);
     this.imageProg = compile(gl, IMAGE_VS, IMAGE_FS);
     this.sceneProg = compile(gl, FULL_VS, SCENE_FS);
+    this.portraitProg = compile(gl, RECT_VS, PORTRAIT_FS);
     this.floatTargets = !!gl.getExtension('EXT_color_buffer_float');
     this.samples = Math.min(4, gl.getParameter(gl.MAX_SAMPLES) as number);
 
@@ -458,6 +460,44 @@ export class Gfx {
     gl.uniform1f(this.u(pr, 'u_time'), this.time);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     this.applyBlend();
+  }
+
+  /** Upload one quad covering a rect with 0..1 UVs, using the batch VBO. */
+  private rectQuad(x: number, y: number, w: number, h: number): void {
+    const q = [x, y, 0, 0, x + w, y, 1, 0, x + w, y + h, 1, 1, x, y, 0, 0, x + w, y + h, 1, 1, x, y + h, 0, 1];
+    for (let i = 0; i < 6; i++) {
+      const b = i * STRIDE;
+      this.f32[b] = q[i * 4];
+      this.f32[b + 1] = q[i * 4 + 1];
+      this.f32[b + 2] = q[i * 4 + 2];
+      this.f32[b + 3] = q[i * 4 + 3];
+      this.u32[b + 4] = 0xffffffff;
+    }
+    const gl = this.gl;
+    gl.bindVertexArray(this.vao);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.f32, 0, 6 * STRIDE);
+  }
+
+  /** Raymarched, candle-lit character bust drawn into a rect (see PORTRAIT_FS). */
+  portrait(x: number, y: number, w: number, h: number, p: { style: number; rim: [number, number, number]; cloth: [number, number, number]; skin: [number, number, number]; active: number; seed: number; talk: number; beard?: number; hair?: [number, number, number] }): void {
+    this.flush();
+    const gl = this.gl;
+    const pr = this.portraitProg;
+    gl.useProgram(pr);
+    this.rectQuad(x, y, w, h);
+    gl.uniform2f(this.u(pr, 'u_view'), this.vw, this.vh);
+    gl.uniform1f(this.u(pr, 'u_time'), this.time);
+    gl.uniform1i(this.u(pr, 'u_style'), p.style);
+    gl.uniform3fv(this.u(pr, 'u_rim'), p.rim);
+    gl.uniform3fv(this.u(pr, 'u_cloth'), p.cloth);
+    gl.uniform3fv(this.u(pr, 'u_skin'), p.skin);
+    gl.uniform1f(this.u(pr, 'u_active'), p.active);
+    gl.uniform1f(this.u(pr, 'u_seed'), p.seed);
+    gl.uniform1f(this.u(pr, 'u_talk'), p.talk);
+    gl.uniform1i(this.u(pr, 'u_beard'), p.beard ?? 0);
+    gl.uniform3fv(this.u(pr, 'u_hair'), p.hair ?? [0.12, 0.08, 0.06]);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
   }
 
   /** Shader-rendered story environment (0 hospice … 5 camp) over the whole world target. */
