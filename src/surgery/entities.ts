@@ -428,13 +428,9 @@ export class BloodPool extends Entity {
       this.kill();
       op.cues.push('squelch');
       const took = op.elapsed - this.contactT;
-      // Refills from the same wound pay only once — no farming an unstitched cut.
-      const key = `pool-paid-${this.sourceId}`;
-      const paid = this.sourceId > 0 && op.flags.has(key);
-      if (this.startR >= B.minRated && took <= B.goodTime && !paid) {
-        if (this.sourceId > 0) op.flags.add(key);
-        op.rate(took <= B.coolTime ? 'cool' : 'good', this.pos, 'Drained');
-      }
+      // Only pools that were there to begin with pay: blood from a wound left
+      // bleeding keeps the combo alive but earns nothing (no farming an unstitched cut).
+      if (this.startR >= B.minRated && took <= B.goodTime) op.rate(took <= B.coolTime ? 'cool' : 'good', this.pos, 'Drained', this.sourceId === 0);
       if (this.ichor === 'blood') op.stain(this.pos, this.startR * 0.9, 0.35);
     }
   }
@@ -1622,6 +1618,7 @@ export class Grub extends Entity {
   private heading: number;
   private grabbed = false;
   private wasBranded = false;
+  private soloBrand = true;
   burrowed = false;
   private sinceSurface = 0;
   noun = 'a grub';
@@ -1659,9 +1656,9 @@ export class Grub extends Entity {
     const Br = op.tuning.brand;
     // Heat only bleeds away when the brand is off it.
     if (!this.branded) {
-      if (this.wasBranded && !this.small && this.heat >= Br.grubSplitMin && this.heat < Br.grubSplitMax) return this.split(op);
+      if (this.wasBranded && this.soloBrand && !this.small && this.heat >= Br.grubSplitMin && this.heat < Br.grubSplitMax) return this.split(op);
       this.heat = Math.max(0, this.heat - dt * G.heatDecay);
-    }
+    } else this.soloBrand = op.brandTargets <= 1;
     this.wasBranded = this.branded;
     this.branded = false;
     if (this.grabbed || this.hidden) return;

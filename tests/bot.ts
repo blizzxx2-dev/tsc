@@ -120,6 +120,8 @@ export const alive = (e: Entity) => () => (e.alive && !e.hidden ? e.pos : null);
 const along = (o: Vec, a: number, d: number): Vec => ({ x: o.x + Math.cos(a) * d, y: o.y + Math.sin(a) * d });
 
 export type Profile = 'novice' | 'steady' | 'expert' | 'farm' | 'sloppy';
+/** Order-sensitive mistakes a bot can be told (or roll) to make. */
+export type Mistake = 'nick' | 'bolt' | 'bubo' | 'acid' | 'wadding';
 
 export const PROFILES: Record<Profile, { think: number; aim: number; sloppy: number; farm: number }> = {
   novice: { think: 1.5, aim: 10, sloppy: 0, farm: 0 },
@@ -139,9 +141,10 @@ export interface BotContext {
   expert: boolean;
   /** Offset a target point by this action's aim error. */
   jitter(p: Vec): Vec;
-  /** Roll for a sloppy mistake. */
-  slip(): boolean;
+  /** Should the bot make this (order-sensitive) mistake now? Forced ones always happen; sloppy bots roll. */
+  mistake(kind: Mistake): boolean;
   has(t: ToolId): boolean;
+  forced: ReadonlySet<Mistake>;
 }
 
 /** Leftover salve too thin to finish the job: wait for the pot to refill. */
@@ -161,7 +164,7 @@ function extract(ctx: BotContext, emb: Embedded): Action {
   const dest = emb.kind === 'hexstone' ? LEAD_DISH : TRAY_DISH;
   const speed = emb.kind === 'glass' ? 320 : 480;
   const g = ctx.jitter(grip);
-  if (emb.kind === 'bolt' && !(ctx.sloppy && ctx.slip())) {
+  if (emb.kind === 'bolt' && !ctx.mistake('bolt')) {
     const mid = along(g, ax, emb.spec.len * 0.5);
     return chain(dragNoRelease('tongs', [g, mid], 300), still('tongs', mid, 0.45), drag('tongs', [mid, along(mid, ax, 30), dest], speed, 0.2));
   }
@@ -189,7 +192,10 @@ function plan(ctx: BotContext): Action | null {
 
   for (const e of ents) if (!isKnown(e)) throw new Error(`bot: unknown entity kind ${e.constructor.name}`);
 
-  if (op.vitals < 40 && op.injectCooldown === 0 && has('tincture')) return hold('tincture', () => ({ x: FIELD.cx + 330, y: FIELD.cy + 20 }), 0.8);
+  if (op.vitals < (ctx.expert ? 55 : 40) && op.injectCooldown === 0 && has('tincture')) return hold('tincture', () => ({ x: FIELD.cx + 330, y: FIELD.cy + 20 }), 0.8);
+
+  // Let a hot brand cool rather than have it lock mid-searing.
+  if (op.brandHeat > 4 && has('brand')) return pause(OFF_BODY, op.tool, 1.2);
 
   const alpha = botPlanAlpha(ctx);
   if (alpha) return alpha;
@@ -211,7 +217,7 @@ function plan(ctx: BotContext): Action | null {
   const bubo = find(Bubo, (b) => !b.lanced);
   if (bubo) {
     const c = ctx.jitter(bubo.pos);
-    const half = ctx.sloppy && ctx.slip() ? bubo.r * 1.3 : bubo.r * 0.7;
+    const half = ctx.mistake('bubo') ? bubo.r * 1.3 : bubo.r * 0.7;
     return drag('lancet', [{ x: c.x - half, y: c.y }, { x: c.x + half, y: c.y }], 300);
   }
 
@@ -219,10 +225,16 @@ function plan(ctx: BotContext): Action | null {
   if (bosses.length && ctx.bossSeen < 0) ctx.bossSeen = op.elapsed;
   const stalling = ctx.farm > 0 && ctx.bossSeen >= 0 && op.elapsed - ctx.bossSeen < ctx.farm;
 
-  // A player invokes the Litany when the Malison lays itself open (an expert waits for the worst moment too).
+  // A player invokes the Litany when the Malison lays itself open.
   if (op.canInvokeLitany() && bosses.length && !stalling) {
     const opening = bosses.some((b) => (b instanceof Malison && b.open) || (b instanceof LaudsMalison && b.livingVoices.length <= 2));
-    if (opening && (!ctx.expert || op.entities.filter((e) => e.alive && !e.hidden).length >= 4 || op.vitals < 70)) op.invokeLitany();
+    if (opening) op.invokeLitany();
+  }
+
+  // An expert spends the Litany on the Malison itself, not on its hexlings.
+  if (ctx.expert && op.litanyTime > 0) {
+    const m = find(Malison, (mm) => mm.open);
+    if (m) return hold('brand', () => (m.alive && m.open ? m.pos : null), 3);
   }
 
   const shard = find(MalisonShard);
@@ -251,11 +263,11 @@ function plan(ctx: BotContext): Action | null {
 
   const emb = find(Embedded, (e) => !e.grabbed);
   if (emb) {
-    if (emb.barbed && emb.nicks < 2 && !(ctx.sloppy && ctx.slip())) return tap('lancet', ctx.jitter({ x: emb.origin.x + 4, y: emb.origin.y + 4 }));
+    if (emb.barbed && emb.nicks < 2 && !ctx.mistake('nick')) return tap('lancet', ctx.jitter({ x: emb.origin.x + 4, y: emb.origin.y + 4 }));
     if (!emb.calmed && has('brand')) return hold('brand', () => (emb.alive && !emb.calmed ? emb.pos : null), 0.8);
     return extract(ctx, emb);
   }
-  const wad = find(Wadding);
+  const wad = ctx.forced.has('wadding') ? undefined : find(Wadding);
   if (wad) return drag('tongs', [ctx.jitter(wad.pos), TRAY_DISH], 480, 0.1);
 
   const burn = find(Burn);
@@ -265,7 +277,7 @@ function plan(ctx: BotContext): Action | null {
       return drag('lancet', [{ x: burn.pos.x - r, y: burn.pos.y }, { x: burn.pos.x + r, y: burn.pos.y }, { x: burn.pos.x - r, y: burn.pos.y + 6 }], 300);
     }
     if (burn.acidLive) {
-      if (ctx.sloppy && ctx.slip()) return salveOr(ctx, () => drag('salve', raster(burn.pos, burn.radiusNow), 900));
+      if (ctx.mistake('acid')) return salveOr(ctx, () => drag('salve', raster(burn.pos, burn.radiusNow), 900));
       return hold('leech', alive(burn), 1.2);
     }
     if (burn.flakes.length) return tap('tongs', burn.flakes[0]);
@@ -344,6 +356,8 @@ export interface BotOptions extends OperationOptions {
   collect?: (e: SimEvent) => void;
   /** Called after every simulated frame. */
   onFrame?: (op: Operation) => void;
+  /** Mistakes this bot always makes. */
+  mistakes?: readonly Mistake[];
 }
 
 /** Idle frames at the current pointer (pointer up). */
@@ -351,57 +365,90 @@ function* pause(pos: Vec, tool: ToolId, seconds: number): Action {
   for (let t = 0; t < seconds; t += DT) yield { tool, pos, down: false };
 }
 
+/**
+ * Drives one operation frame by frame. `input()` feeds this frame's pointer
+ * and tool choice; the caller advances the simulation (headless loop below, or
+ * the real OperationScene in the dev playback view).
+ */
+export class BotDriver {
+  readonly ctx: BotContext;
+  private prev: Vec = { x: FIELD.cx, y: FIELD.cy };
+  private wasDown = false;
+  private action: Action | null = null;
+  private aimOff: Vec = { x: 0, y: 0 };
+  private readonly think: number;
+  /** Where the bot's hand is (for drawing a cursor during playback). */
+  get hand(): Vec {
+    return this.prev;
+  }
+
+  constructor(
+    readonly op: Operation,
+    opts: BotOptions = {},
+  ) {
+    const prof = opts.profile ? PROFILES[opts.profile] : null;
+    this.think = opts.think ?? prof?.think ?? 0;
+    const rng = new Rng(opts.botSeed ?? 7);
+    const sloppy = prof?.sloppy ?? 0;
+    const forced = new Set<Mistake>(opts.mistakes ?? []);
+    this.ctx = {
+      op,
+      rng,
+      aim: prof?.aim ?? 0,
+      sloppy,
+      farm: prof?.farm ?? 0,
+      bossSeen: -1,
+      expert: opts.profile === 'expert',
+      jitter: (p) => ({ x: p.x + this.aimOff.x, y: p.y + this.aimOff.y }),
+      mistake: (k) => forced.has(k) || (sloppy > 0 && rng.next() < sloppy),
+      has: (t) => op.def.tools.includes(t),
+      forced,
+    };
+  }
+
+  /** Feed one frame of input. */
+  input(): void {
+    const op = this.op;
+    if (op.status !== 'running' || op.paused) return;
+    if (op.dialogue.length) {
+      op.advanceDialogue();
+      return;
+    }
+    let f = this.action?.next();
+    if (!f || f.done) {
+      // Finish the previous gesture cleanly before planning the next.
+      if (this.wasDown) {
+        op.handlePointer({ pos: this.prev, prev: this.prev, down: false, pressed: false, released: true }, DT);
+        this.wasDown = false;
+      }
+      const { rng, aim } = this.ctx;
+      const a = rng.range(0, Math.PI * 2);
+      const r = aim * Math.sqrt(rng.next());
+      this.aimOff = { x: Math.cos(a) * r, y: Math.sin(a) * r };
+      const next = plan(this.ctx);
+      this.action = next && this.think > 0 ? chain(pause(this.prev, op.tool, this.think), next) : next;
+      f = this.action?.next();
+    }
+    if (f && !f.done) {
+      const fr = f.value;
+      op.setTool(fr.tool);
+      const ptr: Pointer = { pos: fr.pos, prev: this.prev, down: fr.down, pressed: fr.down && !this.wasDown, released: !fr.down && this.wasDown };
+      op.handlePointer(ptr, DT);
+      this.wasDown = fr.down;
+      this.prev = fr.pos;
+    }
+  }
+}
+
 /** Play an operation to completion (or failure) with the bot. */
 export function playWithBot(def: OperationDef, opts: BotOptions = {}): BotResult {
   const maxSeconds = opts.maxSeconds ?? 900;
-  const prof = opts.profile ? PROFILES[opts.profile] : null;
-  const think = opts.think ?? prof?.think ?? 0;
   const op = new Operation(def, opts);
-  const rng = new Rng(opts.botSeed ?? 7);
-  let aimOff: Vec = { x: 0, y: 0 };
-  const aim = prof?.aim ?? 0;
-  const ctx: BotContext = {
-    op,
-    rng,
-    aim,
-    sloppy: prof?.sloppy ?? 0,
-    farm: prof?.farm ?? 0,
-    bossSeen: -1,
-    expert: opts.profile === 'expert',
-    jitter: (p) => ({ x: p.x + aimOff.x, y: p.y + aimOff.y }),
-    slip: () => rng.next() < (prof?.sloppy ?? 0),
-    has: (t) => op.def.tools.includes(t),
-  };
-  let prev: Vec = { x: FIELD.cx, y: FIELD.cy };
-  let wasDown = false;
-  let action: Action | null = null;
+  const bot = new BotDriver(op, opts);
   let frames = 0;
   while ((op.status === 'intro' || op.status === 'running') && frames < maxSeconds * 60) {
     frames++;
-    if (op.status === 'running') {
-      let f = action?.next();
-      if (!f || f.done) {
-        // Finish the previous gesture cleanly before planning the next.
-        if (wasDown) {
-          op.handlePointer({ pos: prev, prev, down: false, pressed: false, released: true }, DT);
-          wasDown = false;
-        }
-        const a = rng.range(0, Math.PI * 2);
-        const r = aim * Math.sqrt(rng.next());
-        aimOff = { x: Math.cos(a) * r, y: Math.sin(a) * r };
-        const next = plan(ctx);
-        action = next && think > 0 ? chain(pause(prev, op.tool, think), next) : next;
-        f = action?.next();
-      }
-      if (f && !f.done) {
-        const fr = f.value;
-        op.setTool(fr.tool);
-        const ptr: Pointer = { pos: fr.pos, prev, down: fr.down, pressed: fr.down && !wasDown, released: !fr.down && wasDown };
-        op.handlePointer(ptr, DT);
-        wasDown = fr.down;
-        prev = fr.pos;
-      }
-    }
+    bot.input();
     op.update(DT);
     op.cues.length = 0;
     if (opts.collect) for (const e of op.events) opts.collect(e);

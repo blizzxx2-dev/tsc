@@ -81,8 +81,8 @@ export const DEFAULT_TUNING = {
     tremorTime: 5,
     tremorPx: 4,
     antivenomHold: 0.9,
-    /** Stabilising doses that pay points (later ones still count for the combo). */
-    paidDoses: 1,
+    /** Stabilising doses that pay points (the rating still counts for the combo). Rescue is not surgery: none pay. */
+    paidDoses: 0,
   },
   miss: {
     /** A tool held on nothing for this long is a MISS (plain clicks never are). */

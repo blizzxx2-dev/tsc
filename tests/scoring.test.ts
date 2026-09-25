@@ -162,18 +162,21 @@ describe('GAM-F slow-play farming fix', () => {
     const rots = hex.entities.filter((e) => e instanceof Rot);
     expect(rots.length).toBeGreaterThan(0);
     expect(rots.every((r) => r.spawnedBy === 'penalty')).toBe(true);
-    // A bleeding wound's pools pay once.
+    // A bleeding wound's pools keep the combo but never pay.
     const wound = running(() => [new Laceration(at(0, 0), 0, 120, 3), new Anchor()]);
     const h = new Hand(wound);
-    let paid = 0;
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 3; i++) {
       wait(wound, 8);
-      const before = wound.score;
       h.hold('leech', at(0, 0), 3);
       h.release();
-      if (wound.score > before) paid++;
     }
-    expect(paid).toBe(1);
+    expect(wound.counts.cool + wound.counts.good).toBeGreaterThan(0);
+    expect(wound.score).toBe(0);
+    // A tincture rescue counts for the combo but pays nothing.
+    const low = running(() => [new Anchor()], { vitals: 30 });
+    new Hand(low).hold('tincture', at(200, 100), 0.75);
+    expect(low.counts.cool).toBe(1);
+    expect(low.score).toBe(0);
     const g = running((o) => [new Grub(at(0, 0), o, 0), new Anchor()]);
     new Hand(g).hold('brand', at(0, 0), 0.25);
     new Hand(g).release('brand');

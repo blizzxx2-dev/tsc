@@ -295,6 +295,8 @@ export class Operation {
   brandHeat = 0;
   brandLock = 0;
   private brandHeld = false;
+  /** How many things the brand touched this frame (a grub seared alongside a Malison doesn't split). */
+  brandTargets = 0;
   private fleshBrandT = 0;
   private emptyHoldT = 0;
   private emptyMissed = false;
@@ -329,6 +331,9 @@ export class Operation {
   private hiddenT = new Map<Entity, number>();
   /** Vitals sampled every 0.25 s over the last second (for the HUD drain arrow). */
   private trend: number[] = [];
+  /** Time-integrated vitals while running (for the average-vitals bonus). */
+  private vitalsInt = 0;
+  private runT = 0;
   private trendT = 0;
 
   constructor(
@@ -603,6 +608,11 @@ export class Operation {
     return true;
   }
 
+  /** The patient's average vitals so far — the vitals bonus pays for this, so a last-second tincture buys nothing. */
+  get averageVitals(): number {
+    return this.runT > 0 ? this.vitalsInt / this.runT : this.vitals;
+  }
+
   /** Vitals lost over the last second (positive = falling). */
   get drainRate(): number {
     return this.trend.length < 2 ? 0 : (this.trend[0] - this.trend[this.trend.length - 1]) / ((this.trend.length - 1) * 0.25);
@@ -750,6 +760,7 @@ export class Operation {
         if (c.alive) this.as(c, () => c.onDrag(this, ptr, tool, edt));
       } else {
         for (const e of live) this.as(e, () => e.onSweep(this, ptr, tool, edt));
+        if (tool === 'brand') this.brandTargets = live.filter((e) => e.branded).length;
         this.emptyHold(ptr, dt, live);
       }
     }
@@ -996,6 +1007,8 @@ export class Operation {
     }
     this.entities = this.entities.filter((e) => e.alive);
     this.minVitals = Math.min(this.minVitals, this.vitals);
+    this.vitalsInt += this.vitals * dt;
+    this.runT += dt;
     this.trendT += dt;
     if (this.trendT >= 0.25) {
       this.trendT = 0;
@@ -1156,7 +1169,7 @@ export class Operation {
     this.status = 'won';
     const perSec = this.bossOp ? T.bossTimeBonus : T.timeBonus;
     const time = this.timeLeft < T.timeBonusFloor ? 0 : Math.round(this.timeLeft) * perSec;
-    this.bonus = { ...this.bonus, vitals: Math.round(this.vitals) * T.vitalsBonus, time };
+    this.bonus = { ...this.bonus, vitals: Math.round(this.averageVitals) * T.vitalsBonus, time };
     this.score += this.bonus.vitals + this.bonus.time;
     for (const f of this.def.outcomes?.(this) ?? []) this.setStoryFlag(f);
     this.cues.push('bell');

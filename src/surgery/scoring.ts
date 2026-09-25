@@ -9,6 +9,10 @@ import { DEFAULT_TUNING } from './tuning';
  * Points: COOL 100 / GOOD 60 / BAD 15 / MISS 0, × (1 + min(combo, 20) × 0.05).
  * Boss adds pay 25 % (combo capped at ×5, total capped at 15 % of S); entities
  * created by the surgeon's own mistakes pay nothing.
+ *
+ * End bonuses: 20 × the patient's *average* vitals over the operation (a
+ * last-second tincture buys nothing), and 10 per second left (8 on boss
+ * operations; nothing under 10 s).
  */
 export interface ScoringRule {
   label: string;
@@ -50,7 +54,7 @@ export const SCORING: readonly ScoringRule[] = [
   { label: 'Plucked', action: 'Drag a grub off the body', tools: ['tongs'], criteria: { good: 'released off the body' } },
   { label: 'Cast out', action: 'Drag a Malison shard off the body', tools: ['tongs'], criteria: { cool: 'before it rejoins' } },
   // Leech-Pipe
-  { label: 'Drained', action: 'Draw off a pool (≥ 20 px)', tools: ['leech'], criteria: { cool: `cleared within ${S.blood.coolTime} s of first contact`, good: `within ${S.blood.goodTime} s` } },
+  { label: 'Drained', action: 'Draw off a pool (≥ 20 px; blood from a wound left bleeding pays nothing)', tools: ['leech'], criteria: { cool: `cleared within ${S.blood.coolTime} s of first contact`, good: `within ${S.blood.goodTime} s` } },
   { label: 'Neutralised', action: 'Draw off live acid', tools: ['leech'], criteria: { good: `${S.burn.acidNeutralise} s of suction` } },
   // Gut Thread
   { label: 'Stitched', action: 'Stitch a laceration', tools: ['thread'], criteria: { cool: `one stroke, spacing ${S.stitch.coolMin}–${S.stitch.coolMax} px`, good: `any closure without a gap > ${S.stitch.goodMax} px` } },
@@ -65,7 +69,7 @@ export const SCORING: readonly ScoringRule[] = [
   { label: 'Soothed', action: 'Salve a scorch mark', tools: ['salve'], criteria: { good: 'always' } },
   { label: 'Salve on acid', action: 'Salve before the acid is drawn off', tools: ['salve'], criteria: { bad: 'once per stroke' } },
   // Tincture
-  { label: 'Stabilised', action: 'Inject the red tincture', tools: ['tincture'], criteria: { cool: `vitals < ${S.tincture.coolBelow} (only the first ${S.tincture.paidDoses} doses pay points)`, good: `vitals < ${S.tincture.goodBelow}` } },
+  { label: 'Stabilised', action: 'Inject the red tincture', tools: ['tincture'], criteria: { cool: `vitals < ${S.tincture.coolBelow} (counts for the combo; rescue pays no points)`, good: `vitals < ${S.tincture.goodBelow}` } },
   { label: 'Wasteful', action: 'Inject when not needed', tools: ['tincture'], criteria: { bad: `vitals > ${S.tincture.badAbove}` } },
   { label: 'Into the wound', action: 'Inject into or beside an open wound', tools: ['tincture'], criteria: { miss: `< ${S.tincture.woundClearance} px from a wound` } },
   { label: 'Antidote', action: 'Hold the tincture on a bite', tools: ['tincture'], criteria: { cool: 'before the venom spreads 50 px', good: 'later' } },
