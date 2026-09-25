@@ -2,6 +2,7 @@ import '@fontsource/im-fell-english/400.css';
 import '@fontsource/im-fell-english/400-italic.css';
 import '@fontsource/unifrakturmaguntia/400.css';
 import { Audio } from './core/audio';
+import { settings } from './core/settings';
 import { Input } from './core/input';
 import type { Game, Scene } from './core/scene';
 import { Gfx } from './render/gfx';
@@ -18,6 +19,8 @@ class Main implements Game {
   private last = performance.now();
 
   constructor(private canvas: HTMLCanvasElement) {
+    this.audio.volume = settings.volume;
+    this.audio.muted = settings.muted;
     this.gfx = new Gfx(canvas, VIEW_W, VIEW_H);
     this.input = new Input(canvas, VIEW_W, VIEW_H);
     window.addEventListener('resize', () => this.resize());

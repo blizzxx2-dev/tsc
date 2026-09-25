@@ -106,7 +106,7 @@ export class LaudsMalison extends Entity {
       this.hymnT = 0;
       this.hymnR = 0;
       op.sayOnce('lauds-hymn', 'It’s singing — every verse tears him open! Stitch the cuts as they come!');
-      op.cues.push('litany');
+      op.cues.push('bell');
     }
     if (this.hymnR >= 0) {
       const prev = this.hymnR;

@@ -202,7 +202,7 @@ export const OP_2_4: OperationDef = {
   id: 'op2-4',
   title: 'The Silenced Cantor',
   patient: 'A lay-cantor of the Hollow Choir',
-  diagnosis: 'Silence-sigils igniting across the chest (hexfire). Self-administered poison. Prisoner of the Order of the Pyre.',
+  diagnosis: 'Silence-sigils igniting across the chest (hexfire). Self-administered poison. Prisoner of the Ash Tribunal.',
   organ: 'flesh',
   timeLimit: 300,
   baseDrain: 0.2,
@@ -225,7 +225,7 @@ export const OP_2_4: OperationDef = {
       spawn: (op: Operation) => [new Burn(at(-150, 60), 44, op, 'hexfire'), new Burn(at(150, 70), 40, op, 'hexfire'), new Burn(at(10, 100), 36, op, 'hexfire')],
     },
     {
-      callout: ['Maggots in an old sore — the Pyre’s cells are filthy. Brand them.'],
+      callout: ['Maggots in an old sore — the Tribunal’s cells are filthy. Brand them.'],
       spawn: (op: Operation) => [new Grub(at(-40, 20), op, 45), new Grub(at(50, 30), op, 45), new Rot(at(0, 30), 50, 0.4)],
     },
   ],

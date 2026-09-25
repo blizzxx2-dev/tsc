@@ -13,6 +13,8 @@ export type Align = 'left' | 'center' | 'right';
 export interface TextOpts {
   size?: number;
   color?: RGBA;
+  /** Optional bottom colour for a vertical gradient (gilt lettering). */
+  color2?: RGBA;
   align?: Align;
   font?: FontId;
   shadow?: RGBA | false;
@@ -520,7 +522,7 @@ export class Gfx {
     const font = o.font ?? 'body';
     const color = o.color ?? 0xffc0dce8;
     if (o.shadow !== false) this.textRaw(str, x + size * 0.06, y + size * 0.08, size, font, o.shadow ?? (0xb0000000 >>> 0), o.align ?? 'left');
-    this.textRaw(str, x, y, size, font, color, o.align ?? 'left');
+    this.textRaw(str, x, y, size, font, color, o.align ?? 'left', o.color2 ?? color);
   }
 
   /** Word-wrapped text; returns the height used. */
@@ -542,7 +544,7 @@ export class Gfx {
     return lines.length * size * lineH;
   }
 
-  private textRaw(str: string, x: number, y: number, size: number, font: FontId, c: RGBA, align: Align): void {
+  private textRaw(str: string, x: number, y: number, size: number, font: FontId, c: RGBA, align: Align, c2: RGBA = c): void {
     const s = size / this.atlas.baseSize;
     const w = this.atlas.measure(str, font) * s;
     let cx = align === 'center' ? x - w / 2 : align === 'right' ? x - w : x;
@@ -557,10 +559,10 @@ export class Gfx {
         const y1 = y0 + g.h * s;
         this.vert(x0, y0, g.u0, g.v0, c);
         this.vert(x1, y0, g.u1, g.v0, c);
-        this.vert(x1, y1, g.u1, g.v1, c);
+        this.vert(x1, y1, g.u1, g.v1, c2);
         this.vert(x0, y0, g.u0, g.v0, c);
-        this.vert(x1, y1, g.u1, g.v1, c);
-        this.vert(x0, y1, g.u0, g.v1, c);
+        this.vert(x1, y1, g.u1, g.v1, c2);
+        this.vert(x0, y1, g.u0, g.v1, c2);
       }
       cx += g.adv * s;
     }

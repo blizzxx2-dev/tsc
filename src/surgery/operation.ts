@@ -35,6 +35,10 @@ export interface Popup {
   pos: Vec;
   t: number;
   color: string;
+  /** Set for action ratings so the HUD can style them. */
+  rating?: Rating;
+  label?: string;
+  combo?: number;
 }
 
 export type Status = 'intro' | 'running' | 'won' | 'lost';
@@ -120,7 +124,7 @@ export class Operation {
     }
     this.score += Math.round(RATING_POINTS[r] * (1 + Math.min(this.combo, 20) * 0.05));
     const text = label ? `${label} ${RATING_TEXT[r]}` : RATING_TEXT[r];
-    this.popup(this.combo > 1 && r !== 'bad' && r !== 'miss' ? `${text} x${this.combo}` : text, pos, RATING_COLOR[r]);
+    this.popups.push({ text, pos: { ...pos }, t: 0, color: RATING_COLOR[r], rating: r, label, combo: this.combo });
     this.cues.push(r);
   }
 
@@ -228,7 +232,8 @@ export class Operation {
   }
 
   private emptyPress(ptr: Pointer): void {
-    if (this.tool === 'lancet') {
+    // Stray cuts only count against you while there is work on the table.
+    if (this.tool === 'lancet' && this.entities.some((e) => e.alive && e.required && !e.hidden)) {
       this.rate('miss', ptr.pos);
       this.hurt(3, ptr.pos);
       this.cues.push('cut');

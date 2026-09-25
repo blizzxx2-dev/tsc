@@ -39,13 +39,16 @@ const NOISE = /* glsl */ `
 float hash(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float noise(vec2 p) {
   vec2 i = floor(p), f = fract(p);
-  vec2 u = f * f * (3.0 - 2.0 * f);
+  // Quintic fade: continuous second derivative, so no creases at cell borders.
+  vec2 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
   return mix(mix(hash(i), hash(i + vec2(1, 0)), u.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), u.x), u.y);
 }
+// Each octave is rotated so the value-noise lattices never line up into visible squares.
+const mat2 OCT = mat2(1.6, 1.2, -1.2, 1.6);
 float fbm(vec2 p) {
   float v = 0.0, a = 0.5;
-  for (int i = 0; i < 5; i++) { v += a * noise(p); p = p * 2.03 + 17.1; a *= 0.5; }
-  return v;
+  for (int i = 0; i < 4; i++) { v += a * noise(p); p = OCT * p + 17.1; a *= 0.5; }
+  return v + a * 0.5;
 }
 // Distance to nearest cell edge: membranes, alveoli, fat lobules.
 float cells(vec2 p) {

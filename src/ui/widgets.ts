@@ -4,6 +4,7 @@ import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import type { ToolId } from '../surgery/types';
 import { PALETTE } from './layout';
+import { leatherPanel, parchmentSheet, UI } from './ornaments';
 
 const TAU = Math.PI * 2;
 
@@ -16,37 +17,36 @@ export interface Rect {
 
 export const inRect = (p: Vec, r: Rect): boolean => p.x >= r.x && p.x <= r.x + r.w && p.y >= r.y && p.y <= r.y + r.h;
 
-/** A dark wooden panel with a brass edge. */
-export function panel(g: Gfx, r: Rect, alpha = 0.92): void {
-  g.rectGrad(r.x, r.y, r.w, r.h, hex('#1e1611', alpha), hex('#0e0a08', alpha));
-  g.rectLine(r.x, r.y, r.w, r.h, 2, hex(PALETTE.panelEdge, alpha));
-  g.rectLine(r.x + 4, r.y + 4, r.w - 8, r.h - 8, 1, hex('#3a2c1e', alpha * 0.8));
+/** A tooled leather panel with brass edging (see ui/ornaments). */
+export function panel(g: Gfx, r: Rect, alpha = 0.96): void {
+  leatherPanel(g, r, { alpha });
 }
 
 /** An aged parchment sheet. */
 export function parchment(g: Gfx, r: Rect): void {
-  g.rect(r.x + 6, r.y + 8, r.w, r.h, hex('#000000', 0.45));
-  g.rectGrad(r.x, r.y, r.w, r.h, hex('#e2d3ab'), hex('#c4ae80'));
-  // Foxing and burnt edges.
-  for (let i = 0; i < 14; i++) {
-    const fx = r.x + ((i * 97.3) % r.w);
-    const fy = r.y + ((i * 53.9) % r.h);
-    g.circleGrad(fx, fy, 18 + (i % 4) * 8, hex('#8a6a3a', 0.12), hex('#8a6a3a', 0));
-  }
-  g.rectLine(r.x, r.y, r.w, r.h, 3, hex('#6a4e2a', 0.8));
+  parchmentSheet(g, r, r.x + r.y);
 }
 
 /** Menu-style text button. Returns true when clicked this frame. `onLight` switches to dark ink for parchment. */
 export function button(g: Gfx, input: Input, label: string, x: number, y: number, size = 30, enabled = true, onLight = false): boolean {
-  const w = g.measure(label, size, 'body') + 40;
-  const r = { x: x - w / 2, y: y - size * 0.9, w, h: size * 1.3 };
+  const w = g.measure(label, size, 'body') + 56;
+  const r = { x: x - w / 2, y: y - size * 0.95, w, h: size * 1.35 };
   const hover = enabled && inRect(input.pos, r);
   if (hover) {
-    g.rect(r.x, r.y, r.w, r.h, hex(PALETTE.blood, 0.35));
-    g.text('•', r.x + 8, y, { size, color: hex(PALETTE.gold), align: 'left' });
+    if (onLight) g.rectGrad(r.x, r.y, r.w, r.h, hex('#8a6a3a', 0.1), hex('#8a6a3a', 0.28));
+    else {
+      g.rectGrad(r.x, r.y, r.w, r.h, hex('#5a1418', 0.55), hex('#2a0608', 0.55));
+      g.line({ x: r.x + 10, y: r.y }, { x: r.x + r.w - 10, y: r.y }, 1, hex(UI.brass, 0.8));
+      g.line({ x: r.x + 10, y: r.y + r.h }, { x: r.x + r.w - 10, y: r.y + r.h }, 1, hex(UI.brass, 0.8));
+      g.glow(x, y - size * 0.3, w * 0.45, hex('#ffb050', 0.08));
+    }
+    const dc = hex(onLight ? '#8a1016' : UI.gilt);
+    for (const dx of [r.x + 12, r.x + r.w - 12]) g.poly([{ x: dx, y: y - size * 0.55 }, { x: dx + 5, y: y - size * 0.3 }, { x: dx, y: y - size * 0.05 }, { x: dx - 5, y: y - size * 0.3 }], dc);
   }
-  const color = onLight ? (hover ? '#8a1016' : '#2a1a10') : enabled ? (hover ? PALETTE.gold : PALETTE.ink) : '#5a5040';
-  g.text(label, x, y, { size, color: hex(color), align: 'center', shadow: onLight ? false : undefined });
+  if (onLight) g.text(label, x, y, { size, color: hex(hover ? '#8a1016' : '#2a1a10'), align: 'center', shadow: false });
+  else if (!enabled) g.text(label, x, y, { size, color: hex('#5a5040'), align: 'center' });
+  else if (hover) g.text(label, x, y, { size, color: hex('#fff0c0'), color2: hex(UI.gilt), align: 'center' });
+  else g.text(label, x, y, { size, color: hex(PALETTE.ink), color2: hex('#b8a888'), align: 'center' });
   return hover && input.pressed;
 }
 

@@ -461,8 +461,8 @@ export class Embedded extends Entity {
       case 'glass':
       case 'warpshard': {
         const warp = this.kind === 'warpshard';
-        const c = warp ? hex('#5aff8c', 0.7 + 0.3 * Math.sin(op.elapsed * 5)) : this.kind === 'glass' ? hex('#c8e6f0', 0.75) : hex('#8a8f96');
-        if (warp) g.glow(x, y, 40, hex('#5aff8c', 0.35));
+        const c = warp ? hex('#e8a838', 0.75 + 0.25 * Math.sin(op.elapsed * 5)) : this.kind === 'glass' ? hex('#c8e6f0', 0.75) : hex('#8a8f96');
+        if (warp) g.glow(x, y, 40, hex('#ff6a20', 0.35));
         g.poly(
           [
             { x, y },

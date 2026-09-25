@@ -7,6 +7,7 @@ import { OperationScene } from './operation';
 import { ResultsScene } from './results';
 import { StoryScene } from './story';
 import { TitleScene } from './title';
+import { DemoEndScene } from './demoend';
 
 export const save: SaveData = load();
 
@@ -30,7 +31,8 @@ export function playOperation(game: Game, def: OperationDef, onWin: () => void, 
 /** Play the campaign from a given chapter/step, saving progress as it goes. */
 export function playStep(game: Game, chapter: number, step: number): void {
   const ch = CAMPAIGN[chapter];
-  if (!ch) return game.go(new TitleScene());
+  // Past the last chapter of the demo: the thank-you / wishlist screen.
+  if (!ch) return game.go(new DemoEndScene());
   const s = ch.steps[step];
   if (!s) return playStep(game, chapter + 1, 0);
   advance(save, chapter, step);

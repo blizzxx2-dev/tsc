@@ -4,7 +4,8 @@ import type { Gfx } from '../render/gfx';
 import { CAST } from '../content/characters';
 import type { StoryDef } from '../content/story';
 import { PALETTE, VIEW_H, VIEW_W } from '../ui/layout';
-import { panel, reticle } from '../ui/widgets';
+import { reticle } from '../ui/widgets';
+import { banner, divider, leatherPanel, UI } from '../ui/ornaments';
 import { drawBackdrop, drawPortrait } from './backdrop';
 
 const CPS = 48; // characters per second
@@ -57,15 +58,17 @@ export class StoryScene implements Scene {
     g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1 });
 
     if (this.fadeIn < 1) g.rect(0, 0, VIEW_W, VIEW_H, hex('#000000', 1 - this.fadeIn));
-    g.text(this.story.place, 30, 42, { size: 20, font: 'italic', color: hex(PALETTE.inkDim) });
+    g.rectGrad(0, 0, VIEW_W, 70, hex('#000000', 0.7), hex('#000000', 0));
+    g.text(this.story.place, 30, 40, { size: 21, font: 'italic', color: hex(UI.parch) });
+    divider(g, 30 + Math.min(600, g.measure(this.story.place, 21, 'italic')) / 2, 54, Math.min(600, g.measure(this.story.place, 21, 'italic')), hex(UI.brass, 0.6));
 
     const box = { x: 90, y: 500, w: VIEW_W - 180, h: 190 };
-    panel(g, box, 0.97);
+    leatherPanel(g, box, { alpha: 0.97 });
     const name = line.as ?? who.name;
     if (name) {
-      const w = g.measure(name, 26) + 40;
-      panel(g, { x: box.x + 20, y: box.y - 26, w, h: 44 }, 0.95);
-      g.text(name, box.x + 40, box.y + 6, { size: 26, color: hex(who.color) });
+      const w = g.measure(name, 26) + 70;
+      banner(g, box.x + 30 + w / 2, box.y - 24, w, 40, '#3a0a0c');
+      g.text(name, box.x + 30 + w / 2, box.y + 5, { size: 26, color: hex('#fff0d0'), color2: hex(who.color), align: 'center' });
     }
     const narr = line.who === 'narrator';
     g.textBlock(line.text.slice(0, Math.floor(this.shown)), box.x + 40, box.y + 60, box.w - 80, {

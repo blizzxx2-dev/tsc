@@ -23,8 +23,23 @@ export type Cue =
 export class Audio {
   private ctx: AudioContext | null = null;
   private master: GainNode | null = null;
-  volume = 0.5;
-  muted = false;
+  private _volume = 0.6;
+  private _muted = false;
+
+  get volume(): number {
+    return this._volume;
+  }
+  set volume(v: number) {
+    this._volume = Math.max(0, Math.min(1, v));
+    if (this.master) this.master.gain.value = this._muted ? 0 : this._volume;
+  }
+  get muted(): boolean {
+    return this._muted;
+  }
+  set muted(m: boolean) {
+    this._muted = m;
+    if (this.master) this.master.gain.value = m ? 0 : this._volume;
+  }
 
   /** Browsers require a user gesture before audio can start. */
   unlock(): void {
@@ -35,7 +50,7 @@ export class Audio {
     try {
       this.ctx = new AudioContext();
       this.master = this.ctx.createGain();
-      this.master.gain.value = this.volume;
+      this.master.gain.value = this._muted ? 0 : this._volume;
       this.master.connect(this.ctx.destination);
     } catch {
       this.ctx = null;
@@ -43,7 +58,7 @@ export class Audio {
   }
 
   private tone(freq: number, dur: number, type: OscillatorType, gain = 0.3, slideTo?: number, delay = 0): void {
-    if (!this.ctx || !this.master || this.muted) return;
+    if (!this.ctx || !this.master || this._muted) return;
     const t = this.ctx.currentTime + delay;
     const o = this.ctx.createOscillator();
     const g = this.ctx.createGain();
@@ -58,7 +73,7 @@ export class Audio {
   }
 
   private noise(dur: number, gain: number, freq: number, q = 1, delay = 0): void {
-    if (!this.ctx || !this.master || this.muted) return;
+    if (!this.ctx || !this.master || this._muted) return;
     const t = this.ctx.currentTime + delay;
     const len = Math.max(1, Math.floor(this.ctx.sampleRate * dur));
     const buf = this.ctx.createBuffer(1, len, this.ctx.sampleRate);

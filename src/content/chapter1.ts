@@ -76,7 +76,7 @@ export const STORY_1_4: StoryDef = {
     say('haller', 'Buboes. Lance them before they burst, draw off the pus, and salve the wound. Rot-patches creep back if you dawdle.'),
     say('haller', 'And the grubs — the cautery brand. Hold it on them until they stop wriggling. Mind you don’t sear good flesh.'),
     say('stroh', 'A plague case. In the city. How very interesting.'),
-    say('ilse', '…Inquisitor Stroh. Of the Order of the Pyre.'),
+    say('ilse', '…Inquisitor Stroh. Of the Ash Tribunal.'),
     say('stroh', 'Please, do carry on, Doctor. I only wish to watch. Pestilence so often has a sponsor.'),
   ],
 };
@@ -93,7 +93,7 @@ export const STORY_1_5: StoryDef = {
     say('haller', 'Kreuzer. Listen to me carefully. Sear the sigils out with the brand — trace every stroke.'),
     say('haller', 'And if something… answers… when you do — there is an old apothecary’s rite. The Litany of Stillness.'),
     say('haller', 'Trace the five-pointed star and still your heart. For a few breaths, the world will wait for you.'),
-    say('haller', 'Do not do it where the Inquisitor can see. The Pyre does not distinguish between a prayer and a spell.'),
+    say('haller', 'Do not do it where the Inquisitor can see. The Tribunal does not distinguish between a prayer and a spell.'),
   ],
 };
 

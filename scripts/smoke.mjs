@@ -34,7 +34,7 @@ const opState = () =>
       phase: op.phase,
       vitals: op.vitals,
       score: op.score,
-      ents: op.entities.filter((e) => e.alive && !e.hidden).map((e) => ({ type: e.constructor.name, pos: e.pos, a: e.a, b: e.b, r: e.r })),
+      ents: op.entities.filter((e) => e.alive && !e.hidden).map((e) => ({ type: e.stitch && e.a ? 'Laceration' : e.r !== undefined && e.ichor ? 'BloodPool' : 'Other', pos: e.pos, a: e.a, b: e.b, r: e.r })),
     };
   });
 
@@ -56,6 +56,7 @@ try {
   await advance(2.5);
   await wait(300);
   await shot('04-op1-1-start');
+  await page.keyboard.press('Digit4'); // Gut Thread
 
   // Stitch each laceration with a zig-zag drag, like a player would.
   const s = await opState();
