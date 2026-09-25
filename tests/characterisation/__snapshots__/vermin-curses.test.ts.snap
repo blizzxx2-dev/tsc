@@ -60,9 +60,6 @@ exports[`Grub & SpiderlingGrub > a brand hold sears a grub: COOL "Seared" 1`] = 
 "2.02 initial Grub speed=40 @(660,410)
 2.80 cue burn
 2.80 rate COOL "Seared" +105 combo=1
-2.80 flag brand-flesh
-2.80 say "Careful! The brand is searing healthy flesh!"
-2.80 say "instruction"
 2.83 -- after brand: status=running vitals=98.7 score=105 combo=1 counts=1/0/0/0 live=[]
 "
 `;
@@ -71,9 +68,6 @@ exports[`Grub & SpiderlingGrub > a spiderling sears faster (0.25 s): COOL "Seare
 "2.02 initial SpiderlingGrub @(660,410)
 2.27 cue burn
 2.27 rate COOL "Seared" +105 combo=1
-2.27 flag brand-flesh
-2.27 say "Careful! The brand is searing healthy flesh!"
-2.27 say "instruction"
 "
 `;
 
@@ -103,13 +97,10 @@ exports[`Sigil > breaking it slower than par (strokes × (node hold + 3 s)) is G
 12.73 cue burn
 12.80 cue burn
 12.83 cue burn
-12.88 flag brand-flesh
-12.88 say "Careful! The brand is searing healthy flesh!"
-12.88 say "instruction"
 13.93 cue burn
 13.93 popup "Stroke 2"
 14.07 rate GOOD "Curse broken" +63 combo=1
-14.12 -- seared late: status=running vitals=93.9 score=63 combo=1 counts=0/1/0/0 live=[]
+14.12 -- seared late: status=running vitals=94.2 score=63 combo=1 counts=0/1/0/0 live=[]
 "
 `;
 
@@ -119,9 +110,6 @@ exports[`Sigil > choir: breaking it fast is COOL "Curse broken" 1`] = `
 3.00 popup "Stroke 1"
 3.02 cue burn
 3.03 cue burn
-3.35 flag brand-flesh
-3.35 say "Careful! The brand is searing healthy flesh!"
-3.35 say "instruction"
 4.37 cue burn
 4.37 popup "Stroke 2"
 4.48 cue burn
@@ -134,7 +122,7 @@ exports[`Sigil > choir: breaking it fast is COOL "Curse broken" 1`] = `
 6.88 cue burn
 6.90 cue burn
 6.92 rate COOL "Curse broken" +105 combo=1
-6.97 -- seared: status=running vitals=96.7 score=105 combo=1 counts=1/0/0/0 live=[] segs=5
+6.97 -- seared: status=running vitals=97 score=105 combo=1 counts=1/0/0/0 live=[] segs=5
 "
 `;
 
@@ -152,10 +140,7 @@ exports[`Sigil > crown: breaking it fast is COOL "Curse broken" 1`] = `
 4.00 cue burn
 4.02 cue burn
 4.10 rate COOL "Curse broken" +105 combo=1
-4.10 flag brand-flesh
-4.10 say "Careful! The brand is searing healthy flesh!"
-4.10 say "instruction"
-4.17 -- seared: status=running vitals=98 score=105 combo=1 counts=1/0/0/0 live=[] segs=7
+4.17 -- seared: status=running vitals=98.2 score=105 combo=1 counts=1/0/0/0 live=[] segs=7
 "
 `;
 
@@ -169,14 +154,11 @@ exports[`Sigil > eye: breaking it fast is COOL "Curse broken" 1`] = `
 3.55 cue burn
 3.72 cue burn
 3.80 cue burn
-3.82 flag brand-flesh
-3.82 say "Careful! The brand is searing healthy flesh!"
-3.82 say "instruction"
 4.87 cue burn
 4.87 popup "Stroke 2"
 4.88 cue burn
 5.00 rate COOL "Curse broken" +105 combo=1
-5.05 -- seared: status=running vitals=97.5 score=105 combo=1 counts=1/0/0/0 live=[] segs=7
+5.05 -- seared: status=running vitals=97.8 score=105 combo=1 counts=1/0/0/0 live=[] segs=7
 "
 `;
 
@@ -195,10 +177,7 @@ exports[`Sigil > hourglass: breaking it fast is COOL "Curse broken" 1`] = `
 3.97 cue burn
 4.07 cue burn
 4.07 rate COOL "Curse broken" +105 combo=1
-4.07 flag brand-flesh
-4.07 say "Careful! The brand is searing healthy flesh!"
-4.07 say "instruction"
-4.15 -- seared: status=running vitals=97.9 score=105 combo=1 counts=1/0/0/0 live=[] segs=4
+4.15 -- seared: status=running vitals=98.2 score=105 combo=1 counts=1/0/0/0 live=[] segs=4
 "
 `;
 
@@ -212,16 +191,13 @@ exports[`Sigil > key: breaking it fast is COOL "Curse broken" 1`] = `
 4.28 popup "Stroke 2"
 4.47 cue burn
 4.57 cue burn
-4.63 flag brand-flesh
-4.63 say "Careful! The brand is searing healthy flesh!"
-4.63 say "instruction"
 5.68 cue burn
 5.68 popup "Stroke 3"
 5.80 cue burn
 5.88 cue burn
 5.90 cue burn
 5.90 rate COOL "Curse broken" +105 combo=1
-5.95 -- seared: status=running vitals=97.1 score=105 combo=1 counts=1/0/0/0 live=[] segs=6
+5.95 -- seared: status=running vitals=97.5 score=105 combo=1 counts=1/0/0/0 live=[] segs=6
 "
 `;
 
@@ -242,15 +218,12 @@ exports[`Sigil > trident: breaking it fast is COOL "Curse broken" 1`] = `
 3.00 popup "Stroke 1"
 3.02 cue burn
 3.03 cue burn
-3.33 flag brand-flesh
-3.33 say "Careful! The brand is searing healthy flesh!"
-3.33 say "instruction"
 4.35 cue burn
 4.35 popup "Stroke 2"
 4.47 cue burn
 4.57 cue burn
 4.73 cue burn
 4.78 rate COOL "Curse broken" +105 combo=1
-4.83 -- seared: status=running vitals=97.7 score=105 combo=1 counts=1/0/0/0 live=[] segs=4
+4.83 -- seared: status=running vitals=97.9 score=105 combo=1 counts=1/0/0/0 live=[] segs=4
 "
 `;

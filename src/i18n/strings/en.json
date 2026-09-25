@@ -738,7 +738,7 @@
   "ui.notice.continue": "Continue",
   "ui.notice.comfort": "Comfort Options",
   "hud.needs": "Needs: {tool}",
-  "popup.not_in_kit": "Not in the kit for this operation.",
+  "popup.not_in_kit": "Not in this case’s kit.",
   "action.op.precision": "Precision (hold)",
   "action.op.retry": "Restart (hold 1 s)",
   "ctl.pref.grab": "Grab (Tongs)",

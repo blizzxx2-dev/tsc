@@ -67,9 +67,6 @@ exports[`Malison of Matins > three phases: "Wounded" into the Watchfire (Litany 
 13.02 spawn MalisonShard @(516,422)
 13.02 spawn MalisonShard @(516,353)
 13.02 say "It’s splitting apart! Seize every shard with the tongs and cast it out — before they rejoin!"
-13.02 flag brand-flesh
-13.02 say "Careful! The brand is searing healthy flesh!"
-13.02 say "instruction"
-13.05 -- unmade: status=running vitals=93.9 score=244 combo=3 counts=1/2/0/0 live=[BossDeath,MalisonShard,MalisonShard,MalisonShard] alive=false
+13.05 -- unmade: status=running vitals=94 score=244 combo=3 counts=1/2/0/0 live=[BossDeath,MalisonShard,MalisonShard,MalisonShard] alive=false
 "
 `;

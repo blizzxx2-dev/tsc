@@ -53,19 +53,13 @@ exports[`Laceration > a one-stroke stitch rates COOL "Stitched" and leaves a sca
 
 exports[`Laceration > a two-stroke stitch rates GOOD "Stitched" 1`] = `
 "2.02 initial Laceration source=blade length=120 bleed=0 @(660,410)
-2.10 cue stitch
-2.23 cue stitch
+2.08 cue stitch
 2.35 cue stitch
-2.53 cue stitch
 2.65 cue stitch
-2.80 cue stitch
-2.80 flag stitch-gap
-2.80 say "There’s a gap in the suture — it’s still bleeding. Close it up."
-2.80 say "instruction"
 2.92 cue stitch
-3.07 cue stitch
 3.18 cue stitch
-3.18 rate GOOD "Stitched" +63 combo=1
+3.45 cue stitch
+3.45 rate GOOD "Stitched" +63 combo=1
 3.68 -- after two strokes: status=running vitals=99 score=63 combo=1 counts=0/1/0/0 live=[]
 "
 `;
@@ -104,12 +98,12 @@ exports[`Laceration > op2-1 claw rakes: three parallel lacerations, each stitche
 2.88 cue stitch
 3.18 cue stitch
 3.18 rate GOOD "Stitched" +66 combo=2
+3.25 cue stitch
 3.52 cue stitch
 3.67 cue stitch
 3.82 cue stitch
-3.97 cue stitch
-3.97 rate COOL "Stitched" +115 combo=3
-4.07 -- after the rakes: status=running vitals=96.2 score=286 combo=3 counts=2/1/0/0 live=[]
+3.82 rate GOOD "Stitched" +69 combo=3
+4.07 -- after the rakes: status=running vitals=96.4 score=240 combo=3 counts=1/2/0/0 live=[]
 "
 `;
 
