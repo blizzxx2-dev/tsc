@@ -250,7 +250,7 @@ describe('unavailable-tool feedback (INP-0048)', () => {
     h.cues.length = 0;
     h.key('Digit7').tick();
     expect(h.op.tool).toBe('lancet');
-    expect(popups).toEqual(['Not in the kit for this operation.']);
+    expect(popups).toEqual(['Not in this case’s kit.']);
     expect(h.ctl.trayShake).toBeGreaterThan(0);
     expect(h.cues).not.toContain('select');
     h.run(0.5);
