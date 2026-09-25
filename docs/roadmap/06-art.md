@@ -369,7 +369,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [x] ART-0231 · Demo · P0 · L · Matins sprites: shroud body (idle breathing 12-frame loop), eye open/close flipbook (10 frames), hurt flash and 3 phase-degradation states, replacing the vector `Malison`
 - [x] ART-0232 · Demo · P0 · M · Matins shader VFX spec: shroud cloth distortion (vertex wobble), eye iris glow ramp and a darkness-vignette pulse on the "watching" rhythm
 - [x] ART-0233 · Demo · P0 · M · Matins death sequence: the shroud unravels into threads and motes (24 frames) with a final eye-close
-- [ ] ART-0234 · Demo · P1 · S · Matins Book-of-Hours card and a boss-intro splash (night vigil miniature)
+- [x] ART-0234 · Demo · P1 · S · Matins Book-of-Hours card and a boss-intro splash (night vigil miniature)
 
 ### Lauds (Chapter 2 — demo)
 - [ ] ART-0235 · Demo · P0 · M · Lauds concept: two antiphonal bodies (a "choir" of mouths each) joined by a light-thread, with a fused phase-3 form — callout sheet
@@ -377,32 +377,32 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [x] ART-0237 · Demo · P0 · M · Lauds light-thread VFX: a stretchable beam sprite with travelling pulses, a sever animation (Lancet) and a tie-off (Thread)
 - [x] ART-0238 · Demo · P0 · M · Lauds dawn-flare VFX spec: full-screen gold bloom burst that blinds the Scrying Lens view, with an ENG shader-parameter table (intensity curve, duration)
 - [ ] ART-0239 · Demo · P0 · L · Lauds phase-3 fused form: merge transition (20 frames), fused idle loop and death sequence
-- [ ] ART-0240 · Demo · P1 · S · Lauds Book-of-Hours card (dawn psalm miniature) and boss-intro splash
+- [x] ART-0240 · Demo · P1 · S · Lauds Book-of-Hours card (dawn psalm miniature) and boss-intro splash
 
 ### Prime (Chapter 3)
 - [ ] ART-0241 · Alpha · P1 · M · Prime concept: a scribe-thing with quill fingers that reads the roll of the dead — callout sheet
 - [ ] ART-0242 · Beta · P1 · L · Prime sprites: idle, writing-stroke loop, hurt and death, integrated with the name-sigil write-on effect
-- [ ] ART-0243 · Beta · P2 · S · Prime Book-of-Hours card and intro splash
+- [x] ART-0243 · Beta · P2 · S · Prime Book-of-Hours card and intro splash
 
 ### Terce (Chapter 3)
 - [ ] ART-0244 · Alpha · P1 · M · Terce concept: a pentecostal hexfire crown with tongues that leap between organs — callout sheet
 - [ ] ART-0245 · Beta · P1 · L · Terce sprites and VFX: tongue-of-fire flipbooks (leap, land, spread), root-core states and death
-- [ ] ART-0246 · Beta · P2 · S · Terce Book-of-Hours card and intro splash
+- [x] ART-0246 · Beta · P2 · S · Terce Book-of-Hours card and intro splash
 
 ### Sext (Chapter 4)
 - [ ] ART-0247 · Alpha · P1 · M · Sext concept: the noonday demon of acedia, a slumped stone-lidded torpor with a false-calm halo — callout sheet
 - [ ] ART-0248 · Beta · P1 · L · Sext sprites and VFX: petrify-spread wave, fake-vitals overlay glitch, crack states and death
-- [ ] ART-0249 · Beta · P2 · S · Sext Book-of-Hours card and intro splash
+- [x] ART-0249 · Beta · P2 · S · Sext Book-of-Hours card and intro splash
 
 ### None (Chapter 4)
 - [ ] ART-0250 · Alpha · P1 · M · None concept: a heart-seeking burrower (hourglass-segmented) — callout sheet with 4 size stages
 - [ ] ART-0251 · Beta · P1 · L · None sprites: burrow tunnel decal, surfacing flipbook, 4 cut-down size stages, extraction and death
-- [ ] ART-0252 · Beta · P2 · S · None Book-of-Hours card and intro splash
+- [x] ART-0252 · Beta · P2 · S · None Book-of-Hours card and intro splash
 
 ### Vespers (Chapter 5)
 - [ ] ART-0253 · Alpha · P1 · M · Vespers concept: a lamp-lighter of wick-filaments that turns blood to tallow — callout sheet
 - [ ] ART-0254 · Beta · P1 · L · Vespers sprites and VFX: wick-filament growth, glow-node "lamps" (lit/dimming/out), shadow-hide dissolve and death
-- [ ] ART-0255 · Beta · P2 · S · Vespers Book-of-Hours card and intro splash
+- [x] ART-0255 · Beta · P2 · S · Vespers Book-of-Hours card and intro splash
 
 ### Compline (Chapter 5 finale)
 - [ ] ART-0256 · Alpha · P0 · M · Compline concept: a veiled sleeper made of every Hour's motif, with a "Great Silence" form — callout sheet with 3 phases
@@ -413,7 +413,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 ### The Unsung Hour (secret, post-game)
 - [ ] ART-0260 · Release · P2 · M · Unsung Hour concept: a patchwork of every lost patient's wound motifs — callout sheet
 - [ ] ART-0261 · Release · P2 · L · Unsung Hour sprites and VFX assembled from the other Hours' atlases plus 1 unique core sprite set
-- [ ] ART-0262 · Release · P3 · S · Unsung Hour blank Book-of-Hours card (an illuminated page with the text scraped away)
+- [x] ART-0262 · Release · P3 · S · Unsung Hour blank Book-of-Hours card (an illuminated page with the text scraped away)
 
 ---
 
@@ -522,10 +522,8 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [ ] ART-0322 · Demo · P1 · S · Next Fest event capsule and a festival page banner
 
 ### Screenshots & store media
-- [ ] ART-0323 · Demo · P0 · M · 10 store screenshots at 1920×1080 captured in-engine from final demo art (3 ops, 2 bosses, 3 VN, the tool tray, results), with the HUD and no debug overlay
 - [ ] ART-0324 · Demo · P1 · S · 5 animated GIF/WebM clips (≤ 3 MB each) for the store description: arrow extraction, Litany, Matins eye, Lauds thread sever and the rank seal
 - [x] ART-0325 · Demo · P1 · S · Store description section-header banners (616 px wide) in the woodcut style: "Operate", "The Malison", "Kessendorf"
-- [ ] ART-0326 · Beta · P1 · M · 1.0 screenshot refresh covering Chapters 3–5 (≥ 5 new shots)
 - [ ] ART-0327 · Release · P1 · S · Seasonal/sale capsule overlays (template) for the Steam sale calendar
 
 ### Marketing & social

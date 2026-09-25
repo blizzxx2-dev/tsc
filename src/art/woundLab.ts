@@ -14,7 +14,7 @@ import type { OperationDef } from '../surgery/operation';
 import { VIEW_H, VIEW_W } from '../ui/layout';
 import { giltText, UI } from '../ui/ornaments';
 import { HOUR_SECONDARY, HOURS, type Hour } from './curse';
-import { bookOfHoursCard } from './hoursCard';
+import { hourCard } from './hourMiniatures';
 import {
   acidBurnArt,
   buboArt,
@@ -155,7 +155,7 @@ const PAGES: { title: string; cells: Cell[]; custom?: (g: Gfx, t: number) => voi
         ['vespers', 'Vespers', 'Ad Vesperas'],
         ['compline', 'Compline', 'Ad Completorium'],
       ];
-      names.forEach(([hour, title, sub], i) => bookOfHoursCard(g, { x: 30 + (i % 4) * 310, y: 62 + Math.floor(i / 4) * 330, w: 214, h: 320 }, hour, { title, sub }));
+      names.forEach(([hour, title, sub], i) => hourCard(g, { x: 30 + (i % 4) * 310, y: 62 + Math.floor(i / 4) * 330, w: 214, h: 320 }, hour, title, g.time, sub));
     },
   },
   {

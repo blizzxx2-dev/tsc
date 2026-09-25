@@ -15,6 +15,7 @@ import { hex, withAlpha } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { organPalette } from '../render/organs';
 import { underSkinBulges } from '../render/underSkin';
+import { hourCard } from '../art/hourMiniatures';
 import { drawGrime, drawRain, VENUE_ID, venueLights } from '../render/venues';
 import { BloodPool, Bubo, Burn, Embedded, Incision, Laceration, Sigil, surfDisc, surfLine } from '../surgery/entities';
 import { EggSac } from '../surgery/lauds';
@@ -1199,6 +1200,15 @@ export class OperationScene implements Scene {
       const sub = hour ? tr(`codex.${hour}.title`) : null;
       g.glow(VIEW_W / 2, y - 6, 220 * ease, hex(INK.curse, 0.18 * a));
       if (sub) g.text(sub, VIEW_W / 2, y + 44, { size: 19, font: 'italic', color: hex('#e0c8ff', a), align: 'center', shadow: hex('#000000', 0.9 * a), soft: true });
+      // The Hour's Book-of-Hours card rises beside the banner (ART-0234…0259): its intro splash.
+      if (hour && hour !== 'office') {
+        const cw = 200;
+        const ch = 300;
+        // Slides in from the margin and back out as the banner fades (the batcher has no global alpha).
+        // Right margin, clear of the instrument tray on the left.
+        const cx = vr.x + vr.w - 60 - cw + (1 - Math.min(ease, a)) * (cw + 80);
+        if (cx < vr.x + vr.w) hourCard(g, { x: cx, y: 250, w: cw, h: ch }, hour, sub ?? hour, g.time);
+      }
       if (OperationScene.malisonCardSeen()) caps(g, tr('hud.intro.skip'), VIEW_W / 2, y + 70, 10, hex(INK.dim, a), 'center');
     } else if (objective) g.text(tSource(objective), VIEW_W / 2, y + 44, { size: 19, font: 'italic', color: hex(INK.text, a), align: 'center', shadow: hex('#000000', 0.9 * a), soft: true });
   }

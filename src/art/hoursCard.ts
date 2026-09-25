@@ -122,7 +122,7 @@ export function bookOfHoursCard(g: Gfx, r: Rect, hour: Hour, o: { title: string;
 }
 
 /** The template's own miniature: the Hour's sky, with the sun or moon where it stands at that hour. */
-function defaultMiniature(g: Gfx, r: Rect, hour: Hour, s: number): void {
+export function defaultMiniature(g: Gfx, r: Rect, hour: Hour, s: number): void {
   const [zen, hor] = SKY[hour];
   g.rectGrad(r.x, r.y, r.w, r.h, hex(zen), hex(hor));
   const h = HOUR_OF_DAY[hour];
