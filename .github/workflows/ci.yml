@@ -41,7 +41,7 @@ jobs:
         run: |
           npx playwright install --with-deps chromium
           CHROMIUM=$(node -e "import('playwright').then(p => console.log(p.chromium.executablePath()))") node scripts/smoke.mjs shots
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with: { name: smoke-shots, path: shots, retention-days: 14 }
 
@@ -66,6 +66,6 @@ jobs:
         run: node scripts/check-package.mjs release/demo/win-unpacked
       - name: Headless desktop smoke (app://, CSP, bridge, atomic save)
         run: node scripts/desktop.mjs smoke --edition=demo --shot=desktop-smoke.png
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with: { name: desktop-smoke, path: desktop-smoke.png, retention-days: 14 }

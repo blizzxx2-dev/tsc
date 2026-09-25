@@ -104,7 +104,7 @@ jobs:
             echo "loc: ${{ steps.loc.outcome }} · pseudo-loc: ${{ steps.pseudo.outcome }} · replays: ${{ steps.replays.outcome }} · bench: ${{ steps.benchcmp.outcome }}"
           } > reports/nightly/status.md
           cat reports/nightly/status.md >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: nightly-reports
@@ -112,7 +112,7 @@ jobs:
             reports/nightly
             test-results
             shots/nightly
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: steps.bench.outcome == 'success'
         with:
           name: nightly-bench
