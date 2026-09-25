@@ -14,7 +14,6 @@
   "ui.title.options": "Options",
   "ui.title.demo_complete": "The demo is complete — thank you for playing. The Hours continue in the full game.",
   "ui.title.fullscreen_hint": "F11: fullscreen",
-  "ui.title.version": "v{version} prototype",
   "ui.options.title": "Options",
   "ui.options.volume": "Volume",
   "ui.options.volume_value": "{value, number, percent}",
@@ -154,5 +153,7 @@
   "ui.inkrun.title": "The ink has run",
   "ui.inkrun.body": "Something went amiss in the scriptorium, and this page could not be written. Your progress was saved before the blot spread.",
   "ui.inkrun.debug": "{scene} · {phase} · frame {frame}",
-  "ui.inkrun.return": "Return to the Title"
+  "ui.inkrun.return": "Return to the Title",
+  "ui.title.owns_full": "The full game is in your library.",
+  "ui.title.wishlist": "Wishlist the Full Game"
 }

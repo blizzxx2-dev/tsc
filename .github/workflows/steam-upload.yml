@@ -1,0 +1,49 @@
+# SteamPipe upload (PLT-0052/0054): downloads the build artifacts, regenerates the VDFs from
+# src/platform/editions.ts and uploads with a dedicated, minimal-permission build account whose Steam
+# Guard state is restored from the STEAM_CONFIG_VDF secret. Never sets the default branch live.
+name: steam-upload
+on:
+  workflow_call:
+    inputs:
+      branch: { type: string, required: true }
+      editions: { type: string, default: '["demo","full"]' }
+  workflow_dispatch:
+    inputs:
+      branch: { description: 'Steam branch to set live (qa or beta)', default: beta }
+      editions: { description: 'Editions (JSON array)', default: '["demo"]' }
+
+jobs:
+  upload:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        edition: ${{ fromJSON(inputs.editions) }}
+    env:
+      HAS_STEAM: ${{ secrets.STEAM_CONFIG_VDF != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: npm }
+      - run: npm ci
+        env: { ELECTRON_SKIP_BINARY_DOWNLOAD: '1' }
+      - uses: actions/download-artifact@v4
+        with: { pattern: '${{ matrix.edition }}-*', path: artifacts, merge-multiple: true }
+      - name: Unpack depots (tar keeps executable bits)
+        run: |
+          mkdir -p release/${{ matrix.edition }}
+          for f in artifacts/*.tar.gz; do tar -xzf "$f" -C release/${{ matrix.edition }}; done
+          ls release/${{ matrix.edition }}
+      - name: Generate SteamPipe scripts (fails while app/depot ids are unassigned)
+        run: node scripts/steam-config.mjs --edition=${{ matrix.edition }} --branch=${{ inputs.branch }} --desc="${{ matrix.edition }} $(git rev-parse --short=8 HEAD) ${{ inputs.branch }}" --strict
+      - name: Upload with steamcmd
+        if: env.HAS_STEAM == 'true'
+        env:
+          STEAM_USERNAME: ${{ secrets.STEAM_BUILD_USERNAME }}
+          STEAM_CONFIG_VDF: ${{ secrets.STEAM_CONFIG_VDF }}
+        run: |
+          sudo dpkg --add-architecture i386 && sudo apt-get update && echo steam steam/question select "I AGREE" | sudo debconf-set-selections
+          sudo apt-get install -y steamcmd
+          mkdir -p ~/Steam/config && echo "$STEAM_CONFIG_VDF" | base64 --decode > ~/Steam/config/config.vdf
+          APP=$(ls steam/output/${{ matrix.edition }}/app_build_*.vdf)
+          /usr/games/steamcmd +login "$STEAM_USERNAME" +run_app_build "$PWD/$APP" +quit

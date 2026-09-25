@@ -9,9 +9,11 @@ import { button, reticle } from '../ui/widgets';
 import { drawBackdrop } from './backdrop';
 import { save } from './flow';
 import { TitleScene } from './title';
+import { platform } from '../platform';
+import { EDITIONS, storeUrl } from '../platform/editions';
 
-/** Store page for the wishlist call-to-action. Replace with the real app URL at launch. */
-export const STORE_URL = 'https://store.steampowered.com/';
+/** Store page for the wishlist call-to-action (the full game's app id lives in src/platform/editions.ts). */
+export const STORE_URL = storeUrl(EDITIONS.full.steamAppId);
 
 /** Shown after the last demo chapter: thanks, the player's case ledger, and a wishlist call-to-action. */
 export class DemoEndScene implements Scene {
@@ -51,7 +53,7 @@ export class DemoEndScene implements Scene {
     });
 
     if (this.t > 0.8) {
-      if (button(g, game.input, t('ui.demoend.wishlist'), VIEW_W / 2, 620, 32)) window.open(STORE_URL, '_blank');
+      if (button(g, game.input, t('ui.demoend.wishlist'), VIEW_W / 2, 620, 32)) platform.steam.openStore(EDITIONS.full.steamAppId);
       if (button(g, game.input, t('ui.demoend.return'), VIEW_W / 2, 675, 24)) game.go(new TitleScene());
     }
     reticle(g, game.input.pos);

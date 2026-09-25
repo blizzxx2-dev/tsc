@@ -9,6 +9,7 @@ import { lampsVeil, splashDone, splashProgress } from './core/splash';
 import { Gfx } from './render/gfx';
 import { classifyTier, describeCaps } from './render/caps';
 import { Profiler } from './render/profiler';
+import { loadDetectedTier, storeDetectedTier } from './render/tierCache';
 import { HEAP_BUDGET, VRAM_BUDGET } from './render/registry';
 import { computeView } from './render/viewport';
 import { createAssets, withTimeout } from './assets/browser';
@@ -27,6 +28,8 @@ import { initLocale } from './i18n/boot';
 
 /** Dev/QA tooling ships in dev and QA builds; `vite build --mode release` strips it (ENG-0237). */
 const DEV_TOOLS = import.meta.env.DEV || import.meta.env.MODE !== 'release';
+import { platform } from './platform';
+import { installPlatform, platformFrame, sceneChanged } from './platform/session';
 
 class Main implements Game {
   input: Input;
@@ -66,8 +69,7 @@ class Main implements Game {
       this.audio.unlock();
       if (e.code === 'F11' || (e.code === 'Enter' && e.altKey)) {
         e.preventDefault();
-        if (document.fullscreenElement) void document.exitFullscreen();
-        else void document.documentElement.requestFullscreen();
+        platform.window.toggleFullscreen();
       }
       if (e.code === 'F3') {
         e.preventDefault();
@@ -112,6 +114,7 @@ class Main implements Game {
       console.info('WebGL context restored');
     });
     this.resize();
+    installPlatform(this);
   }
 
   /** Fill the window; the view grows past 16:9 instead of letterboxing (ENG-0180–0183). DPR is not capped. */
@@ -139,6 +142,7 @@ class Main implements Game {
 
   go(scene: Scene): void {
     this.scenes.go(scene);
+    sceneChanged(scene);
   }
   push(scene: Scene): void {
     this.scenes.push(scene);
@@ -174,6 +178,7 @@ class Main implements Game {
     const ends = stepEndTimes(now, steps, FIXED_DT, this.fixed.pending);
     this.clock.frame(Math.min(dt, 0.25));
     this.gfx.time = this.clock.real;
+    platformFrame(Math.min(dt, 0.25));
     const clock = this.clock;
     this.gfx.renderScale = settings.renderScale;
     this.gfx.gpuTimer.enabled = this.profiler.enabled && this.gfx.plan.gpuProfiler;
@@ -203,7 +208,7 @@ class Main implements Game {
 
   /** VRAM/heap budgets (ENG-0227): log once with the top consumers when exceeded. */
   private checkBudgets(): void {
-    const tier = settings.gpuTier === 'auto' ? (settings.detectedTier?.tier ?? 'medium') : settings.gpuTier;
+    const tier = settings.gpuTier === 'auto' ? (loadDetectedTier()?.tier ?? 'medium') : settings.gpuTier;
     this.gfx.registry.checkBudget(VRAM_BUDGET[tier]);
     const heap = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize;
     if (heap && heap > HEAP_BUDGET) console.warn(`JS heap over budget: ${(heap / 2 ** 20).toFixed(0)} MB > ${HEAP_BUDGET / 2 ** 20} MB`);
@@ -230,12 +235,11 @@ class Main implements Game {
   /** First-launch GPU tier (ENG-0191): benchmark once per renderer, skip on software rasterisers. */
   detectTier(): void {
     const caps = this.gfx.caps;
-    const known = settings.detectedTier;
+    const known = loadDetectedTier();
     if (known && known.renderer === caps.renderer) return;
     const bench = caps.software ? undefined : this.gfx.benchmarkFlesh(2000);
     const { tier, reasons } = classifyTier(caps, bench);
-    settings.detectedTier = { tier, renderer: caps.renderer, benchMs: bench };
-    saveSettings();
+    storeDetectedTier({ tier, renderer: caps.renderer, benchMs: bench });
     console.info(`GPU tier: ${tier} (${reasons.join('; ')})`);
   }
 }

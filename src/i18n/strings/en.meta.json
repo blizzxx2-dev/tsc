@@ -123,14 +123,6 @@
     "context": "Small footer text.",
     "screenshot": "docs/loc/screens/title.png"
   },
-  "ui.title.version": {
-    "scene": "title",
-    "font": "body",
-    "size": 14,
-    "maxPx": 400,
-    "context": "Small footer text.",
-    "screenshot": "docs/loc/screens/title.png"
-  },
   "ui.options.title": {
     "scene": "options",
     "font": "display",
@@ -1326,5 +1318,21 @@
     "context": "Explanation shown under the options list while the row is hovered.",
     "screenshot": "docs/loc/screens/options.png",
     "maxLines": 1
+  },
+  "ui.title.owns_full": {
+    "scene": "title",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 1180,
+    "context": "Title screen notice when the player already owns the full game.",
+    "screenshot": "docs/loc/screens/title.png"
+  },
+  "ui.title.wishlist": {
+    "scene": "title",
+    "font": "body",
+    "size": 22,
+    "maxPx": 420,
+    "context": "Title screen button in the demo: opens the full game store page.",
+    "screenshot": "docs/loc/screens/title.png"
   }
 }

@@ -1,0 +1,70 @@
+# PR pipeline (PLT-0138, PLT-0141, PLT-0143, PLT-0144, PLT-0023, PLT-0057, PLT-0092).
+# Required checks for merge: web, desktop-linux.
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main, 'release/**']
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ELECTRON_CACHE: ${{ github.workspace }}/.cache/electron
+  ELECTRON_BUILDER_CACHE: ${{ github.workspace }}/.cache/electron-builder
+
+jobs:
+  web:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: npm }
+      - run: npm ci
+        env: { ELECTRON_SKIP_BINARY_DOWNLOAD: '1' }
+      - name: Typecheck (game + desktop shell)
+        run: npx tsc --noEmit && npx tsc -p desktop/tsconfig.json
+      - name: Unit tests (incl. balance bot, save-compatibility fixtures, fuzz)
+        run: npx vitest run
+      - name: Licence allow-list and audit of shipped dependencies
+        run: node scripts/check-licenses.mjs && npm audit --omit=dev --audit-level=high
+      - name: Web build — demo (browser/press/itch build stays green)
+        run: node scripts/web-build.mjs --edition=demo
+      - name: Demo bundle contains no Chapter III–V code
+        run: node scripts/check-demo-bundle.mjs dist
+      - name: Web build — full
+        run: node scripts/web-build.mjs --edition=full --out=dist-full
+      - name: Playwright smoke (SwiftShader)
+        run: |
+          npx playwright install --with-deps chromium
+          CHROMIUM=$(node -e "import('playwright').then(p => console.log(p.chromium.executablePath()))") node scripts/smoke.mjs shots
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: smoke-shots, path: shots, retention-days: 14 }
+
+  desktop-linux:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: npm }
+      - uses: actions/cache@v4
+        with:
+          path: .cache
+          key: electron-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - run: npm ci
+      - name: Package Linux demo (unsigned)
+        run: node scripts/desktop.mjs pack --os=linux --edition=demo
+      - name: Inspect package (fuses, no maps, size)
+        run: node scripts/check-package.mjs release/demo/linux-unpacked
+      - name: Headless desktop smoke (app://, CSP, bridge, atomic save)
+        run: |
+          sudo apt-get update && sudo apt-get install -y xvfb
+          node scripts/desktop.mjs smoke --edition=demo --shot=desktop-smoke.png
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: desktop-smoke, path: desktop-smoke.png, retention-days: 14 }

@@ -6,3 +6,9 @@ scripts/.*.mjs
 .claude/
 loc/pseudo/
 archive/
+release/
+desktop/dist/
+dist-*/
+coverage/
+steam/output/
+steam_appid.txt
