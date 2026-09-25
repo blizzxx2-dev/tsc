@@ -19,6 +19,8 @@ float fbm(vec2 p) {
 // Smooth voronoi edge distance: d2 - d1 with a soft minimum so membranes never form hard creases.
 uniform float u_cellSoft;
 float cells(vec2 p) {
+  // Domain-warp the input so the lattice regularity never shows.
+  p += vec2(noise(p * 0.35 + 11.0), noise(p * 0.35 + 23.0)) * 1.2 - 0.6;
   vec2 i = floor(p), f = fract(p);
   float d1 = 8.0, d2 = 8.0;
   float k = max(u_cellSoft, 0.02);
@@ -239,7 +241,10 @@ void main() {
   float cor = u_corrupt * smoothstep(0.3, 1.0, r + fbm(uv * 1.7 + u_time * 0.1) * 0.4);
   col = mix(col, vec3(0.16, 0.05, 0.2), cor * 0.7);
 
-  // Retractor rim darkening.
+  // Cavity depth: occlusion under the retractor rim and a Fresnel sheen where tissue curves away.
+  float cavity = smoothstep(0.7, 1.0, edge);
+  col *= mix(1.0, 0.55, cavity * cavity);
+  col += vec3(1.0, 0.8, 0.75) * smoothstep(0.82, 0.97, edge) * (1.0 - smoothstep(0.97, 1.0, edge)) * spec * 0.25;
   col *= rsmooth(1.02, 0.78, edge) * 0.6 + 0.4;
   float inside = rsmooth(1.0, 0.985, edge);
   vec3 outc = mix(drape, col * 0.3, rsmooth(1.06, 1.0, edge) * 0.6);
