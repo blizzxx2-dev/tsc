@@ -37,12 +37,23 @@ export const toolInfo = (id: ToolId): ToolInfo => TOOL_INFO.find((t) => t.id ===
 
 export type Rating = 'cool' | 'good' | 'bad' | 'miss';
 
+/** What moved the pointer (ENG-0250). */
+export type PointerSource = 'mouse' | 'pen' | 'touch' | 'pad';
+
 export interface Pointer {
   pos: Vec;
   prev: Vec;
   down: boolean;
   pressed: boolean;
   released: boolean;
+  /**
+   * Extended pointer data (ENG-0250): pens, touchscreens and the gamepad cursor feed the same API.
+   * Pressure is 0..1 (0.5 for devices without it), tilt is degrees on x/y. These are not in the
+   * replay log yet, so rules must not depend on them; assists and presentation may.
+   */
+  pressure?: number;
+  tilt?: Vec;
+  source?: PointerSource;
 }
 
 export type Rank = 'XS' | 'S' | 'A' | 'B' | 'C';

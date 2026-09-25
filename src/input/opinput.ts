@@ -1,3 +1,4 @@
+import type { PointerSource } from '../surgery/types';
 import { t } from '../i18n';
 import type { Input } from '../core/input';
 import { settings } from '../core/settings';
@@ -59,6 +60,8 @@ export class OperationInput {
   onStar: ((trail: Vec[], ok: boolean) => void) | null = null;
   /** Multi-view ops (GAM-0247/0248): Tab switches the view instead of quick-swapping (mouse 4 / pad keep the swap). */
   onSwitchView: (() => void) | null = null;
+  /** The pointer device and pen data this frame (ENG-0250). */
+  private stylus: { source: PointerSource; pressure: number; tilt: Vec } = { source: 'mouse', pressure: 0.5, tilt: { x: 0, y: 0 } };
   litanyCenter: [number, number] = [0.5, 0.5];
   readonly radial = new RadialMenu();
   /** The previous-instrument key is down (keyboard): held past WHEEL_HOLD_MS it opens the wheel instead. */
@@ -123,6 +126,7 @@ export class OperationInput {
 
   update(op: Operation, input: Input, dt: number, hud?: HudHit): void {
     this.b = input.bindings;
+    this.stylus = input.pointer;
     const f = input.frame;
     const prefs = this.b.prefs;
     this.pad = f.device === 'pad';
@@ -437,7 +441,7 @@ export class OperationInput {
       this.sent = p;
       return;
     }
-    const ptr: Pointer = { pos: p, prev: this.sent, down, pressed: kind === 'press', released: kind === 'release' };
+    const ptr: Pointer = { pos: p, prev: this.sent, down, pressed: kind === 'press', released: kind === 'release', ...this.stylus };
     op.handlePointer(ptr, dt);
     this.sent = p;
     if (!down || kind !== 'hold') return;

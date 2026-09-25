@@ -1,3 +1,4 @@
+import type { PointerSource } from '../surgery/types';
 import type { Vec } from './math';
 import { ActionState, type Edge } from '../input/actionState';
 import type { ActionId } from '../input/actions';
@@ -72,6 +73,8 @@ const MAX_QUEUE = 4096;
 export class Input {
   // ---- per-tick pointer state (primary = the `primary` action: left mouse / RT)
   pos: Vec = { x: 0, y: 0 };
+  /** The device behind the pointer and its pen data (ENG-0250). */
+  pointer: { source: PointerSource; pressure: number; tilt: Vec } = { source: 'mouse', pressure: 0.5, tilt: { x: 0, y: 0 } };
   prev: Vec = { x: 0, y: 0 };
   /** Every pointer sample in the current tick (oldest first). */
   path: Vec[] = [];
@@ -297,6 +300,8 @@ export class Input {
           if (p.x !== ev.x || p.y !== ev.y) ev = { ...ev, x: p.x, y: p.y };
         }
         this.pos = { x: ev.x, y: ev.y };
+        // ENG-0250: what is moving the pointer, with pen pressure and tilt when there are any.
+        this.pointer = ev.src === 'pad' ? { source: 'pad', pressure: 0.5, tilt: { x: 0, y: 0 } } : ev.stylus ? { source: ev.stylus.kind, pressure: ev.stylus.pressure, tilt: { x: ev.stylus.tiltX, y: ev.stylus.tiltY } } : { source: 'mouse', pressure: 0.5, tilt: { x: 0, y: 0 } };
         if (this.path.length < MAX_PATH) this.path.push(this.pos);
         edges = [];
       } else if (ev.type === 'focus') {

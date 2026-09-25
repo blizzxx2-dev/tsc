@@ -1,3 +1,4 @@
+import type { Stylus } from './types';
 import type { Vec } from '../core/math';
 import type { InputEvent } from './types';
 import { WheelNormaliser } from './wheel';
@@ -10,6 +11,12 @@ type Sink = (e: InputEvent) => void;
  * `lostpointercapture` and focus loss release every held button as a cancel.
  * The DOM wiring is in `attach`; the handlers are plain methods so tests can drive them.
  */
+/** Pen/touch detail of a pointer event; plain mice report nothing (ENG-0250). */
+function stylusOf(e: PointerEvent): Stylus | undefined {
+  if (e.pointerType !== 'pen' && e.pointerType !== 'touch') return undefined;
+  return { kind: e.pointerType, pressure: e.pressure || 0.5, tiltX: e.tiltX || 0, tiltY: e.tiltY || 0 };
+}
+
 export class MouseAdapter {
   readonly held = new Set<number>();
   pos: Vec = { x: 0, y: 0 };
@@ -18,10 +25,10 @@ export class MouseAdapter {
 
   constructor(private sink: Sink) {}
 
-  move(x: number, y: number, t: number): void {
-    if (x === this.pos.x && y === this.pos.y) return;
+  move(x: number, y: number, t: number, stylus?: Stylus): void {
+    if (x === this.pos.x && y === this.pos.y && !stylus) return;
     this.pos = { x, y };
-    this.sink({ t, type: 'move', x, y, src: 'kbm' });
+    this.sink(stylus ? { t, type: 'move', x, y, src: 'kbm', stylus } : { t, type: 'move', x, y, src: 'kbm' });
   }
 
   down(button: number, x: number, y: number, t: number): void {
@@ -57,11 +64,12 @@ export class MouseAdapter {
       const samples = e.getCoalescedEvents?.().length ? e.getCoalescedEvents() : [e];
       for (const s of samples) {
         const p = at(s);
-        this.move(p.x, p.y, s.timeStamp || e.timeStamp);
+        this.move(p.x, p.y, s.timeStamp || e.timeStamp, stylusOf(s));
       }
     });
     el.addEventListener('pointerdown', (e) => {
       const p = at(e);
+      this.move(p.x, p.y, e.timeStamp, stylusOf(e));
       try {
         el.setPointerCapture(e.pointerId);
       } catch {

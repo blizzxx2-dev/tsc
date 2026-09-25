@@ -15,10 +15,18 @@ export type InputCode = string;
 export type Device = 'kbm' | 'pad';
 
 /** One timestamped event, in the order it happened. `t` is `event.timeStamp` (ms, performance clock). */
+/** Pen/touch detail carried on pointer moves (ENG-0250). */
+export interface Stylus {
+  kind: 'mouse' | 'pen' | 'touch';
+  pressure: number;
+  tiltX: number;
+  tiltY: number;
+}
+
 export type InputEvent =
   | { t: number; type: 'down'; code: InputCode }
   | { t: number; type: 'up'; code: InputCode; cancel?: boolean }
-  | { t: number; type: 'move'; x: number; y: number; src: Device }
+  | { t: number; type: 'move'; x: number; y: number; src: Device; stylus?: Stylus }
   | { t: number; type: 'wheel'; code: 'wheel:up' | 'wheel:down' }
   | { t: number; type: 'focus'; state: 'lost' | 'gained' }
   | { t: number; type: 'pad'; state: 'connected' | 'disconnected'; id: string };
