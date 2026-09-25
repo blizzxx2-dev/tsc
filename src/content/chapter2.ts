@@ -102,7 +102,7 @@ export const STORY_2_END: StoryDef = {
     ...when(
       { litany: true },
       say('stroh', 'When that thing screamed, every candle in this tent stopped flickering. The flames stood still. For eight heartbeats.'),
-      say('stroh', 'I counted.'),
+      { ...say('stroh', 'I counted.'), stamp: 'suspect' },
       say('kreuzer', '…The morning air is very still, Inquisitor.'),
     ),
     ...when(

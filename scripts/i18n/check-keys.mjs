@@ -74,7 +74,8 @@ export function scan() {
     const visit = (node) => {
       if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
         if (keys.has(node.text)) used.add(node.text);
-        if (isSim && byText.has(node.text)) used.add(byText.get(node.text));
+        // Simulation and content text is matched to its key by value (tSource).
+        if ((isSim || rel.startsWith('src/content/')) && byText.has(node.text)) used.add(byText.get(node.text));
       }
       if (ts.isCallExpression(node)) {
         const callee = node.expression;

@@ -7,7 +7,7 @@ import type { Gfx } from '../render/gfx';
 import { CAMPAIGN } from '../content/campaign';
 import { PALETTE, VIEW_H, VIEW_W } from '../ui/layout';
 import { button, reticle } from '../ui/widgets';
-import { divider, leatherPanel, UI } from '../ui/ornaments';
+import { divider, fleuron, leatherPanel, UI, woodcutCorner } from '../ui/ornaments';
 import { drawBackdrop } from './backdrop';
 import { playStep, save } from './flow';
 import { OperationsScene } from './operations';
@@ -37,8 +37,12 @@ export class TitleScene implements Scene {
     g.glow(VIEW_W / 2, 180, 420, hex('#8a1016', 0.3 * a));
     g.text(t('ui.game.title'), VIEW_W / 2, 200, { size: 116, font: 'display', color: hex('#fff0c0', a), color2: hex('#d8a040', a), align: 'center', shadow: hex('#0a0402', 0.95 * a) });
     divider(g, VIEW_W / 2, 236, 520, hex(UI.brass, a));
+    fleuron(g, VIEW_W / 2 - 290, 236, 14, hex(UI.brass, a));
+    fleuron(g, VIEW_W / 2 + 290, 236, 14, hex(UI.brass, a));
     g.text(t('ui.game.subtitle'), VIEW_W / 2, 280, { size: 30, font: 'italic', color: hex(UI.parch, a), align: 'center' });
-    leatherPanel(g, { x: VIEW_W / 2 - 220, y: 330, w: 440, h: 270 }, { alpha: 0.9 * a });
+    const menu = { x: VIEW_W / 2 - 220, y: 330, w: 440, h: 270 };
+    leatherPanel(g, menu, { alpha: 0.9 * a });
+    for (const [x, y, dx, dy] of [[menu.x, menu.y, 1, 1], [menu.x + menu.w, menu.y, -1, 1], [menu.x, menu.y + menu.h, 1, -1], [menu.x + menu.w, menu.y + menu.h, -1, -1]] as const) woodcutCorner(g, x, y, dx, dy, 1, hex(UI.brass, a), 0.8, '#2a1812');
 
     const p = save.progress;
     const started = p.chapter > 0 || p.step > 0;

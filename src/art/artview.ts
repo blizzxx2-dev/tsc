@@ -1,3 +1,4 @@
+import type { FontId } from '../render/text';
 /**
  * Art viewer (`?scene=artview`): every piece of the procedural UI kit on one board, with
  * zoom (mouse wheel), flipbook frame-stepping (←/→ or , .; Space toggles playback) and a
@@ -45,7 +46,7 @@ export class ArtViewScene implements Scene {
 
   constructor() {
     const q = new URLSearchParams(location.search);
-    this.page = Math.max(0, Math.min(2, Number(q.get('page') ?? 1) - 1));
+    this.page = Math.max(0, Math.min(3, Number(q.get('page') ?? 1) - 1));
     if (q.get('t')) {
       this.t = Number(q.get('t'));
       this.playing = false;
@@ -62,6 +63,7 @@ export class ArtViewScene implements Scene {
     if (input.keyPressed('Digit1')) this.page = 0;
     if (input.keyPressed('Digit2')) this.page = 1;
     if (input.keyPressed('Digit3')) this.page = 2;
+    if (input.keyPressed('Digit4')) this.page = 3;
     if (input.keyPressed('KeyR')) this.t = 0;
     this.zoom = Math.max(0.5, Math.min(3, this.zoom * (1 - input.wheel * 0.1)));
   }
@@ -78,11 +80,43 @@ export class ArtViewScene implements Scene {
     }
     if (this.page === 0) this.kit(g);
     else if (this.page === 1) this.seals(g);
-    else this.instruments(g);
+    else if (this.page === 2) this.instruments(g);
+    else this.type(g);
     g.restore();
     const label = (s: string, x: number, y: number) => g.text(s, x, y, { size: 13, color: hex('#e8dcc0', 0.8), shadow: hex('#000000', 0.9) });
-    label(`Art viewer — page ${this.page + 1}/3 (1-3)   B: background   wheel: zoom   ←/→: frame ${Math.floor(this.t * 12)}   Space: ${this.playing ? 'pause' : 'play'}   R: restart`, 12, VIEW_H - 10);
+    label(`Art viewer — page ${this.page + 1}/4 (1-4)   B: background   wheel: zoom   ←/→: frame ${Math.floor(this.t * 12)}   Space: ${this.playing ? 'pause' : 'play'}   R: restart`, 12, VIEW_H - 10);
     g.endFrame();
+  }
+
+  /** ART-0081 type specimen: every text style on the surface it is used on. */
+  private type(g: Gfx): void {
+    const pangram = 'Sister Ilse binds the wound; the leech-jar waits by the brazier.';
+    parchmentArt(g, { x: 20, y: 20, w: 610, h: 330 }, 'fresh', 1, 1);
+    const onParch: [string, FontId, number, string][] = [
+      ['Display 44 — Suture & Steel', 'display', 44, '#2a1a0c'],
+      ['Display 28 — Phase II', 'display', 28, '#6a0a10'],
+      ['Body 21 — Sister Ilse binds the wound.', 'body', 21, UI.inkDark],
+      ['Italic 18 — narration: ' + pangram, 'italic', 18, '#5a4228'],
+      ['Body 16 — tooltip body text at minimum size', 'body', 16, UI.inkDark],
+      ['SPEAKER NAME (red ink) 16', 'body', 16, '#6a0a10'],
+    ];
+    onParch.forEach(([s, font, size, c], i) => g.text(s, 44, 80 + i * 48, { size, font, color: hex(c), shadow: false, maxWidth: 560 }));
+    leatherPanel(g, { x: 650, y: 20, w: 610, h: 330 });
+    const onLeather: [string, FontId, number, string][] = [
+      ['Display 34 — The Malison Stirs', 'display', 34, UI.gilt],
+      ['Vitals 99   ·   Score 12,480', 'body', 26, '#ffffff'],
+      ['HUD LABEL — brass on leather', 'body', 16, UI.brass],
+      ['Patient: Jörg Wendt, pikeman', 'body', 18, UI.parchLo],
+      ['Italic 16 — hint text beneath the timer', 'italic', 16, UI.parchLo],
+      ['LITANY — gilt, reserved', 'body', 16, UI.gilt],
+    ];
+    onLeather.forEach(([s, font, size, c], i) => g.text(s, 674, 80 + i * 48, { size, font, color: hex(c), maxWidth: 560 }));
+    parchmentArt(g, { x: 20, y: 370, w: 1240, h: 300 }, 'foxed', 1, 2);
+    const glyphs = ['ÄÖÜäöüß „Grüß Gott“', 'àâæçéèêëîïôœùûü « fr »', 'áéíñóúü ¿¡', 'ąćęłńóśźż (fallback)', 'ãõâêôç', '0123456789 — – … ’'];
+    glyphs.forEach((s, i) => {
+      g.text(s, 44 + (i % 3) * 400, 430 + Math.floor(i / 3) * 110, { size: 22, font: 'body', color: hex(UI.inkDark), shadow: false });
+      g.text(s, 44 + (i % 3) * 400, 470 + Math.floor(i / 3) * 110, { size: 30, font: 'display', color: hex('#6a0a10'), shadow: false });
+    });
   }
 
   private kit(g: Gfx): void {

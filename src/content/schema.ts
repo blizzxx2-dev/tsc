@@ -56,6 +56,8 @@ export type SpawnSpec = EntitySpec | PickSpec;
 export interface PhaseData {
   /** Lines the assistant says when the phase begins. */
   callout?: string[];
+  /** Short objective for the phase banner (UIX-0061). */
+  objective?: string;
   /** Entities placed when the phase begins. */
   spawn?: readonly SpawnSpec[];
   /** Close the incision opened earlier with the thread (the shared final phase). */
@@ -218,6 +220,7 @@ function compilePhase(data: PhaseData): DataPhaseDef {
   return {
     data,
     callout: data.callout,
+    objective: data.objective,
     spawn(op: Operation): Entity[] {
       if (data.floor) new VitalsFloor(data.floor).attach(op);
       if (data.close) incisionOf(op)?.beginClosing();

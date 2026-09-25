@@ -20,6 +20,8 @@ export const OP_1_1 = defineOp({
   seed: 11,
   phases: [
     {
+      objective: 'Stitch the deep cuts',
+
       callout: ['Two deep cuts. Take the gut thread and zig-zag across each wound to stitch it.', 'Cross the wound again and again, moving along it. One smooth stroke earns the best marks.'],
       spawn: [
         { e: 'laceration', at: [-140, -40], angle: 0.3, len: 120, bleed: 0.5 },
@@ -27,10 +29,14 @@ export const OP_1_1 = defineOp({
       ],
     },
     {
+      objective: 'Draw off the blood',
+
       callout: ['Blood’s pooling. Hold the leech-pipe over it to draw it off.', 'You can’t stitch through a pool of blood — drain first.'],
       spawn: [{ e: 'laceration', at: [0, 20], angle: 1.2, len: 110, bleed: 0.9 }],
     },
     {
+      objective: 'Salve the nicks',
+
       callout: ['Just nicks left. Brush Saint’s Salve over the small ones — no need for thread.'],
       spawn: [
         { e: 'laceration', at: [-200, 80], angle: 0.9, len: 36, bleed: 0.3 },
@@ -55,10 +61,14 @@ export const OP_1_2 = defineOp({
   seed: 12,
   phases: [
     {
+      objective: 'Free the barbed arrow',
+
       callout: ['The arrow’s barbed. Lancet first — two nicks at the entry wound. Then seize it with the tongs and pull it well clear.', 'Then drain and stitch the wound it leaves.'],
       spawn: [{ e: 'embedded', at: [-60, 0], kind: 'arrow', angle: -0.5 }],
     },
     {
+      objective: 'Pull the bolt and shard',
+
       callout: ['The bolt in his thigh has no barbs. Tongs, and pull it straight out.', 'Quick, clean pulls earn the best marks.'],
       spawn: [
         { e: 'embedded', at: [150, 60], kind: 'bolt', angle: 0.4, barbed: false },
@@ -84,6 +94,8 @@ export const OP_1_3 = defineOp({
   seed: 13,
   phases: [
     {
+      objective: 'Steady his pulse',
+
       callout: ['His pulse is weak already. Hold the tincture to the flesh to steady him if you need it.', 'Burns first. Pluck the black eschar away with the tongs, then salve the raw flesh.'],
       spawn: [
         { e: 'burn', at: [-170, -60], r: 48 },
@@ -91,10 +103,14 @@ export const OP_1_3 = defineOp({
       ],
     },
     {
+      objective: 'Open along the line',
+
       callout: ['Now open him along the inked line with the lancet. Keep to the line — start at the glowing end.'],
       spawn: [{ e: 'incision', path: [[-150, 60], [-50, 40], [60, 50], [160, 30]] }],
     },
     {
+      objective: 'Extract the shot',
+
       callout: ['There — the shot. Pull each ball out with the tongs.'],
       spawn: [
         { e: 'embedded', at: [-80, 40], kind: 'shot' },
@@ -102,7 +118,7 @@ export const OP_1_3 = defineOp({
         { e: 'embedded', at: [120, 20], kind: 'shot' },
       ],
     },
-    { callout: ['Everything’s clear. Close the incision with the thread.'], close: true },
+    { objective: 'Close the incision', callout: ['Everything’s clear. Close the incision with the thread.'], close: true },
   ],
 });
 
@@ -121,6 +137,8 @@ export const OP_1_4 = defineOp({
   seed: 14,
   phases: [
     {
+      objective: 'Lance the buboes',
+
       callout: ['Lance each bubo with a single touch of the lancet before it bursts. Then drain the pus and salve it.'],
       spawn: [
         { e: 'bubo', at: [-160, -40], r: 22 },
@@ -129,6 +147,8 @@ export const OP_1_4 = defineOp({
       ],
     },
     {
+      objective: 'Sear the grubs',
+
       callout: ['Grubs in the sore! The cautery brand — hold it on each one until it stops moving.', 'Don’t linger on bare flesh with the brand.'],
       spawn: [
         { e: 'grub', at: [-40, 40], speed: 35 },
@@ -138,6 +158,8 @@ export const OP_1_4 = defineOp({
       ],
     },
     {
+      objective: 'Salve the rot',
+
       callout: ['The rot’s spreading. Salve every patch — quickly, it creeps back.'],
       spawn: [
         { e: 'rot', at: [-180, 70], r: 50, spread: 0.6 },
@@ -162,6 +184,8 @@ export const OP_1_5 = defineOp({
   seed: 15,
   phases: [
     {
+      objective: 'Break the sigils',
+
       callout: ['Those sigils are draining him. Trace every stroke of each one with the brand to sear it out.'],
       spawn: [
         { e: 'sigil', at: [-170, -30], shape: 'eye', size: 70 },
@@ -169,14 +193,20 @@ export const OP_1_5 = defineOp({
       ],
     },
     {
+      objective: 'Open the incision',
+
       callout: ['Something is moving beneath the skin. We have to open him. The lancet — along the line.'],
       spawn: [{ e: 'incision', path: [[-180, 0], [-60, -20], [60, -10], [180, 10]] }],
     },
     {
+      objective: 'Unmake the Malison',
+
       callout: ['Saints preserve us… what is that?', 'Doctor — if ever there were a time for the Litany, it is now. Draw the star with the right hand.'],
       spawn: [{ e: 'malison-matins', at: [0, 40], hp: 100 }],
     },
     {
+      objective: 'Tend the wounds',
+
       callout: ['It’s gone. Tend the wounds it left.'],
       spawn: [
         { e: 'laceration', at: [-90, 90], angle: 0.4, len: 60, bleed: 0.8 },
@@ -184,6 +214,6 @@ export const OP_1_5 = defineOp({
         { e: 'grub', at: [0, 0], speed: 40 },
       ],
     },
-    { callout: ['Everything’s clear. Close the incision with the thread.'], close: true },
+    { objective: 'Close the incision', callout: ['Everything’s clear. Close the incision with the thread.'], close: true },
   ],
 });

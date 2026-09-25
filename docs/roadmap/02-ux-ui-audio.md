@@ -226,7 +226,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] UIX-0058 · Demo · P1 · M · Callout priorities — `op.say(line, { priority })`: urgent lines (low vitals, shard rejoining, Brand on healthy flesh) interrupt the queue; tips queue; duplicate lines within 10 s are dropped (unit tests on the queue)
 - [ ] UIX-0059 · Demo · P1 · M · Ilse callout bust — portrait in the callout panel with calm/urgent/relieved/worried expressions keyed by line priority or tag; subtle blink and mouth flap while text types
 - [x] UIX-0060 · Demo · P1 · S · Callout log — last 20 callouts of the current operation viewable from the pause menu
-- [ ] UIX-0061 · Demo · P1 · S · Phase objective banner — optional `PhaseDef.objective` ("Close the wounds", "Draw off the blood") shown for 2 s at phase start and kept as a small line under the timer
+- [x] UIX-0061 · Demo · P1 · S · Phase objective banner — optional `PhaseDef.objective` ("Close the wounds", "Draw off the blood") shown for 2 s at phase start and kept as a small line under the timer
 - [ ] UIX-0062 · Demo · P2 · S · Threat markers — entities with a countdown (Malison shard rejoin, hexstone corruption every 7 s, bubo swelling) show a thin radial timer ring; edge arrows point to off-attention threats when the cursor is > 400 px away
 
 ### Boss HUD (Malison)

@@ -5601,5 +5601,307 @@
     "context": "Full-width message line on the Controls screen.",
     "screenshot": "docs/loc/screens/options.png",
     "maxLines": 1
+  },
+  "ui.stamp.suspect": {
+    "scene": "operation",
+    "font": "body",
+    "size": 13,
+    "maxPx": 260,
+    "context": "HUD label above the vitals number.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "ui.stamp.approved": {
+    "scene": "operation",
+    "font": "body",
+    "size": 13,
+    "maxPx": 260,
+    "context": "HUD label above the vitals number.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "hud.banner.phase": {
+    "scene": "operation",
+    "font": "display",
+    "size": 28,
+    "maxPx": 380,
+    "context": "HUD label above the vitals number.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "hud.banner.malison": {
+    "scene": "operation",
+    "font": "display",
+    "size": 28,
+    "maxPx": 380,
+    "context": "HUD label above the vitals number.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.obj.stitch_the_deep_cuts": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.draw_off_the_blood": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.salve_the_nicks": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.free_the_barbed_arrow": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.pull_the_bolt_and_shard": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.steady_his_pulse": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.open_along_the_line": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.extract_the_shot": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.close_the_incision": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.lance_the_buboes": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.sear_the_grubs": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.salve_the_rot": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.break_the_sigils": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.open_the_incision": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.unmake_the_malison": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.tend_the_wounds": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.draw_out_the_venom": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.pull_the_fangs": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.stitch_the_claw_rakes": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.pull_the_splinters": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.find_the_hidden_shards": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.clean_the_spoiled_flesh": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.treat_the_bites": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.lance_the_egg_sacs": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.find_the_last_sac": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.counter_the_poison": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.sear_the_sigils": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.dress_the_hexfire_burns": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.brand_the_maggots": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.obj.silence_the_choir": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 380,
+    "context": "Phase objective on the phase banner and under the timer.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
   }
 }

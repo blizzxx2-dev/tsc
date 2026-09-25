@@ -31,6 +31,8 @@ export interface OrganRegion {
 export interface PhaseDef {
   /** Lines the assistant says when the phase begins. */
   callout?: string[];
+  /** Short objective shown with the phase banner and kept under the timer (UIX-0061), e.g. "Close the wounds". */
+  objective?: string;
   spawn(op: Operation): Entity[];
 }
 

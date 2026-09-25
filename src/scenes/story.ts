@@ -6,7 +6,8 @@ import { CAST } from '../content/characters';
 import type { StoryDef } from '../content/story';
 import { PALETTE, VIEW_H, VIEW_W } from '../ui/layout';
 import { reticle } from '../ui/widgets';
-import { divider, flowMark, nameCartouche, quillGlyph, scroll, UI } from '../ui/ornaments';
+import { divider, dropCap, flowMark, nameCartouche, quillGlyph, scroll, UI } from '../ui/ornaments';
+import { inkStamp } from '../art/kit';
 import { glyphContext, glyphFor } from '../input/glyphs';
 import { settings } from '../core/settings';
 import { canSkip, readLog, ReadLog } from '../ui/readLog';
@@ -89,12 +90,19 @@ export class StoryScene implements Scene {
       g.text(name, box.x + 30 + w / 2, box.y + 5, { size: 26, color: hex('#fff0d0'), color2: hex(who.color), align: 'center' });
     }
     const narr = line.who === 'narrator';
-    g.textBlock(line.text.slice(0, Math.floor(this.shown)), box.x + 40, box.y + 60, box.w - 80, {
+    // A rubricated drop cap opens each scene's first narration (ART-0082).
+    const cap = this.i === 0 && narr && /^\p{Lu}/u.test(line.text);
+    const capSize = Math.round(64 * ts);
+    if (cap) dropCap(g, line.text[0], box.x + 36, box.y + 34, capSize);
+    const body = cap ? line.text.slice(1) : line.text;
+    const shownBody = cap ? Math.max(0, Math.floor(this.shown) - 1) : Math.floor(this.shown);
+    g.textBlock(body.slice(0, shownBody), box.x + 40 + (cap ? capSize + 10 : 0), box.y + 60, box.w - 80 - (cap ? capSize + 10 : 0), {
       size: Math.round(25 * ts),
       font: narr ? 'italic' : 'body',
       color: hex(narr ? '#5a4228' : UI.inkDark),
       shadow: false,
     });
+    if (line.stamp && this.shown >= line.text.length) inkStamp(g, t(`ui.stamp.${line.stamp}`), box.x + box.w - 170, box.y + box.h - 60, 26, line.stamp === 'suspect' ? '#7a0a10' : '#2a4a20', Math.min(1, this.t * 3), false, line.stamp === 'suspect' ? -0.12 : 0.08);
     if (this.shown >= line.text.length) quillGlyph(g, box.x + box.w - 40, box.y + box.h - 30, 16, g.time, hex('#6a0a10'));
     if (game.input.act('vn.fast')) flowMark(g, box.x + box.w - 62, box.y + 24, 'skip', g.time);
     const click = glyphContext().device === 'pad' ? '' : t('ui.story.click_prefix');

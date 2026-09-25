@@ -93,11 +93,25 @@ export class PauseScene implements Scene {
     g.rectGrad(vr.x, vr.y, vr.w, vr.h * 0.35, hex('#000000', 0.5 * k), hex('#000000', 0));
     g.rectGrad(vr.x, vr.y + vr.h * 0.65, vr.w, vr.h * 0.35, hex('#000000', 0), hex('#000000', 0.5 * k));
     const slide = (1 - k) * 60;
+    // ART-0079: a candle just snuffed at the foot of the screen, its smoke curling up.
+    const cx = 690;
+    const cy = 668;
+    g.rectGrad(cx - 9, cy - 34, 18, 34, hex('#e8d8a8', 0.9 * k), hex('#8a7040', 0.9 * k));
+    g.ellipse(cx, cy - 34, 9, 3, 0, hex('#fff4d0', 0.8 * k), hex('#c8b888', 0.8 * k));
+    g.line({ x: cx, y: cy - 34 }, { x: cx + 1, y: cy - 40 }, 1.5, hex('#1a1008', k));
+    g.glow(cx + 1, cy - 40, 5, hex('#ff6020', 0.5 * k * (0.6 + 0.4 * Math.sin(g.time * 9))));
+    for (let i = 0; i < 14; i++) {
+      const f = (g.time * 0.35 + i / 14) % 1;
+      const x = cx + 1 + Math.sin(f * 7 + i) * (4 + f * 22);
+      g.glow(x, cy - 44 - f * 150, 6 + f * 18, hex('#b8b0a0', 0.1 * (1 - f) * k));
+    }
 
     // ---- menu (right)
     g.save();
     g.translate(slide, 0);
     const mr = { x: 730, y: 90, w: 440, h: 540 };
+    // The ledger hangs from two chains off the top of the screen.
+    for (const x of [mr.x + 60, mr.x + mr.w - 60]) for (let y = vr.y - 8; y < mr.y + 6; y += 12) g.ellipse(x, y, (y / 12) % 2 < 1 ? 3 : 1.5, 6, 0, hex('#6a6a66', 0), hex('#8a8a86', 0.95));
     leatherPanel(g, mr, { alpha: 0.97 });
     giltText(g, t('hud.pause.title'), mr.x + mr.w / 2, mr.y + 66, { size: 50, align: 'center' });
     divider(g, mr.x + mr.w / 2, mr.y + 88, 280);

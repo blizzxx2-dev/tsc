@@ -183,9 +183,10 @@ export function optionRow(g: Gfx, n: UiNode, s: NodeState, t: number, o: { size?
     g.rectLine(tr.x - 1, tr.y - 1, tr.w + 2, tr.h + 2, 1, hex(UI.brass, 0.8));
     for (let i = 1; i < 10; i++) g.rect(tr.x + (tr.w * i) / 10, tr.y + tr.h + 3, 1, 4, hex(UI.brass, 0.5));
     const kx = tr.x + tr.w * f;
-    g.circle(kx + 1, tr.y + 4, 10, hex('#000000', 0.5));
-    g.circleGrad(kx, tr.y + 2, 9, hex(k > 0.5 ? UI.brassHi : '#d8b060'), hex(UI.brassLo));
-    g.circle(kx, tr.y + 3, 3, hex('#2a1a08'));
+    // A wax bead on a brass rule (ART-0058).
+    g.circle(kx + 1, tr.y + 5, 10, hex('#000000', 0.5));
+    g.circleGrad(kx, tr.y + 3, 9, hex(k > 0.5 ? '#c02028' : '#8a1016'), hex('#3a0406'));
+    g.circleGrad(kx - 3, tr.y, 3.5, hex('#ffb0a0', 0.55), hex('#ffb0a0', 0));
     if (n.value) g.text(n.value, r.x + r.w - 16, cy, { size: size * 0.85, color: valCol, align: 'right', shadow: light ? false : undefined });
   } else if (n.kind === 'toggle') {
     const sw = { x: r.x + r.w - 16 - 64, y: r.y + r.h / 2 - 12, w: 64, h: 24 };

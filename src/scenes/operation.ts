@@ -14,8 +14,9 @@ import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOW
 import { TOOL_INFO, toolInfo, type ToolId } from '../surgery/types';
 import { anchorShift, PALETTE, viewRect, VIEW_W } from '../ui/layout';
 import { button, inRect, reticle, toolIcon } from '../ui/widgets';
-import { banner, divider, giltText, hourglass, leatherPanel, medallion, plaque, scroll, UI } from '../ui/ornaments';
+import { banner, divider, giltText, hourglass, keyPlate, leatherPanel, medallion, plaque, scroll, tooltipSlip, UI } from '../ui/ornaments';
 import { buttonSurface } from '../ui/widgets';
+import type { ActionId } from '../input/actions';
 import { DamageAggregator, ToolHints } from '../ui/hudPrefs';
 import { localeInfo } from '../i18n/locales';
 import { getLocale } from '../i18n';
@@ -44,6 +45,9 @@ export interface OperationOutcome {
 const TRAY = { x: 14, y: 106, w: 88, h: 58, gap: 6 };
 const ECG = { x: 160, y: 20, w: 252, h: 52 };
 
+/** 1 → I, 2 → II … for phase banners. */
+const roman = (n: number): string => ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'][n - 1] ?? String(n);
+
 export class OperationScene implements Scene {
   op: Operation;
   private paused = false;
@@ -61,6 +65,8 @@ export class OperationScene implements Scene {
   private dmg = new DamageAggregator();
   private hints = new ToolHints();
   private idleT = 0;
+  /** Phase banner (ART-0078 / UIX-0061): a ribbon that slides in at each phase start. */
+  private banner: { phase: number; t: number; boss: boolean | null } | null = null;
   private particles = new Particles();
   private flashLimit = new FlashLimiter();
   private comboT = 0;
@@ -95,6 +101,7 @@ export class OperationScene implements Scene {
     op.events.on('popup', (p) => {
       if (!this.dmg.absorb(p.text, p.pos, p.color)) this.popups.push({ ...p, t: 0 });
     });
+    op.events.on('phase', ({ index }) => (this.banner = { phase: index, t: 0, boss: null }));
     op.events.on('fx', (e) => {
       // Gore level (UIX-0155): fewer blood particles when reduced, none when minimal.
       if (e.kind === 'blood') {
@@ -225,6 +232,12 @@ export class OperationScene implements Scene {
       this.idleT = 0;
     }
     this.hintT = Math.max(0, this.hintT - dt);
+    if (this.banner) {
+      // Decide on the first frame whether a Malison arrived with the phase.
+      if (this.banner.boss === null) this.banner.boss = op.entities.some((e) => e.alive && e.boss);
+      this.banner.t += dt;
+      if (this.banner.t > 2.2) this.banner.t = Math.min(this.banner.t, 99);
+    }
     if (op.combo !== this.lastCombo) {
       this.comboT = 0;
       this.lastCombo = op.combo;
@@ -462,6 +475,7 @@ export class OperationScene implements Scene {
     const low = op.timeLeft < op.tuning.flow.timerWarn && op.status === 'running';
     const tcol = op.litanyTime > 0 ? UI.gilt : low ? (Math.sin(t * 8) > 0 ? '#ff5040' : '#a02018') : UI.parch;
     g.text(formatClock(op.timeLeft), pl.x + 98, pl.y + 31, { size: 28, color: hex(tcol), align: 'center' });
+    this.drawBanner(g);
     // Minimal HUD (UIX-0071): vitals, timer, tray and Litany only.
     if (settings.minimalHud) return;
     for (let i = 0; i < op.phaseCount; i++) {
@@ -482,6 +496,24 @@ export class OperationScene implements Scene {
       g.text(tr('hud.combo', { combo: op.combo }), VIEW_W - 238, 54, { size: 22 * pop, color: hex('#ffe0c0'), align: 'center', shadow: hex('#3a0406', 0.8) });
       g.text(tr('hud.chain'), VIEW_W - 238, 80, { size: 16, font: 'italic', color: hex(UI.brass), align: 'center', shadow: false });
     }
+  }
+
+  private drawBanner(g: Gfx): void {
+    const b = this.banner;
+    if (!b) return;
+    const objective = this.op.def.phases[b.phase]?.objective;
+    // The objective stays as a small line under the timer for the rest of the phase.
+    if (objective && b.t > 2) g.text(tSource(objective), VIEW_W / 2, 118, { size: 16, font: 'italic', color: hex(UI.parch, 0.85), align: 'center' });
+    if (b.t > 2 || (b.phase === 0 && !b.boss && !objective)) return;
+    const still = settings.reduceMotion;
+    const inK = still ? 1 : Math.min(1, b.t / 0.3);
+    const a = b.t < 1.7 ? 1 : Math.max(0, 1 - (b.t - 1.7) / 0.3);
+    const ease = 1 - (1 - inK) ** 3;
+    const cx = VIEW_W / 2 + (1 - ease) * -420;
+    const title = b.boss ? tr('hud.banner.malison') : tr('hud.banner.phase', { n: roman(b.phase + 1) });
+    ribbonArt(g, cx, 150, 420, 46, b.boss ? '#3a0a3a' : '#5a0c10', ease);
+    g.text(title, cx, 176, { size: 28, font: 'display', color: hex(UI.gilt, a), color2: hex(UI.giltLo, a), align: 'center', shadow: hex('#0a0402', 0.8 * a) });
+    if (objective) g.text(tSource(objective), cx, 212, { size: 18, font: 'italic', color: hex(UI.parch, a), align: 'center' });
   }
 
   private drawTray(g: Gfx): void {
@@ -511,12 +543,16 @@ export class OperationScene implements Scene {
       const r = this.slot(op.def.tools.indexOf(op.tool));
       const a = Math.min(1, this.hintT);
       const ts = settings.textScale;
-      const tip = { x: r.x + r.w + 14, y: r.y + 2, w: Math.round(250 * ts), h: Math.round((r.h - 4) * (0.4 + 0.6 * ts * ts)) };
-      g.rect(tip.x + 3, tip.y + 4, tip.w, tip.h, hex('#000000', 0.4 * a));
-      g.rectGrad(tip.x, tip.y, tip.w, tip.h, hex('#ecdcb4', 0.95 * a), hex('#cdb688', 0.95 * a));
-      g.tri(tip.x, tip.y + tip.h / 2 - 7, tip.x, tip.y + tip.h / 2 + 7, tip.x - 8, tip.y + tip.h / 2, hex('#ddc9a0', 0.95 * a));
-      g.text(tr(`tool.${info.id}.name`), tip.x + 10, tip.y + 19 * ts, { size: Math.round(17 * ts), color: hex('#6a0a10', a), shadow: false });
-      g.textBlock(tr(`tool.${info.id}.hint`), tip.x + 10, tip.y + 35 * ts, tip.w - 20, { size: Math.round(13 * ts), color: hex(UI.inkDark, a), shadow: false }, 1.15);
+      // A vellum slip pinned beside the tray, with the instrument's key on a brass plate (ART-0055).
+      const hint = tr(`tool.${info.id}.hint`);
+      const hs = Math.round(16 * ts);
+      const w = Math.round(270 * ts);
+      const lines = g.wrap(hint, w - 24, hs).length;
+      const tip = { x: r.x + r.w + 14, y: r.y + 2, w, h: Math.round(32 * ts + lines * hs * 1.15 + 14) };
+      tooltipSlip(g, tip, a);
+      g.text(tr(`tool.${info.id}.name`), tip.x + 12, tip.y + 22 * ts, { size: Math.round(18 * ts), color: hex('#6a0a10', a), shadow: false });
+      if (a > 0.5) keyPlate(g, tip.x + tip.w - 30, tip.y + 16 * ts, glyphFor(`tool.select.${TOOL_INFO.findIndex((ti) => ti.id === info.id) + 1}` as ActionId), 16);
+      g.textBlock(hint, tip.x + 12, tip.y + 32 * ts + hs * 0.6, tip.w - 24, { size: hs, color: hex(UI.inkDark, a), shadow: false }, 1.15);
     }
 
     // Litany medallion (only once the rite has been learned).

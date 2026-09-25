@@ -1425,20 +1425,26 @@ export class Gfx {
   }
 
   /** Word-wrapped text; returns the height used. */
-  textBlock(str: string, x: number, y: number, width: number, o: TextOpts = {}, lineH = 1.35): number {
-    const size = o.size ?? 20;
+  /** Word-wrap `str` to `width` at `size`: the lines `textBlock` would draw. */
+  wrap(str: string, width: number, size = 20, font?: FontId): string[] {
     const lines: string[] = [];
     for (const para of str.split('\n')) {
       let cur = '';
       for (const word of para.split(' ')) {
         const tryLine = cur ? `${cur} ${word}` : word;
-        if (this.measure(tryLine, size, o.font) > width && cur) {
+        if (this.measure(tryLine, size, font) > width && cur) {
           lines.push(cur);
           cur = word;
         } else cur = tryLine;
       }
       lines.push(cur);
     }
+    return lines;
+  }
+
+  textBlock(str: string, x: number, y: number, width: number, o: TextOpts = {}, lineH = 1.35): number {
+    const size = o.size ?? 20;
+    const lines = this.wrap(str, width, size, o.font);
     lines.forEach((l, i) => this.text(l, x, y + i * size * lineH, o));
     return lines.length * size * lineH;
   }

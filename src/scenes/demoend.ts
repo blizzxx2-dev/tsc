@@ -4,7 +4,8 @@ import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { CAMPAIGN } from '../content/campaign';
 import { VIEW_W } from '../ui/layout';
-import { divider, leatherPanel, UI, waxSeal } from '../ui/ornaments';
+import { divider, leatherPanel, UI, waxSeal, woodcutCorner } from '../ui/ornaments';
+import { chapterSeal } from '../art/kit';
 import { button, reticle } from '../ui/widgets';
 import { drawBackdrop } from './backdrop';
 import { save } from './flow';
@@ -37,8 +38,11 @@ export class DemoEndScene implements Scene {
     g.text(t('ui.demoend.thanks'), VIEW_W / 2, 166, { size: 28, font: 'italic', color: hex(UI.parch, a), align: 'center' });
     g.text(t('ui.demoend.teaser'), VIEW_W / 2, 200, { size: 22, color: hex('#c8b890', a), align: 'center' });
 
+    // A pressed seal for each chapter finished (ART-0067).
+    CAMPAIGN.forEach((c, i) => chapterSeal(g, VIEW_W / 2 + (i === 0 ? -330 : 330), 150, 38, c.numeral, this.t - 0.6 - i * 0.25));
     const panelR = { x: 250, y: 232, w: 780, h: 330 };
     leatherPanel(g, panelR, { alpha: 0.94 * a });
+    for (const [x, y, dx, dy] of [[panelR.x, panelR.y, 1, 1], [panelR.x + panelR.w, panelR.y, -1, 1], [panelR.x, panelR.y + panelR.h, 1, -1], [panelR.x + panelR.w, panelR.y + panelR.h, -1, -1]] as const) woodcutCorner(g, x, y, dx, dy, 0, hex(UI.brass, a), 1, '#2a1812');
     g.text(t('ui.demoend.ledger'), VIEW_W / 2, panelR.y + 42, { size: 24, color: hex(UI.gilt), align: 'center' });
     const ops = CAMPAIGN.flatMap((c) => c.steps.flatMap((s) => (s.kind === 'op' ? [{ ch: c.numeral, op: s.op }] : [])));
     ops.forEach(({ ch, op }, i) => {

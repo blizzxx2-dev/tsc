@@ -68,7 +68,7 @@ export const STORY_1_3: StoryDef = {
     n('Noon. A second sack of turnips arrives at the gate. The drover has told his friends about us.'),
     say('ilse', 'Doctor, the gunsmiths’ quarter. An apprentice was proving a new handgun barrel and it burst in his hands.'),
     say('ilse', 'Burns across the chest, lead driven under the skin — and a note from the Gunsmiths’ Guild pinned to his shirt.'),
-    say('ilse', 'The Guild will pay for his care. Once we have paid the Guild’s fee for inspecting its own burst barrel.'),
+    { ...say('ilse', 'The Guild will pay for his care. Once we have paid the Guild’s fee for inspecting its own burst barrel.'), stamp: 'approved' },
     say('haller', 'Naturally. In Kessendorf a man pays the Guild for the privilege of being shot by its work.'),
     say('kreuzer', 'Then we send the Guild a bill for the lead we take out of him. Itemised, by the ounce.'),
     say('haller', 'Powder burns. The black crust is dead meat: off with it before any salve, or it festers underneath.'),

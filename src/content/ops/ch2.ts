@@ -26,10 +26,14 @@ export const OP_2_1 = defineOp({
   seed: 21,
   phases: [
     {
+      objective: 'Draw out the venom',
+
       callout: ['The venom first — hold the tincture on the bite until it takes.', 'The longer it spreads, the harder it drags on him.'],
       spawn: [{ e: 'venom', at: [-120, -30], rate: 7 }],
     },
     {
+      objective: 'Pull the fangs',
+
       callout: ['Now the fangs. Tongs — pull each one clear.'],
       spawn: [
         { e: 'embedded', at: [-150, -50], kind: 'tooth', angle: 0.9, barbed: false },
@@ -38,6 +42,8 @@ export const OP_2_1 = defineOp({
       ],
     },
     {
+      objective: 'Stitch the claw rakes',
+
       callout: ['Claw rakes. Three deep lines — drain and stitch each.'],
       spawn: clawRake(110, 20, -0.5, 100),
     },
@@ -60,6 +66,8 @@ export const OP_2_2 = defineOp({
   seed: 22,
   phases: [
     {
+      objective: 'Pull the splinters',
+
       callout: ['Rock splinters on the surface first. Tongs.'],
       spawn: [
         { e: 'embedded', at: [-160, 60], kind: 'shard', angle: 2.4, barbed: false },
@@ -68,10 +76,14 @@ export const OP_2_2 = defineOp({
       ],
     },
     {
+      objective: 'Find the hidden shards',
+
       callout: ['Now — the Scrying Lens. Pass it slowly over the flesh; where something hides, it shimmers.', 'Hold it still over the shimmer to bring the shard to light, then pull it.'],
       spawn: [hiddenShard(-120, -40, 0.4), hiddenShard(90, 30, 2.1), hiddenShard(0, -100, -1.2), { e: 'rot', at: [-110, -30], r: 40, spread: 0.4 }],
     },
     {
+      objective: 'Clean the spoiled flesh',
+
       callout: ['Clean up the spoiled flesh and any wounds left.'],
       spawn: [
         { e: 'rot', at: [120, 60], r: 45, spread: 0.5 },
@@ -96,6 +108,8 @@ export const OP_2_3 = defineOp({
   seed: 23,
   phases: [
     {
+      objective: 'Treat the bites',
+
       callout: ['Venom from two bites. Tincture on each, quickly.'],
       spawn: [
         { e: 'venom', at: [-60, -80], rate: 9 },
@@ -103,6 +117,8 @@ export const OP_2_3 = defineOp({
       ],
     },
     {
+      objective: 'Lance the egg sacs',
+
       callout: ['The sacs — lance each one with a single touch, then sear the hatchlings with the brand.', 'Mind the ones that are close to hatching.'],
       spawn: [
         { e: 'eggsac', at: [-170, 30], brood: 3, hatchIn: 16 },
@@ -111,6 +127,8 @@ export const OP_2_3 = defineOp({
       ],
     },
     {
+      objective: 'Find the last sac',
+
       callout: ['One more sac, deeper. Use the lens to find it, then open it.', 'And he’s taken a fever-bubo from the bite — lance and cleanse it.'],
       spawn: [
         { e: 'eggsac', at: [90, 90], brood: 4, hatchIn: 30, hidden: true },
@@ -136,10 +154,14 @@ export const OP_2_4 = defineOp({
   seed: 24,
   phases: [
     {
+      objective: 'Counter the poison',
+
       callout: ['The poison he swallowed — tincture, now, or he’s gone before we start.'],
       spawn: [{ e: 'venom', at: [0, 20], rate: 5 }],
     },
     {
+      objective: 'Sear the sigils',
+
       callout: ['Those sigils are burning him from within. Sear each one out — every stroke.'],
       spawn: [
         { e: 'sigil', at: [-160, -20], shape: 'crown', size: 55, lashEvery: 4.5 },
@@ -148,6 +170,8 @@ export const OP_2_4 = defineOp({
       ],
     },
     {
+      objective: 'Dress the hexfire burns',
+
       callout: ['The hexfire burns. Pluck the eschar, then salve them.'],
       spawn: [
         { e: 'burn', at: [-150, 60], r: 44, source: 'hexfire' },
@@ -156,6 +180,8 @@ export const OP_2_4 = defineOp({
       ],
     },
     {
+      objective: 'Brand the maggots',
+
       callout: ['Maggots in an old sore — the Tribunal’s cells are filthy. Brand them.'],
       spawn: [
         { e: 'grub', at: [-40, 20], speed: 45 },
@@ -181,14 +207,20 @@ export const OP_2_5 = defineOp({
   seed: 25,
   phases: [
     {
+      objective: 'Open the incision',
+
       callout: ['We have to open him — along the line, Doctor.'],
       spawn: [{ e: 'incision', path: [[-190, 20], [-70, -10], [70, -10], [190, 20]] }],
     },
     {
+      objective: 'Silence the choir',
+
       callout: ['Saints… it has a choir. Those little lights are its Voices — hold the brand on each as it circles.', 'Silence all of them and its heart will be bare.'],
       spawn: [{ e: 'malison-lauds', at: [0, 30] }],
     },
     {
+      objective: 'Tend the wounds',
+
       callout: ['It’s done. Tend what it left of him.'],
       spawn: [
         { e: 'laceration', at: [-110, 80], angle: 0.3, len: 60, bleed: 0.7 },
@@ -197,6 +229,6 @@ export const OP_2_5 = defineOp({
         { e: 'grub', at: [0, 0], speed: 40 },
       ],
     },
-    { callout: ['Close him up. Gently — he has a banner to carry.'], close: true },
+    { objective: 'Close the incision', callout: ['Close him up. Gently — he has a banner to carry.'], close: true },
   ],
 });
