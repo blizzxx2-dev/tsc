@@ -209,7 +209,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0123 · Alpha · P0 · L · Gangrene spread — black tissue creeps up limb 2 px/s; Lens shows demarcation line; debride with Lancet + Salve if caught below the line
 - [x] GAM-0124 · Alpha · P0 · M · Amputation op flow — saw gesture (back-and-forth Lancet drag, 8 strokes at rhythm), then seal choice: Brand (fast, −15 vitals) vs Thread ligatures (slower, +score)
 - [x] GAM-0125 · Alpha · P1 · S · Ligature vs cautery scoring — ligature path yields +400 bonus but requires tying 3 vessels within 20 s
-- [ ] GAM-0126 · Alpha · P2 · S · Tone guard — amputation presented through surgical drape framing; no gore beyond chart content-rating guidelines (checked with ESRB/PEGI notes)
+- [x] GAM-0126 · Alpha · P2 · S · Tone guard — amputation presented through surgical drape framing; no gore beyond chart content-rating guidelines (checked with ESRB/PEGI notes)
 
 ### Parasites & worms
 - [x] GAM-0127 · Alpha · P1 · M · Gut worm — pull head out whole with steady Tongs drag < 300 px/s; tearing leaves the body which regrows a head in 6 s
