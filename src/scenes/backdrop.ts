@@ -5,6 +5,7 @@ import type { Character } from '../content/characters';
 import { VIEW_H, VIEW_W } from '../ui/layout';
 import type { Vec } from '../core/math';
 import { MANIFEST } from '../assets/manifest.gen';
+import { setFor, setScene } from './sets';
 import type { AssetEntry } from '../assets/types';
 
 /** Painted backdrop layers for a key, far to near (manifest `layer` + `parallax`, ART-0045). */
@@ -99,7 +100,9 @@ export function drawBackdrop(g: Gfx, kind: Backdrop | 'title' | 'results', t: nu
   const tier = QUALITY[quality];
   // Painted layers (ART-0045) replace the procedural scene when the manifest has them for this key.
   const layers = backdropLayers(key);
-  if (layers.length) {
+  const set = setFor(key);
+  if (set) g.draw3D(setScene(set, t, parallax));
+  else if (layers.length) {
     for (const l of layers) {
       const img = g.image(import.meta.env.BASE_URL + l.url);
       const k = l.parallax ?? 0;

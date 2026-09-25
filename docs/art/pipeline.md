@@ -127,3 +127,23 @@ parallax offset. Author at 2048² and export at 1024².
 - Palette matches use the master swatches (`src/render/palette.ts`, `docs/art/palette.gpl`).
   `nearestSwatch()` and the ΔE test enforce UI tokens, and the same ΔE 6 tolerance is the
   review bar for painted UI.
+
+## 3D assets (scripted Blender pipeline)
+
+Models are built from code: `art-src/blender/models/*.py` run headless under Blender's Python
+module (`pip install bpy==4.2.0` into Python 3.11; set `BLENDER_PY` to that interpreter) via
+`npm run art:models [-- <script>]`. Each script writes `assets/models/<name>.glb` and a Cycles
+review render into `docs/art/renders/`. Shared helpers (turned profiles, swept tubes, world-scale
+UVs, PBR materials, glTF export) live in `art-src/blender/lib/common.py`.
+
+- **Textures** are CC0 Poly Haven sets listed in `art-src/textures.json`, fetched at full 4K into
+  `art-src/.cache/textures` (colour maps JPEG, normal and AO/rough/metal maps lossless PNG). Colour
+  grades are baked into the colour map at full resolution; nothing is downscaled.
+- **Anchors**: empties named `cam`, `cam.target`, `key`, `key.target`, `candle.*` place the camera
+  and lights; their custom properties (fov, colour, intensity, cone, range) export as glTF extras
+  and drive `src/scenes/sets.ts`.
+- **Materials** may carry custom properties `sss` (skin/wax/cloth scattering) and `flicker`
+  (candle-flame emissive), read by the renderer (`src/render/renderer3d.ts`).
+- **Storage**: generated models are not committed (`assets/models/` is git-ignored, files exceed
+  GitHub's 100 MB limit). Run `npm run art:models` then `npm run assets` after cloning; until
+  then the game shows the procedural backdrops.

@@ -1,3 +1,7 @@
+import { MANIFEST } from './assets/manifest.gen';
+import { registerSet, SETS } from './scenes/sets';
+import type { Model3D } from './render/renderer3d';
+import type { AssetId } from './assets/manifest.gen';
 import { CalibrateScene } from './scenes/calibrate';
 import { ControlsCardScene } from './scenes/controlsCard';
 import { AudioOptionsScene } from './audio/options-scene';
@@ -351,6 +355,12 @@ async function boot(): Promise<void> {
   game.detectTier();
   game.assets.prefetch('title');
   game.assets.prefetch('ops-common');
+  // 3D sets: registered with the backdrop as they arrive (the procedural scene shows until then).
+  // Models are generated (npm run art:models) and absent from fresh clones: skip unbuilt sets.
+  for (const [key, id] of Object.entries(SETS).filter(([, id]) => id in MANIFEST))
+    void game.assets.load(id as AssetId).then((a) => {
+      if (a.value) registerSet(key, a.value as Model3D);
+    });
   splashProgress(1, 'Ready');
   void loadLayoutLabels();
   game.start(new TitleScene());

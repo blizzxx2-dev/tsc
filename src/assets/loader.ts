@@ -26,6 +26,8 @@ export interface LoaderBackend {
   /** Load a sprite sheet: JSON frame table + its page images. */
   sheet(id: AssetId, json: unknown, pages: ArrayBuffer[], entry: AssetEntry): Promise<{ value: unknown; dispose?: () => void }>;
   font(id: AssetId, bytes: ArrayBuffer, entry: AssetEntry): Promise<{ value: unknown; dispose?: () => void }>;
+  /** Parse + upload a glTF binary (3D sets, props, busts). Optional: headless backends skip models. */
+  model?(id: AssetId, bytes: ArrayBuffer, entry: AssetEntry): Promise<{ value: unknown; dispose?: () => void }>;
   warn(msg: string): void;
 }
 
@@ -196,6 +198,11 @@ export class AssetLoader {
         }
         case 'font': {
           const r = await be.font(id, await be.fetchBytes(this.url(id)), entry);
+          return { id, entry, fallback: false, ...r };
+        }
+        case 'model': {
+          if (!be.model) return { id, entry, fallback: true, value: null };
+          const r = await be.model(id, await be.fetchBytes(this.url(id)), entry);
           return { id, entry, fallback: false, ...r };
         }
         case 'json':

@@ -2,6 +2,8 @@ import type { Gfx } from '../render/gfx';
 import type { SheetJson } from '../render/sprites';
 import { checkerPixels, decodeImage, Texture } from '../render/texture';
 import { AssetLoader, type LoaderBackend } from './loader';
+import { parseGlb } from '../render/gltf';
+import { Model3D } from '../render/renderer3d';
 
 /** Loader backend for the browser: fetch, off-thread image decode, GL textures, FontFace. */
 export function browserBackend(gfx: Gfx): LoaderBackend {
@@ -44,6 +46,10 @@ export function browserBackend(gfx: Gfx): LoaderBackend {
       await face.load();
       document.fonts.add(face);
       return { value: face, dispose: () => document.fonts.delete(face) };
+    },
+    async model(_id, bytes) {
+      const m = await Model3D.create(gfx.gl, gfx.registry, parseGlb(bytes), aniso);
+      return { value: m, dispose: () => m.dispose() };
     },
     warn(msg) {
       if (import.meta.env.DEV) console.error(msg);

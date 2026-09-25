@@ -21,7 +21,6 @@ interface Rules {
   rules: { match: string; bundle: string }[];
   default: string;
   fonts: Record<string, { family: string; style: string; weight: string; unicodeRange?: string }>;
-  budgetMB: number;
 }
 interface Entry {
   type: string;
@@ -73,6 +72,7 @@ const TYPE_BY_DIR: Record<string, string> = {
   particles: 'json',
   backdrops: 'image',
   portraits: 'image',
+  models: 'model',
 };
 const TYPE_BY_EXT: Record<string, string> = {
   '.png': 'image',
@@ -85,6 +85,7 @@ const TYPE_BY_EXT: Record<string, string> = {
   '.mp3': 'audio',
   '.wav': 'audio',
   '.txt': 'text',
+  '.glb': 'model',
 };
 
 function emit(id: string, ext: string, data: Buffer): { url: string; h: string } {
@@ -195,16 +196,15 @@ for (const m of srcText.matchAll(/(?:assetUrl|assets\.load|assets\.get)\(\s*'([^
   if (!entries[m[1]]) errors.push(`src references missing asset '${m[1]}'`);
 for (const [id, e] of Object.entries(entries)) {
   if (!rules.bundles.includes(e.bundle)) errors.push(`${id}: unknown bundle '${e.bundle}'`);
-  const autoUsed = e.type === 'font' || e.type === 'lut' || e.type === 'sheet';
+  const autoUsed = e.type === 'font' || e.type === 'lut' || e.type === 'sheet' || e.type === 'model';
   if (!autoUsed && e.bytes > UNUSED_LIMIT && !srcText.includes(`'${id}'`))
     errors.push(`${id}: ${Math.round(e.bytes / 1024)} KB and never referenced from src/`);
 }
 
-// ---- size report + install budget (ENG-0207/0217).
+// ---- size report (ENG-0207/0217). No size budget: asset quality is never traded for install size.
 const perBundle = new Map<string, number>();
 for (const e of Object.values(entries)) perBundle.set(e.bundle, (perBundle.get(e.bundle) ?? 0) + e.bytes);
 const total = [...perBundle.values()].reduce((a, b) => a + b, 0);
-if (total > rules.budgetMB * 2 ** 20) errors.push(`assets total ${(total / 2 ** 20).toFixed(1)} MB exceeds the ${rules.budgetMB} MB demo budget`);
 
 // ---- manifest source.
 const ids = Object.keys(entries).sort();

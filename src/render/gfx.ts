@@ -13,6 +13,7 @@ import { checkerPixels, Texture } from './texture';
 import { scissorRect } from './viewport';
 import { UI_ART_FS } from '../art/uiShader';
 import { PLATE_FS } from './shaders/plate';
+import { Renderer3D, type Scene3D } from './renderer3d';
 
 /** Bilinear upsample of a reduced-resolution layer. */
 const UPSAMPLE_FS = `#version 300 es
@@ -318,7 +319,7 @@ export class Gfx {
 
     this.n = 0;
     this.pw = this.ph = 0;
-    this.msaaFb = this.msaaRb = null;
+    this.msaaFb = this.msaaRb = this.msaaDepth = null;
     gl.enable(gl.BLEND);
     this.applyBlend();
   }
@@ -472,7 +473,7 @@ export class Gfx {
     if (w === this.pw && h === this.ph && this.scene && this.targets.get('scene') === this.scene) return;
     const P = this.targets;
     // HDR scene target when float render targets are available (ENG-0147).
-    this.scene = P.acquire('scene', w, h, { format: this.floatTargets ? 'rgba16f' : 'rgba8' });
+    this.scene = P.acquire('scene', w, h, { format: this.floatTargets ? 'rgba16f' : 'rgba8', depthStencil: true });
     this.mips = [];
     for (let i = 1; i <= 5; i++) this.mips.push(P.acquire(`bloom${i}`, Math.max(1, w >> i), Math.max(1, h >> i), { format: this.plan.bloomFormat }));
     const hw = Math.max(1, Math.round(w * 0.6));
@@ -483,8 +484,9 @@ export class Gfx {
     const gl = this.gl;
     const reg = this.registry;
     reg.release(this.msaaRb);
+    reg.release(this.msaaDepth);
     reg.release(this.msaaFb);
-    this.msaaFb = this.msaaRb = null;
+    this.msaaFb = this.msaaRb = this.msaaDepth = null;
     if (this.samples > 1) {
       this.msaaRb = reg.createRenderbuffer('msaa world');
       gl.bindRenderbuffer(gl.RENDERBUFFER, this.msaaRb);
@@ -494,6 +496,12 @@ export class Gfx {
       this.msaaFb = reg.createFramebuffer('msaa world');
       gl.bindFramebuffer(gl.FRAMEBUFFER, this.msaaFb);
       gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, this.msaaRb);
+      // Depth for the 3D layer.
+      this.msaaDepth = reg.createRenderbuffer('msaa world depth');
+      gl.bindRenderbuffer(gl.RENDERBUFFER, this.msaaDepth);
+      gl.renderbufferStorageMultisample(gl.RENDERBUFFER, this.samples, gl.DEPTH24_STENCIL8, w, h);
+      reg.setBytes(this.msaaDepth, w * h * 4 * this.samples);
+      gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.RENDERBUFFER, this.msaaDepth);
       if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) this.msaaFb = null;
     }
     this.pw = w;
@@ -864,6 +872,8 @@ export class Gfx {
 
   private uiArtProg: WebGLProgram | null = null;
   private plateProg: WebGLProgram | null = null;
+  private msaaDepth: WebGLRenderbuffer | null = null;
+  private r3d: Renderer3D | null = null;
 
   /**
    * Procedural UI art (src/art/uiShader.ts) drawn into a rect, premultiplied. `mode` picks the
@@ -932,6 +942,36 @@ export class Gfx {
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
     this.applyBlend();
+  }
+
+  /** The 3D renderer (created on first use). */
+  get renderer3d(): Renderer3D {
+    return (this.r3d ??= new Renderer3D(this.gl, this.registry));
+  }
+
+  /**
+   * Draw a 3D scene into the world layer (call between beginWorld and endWorld, usually first so
+   * 2D world art lands on top). The 2D batch is flushed first and picks its state back up after.
+   */
+  draw3D(scene: Scene3D): void {
+    this.flush('program');
+    const fb = this.msaaFb ?? this.scene.fb;
+    this.renderer3d.render(scene, { fb, w: this.scene.w, h: this.scene.h });
+    this.stats.drawCalls += this.renderer3d.stats.draws;
+    this.gl.viewport(0, 0, this.outW, this.outH);
+    this.applyBlend();
+  }
+
+  /** Render a 3D scene into an offscreen RGBA target (icons, thumbnails); returns its texture. */
+  render3DToTexture(key: string, w: number, h: number, scene: Scene3D): WebGLTexture {
+    this.flush('program');
+    const t = this.targets.acquire(key, w, h, { depthStencil: true });
+    this.renderer3d.render({ ...scene, clearColor: scene.clearColor ?? [0, 0, 0, 0] }, { fb: t.fb, w, h });
+    const gl = this.gl;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    this.bindTarget(null);
+    this.applyBlend();
+    return t.tex;
   }
 
   /** Shader-drawn creature/effect in a square around (x, y). Modes: 0 Matins, 1 Lauds, 2 hexfire, 3 hexstone glow. */

@@ -1,5 +1,5 @@
 /** Asset manifest entry types shared by the build script output and the loader (ENG-0205). */
-export type AssetType = 'image' | 'sheet' | 'font' | 'json' | 'audio' | 'lut' | 'shader' | 'text';
+export type AssetType = 'image' | 'sheet' | 'font' | 'json' | 'audio' | 'lut' | 'shader' | 'text' | 'model';
 
 export interface AssetEntry {
   type: AssetType;
