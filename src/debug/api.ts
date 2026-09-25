@@ -4,6 +4,7 @@
  * Versioned: bump DEBUG_API_VERSION on any breaking change and keep tests/e2e in step.
  * Only bundled in dev and QA builds (see ./hooks.ts); `vite build` (production) strips it.
  */
+import { restoreState, saveState } from '../surgery/snapshot';
 import { OPTION_TABS, optionRows } from '../scenes/options';
 import { compileCatalog, shaderCatalog, type ShaderFailure } from '../render/shaderCatalog';
 import { isQuality, QUALITIES, SHADER_TIERS } from '../render/quality';
@@ -491,6 +492,26 @@ export class DebugApi {
         n++;
       }
     return n ? sum / n : 0;
+  }
+
+  /** The last saved snapshot (ENG-0249). */
+  private snapshot: string | null = null;
+
+  /** Save the running operation's state as a JSON snapshot (ENG-0249); returns it. */
+  saveState(): string {
+    const op = this.requireOp();
+    if (!op.log) throw new Error('this operation is not recording its inputs');
+    this.snapshot = saveState(op);
+    return this.snapshot;
+  }
+
+  /** Restore the last (or a given) snapshot into the running operation scene (ENG-0249). */
+  restoreState(json: string | null = this.snapshot): DebugState {
+    if (!json) throw new Error('no snapshot saved yet (use savestate)');
+    const s = this.game.scene;
+    if (!(s instanceof OperationScene)) throw new Error(`no operation is running (scene: ${this.scene})`);
+    s.adopt(restoreState(s.liveDef, json));
+    return this.state();
   }
 
   /** Toggle (or set) god mode; returns the new state. */

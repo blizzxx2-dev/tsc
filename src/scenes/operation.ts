@@ -374,10 +374,23 @@ export class OperationScene implements Scene {
   }
 
   private restart(): void {
-    this.op.events.clear();
     // A repeat attempt skips the bosses’ phase-transition beats (BOS-0004).
     this.def = { ...this.def, skipCinematics: true } as OperationDef;
-    this.op = OperationScene.create(this.def, this.runOpts);
+    this.adopt(OperationScene.create(this.def, this.runOpts));
+  }
+
+  /** The def the running operation was built from (with boss context), for snapshots (ENG-0249). */
+  get liveDef(): OperationDef {
+    return this.op.def;
+  }
+
+  /**
+   * Take over a different operation of the same case (a restart, or a restored debug snapshot,
+   * ENG-0249): presentation state is reset around it.
+   */
+  adopt(op: Operation): void {
+    this.op.events.clear();
+    this.op = op;
     if (this.runOpts.timeAttack) {
       this.ta = new TimeAttackClock();
       this.ghost = timeAttackBest(this.def.id);

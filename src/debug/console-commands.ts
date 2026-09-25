@@ -98,6 +98,12 @@ export function buildCommands(api: DebugApi, hooks: ConsoleHooks = {}): CommandR
       help: 'show or set the dev time scale (0.25 slow-mo, 4 fast-forward)',
       run: (a, [x]) => `timescale ${a.timescale(x === undefined ? undefined : numArg(x, 'scale'))}x`,
     },
+    {
+      name: 'savestate',
+      help: 'snapshot the running operation (entities, rng, timers, phase, score) as JSON',
+      run: (a) => `saved ${a.saveState().length} bytes`,
+    },
+    { name: 'loadstate', help: 'restore the last snapshot (re-simulated and verified)', run: (a) => (a.restoreState(), brief(a)) },
     { name: 'seed', usage: '<n>', min: 1, help: 'restart the running operation with RNG seed n', run: (a, [n]) => (a.reseed(intArg(n, 'seed')), brief(a)) },
     {
       name: 'tier',

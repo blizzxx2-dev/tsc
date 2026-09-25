@@ -353,7 +353,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0246 · Demo · P2 · S · Spatial index — uniform grid over the field for picking and sweep tools when entity count >64; benchmark with 300 entities
 - [x] ENG-0247 · Demo · P1 · S · Entity lifecycle hooks — `onSpawn`/`onDeath` emit events so VFX and achievements never poll entity arrays
 - [ ] ENG-0248 · Demo · P1 · M · Tuning tables — bleed rates, radii, timers and damage move from constants in `entities.ts`/`malison.ts` into typed content tables, hot-reloadable in dev
-- [ ] ENG-0249 · Demo · P1 · M · Operation state serialisation (entities, rng state, timers, phase, score) to JSON with a round-trip test — used by the debug "save state/restore state" keys and crash reports
+- [x] ENG-0249 · Demo · P1 · M · Operation state serialisation (entities, rng state, timers, phase, score) to JSON with a round-trip test — used by the debug "save state/restore state" keys and crash reports
 - [ ] ENG-0250 · Demo · P1 · S · Extended `Pointer` — `pressure`, `tilt`, `source` (mouse/pen/touch/gamepad-cursor) so pens, Deck touchscreen and the gamepad cursor feed the same sim API
 - [x] ENG-0251 · Demo · P1 · S · Remove remaining `Math.random` from `OperationScene` (ECG jitter at low vitals) — presentation noise uses a seeded presentation RNG so golden screenshots are stable
 
