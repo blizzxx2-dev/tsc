@@ -50,3 +50,8 @@ The game's graphics are procedural. The items below need a painter or an art dir
 - ART-0380 — Trading cards
 - ART-0381 — Anniversary art
 - ART-0382 — Artbook
+- ART-0321 — Tick and sign the capsule compliance checklist per capsule before upload (docs/art/marketing/capsule-compliance.md)
+- ART-0312/0314–0320/0322 — Commission the key-art master; the crop map and safe areas are ready (docs/art/marketing/key-art-crop-map.md)
+- ART-0343 — Run the paid vendor test task and score it (brief: docs/art/outsourcing/feedback-protocol.md, budget: docs/art/outsourcing/budget-schedule.md)
+- ART-0353 — Tick the per-asset QA checklist for every Demo asset (tracker: docs/art/tracker/demo-assets.csv)
+- ART-0356 — Review every demo screen at the listed resolutions (`node scripts/shoot-aspects.mjs`)

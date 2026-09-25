@@ -547,10 +547,10 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [ ] ART-0337 · Demo · P2 · S · Next Fest livestream overlay art: a frame, lower-thirds and a "Wishlist" bug
 
 ### Launch & post-launch trailers
-- [ ] ART-0338 · Beta · P1 · M · Launch trailer (90 s) storyboard including Chapters 3–5 Hours (Prime through Compline, with no final-form spoilers)
-- [ ] ART-0339 · Beta · P2 · M · Gameplay deep-dive trailer (2–3 min) storyboard with tool-by-tool callouts
-- [ ] ART-0340 · Release · P2 · S · Accolades trailer template (laurels layout) for post-launch reviews
-- [ ] ART-0341 · Post · P3 · M · DLC or free-update trailer storyboard template
+- [x] ART-0338 · Beta · P1 · M · Launch trailer (90 s) storyboard including Chapters 3–5 Hours (Prime through Compline, with no final-form spoilers)
+- [x] ART-0339 · Beta · P2 · M · Gameplay deep-dive trailer (2–3 min) storyboard with tool-by-tool callouts
+- [x] ART-0340 · Release · P2 · S · Accolades trailer template (laurels layout) for post-launch reviews
+- [x] ART-0341 · Post · P3 · M · DLC or free-update trailer storyboard template
 
 ---
 

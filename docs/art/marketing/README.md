@@ -8,6 +8,11 @@
 | Steam autoplay 30 s storyboard | ART-0336 | [autoplay-cut.md](autoplay-cut.md) |
 | Key-art crop map (safe areas per store size) | ART-0313 | [key-art-crop-map.md](key-art-crop-map.md) |
 | Store section-header banners (616 px) | ART-0325 | `renders/banner-operate.png`, `renders/banner-malison.png`, `renders/banner-kessendorf.png` |
+| Launch trailer (90 s) storyboard | ART-0338 | [launch-trailer.md](launch-trailer.md) |
+| Gameplay deep-dive trailer storyboard | ART-0339 | [deep-dive-trailer.md](deep-dive-trailer.md) |
+| Accolades trailer template | ART-0340 | [accolades-template.md](accolades-template.md) |
+| DLC / free-update trailer template | ART-0341 | [update-trailer-template.md](update-trailer-template.md) |
+| Capsule compliance checklist (to sign) | ART-0321 | [capsule-compliance.md](capsule-compliance.md) |
 
 The cards and banners are drawn in-engine in the woodcut style (`src/art/marketingCards.ts`).
 Review one at `?scene=cards&card=<id>` and re-export them all at their delivery sizes with
