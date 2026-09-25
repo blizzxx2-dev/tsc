@@ -1,5 +1,6 @@
 import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, Sigil, SIGILS, Venom } from '../surgery/entities';
-import { EggSac } from '../surgery/lauds';
+import { EggSac, LaudsMalison } from '../surgery/lauds';
+import { Malison } from '../surgery/malison';
 import type { Operation, OperationDef } from '../surgery/operation';
 import { at } from './chapter1';
 
@@ -42,6 +43,21 @@ export const SHOWCASE: OperationDef = {
           new EggSac(at(-200, 190), 3, 999),
           new Grub(at(120, -50), op, 20),
         ];
+      },
+    },
+  ],
+};
+
+/** Dev-only: both demo Malisons side by side (?op=showcase-boss). */
+export const SHOWCASE_BOSS: OperationDef = {
+  ...SHOWCASE,
+  id: 'showcase-boss',
+  title: 'The Hours, Compared',
+  phases: [
+    {
+      spawn: (op: Operation) => {
+        const m = new Malison(at(-200, 0), op, 'matins', 100);
+        return [m, new LaudsMalison(at(200, 20), op), new Burn(at(0, 150), 44, op, 'hexfire'), new Embedded(at(20, -150), 'hexstone', 1.2, false)];
       },
     },
   ],

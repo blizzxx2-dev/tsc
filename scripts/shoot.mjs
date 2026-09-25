@@ -28,9 +28,9 @@ try {
       await page.waitForTimeout(2500);
     } else if (kind === 'op') {
       await page.goto(`${url}?op=${a}`);
-      await page.waitForTimeout(1500);
+      await page.waitForFunction(() => window.__game?.scene && typeof window.__game.scene.onBegin === 'function', null, { timeout: 30000 });
       await page.keyboard.press('Enter');
-      await page.waitForTimeout(400);
+      await page.waitForFunction(() => !!window.__game?.scene?.op, null, { timeout: 30000 });
       await page.evaluate((s) => {
         const op = window.__game.scene.op;
         for (let t = 0; t < s; t += 1 / 60) op.update(1 / 60);

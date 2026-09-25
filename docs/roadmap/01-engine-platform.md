@@ -147,11 +147,11 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 
 ### Wound, curse & boss surfaces needed by Chapters 1–2
 - [ ] ENG-0099 · Demo · P0 · M · Curse corruption v2 — per-pixel corruption map (render target) painted by `Sigil`/Malison entities instead of the uniform rim-in `u_corrupt`; veins blacken along the corruption front
-- [ ] ENG-0100 · Demo · P0 · M · Hexfire burn shader — violet-green emissive flame tongues over char, flickering with world time, bloom-friendly HDR emissive, dims as it is treated
+- [x] ENG-0100 · Demo · P0 · M · Hexfire burn shader — violet-green emissive flame tongues over char, flickering with world time, bloom-friendly HDR emissive, dims as it is treated
 - [ ] ENG-0101 · Demo · P1 · M · Fire and acid burn surfaces: blistered char with ember speckle (fire), yellow-green etched froth (acid) — replace flat `circleGrad` burns
 - [ ] ENG-0102 · Demo · P1 · M · Bubo, rot and venom surfaces — taut glossy bubo dome with pus shadow; necrotic rot ramp red→purple→black with wetness loss; green-black venom tracking along veins
 - [ ] ENG-0103 · Demo · P1 · M · Scrying Lens view shader — sepia scry-glass disc with lens distortion, scan sweep and edge chromatic fringe revealing hidden entities; matches the lens reveal radius in sim
-- [ ] ENG-0104 · Demo · P0 · L · Malison of Matins render set — living-ink body shader (flowing noise, gold-leaf sigil glints), hit flash, phase-change swell, dissolve-to-ash on defeat
+- [x] ENG-0104 · Demo · P0 · L · Malison of Matins render set — living-ink body shader (flowing noise, gold-leaf sigil glints), hit flash, phase-change swell, dissolve-to-ash on defeat
 - [ ] ENG-0105 · Demo · P0 · L · Malison of Lauds render set — chorister core with orbiting Voices (emissive rings), Hymn ring distortion wave, submerged silhouette visible only through the Scrying Lens, hexstone shatter
 - [ ] ENG-0106 · Demo · P1 · S · Hexstone shard material — emissive rune glow plus refraction offset of the flesh behind it, shared by `Embedded(hexstone)` and Lauds shatter
 

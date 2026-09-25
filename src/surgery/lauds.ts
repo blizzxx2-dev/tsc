@@ -3,6 +3,7 @@ import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { Entity } from './entity';
 import { Embedded, Laceration, Rot, surfDisc } from './entities';
+import { MalisonAsh } from './malison';
 import { FIELD, onBody, type Operation } from './operation';
 import type { Pointer, ToolId } from './types';
 
@@ -170,6 +171,7 @@ export class LaudsMalison extends Entity {
     if (this.hp <= 0) {
       this.kill();
       op.rate('cool', this.pos, 'Malison unmade');
+      op.spawn(new MalisonAsh({ ...this.pos }, this.radius, 1));
       op.shake = 14;
       op.say('It shattered — hexstone, everywhere! Get every shard out before it spoils him!');
       for (let i = 0; i < 3; i++) {
@@ -187,24 +189,17 @@ export class LaudsMalison extends Entity {
 
   draw(g: Gfx, op: Operation): void {
     const { x, y } = this.pos;
-    const t = op.elapsed;
     if (this.hymnR >= 0) {
       const a = Math.max(0, 1 - this.hymnR / 320);
-      g.arc(x, y, this.hymnR, 10, hex('#d8b0ff', 0.12 * a));
+      g.arc(x, y, this.hymnR, 14, hex('#d8b0ff', 0.1 * a));
       g.arc(x, y, this.hymnR, 3, hex('#f0d8ff', 0.7 * a));
     }
     const exposed = this.livingVoices.length === 0;
-    g.glow(x, y, this.radius * 2.4, hex(exposed ? '#ff9050' : '#c0a0ff', 0.25));
-    // A mouth-like core that sings.
-    const sing = 0.5 + 0.5 * Math.sin(t * 5);
-    g.circleGrad(x, y, this.radius, this.hurtFlash > 0 ? hex('#ffc080') : hex('#5a3080'), hex('#1a0828', 0.6));
-    g.ellipse(x, y, this.radius * 0.35, this.radius * (0.1 + 0.25 * sing), 0, hex('#0a0005'));
-    for (let i = 0; i < 6; i++) {
-      const a = (i / 6) * TAU - t * 0.6;
-      g.line({ x: x + Math.cos(a) * this.radius * 0.8, y: y + Math.sin(a) * this.radius * 0.8 }, { x: x + Math.cos(a) * this.radius * 1.35, y: y + Math.sin(a) * this.radius * 1.35 }, 3, hex('#2a1040', 0.8));
-    }
-    if (exposed) g.arc(x, y, this.radius + 12, 3, hex('#ff8040'), 1 - this.exposedT / 5);
-    g.arc(x, y, this.radius + 6, 3, hex('#b478ff', 0.7), this.hp / this.maxHp);
+    g.glow(x, y, this.radius * 2.8, hex(exposed ? '#ff9050' : '#c0a0ff', 0.25));
+    g.creature(1, x, y, this.radius * 4, { seed: this.id, open: exposed ? 1 : 0, health: this.hp / this.maxHp, flash: this.hurtFlash });
+    if (exposed) g.arc(x, y, this.radius + 16, 3, hex('#ff8040'), 1 - this.exposedT / 5);
+    g.arc(x, y, this.radius + 10, 3, hex('#b478ff', 0.7), this.hp / this.maxHp);
+    void op;
   }
 }
 

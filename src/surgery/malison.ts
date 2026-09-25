@@ -114,6 +114,7 @@ export class Malison extends Entity {
     if (this.hp <= 0) {
       this.kill();
       op.rate('cool', this.pos, 'Malison unmade');
+      op.spawn(new MalisonAsh({ ...this.pos }, this.radius));
       op.shake = 14;
       op.emit('mote', this.pos, 60, undefined, undefined, 140);
       op.emit('blood', this.pos, 30, undefined, undefined, 200);
@@ -129,25 +130,11 @@ export class Malison extends Entity {
   draw(g: Gfx, op: Operation): void {
     const { x, y } = this.pos;
     const r = this.radius;
-    const t = op.elapsed;
-    // Shroud tendrils.
-    const ta = this.open ? 0.5 : 0.9;
-    for (let i = 0; i < 9; i++) {
-      const a = (i / 9) * TAU + t * 0.4;
-      const l = r * (1.3 + 0.3 * Math.sin(t * 2 + i));
-      g.quadCurve(this.pos, { x: x + Math.cos(a + 0.5) * l * 0.6, y: y + Math.sin(a + 0.5) * l * 0.6 }, { x: x + Math.cos(a) * l, y: y + Math.sin(a) * l }, 7, hex('#1a0a24', ta));
-    }
-    g.glow(x, y, r * 2.2, hex(this.open ? '#ff6030' : '#8030c0', 0.25));
-    g.circleGrad(x, y, r, this.hurtFlash > 0 ? hex('#ffb070') : hex('#4a2060'), hex('#140820', 0.4));
-    // The eye opens as the shroud parts.
-    const openness = this.open ? Math.min(1, this.cycleT * 4) : 0;
-    g.ellipse(x, y, r * 0.55, r * 0.35 * Math.max(0.05, openness), 0, hex('#d8c8f0'));
-    if (openness > 0.2) {
-      const ex = x + Math.sin(t) * 6;
-      g.circle(ex, y, r * 0.18, hex('#6a0a2a'));
-      g.ellipse(ex, y, r * 0.05, r * 0.15, 0, hex('#000000'));
-    }
-    g.arc(x, y, r + 8, 3, this.open ? hex('#ff8040') : hex('#b478ff', 0.6), this.hp / this.maxHp);
+    const openness = this.open ? Math.min(1, this.cycleT * 4) : Math.max(0, 1 - this.cycleT * 6) * 0;
+    g.glow(x, y, r * 2.6, hex(this.open ? '#ff6030' : '#8030c0', 0.22));
+    g.creature(0, x, y, r * 4.4, { seed: this.id * 1.3, open: openness, health: this.hp / this.maxHp, flash: this.hurtFlash });
+    g.arc(x, y, r + 14, 3, this.open ? hex('#ff8040', 0.9) : hex('#b478ff', 0.5), this.hp / this.maxHp);
+    void op;
   }
 }
 
@@ -215,5 +202,28 @@ export class MalisonShard extends Entity {
     }
     g.poly(pts, hex('#8c3cc8', flick), hex('#e0b0ff', flick));
     g.arc(x, y, 24, 3, hex('#ffc878', 0.7), this.life / 9);
+  }
+}
+
+/** Death animation: the ink body dissolves into embers and ash (cosmetic, not required). */
+export class MalisonAsh extends Entity {
+  private t = 0;
+  constructor(
+    pos: Vec,
+    private r: number,
+    private mode = 0,
+  ) {
+    super(pos);
+    this.required = false;
+    this.layer = 8;
+  }
+
+  override update(_op: Operation, dt: number): void {
+    this.t += dt;
+    if (this.t > 1.4) this.kill();
+  }
+
+  draw(g: Gfx): void {
+    g.creature(this.mode, this.pos.x, this.pos.y, this.r * 4.4, { seed: this.id, dissolve: Math.min(1, this.t / 1.2), health: 0.6 });
   }
 }

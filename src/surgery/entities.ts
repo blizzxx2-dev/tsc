@@ -504,7 +504,7 @@ export class Embedded extends Entity {
       case 'hexstone': {
         const warp = this.kind === 'hexstone';
         const c = warp ? hex('#e8a838', 0.75 + 0.25 * Math.sin(op.elapsed * 5)) : this.kind === 'glass' ? hex('#c8e6f0', 0.75) : hex('#8a8f96');
-        if (warp) g.glow(x, y, 40, hex('#ff6a20', 0.35));
+        if (warp) g.creature(3, x, y, 90, { seed: this.id, blend: 'add' });
         g.poly(
           [
             { x, y },
@@ -587,7 +587,7 @@ export class Burn extends Entity {
   draw(g: Gfx, op: Operation): void {
     const { x, y } = this.pos;
     // Char and rawness come from the surface layer; embers and eschar crusts are drawn here.
-    if (this.source === 'hexfire') g.glow(x, y, this.radius * 1.3, hex('#c060ff', 0.18 + 0.1 * Math.sin(op.elapsed * 7)));
+    if (this.source === 'hexfire') g.creature(2, x, y - this.radius * 0.3, this.radius * 3, { seed: this.id, intensity: 0.35 + 0.65 * (1 - this.cov.fraction), blend: 'add' });
     else if (this.flakes.length) g.glow(x, y, this.radius * 0.9, hex('#ff5a1a', 0.1 + 0.05 * Math.sin(op.elapsed * 5 + this.id)));
     for (const f of this.flakes) {
       const rot = (f.x * 0.37 + f.y * 0.11) % 3;
