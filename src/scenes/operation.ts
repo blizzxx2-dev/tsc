@@ -31,7 +31,7 @@ import { bloodScale, flashScale, GORE_LEVEL, presentation } from '../render/pres
 import { highContrast, palette } from '../ui/theme';
 import { giltNumerals } from '../ui/ornaments';
 import { RATING_INK, starReliquary, vialArt } from '../art/kit';
-import { cursorTarget, cursorTint, vialLevel } from '../art/hud';
+import { cursorTarget, cursorTint, drawTongsJaws, vialLevel } from '../art/hud';
 import { CAST } from '../content/characters';
 import { ASSISTANT_NAME } from '../content/characters';
 import { vec3 } from '../render/color';
@@ -593,6 +593,7 @@ export class OperationScene implements Scene {
     this.drawHoldRing(g, p);
     drawTorpor(g, op, p, viewRect());
     toolIcon(g, op.tool, p.x + 20, p.y - 20, 0.8 + this.toolFlash * 0.3, t);
+    if (op.tool === 'tongs') drawTongsJaws(g, p, op.held !== null);
     const aim = op.status === 'running' && !this.paused ? cursorTarget(op, p) : { kind: 'none' as const };
     const cpal = palette();
     const tint = aim.kind === 'valid' ? '#9fe0a8' : aim.kind === 'needs' ? '#ff9a6a' : cursorTint(op, p);

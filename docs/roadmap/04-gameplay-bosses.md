@@ -58,7 +58,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0028 · Demo · P0 · M · Extraction angle rule — pulling within ±25° of the embed axis is COOL, ±50° GOOD, otherwise tears (laceration spawn + BAD); unit test for arrow/bolt/tooth
 - [x] GAM-0029 · Demo · P1 · S · Drop-off zone — objects must be dragged off the body silhouette (tray at screen edge) to count; release on body re-embeds shallowly
 - [x] GAM-0030 · Demo · P1 · S · Held-object drag inertia (lag 60 ms) so heavy items (bolts, lead shot) feel weighty — light items (glass) have none
-- [ ] GAM-0031 · Demo · P2 · S · Tongs clack SFX pitch by object weight — grip closes visually on grab
+- [x] GAM-0031 · Demo · P2 · S · Tongs clack SFX pitch by object weight — grip closes visually on grab
 
 ### Leech-Pipe
 - [x] GAM-0032 · Demo · P0 · S · Drain rate 1 pool-unit per 0.9 s at centre, falloff to 40 % at rim — pools < 10 % auto-clear as GOOD

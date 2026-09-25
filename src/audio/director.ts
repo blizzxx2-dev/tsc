@@ -7,7 +7,7 @@
  */
 import { dist, Rng, type Vec } from '../core/math';
 import { settings } from '../core/settings';
-import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, Sigil, Venom } from '../surgery/entities';
+import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, Sigil, Venom, type EmbeddedKind } from '../surgery/entities';
 import type { Entity } from '../surgery/entity';
 import { ChoirVoice, EggSac, LaudsMalison, SpiderlingGrub } from '../surgery/lauds';
 import { Malison, MalisonShard } from '../surgery/malison';
@@ -95,6 +95,14 @@ const TOOL_SELECT: Record<ToolId, EventId> = {
 const TOOL_KEYS: Record<string, ToolId> = { Digit1: 'lancet', Digit2: 'tongs', Digit3: 'leech', Digit4: 'thread', Digit5: 'salve', Digit6: 'tincture', Digit7: 'brand', Digit8: 'lens' };
 
 const peek = <T>(o: object, k: string): T | undefined => (o as Record<string, unknown>)[k] as T | undefined;
+
+/** Relative weight of each embedded object (lead shot heaviest, glass lightest). */
+export const EMBED_WEIGHT: Record<EmbeddedKind, number> = { shot: 1, bolt: 0.85, arrow: 0.6, hexstone: 0.55, tooth: 0.4, shard: 0.35, glass: 0.15 };
+
+/** Pitch of the tongs' clack on an embedded object: heavy things clack low, light ones high (GAM-0031). */
+export function clackPitch(kind: EmbeddedKind): number {
+  return 1.3 - 0.55 * EMBED_WEIGHT[kind];
+}
 
 /** Which of the three grub squeals (0–2) a seared grub gives: seeded by the operation and the grub, so replays match. */
 export function squealVariant(seed: number, id: number): 0 | 1 | 2 {
@@ -325,7 +333,9 @@ export class OperationAudio {
         }
         case 'pluck': {
           const near = op.entities.find((e) => e.alive && dist(e.pos, pos) < 40 && (e instanceof Embedded || e instanceof Grub || e instanceof MalisonShard));
-          this.play(near instanceof Embedded ? 'sfx.tongs.grabHard' : 'sfx.tongs.grabFlesh', { pan });
+          // The clack drops in pitch with the weight of what the tongs close on (GAM-0031).
+          if (near instanceof Embedded) this.play('sfx.tongs.grabHard', { pan, pitch: clackPitch(near.kind) });
+          else this.play('sfx.tongs.grabFlesh', { pan });
           break;
         }
         case 'burn': {

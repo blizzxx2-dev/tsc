@@ -1,6 +1,7 @@
-/** GAM-0039 / GAM-0085: stitch and grub feedback — the thread's tension and knot, the grub's squeal and death-curl. */
+/** GAM-0031 / GAM-0039 / GAM-0085: tongs, stitch and grub feedback — the thread's tension and knot, the grub's squeal and death-curl. */
 import { describe, expect, it } from 'vitest';
-import { squealVariant } from '../../../src/audio/director';
+import { clackPitch, EMBED_WEIGHT, squealVariant } from '../../../src/audio/director';
+import { drawTongsJaws } from '../../../src/art/hud';
 import { EVENTS } from '../../../src/audio/events';
 import { RECIPES } from '../../../src/audio/sfx';
 import type { FxEvent } from '../../../src/render/particles';
@@ -8,6 +9,23 @@ import { CURL_SECONDS, KNOT_SECONDS, Particles } from '../../../src/render/parti
 import type { Gfx } from '../../../src/render/gfx';
 import { Grub, Laceration } from '../../../src/surgery/entities';
 import { at, Hand, start } from '../../harness';
+
+describe('GAM-0031 the tongs’ clack and grip', () => {
+  it('the clack drops in pitch with the weight of the object; the jaws snap shut on a grab', () => {
+    expect(clackPitch('shot')).toBeLessThan(clackPitch('bolt'));
+    expect(clackPitch('bolt')).toBeLessThan(clackPitch('arrow'));
+    expect(clackPitch('arrow')).toBeLessThan(clackPitch('glass'));
+    for (const k of Object.keys(EMBED_WEIGHT) as (keyof typeof EMBED_WEIGHT)[]) expect(clackPitch(k)).toBeGreaterThan(0.5);
+    const tips = (closed: boolean) => {
+      const ends: number[] = [];
+      const g = new Proxy({}, { get: (_t, k) => (_a: { y: number }, b: { y: number }) => k === 'line' && ends.push(b.y) }) as unknown as Gfx;
+      drawTongsJaws(g, { x: 100, y: 100 }, closed);
+      return Math.abs(ends[0] - ends[1]);
+    };
+    expect(tips(false)).toBeGreaterThan(12);
+    expect(tips(true)).toBeLessThan(4);
+  });
+});
 
 describe('GAM-0039 thread tension and the knot', () => {
   it('a taut line runs from the last stitch to the needle, and a finished line ties off with a knot flourish', () => {
