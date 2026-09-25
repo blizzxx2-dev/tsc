@@ -27,6 +27,10 @@ export class Malison extends Entity {
   private target: Vec;
   private hurtFlash = 0;
   private spawnedMotes = 0;
+  override boss = true;
+  /** Shroud rhythm (s veiled / s open); X-op remixes shorten it. */
+  veilTime = 4;
+  openTime = 2.5;
 
   constructor(
     pos: Vec,
@@ -61,7 +65,7 @@ export class Malison extends Entity {
     if (Math.random() < dt * 12) op.emit('mote', { x: this.pos.x + fxRange(-30, 30), y: this.pos.y + fxRange(-30, 30) }, 1);
     // Shroud rhythm: 4s veiled, 2.5s open.
     this.cycleT += dt;
-    const period = this.open ? 2.5 : 4;
+    const period = this.open ? this.openTime : this.veilTime;
     if (this.cycleT >= period) {
       this.cycleT = 0;
       this.open = !this.open;

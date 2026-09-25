@@ -3,7 +3,14 @@ import type { Gfx } from '../render/gfx';
 import type { Operation } from './operation';
 import type { Pointer, ToolId } from './types';
 
-let nextId = 1;
+/**
+ * Where an entity came from, for scoring:
+ * - `content`: placed by the operation's phases (full points);
+ * - `boss`: spawned by a Malison or by another boss add (reduced, capped points);
+ * - `penalty`: created by the surgeon's own mistake — torn barbs, burst buboes, split grubs (no points);
+ * - `self`: spawned by an ordinary ailment as it runs its course (full points).
+ */
+export type Origin = 'content' | 'boss' | 'penalty' | 'self';
 
 /**
  * Anything on the operating field the surgeon can act upon. Entities are pure
@@ -11,7 +18,13 @@ let nextId = 1;
  * directly, so the whole operation can be driven headlessly in tests.
  */
 export abstract class Entity {
-  readonly id = nextId++;
+  /** Ids are per operation: `Operation` resets the counter, so replays of a seed produce identical ids. */
+  static nextId = 1;
+  static resetIds(): void {
+    Entity.nextId = 1;
+  }
+
+  readonly id = Entity.nextId++;
   alive = true;
   /** The phase cannot end while a required entity lives. */
   required = true;
@@ -21,12 +34,32 @@ export abstract class Entity {
   layer = 0;
   /** Set during a frame when the brand is on this entity (so it isn't searing healthy flesh). */
   branded = false;
+  /** True for a Malison (or any boss core): its spawns are tagged as boss adds. */
+  boss = false;
+  spawnedBy: Origin = 'content';
+  /** Left inside when the patient is closed, it causes wound-fever (lead-shot wadding, bone splinters…). */
+  feverOnClose = false;
+  /** Seconds this entity has existed (world time). */
+  age = 0;
 
   constructor(public pos: Vec) {}
 
   /** Vitals lost per second while this entity is alive. */
   drain(_op: Operation): number {
     return 0;
+  }
+
+  /** Instruments that act on this entity (for wrong-tool hints and the assist tool suggestion). */
+  wants(_op: Operation): readonly ToolId[] {
+    return [];
+  }
+
+  /** What the surgeon would call it in a hint ("a grub", "the arrow"). */
+  noun = 'that';
+
+  /** Is the point over this entity (for "nothing there" MISS checks and hints)? */
+  hitTest(p: Vec, pad = 0): boolean {
+    return dist(p, this.pos) < 28 + pad;
   }
 
   /** A press landed; return true to capture the pointer until release. */
@@ -41,13 +74,17 @@ export abstract class Entity {
 
   /** Lens hovering nearby: by default a hidden entity surfaces once the lens lingers over it. */
   onReveal(op: Operation, p: Vec, dt: number): void {
-    if (dist(p, this.pos) > 60) return;
+    if (dist(p, this.pos) > op.tuning.lens.radius) return;
     this.revealT += dt;
-    if (this.revealT > 0.4) {
-      this.hidden = false;
-      op.popup('Found!', this.pos, '#b9d7ff');
-      op.cues.push('good');
-    }
+    if (this.revealT > op.tuning.lens.reveal) this.reveal(op);
+  }
+
+  /** Bring a hidden entity to light (lens, Vigil, auto-lens assist). It stays visible. */
+  reveal(op: Operation): void {
+    if (!this.hidden) return;
+    this.hidden = false;
+    op.popup('Found!', this.pos, '#b9d7ff');
+    op.cues.push('good');
   }
 
   /** World time: slowed by the Litany. */

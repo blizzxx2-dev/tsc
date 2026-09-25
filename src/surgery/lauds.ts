@@ -32,6 +32,7 @@ export class LaudsMalison extends Entity {
   private drift: Vec;
   private lensT = 0;
   private rekindleT = 0;
+  override boss = true;
 
   constructor(pos: Vec, op: Operation) {
     super(pos);
