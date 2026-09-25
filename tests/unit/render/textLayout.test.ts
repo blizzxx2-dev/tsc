@@ -190,19 +190,21 @@ describe('Gfx text with kerning and the static text cache (ENG-0168, ENG-0177)',
       }
       g.flush();
     };
-    const time = (on: boolean) => {
+    // Interleave the two modes round by round and keep each one's best round, so a burst of load
+    // from other test workers lands on both sides instead of skewing one.
+    const round = (on: boolean) => {
       g.textCache = on;
       frame();
-      let best = Infinity;
-      for (let r = 0; r < 5; r++) {
-        const t0 = performance.now();
-        for (let i = 0; i < 40; i++) frame();
-        best = Math.min(best, performance.now() - t0);
-      }
-      return best;
+      const t0 = performance.now();
+      for (let i = 0; i < 40; i++) frame();
+      return performance.now() - t0;
     };
-    const uncached = time(false);
-    const cached = time(true);
+    let uncached = Infinity;
+    let cached = Infinity;
+    for (let r = 0; r < 9; r++) {
+      uncached = Math.min(uncached, round(false));
+      cached = Math.min(cached, round(true));
+    }
     expect(cached).toBeLessThan(uncached * 0.5);
   });
 });
