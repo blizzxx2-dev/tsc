@@ -1050,5 +1050,14 @@
   "ui.setup.timing.body": "Cases are timed and the patient bleeds while you work. Slower hands can have more time without changing what the theatre asks of them.",
   "ui.setup.timing.0": "Standard",
   "ui.setup.timing.1": "Generous (×1.5)",
-  "ui.setup.timing.2": "Relaxed (×2)"
+  "ui.setup.timing.2": "Relaxed (×2)",
+  "hud.timeattack": "Against the clock",
+  "hud.timeattack.best": "Best {t}",
+  "hud.timeattack.behind": "{t} behind",
+  "hud.timeattack.first": "First clear sets the ghost",
+  "hud.timeattack.new_best": "New best time",
+  "ui.theatre.fastest": "Fastest {time}",
+  "ui.theatre.not_cleared": "Not yet cleared",
+  "ui.theatre.mode_standard": "Mode: Standard",
+  "ui.theatre.mode_timeattack": "Mode: Time attack"
 }

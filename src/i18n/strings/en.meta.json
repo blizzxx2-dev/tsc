@@ -8608,5 +8608,68 @@
     "size": 24,
     "maxPx": 420,
     "context": "Setup choice: timers ×2."
+  },
+  "hud.timeattack": {
+    "scene": "operation",
+    "font": "display",
+    "size": 11,
+    "maxPx": 160,
+    "context": "Caps label on the time-attack plate under the timer."
+  },
+  "hud.timeattack.best": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 230,
+    "context": "Time-attack plate: the personal best to beat."
+  },
+  "hud.timeattack.behind": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 230,
+    "context": "Time-attack plate: how far past the personal best this run is."
+  },
+  "hud.timeattack.first": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 230,
+    "context": "Time-attack plate when there is no personal best yet."
+  },
+  "hud.timeattack.new_best": {
+    "scene": "operation",
+    "font": "display",
+    "size": 14,
+    "maxPx": 260,
+    "context": "Shown under the time-attack plate when the run beats the personal best."
+  },
+  "ui.theatre.fastest": {
+    "scene": "theatre",
+    "font": "body",
+    "size": 26,
+    "maxPx": 200,
+    "context": "Operating theatre, time-attack mode: the fastest clear of this op."
+  },
+  "ui.theatre.not_cleared": {
+    "scene": "theatre",
+    "font": "body",
+    "size": 26,
+    "maxPx": 220,
+    "context": "Operating theatre, time-attack mode: the op must be cleared first."
+  },
+  "ui.theatre.mode_standard": {
+    "scene": "theatre",
+    "font": "display",
+    "size": 15,
+    "maxPx": 300,
+    "context": "Toggle button in the operating theatre."
+  },
+  "ui.theatre.mode_timeattack": {
+    "scene": "theatre",
+    "font": "display",
+    "size": 15,
+    "maxPx": 300,
+    "context": "Toggle button in the operating theatre."
   }
 }

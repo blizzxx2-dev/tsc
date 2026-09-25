@@ -1,3 +1,4 @@
+import { formatSplit, timeAttackBest } from '../surgery/timeAttack';
 import type { Game, Scene } from '../core/scene';
 import { heading } from '../ui/hudKit';
 import { t } from '../i18n';
@@ -18,6 +19,8 @@ export class OperationsScene implements Scene {
   /** A menu page: moving between two plays the page-turn transition (ART-0306). */
   readonly menuPage = true;
   private list: { chapter: string; def: OperationDef }[] = [];
+  /** Time attack (GAM-0217): a cleared op is raced against the clock and its personal-best ghost. */
+  private static timeAttack = false;
 
   enter(): void {
     const p = save.progress;
@@ -46,12 +49,19 @@ export class OperationsScene implements Scene {
       g.text(t('ui.theatre.entry', { chapter, index: i + 1 }), 260, y, { size: 24, color: hex(PALETTE.inkDim) });
       g.text(def.title, 340, y, { size: 28, color: hex(hover ? PALETTE.gold : PALETTE.ink) });
       const best = save.best[def.id];
-      g.text(best ? t('ui.theatre.best', { rank: best.rank, score: best.score }) : '—', 1020, y, { size: 26, color: hex(best ? PALETTE.gold : PALETTE.inkDim), align: 'right' });
-      if (hover && game.input.pressed) {
+      const ta = OperationsScene.timeAttack;
+      const record = ta ? timeAttackBest(def.id) : null;
+      // In time attack only cleared operations can be raced; the column shows the fastest clear.
+      const open = !ta || !!best;
+      const right = ta ? (record ? t('ui.theatre.fastest', { time: formatSplit(record.time) }) : best ? '—' : t('ui.theatre.not_cleared')) : best ? t('ui.theatre.best', { rank: best.rank, score: best.score }) : '—';
+      g.text(right, 1020, y, { size: 26, color: hex(open && (record || (!ta && best)) ? PALETTE.gold : PALETTE.inkDim), align: 'right' });
+      if (hover && open && game.input.pressed) {
         const back = () => game.go(new OperationsScene());
-        playOperation(game, def, back, back);
+        playOperation(game, def, back, back, false, ta ? { timeAttack: true } : {});
       }
     });
+    const mode = t(OperationsScene.timeAttack ? 'ui.theatre.mode_timeattack' : 'ui.theatre.mode_standard');
+    if (button(g, game.input, mode, VIEW_W / 2, 132, 20)) OperationsScene.timeAttack = !OperationsScene.timeAttack;
     if (button(g, game.input, t('ui.codex.open'), VIEW_W / 2 - 250, 650, 24)) game.go(new CodexScene(() => game.go(new OperationsScene())));
     if (button(g, game.input, t('ui.manual.open'), VIEW_W / 2, 650, 24)) game.go(new ManualScene(() => game.go(new OperationsScene())));
     if (button(g, game.input, t('ui.common.back'), VIEW_W / 2 + 250, 650, 26)) game.go(new TitleScene());

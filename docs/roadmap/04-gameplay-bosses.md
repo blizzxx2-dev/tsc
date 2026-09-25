@@ -336,7 +336,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0214 · Demo · P1 · S · X-op rules: no Assist toggles, no retry-at-Novice, Litany allowed once — results show rank and a global demo best time
 - [x] GAM-0215 · Alpha · P1 · L · Full X-op ladder — X1–X8, one per Malison Hour, each a remixed escalated boss unlocked by clearing its story chapter at A rank or better
 - [x] GAM-0216 · Alpha · P1 · S · X-op modifiers table (data): drain×, time×, HP×, tell speed×, add cadence× — each X-op declares its modifiers
-- [ ] GAM-0217 · Alpha · P2 · M · Time-attack mode — any cleared op replayable against the clock; ghost vitals graph of personal best overlaid on HUD
+- [x] GAM-0217 · Alpha · P2 · M · Time-attack mode — any cleared op replayable against the clock; ghost vitals graph of personal best overlaid on HUD
 - [x] GAM-0218 · Beta · P1 · M · Symptom Loom — procedural challenge ops built from 3 adjacent "verses" out of 12 symptom modules; seed shown and shareable
 - [x] GAM-0219 · Beta · P1 · S · Loom validator — every generated combination tested by bot sweep (1000 seeds) for completability before shipping the module set
 - [x] GAM-0220 · Beta · P2 · M · Daily Loom — date-seeded op; Steam leaderboard per day

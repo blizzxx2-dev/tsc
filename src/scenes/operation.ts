@@ -52,6 +52,7 @@ import { vec3 } from '../render/color';
 import { settings } from '../core/settings';
 import { OptionsScene } from './options';
 import { litanyMode, OperationInput } from '../input/opinput';
+import { formatSplit, ghostAt, GHOST_STEP, recordTimeAttack, TimeAttackClock, timeAttackBest, type TimeAttackRun } from '../surgery/timeAttack';
 import { addTray, HudLayer, inRect, trayFrame, traySide, traySlot } from '../input/hud';
 import { drawGraspOutline } from '../input/hover';
 import { HoldToRetry } from '../input/retry';
@@ -194,6 +195,10 @@ export class OperationScene implements Scene {
   /** The Respite button in the HUD (UIX-0102): registered each frame, drawn beside the score plate. */
   private pauseRect = { x: VIEW_W - 16 - 250 - 8 - 44, y: 14, w: 44, h: 44 };
   private pauseHover = 0;
+  /** Time attack (GAM-0217): the live clock, the personal best it races and whether this run beat it. */
+  private ta: TimeAttackClock | null = null;
+  private ghost: TimeAttackRun | null = null;
+  private taBest: boolean | null = null;
   /** Hold `op.retry` for a second to restart a challenge run on the spot (INP-0113). */
   private retry = new HoldToRetry();
 
@@ -205,6 +210,10 @@ export class OperationScene implements Scene {
     private runOpts: OperationOptions = {},
   ) {
     this.op = OperationScene.create(def, runOpts);
+    if (runOpts.timeAttack) {
+      this.ta = new TimeAttackClock();
+      this.ghost = timeAttackBest(def.id);
+    }
     this.presRng = new Rng(def.seed ?? 1);
     // Emitter streams seeded from the operation seed (ENG-0131).
     this.particles.seed(this.runOpts.seed ?? this.def.seed ?? 1);
@@ -351,6 +360,11 @@ export class OperationScene implements Scene {
     // A repeat attempt skips the bosses’ phase-transition beats (BOS-0004).
     this.def = { ...this.def, skipCinematics: true } as OperationDef;
     this.op = OperationScene.create(this.def, this.runOpts);
+    if (this.runOpts.timeAttack) {
+      this.ta = new TimeAttackClock();
+      this.ghost = timeAttackBest(this.def.id);
+      this.taBest = null;
+    }
     this.presRng = new Rng(this.def.seed ?? 1);
     this.popups.length = 0;
     this.listen(this.op);
@@ -468,6 +482,10 @@ export class OperationScene implements Scene {
     this.toolFlash = Math.max(0, this.toolFlash - dt * 3);
 
     op.update(dt);
+    if (this.ta) {
+      this.ta.tick(op, dt);
+      if (op.status === 'won' && this.taBest === null) this.taBest = recordTimeAttack(op.def.id, this.ta.run(op));
+    }
 
     // Heartbeat drives the ECG trace and the organ swell (the audio director schedules the thump on its QRS).
     // The Litany slows the heart with the rest of the world.
@@ -943,6 +961,7 @@ export class OperationScene implements Scene {
       g.text(body, bx + 16, by + 34, { size: 16, color: hex(INK.text), shadow: false });
     }
     drawBossHud(g, op);
+    if (this.ta) this.drawTimeAttack(g);
 
     // ---- Score, patient and chain: right.
     const S = { ...HUD_SCORE };
@@ -1078,6 +1097,43 @@ export class OperationScene implements Scene {
     const n = this.op.def.tools.length;
     for (let i = 0; i < n; i++) if (inRect(this.hoverPos, this.slot(i))) return i;
     return -1;
+  }
+
+  /**
+   * Time attack HUD (GAM-0217): under the timer plate, the live clear time with the split against
+   * the personal best, and a small graph of this run's vitals over the best run's ghost trace.
+   */
+  private drawTimeAttack(g: Gfx): void {
+    const ta = this.ta!;
+    const op = this.op;
+    const ghost = this.ghost;
+    const r = { x: HUD_TIMER.x, y: HUD_TIMER.y + HUD_TIMER.h + 8, w: HUD_TIMER.w, h: 96 };
+    glass(g, r);
+    caps(g, tr('hud.timeattack'), r.x + 14, r.y + 18, 11, hex(INK.gold));
+    g.text(formatSplit(ta.time), r.x + r.w - 14, r.y + 22, { size: 20, font: 'display', color: hex(INK.goldHi), align: 'right', shadow: false });
+    if (ghost) {
+      const d = ta.time - Math.min(ta.time, ghost.time);
+      const ahead = ta.time <= ghost.time;
+      const label = ahead ? tr('hud.timeattack.best', { t: formatSplit(ghost.time) }) : tr('hud.timeattack.behind', { t: `+${formatSplit(d)}` });
+      g.text(label, r.x + 14, r.y + 40, { size: 16, font: 'italic', color: hex(ahead ? INK.dim : '#ff9a6a'), shadow: false });
+    } else g.text(tr('hud.timeattack.first'), r.x + 14, r.y + 40, { size: 16, font: 'italic', color: hex(INK.dim), shadow: false });
+    // The graph: time runs left to right over the longer of the two runs.
+    const gr = { x: r.x + 14, y: r.y + 50, w: r.w - 28, h: 38 };
+    g.rect(gr.x, gr.y, gr.w, gr.h, hex('#050303', 0.55));
+    const span = Math.max(10, ghost?.time ?? 0, ta.time);
+    const X = (t: number) => gr.x + (t / span) * gr.w;
+    const Y = (v: number) => gr.y + gr.h - Math.max(0, Math.min(1, v)) * gr.h;
+    if (ghost) {
+      const pts = [];
+      for (let t = 0; t <= ghost.time; t += GHOST_STEP) pts.push({ x: X(t), y: Y(ghostAt(ghost, t)) });
+      pts.push({ x: X(ghost.time), y: Y(ghostAt(ghost, ghost.time)) });
+      g.polyline(pts, 1.5, hex('#c8c0b0', 0.45));
+      g.rect(X(ghost.time) - 0.5, gr.y, 1, gr.h, hex(INK.gilt, 0.6));
+    }
+    const live = ta.vitals.map((v, i) => ({ x: X(i * GHOST_STEP), y: Y(v) }));
+    live.push({ x: X(ta.time), y: Y(op.vitals / op.maxVitals) });
+    if (live.length > 1) g.polyline(live, 2, hex('#e04040', 0.95));
+    if (this.taBest) caps(g, tr('hud.timeattack.new_best'), r.x + r.w / 2, r.y + r.h + 20, 14, hex(INK.goldHi), 'center');
   }
 
   /** The Respite button (UIX-0102): a small glass cap with a pause glyph beside the score plate. */

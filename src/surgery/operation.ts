@@ -116,6 +116,8 @@ export interface OperationOptions {
   tutorial?: boolean;
   /** Practice Theatre: nothing is scored and the patient cannot die. */
   practice?: boolean;
+  /** Time attack (GAM-0217): a cleared op against the clock, raced by the personal-best ghost. */
+  timeAttack?: boolean;
 }
 
 export type MutatorId = 'candle' | 'cart' | 'rain' | 'stroh';
