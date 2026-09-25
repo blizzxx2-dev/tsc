@@ -79,6 +79,8 @@ export interface PostParams {
   /** Litany ripple origin (0..1 screen, y up) and seconds since invoked. */
   litanyCenter?: [number, number];
   litanyAge?: number;
+  /** Scrying Lens: centre (virtual px), radius (virtual px), strength 0..1. */
+  lens?: [number, number, number, number];
   /** Damage flash: direction from screen centre (virtual px) and intensity 0..1. */
   hurt?: [number, number, number];
 }
@@ -342,6 +344,8 @@ export class Gfx {
     gl.uniform2fv(this.u(this.post, 'u_litanyCenter'), p.litanyCenter ?? [0.5, 0.5]);
     gl.uniform1f(this.u(this.post, 'u_litanyAge'), p.litanyAge ?? 10);
     gl.uniform3fv(this.u(this.post, 'u_hurt'), p.hurt ?? [0, 0, 0]);
+    const ln = p.lens ?? [0, 0, 0, 0];
+    gl.uniform4f(this.u(this.post, 'u_lens'), ln[0] / this.vw, 1 - ln[1] / this.vh, ln[2] / this.vh, ln[3]);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     gl.activeTexture(gl.TEXTURE0);
 

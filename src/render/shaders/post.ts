@@ -49,6 +49,7 @@ uniform vec3 u_hurt; // xy: direction from screen centre, z: intensity
 uniform sampler2D u_lutA;
 uniform sampler2D u_lutB;
 uniform float u_lutMix;
+uniform vec4 u_lens; // xy centre (0..1, y up), z radius (fraction of height), w strength
 out vec4 o;
 // 32³ LUT stored as a 1024×32 strip; blue selects the slice, blended between neighbours.
 vec3 lut(sampler2D t, vec3 c) {
@@ -84,6 +85,15 @@ void main() {
     uv += normalize(lp + 1e-4) / vec2(aspect, 1.0) * lring * 0.012;
     uv += (uv - u_litanyCenter) * sin(sd * 40.0 - u_time * 3.0) * 0.002 * u_litany;
   }
+  // Scrying Lens: a magnifying glass disc with barrel distortion and a fringe at the rim.
+  float lensMask = 0.0;
+  vec2 lensD = vec2(0.0);
+  if (u_lens.w > 0.0) {
+    lensD = (uv - u_lens.xy) * vec2(aspect, 1.0);
+    float lr = length(lensD) / u_lens.z;
+    lensMask = (1.0 - smoothstep(0.96, 1.0, lr)) * u_lens.w;
+    uv = mix(uv, u_lens.xy + (uv - u_lens.xy) * (0.72 + 0.2 * lr * lr), lensMask);
+  }
   vec3 c;
   // Chromatic aberration grows toward the frame edge (curses, trauma).
   float ca = u_chroma * 0.006 + 0.0006;
@@ -95,6 +105,19 @@ void main() {
   // Per-chapter grade.
   c = c * u_tint + u_lift;
 
+  if (lensMask > 0.0) {
+    float lr = length(lensD) / u_lens.z;
+    // Blue scry-tint, fringe at the rim, a rotating scan sweep.
+    float lum = dot(c, vec3(0.299, 0.587, 0.114));
+    vec3 scry = vec3(lum * 0.75, lum * 0.95, lum * 1.25) + vec3(0.02, 0.04, 0.08);
+    float ang = atan(lensD.y, lensD.x);
+    float sweep = pow(max(0.0, cos(ang - u_time * 2.5)), 24.0) * (1.0 - lr) * 0.35;
+    c = mix(c, scry + vec3(0.5, 0.75, 1.0) * sweep, lensMask * 0.75);
+    float rim = smoothstep(0.86, 0.97, lr) * (1.0 - smoothstep(0.97, 1.02, lr));
+    c += vec3(0.9, 0.7, 0.35) * rim * u_lens.w * 0.8;
+    c.r += smoothstep(0.8, 1.0, lr) * lensMask * 0.12;
+    c.b += smoothstep(0.7, 0.95, lr) * lensMask * 0.1;
+  }
   // LUT grade, crossfading between two looks.
   c = mix(lut(u_lutA, c), lut(u_lutB, c), u_lutMix);
   float l = dot(c, vec3(0.299, 0.587, 0.114));

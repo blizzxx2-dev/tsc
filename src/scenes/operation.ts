@@ -256,6 +256,7 @@ export class OperationScene implements Scene {
       lutB: danger > 0.5 ? 'failing' : 'curse',
       lutMix: Math.max(this.corrupt * 0.8, danger > 0.5 ? (danger - 0.5) * 1.2 : 0),
       litanyCenter: this.litanyCenter,
+      lens: op.tool === 'lens' ? [game.input.pos.x, game.input.pos.y, 95, 1] : undefined,
       litanyAge: op.litanyTime > 0 ? LITANY_DURATION - op.litanyTime : 10,
       hurt: (() => {
         const age = op.elapsed - op.lastHurt.at;

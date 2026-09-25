@@ -1,6 +1,6 @@
 // Screenshot tool for visual review. Builds must exist (npm run build).
 // Usage: node scripts/shoot.mjs <outDir> [shot ...]
-//   shots: title | story:<backdrop>[:<characterId>] | op:<id>:<seconds> (default: title story:hospice op:showcase:3)
+//   shots: title | story:<backdrop>[:<characterId>] | op:<id>:<seconds>[:<toolKey 1-8>] (default: title story:hospice op:showcase:3)
 import { chromium } from 'playwright';
 import { preview } from 'vite';
 import { mkdirSync } from 'node:fs';
@@ -35,6 +35,9 @@ try {
         const op = window.__game.scene.op;
         for (let t = 0; t < s; t += 1 / 60) op.update(1 / 60);
       }, Number(b ?? 3));
+      const [, , , tool] = shot.split(':');
+      if (tool) await page.keyboard.press(`Digit${tool}`);
+      await page.mouse.move(660, 380);
       await page.waitForTimeout(600);
     }
     await page.screenshot({ path: `${out}/${shot.replace(/:/g, '_')}.png` });
