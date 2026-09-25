@@ -13,6 +13,7 @@
  * - ENG-0141 tincture shimmer at the needle; salve droplets along the stroke.
  * - ENG-0142 Litany dust: gold motes along the star trail and "held time" motes while the Litany holds.
  */
+import type { Entity } from '../surgery/entity';
 import type { Vec } from '../core/math';
 import type { Particles } from '../render/particles';
 import { Burn, Grub, Laceration, Sigil, Venom } from '../surgery/entities';
@@ -42,6 +43,11 @@ export interface VfxFrame {
 
 export class OperationVfx {
   private lastBeat = 0;
+  /**
+   * Entities that drive continuous effects, kept from the operation's spawn/death events
+   * (ENG-0247) instead of scanning the entity list every frame.
+   */
+  readonly tracked = new Set<Entity>();
   private prevPtr: Vec | null = null;
   private sprayStep = 0;
   private trailN = 0;
@@ -56,6 +62,11 @@ export class OperationVfx {
 
   /** Subscribe to the operation's events (call once per operation instance). */
   listen(op: Operation, gore: () => number): void {
+    this.tracked.clear();
+    const drives = (e: Entity) => e instanceof Laceration || e instanceof Venom || e instanceof Sigil || (e instanceof Burn && e.source === 'hexfire');
+    for (const e of op.entities) if (drives(e)) this.tracked.add(e);
+    op.events.on('spawn', ({ entity }) => drives(entity) && this.tracked.add(entity));
+    op.events.on('death', ({ entity }) => this.tracked.delete(entity));
     op.events.on('rate', ({ rating, pos, label }) => {
       if (op.tool === 'lancet' && !/stitch/i.test(label ?? '')) this.spatter(pos, SPATTER[rating] * gore(), rating);
       else if (op.tool === 'tincture') this.fx.burst('tinctureShimmer', pos);
@@ -93,7 +104,7 @@ export class OperationVfx {
     this.lastBeat = f.beat;
     const running = op.status === 'running';
 
-    for (const e of op.entities) {
+    for (const e of this.tracked) {
       if (!e.alive) continue;
       if (e instanceof Laceration && running && f.gore > 0) {
         const rate = e.drain(op);
@@ -116,7 +127,7 @@ export class OperationVfx {
         fx.emitContinuous('hexSpark', e.pos, dt);
         // Curse motes drift from the fire toward the nearest live Sigil.
         let target: Sigil | null = null;
-        for (const s of op.entities) if (s instanceof Sigil && s.alive && (!target || dist(s.pos, e.pos) < dist(target.pos, e.pos))) target = s;
+        for (const s of this.tracked) if (s instanceof Sigil && s.alive && (!target || dist(s.pos, e.pos) < dist(target.pos, e.pos))) target = s;
         if (target) fx.emitContinuous('curseMote', e.pos, dt, 1, { dir: Math.atan2(target.pos.y - e.pos.y, target.pos.x - e.pos.x) });
       } else if (e instanceof Venom) fx.emitContinuous('venomMist', e.pos, dt);
     }
