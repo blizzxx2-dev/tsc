@@ -17,7 +17,9 @@ import { LarynxFold } from '../surgery/ailments/organs';
 import { VIEW_W } from '../ui/layout';
 import { UI, scroll } from '../ui/ornaments';
 import { button, type Rect } from '../ui/widgets';
-import { toolInfo } from '../surgery/types';
+import { TOOL_INFO } from '../surgery/types';
+import { glyphFor } from '../input/glyphs';
+import type { ActionId } from '../input/actions';
 
 /** Arrow(s) beside the vitals number: ↓ slow, ↓↓ fast. */
 export function drawDrainArrow(g: Gfx, op: Operation, x: number, y: number): void {
@@ -34,14 +36,14 @@ export function drawSecondaryVitals(g: Gfx, op: Operation, x: number, y: number)
   if (!s) return;
   let cx = x;
   if (s.bloodVolume) {
-    g.text(t('hud.blood'), cx, y + 4, { size: 10, color: hex(UI.brass), shadow: false });
+    g.text(t('hud.blood'), cx, y + 4, { size: 16, color: hex(UI.brass), shadow: false });
     g.rect(cx + 40, y - 4, 70, 6, hex('#000000', 0.7));
     g.rect(cx + 40, y - 4, (70 * op.bloodVolume) / 100, 6, hex('#b01020'));
     cx += 124;
   }
   if (s.temperature) {
     const t = op.temperature;
-    g.text(`${t.toFixed(1)}°`, cx, y + 4, { size: 12, color: hex(t < 35.5 ? '#9ec8ff' : t > 38.5 ? '#ff9060' : UI.parch), shadow: false });
+    g.text(`${t.toFixed(1)}°`, cx, y + 4, { size: 16, color: hex(t < 35.5 ? '#9ec8ff' : t > 38.5 ? '#ff9060' : UI.parch), shadow: false });
   }
 }
 
@@ -83,12 +85,12 @@ export function drawTutorial(g: Gfx, op: Operation): void {
     g.arc(p.x, p.y, r, 3, hex(UI.gilt, 0.8));
     g.glow(p.x, p.y, r * 1.5, hex(UI.gilt, 0.12));
   }
-  const tool = s.tool ? `${toolInfo(s.tool).name} · key ${toolInfo(s.tool).key}` : '';
-  const w = Math.max(g.measure(s.say, 18), g.measure(tool, 14)) + 40;
+  const tool = s.tool ? t('hud.tutorial.tool', { tool: t(`tool.${s.tool}.name`), key: glyphFor(`tool.select.${TOOL_INFO.findIndex((ti) => ti.id === s.tool) + 1}` as ActionId) }) : '';
+  const w = Math.max(g.measure(s.say, 18), g.measure(tool, 16)) + 40;
   g.rect(700 - w / 2, 588, w, 56, hex('#000000', 0.55));
   g.rectLine(700 - w / 2, 588, w, 56, 1, hex(UI.gilt, 0.5));
   g.text(s.say, 700, 612, { size: 18, font: 'italic', color: hex(UI.gilt), align: 'center' });
-  if (tool) g.text(tool, 700, 632, { size: 14, color: hex(UI.parchLo), align: 'center' });
+  if (tool) g.text(tool, 700, 632, { size: 16, color: hex(UI.parchLo), align: 'center' });
 }
 
 /** The Litany practice frame: prompt, attempts, and a skip button. Returns true if skipped. */
@@ -109,7 +111,7 @@ export function drawDialogue(g: Gfx, op: Operation, input: Input): boolean {
   const r = { x: 240, y: 520, w: 800, h: 70 };
   scroll(g, r);
   g.text(line, r.x + 24, r.y + 44, { size: 21, color: hex(UI.inkDark), shadow: false });
-  g.text(t('hud.dialogue.continue'), r.x + r.w - 20, r.y + r.h - 8, { size: 12, font: 'italic', color: hex(UI.inkDark, 0.6), align: 'right', shadow: false });
+  g.text(t('hud.dialogue.continue'), r.x + r.w - 20, r.y + r.h - 8, { size: 16, font: 'italic', color: hex(UI.inkDark, 0.6), align: 'right', shadow: false });
   return input.pressed || input.actPressed('litany.key') || input.actPressed('ui.confirm');
 }
 
@@ -124,7 +126,7 @@ export function drawFieldOverlays(g: Gfx, op: Operation): void {
     const pts: Vec[] = [];
     for (let i = 0; i <= 40; i++) pts.push({ x: VIEW_W / 2 - 100 + i * 5, y: 110 + (hum ? Math.sin(i * 0.9 + g.time * 12) * 7 : 0) });
     g.polyline(pts, 2, hex(hum ? '#e0c0ff' : '#9fd3a8'));
-    g.text(hum ? 'humming' : 'silence — cut now', VIEW_W / 2 + 110, 115, { size: 13, color: hex(hum ? '#e0c0ff' : '#9fd3a8') });
+    g.text(hum ? t('hud.fold.humming') : t('hud.fold.silence'), VIEW_W / 2 + 110, 115, { size: 16, color: hex(hum ? '#e0c0ff' : '#9fd3a8') });
   }
 }
 

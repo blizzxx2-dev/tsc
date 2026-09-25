@@ -1,3 +1,4 @@
+import { t as tr } from '../i18n';
 import type { Game, Scene } from '../core/scene';
 import { settings, saveSettings } from '../core/settings';
 import { hex } from '../render/color';
@@ -5,7 +6,7 @@ import type { Gfx } from '../render/gfx';
 import { drawBackdrop } from '../scenes/backdrop';
 import { PALETTE, VIEW_W } from '../ui/layout';
 import { inRect, panel, reticle, type Rect } from '../ui/widgets';
-import { ACTIONS, CAPTURE_CANCEL, reservedFor, type ActionGroup, type ActionId } from './actions';
+import { ACTIONS, CAPTURE_CANCEL, RESERVED, reservedFor, type ActionGroup, type ActionId } from './actions';
 import { bindings, DEFAULT_PREFS, type GlyphSet, type InputPrefs, type Slot } from './bindings';
 import { codeLabel, glyphContext } from './glyphs';
 import type { InputCode } from './types';
@@ -15,12 +16,12 @@ export const CAPTURE_TIMEOUT = 5;
 
 type Tab = ActionGroup | 'handling' | 'deck';
 const TABS: { id: Tab; label: string }[] = [
-  { id: 'tools', label: 'Instruments' },
-  { id: 'litany', label: 'Litany' },
-  { id: 'story', label: 'Story' },
-  { id: 'menus', label: 'Menus' },
-  { id: 'handling', label: 'Handling & Assists' },
-  { id: 'deck', label: 'Steam Deck' },
+  { id: 'tools', label: 'ctl.tab.tools' },
+  { id: 'litany', label: 'ctl.tab.litany' },
+  { id: 'story', label: 'ctl.tab.story' },
+  { id: 'menus', label: 'ctl.tab.menus' },
+  { id: 'handling', label: 'ctl.tab.handling' },
+  { id: 'deck', label: 'ctl.tab.deck' },
 ];
 
 const SLOTS: Slot[] = [
@@ -41,44 +42,45 @@ const step = (v: number, d: number, lo: number, hi: number, by: number) => Math.
 
 function prefRows(p: InputPrefs): PrefRow[] {
   return [
-    { label: 'Hold actions', value: () => (p.holdMode === 'hold' ? 'Hold' : 'Toggle'), change: () => (p.holdMode = p.holdMode === 'hold' ? 'toggle' : 'hold'), note: 'Toggle: click once to start the Leech, Salve, Tincture or Brand, again to stop.' },
-    { label: 'Assist: target size', value: () => `${p.hitScale}×`, change: (d) => (p.hitScale = cycle([1, 1.25, 1.5] as const, p.hitScale, d)), note: 'Every grab, cut and brush reaches further.' },
-    { label: 'Assist: stitching', value: () => ({ off: 'Off', on: 'On', gamepad: 'Gamepad only' })[p.assistedStitch], change: (d) => (p.assistedStitch = cycle(['off', 'on', 'gamepad'] as const, p.assistedStitch, d)), note: 'Hold and run along the wound; stitches are placed for you (rated Good at best).' },
+    { label: tr('ctl.pref.hold_actions'), value: () => (p.holdMode === 'hold' ? tr('ctl.pref.hold') : tr('ctl.pref.toggle')), change: () => (p.holdMode = p.holdMode === 'hold' ? 'toggle' : 'hold'), note: tr('ctl.pref.toggle_click_once_to_start_the_l') },
+    { label: tr('ctl.pref.assist_target_size'), value: () => `${p.hitScale}×`, change: (d) => (p.hitScale = cycle([1, 1.25, 1.5] as const, p.hitScale, d)), note: tr('ctl.pref.every_grab_cut_and_brush_reaches') },
+    { label: tr('ctl.pref.assist_stitching'), value: () => ({ off: tr('ctl.pref.off'), on: tr('ctl.pref.on'), gamepad: tr('ctl.pref.gamepad_only') })[p.assistedStitch], change: (d) => (p.assistedStitch = cycle(['off', 'on', 'gamepad'] as const, p.assistedStitch, d)), note: tr('ctl.pref.hold_and_run_along_the_wound_sti') },
     {
-      label: 'Litany input',
-      value: () => ({ draw: 'Draw the star', key: 'Litany key', both: 'Either' })[p.litanyInput],
+      label: tr('ctl.pref.litany_input'),
+      value: () => ({ draw: tr('ctl.pref.draw_the_star'), key: tr('ctl.pref.litany_key'), both: tr('ctl.pref.either') })[p.litanyInput],
       change: (d) => {
         p.litanyInput = cycle(['draw', 'key', 'both'] as const, p.litanyInput, d);
         settings.litanyKey = p.litanyInput !== 'draw';
         saveSettings();
       },
-      note: 'Speaking the Litany with a key is marked as assisted on the rank screen.',
+      note: tr('ctl.pref.speaking_the_litany_with_a_key_i'),
     },
-    { label: 'Aim assist (gamepad)', value: () => (p.aimAssist ? 'On' : 'Off'), change: () => (p.aimAssist = !p.aimAssist), note: 'Slows the cursor near what the instrument can act on; the Lancet snaps to the incision.' },
-    { label: 'Cursor speed (gamepad)', value: () => `${p.cursorSpeed.toFixed(2)}×`, change: (d) => (p.cursorSpeed = step(p.cursorSpeed, d, 0.5, 2, 0.25)), note: 'Applies to the gamepad cursor; the mouse keeps your system speed.' },
-    { label: 'Left stick deadzone', value: () => `${Math.round(p.deadzones.left.inner * 100)}%`, change: (d) => (p.deadzones.left = { ...p.deadzones.left, inner: step(p.deadzones.left.inner, d, 0.05, 0.4, 0.05) }) },
-    { label: 'Right stick deadzone', value: () => `${Math.round(p.deadzones.right.inner * 100)}%`, change: (d) => (p.deadzones.right = { ...p.deadzones.right, inner: step(p.deadzones.right.inner, d, 0.05, 0.4, 0.05) }) },
-    { label: 'Mouse wheel', value: () => (p.invertWheel ? 'Inverted' : 'Normal'), change: () => (p.invertWheel = !p.invertWheel) },
-    { label: 'Wheel wraps around the tray', value: () => (p.wrapWheel ? 'On' : 'Off'), change: () => (p.wrapWheel = !p.wrapWheel) },
-    { label: 'Confirm button', value: () => (p.nintendoLayout ? 'Right face (Nintendo)' : 'Bottom face'), change: () => (p.nintendoLayout = !p.nintendoLayout) },
-    { label: 'Button prompts', value: () => ({ auto: 'Automatic', xbox: 'Xbox', playstation: 'PlayStation', nintendo: 'Nintendo', deck: 'Steam Deck', generic: 'Generic' })[p.glyphs], change: (d) => (p.glyphs = cycle(['auto', 'xbox', 'playstation', 'nintendo', 'deck', 'generic'] as GlyphSet[], p.glyphs, d)) },
+    { label: tr('ctl.pref.aim_assist_gamepad'), value: () => (p.aimAssist ? tr('ctl.pref.on') : tr('ctl.pref.off')), change: () => (p.aimAssist = !p.aimAssist), note: tr('ctl.pref.slows_the_cursor_near_what_the_i') },
+    { label: tr('ctl.pref.cursor_speed_gamepad'), value: () => `${p.cursorSpeed.toFixed(2)}×`, change: (d) => (p.cursorSpeed = step(p.cursorSpeed, d, 0.5, 2, 0.25)), note: tr('ctl.pref.applies_to_the_gamepad_cursor_th') },
+    { label: tr('ctl.pref.left_stick_deadzone'), value: () => `${Math.round(p.deadzones.left.inner * 100)}%`, change: (d) => (p.deadzones.left = { ...p.deadzones.left, inner: step(p.deadzones.left.inner, d, 0.05, 0.4, 0.05) }) },
+    { label: tr('ctl.pref.right_stick_deadzone'), value: () => `${Math.round(p.deadzones.right.inner * 100)}%`, change: (d) => (p.deadzones.right = { ...p.deadzones.right, inner: step(p.deadzones.right.inner, d, 0.05, 0.4, 0.05) }) },
+    { label: tr('ctl.pref.mouse_wheel'), value: () => (p.invertWheel ? tr('ctl.pref.inverted') : tr('ctl.pref.normal')), change: () => (p.invertWheel = !p.invertWheel) },
+    { label: tr('ctl.pref.wheel_wraps_around_the_tray'), value: () => (p.wrapWheel ? tr('ctl.pref.on') : tr('ctl.pref.off')), change: () => (p.wrapWheel = !p.wrapWheel) },
+    { label: tr('ctl.pref.confirm_button'), value: () => (p.nintendoLayout ? tr('ctl.pref.right_face_nintendo') : tr('ctl.pref.bottom_face')), change: () => (p.nintendoLayout = !p.nintendoLayout) },
+    { label: tr('ctl.pref.button_prompts'), value: () => ({ auto: tr('ctl.pref.automatic'), xbox: tr('ctl.pref.xbox'), playstation: tr('ctl.pref.playstation'), nintendo: tr('ctl.pref.nintendo'), deck: tr('ctl.pref.steam_deck'), generic: tr('ctl.pref.generic') })[p.glyphs], change: (d) => (p.glyphs = cycle(['auto', 'xbox', 'playstation', 'nintendo', 'deck', 'generic'] as GlyphSet[], p.glyphs, d)) },
   ];
 }
 
 /** The Steam Deck default configuration shipped with the game (see steam/input/). */
+/** Keys: input, action. */
 const DECK_LAYOUT: [string, string][] = [
-  ['Right trackpad', 'Cursor (click = use instrument, soft-press haptic)'],
-  ['R2', 'Use instrument (hold)'],
-  ['L2', 'Hold and trace to draw the star'],
-  ['Left trackpad', 'Instrument wheel'],
-  ['Left stick', 'Cursor'],
-  ['Right stick', 'Precision nudge'],
-  ['L1 / R1', 'Previous / next instrument (L1+R1: speak the Litany)'],
-  ['D-pad left / right', 'Swap to last instrument'],
-  ['Y', 'Instrument wheel'],
-  ['A / B', 'Confirm / back'],
-  ['Menu', 'Pause'],
-  ['Gyro', 'Off by default'],
+  ['ctl.deck.0.input', 'ctl.deck.0.action'],
+  ['ctl.deck.1.input', 'ctl.deck.1.action'],
+  ['ctl.deck.2.input', 'ctl.deck.2.action'],
+  ['ctl.deck.3.input', 'ctl.deck.3.action'],
+  ['ctl.deck.4.input', 'ctl.deck.4.action'],
+  ['ctl.deck.5.input', 'ctl.deck.5.action'],
+  ['ctl.deck.6.input', 'ctl.deck.6.action'],
+  ['ctl.deck.7.input', 'ctl.deck.7.action'],
+  ['ctl.deck.8.input', 'ctl.deck.8.action'],
+  ['ctl.deck.9.input', 'ctl.deck.9.action'],
+  ['ctl.deck.10.input', 'ctl.deck.10.action'],
+  ['ctl.deck.11.input', 'ctl.deck.11.action'],
 ];
 
 /**
@@ -137,7 +139,9 @@ export class ControlsScene implements Scene {
   }
 
   private say(msg: string): void {
-    this.message = msg;
+    // Reserved-input explanations come from the action table in English; show them localised.
+    const reserved = RESERVED.findIndex((r) => r.why === msg);
+    this.message = reserved >= 0 ? tr(`ctl.reserved.${reserved}`) : msg;
     this.messageT = 4;
   }
 
@@ -241,7 +245,7 @@ export class ControlsScene implements Scene {
     } else if (i === 1) {
       bindings.resetAll();
       bindings.save();
-      this.say('Every binding is back to its default.');
+      this.say(tr('ctl.msg.reset_all'));
     } else this.back();
   }
 
@@ -256,7 +260,7 @@ export class ControlsScene implements Scene {
     cap.t -= dt;
     if (cap.t <= 0) {
       this.capture = null;
-      return this.say('No key pressed — binding unchanged.');
+      return this.say(tr('ctl.msg.no_key'));
     }
     const codes = game.input.codesPressed();
     // Ignore whatever opened the capture; listen from the next frame.
@@ -273,7 +277,7 @@ export class ControlsScene implements Scene {
     this.capture = null;
     const r = bindings.assign(cap.action, cap.slot, code);
     if (r.ok) bindings.save();
-    else if (r.reason === 'conflict') this.prompt = { action: cap.action, slot: cap.slot, code, others: r.conflicts.map((c) => ACTIONS.find((a) => a.id === c.action)!.label).join(', ') };
+    else if (r.reason === 'conflict') this.prompt = { action: cap.action, slot: cap.slot, code, others: r.conflicts.map((c) => tr(`action.${c.action}`)).join(', ') };
     else this.say(r.message);
   }
 
@@ -292,22 +296,22 @@ export class ControlsScene implements Scene {
       g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1 });
     } else g.beginScreen();
     panel(g, { x: 160, y: 30, w: 960, h: 660 });
-    g.text('Controls', VIEW_W / 2, 92, { size: 46, font: 'display', color: hex(PALETTE.ink), align: 'center' });
+    g.text(tr('ctl.title'), VIEW_W / 2, 92, { size: 46, font: 'display', color: hex(PALETTE.ink), align: 'center' });
     const pad = glyphContext().glyphs;
 
     TABS.forEach((t, i) => {
       const r = this.tabRect(i);
       const on = i === this.tab;
       g.rect(r.x, r.y, r.w, r.h, hex(on ? PALETTE.blood : '#000000', on ? 0.5 : 0.25));
-      g.text(t.label, r.x + r.w / 2, r.y + 25, { size: 16, color: hex(on ? PALETTE.gold : PALETTE.inkDim), align: 'center' });
+      g.text(tr(t.label), r.x + r.w / 2, r.y + 25, { size: 16, color: hex(on ? PALETTE.gold : PALETTE.inkDim), align: 'center' });
     });
 
     const rows = this.rowCount();
     if (this.tabId === 'deck') {
-      g.text('Default Steam Deck layout', 190, 190, { size: 22, color: hex(PALETTE.gold) });
+      g.text(tr('ctl.deck.title'), 190, 190, { size: 22, color: hex(PALETTE.gold) });
       DECK_LAYOUT.forEach(([k, v], i) => {
-        g.text(k, 210, 226 + i * 32, { size: 19, color: hex(PALETTE.gold) });
-        g.text(v, 450, 226 + i * 32, { size: 19, color: hex(PALETTE.ink) });
+        g.text(tr(k), 210, 226 + i * 32, { size: 19, color: hex(PALETTE.gold) });
+        g.text(tr(v), 450, 226 + i * 32, { size: 19, color: hex(PALETTE.ink) });
       });
     } else if (this.tabId === 'handling') {
       const list = prefRows(bindings.prefs);
@@ -321,13 +325,13 @@ export class ControlsScene implements Scene {
       const note = list[this.hoverRow >= 0 ? this.hoverRow : this.row]?.note;
       if (note) g.text(note, VIEW_W / 2, 614, { size: 16, font: 'italic', color: hex(PALETTE.inkDim), align: 'center' });
     } else {
-      g.text('Keyboard & mouse', this.cellRect(0, 0).x + 172, 162, { size: 15, color: hex(PALETTE.inkDim), align: 'center' });
-      g.text('Gamepad', this.cellRect(0, 2).x + 84, 162, { size: 15, color: hex(PALETTE.inkDim), align: 'center' });
+      g.text(tr('ctl.col.kbm'), this.cellRect(0, 0).x + 172, 162, { size: 16, color: hex(PALETTE.inkDim), align: 'center' });
+      g.text(tr('ctl.col.pad'), this.cellRect(0, 2).x + 84, 162, { size: 16, color: hex(PALETTE.inkDim), align: 'center' });
       this.actions().forEach((id, i) => {
         const r = this.rowRect(i);
         const set = bindings.get(id);
         const def = ACTIONS.find((a) => a.id === id)!;
-        g.text(def.label, r.x + 16, r.y + 21, { size: 19, color: hex(i === this.row ? PALETTE.gold : PALETTE.ink) });
+        g.text(tr(`action.${def.id}`), r.x + 16, r.y + 21, { size: 19, color: hex(i === this.row ? PALETTE.gold : PALETTE.ink) });
         SLOTS.forEach((slot, c) => {
           const cr = this.cellRect(i, c);
           const code = set[slot.kind][slot.index];
@@ -336,14 +340,14 @@ export class ControlsScene implements Scene {
           g.rect(cr.x, cr.y, cr.w, cr.h, hex(focused ? PALETTE.blood : '#000000', focused ? 0.45 : 0.3));
           if (focused) g.rectLine(cr.x, cr.y, cr.w, cr.h, 1.5, hex(PALETTE.gold, 0.8));
           const locked = code && reservedFor(code)?.action === id;
-          const label = capturing ? `Press… ${Math.ceil(this.capture!.t)}` : code ? codeLabel(code, slot.kind === 'pad' ? pad : 'xbox') + (locked ? ' •' : '') : '—';
+          const label = capturing ? tr('ctl.capture_short', { s: Math.ceil(this.capture!.t) }) : code ? codeLabel(code, slot.kind === 'pad' ? pad : 'xbox') + (locked ? ' •' : '') : '—';
           g.text(label, cr.x + cr.w / 2, cr.y + 20, { size: 17, color: hex(capturing ? PALETTE.gold : code ? PALETTE.ink : PALETTE.inkDim), align: 'center' });
         });
       });
-      g.text('Select a slot and press the new input · right-click clears · • cannot be unbound', VIEW_W / 2, 614, { size: 15, font: 'italic', color: hex(PALETTE.inkDim), align: 'center' });
+      g.text(tr('ctl.help'), VIEW_W / 2, 614, { size: 16, font: 'italic', color: hex(PALETTE.inkDim), align: 'center' });
     }
 
-    const foot = [this.tabId === 'handling' ? 'Reset these' : 'Reset row', 'Reset all', 'Back'];
+    const foot = [this.tabId === 'handling' ? tr('ctl.foot.reset_these') : tr('ctl.foot.reset_row'), tr('ctl.foot.reset_all'), tr('ui.common.back')];
     foot.forEach((label, i) => {
       const r = this.footRect(i);
       const focus = (this.row >= rows && this.col === i) || inRect(game.input.pos, r);
@@ -351,8 +355,8 @@ export class ControlsScene implements Scene {
       g.text(label, r.x + r.w / 2, r.y + 26, { size: 20, color: hex(focus ? PALETTE.gold : PALETTE.ink), align: 'center' });
     });
 
-    if (this.capture) this.drawOverlay(g, `Press the new input for “${ACTIONS.find((a) => a.id === this.capture!.action)!.label}”`, `Esc cancels · ${Math.ceil(this.capture.t)} s`);
-    if (this.prompt) this.drawOverlay(g, `${codeLabel(this.prompt.code, pad)} is used by ${this.prompt.others}.`, 'Swap the bindings?', ['Swap', 'Cancel']);
+    if (this.capture) this.drawOverlay(g, tr('ctl.capture', { action: tr(`action.${this.capture.action}`) }), tr('ctl.capture_note', { s: Math.ceil(this.capture.t) }));
+    if (this.prompt) this.drawOverlay(g, tr('ctl.conflict', { input: codeLabel(this.prompt.code, pad), others: this.prompt.others }), tr('ctl.prompt.swap_q'), [tr('ctl.prompt.swap'), tr('ctl.prompt.cancel')]);
     if (this.messageT > 0) g.text(this.message, VIEW_W / 2, 700, { size: 17, color: hex(PALETTE.bad), align: 'center' });
     reticle(g, game.input.pos);
     g.endFrame();

@@ -57,7 +57,7 @@ export class BriefingScene implements Scene {
       g.text(toolKeyLabel(TOOL_INFO.findIndex((ti) => ti.id === t) + 1), x, r.y + 492, { size: 16, color: faded, align: 'center', shadow: false });
     });
     this.notes ??= briefingNotes(d);
-    this.notes.forEach((n, i) => g.text(n, r.x + 60, r.y + 512 + i * 18, { size: 15, font: 'italic', color: faded, shadow: false }));
+    this.notes.forEach((n, i) => g.text(n, r.x + 60, r.y + 512 + i * 18, { size: 16, font: 'italic', color: faded, shadow: false }));
     if (button(g, game.input, t('ui.briefing.begin'), VIEW_W / 2 + 120, r.y + 560, 34, true, true)) this.onBegin();
     if (button(g, game.input, t('ui.common.back'), VIEW_W / 2 - 160, r.y + 560, 26, true, true)) this.onBack();
     reticle(g, game.input.pos);

@@ -114,7 +114,7 @@ export class GameplayOptionsScene implements Scene {
       g.text(`‹ ${row.value()} ›`, r.x + r.w - 14, r.y + 19, { size: 17, color: hex(PALETTE.gold), align: 'right' });
     });
     const note = this.hover >= 0 ? this.rows[this.hover].note : undefined;
-    if (note) g.text(note, VIEW_W / 2, 630, { size: 15, font: 'italic', color: hex(PALETTE.inkDim), align: 'center' });
+    if (note) g.text(note, VIEW_W / 2, 630, { size: 16, font: 'italic', color: hex(PALETTE.inkDim), align: 'center' });
     if (button(g, game.input, t('ui.common.back'), VIEW_W / 2, 672, 24)) this.back();
     reticle(g, game.input.pos);
     g.endFrame();

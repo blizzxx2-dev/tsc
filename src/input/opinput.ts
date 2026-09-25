@@ -374,7 +374,7 @@ export class OperationInput {
     this.radial.draw(g, op.tool);
     if (paused && this.disconnectNotice) {
       g.rect(VIEW_W / 2 - 330, 92, 660, 44, hex('#1a0606', 0.9));
-      g.text('Controller disconnected — reconnect or press any key', VIEW_W / 2, 121, { size: 22, color: hex('#f0c060'), align: 'center' });
+      g.text(t('hud.pad_disconnected'), VIEW_W / 2, 121, { size: 22, color: hex('#f0c060'), align: 'center' });
     }
   }
 }

@@ -42,8 +42,8 @@ export class InkRunScene implements Scene {
       660,
       { size: 22, font: 'italic', color: hex(PALETTE.inkDim) },
     );
-    g.text(t('ui.inkrun.debug', { scene: this.crash.scene, phase: this.crash.phase, frame: this.crash.frame }), VIEW_W / 2, 520, { size: 15, color: hex(PALETTE.inkDim, 0.7), align: 'center', shadow: false });
-    g.text(this.crash.message.slice(0, 110), VIEW_W / 2, 542, { size: 15, color: hex(PALETTE.bad, 0.8), align: 'center', shadow: false });
+    g.text(t('ui.inkrun.debug', { scene: this.crash.scene, phase: this.crash.phase, frame: this.crash.frame }), VIEW_W / 2, 520, { size: 16, color: hex(PALETTE.inkDim, 0.7), align: 'center', shadow: false });
+    g.text(this.crash.message.slice(0, 110), VIEW_W / 2, 542, { size: 16, color: hex(PALETTE.bad, 0.8), align: 'center', shadow: false });
     if (button(g, game.input, t('ui.inkrun.return'), VIEW_W / 2, 620, 28)) this.onTitle();
     reticle(g, game.input.pos);
     g.endFrame();

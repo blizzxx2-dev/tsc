@@ -443,7 +443,7 @@ export class OperationScene implements Scene {
       g.rect(VIEW_W / 2 - 20, 44, 96, 34, hex('#000000', pal.plate));
       if (!settings.minimalHud) g.rect(VIEW_W - 200, 44, 184, 34, hex('#000000', pal.plate));
     }
-    g.text(tr('hud.vitals'), 92, 30, { size: 13, color: hex(UI.brass), shadow: false });
+    g.text(tr('hud.vitals'), 92, 30, { size: 16, color: hex(UI.brass), shadow: false });
     g.text(formatVitals(op.displayVitals()), 92, 64, { size: 38, font: 'body', color: hex('#ffffff'), color2: hex(vcol), shadow: hex('#000000', 0.9) });
     drawDrainArrow(g, op, 146, 50);
     drawSecondaryVitals(g, op, 160, 80);
@@ -471,13 +471,13 @@ export class OperationScene implements Scene {
 
     // ---- Score and chain.
     leatherPanel(g, { x: VIEW_W - 280, y: 10, w: 266, h: 72 }, { corners: false });
-    g.text(op.def.patient, VIEW_W - 30, 30, { size: 15, font: 'italic', color: hex(UI.parchLo), align: 'right', shadow: false });
+    g.text(op.def.patient, VIEW_W - 30, 30, { size: 16, font: 'italic', color: hex(UI.parchLo), align: 'right', shadow: false });
     giltText(g, formatNumber(op.score), VIEW_W - 30, 68, { size: 34, font: 'body', align: 'right' });
     if (op.combo > 1) {
       const pop = 1 + Math.max(0, 0.3 - (this.comboT ?? 0)) * 1.2;
       tallyRibbon(g, VIEW_W - 150, 100, 190 * Math.min(1.1, pop), 26, op.combo);
       g.text(tr('hud.combo', { combo: op.combo }), VIEW_W - 238, 54, { size: 22 * pop, color: hex('#ffe0c0'), align: 'center', shadow: hex('#3a0406', 0.8) });
-      g.text(tr('hud.chain'), VIEW_W - 238, 80, { size: 12, font: 'italic', color: hex(UI.brass), align: 'center', shadow: false });
+      g.text(tr('hud.chain'), VIEW_W - 238, 80, { size: 16, font: 'italic', color: hex(UI.brass), align: 'center', shadow: false });
     }
   }
 
@@ -523,7 +523,7 @@ export class OperationScene implements Scene {
     const ready = op.canInvokeLitany();
     starReliquary(g, lx, ly, 32, { fill: op.litanyTime > 0 ? op.litanyTime / LITANY_DURATION : ready ? 1 : 0, spent: !ready && op.litanyTime <= 0, glint: ready, active: op.litanyTime > 0 });
     const label = ready ? { draw: `${dragGlyphFor('litany.draw')} ★`, key: glyphFor('litany.key'), both: `${dragGlyphFor('litany.draw')} ★ / ${glyphFor('litany.key')}` }[litanyMode()] : op.litanyTime > 0 ? tr('hud.litany.active') : tr('hud.litany.spent');
-    g.text(label, lx + 42, ly + 6, { size: 14, font: 'italic', color: hex(ready ? UI.gilt : UI.parchLo, 0.9) });
+    g.text(label, lx + 42, ly + 6, { size: 16, font: 'italic', color: hex(ready ? UI.gilt : UI.parchLo, 0.9) });
   }
 
   private drawCallout(g: Gfx, t: number): void {
@@ -549,7 +549,7 @@ export class OperationScene implements Scene {
     const h = Math.max(50, 30 + lines * size * 1.3);
     const r = { x: mx + 44, y: 702 - h, w: 840, h };
     scroll(g, r);
-    g.text(ASSISTANT_NAME, r.x + 16, r.y + 20, { size: 15, color: hex('#6a0a10'), shadow: false });
+    g.text(ASSISTANT_NAME, r.x + 16, r.y + 20, { size: 16, color: hex('#6a0a10'), shadow: false });
     const shown = line.slice(0, Math.floor(this.op.calloutT * 60 * settings.textSpeed));
     g.textBlock(shown, r.x + 16, r.y + 22 + size, 808, { size, color: hex(UI.inkDark), shadow: false }, 1.3);
   }
@@ -572,7 +572,7 @@ export class OperationScene implements Scene {
       // Colour filters swap the stamp inks; the stamp shapes and tilt still tell the ratings apart (UIX-0147).
       ratingStamp(g, p.rating, word, x, y, still ? 1 : p.t, a, 30, settings.colorFilter === 'none' ? undefined : palette()[p.rating]);
       if (p.label) g.text(tSource(p.label), x, y - 36 * pop, { size: 16, font: 'italic', color: hex(UI.parch, a * 0.9), align: 'center' });
-      if (p.combo && p.combo > 1 && (p.rating === 'cool' || p.rating === 'good')) g.text(tr('hud.chain_combo', { combo: p.combo }), x, y + 20, { size: 15, color: hex(UI.gilt, a * 0.9), align: 'center' });
+      if (p.combo && p.combo > 1 && (p.rating === 'cool' || p.rating === 'good')) g.text(tr('hud.chain_combo', { combo: p.combo }), x, y + 20, { size: 16, color: hex(UI.gilt, a * 0.9), align: 'center' });
     }
   }
 

@@ -98,7 +98,7 @@ export class StoryScene implements Scene {
     if (this.shown >= line.text.length) quillGlyph(g, box.x + box.w - 40, box.y + box.h - 30, 16, g.time, hex('#6a0a10'));
     if (game.input.act('vn.fast')) flowMark(g, box.x + box.w - 62, box.y + 24, 'skip', g.time);
     const click = glyphContext().device === 'pad' ? '' : t('ui.story.click_prefix');
-    g.text(t('ui.story.controls_fmt', { click, advance: glyphFor('vn.advance'), fast: glyphFor('vn.fast'), skip: glyphFor('ui.back') }), VIEW_W - 30, VIEW_H - 8, { size: 13, color: hex(PALETTE.inkDim, 0.6), align: 'right', shadow: false });
+    g.text(t('ui.story.controls_fmt', { click, advance: glyphFor('vn.advance'), fast: glyphFor('vn.fast'), skip: glyphFor('ui.back') }), VIEW_W - 30, VIEW_H - 8, { size: 16, color: hex(PALETTE.inkDim, 0.6), align: 'right', shadow: false });
     reticle(g, game.input.pos);
     g.endFrame();
   }

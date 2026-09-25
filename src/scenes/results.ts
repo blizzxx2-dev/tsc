@@ -114,7 +114,7 @@ export class ResultsScene implements Scene {
       if (bd.flags.length) notes.push(`(${bd.flags.join(', ')})`);
       if (this.summary?.fee) notes.push(`Fee paid: ${this.summary.fee} crowns`);
       for (const a of this.summary?.achievements ?? []) notes.push(`✦ ${ACHIEVEMENTS[a]}`);
-      notes.forEach((n, i) => g.text(n, r.x + 60, r.y + 524 + i * 18, { size: 15, font: 'italic', color: faded, shadow: false }));
+      notes.forEach((n, i) => g.text(n, r.x + 60, r.y + 524 + i * 18, { size: 16, font: 'italic', color: faded, shadow: false }));
       if (this.summary?.tip) g.textBlock(t('ui.results.ilse_tip', { tip: this.summary.tip }), r.x + 400, r.y + 440, 250, { size: 16, font: 'italic', color: hex('#6a0a10'), shadow: false }, 1.15);
     }
 

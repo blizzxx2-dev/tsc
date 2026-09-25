@@ -70,8 +70,8 @@ export class TitleScene implements Scene {
       }
       if (done) g.text(t('ui.title.demo_complete'), VIEW_W / 2, 660, { size: 20, font: 'italic', color: hex(PALETTE.inkDim), align: 'center' });
     }
-    g.text(t('ui.title.fullscreen_hint'), 20, VIEW_H - 14, { size: 14, color: hex(PALETTE.inkDim, 0.6), shadow: false });
-    g.text(buildLabel(), VIEW_W - 20, VIEW_H - 14, { size: 14, color: hex(PALETTE.inkDim, 0.6), align: 'right', shadow: false });
+    g.text(t('ui.title.fullscreen_hint'), 20, VIEW_H - 14, { size: 16, color: hex(PALETTE.inkDim, 0.6), shadow: false });
+    g.text(buildLabel(), VIEW_W - 20, VIEW_H - 14, { size: 16, color: hex(PALETTE.inkDim, 0.6), align: 'right', shadow: false });
     reticle(g, game.input.pos);
     g.endFrame();
   }
