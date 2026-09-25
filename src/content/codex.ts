@@ -437,7 +437,61 @@ const HOURS: CodexEntry[] = [
   ),
 ];
 
-export const CODEX: readonly CodexEntry[] = [...PEOPLE, ...INSTRUMENTS, ...AFFLICTIONS, ...PLACES, ...ORDERS, ...HOURS];
+// ------------------------------------------------------------------ The Precentor's letters (NAR-0110)
+
+/**
+ * Five letters the Tribunal intercepted, one per chapter, in the Precentor's own hand. The demo
+ * lists the first two as locked stubs; they open in Chapter III, when Stroh's ledger does.
+ */
+const LETTERS: CodexEntry[] = [
+  {
+    id: 'letter-one',
+    title: 'Intercepted Letter, the First',
+    category: 'Orders',
+    unlock: chapter(3),
+    image: 'wc-letter-one',
+    silhouette: true,
+    body: 'To the benefactress, by the usual carriage. The page-boy at Saint Ildra took the vigil well, and woke it well. Then a surgeon cut it out of him with a star drawn in the air, which I confess I did not expect. Do not trouble yourself about him. Every Office needs a listener. I have waited twenty years for somebody in this city to hear the stillness properly. — A.V.',
+  },
+  {
+    id: 'letter-two',
+    title: 'Intercepted Letter, the Second',
+    category: 'Orders',
+    unlock: chapter(3),
+    image: 'wc-letter-two',
+    silhouette: true,
+    body: 'The muster sang Lauds as I wrote it: two voices answering across one chest. The surgeon took it apart like a man unpicking a hymnal for the vellum. The cantor told the Inquisitor my antiphon, and the Inquisitor wrote it down. Good. Let it be written. A hymn is not a secret; it is only waiting for enough mouths. Burn this, madam, and keep the candles coming. — A.V.',
+  },
+  {
+    id: 'letter-three',
+    title: 'Intercepted Letter, the Third',
+    category: 'Orders',
+    unlock: chapter(3),
+    image: 'wc-letter-three',
+    silhouette: true,
+    body: 'Prime is read and Terce is burning, and old Haller has burned with it. Tell him, if he lives, that I hold nothing against him. He struck me from the rolls for mercy. I am only finishing the sentence he began. The foundries are ready; the registrar reads the roll of the dead each morning and never reaches the end. Kessendorf is learning the shape of the Office. — A.V.',
+  },
+  {
+    id: 'letter-four',
+    title: 'Intercepted Letter, the Fourth',
+    category: 'Orders',
+    unlock: chapter(4),
+    image: 'wc-letter-four',
+    silhouette: true,
+    body: 'Sext and None have gone east with the war, as wars go east. The surgeon follows them with his star, and does not yet know whose verse it is. He will. Tell the council the Tribunal’s charter needs no renewing; let it lapse quietly at the new year. A lapsed law is a door left open. We shall want him home, and tried, and waiting, by Hollow Night. — A.V.',
+  },
+  {
+    id: 'letter-five',
+    title: 'Intercepted Letter, the Last',
+    category: 'Orders',
+    unlock: chapter(5),
+    image: 'wc-letter-five',
+    silhouette: true,
+    body: 'Madam, you may take the carriage now. There is nothing more to pay for. Tonight the city will sing Vespers and Compline, and then it will sleep, and nobody will need a hospice again. I have asked only one thing of the Office: that the surgeon be awake to hear the end. He is the only one who ever understood that stillness is a mercy. I should like him to see it perfected. — A.V.',
+  },
+];
+
+export const CODEX: readonly CodexEntry[] = [...PEOPLE, ...INSTRUMENTS, ...AFFLICTIONS, ...PLACES, ...ORDERS, ...LETTERS, ...HOURS];
 
 export const codexEntry = (id: string): CodexEntry | undefined => CODEX.find((e) => e.id === id);
 

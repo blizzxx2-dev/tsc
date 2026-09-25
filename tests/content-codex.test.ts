@@ -183,3 +183,15 @@ describe('The Litany, Reconsidered (NAR-0092)', () => {
     expect(e.body.split(/\s+/).length).toBeLessThanOrEqual(180);
   });
 });
+
+describe('the Precentor’s letters (NAR-0110)', () => {
+  it('five letters in his hand, the first two listed as locked stubs through the demo', () => {
+    const letters = CODEX.filter((e) => e.id.startsWith('letter-'));
+    expect(letters).toHaveLength(5);
+    for (const l of letters) {
+      expect(l.silhouette, l.id).toBe(true);
+      expect(l.body).toMatch(/— A\.V\.$/);
+      expect(l.body.split(/\\s+/).length).toBeLessThanOrEqual(180);
+    }
+  });
+});

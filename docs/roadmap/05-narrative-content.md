@@ -176,7 +176,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### The Precentor
 - [ ] NAR-0109 · Alpha · P0 · M · Precentor arc doc — Aurel Vennholt, struck-off surgeon; motive: end all suffering with a perfect Compline; appears only as voice until Ch4, in person in Ch5
-- [ ] NAR-0110 · Alpha · P1 · S · Precentor's letters — 5 intercepted letters (one per chapter, Ch1–2 letters added to demo codex as locked stubs) building his case in his own voice
+- [x] NAR-0110 · Alpha · P1 · S · Precentor's letters — 5 intercepted letters (one per chapter, Ch1–2 letters added to demo codex as locked stubs) building his case in his own voice
 - [x] NAR-0111 · Alpha · P1 · S · Precentor/Kreuzer mirror scene (Ch5) — both claim to stop pain; 20 lines; no villain monologue beyond 4 consecutive lines
 - [x] NAR-0112 · Alpha · P2 · S · Hollow Choir hierarchy — Precentor, cantors, lay-cantors, acolytes; the hospice patron (Widow Aldegund Reiss) as secret acolyte; bible entry
 
