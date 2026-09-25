@@ -187,7 +187,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ## NAR · Epic 6 — Chapter III "Prime and Terce" (Kilnrows and quarantine)
 
 ### Outline
-- [ ] NAR-0115 · Alpha · P0 · M · Ch3 outline — 10 ops, 12 scenes; acts: Hornchild inspection → foundry explosions → plague and raised bridges → Prime (roll of the dead) → guild licence vote → Terce (guildhall fire, Haller host)
+- [x] NAR-0115 · Alpha · P0 · M · Ch3 outline — 10 ops, 12 scenes; acts: Hornchild inspection → foundry explosions → plague and raised bridges → Prime (roll of the dead) → guild licence vote → Terce (guildhall fire, Haller host)
 - [ ] NAR-0116 · Alpha · P0 · S · Ch3 flag inputs — reads `cantorMercy`, demo Litany-seen count, demo total rank; writes `hornchildCertificate`, `strohTooth`, `hallerFate`
 - [x] NAR-0117 · Alpha · P1 · S · Ch3 title card and opening narration — "Prime: the first work of the day. The roll of the dead is read aloud."
 
@@ -208,7 +208,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ## NAR · Epic 7 — Chapter IV "Sext and None" (the Vennmark field)
 
 ### Outline
-- [ ] NAR-0130 · Alpha · P0 · M · Ch4 outline — 9 ops, 11 scenes; acts: march east → field hospital in rain → Orsa's miners → the dead man's pulse → Sext at noon (Mauer host) → charter-lapse reveal → patron betrayal → None
+- [x] NAR-0130 · Alpha · P0 · M · Ch4 outline — 9 ops, 11 scenes; acts: march east → field hospital in rain → Orsa's miners → the dead man's pulse → Sext at noon (Mauer host) → charter-lapse reveal → patron betrayal → None
 - [ ] NAR-0131 · Alpha · P0 · S · Ch4 flag inputs/outputs — reads `hallerFate`, `hornchildCertificate`, `strohTrust`; writes `mauerFate`, `charterRevealed`, `deadManVerdict`, `thirstChoice`
 
 ### Scenes (first draft)
@@ -228,7 +228,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ## NAR · Epic 8 — Chapter V "Vespers and Compline" (Hollow Night)
 
 ### Outline
-- [ ] NAR-0144 · Alpha · P0 · M · Ch5 outline — 8 ops, 12 scenes; acts: warrant and arrest → trial (witch-pricking evidence) → Hollow Night processions → Vespers (Ilse) → descent under the Tribunal court → Compline (Stroh) → endings
+- [x] NAR-0144 · Alpha · P0 · M · Ch5 outline — 8 ops, 12 scenes; acts: warrant and arrest → trial (witch-pricking evidence) → Hollow Night processions → Vespers (Ilse) → descent under the Tribunal court → Compline (Stroh) → endings
 - [ ] NAR-0145 · Alpha · P0 · S · Ch5 flag inputs — all prior flags plus final Whisper band; outputs `ending` enum
 
 ### Scenes (first draft)
@@ -323,7 +323,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] CON-0013 · Demo · P1 · M · Placement overlay — in sandbox, shows field grid in `at(x,y)` units and entity bounds; click copies coordinates to clipboard
 - [ ] CON-0014 · Demo · P1 · S · Headless op simulator CLI — `npm run sim op2-3 --bot perfect|average|poor` runs the op with a scripted bot and prints score, time, rank, vitals min
 - [ ] CON-0015 · Demo · P1 · M · Reference bots — perfect/average/poor bots that act on each entity type with rating distributions matching playtest data (±10%)
-- [ ] CON-0016 · Demo · P1 · S · Rank-threshold report — sim runs every op with 3 bots × 20 seeds and outputs a CSV of scores vs S/A/B thresholds
+- [x] CON-0016 · Demo · P1 · S · Rank-threshold report — sim runs every op with 3 bots × 20 seeds and outputs a CSV of scores vs S/A/B thresholds
 - [ ] CON-0017 · Alpha · P1 · M · Phase timeline visualiser — renders per-op phase durations and entity counts from sim runs as an HTML report
 - [ ] CON-0018 · Alpha · P2 · M · Story scene previewer — dev scene renders any StoryDef with a flag override panel
 
@@ -333,7 +333,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0021 · Demo · P0 · S · Determinism test — each op run twice with same seed and inputs yields identical score and final vitals
 - [ ] CON-0022 · Demo · P1 · S · Difficulty curve targets — Ch1 op average-bot win rate 95→80%, Ch2 85→65% (op2-5 boss lowest); sim report checked in CI
 - [ ] CON-0023 · Demo · P1 · S · Time budget rule — perfect-bot clear time ≤ 55% of timeLimit, average-bot ≤ 85%; violations fail report
-- [ ] CON-0024 · Demo · P1 · S · Tool-introduction ledger — table of which op first requires each tool and the Litany; demo introduces each at most once per op, lens last (op2-2)
+- [x] CON-0024 · Demo · P1 · S · Tool-introduction ledger — table of which op first requires each tool and the Litany; demo introduces each at most once per op, lens last (op2-2)
 - [ ] CON-0025 · Demo · P1 · S · Playtest survey form for ops — per op: clarity 1–5, fairness 1–5, fun 1–5, "what killed you"; results stored per build
 - [ ] CON-0026 · Demo · P1 · M · Two external playtest rounds on Ch1–2 — ≥ 8 players each; every op scoring < 3.5 fairness gets a fix ticket
 - [x] CON-0027 · Alpha · P1 · S · Apply checklist — softlock and determinism tests to every Ch3–5 op (CI gate for the content folder)
@@ -343,10 +343,10 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ## CON · Epic 3 — Chapter I operations: demo polish
 
 ### op1-1 "A Tavern Knife" (Jost, drover) — tutorial: thread, leech, salve
-- [ ] CON-0030 · Demo · P0 · S · Split into guided tutorial phases — stitch-only phase cannot fail (vitals floor 40) until first successful stitch
+- [x] CON-0030 · Demo · P0 · S · Split into guided tutorial phases — stitch-only phase cannot fail (vitals floor 40) until first successful stitch
 - [ ] CON-0031 · Demo · P1 · S · Reposition lacerations — so neither overlaps HUD safe area at 16:9, 16:10 and Steam Deck 1280×800
 - [ ] CON-0032 · Demo · P1 · S · Blood-pool phase — pool spawns over the second laceration so "drain before stitch" is demonstrated, not just told
-- [ ] CON-0033 · Demo · P1 · S · Rank thresholds re-derived from sim — currently S 3950 / A 3150 / B 2350; XS requires no BAD/MISS
+- [x] CON-0033 · Demo · P1 · S · Rank thresholds re-derived from sim — currently S 3950 / A 3150 / B 2350; XS requires no BAD/MISS
 - [ ] CON-0034 · Demo · P2 · S · Flavour dressing — dice-wound pattern and tavern-straw overlay on flesh field
 
 ### op1-2 "The Barbed Shaft" (Pieter, militiaman) — lancet nicks, tongs
@@ -386,7 +386,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] CON-0058 · Demo · P2 · S · Grave-dirt contamination — 2 dirt spots must be drained before salve or salve rates BAD
 
 ### op2-2 "The Green Seam" → rename "The Black Seam" (Orsa Flintvein) — scrying lens intro
-- [ ] CON-0059 · Demo · P0 · S · Rename op title and all references to "The Black Seam" — hexshard visual is black glass with a heartbeat pulse, no green
+- [x] CON-0059 · Demo · P0 · S · Rename op title and all references to "The Black Seam" — hexshard visual is black glass with a heartbeat pulse, no green
 - [ ] CON-0060 · Demo · P0 · S · Lens tutorial — first hidden shard revealed automatically under the lens with callout; rest must be found (4–6 by seed)
 - [ ] CON-0061 · Demo · P1 · S · Spoiling flesh around unfound shards spreads at 1 radius/10 s — spread rate tuned from sim
 - [ ] CON-0062 · Demo · P1 · S · Thick-hide stitching — mountain-folk flesh tint and 1.3× thread-pass requirement (Orsa's "strong arm" line)
@@ -396,7 +396,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] CON-0064 · Demo · P0 · S · Egg-sac hatch timer shown as swelling — lanced sacs spill grubs to be branded; unlanced hatch scatters 3× grubs (test)
 - [ ] CON-0065 · Demo · P1 · S · Venom spread along drawn veins — tincture targets the vein head
 - [ ] CON-0066 · Demo · P1 · S · Web-silk wrapping overlay that must be cut — with the lancet before the field is accessible
-- [ ] CON-0067 · Demo · P2 · S · Grub AI flees toward nearest open wound — not random; so good play closes wounds first
+- [x] CON-0067 · Demo · P2 · S · Grub AI flees toward nearest open wound — not random; so good play closes wounds first
 
 ### op2-4 "The Silenced Cantor" (lay-cantor of the Hollow Choir) — igniting sigils, swallowed object
 - [ ] CON-0068 · Demo · P0 · S · Igniting sigils — each sigil ignites on a stagger (not all at once); untraced ignition causes hexfire burn
@@ -415,17 +415,17 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### Demo briefing and diagnosis content (all 10 ops)
 - [ ] CON-0079 · Demo · P1 · S · Briefing schema — patient name/age/trade, presenting complaint, diagnosis (≤ 160 chars), tools unlocked, objective list, woodcut plate id
-- [ ] CON-0080 · Demo · P1 · S · Ch1 briefings rewritten for op1-1…op1-5 — diagnosis strings match the scenes (vagrant renamed), objective list matches phases
+- [x] CON-0080 · Demo · P1 · S · Ch1 briefings rewritten for op1-1…op1-5 — diagnosis strings match the scenes (vagrant renamed), objective list matches phases
 - [ ] CON-0081 · Demo · P1 · S · Ch2 briefings rewritten for op2-1…op2-5 — "The Black Seam" retitle, Lauds described as "two voices beneath the sternum"
 - [ ] CON-0082 · Demo · P1 · S · Objective-to-phase test — every briefing objective maps to at least one phase id; test fails on orphans
 - [ ] CON-0083 · Demo · P1 · M · Woodcut briefing plates for 10 demo ops commissioned — art spec per op: patient pose, wound locations, one period prop
 - [ ] CON-0084 · Demo · P2 · S · Patient ages and trades consistent between briefing — scene text and case note (content test cross-references ids)
 
 ### Demo retry and replay content
-- [ ] CON-0085 · Demo · P1 · S · Chapter-select for demo — replay any cleared op; best rank shown per op
+- [x] CON-0085 · Demo · P1 · S · Chapter-select for demo — replay any cleared op; best rank shown per op
 - [ ] CON-0086 · Demo · P1 · S · Seed variants — each demo op defines 3 seeds; replays rotate seeds; all 30 seed/op pairs pass softlock and determinism tests
 - [ ] CON-0087 · Demo · P2 · S · Rank-goal hints on op select — "S rank: finish with no MISS and 60 s spare"; derived from thresholds
-- [ ] CON-0088 · Demo · P1 · S · Op failure analytics events — op id, phase, cause of loss; emitted for playtest builds to target polish
+- [x] CON-0088 · Demo · P1 · S · Op failure analytics events — op id, phase, cause of loss; emitted for playtest builds to target polish
 
 ## CON · Epic 5 — Demo end flow, wishlist hook and demo extras
 
@@ -443,7 +443,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] CON-0097 · Demo · P1 · M · X-op "Tuesday Knife-Fights" — 4 simultaneous stab wounds, 120 s, no salve; remix of op1-1 entities at higher bleed
 - [ ] CON-0098 · Demo · P1 · M · X-op "A Quiver's Worth" — 5 barbed arrows incl. 2 hidden (lens), blood pools
 - [ ] CON-0099 · Demo · P1 · M · X-op "Matins, Unwatched" — Matins boss with faster eye rhythm (×1.4), no Litany, XS rank requires no MISS
-- [ ] CON-0100 · Demo · P2 · S · Local best-score table per X-op — Steam leaderboard hooks owned by engine workstream
+- [x] CON-0100 · Demo · P2 · S · Local best-score table per X-op — Steam leaderboard hooks owned by engine workstream
 
 ## CON · Epic 6 — Chapter III operations (Prime and Terce)
 
@@ -479,7 +479,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0119 · Alpha · P1 · S · Author `op3-6` data file — callouts, thresholds, checklist pass
 
 ### op3-7 "Lance the Buboes" (quarantine ward, Mother Agathe) — plague
-- [ ] CON-0120 · Alpha · P0 · S · Design spec — 6 buboes; clean lance only; pus must not touch open cuts; plague-rot regrows faster than op1-4; candle-only light modifier
+- [x] CON-0120 · Alpha · P0 · S · Design spec — 6 buboes; clean lance only; pus must not touch open cuts; plague-rot regrows faster than op1-4; candle-only light modifier
 - [ ] CON-0121 · Alpha · P0 · M · Implement candle-light environment modifier — vignette radius follows cursor; data flag
 - [x] CON-0122 · Alpha · P1 · S · Author `op3-7` data file — callouts, thresholds, checklist pass
 
@@ -495,7 +495,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] CON-0129 · Alpha · P1 · S · Author `op3-9` data file — callouts, thresholds, `strohTooth` flag write, checklist pass
 
 ### op3-10 "The Hour of Prime" (Registrar Oswin Tallert) — boss
-- [ ] CON-0130 · Alpha · P0 · M · Prime design spec — writes name-sigils across tissue stroke by stroke; each completed name = −12 vitals; trace-erase with brand in reverse stroke order; up to 3 names writing at once in phase 2
+- [x] CON-0130 · Alpha · P0 · M · Prime design spec — writes name-sigils across tissue stroke by stroke; each completed name = −12 vitals; trace-erase with brand in reverse stroke order; up to 3 names writing at once in phase 2
 - [x] CON-0131 · Alpha · P0 · L · Implement PrimeMalison + NameSigil entities — phases, write speed curve, erase rules; with unit tests
 - [x] CON-0132 · Alpha · P1 · S · Name list content — 40 original Kessendorf names used by the name-sigils (IP-checked)
 - [ ] CON-0133 · Alpha · P1 · S · Author `op3-10` data file — callouts, boss-fail tips, thresholds, checklist pass
@@ -529,7 +529,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0149 · Alpha · P1 · S · Author `op4-3` data file — callouts, thresholds, checklist pass
 
 ### op4-4 "The Swallowed Strongbox" (Gutram, giant mercenary)
-- [ ] CON-0150 · Alpha · P0 · S · Design spec — 3 incision layers (thick hide), low organ layout needing lens, heavy retraction held with tongs, lock-pick minigame inside the stomach (rotate wheel to align 3 pins)
+- [x] CON-0150 · Alpha · P0 · S · Design spec — 3 incision layers (thick hide), low organ layout needing lens, heavy retraction held with tongs, lock-pick minigame inside the stomach (rotate wheel to align 3 pins)
 - [ ] CON-0151 · Alpha · P0 · M · Implement layered Incision and Retractor-hold — tongs held reduces field obstruction; (tests)
 - [ ] CON-0152 · Alpha · P1 · M · Implement Lock minigame entity — 3 pins, wheel-driven, time penalty on slip
 - [x] CON-0153 · Alpha · P1 · S · Author `op4-4` data file — callouts, thresholds, checklist pass
@@ -602,7 +602,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0194 · Alpha · P1 · S · Author `op5-7` data file — callouts, thresholds, checklist pass
 
 ### op5-8 "The Hour of Compline" (Inquisitor Stroh) — final boss
-- [ ] CON-0195 · Alpha · P0 · M · Compline design spec — mixes all hours; mutes audio; steals the Litany (a star gesture now slows the player's own time); vitals drift toward a "peaceful" 0; break 5 silence nodes to recover the Litany; final phase needs a two-hand combo (hold tongs on core, brand with keyboard-bound second action)
+- [x] CON-0195 · Alpha · P0 · M · Compline design spec — mixes all hours; mutes audio; steals the Litany (a star gesture now slows the player's own time); vitals drift toward a "peaceful" 0; break 5 silence nodes to recover the Litany; final phase needs a two-hand combo (hold tongs on core, brand with keyboard-bound second action)
 - [x] CON-0196 · Alpha · P0 · L · Implement ComplineMalison phases 1–2 — mixed-hour attacks, audio mute, Litany inversion; with tests
 - [x] CON-0197 · Alpha · P0 · L · Implement ComplineMalison phases 3–4 — silence nodes, Litany recovery, two-hand combo finale; with tests
 - [ ] CON-0198 · Alpha · P0 · S · Two-hand combo accessibility — toggle mode (tap to hold) and controller mapping verified
@@ -642,7 +642,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### Unsung tier and procedural
 - [ ] CON-0222 · Beta · P2 · M · Secret X-op "The Unsung Hour" — remnants of every patient the player lost in the campaign stitched together; falls back to a curated set if none lost
-- [ ] CON-0223 · Post · P2 · L · Symptom Loom — procedural ailment generator combining 3 of 12 symptom modules into seeded daily ops; validation via sim bots (winnable, 90–300 s)
+- [x] CON-0223 · Post · P2 · L · Symptom Loom — procedural ailment generator combining 3 of 12 symptom modules into seeded daily ops; validation via sim bots (winnable, 90–300 s)
 - [ ] CON-0224 · Post · P2 · S · Daily Loom seed shared across players — date-based, with results screen showing the three "verses" of the day
 - [ ] CON-0225 · Post · P3 · M · Weekly curated X-op pack — 3 X-ops per update authored in data only
 
