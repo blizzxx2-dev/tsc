@@ -449,6 +449,11 @@ export const OP_4_8: OperationDef = {
   patient: 'Hanne, sutler’s daughter',
   diagnosis: 'Petrification from the fingertips, advancing at her wedding. Hand, then arm, then chest.',
   organ: 'flesh',
+  // Two regions (GAM-0247): the arm on the left, the chest on the right; Tab pans between them.
+  regions: [
+    { kind: 'flesh', ...at(-210, -20), rx: 230, ry: 190 },
+    { kind: 'flesh', ...at(120, 30), rx: 230, ry: 190 },
+  ],
   timeLimit: 330,
   baseDrain: 0.1,
   tools: ALL,

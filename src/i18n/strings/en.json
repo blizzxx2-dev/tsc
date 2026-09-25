@@ -1092,5 +1092,6 @@
   "popup.sext.stone": "Stone!",
   "ui.codex.fastest": "Fastest clear",
   "ui.codex.fastest_value": "{time} · rank {rank} · verified by replay",
-  "ui.codex.fastest_none": "Not yet cleared"
+  "ui.codex.fastest_none": "Not yet cleared",
+  "hud.view_switch": "{key} — switch view"
 }

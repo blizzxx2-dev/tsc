@@ -77,7 +77,7 @@ export interface OperationDef {
   secondary?: { bloodVolume?: boolean; temperature?: boolean };
   /** Frail patients have 0.8× max vitals; hardy ones shrug off 1/1.2 of the drain. */
   constitution?: 'frail' | 'hardy';
-  /** Multi-organ fields: regions with their own sensitivity. */
+  /** Multi-organ fields: regions with their own sensitivity; with two or more, the camera frames one at a time (GAM-0247). */
   regions?: readonly OrganRegion[];
   events?: readonly ScriptedEvent[];
   /** Sext: the HUD shows a smoothed false vitals value unless the lens is on the heart. */

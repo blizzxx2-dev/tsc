@@ -29,7 +29,7 @@ import { FlashLimiter } from '../render/flashLimiter';
 import { Malison, MalisonShard } from '../surgery/malison';
 import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOWN, TINCTURE_TIME, TINCTURE_HEX, type OperationDef, type Popup } from '../surgery/operation';
 import { TOOL_INFO, type ToolId } from '../surgery/types';
-import { anchorShift, PALETTE, viewRect, VIEW_W } from '../ui/layout';
+import { anchorShift, PALETTE, viewRect, VIEW_H, VIEW_W } from '../ui/layout';
 import { button, reticle, toolIcon } from '../ui/widgets';
 import { giltText, UI, waxSeal } from '../ui/ornaments';
 import { RANK_WAX } from './rankArt';
@@ -201,6 +201,8 @@ export class OperationScene implements Scene {
   /** The Respite button in the HUD (UIX-0102): registered each frame, drawn beside the score plate. */
   private pauseRect = { x: VIEW_W - 16 - 250 - 8 - 44, y: 14, w: 44, h: 44 };
   private pauseHover = 0;
+  /** Multi-organ views (GAM-0247): which region the camera frames. */
+  private view = 0;
   /** Salve gloss (GAM-0043): where the Salve was spread and when; each spot stays wet for SALVE_GLOSS_S. */
   private gloss: { x: number; y: number; t: number }[] = [];
   /** Frost still standing, 0..1 of the peak frozen area (GAM-0103). */
@@ -363,6 +365,7 @@ export class OperationScene implements Scene {
   enter(): void {
     if (this.entered) return;
     this.entered = true;
+    this.setupViews();
     this.op.say('Instruments ready, Doctor.');
   }
 
@@ -386,6 +389,7 @@ export class OperationScene implements Scene {
     this.decals?.reset();
     this.snapped = false;
     this.ctl = new OperationInput();
+    this.setupViews();
     this.paused = false;
     this.resumeT = 0;
     this.calloutLog.length = 0;
@@ -641,6 +645,8 @@ export class OperationScene implements Scene {
     const light = { x: FIELD.cx - 220 + Math.sin(t * 0.7) * 30, y: 60 + Math.sin(t * 1.3) * 10 };
     // Tissue breathing and heartbeat (ART-0298): the flesh, its wounds, fluids and ailments share one warp.
     const warp = tissueWarp(pal.kind, this.pulse, t, settings.reduceMotion);
+    // The world camera (ENG-0045; multi-organ views GAM-0247) applies to every world layer from here on.
+    g.setCamera(this.camera.isIdentity ? null : this.camera.matrix());
     g.beginLayer('surface');
     pushWarp(g, FIELD.cx, FIELD.cy, warp);
     for (const sc of op.scars) {
@@ -663,9 +669,13 @@ export class OperationScene implements Scene {
     g.beginWorld();
     const pallor = anaemia(op);
     const curse = curseSource(op.entities);
+    // The flesh pass works in view space: map the field through the camera (GAM-0247 region views).
+    const cam = this.camera.isIdentity ? null : this.camera;
+    const vc = (p: { x: number; y: number }) => (cam ? cam.toView(p, { x: 0, y: 0 }) : p);
+    const fz = cam ? cam.zoom : 1;
     g.fleshField({
-      center: { x: FIELD.cx, y: FIELD.cy },
-      radii: { x: FIELD.rx, y: FIELD.ry },
+      center: vc({ x: FIELD.cx, y: FIELD.cy }),
+      radii: { x: FIELD.rx * fz, y: FIELD.ry * fz },
       kind: pal.kind,
       // Anaemia (GAM-0119): the flesh pales and dulls as blood volume drains.
       base: paleFlesh(pal.base, pallor),
@@ -673,18 +683,18 @@ export class OperationScene implements Scene {
       vein: pal.vein,
       pulse: this.pulse,
       warp,
-      light,
+      light: vc(light),
       corrupt: this.fleshCurse,
-      corruptAt: curse?.at,
+      corruptAt: curse ? vc(curse.at) : undefined,
       curse: curse?.look,
       cellSoft: pal.cellSoft,
       rough: paleRough(pal.rough, pallor),
       gore: presentation.gore,
       species: pal.species,
       lights: [
-        { x: light.x, y: light.y, h: 1.1, i: 1.1, col: [0.95, 0.9, 0.82] },
-        { x: FIELD.cx - FIELD.rx - 60, y: FIELD.cy + 120, h: 0.35, i: 0.45 * candleFlicker(t, 0, g.displayPrefs.flicker), col: [1.0, 0.6, 0.3] },
-        { x: FIELD.cx + FIELD.rx + 60, y: FIELD.cy - 60, h: 0.35, i: 0.4 * candleFlicker(t, 2, g.displayPrefs.flicker), col: [1.0, 0.62, 0.32] },
+        { ...vc(light), h: 1.1, i: 1.1, col: [0.95, 0.9, 0.82] },
+        { ...vc({ x: FIELD.cx - FIELD.rx - 60, y: FIELD.cy + 120 }), h: 0.35, i: 0.45 * candleFlicker(t, 0, g.displayPrefs.flicker), col: [1.0, 0.6, 0.3] },
+        { ...vc({ x: FIELD.cx + FIELD.rx + 60, y: FIELD.cy - 60 }), h: 0.35, i: 0.4 * candleFlicker(t, 2, g.displayPrefs.flicker), col: [1.0, 0.62, 0.32] },
       ],
     });
     const colours = palette();
@@ -776,6 +786,7 @@ export class OperationScene implements Scene {
     g.save();
     g.translate(0, anchorShift('top'));
     drawBreathFog(g, this.frost, t, viewRect(), settings.reduceMotion);
+    this.drawEdgeArrows(g);
     this.drawHud(g);
     g.restore();
     this.drawTray(g);
@@ -1185,6 +1196,64 @@ export class OperationScene implements Scene {
       g.circleGrad(s.x, s.y, 20, hex('#f2ead2', 0.2 * k), hex('#f2ead2', 0));
       g.circle(s.x - 5, s.y - 6, 2.2, hex('#ffffff', 0.4 * k));
     }
+  }
+
+  /** Multi-organ fields (GAM-0247): with two or more regions, the camera frames one at a time. */
+  private get views(): readonly { x: number; y: number; rx: number; ry: number }[] {
+    const r = this.op.def.regions ?? [];
+    return r.length >= 2 ? r : [];
+  }
+
+  /** Frame region `i`, magnified to fill the view (instantly on setup, eased on Tab). */
+  private frameView(i: number, seconds: number): void {
+    const r = this.views[i];
+    if (!r) return;
+    this.view = i;
+    const zoom = Math.max(1, Math.min(2, Math.min((VIEW_W * 0.78) / (2 * r.rx), (VIEW_H * 0.72) / (2 * r.ry))));
+    if (seconds <= 0) {
+      this.camera.x = r.x;
+      this.camera.y = r.y;
+      this.camera.zoom = zoom;
+    } else this.camera.focus({ x: r.x, y: r.y }, zoom, seconds);
+  }
+
+  private setupViews(): void {
+    if (!this.views.length) {
+      this.ctl.onSwitchView = null;
+      return;
+    }
+    this.frameView(0, 0);
+    this.ctl.onSwitchView = () => this.frameView((this.view + 1) % this.views.length, settings.reduceMotion ? 0 : 0.35);
+  }
+
+  /**
+   * Edge arrows (GAM-0247): everything still draining off-screen is pointed at from the edge of
+   * the view, reddening with how hard it drains.
+   */
+  private drawEdgeArrows(g: Gfx): void {
+    if (!this.views.length) return;
+    const op = this.op;
+    const m = 34;
+    for (const e of op.entities) {
+      if (!e.alive || e.hidden) continue;
+      const d = e.drain(op);
+      if (d <= 0) continue;
+      const v = this.camera.toView(e.pos, { x: 0, y: 0 });
+      if (v.x > m && v.x < VIEW_W - m && v.y > m && v.y < VIEW_H - m) continue;
+      const cx = VIEW_W / 2;
+      const cy = VIEW_H / 2;
+      const ang = Math.atan2(v.y - cy, v.x - cx);
+      // Walk from the centre toward it until the margin box.
+      const k = Math.min(Math.abs((VIEW_W / 2 - m) / (Math.cos(ang) || 1e-6)), Math.abs((VIEW_H / 2 - m) / (Math.sin(ang) || 1e-6)));
+      const p = { x: cx + Math.cos(ang) * k, y: cy + Math.sin(ang) * k };
+      const heat = Math.min(1, d / 1.2);
+      const col = hex(heat > 0.5 ? '#ff5a4a' : '#f0c070', 0.75 + 0.25 * Math.sin(op.elapsed * 6));
+      const tip = { x: p.x + Math.cos(ang) * 14, y: p.y + Math.sin(ang) * 14 };
+      const l = { x: p.x + Math.cos(ang + 2.4) * 12, y: p.y + Math.sin(ang + 2.4) * 12 };
+      const r = { x: p.x + Math.cos(ang - 2.4) * 12, y: p.y + Math.sin(ang - 2.4) * 12 };
+      g.tri(tip.x, tip.y, l.x, l.y, r.x, r.y, col);
+    }
+    caps(g, tr('hud.view_switch', { key: glyphFor('tool.quickSwap').split(' / ')[0] }), VIEW_W / 2, VIEW_H - 112, 12, hex(INK.gold, 0.8), 'center');
   }
 
   /** The Respite button (UIX-0102): a small glass cap with a pause glyph beside the score plate. */

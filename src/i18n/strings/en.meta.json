@@ -8927,5 +8927,13 @@
     "size": 18,
     "maxPx": 420,
     "context": "Codex boss page: no clear of this Hour has been recorded."
+  },
+  "hud.view_switch": {
+    "scene": "operation",
+    "font": "display",
+    "size": 12,
+    "maxPx": 300,
+    "context": "Hint under the field on multi-organ operations: the key that pans the camera to the other region.",
+    "screenshot": "docs/loc/screens/operation.png"
   }
 }

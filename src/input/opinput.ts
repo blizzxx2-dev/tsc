@@ -57,6 +57,8 @@ export class OperationInput {
   starTrail: Vec[] = [];
   /** Presentation hook: a finished star gesture (trail in view space, and whether it read) — VFX only. */
   onStar: ((trail: Vec[], ok: boolean) => void) | null = null;
+  /** Multi-view ops (GAM-0247/0248): Tab switches the view instead of quick-swapping (mouse 4 / pad keep the swap). */
+  onSwitchView: (() => void) | null = null;
   litanyCenter: [number, number] = [0.5, 0.5];
   readonly radial = new RadialMenu();
   /** The previous-instrument key is down (keyboard): held past WHEEL_HOLD_MS it opens the wheel instead. */
@@ -220,6 +222,7 @@ export class OperationInput {
     if (a === 'tool.prev' && ev?.type === 'down' && ev.code.startsWith('key:')) this.cycleHold = { t: e.t, before: op.tool, opened: false };
     if (a === 'tool.next' || a === 'tool.prev') return this.cycle(op, e.t, a === 'tool.next' ? 1 : -1);
     if (a === 'tool.quickSwap') {
+      if (this.onSwitchView && ev?.type === 'down' && ev.code === 'key:Tab') return this.onSwitchView();
       this.commitRelease(op);
       this.flush(op, e.t);
       this.unlatch(op);
