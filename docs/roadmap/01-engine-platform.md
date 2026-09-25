@@ -122,7 +122,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ### Surface model & performance tiers
 - [ ] ENG-0077 · Demo · P1 · M · Split `FLESH_FS` into composable GLSL chunks (noise, lighting, per-organ surface, corruption, drape) assembled with defines per variant — variants compiled and cached at load
 - [x] ENG-0078 · Demo · P1 · M · Wetness field — specular and gloss modulated by a low-frequency wetness map plus the blood/salve decal maps so dry tissue reads matte and fresh blood glistens
-- [ ] ENG-0079 · Demo · P1 · M · Subsurface-scattering approximation (wrap diffuse + red-shifted translucency) for flesh, lung and gut so tissue reads as meat, not plastic — art sign-off
+- [x] ENG-0079 · Demo · P1 · M · Subsurface-scattering approximation (wrap diffuse + red-shifted translucency) for flesh, lung and gut so tissue reads as meat, not plastic — art sign-off
 - [ ] ENG-0080 · Demo · P2 · S · Cavity depth cues — Fresnel rim toward the opening edge plus ambient-occlusion falloff under the retractor rim
 - [ ] ENG-0081 · Demo · P0 · M · Bake static fbm/voronoi into 512² tiling noise textures at load; `FLESH_FS` samples textures instead of evaluating 5-octave fbm up to 6× per pixel — flesh pass ≤1.5 ms at 1080p on Intel UHD 620 (GPU timer)
 - [ ] ENG-0082 · Demo · P1 · M · Shader quality tiers High/Medium/Low (octaves, SSS, spec AA, baked vs live noise) chosen by GPU tier and overridable in settings — Low renders the field at 0.75× internal resolution
@@ -212,26 +212,26 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 
 ### Pipeline
 - [ ] ENG-0146 · Demo · P0 · M · Post pipeline as an ordered pass list (bloom, CA, Litany, damage, LUT, vignette, grain, dither) with per-pass enable flags and uniforms, replacing the monolithic `POST_FS` — toggleable from the debug overlay
-- [ ] ENG-0147 · Demo · P1 · M · HDR scene target (RGBA16F via `EXT_color_buffer_float`) with a filmic tonemap — RGBA8 fallback path keeps visual parity within tolerance
-- [ ] ENG-0148 · Demo · P1 · M · Bloom v2: 5-level downsample/upsample mip-chain bloom with soft-knee threshold (replacing 2× 5-tap quarter-res blur and the hard-coded threshold in `endWorld`) — no bloom shimmer on small highlights in a static scene
+- [x] ENG-0147 · Demo · P1 · M · HDR scene target (RGBA16F via `EXT_color_buffer_float`) with a filmic tonemap — RGBA8 fallback path keeps visual parity within tolerance
+- [x] ENG-0148 · Demo · P1 · M · Bloom v2: 5-level downsample/upsample mip-chain bloom with soft-knee threshold (replacing 2× 5-tap quarter-res blur and the hard-coded threshold in `endWorld`) — no bloom shimmer on small highlights in a static scene
 - [ ] ENG-0149 · Demo · P1 · S · Bloom presets per scene type (operation, story, menu, Malison) as data — `PostParams.bloom` becomes a preset id + intensity override
-- [ ] ENG-0150 · Demo · P1 · S · Dither at final output (blue-noise ±0.5 LSB) — gradient test capture shows no visible banding in the dark vignette
+- [x] ENG-0150 · Demo · P1 · S · Dither at final output (blue-noise ±0.5 LSB) — gradient test capture shows no visible banding in the dark vignette
 
 ### Grading & look
 - [x] ENG-0151 · Demo · P0 · M · LUT colour grading — 32³ LUT strips sampled as 2D textures, crossfade between two LUTs over time; replaces the hard-coded candlelit grade math (neutral-plus-candle default LUT keeps parity)
 - [ ] ENG-0152 · Demo · P1 · S · LUT authoring pipeline — neutral LUT PNG exported by script, graded externally, dropped into `assets/luts/`; build validates size and format
 - [ ] ENG-0153 · Demo · P1 · S · Chapter 1–2 LUTs — per-location grades (hospice, theatre, street, chapel, night) selected by story backdrop and operation def
-- [ ] ENG-0154 · Demo · P1 · S · Aspect-aware vignette — parameters derived from aspect ratio so 21:9/32:9 edges are not over-darkened and 16:10 not under-darkened
-- [ ] ENG-0155 · Demo · P2 · S · Blue-noise film grain — tiled texture animated by offset replaces `hash(v_uv*900)`; grain size in virtual units so 720p and 4K match
+- [x] ENG-0154 · Demo · P1 · S · Aspect-aware vignette — parameters derived from aspect ratio so 21:9/32:9 edges are not over-darkened and 16:10 not under-darkened
+- [x] ENG-0155 · Demo · P2 · S · Blue-noise film grain — tiled texture animated by offset replaces `hash(v_uv*900)`; grain size in virtual units so 720p and 4K match
 - [ ] ENG-0156 · Demo · P2 · S · Candle flicker on the light rig — luminance amplitude ≤3%, disabled by the reduce-flashing setting
 
 ### Gameplay feedback effects
 - [x] ENG-0157 · Demo · P0 · M · Litany v2 — star-shaped ripple radiating from the gesture centroid, sepia with gold highlight retention, radial "clock-hand" blur on onset, smooth ramp driven by the `litanyTime` curve
 - [x] ENG-0158 · Demo · P0 · S · Damage feedback — directional red edge flash on `hurt` (intensity ∝ amount, direction from hurt position), capped repetition rate
-- [ ] ENG-0159 · Demo · P1 · S · Low-vitals treatment — red edge pulse synced to the ECG beat (not a fixed `sin(t*6)`), progressive desaturation below 15 vitals
-- [ ] ENG-0160 · Demo · P1 · S · Chromatic aberration pass — radial, strength uniform, used on Malison phase shifts and heavy damage, scaled by the accessibility slider
-- [ ] ENG-0161 · Demo · P1 · M · Malison curse screen effect — ink tendrils creeping from screen edges via noise mask plus slight warp, intensity from boss phase
-- [ ] ENG-0162 · Demo · P1 · S · Outcome transitions: flatline desaturates and fades to black with film burn; victory swells warm bloom — both driven by one timeline helper
+- [x] ENG-0159 · Demo · P1 · S · Low-vitals treatment — red edge pulse synced to the ECG beat (not a fixed `sin(t*6)`), progressive desaturation below 15 vitals
+- [x] ENG-0160 · Demo · P1 · S · Chromatic aberration pass — radial, strength uniform, used on Malison phase shifts and heavy damage, scaled by the accessibility slider
+- [x] ENG-0161 · Demo · P1 · M · Malison curse screen effect — ink tendrils creeping from screen edges via noise mask plus slight warp, intensity from boss phase
+- [x] ENG-0162 · Demo · P1 · S · Outcome transitions: flatline desaturates and fades to black with film burn; victory swells warm bloom — both driven by one timeline helper
 
 ### Safety & settings plumbing
 - [x] ENG-0163 · Demo · P0 · M · Photosensitivity flash limiter: full-screen luminance changes limited to <3 flashes/s (Harding-style check) — unit test feeds worst-case post-param timelines (Malison + damage + Litany)

@@ -2,7 +2,7 @@ import type { Vec } from '../core/math';
 import { alphaOf, type RGBA } from './color';
 import { bakeLut, GRADES, LUT_SIZE } from './lut';
 import { GlyphAtlas, type FontId } from './text';
-import { BLUR_FS, BRIGHT_FS, FLESH_FS, FLUID_FS, FULL_VS, IMAGE_FS, IMAGE_VS, PORTRAIT_FS, CREATURE_FS, POST_FS, PRIM_FS, PRIM_VS, RECT_VS, SCENE_FS } from './shaders';
+import { BRIGHT_FS, DOWN_FS, UP_FS, FLESH_FS, FLUID_FS, FULL_VS, IMAGE_FS, IMAGE_VS, PORTRAIT_FS, CREATURE_FS, POST_FS, PRIM_FS, PRIM_VS, RECT_VS, SCENE_FS } from './shaders';
 
 const TAU = Math.PI * 2;
 const MAX_VERTS = 60000;
@@ -79,6 +79,14 @@ export interface PostParams {
   /** Litany ripple origin (0..1 screen, y up) and seconds since invoked. */
   litanyCenter?: [number, number];
   litanyAge?: number;
+  /** Heartbeat pulse 0..1 (drives the low-vitals edge pulse). */
+  beat?: number;
+  /** Malison presence 0..1 (ink creeps from the frame edges). */
+  curse?: number;
+  /** [flatline 0..1, victory 0..1] outcome transitions. */
+  outcome?: [number, number];
+  /** Bloom threshold override (per scene preset). */
+  bloomThreshold?: number;
   /** Scrying Lens: centre (virtual px), radius (virtual px), strength 0..1. */
   lens?: [number, number, number, number];
   /** Damage flash: direction from screen centre (virtual px) and intensity 0..1. */
@@ -118,7 +126,6 @@ export class Gfx {
   private prim: WebGLProgram;
   private flesh: WebGLProgram;
   private bright: WebGLProgram;
-  private blur: WebGLProgram;
   private post: WebGLProgram;
   private vao: WebGLVertexArrayObject;
   private emptyVao: WebGLVertexArrayObject;
@@ -130,8 +137,6 @@ export class Gfx {
   private tf = [1, 0, 0, 1, 0, 0];
   private stack: number[][] = [];
   private scene!: Target;
-  private bloomA!: Target;
-  private bloomB!: Target;
   /** Wound/decal layer: R cut depth, G blood stain, B scorch, A swelling. */
   private surface!: Target;
   /** Liquid layer: R blood, G pus, B black bile densities (half-float when available). */
@@ -145,6 +150,10 @@ export class Gfx {
   private sceneProg: WebGLProgram;
   private portraitProg: WebGLProgram;
   private creatureProg: WebGLProgram;
+  private downProg: WebGLProgram;
+  private upProg: WebGLProgram;
+  /** Bloom mip chain (1/2 … 1/32). */
+  private mips: Target[] = [];
   private images = new Map<string, ImageHandle>();
   private luts = new Map<string, WebGLTexture>();
   private pw = 0;
@@ -167,13 +176,14 @@ export class Gfx {
     this.prim = compile(gl, PRIM_VS, PRIM_FS);
     this.flesh = compile(gl, FULL_VS, FLESH_FS);
     this.bright = compile(gl, FULL_VS, BRIGHT_FS);
-    this.blur = compile(gl, FULL_VS, BLUR_FS);
     this.post = compile(gl, FULL_VS, POST_FS);
     this.fluidProg = compile(gl, FULL_VS, FLUID_FS);
     this.imageProg = compile(gl, IMAGE_VS, IMAGE_FS);
     this.sceneProg = compile(gl, FULL_VS, SCENE_FS);
     this.portraitProg = compile(gl, RECT_VS, PORTRAIT_FS);
     this.creatureProg = compile(gl, RECT_VS, CREATURE_FS);
+    this.downProg = compile(gl, FULL_VS, DOWN_FS);
+    this.upProg = compile(gl, FULL_VS, UP_FS);
     this.floatTargets = !!gl.getExtension('EXT_color_buffer_float');
     this.samples = Math.min(4, gl.getParameter(gl.MAX_SAMPLES) as number);
 
@@ -230,15 +240,13 @@ export class Gfx {
     const h = this.canvas.height;
     if (w === this.pw && h === this.ph) return;
     this.freeTarget(this.scene);
-    this.freeTarget(this.bloomA);
-    this.freeTarget(this.bloomB);
     this.freeTarget(this.surface);
     this.freeTarget(this.fluid);
-    this.scene = this.makeTarget(w, h);
-    const bw = Math.max(1, w >> 2);
-    const bh = Math.max(1, h >> 2);
-    this.bloomA = this.makeTarget(bw, bh);
-    this.bloomB = this.makeTarget(bw, bh);
+    // HDR scene target when float render targets are available.
+    this.scene = this.makeTarget(w, h, this.floatTargets);
+    for (const m of this.mips) this.freeTarget(m);
+    this.mips = [];
+    for (let i = 1; i <= 5; i++) this.mips.push(this.makeTarget(Math.max(1, w >> i), Math.max(1, h >> i), this.floatTargets));
     const hw = Math.max(1, Math.round(w * 0.6));
     const hh = Math.max(1, Math.round(h * 0.6));
     this.surface = this.makeTarget(hw, hh);
@@ -251,7 +259,7 @@ export class Gfx {
     if (this.samples > 1) {
       this.msaaRb = gl.createRenderbuffer()!;
       gl.bindRenderbuffer(gl.RENDERBUFFER, this.msaaRb);
-      gl.renderbufferStorageMultisample(gl.RENDERBUFFER, this.samples, gl.RGBA8, w, h);
+      gl.renderbufferStorageMultisample(gl.RENDERBUFFER, this.samples, this.floatTargets ? gl.RGBA16F : gl.RGBA8, w, h);
       this.msaaFb = gl.createFramebuffer()!;
       gl.bindFramebuffer(gl.FRAMEBUFFER, this.msaaFb);
       gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, this.msaaRb);
@@ -299,37 +307,51 @@ export class Gfx {
     gl.disable(gl.BLEND);
     gl.bindVertexArray(this.emptyVao);
 
-    // Bright pass → quarter res, then separable blur.
-    this.bindTarget(this.bloomA);
+    // Bloom v2: soft-knee bright pass into mip 0, box downsample to 1/32, tent upsample back up.
+    const m = this.mips;
+    this.bindTarget(m[0]);
     gl.useProgram(this.bright);
     this.bindTex(this.scene.tex, 0);
     gl.uniform1i(this.u(this.bright, 'u_tex'), 0);
-    gl.uniform1f(this.u(this.bright, 'u_threshold'), 0.78);
+    gl.uniform1f(this.u(this.bright, 'u_threshold'), p.bloomThreshold ?? 0.78);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
-    gl.useProgram(this.blur);
-    gl.uniform1i(this.u(this.blur, 'u_tex'), 0);
-    for (let i = 0; i < 2; i++) {
-      this.bindTarget(this.bloomB);
-      this.bindTex(this.bloomA.tex, 0);
-      gl.uniform2f(this.u(this.blur, 'u_dir'), 1.5 / this.bloomA.w, 0);
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
-      this.bindTarget(this.bloomA);
-      this.bindTex(this.bloomB.tex, 0);
-      gl.uniform2f(this.u(this.blur, 'u_dir'), 0, 1.5 / this.bloomA.h);
+    gl.useProgram(this.downProg);
+    gl.uniform1i(this.u(this.downProg, 'u_tex'), 0);
+    for (let i = 1; i < m.length; i++) {
+      this.bindTarget(m[i]);
+      this.bindTex(m[i - 1].tex, 0);
+      gl.uniform2f(this.u(this.downProg, 'u_texel'), 1 / m[i - 1].w, 1 / m[i - 1].h);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     }
+    gl.useProgram(this.upProg);
+    gl.uniform1i(this.u(this.upProg, 'u_tex'), 0);
+    gl.uniform1f(this.u(this.upProg, 'u_radius'), 1.0);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, gl.ONE);
+    for (let i = m.length - 1; i > 0; i--) {
+      this.bindTarget(m[i - 1]);
+      this.bindTex(m[i].tex, 0);
+      gl.uniform2f(this.u(this.upProg, 'u_texel'), 1 / m[i].w, 1 / m[i].h);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    gl.disable(gl.BLEND);
 
     // Composite.
     this.bindTarget(null);
     gl.useProgram(this.post);
     this.bindTex(this.scene.tex, 0);
-    this.bindTex(this.bloomA.tex, 1);
+    this.bindTex(m[0].tex, 1);
     gl.uniform1i(this.u(this.post, 'u_scene'), 0);
     gl.uniform1i(this.u(this.post, 'u_bloom'), 1);
     gl.uniform1f(this.u(this.post, 'u_time'), this.time);
     gl.uniform1f(this.u(this.post, 'u_litany'), p.litany);
     gl.uniform1f(this.u(this.post, 'u_danger'), p.danger);
-    gl.uniform1f(this.u(this.post, 'u_bloomAmt'), p.bloom);
+    // Mip-chain bloom sums five levels; scale so `bloom` keeps its old meaning.
+    gl.uniform1f(this.u(this.post, 'u_bloomAmt'), p.bloom * 0.35);
+    gl.uniform1f(this.u(this.post, 'u_beat'), p.beat ?? 0);
+    gl.uniform1f(this.u(this.post, 'u_curse'), p.curse ?? 0);
+    gl.uniform2fv(this.u(this.post, 'u_outcome'), p.outcome ?? [0, 0]);
+    gl.uniform1f(this.u(this.post, 'u_hdr'), this.floatTargets ? 1 : 0);
     gl.uniform2f(this.u(this.post, 'u_shake'), p.shake.x / this.vw, -p.shake.y / this.vh);
     gl.uniform1f(this.u(this.post, 'u_flicker'), Math.sin(this.time * 9.1) * Math.sin(this.time * 3.7));
     gl.uniform1f(this.u(this.post, 'u_chroma'), p.chroma ?? 0);
