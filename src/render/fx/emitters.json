@@ -1208,5 +1208,185 @@
     "wobble": 6,
     "particle": "glow",
     "color": "#ffe8b0"
+  },
+  "uiSparkle": {
+    "layer": "UI",
+    "shape": {
+      "kind": "point"
+    },
+    "speedJitter": [
+      0.6,
+      1.2
+    ],
+    "cone": 3.14,
+    "alphaOverLife": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "sizeOverLife": [
+      [
+        0,
+        1.4
+      ],
+      [
+        1,
+        0.4
+      ]
+    ],
+    "priority": "feedback",
+    "blend": "add",
+    "burst": 10,
+    "speed": 90,
+    "life": [
+      0.35,
+      0.7
+    ],
+    "size": [
+      2,
+      4.5
+    ],
+    "drag": 3,
+    "particle": "shard",
+    "spin": 6,
+    "color": [
+      [
+        0,
+        "#ffffff",
+        1
+      ],
+      [
+        0.4,
+        "#fff0b0",
+        1
+      ],
+      [
+        1,
+        "#e0b050",
+        1
+      ]
+    ]
+  },
+  "uiFlare": {
+    "layer": "UI",
+    "shape": {
+      "kind": "line",
+      "dx": 220,
+      "dy": 0
+    },
+    "speedJitter": [
+      0.6,
+      1.2
+    ],
+    "cone": 0.6,
+    "alphaOverLife": [
+      [
+        0,
+        0
+      ],
+      [
+        0.15,
+        0.8
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "sizeOverLife": 1,
+    "priority": "feedback",
+    "blend": "add",
+    "burst": 18,
+    "speed": 40,
+    "dir": -1.5708,
+    "life": [
+      0.5,
+      1.0
+    ],
+    "size": [
+      5,
+      10
+    ],
+    "drag": 1.5,
+    "gravity": -20,
+    "particle": "glow",
+    "color": [
+      [
+        0,
+        "#fff4d0",
+        1
+      ],
+      [
+        1,
+        "#e0a040",
+        1
+      ]
+    ]
+  },
+  "inkSplash": {
+    "layer": "UI",
+    "shape": {
+      "kind": "point"
+    },
+    "speedJitter": [
+      0.3,
+      1.2
+    ],
+    "cone": 3.14,
+    "alphaOverLife": [
+      [
+        0,
+        1
+      ],
+      [
+        0.7,
+        1
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "sizeOverLife": [
+      [
+        0,
+        1.2
+      ],
+      [
+        1,
+        0.8
+      ]
+    ],
+    "priority": "feedback",
+    "blend": "alpha",
+    "burst": 26,
+    "speed": 260,
+    "life": [
+      0.3,
+      0.7
+    ],
+    "size": [
+      2,
+      6
+    ],
+    "drag": 7,
+    "particle": "disc",
+    "color": [
+      [
+        0,
+        "#1a0406",
+        0.95
+      ],
+      [
+        1,
+        "#3a0a0c",
+        0.85
+      ]
+    ]
   }
 }

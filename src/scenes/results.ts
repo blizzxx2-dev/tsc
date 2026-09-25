@@ -10,6 +10,7 @@ import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import type { Operation } from '../surgery/operation';
 import { VIEW_W } from '../ui/layout';
+import { Particles } from '../render/particles';
 import { caps, glass, heading, INK, numerals, tallyMarks } from '../ui/hudKit';
 import { failSeal, rankSeal } from '../art/kit';
 import { button, reticle } from '../ui/widgets';
@@ -44,10 +45,16 @@ export class ResultsScene implements Scene {
     if (this.won && this.op.rank() === 'XS') setTimeout(() => game.audio.play('bell'), 350);
   }
 
+  /** Rank-reveal ink splash (ENG-0144). */
+  private fx = new Particles();
+  private splashAt: { x: number; y: number } | null = null;
+
   update(dt: number, game: Game): void {
     this.t += dt;
+    this.fx.update(dt, () => {});
     if (this.won && !this.stamped && this.t > 1.9) {
       this.stamped = true;
+      if (this.splashAt) this.fx.burst('inkSplash', this.splashAt);
       game.audio.play('squelch');
     }
     // Results skip (UIX-0117): the first press completes the tally, the second continues.
@@ -136,6 +143,7 @@ export class ResultsScene implements Scene {
     // The rank seal presses down.
     const sx = r.x + 530;
     const sy = r.y + 320;
+    this.splashAt = { x: sx, y: sy };
     if (this.won && this.t > 1.6) {
       const rank = op.rank();
       const k = Math.min(1, (this.t - 1.6) / 0.3);
@@ -152,6 +160,7 @@ export class ResultsScene implements Scene {
     } else if (!this.won) {
       failSeal(g, sx, sy, 70, this.t - 0.4);
     }
+    this.fx.draw(g, 'UI');
 
     // Margin notes: what the next rank needs, why not XS, flags, fees, tips.
     if (this.t > 2) {

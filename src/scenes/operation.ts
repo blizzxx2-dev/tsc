@@ -81,6 +81,8 @@ export class OperationScene implements Scene {
   /** Phase banner (ART-0078 / UIX-0061): a ribbon that slides in at each phase start. */
   private banner: { phase: number; t: number; boss: boolean | null } | null = null;
   private particles = new Particles();
+  /** HUD particles (ENG-0144): COOL sparkle, chain-milestone flare; real time, UI layer. */
+  private uiFx = new Particles();
   /** Emitters driven by the operation's state and events (ENG-0133–0142). */
   private vfx = new OperationVfx(() => this.particles);
   private flashLimit = new FlashLimiter();
@@ -195,6 +197,7 @@ export class OperationScene implements Scene {
     if (!this.runOpts.practice) attachBarkDirector(op);
     this.vfx = new OperationVfx(() => this.particles);
     this.vfx.listen(op, () => bloodScale(presentation.gore));
+    op.events.on('rate', ({ rating, pos }) => rating === 'cool' && this.uiFx.burst('uiSparkle', pos));
   }
 
   /** Open the "Respite" overlay (UIX-0100). The operation stops updating until it closes. */
@@ -347,7 +350,10 @@ export class OperationScene implements Scene {
     }
     if (op.combo !== this.lastCombo) {
       this.comboT = 0;
-      if (op.combo > this.lastCombo && op.tuning.scoring.comboMilestones.includes(op.combo)) this.milestone = { combo: op.combo, t: 0 };
+      if (op.combo > this.lastCombo && op.tuning.scoring.comboMilestones.includes(op.combo)) {
+        this.milestone = { combo: op.combo, t: 0 };
+        this.uiFx.burst('uiFlare', { x: VIEW_W / 2 - 110, y: 130 });
+      }
       this.lastCombo = op.combo;
     }
     this.comboT += dt;
@@ -381,6 +387,7 @@ export class OperationScene implements Scene {
     this.particles.update(dt * op.timeScale, (p, kind, size) => {
       if (kind === 'blood' && onBody(p)) op.stain(p, size * 2.6, 0.3);
     });
+    this.uiFx.update(dt, () => {});
     this.vfx.update(op, dt * op.timeScale, { beat: this.beatPhase, pointer: game.input.pos, down: game.input.down, light: { x: FIELD.cx - 220, y: 60 }, starTrail: this.ctl.starTrail, gore: bloodScale(presentation.gore) });
 
     // op.cues are drained by the audio director (src/audio/director.ts) right after this update.
@@ -692,6 +699,7 @@ export class OperationScene implements Scene {
     const tf = op.timeLeft / op.def.timeLimit;
     g.rect(T.x + 22, T.y + T.h - 7, (T.w - 44) * tf, 1.5, hex(lowT ? '#ff5a4a' : INK.gilt, 0.8));
     this.drawBanner(g);
+    this.uiFx.draw(g, 'UI');
     // Minimal HUD (UIX-0071): vitals, timer, tray and Litany only.
     if (settings.minimalHud) return;
     // Phase seals (UIX-0045): pressed once done, lit while current; hovering names the phase's objective.

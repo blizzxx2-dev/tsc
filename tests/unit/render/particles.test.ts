@@ -170,6 +170,18 @@ describe('budget and priority classes (ENG-0128, ENG-0145)', () => {
   });
 });
 
+describe('UI particles (ENG-0144)', () => {
+  it('draws COOL sparkle, milestone flare and rank ink splash on the UI layer only', () => {
+    const p = new Particles(undefined, 2);
+    for (const id of ['uiSparkle', 'uiFlare', 'inkSplash']) {
+      expect(EMITTERS[id].layer).toBe('UI');
+      p.burst(id, { x: 640, y: 360 });
+    }
+    expect(p.instances('alpha', 'Particles').count + p.instances('add', 'Particles').count).toBe(0);
+    expect(p.instances('alpha', 'UI').count + p.instances('add', 'UI').count).toBe(p.count);
+  });
+});
+
 describe('instanced renderer (ENG-0124)', () => {
   it('draws every particle in one instanced call per blend and registers its shader variant', async () => {
     installFakeDom();
