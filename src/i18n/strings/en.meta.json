@@ -7894,6 +7894,200 @@
     "context": "Codex page text for an Hour not yet met.",
     "screenshot": "docs/loc/screens/codex.png"
   },
+  "ui.manual.title": {
+    "scene": "manual",
+    "font": "display",
+    "size": 30,
+    "maxPx": 280,
+    "context": "Heading of the Surgeon's Manual: a page per instrument and ailment.",
+    "screenshot": "docs/loc/screens/manual.png"
+  },
+  "ui.manual.open": {
+    "scene": "manual",
+    "font": "display",
+    "size": 24,
+    "maxPx": 200,
+    "context": "Operating Theatre button opening the Surgeon's Manual.",
+    "screenshot": "docs/loc/screens/manual.png"
+  },
+  "ui.manual.locked": {
+    "scene": "manual",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 620,
+    "context": "Manual page text for an instrument or ailment not yet met.",
+    "screenshot": "docs/loc/screens/manual.png"
+  },
+  "manual.laceration.title": {
+    "scene": "manual",
+    "font": "display",
+    "size": 32,
+    "maxPx": 640,
+    "context": "Surgeon’s Manual page title for the ailment “Laceration”.",
+    "screenshot": "docs/loc/screens/manual.png"
+  },
+  "manual.laceration.body": {
+    "scene": "manual",
+    "font": "body",
+    "size": 20,
+    "maxPx": 610,
+    "context": "Surgeon’s Manual text: how to treat laceration.",
+    "screenshot": "docs/loc/screens/manual.png",
+    "maxLines": 6
+  },
+  "manual.pool.title": {
+    "scene": "manual",
+    "font": "display",
+    "size": 32,
+    "maxPx": 640,
+    "context": "Surgeon’s Manual page title for the ailment “Pooled Blood”.",
+    "screenshot": "docs/loc/screens/manual.png"
+  },
+  "manual.pool.body": {
+    "scene": "manual",
+    "font": "body",
+    "size": 20,
+    "maxPx": 610,
+    "context": "Surgeon’s Manual text: how to treat pooled blood.",
+    "screenshot": "docs/loc/screens/manual.png",
+    "maxLines": 6
+  },
+  "manual.incision.title": {
+    "scene": "manual",
+    "font": "display",
+    "size": 32,
+    "maxPx": 640,
+    "context": "Surgeon’s Manual page title for the ailment “Incision”.",
+    "screenshot": "docs/loc/screens/manual.png"
+  },
+  "manual.incision.body": {
+    "scene": "manual",
+    "font": "body",
+    "size": 20,
+    "maxPx": 610,
+    "context": "Surgeon’s Manual text: how to treat incision.",
+    "screenshot": "docs/loc/screens/manual.png",
+    "maxLines": 6
+  },
+  "manual.embedded.title": {
+    "scene": "manual",
+    "font": "display",
+    "size": 32,
+    "maxPx": 640,
+    "context": "Surgeon’s Manual page title for the ailment “Embedded Object”.",
+    "screenshot": "docs/loc/screens/manual.png"
+  },
+  "manual.embedded.body": {
+    "scene": "manual",
+    "font": "body",
+    "size": 20,
+    "maxPx": 610,
+    "context": "Surgeon’s Manual text: how to treat embedded object.",
+    "screenshot": "docs/loc/screens/manual.png",
+    "maxLines": 6
+  },
+  "manual.burn.title": {
+    "scene": "manual",
+    "font": "display",
+    "size": 32,
+    "maxPx": 640,
+    "context": "Surgeon’s Manual page title for the ailment “Burn”.",
+    "screenshot": "docs/loc/screens/manual.png"
+  },
+  "manual.burn.body": {
+    "scene": "manual",
+    "font": "body",
+    "size": 20,
+    "maxPx": 610,
+    "context": "Surgeon’s Manual text: how to treat burn.",
+    "screenshot": "docs/loc/screens/manual.png",
+    "maxLines": 6
+  },
+  "manual.bubo.title": {
+    "scene": "manual",
+    "font": "display",
+    "size": 32,
+    "maxPx": 640,
+    "context": "Surgeon’s Manual page title for the ailment “Bubo”.",
+    "screenshot": "docs/loc/screens/manual.png"
+  },
+  "manual.bubo.body": {
+    "scene": "manual",
+    "font": "body",
+    "size": 20,
+    "maxPx": 610,
+    "context": "Surgeon’s Manual text: how to treat bubo.",
+    "screenshot": "docs/loc/screens/manual.png",
+    "maxLines": 6
+  },
+  "manual.rot.title": {
+    "scene": "manual",
+    "font": "display",
+    "size": 32,
+    "maxPx": 640,
+    "context": "Surgeon’s Manual page title for the ailment “Rot”.",
+    "screenshot": "docs/loc/screens/manual.png"
+  },
+  "manual.rot.body": {
+    "scene": "manual",
+    "font": "body",
+    "size": 20,
+    "maxPx": 610,
+    "context": "Surgeon’s Manual text: how to treat rot.",
+    "screenshot": "docs/loc/screens/manual.png",
+    "maxLines": 6
+  },
+  "manual.venom.title": {
+    "scene": "manual",
+    "font": "display",
+    "size": 32,
+    "maxPx": 640,
+    "context": "Surgeon’s Manual page title for the ailment “Venom”.",
+    "screenshot": "docs/loc/screens/manual.png"
+  },
+  "manual.venom.body": {
+    "scene": "manual",
+    "font": "body",
+    "size": 20,
+    "maxPx": 610,
+    "context": "Surgeon’s Manual text: how to treat venom.",
+    "screenshot": "docs/loc/screens/manual.png",
+    "maxLines": 6
+  },
+  "manual.grub.title": {
+    "scene": "manual",
+    "font": "display",
+    "size": 32,
+    "maxPx": 640,
+    "context": "Surgeon’s Manual page title for the ailment “Grub”.",
+    "screenshot": "docs/loc/screens/manual.png"
+  },
+  "manual.grub.body": {
+    "scene": "manual",
+    "font": "body",
+    "size": 20,
+    "maxPx": 610,
+    "context": "Surgeon’s Manual text: how to treat grub.",
+    "screenshot": "docs/loc/screens/manual.png",
+    "maxLines": 6
+  },
+  "manual.sigil.title": {
+    "scene": "manual",
+    "font": "display",
+    "size": 32,
+    "maxPx": 640,
+    "context": "Surgeon’s Manual page title for the ailment “Curse-Sigil”.",
+    "screenshot": "docs/loc/screens/manual.png"
+  },
+  "manual.sigil.body": {
+    "scene": "manual",
+    "font": "body",
+    "size": 20,
+    "maxPx": 610,
+    "context": "Surgeon’s Manual text: how to treat curse-sigil.",
+    "screenshot": "docs/loc/screens/manual.png",
+    "maxLines": 6
+  },
   "ui.briefing.litany_sealed": {
     "scene": "briefing",
     "font": "display",

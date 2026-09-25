@@ -49,6 +49,7 @@ import { BossAudio, withBossContext } from './bossAudio';
 import { BOSS_OPS, watchEncounters } from '../surgery/bosses/codex';
 import { loadProgress, storeProgress } from '../surgery/progress';
 import { codexId } from './codex';
+import { watchManual } from '../content/manual';
 import { operationOptions } from '../surgery/session';
 import type { OperationOptions } from '../surgery/operation';
 import { drawDebug, drawDialogue, drawDrainArrow, drawFieldOverlays, drawLitanyPractice, drawSecondaryVitals, drawTrayState, drawTutorial } from './gameplayHud';
@@ -195,6 +196,13 @@ export class OperationScene implements Scene {
       const p = loadProgress();
       if (p.codex.includes(codexId(boss))) return;
       p.codex.push(codexId(boss));
+      storeProgress(p);
+    });
+    // The Surgeon's Manual opens a page for each instrument and ailment met (GAM-0209).
+    watchManual(op, (id) => {
+      const p = loadProgress();
+      if (p.codex.includes(id)) return;
+      p.codex.push(id);
       storeProgress(p);
     });
     if (!this.runOpts.practice) attachBarkDirector(op);

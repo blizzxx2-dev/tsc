@@ -9,6 +9,7 @@ import { AudioOptionsScene } from './audio/options-scene';
 import { ControlsScene } from './input/controlsScene';
 import { GameplayOptionsScene } from './scenes/gameplayOptions';
 import { OperationsScene } from './scenes/operations';
+import { ManualScene } from './scenes/manual';
 import { DemoEndScene } from './scenes/demoend';
 import { ChapterSelectScene } from './scenes/chapterSelect';
 import { SaveSlotsScene } from './scenes/saveSlots';
@@ -449,6 +450,7 @@ async function boot(): Promise<void> {
       credits: () => new CreditsScene(),
       extras: () => new ExtrasScene(),
       display: () => new OptionsScene(back, true, 'display'),
+      manual: () => new ManualScene(back, true),
     };
     const make = screens[params.get('ui') ?? ''];
     if (make) game.instant(() => game.go(make()));
