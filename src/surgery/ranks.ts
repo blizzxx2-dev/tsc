@@ -18,6 +18,9 @@ export const RANK_TABLE: Record<string, { S: number; A: number; B: number }> = {
   'op2-3': { S: 6840, A: 5470, B: 4100 },
   'op2-4': { S: 5990, A: 4790, B: 3590 },
   'op2-5': { S: 6380, A: 5100, B: 3830 },
+  // Challenge X-ops (Master rules).
+  'op1-5-x1': { S: 4710, A: 3770, B: 2830 },
+  'op2-5-x2': { S: 5520, A: 4420, B: 3310 },
 };
 
 export function rankThresholds(def: OperationDef): { S: number; A: number; B: number } {

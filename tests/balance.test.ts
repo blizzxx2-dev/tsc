@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { allOperations } from '../src/content/campaign';
 import { playWithBot } from './bot';
+import { X_OPS, xOpDef, xOpOptions } from '../src/content/challenge';
 
 /**
  * Balance guard-rails, using the bot surgeon at two paces:
@@ -31,6 +32,12 @@ it.runIf(process.env.CALIBRATE)('calibrate rank thresholds', () => {
   const round = (n: number) => Math.round(n / 10) * 10;
   for (const def of allOperations()) {
     const steady = playWithBot(def, { profile: 'steady' }).op;
+    const S = round(steady.score * 0.96);
+    console.log(`  '${def.id}': { S: ${S}, A: ${round(S * 0.8)}, B: ${round(S * 0.6)} }, // steady ${steady.status} ${steady.score}`);
+  }
+  for (const x of X_OPS.filter((xx) => xx.base)) {
+    const def = xOpDef(x);
+    const steady = playWithBot(def, { profile: 'steady', ...xOpOptions(x) }).op;
     const S = round(steady.score * 0.96);
     console.log(`  '${def.id}': { S: ${S}, A: ${round(S * 0.8)}, B: ${round(S * 0.6)} }, // steady ${steady.status} ${steady.score}`);
   }

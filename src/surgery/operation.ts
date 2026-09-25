@@ -102,7 +102,11 @@ export interface OperationOptions {
   tinctures?: readonly TinctureColor[];
   /** First-time hints already seen on this save (not repeated). */
   hintsSeen?: readonly string[];
+  /** Challenge mutators (Candle-Only, Moving Cart, Field Tent in Rain, Stroh Watches). */
+  mutators?: readonly MutatorId[];
 }
+
+export type MutatorId = 'candle' | 'cart' | 'rain' | 'stroh';
 
 export interface Popup {
   text: string;
@@ -378,6 +382,8 @@ export class Operation {
     this.mods = combineMods(NO_MODS, opts.mods ?? {});
     this.upgrades = new Set(opts.challenge ? [] : (opts.upgrades ?? []));
     this.tuning = mergeTuning(OP_TUNING[def.id], def.tuning, this.mods.tuning, upgradeTuning(this.upgrades));
+    // Candle-Only: the lens sees less in the gloom.
+    if (opts.mutators?.includes('candle')) this.tuning.lens.radius *= 0.7;
     this.litanyVariant = opts.litanyVariant ?? 'stillness';
     this.maxVitals = Math.round(this.tuning.vitals.max * (def.constitution === 'frail' ? 0.8 : 1));
     this.vitalsCap = this.maxVitals;
@@ -620,6 +626,10 @@ export class Operation {
   invokeLitany(): boolean {
     this.log?.push(['l']);
     if (!this.canInvokeLitany()) return false;
+    if (this.opts.mutators?.includes('stroh')) {
+      this.lose('Inquisitor Stroh saw the sign. The operation is over.', 'stroh');
+      return false;
+    }
     this.litanyUsed = true;
     this.litanyUses++;
     this.whisper++;
@@ -643,6 +653,21 @@ export class Operation {
   /** The patient's average vitals so far — the vitals bonus pays for this, so a last-second tincture buys nothing. */
   get averageVitals(): number {
     return this.runT > 0 ? this.vitalsInt / this.runT : this.vitals;
+  }
+
+  /** Candle-Only: the vignette closes to 45 % of the view. */
+  get vignette(): number {
+    return this.opts.mutators?.includes('candle') ? 0.45 : 1;
+  }
+
+  /**
+   * Moving Cart: the whole field sways 12 px at 0.3 Hz. The scene draws the field
+   * offset by this and maps the pointer back, so aim tolerance is unchanged.
+   */
+  sway(): Vec {
+    if (!this.opts.mutators?.includes('cart')) return { x: 0, y: 0 };
+    const w = Math.PI * 2 * 0.3 * this.elapsed;
+    return { x: Math.sin(w) * 12, y: Math.sin(w * 0.5) * 4 };
   }
 
   /** Vitals lost over the last second (positive = falling). */
@@ -1548,3 +1573,4 @@ export class WoundFever extends Entity {
     g.arc(FIELD.cx, FIELD.cy - FIELD.ry - 20, 18, 3, hex('#ff8040'), this.left / DEFAULT_TUNING.fever.duration);
   }
 }
+

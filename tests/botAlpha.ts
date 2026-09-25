@@ -19,6 +19,7 @@ import { RegenWound, REGEN } from '../src/surgery/ailments/regen';
 import { GlassCluster, WoodSplinter } from '../src/surgery/ailments/splinters';
 import { Spill, Ulcer, ULCER } from '../src/surgery/ailments/ulcer';
 import { BiteChannel, DonorBowl } from '../src/surgery/ailments/vampire';
+import { RainDrips } from '../src/surgery/ailments/environment';
 import { DT, drag, hold, raster, still, tap, zigzag, type Action, type BotContext, type Frame } from './bot';
 
 const ALPHA = [
@@ -55,6 +56,7 @@ const ALPHA = [
   Ulcer,
   BiteChannel,
   DonorBowl,
+  RainDrips,
 ];
 
 export function isAlphaEntity(e: Entity): boolean {
