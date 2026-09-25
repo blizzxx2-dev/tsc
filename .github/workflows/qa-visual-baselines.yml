@@ -24,7 +24,7 @@ jobs:
       PLAYWRIGHT_DOCKER: '1'
       QA_BASELINE_ENV: playwright-docker
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: npm ci
       - name: Keep the old baselines for the before/after table
         run: mkdir -p /tmp/before && cp -r tests/e2e/visual/__baselines__/. /tmp/before/ 2>/dev/null || true
