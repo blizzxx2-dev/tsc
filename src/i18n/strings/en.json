@@ -23,6 +23,8 @@
   "ui.options.shake_full": "Full",
   "ui.options.reduce_flashing": "Reduce flashing",
   "ui.options.reduce_flashing_note": "Softens the failing-vitals pulse, damage flashes and the Litany ripple.",
+  "ui.options.flash_intensity": "Flash intensity",
+  "ui.options.flash_intensity_note": "How bright boss flares, opening flashes and hit flashes are. Reduce flashing caps it at 35 %.",
   "ui.options.timer_assist": "Assist: time allowed",
   "ui.options.timer_standard": "Standard",
   "ui.options.timer_generous": "Generous (×1.5)",

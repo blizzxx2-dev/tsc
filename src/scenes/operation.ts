@@ -26,7 +26,7 @@ import { speciesBlood } from '../render/organs';
 import { band, caps, heading, heartIcon, phaseSeal, ratingStamp, glass, INK, keycap, meter, numerals, titleRule, well } from '../ui/hudKit';
 import { localeInfo } from '../i18n/locales';
 import { getLocale } from '../i18n';
-import { bloodScale, GORE_LEVEL, presentation } from '../render/presentation';
+import { bloodScale, flashScale, GORE_LEVEL, presentation } from '../render/presentation';
 import { highContrast, palette } from '../ui/theme';
 import { giltNumerals } from '../ui/ornaments';
 import { RATING_INK, starReliquary, vialArt } from '../art/kit';
@@ -400,6 +400,7 @@ export class OperationScene implements Scene {
     presentation.creatureFilter = settings.creatureFilter;
     op.calloutPace = localeInfo(getLocale())?.reading ?? 1;
     presentation.gore = GORE_LEVEL[settings.goreLevel];
+    presentation.flash = flashScale(settings);
     const pal = organPalette(op.def);
     const t = g.time;
     const sk = settings.reduceMotion ? 0 : op.shake * settings.shake;
@@ -472,7 +473,7 @@ export class OperationScene implements Scene {
       g.setBlend('alpha');
     }
 
-    const soften = settings.reduceFlashing ? 0.35 : 1;
+    const soften = flashScale(settings);
     const danger = (op.status === 'running' ? Math.max(0, (35 - op.vitals) / 35) : op.status === 'lost' ? 1 : 0) * soften;
     const litany = op.litanyTime > 0 ? Math.min(1, op.litanyTime, (LITANY_DURATION - op.litanyTime) * 3) * soften : 0;
     const ch2 = op.def.id.startsWith('op2');

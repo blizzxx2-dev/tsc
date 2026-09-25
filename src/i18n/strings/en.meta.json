@@ -196,6 +196,22 @@
     "context": "Options row description.",
     "screenshot": "docs/loc/screens/options.png"
   },
+  "ui.options.flash_intensity": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label (slider).",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.flash_intensity_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
   "ui.options.timer_assist": {
     "scene": "options",
     "font": "body",

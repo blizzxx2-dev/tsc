@@ -8,6 +8,12 @@ import { Operation, type OperationDef } from '../src/surgery/operation';
 import { lostPatientsOf } from '../src/scenes/bossAudio';
 import { optionRows } from '../src/scenes/options';
 import { at, start, wait } from './harness';
+import { LaudsMalison } from '../src/surgery/lauds';
+import { Malison } from '../src/surgery/malison';
+import { flashScale, presentation } from '../src/render/presentation';
+import { alphaOf } from '../src/render/color';
+import type { Gfx } from '../src/render/gfx';
+import { DEFAULT_SETTINGS } from '../src/core/settings/schema';
 
 const byId = (id: string) => allCampaignOperations().find((d) => d.id === id)!;
 const boss = (o: Partial<BossOpDef>) => o as Partial<OperationDef>;
@@ -56,5 +62,47 @@ describe('story flags and assists reach the fights', () => {
     expect(op.tuning.salve.refillIdle).toBe(2);
     expect(op.salve).toBe(70);
     expect(new Operation(byId('op3-10')).tuning.salve.capacity).toBe(46);
+  });
+});
+
+describe('GAM-0239: shake and flash sliders reach the boss effects', () => {
+  const glowAlphas = (draw: (g: Gfx) => void): number[] => {
+    const out: number[] = [];
+    const g = new Proxy(
+      {},
+      { get: (_t, k) => (k === 'glow' ? (_x: number, _y: number, _r: number, c: number) => out.push(alphaOf(c)) : () => undefined) },
+    ) as Gfx;
+    draw(g);
+    return out;
+  };
+
+  it('flash intensity scales the Lauds dawn flare and the Matins opening; Reduce flashing caps it at 35 %', () => {
+    expect(flashScale({ flashIntensity: 1, reduceFlashing: false })).toBe(1);
+    expect(flashScale({ flashIntensity: 0.6, reduceFlashing: true })).toBe(0.35);
+    expect(flashScale({ flashIntensity: 0.2, reduceFlashing: true })).toBe(0.2);
+    let l!: LaudsMalison;
+    const op = start((o) => [(l = new LaudsMalison(at(0, 0), o))], boss({ skipCinematics: true }));
+    l.damage(op, 40);
+    l.damage(op, 40);
+    expect(l.phase.key).toBe('dawn');
+    l.flareT = l.tune.flareFor;
+    let m!: Malison;
+    const op2 = start((o) => [(m = new Malison(at(0, 0), o))]);
+    m.open = true;
+    const sample = () => [...glowAlphas((g) => l.drawDawn(g, op)), ...glowAlphas((g) => m.draw(g, op2))];
+    presentation.flash = 1;
+    const full = sample();
+    presentation.flash = 0.5;
+    const half = sample();
+    presentation.flash = 1;
+    expect(Math.max(...half)).toBeLessThan(Math.max(...full));
+    expect(half[0]).toBeCloseTo(full[0] * 0.5, 1);
+  });
+
+  it('boss shakes go through the shake slider; the flash slider sits in the accessibility options', () => {
+    expect(DEFAULT_SETTINGS.shake).toBe(1);
+    expect(DEFAULT_SETTINGS.flashIntensity).toBe(1);
+    expect(optionRows('display').flatMap((r) => r.keys ?? [])).toContain('shake');
+    expect(optionRows('access').flatMap((r) => r.keys ?? [])).toContain('flashIntensity');
   });
 });

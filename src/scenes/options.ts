@@ -252,6 +252,7 @@ export function optionRows(tabId: OptionsTab): OptionRow[] {
         slider('box_opacity', 'textBoxOpacity', 0.6, 1, 0.1, (v) => pct(v)),
         toggle('reduce_motion', 'reduceMotion'),
         toggle('reduce_flashing', 'reduceFlashing', 'ui.options.reduce_flashing'),
+        slider('flash_intensity', 'flashIntensity', 0, 1, 0.05, (v) => pct(v)),
         { ...choice('colour_filter', 'colorFilter', Object.keys(PALETTES) as PaletteId[], () => (Object.keys(PALETTES) as PaletteId[]).map((k) => t(`ui.options.filter_${k}`))), preview: 'palette' },
         choice('cursor_size', 'cursorSize', [1, 1.25, 1.5, 2] as const, () => ['100%', '125%', '150%', '200%']),
         choice('cursor_colour', 'cursorColor', ['brass', 'white', 'cyan', 'magenta'] as const, () => [t('ui.options.cursor_brass'), t('ui.options.cursor_white'), t('ui.options.cursor_cyan'), t('ui.options.cursor_magenta')]),

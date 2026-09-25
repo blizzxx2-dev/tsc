@@ -366,7 +366,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [ ] GAM-0236 · Demo · P1 · S · Colour-blind safe ailments — venom, hexstone, rot, pus distinguished by shape/pattern not hue alone; verified under deuteranopia/protanopia/tritanopia filters
 - [x] GAM-0237 · Demo · P1 · S · Game-speed slider 70–100 % — (flags results, disables leaderboard)
 - [x] GAM-0238 · Demo · P1 · S · Gesture simplification — zig-zag stitches can be replaced by click-per-stitch; encircle can be replaced by tap-and-hold 1 s; star can be a hold key
-- [ ] GAM-0239 · Demo · P1 · S · Screen shake and flash intensity sliders honoured by all boss effects — (Matins open flash, Lauds dawn flare)
+- [x] GAM-0239 · Demo · P1 · S · Screen shake and flash intensity sliders honoured by all boss effects — (Matins open flash, Lauds dawn flare)
 - [x] GAM-0240 · Demo · P2 · S · Cursor options — cursor size (1×/1.5×/2×) and high-contrast target outlines toggle, applied to all entities
 - [ ] GAM-0241 · Alpha · P1 · S · One-handed mode — tool cycle on mouse side buttons, Litany via hold key; every Alpha mechanic validated completable
 - [x] GAM-0242 · Alpha · P2 · S · Rhythm mechanics — (amputation saw, heart beats) have a "no rhythm" assist with widened windows ×2

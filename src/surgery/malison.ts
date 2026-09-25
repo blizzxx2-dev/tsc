@@ -1,6 +1,7 @@
 import { dist, pointSegment, type Vec } from '../core/math';
 import { Entity } from './entity';
 import { hex } from '../render/color';
+import { presentation } from '../render/presentation';
 import type { Gfx } from '../render/gfx';
 import { Laceration, surfDisc } from './entities';
 import { FIELD, onBody, type Operation } from './operation';
@@ -404,8 +405,10 @@ export class Malison extends MalisonBase {
       openness = b === 3 ? 1 : b === 0 ? 0.1 : 0.3 + 0.3 * Math.exp(-within * 6) * b;
       if (this.gaze) openness *= 0.6 + 0.4 * (this.gaze.t / 1); // the iris contracts
     }
-    g.glow(x, y, r * 2.6, hex(this.vulnerable ? '#ff6030' : '#8030c0', 0.22));
-    if (tellK > 0) g.glow(x, y, r * 1.6, hex('#ff2010', 0.35 * tellK));
+    // The opening flash follows the flash-intensity slider (GAM-0239); shakes go through op.shake × the shake slider.
+    const fl = presentation.flash;
+    g.glow(x, y, r * 2.6, hex(this.vulnerable ? '#ff6030' : '#8030c0', 0.22 * (this.vulnerable ? fl : 1)));
+    if (tellK > 0) g.glow(x, y, r * 1.6, hex('#ff2010', 0.35 * tellK * fl));
     g.creature(0, x, y, r * 4.4, { seed: this.id * 1.3, open: openness, health: this.frac, flash: this.hurtFlash });
     // Rend tell: the shroud's edge sharpens into hooks.
     if (this.rendTelling) {
