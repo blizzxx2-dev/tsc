@@ -7,6 +7,7 @@ import { Burn, surfDisc } from '../entities';
 import { FIELD, onBody, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
 import { distortion, drawBossRing, fxRange, TAU } from './common';
+import { Voice } from './voices';
 
 export interface TerceTuning {
   hp: number;
@@ -146,6 +147,7 @@ export class FlameTongue extends Entity {
  * The brand feeds the fire: it heals Terce and relights what was doused.
  */
 export class TerceMalison extends Entity {
+  private voice = new Voice('terce', 9, '#ffb080');
   hp: number;
   readonly maxHp: number;
   zone = 0;
@@ -268,6 +270,7 @@ export class TerceMalison extends Entity {
   }
 
   override update(op: Operation, dt: number): void {
+    this.voice.tick(op, dt, this.pos);
     this.branded = false;
     this.hurtFlash = Math.max(0, this.hurtFlash - dt * 3);
     if (Math.random() < dt * 8) op.emit('spark', { x: this.pos.x + fxRange(-15, 15), y: this.pos.y + fxRange(-15, 15) }, 1);

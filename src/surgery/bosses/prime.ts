@@ -5,7 +5,8 @@ import { Entity } from '../entity';
 import { BloodPool, Laceration, surfDisc, surfLine } from '../entities';
 import { FIELD, onBody, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
-import { drawBossRing, fxRange, randomOnBody, samplePath, stepToward, TAU } from './common';
+import { distortion, drawBossRing, fxRange, randomOnBody, samplePath, stepToward, TAU } from './common';
+import { Voice } from './voices';
 
 /**
  * The roll of the dead that Prime writes into its host. Original Kessendorf
@@ -43,6 +44,10 @@ export class NameSigil extends Entity {
   private traceStart = 0;
   onErased: ((op: Operation, n: NameSigil) => void) | null = null;
   onWritten: ((op: Operation, n: NameSigil) => void) | null = null;
+  /** Called as each stroke is completed (Prime moves its quill on to another name). */
+  onStroke: ((op: Operation, n: NameSigil) => void) | null = null;
+  /** The quill is elsewhere: this name waits. */
+  paused = false;
   /** Written in red ink (near the heart): faster, more urgent. */
   red = false;
 
@@ -80,17 +85,21 @@ export class NameSigil extends Entity {
   }
 
   override drain(): number {
-    return 0.12 + 0.07 * this.written;
+    return 0.08 + 0.05 * this.written;
   }
 
   override update(op: Operation, dt: number): void {
-    // The Litany stills the quill entirely.
-    if (op.litanyTime > 0) return;
+    // The Litany stills the quill entirely; and the quill writes one name at a time.
+    if (op.litanyTime > 0 || this.paused) return;
     if (this.recoil > 0) {
       this.recoil -= dt;
       return;
     }
+    const lead = 1 - 0.8 / this.strokeTime;
+    const before = this.writeT;
     this.writeT += dt / this.strokeTime;
+    // Tell: the nib glints (and scratches) 0.8 s before the next stroke begins.
+    if (before < lead && this.writeT >= lead && this.written < this.count - 1) op.cues.push('cut');
     if (this.writeT >= 1) {
       this.writeT = 0;
       this.written++;
@@ -100,6 +109,7 @@ export class NameSigil extends Entity {
         op.cues.push('bell');
       }
       if (this.written >= this.count) this.take(op);
+      else this.onStroke?.(op, this);
     }
   }
 
@@ -109,11 +119,10 @@ export class NameSigil extends Entity {
     op.rate('miss', this.pos, 'The name is written');
     op.cues.push('bell');
     op.shake = Math.max(op.shake, 8);
-    // The letters split open.
-    for (let i = 0; i < 2; i++) {
-      const s = this.strokes[i * 2];
+    // Every letter splits open as a shallow cut.
+    for (const s of this.strokes) {
       const c = { x: (s[0].x + s[s.length - 1].x) / 2, y: (s[0].y + s[s.length - 1].y) / 2 };
-      if (onBody(c)) op.spawn(new Laceration(c, Math.PI / 2 + op.rng.range(-0.3, 0.3), 42, 0.6));
+      if (onBody(c)) op.spawn(new Laceration(c, Math.PI / 2 + op.rng.range(-0.3, 0.3), 26, 0.3));
     }
     this.onWritten?.(op, this);
   }
@@ -207,10 +216,11 @@ export class NameSigil extends Entity {
         const total = samplePath(s, 4);
         const upto = Math.max(1, Math.floor(total.length * this.writeT));
         if (upto > 1) g.polyline(total.slice(0, upto), 5, hex(ink, 0.9));
-        // Nib glint just before the stroke begins.
         const nib = total[Math.min(total.length - 1, upto)];
-        if (this.recoil > 0 && this.recoil < 0.8) g.glow(s[0].x, s[0].y, 16, hex('#f0e0ff', 0.6));
-        else g.circle(nib.x, nib.y, 3, hex('#f0e0ff', 0.8));
+        g.circle(nib.x, nib.y, 3, hex('#f0e0ff', 0.8));
+      } else if (i === this.written + 1 && (1 - this.writeT) * this.strokeTime < 0.8) {
+        // Nib glint where the next stroke will begin.
+        g.glow(s[0].x, s[0].y, 18, hex('#f0e0ff', 0.7));
       } else g.dashed(s, 1, hex('#e8dcc0', 0.12), 3, 6);
     }
     if (this.tracing >= 0) {
@@ -218,6 +228,8 @@ export class NameSigil extends Entity {
       ss.forEach((p, k) => this.covered[k] && g.circle(p.x, p.y, 2.5, hex('#ffd080', 0.9)));
     }
     const pr = this.written / this.count;
+    // Completion warning: the whole name glows as its last stroke is written.
+    if (this.written === this.count - 1) g.glow(this.pos.x, this.pos.y, 110, hex('#ff5040', 0.12 + 0.08 * Math.sin(op.elapsed * 10)));
     g.text(this.name, this.pos.x, this.pos.y + 44, { size: 15, font: 'italic', color: hex(this.red ? '#ff9080' : '#d8c8f0', 0.5 + 0.5 * pr), align: 'center' });
   }
 }
@@ -231,6 +243,19 @@ export class InkBlot extends BloodPool {
   ) {
     super(pos, 24, 'blackbile');
   }
+  override onSweep(op: Operation, ptr: Pointer, tool: ToolId, dt: number): void {
+    if (tool !== 'leech' && tool !== 'lens' && dist(ptr.pos, this.pos) < this.r) {
+      const d = distortion(op);
+      if (!d.isFouled(tool)) {
+        d.foul(tool, 3);
+        op.popup('Ink on the instrument!', ptr.pos, '#b478ff');
+        op.sayOnce('prime-foul', 'Keep clear of the ink — it fouls whatever touches it! Draw it off with the leech-pipe.');
+      }
+      return;
+    }
+    super.onSweep(op, ptr, tool, dt);
+  }
+
   override update(op: Operation, dt: number): void {
     if (op.litanyTime > 0) return;
     this.age += dt;
@@ -269,6 +294,7 @@ export const PRIME_DEFAULT: PrimeTuning = { hp: 100, dps: 7, exposure: 3, stroke
  * the quill to the brand for a few seconds.
  */
 export class PrimeMalison extends Entity {
+  private voice = new Voice('prime', 9, '#d8c8f0');
   hp: number;
   readonly maxHp: number;
   exposedT = 0;
@@ -313,7 +339,7 @@ export class PrimeMalison extends Entity {
   }
 
   override drain(): number {
-    return 0.3;
+    return 0.2;
   }
 
   private nextName(): string {
@@ -323,8 +349,27 @@ export class PrimeMalison extends Entity {
 
   adopt(op: Operation, n: NameSigil): void {
     n.onErased = (o) => this.expose(o);
+    n.onStroke = () => this.moveQuill(n);
+    n.onWritten = () => this.moveQuill(n);
     this.names.push(n);
     op.spawn(n);
+    if (this.living.length > 1) n.paused = true;
+  }
+
+  /**
+   * One quill, many names: after each stroke it moves on to the next living
+   * name, so names in parallel share its pace rather than multiply it.
+   */
+  private moveQuill(from: NameSigil): void {
+    const live = this.living.filter((n) => n.alive && n !== from);
+    if (!live.length) {
+      from.paused = false;
+      return;
+    }
+    const i = this.names.indexOf(from);
+    const next = [...this.names.slice(i + 1), ...this.names.slice(0, i)].find((n) => n.alive) ?? live[0];
+    for (const n of this.names) n.paused = n !== next;
+    if (!from.alive) from.paused = true;
   }
 
   private expose(op: Operation): void {
@@ -345,6 +390,7 @@ export class PrimeMalison extends Entity {
   }
 
   override update(op: Operation, dt: number): void {
+    this.voice.tick(op, dt, this.pos);
     this.branded = false;
     this.hurtFlash = Math.max(0, this.hurtFlash - dt * 3);
     if (Math.random() < dt * 6) op.emit('mote', { x: this.pos.x + fxRange(-20, 20), y: this.pos.y + fxRange(-20, 20) }, 1);
@@ -358,6 +404,7 @@ export class PrimeMalison extends Entity {
 
     const phase = this.phaseNo;
     const live = this.living;
+    if (live.length && live.every((n) => n.paused)) live[0].paused = false;
     this.spawnT -= dt;
     if (phase === 1) {
       if (live.length === 0 && !this.exposed && this.spawnT <= 0) {
@@ -366,12 +413,13 @@ export class PrimeMalison extends Entity {
         op.sayOnce('prime-writes', 'It’s writing a name into him! Trace the strokes out with the lancet — newest first!');
       }
     } else if (phase === 2) {
-      const want = this.tune.parallel + (this.hp / this.maxHp < 0.4 && this.tune.parallel > 2 ? 1 : 0);
+      // Two names, and a third (slower) one late in the Ledger.
+      const want = this.tune.parallel + (this.hp / this.maxHp < 0.4 ? 1 : 0);
       if (live.length < want && this.spawnT <= 0) {
         this.spawnT = 3;
         const p = this.spot(op);
         const red = dist(p, this.heart) < 190;
-        const n = new NameSigil(p, this.nextName(), op, this.tune.stroke2 * (red ? 0.7 : 1));
+        const n = new NameSigil(p, this.nextName(), op, this.tune.stroke2 * (red ? 0.7 : 1) * (live.length >= this.tune.parallel ? 1.4 : 1));
         n.red = red;
         this.adopt(op, n);
         op.sayOnce('prime-ledger', 'Several at once now! The red ink is nearest the heart — strike those first!');
@@ -380,7 +428,7 @@ export class PrimeMalison extends Entity {
       if (!this.wroteKreuzer || (live.length === 0 && !this.exposed && this.spawnT <= 0)) {
         this.wroteKreuzer = true;
         this.spawnT = 2;
-        const k = new NameSigil({ x: FIELD.cx, y: FIELD.cy - FIELD.ry * 0.72 }, 'KREUZER', op, 2, 7, 22);
+        const k = new NameSigil({ x: FIELD.cx, y: FIELD.cy - FIELD.ry * 0.72 }, 'KREUZER', op, 2, 7, 18);
         k.red = true;
         this.adopt(op, k);
         op.say('Doctor… that is your name it’s writing.');

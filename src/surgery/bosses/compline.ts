@@ -8,6 +8,7 @@ import { Malison, MalisonShard } from '../malison';
 import { FIELD, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
 import { BrandNode, distortion, drawBossRing, Muffler, randomOnBody, stepToward, TAU } from './common';
+import { Voice } from './voices';
 import { burrowPath, BurrowSegment } from './none';
 import { NameSigil, PRIME_NAMES } from './prime';
 import { CrustPlate } from './sext';
@@ -123,6 +124,7 @@ export class SilenceNode extends BrandNode {
  * Throughout, windows of silence mute every sound cue.
  */
 export class ComplineMalison extends Entity {
+  private voice = new Voice('compline', 9, '#c0c8f0');
   hp: number;
   readonly maxHp: number;
   stage: 1 | 2 | 3 = 1;
@@ -276,6 +278,7 @@ export class ComplineMalison extends Entity {
   // -------------------------------------------------------------- frame
 
   override update(op: Operation, dt: number): void {
+    this.voice.tick(op, dt, this.pos);
     this.branded = false;
     this.hurtFlash = Math.max(0, this.hurtFlash - dt * 3);
     if (dist(this.pos, this.target) < 6) this.target = randomOnBody(op, 0.35, 0.3);

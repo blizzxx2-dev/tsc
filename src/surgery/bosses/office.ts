@@ -5,6 +5,7 @@ import { Entity } from '../entity';
 import { Sigil, surfDisc } from '../entities';
 import { FIELD, onBody, type Operation } from '../operation';
 import { drawBossRing, TAU } from './common';
+import { Voice } from './voices';
 import { LaudsEcho, MatinsEcho, SilenceNode } from './compline';
 import { burrowPath, BurrowSegment } from './none';
 import { NameSigil, PRIME_NAMES } from './prime';
@@ -36,8 +37,8 @@ export const HOUR_TOOL: Record<HourId, 'brand' | 'lancet' | 'salve' | 'leech'> =
  */
 export const UNISON_PAIRS: readonly (readonly [HourId, HourId])[] = [
   ['matins', 'prime'],
-  ['lauds', 'terce'],
-  ['compline', 'sext'],
+  ['lauds', 'sext'],
+  ['terce', 'compline'],
   ['none', 'vespers'],
 ];
 
@@ -76,7 +77,7 @@ export function hourTrial(op: Operation, hour: HourId, at: Vec, heart: Vec): Hou
     case 'matins':
       return simple([new MatinsEcho(at, op, 'matins', 25)]);
     case 'lauds':
-      return simple([new LaudsEcho(at, op, 30, 0)]);
+      return simple([new LaudsEcho(at, op, 20, 0)]);
     case 'prime': {
       let erased = false;
       let ix = op.rng.int(0, PRIME_NAMES.length - 1);
@@ -122,6 +123,7 @@ export function hourTrial(op: Operation, hour: HourId, at: Vec, heart: Vec): Hou
  * holds the patient's vitals with a tincture every ten seconds.
  */
 export class OfficeMalison extends Entity {
+  private voice = new Voice('office', 9, '#e0b0ff');
   stage: 1 | 2 | 3 = 1;
   order: HourId[];
   lit = new Set<HourId>(HOURS);
@@ -181,14 +183,18 @@ export class OfficeMalison extends Entity {
   }
 
   override update(op: Operation, dt: number): void {
+    this.voice.tick(op, dt, this.pos);
+    // Sister Ilse holds the patient throughout: a tincture every 12 s when he sinks
+    // below 60 in the Dial and Unison, and every 10 s unconditionally at the Heart.
+    this.ilseT -= dt;
+    if (this.ilseT <= 0 && (this.stage === 3 || op.vitals < 60)) {
+      const amt = this.stage === 3 ? 15 : 12;
+      this.ilseT = this.stage === 3 ? 10 : 12;
+      op.heal(amt);
+      op.cues.push('inject');
+      op.popup(`Ilse holds him: +${amt}`, { x: FIELD.cx + 300, y: FIELD.cy + 120 }, '#9fd3a8');
+    }
     if (this.stage === 3) {
-      this.ilseT -= dt;
-      if (this.ilseT <= 0) {
-        this.ilseT = 10;
-        op.heal(15);
-        op.cues.push('inject');
-        op.popup('Ilse holds him: +15', { x: FIELD.cx + 300, y: FIELD.cy + 120 }, '#9fd3a8');
-      }
       if (this.heartSigil && !this.heartSigil.alive) this.die(op);
       return;
     }

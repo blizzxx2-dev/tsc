@@ -6,6 +6,7 @@ import { surfDisc } from '../entities';
 import { FIELD, MAX_VITALS, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
 import { BrandNode, distortion, drawBossRing, InjectionWatch, TAU } from './common';
+import { Voice } from './voices';
 
 export interface SextTuning {
   hp: number;
@@ -115,6 +116,7 @@ export class HeartTruth extends Entity {
  * the Litany against it to stun it.
  */
 export class SextMalison extends Entity {
+  private voice = new Voice('sext', 9, '#f0d890');
   hp: number;
   readonly maxHp: number;
   stage: 1 | 2 | 3 = 1;
@@ -218,6 +220,7 @@ export class SextMalison extends Entity {
   }
 
   override update(op: Operation, dt: number): void {
+    this.voice.tick(op, dt, this.pos);
     this.branded = false;
     this.hurtFlash = Math.max(0, this.hurtFlash - dt * 3);
     this.stunT = Math.max(0, this.stunT - dt);

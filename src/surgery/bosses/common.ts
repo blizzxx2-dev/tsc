@@ -70,10 +70,29 @@ export class InputDistortion {
   lag = 0;
   /** Pixels of heat-haze displacement (a slow deterministic wobble). */
   haze = 0;
+  /** An instrument fouled (e.g. by Prime's ink) and useless until `until` (filter time). */
+  fouled: { tool: string; until: number } | null = null;
   private buf: { pos: Vec; down: boolean; t: number }[] = [];
   private now = 0;
   private outDown = false;
   private outPos: Vec | null = null;
+
+  /** Foul an instrument for `seconds`. */
+  foul(tool: string, seconds: number): void {
+    this.fouled = { tool, until: this.now + seconds };
+  }
+
+  isFouled(tool: string): boolean {
+    return this.fouled !== null && this.fouled.tool === tool && this.now < this.fouled.until;
+  }
+
+  /** The filter for Operation.inputFilter; `tool` is the instrument in hand. */
+  apply(ptr: Pointer, dt: number, tool: string): Pointer {
+    const out = this.filter(ptr, dt);
+    // A fouled instrument does nothing: the press never lands.
+    if (this.isFouled(tool) && out.down) return { pos: out.pos, prev: out.pos, down: false, pressed: false, released: out.released };
+    return out;
+  }
 
   filter = (ptr: Pointer, dt: number): Pointer => {
     this.buf.push({ pos: { ...ptr.pos }, down: ptr.down, t: this.now });
@@ -108,9 +127,10 @@ const distortions = new WeakMap<Operation, InputDistortion>();
 export function distortion(op: Operation): InputDistortion {
   let d = distortions.get(op);
   if (!d) {
-    d = new InputDistortion();
-    distortions.set(op, d);
-    op.inputFilter = d.filter;
+    const dd = new InputDistortion();
+    d = dd;
+    distortions.set(op, dd);
+    op.inputFilter = (ptr, dt) => dd.apply(ptr, dt, op.tool);
   }
   return d;
 }

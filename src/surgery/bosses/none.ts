@@ -6,6 +6,15 @@ import { Laceration, surfDisc, surfLine } from '../entities';
 import { FIELD, onBody, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
 import { drawBossRing, pathLength, pointAlong, TAU } from './common';
+import { Voice, VoiceLine } from './voices';
+
+/** The Precentor's voice, heard through Pieter's mouth as None is cut down (phase 3). */
+export const PRECENTOR_THROUGH_NONE: readonly string[] = [
+  'Doctor Kreuzer. At last we speak without a Registrar between us.',
+  'You keep saving them for the next wound. I would save them from all of them.',
+  'Haller struck me from the rolls for mercy. Ask him what he meant.',
+  'Come home to Kessendorf for Hollow Night. I will be singing.',
+];
 
 export interface NoneTuning {
   hp: number;
@@ -189,6 +198,9 @@ export class BurrowSegment extends Entity {
  * tongs within a short window, or it regrows. Old tunnels cave in as cuts.
  */
 export class NoneMalison extends Entity {
+  private voice = new Voice('none', 9, '#f0a0b0');
+  private precentorT = 1;
+  private precentorIx = 0;
   hp: number;
   readonly maxHp: number;
   stage: 1 | 2 | 3 = 1;
@@ -252,6 +264,15 @@ export class NoneMalison extends Entity {
   }
 
   override update(op: Operation, dt: number): void {
+    this.voice.tick(op, dt, this.hidden ? this.heart : this.pos);
+    // Phase 3: the Precentor speaks through the host for the first time.
+    if (this.stage === 3) {
+      this.precentorT -= dt;
+      if (this.precentorT <= 0 && this.precentorIx < PRECENTOR_THROUGH_NONE.length) {
+        this.precentorT = 6;
+        op.spawn(new VoiceLine({ x: FIELD.cx, y: FIELD.cy - FIELD.ry - 20 }, `The Precentor: ${PRECENTOR_THROUGH_NONE[this.precentorIx++]}`, '#f5d76e', 5));
+      }
+    }
     this.branded = false;
     this.hurtFlash = Math.max(0, this.hurtFlash - dt * 3);
     if (this.stage === 2) return;

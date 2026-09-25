@@ -6,6 +6,7 @@ import { surfDisc, surfLine } from '../entities';
 import { FIELD, onBody, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
 import { drawBossRing, InjectionWatch, randomOnBody, samplePath, stepToward, TAU } from './common';
+import { Voice } from './voices';
 
 export interface VespersTuning {
   hp: number;
@@ -198,6 +199,7 @@ export class TallowClot extends Entity {
  * remains and wanders; trace the wick back to its root and excise it.
  */
 export class VespersMalison extends Entity {
+  private voice = new Voice('vespers', 9, '#ffe0a0');
   hp: number;
   readonly maxHp: number;
   stage: 1 | 2 | 3 = 1;
@@ -324,6 +326,7 @@ export class VespersMalison extends Entity {
   }
 
   override update(op: Operation, dt: number): void {
+    this.voice.tick(op, dt, this.pos);
     this.branded = false;
     this.hurtFlash = Math.max(0, this.hurtFlash - dt * 3);
     // The dark hides the wicks.
