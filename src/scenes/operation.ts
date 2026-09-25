@@ -618,6 +618,8 @@ export class OperationScene implements Scene {
     this.decals ??= new DecalMaps(g, g.shaderQuality);
     this.decals.setQuality(g.shaderQuality);
     this.decals.flush();
+    // Blood seeps and dries, hexfire creeps: the 10 Hz map update (ENG-0119), on world time.
+    this.decals.update(op.elapsed);
     const light = { x: FIELD.cx - 220 + Math.sin(t * 0.7) * 30, y: 60 + Math.sin(t * 1.3) * 10 };
     // Tissue breathing and heartbeat (ART-0298): the flesh, its wounds, fluids and ailments share one warp.
     const warp = tissueWarp(pal.kind, this.pulse, t, settings.reduceMotion);

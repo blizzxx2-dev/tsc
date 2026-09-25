@@ -162,3 +162,48 @@ void main() {
   vec3 outc = col * a + violet * hx * 0.8;
   o = vec4(outc, max(a, hx * 0.5));
 }`;
+
+/** Full-map pass for the 10 Hz update (ENG-0119): one triangle strip covering the target. */
+export const DECAL_UPDATE_VS = /* glsl */ `#version 300 es
+out vec2 v_uv;
+void main() {
+  vec2 c = vec2(float(gl_VertexID & 1), float((gl_VertexID >> 1) & 1));
+  gl_Position = vec4(c * 2.0 - 1.0, 0.0, 1.0);
+  v_uv = c;
+}`;
+
+/**
+ * The 10 Hz decal update (ENG-0119), ping-ponged into a scratch map. Blood (`u_kind` 0): wet blood
+ * seeps into its neighbours and its wetness (G) evaporates, so pools spread a little then set.
+ * Scorch (`u_kind` 1): hexfire corruption (G) creeps outward along charred flesh (R), fading as it
+ * goes, so a hexfire scar keeps growing violet veins into the burn around it.
+ */
+export const DECAL_UPDATE_FS = /* glsl */ `#version 300 es
+precision highp float;
+in vec2 v_uv;
+uniform sampler2D u_map;
+uniform vec2 u_texel;
+uniform float u_dt;
+uniform int u_kind;
+out vec4 o;
+void main() {
+  vec4 m = texture(u_map, v_uv);
+  vec4 l = texture(u_map, v_uv - vec2(u_texel.x, 0.0));
+  vec4 r = texture(u_map, v_uv + vec2(u_texel.x, 0.0));
+  vec4 d = texture(u_map, v_uv - vec2(0.0, u_texel.y));
+  vec4 u = texture(u_map, v_uv + vec2(0.0, u_texel.y));
+  if (u_kind == 0) {
+    // Seep: density flows from wet neighbours (a wet neighbour pushes, a dry one holds).
+    float wetN = max(max(l.g, r.g), max(d.g, u.g));
+    float avg = (l.r + r.r + d.r + u.r) * 0.25;
+    float k = clamp(u_dt * 2.5, 0.0, 0.5) * clamp(max(m.g, wetN), 0.0, 1.0);
+    float dens = min(1.6, m.r + max(0.0, avg - m.r) * k);
+    // Blood that seeped in carries the time of the blood it came from.
+    float t = dens > m.r + 0.004 ? max(m.a, max(max(l.a, r.a), max(d.a, u.a))) : m.a;
+    o = vec4(dens, m.g * exp(-u_dt / 12.0), m.b, t);
+  } else {
+    float hxN = max(max(l.g, r.g), max(d.g, u.g));
+    float creep = hxN * (1.0 - clamp(u_dt * 0.3, 0.0, 0.2)) * step(0.05, m.r);
+    o = vec4(m.r, max(m.g, creep), m.b, m.a);
+  }
+}`;

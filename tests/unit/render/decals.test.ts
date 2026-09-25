@@ -72,7 +72,7 @@ describe('batched stamps (ENG-0109)', () => {
       shaderCatalog()
         .filter((v) => v.name.startsWith('decal-'))
         .map((v) => v.name),
-    ).toEqual(['decal-stamp', 'decal-blood', 'decal-coverage', 'decal-scorch']);
+    ).toEqual(['decal-stamp', 'decal-blood', 'decal-coverage', 'decal-scorch', 'decal-update']);
   });
 
   it('draws erases (the Leech-Pipe, ENG-0115) with a subtractive blend after that frame’s blood', async () => {
@@ -126,5 +126,34 @@ describe('rebuild and lifecycle (ENG-0120, ENG-0121)', () => {
     expect(d.stampCount).toBe(0);
     d.release();
     expect(g.registry.bytes()).toBe(base);
+  });
+});
+
+describe('10 Hz update pass (ENG-0119)', () => {
+  it('runs at most ten times per world second, one ping-pong draw and blit per live map', async () => {
+    const { f, d } = await setup();
+    for (let i = 0; i < 20; i++) d.stamp(drop(i));
+    d.stamp({ ...drop(0), map: 'scorch', value: [0.7, 1, 0] });
+    d.flush();
+    const draws0 = f.count('drawArrays');
+    // 1 s of world time at 60 fps: the first call only sets the clock, then one pass per 0.1 s.
+    for (let i = 0; i <= 60; i++) d.update(i / 60);
+    expect(d.updates).toBeGreaterThanOrEqual(9);
+    expect(d.updates).toBeLessThanOrEqual(10);
+    expect(f.count('drawArrays') - draws0).toBe(d.updates * 2);
+    expect(f.count('blitFramebuffer')).toBe(d.updates * 2);
+    // A restart rewinds the clock with the maps.
+    d.reset();
+    expect(d.update(0)).toBe(false);
+  });
+
+  it('costs well under 0.3 ms of CPU per pass', async () => {
+    const { d } = await setup();
+    d.stamp(drop(1));
+    d.flush();
+    d.update(0);
+    const t0 = performance.now();
+    for (let i = 1; i <= 200; i++) d.update(i * 0.1);
+    expect((performance.now() - t0) / 200).toBeLessThan(0.3);
   });
 });

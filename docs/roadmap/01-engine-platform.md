@@ -174,7 +174,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0116 · Demo · P1 · S · Low-res readback (64×36) of blood coverage for tests and the debug overlay — draining a pool reduces coverage within tolerance (Playwright test)
 - [x] ENG-0117 · Demo · P1 · M · Scorch/sear decals from Cautery Brand and burns — hexfire leaves violet-ringed scars that persist to the results snapshot
 - [ ] ENG-0118 · Demo · P1 · S · Saint's Salve film layer — glossy translucent gel decal with high specular that fades as the sim marks the wound set
-- [ ] ENG-0119 · Demo · P2 · M · 10 Hz decal update pass (ping-pong) for time-based effects: blood drying, pus spreading, corruption creep — cost ≤0.3 ms
+- [x] ENG-0119 · Demo · P2 · M · 10 Hz decal update pass (ping-pong) for time-based effects: blood drying, pus spreading, corruption creep — cost ≤0.3 ms
 - [x] ENG-0120 · Demo · P0 · M · Rebuildable decal maps — maps regenerate from a recorded stamp log (sim events) so context loss or render-scale changes restore identical fields
 - [x] ENG-0121 · Demo · P1 · S · Decal lifecycle — mask/decal maps reset on operation restart and released on exit; VRAM counter returns to baseline
 - [x] ENG-0122 · Demo · P2 · S · Results "field snapshot" — final world target copied to a 480×270 texture shown on the results screen and saved as the slot thumbnail

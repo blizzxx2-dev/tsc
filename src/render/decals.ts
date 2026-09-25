@@ -14,11 +14,14 @@
  * - Rebuildable (ENG-0120): every stamp is logged in order; after a context loss or a resize the
  *   maps are cleared and the log replayed, giving identical fields.
  * - Lifecycle (ENG-0121): `reset()` on operation restart, `release()` on exit returns VRAM.
+ * - Update pass (ENG-0119): `update(now)` runs at most 10 times a world second, ping-ponging each
+ *   live map through a scratch target: wet blood seeps and dries, hexfire creeps along the char.
+ *   A rebuild replays stamps only, so a restored context shows the fields as stamped.
  */
 import type { Vec } from '../core/math';
 import type { Gfx } from './gfx';
 import type { Quality } from './quality';
-import { BLOOD_DECAL_FS, BRUSHES, COVERAGE_FS, COVERAGE_VS, DECAL_VS, SCORCH_DECAL_FS, STAMP_FS, STAMP_VS, type Brush } from './shaders/decal';
+import { BLOOD_DECAL_FS, BRUSHES, COVERAGE_FS, COVERAGE_VS, DECAL_UPDATE_FS, DECAL_UPDATE_VS, DECAL_VS, SCORCH_DECAL_FS, STAMP_FS, STAMP_VS, type Brush } from './shaders/decal';
 import { RenderTargetPool, type Target } from './targets';
 
 export type DecalMapId = 'blood' | 'scorch';
@@ -64,6 +67,9 @@ export const BLOOD_DRY_S = 20;
 /** The slice of Gfx decals need for compositing. */
 type Host = Pick<Gfx, 'gl' | 'registry' | 'targets' | 'vw' | 'vh' | 'flush' | 'viewTransform' | 'resyncBlend'>;
 
+/** Seconds of world time between update passes: 10 Hz (ENG-0119). */
+export const UPDATE_STEP = 0.1;
+
 export class DecalMaps {
   private pool: RenderTargetPool;
   private maps = new Map<DecalMapId, Target>();
@@ -74,6 +80,11 @@ export class DecalMaps {
   private bloodProg: WebGLProgram | null = null;
   private covProg: WebGLProgram | null = null;
   private scorchProg: WebGLProgram | null = null;
+  private updateProg: WebGLProgram | null = null;
+  /** World time of the last update pass (ENG-0119), or -1 before the first. */
+  private lastUpdate = -1;
+  /** Update passes run so far (tests and the debug overlay). */
+  updates = 0;
   private vao: WebGLVertexArrayObject | null = null;
   private inst: WebGLBuffer | null = null;
   private corners: WebGLBuffer | null = null;
@@ -97,7 +108,7 @@ export class DecalMaps {
     this.unRestore = reg.onRestore(() => {
       this.pool.forget();
       this.maps.clear();
-      this.stampProg = this.bloodProg = this.covProg = this.scorchProg = null;
+      this.stampProg = this.bloodProg = this.covProg = this.scorchProg = this.updateProg = null;
       this.vao = null;
       this.inst = null;
       this.instBytes = 0;
@@ -162,6 +173,7 @@ export class DecalMaps {
 
   /** Operation restart: blank maps, empty log (ENG-0121). */
   reset(): void {
+    this.lastUpdate = -1;
     this.queue.length = 0;
     this.log.length = 0;
     for (const t of this.maps.values()) this.clearTarget(t);
@@ -178,7 +190,8 @@ export class DecalMaps {
     reg.release(this.bloodProg);
     reg.release(this.covProg);
     reg.release(this.scorchProg);
-    this.covProg = this.scorchProg = null;
+    reg.release(this.updateProg);
+    this.covProg = this.scorchProg = this.updateProg = null;
     reg.release(this.vao);
     reg.release(this.inst);
     reg.release(this.corners);
@@ -312,6 +325,48 @@ export class DecalMaps {
     }
     gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, n);
     this.lastDraws++;
+  }
+
+  /**
+   * The 10 Hz update pass (ENG-0119): at most one run per UPDATE_STEP of world time. Each live map
+   * is drawn through DECAL_UPDATE_FS into a scratch target of the same size, which is then blitted
+   * back. Returns true when a pass ran.
+   */
+  update(now: number): boolean {
+    if (this.lastUpdate < 0 || now < this.lastUpdate) this.lastUpdate = now;
+    const dt = now - this.lastUpdate;
+    if (dt < UPDATE_STEP || this.maps.size === 0) return false;
+    this.lastUpdate = now;
+    const g = this.g;
+    g.flush('program');
+    const gl = g.gl;
+    if (!this.updateProg) this.updateProg = g.registry.createProgram('decal-update', DECAL_UPDATE_VS, DECAL_UPDATE_FS);
+    const p = this.updateProg;
+    gl.useProgram(p);
+    gl.bindVertexArray(null);
+    gl.disable(gl.BLEND);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.uniform1i(this.u(p, 'u_map'), 0);
+    gl.uniform1f(this.u(p, 'u_dt'), Math.min(dt, 0.5));
+    for (const [id, t] of this.maps) {
+      const tmp = this.pool.acquire(`decal:${id}:update`, t.w, t.h, { format: 'rgba16f' });
+      gl.bindFramebuffer(gl.FRAMEBUFFER, tmp.fb);
+      gl.viewport(0, 0, tmp.w, tmp.h);
+      gl.bindTexture(gl.TEXTURE_2D, t.tex);
+      gl.uniform2f(this.u(p, 'u_texel'), 1 / t.w, 1 / t.h);
+      gl.uniform1i(this.u(p, 'u_kind'), id === 'blood' ? 0 : 1);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      // Back into the map (same size and format, so a plain blit).
+      gl.bindFramebuffer(gl.READ_FRAMEBUFFER, tmp.fb);
+      gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, t.fb);
+      gl.blitFramebuffer(0, 0, t.w, t.h, 0, 0, t.w, t.h, gl.COLOR_BUFFER_BIT, gl.NEAREST);
+    }
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.enable(gl.BLEND);
+    g.resyncBlend();
+    this.updates++;
+    return true;
   }
 
   /**
