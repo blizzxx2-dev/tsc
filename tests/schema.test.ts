@@ -2,6 +2,7 @@ import { SPECIES } from '../src/surgery/species';
 import { describe, expect, it } from 'vitest';
 import { allCampaignOperations, FULL_CAMPAIGN } from '../src/content/campaign';
 import { CantorKnot, EggCluster, FangNest, MatinsHerald } from '../src/surgery/bosses/elites';
+import { ChoirMagus, DeadPulse, FrostWight, GhoulClaw, Sellsword, WormMatriarch } from '../src/surgery/bosses/alphaElites';
 import {
   ENTITY_REGISTRY,
   makeEntity,
@@ -67,6 +68,31 @@ describe('entity registry (CON-0002)', () => {
       FangNest,
     ],
     [{ e: 'herald', at: [0, 0] }, MatinsHerald],
+    [{ e: 'elite-matriarch', at: [0, 0] }, WormMatriarch],
+    [
+      {
+        e: 'elite-sellsword',
+        path: [
+          [-40, 0],
+          [40, 0],
+        ],
+      },
+      Sellsword,
+    ],
+    [
+      {
+        e: 'elite-deadpulse',
+        path: [
+          [-80, 40],
+          [60, 40],
+        ],
+        sigil: [0, -80],
+      },
+      DeadPulse,
+    ],
+    [{ e: 'elite-frostwight', at: [0, 0] }, FrostWight],
+    [{ e: 'elite-ghoulclaw', at: [-150, 60], armpit: [150, -100] }, GhoulClaw],
+    [{ e: 'elite-magus', at: [0, 0] }, ChoirMagus],
   ];
 
   it('maps every string id to its constructor', () => {

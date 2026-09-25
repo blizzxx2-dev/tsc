@@ -617,15 +617,15 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 
 ### Alpha/Beta elites (Chapters 3–5)
 - [x] BOS-0152 · Alpha · P1 · M · Stone Bride elite — petrification front from fingertips toward heart; chipping order puzzle + Litany freeze; 3 phases (hand, arm, chest)
-- [ ] BOS-0153 · Alpha · P1 · M · Troll-Blood Sellsword elite — regenerating wounds over shrapnel + acid spray disabling tools
+- [x] BOS-0153 · Alpha · P1 · M · Troll-Blood Sellsword elite — regenerating wounds over shrapnel + acid spray disabling tools
 - [x] BOS-0154 · Alpha · P1 · M · The Mouth Beneath elite — talking cyst; remove whole via encircle + tongs lift; rupture spawns a crawling remnant mini-boss (HP 40, flees to wounds)
 - [x] BOS-0155 · Alpha · P1 · M · Hornchild elite — horn-bud trepanation with Choir sigil under the bud; sigil reacts to drill vibration by spawning lacerations
 - [x] BOS-0156 · Alpha · P1 · M · Choir-Throat elite — extra vocal folds hum the hymn; hum mutes audio cues; excise in silence gaps
-- [ ] BOS-0157 · Alpha · P2 · M · Gut-worm matriarch — giant worm whose segments detach and become separate worms when pulled too fast
-- [ ] BOS-0158 · Alpha · P2 · M · Dead Man's Pulse elite — one heartbeat per minute; incisions only during the beat window; Lens shows bite-trance sigil
-- [ ] BOS-0159 · Beta · P2 · M · Frost-Wight's Kiss elite — frost-curse spreading from a bite, frost patches refreeze unless thawed in ring order
-- [ ] BOS-0160 · Beta · P2 · M · Ghoul-claw infection elite — infection lines race to armpit; forced amputation branch if lost
-- [ ] BOS-0161 · Beta · P2 · M · Choir Magus remnant — mid-boss before Compline: a Hollow Choir agent's hex embedded as 3 hexstones that orbit and swap places (shell-game) under the Lens
+- [x] BOS-0157 · Alpha · P2 · M · Gut-worm matriarch — giant worm whose segments detach and become separate worms when pulled too fast
+- [x] BOS-0158 · Alpha · P2 · M · Dead Man's Pulse elite — one heartbeat per minute; incisions only during the beat window; Lens shows bite-trance sigil
+- [x] BOS-0159 · Beta · P2 · M · Frost-Wight's Kiss elite — frost-curse spreading from a bite, frost patches refreeze unless thawed in ring order
+- [x] BOS-0160 · Beta · P2 · M · Ghoul-claw infection elite — infection lines race to armpit; forced amputation branch if lost
+- [x] BOS-0161 · Beta · P2 · M · Choir Magus remnant — mid-boss before Compline: a Hollow Choir agent's hex embedded as 3 hexstones that orbit and swap places (shell-game) under the Lens
 - [x] BOS-0162 · Alpha · P1 · S · Elite framework — elites use `MalisonBase` with ≤ 2 phases, no checkpoints, bot completion tests, and farming guards
 - [x] BOS-0163 · Beta · P1 · S · Every elite has codex entry — Ilse hint on 2nd failure, and balance-report row
 

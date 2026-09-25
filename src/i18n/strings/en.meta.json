@@ -8706,5 +8706,205 @@
     "size": 16,
     "maxPx": 110,
     "context": "Burn grade 3 on the briefing chart."
+  },
+  "label.matriarch.drawn": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Rating label: the whole gut-worm matriarch was drawn out.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.matriarch.torn": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Rating label: a matriarch segment tore off from a too-fast pull.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.matriarch.freed": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 340,
+    "context": "Floating popup: a torn matriarch segment became a separate worm.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.sellsword.sealed": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 240,
+    "context": "Floating popup: troll-blood flesh sealed over a shrapnel fragment.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.sellsword.acid": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 340,
+    "context": "Floating popup: the sellsword's acid blood disabled an instrument.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.deadpulse.beat": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 340,
+    "context": "Floating popup: the once-a-minute heartbeat opened the cutting window.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.frostwight.order": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Rating label: a frost patch was thawed in ring order.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.frostwight.refreeze": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 360,
+    "context": "Floating popup: a frost patch thawed out of ring order will freeze again.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.ghoul.seared": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Rating label: an infection line was cauterised at its tip.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.ghoul.lost": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Rating label: an infection line reached the armpit; the arm must be amputated.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.magus.anchor": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Rating label: the true hexstone anchor was pulled.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.magus.false": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Rating label: a false hexstone was pulled and lashed back.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.matriarch.name": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 15,
+    "maxPx": 260,
+    "context": "Compact elite HP bar: the giant gut-worm matriarch.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.matriarch.phase.main": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 13,
+    "maxPx": 160,
+    "context": "Compact elite HP bar phase label for the giant gut-worm matriarch.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.sellsword.name": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 15,
+    "maxPx": 260,
+    "context": "Compact elite HP bar: the troll-blooded sellsword's shrapnel wounds.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.sellsword.phase.main": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 13,
+    "maxPx": 160,
+    "context": "Compact elite HP bar phase label for the troll-blooded sellsword's shrapnel wounds.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.deadpulse.name": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 15,
+    "maxPx": 260,
+    "context": "Compact elite HP bar: the bite-tranced patient whose heart beats once a minute.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.deadpulse.phase.main": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 13,
+    "maxPx": 160,
+    "context": "Compact elite HP bar phase label for the bite-tranced patient whose heart beats once a minute.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.frostwight.name": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 15,
+    "maxPx": 260,
+    "context": "Compact elite HP bar: the frost-curse ring spreading from a wight's bite.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.frostwight.phase.main": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 13,
+    "maxPx": 160,
+    "context": "Compact elite HP bar phase label for the frost-curse ring spreading from a wight's bite.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.ghoulclaw.name": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 15,
+    "maxPx": 260,
+    "context": "Compact elite HP bar: the ghoul-claw infection racing up the arm.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.ghoulclaw.phase.main": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 13,
+    "maxPx": 160,
+    "context": "Compact elite HP bar phase label for the ghoul-claw infection racing up the arm.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.magus.name": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 15,
+    "maxPx": 260,
+    "context": "Compact elite HP bar: the Choir magus's hex split across three orbiting hexstones.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "boss.magus.phase.main": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 13,
+    "maxPx": 160,
+    "context": "Compact elite HP bar phase label for the Choir magus's hex split across three orbiting hexstones.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.sext.stone": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 160,
+    "context": "Floating popup: Sext's spreading stone reached an organ glyph and petrified it.",
+    "screenshot": "docs/loc/screens/operation.png"
   }
 }

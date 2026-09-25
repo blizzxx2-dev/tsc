@@ -148,6 +148,9 @@ export const BOSS_TELLS: Record<string, Record<string, TellSpec>> = {
   cantor: {
     hum: { lead: 1.0, visual: 'the throat glows and swells', audio: 'hum' },
   },
+  sellsword: {
+    spray: { lead: 1.5, visual: 'his wounds froth green and hiss', audio: 'hiss' },
+  },
   broodmother: {
     hatch: { lead: 3.0, visual: 'the sacs swell and churn', audio: 'hum' },
   },

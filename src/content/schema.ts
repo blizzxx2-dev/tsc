@@ -9,6 +9,7 @@
  *
  * Positions are `[dx, dy]` offsets from the centre of the operating field (the `at()` convention).
  */
+import { ChoirMagus, DeadPulse, FrostWight, GhoulClaw, Sellsword, WormMatriarch } from '../surgery/bosses/alphaElites';
 import type { Vec } from '../core/math';
 import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, SALVE_MAX, Sigil, SIGILS, Venom, type EmbeddedKind } from '../surgery/entities';
 import type { Entity } from '../surgery/entity';
@@ -45,6 +46,12 @@ export type EntitySpec =
   | ({ e: 'elite-broodcluster'; at: Pt; hatchIn?: number } & Common)
   | ({ e: 'elite-cantor'; at: Pt; every?: number } & Common)
   | ({ e: 'elite-fangnest'; path: readonly Pt[]; angles: readonly number[] } & Common)
+  | ({ e: 'elite-matriarch'; at: Pt; segments?: number } & Common)
+  | ({ e: 'elite-sellsword'; path: readonly Pt[] } & Common)
+  | ({ e: 'elite-deadpulse'; path: readonly Pt[]; sigil: Pt; period?: number } & Common)
+  | ({ e: 'elite-frostwight'; at: Pt; count?: number } & Common)
+  | ({ e: 'elite-ghoulclaw'; at: Pt; armpit: Pt } & Common)
+  | ({ e: 'elite-magus'; at: Pt } & Common)
   | ({ e: 'herald'; at: Pt } & Common);
 
 export type EntityId = EntitySpec['e'];
@@ -188,6 +195,37 @@ export const ENTITY_REGISTRY: { [K in EntityId]: Entry<K> } = {
     params: { path: { type: 'path' }, angles: { type: 'numbers' } },
     needs: () => [['tongs']],
     make: (s, op) => new FangNest(op, s.path.map((p, i) => [P(p), s.angles[i] ?? 0] as [Vec, number])).all,
+  },
+  // Alpha elites (BOS-0153, BOS-0157..0161).
+  'elite-matriarch': {
+    params: { at: { type: 'pt' }, segments: num(true, [2, 8]) },
+    needs: () => [['tongs']],
+    make: (s, op) => new WormMatriarch(P(s.at), op, s.segments).all,
+  },
+  'elite-sellsword': {
+    params: { path: { type: 'path' } },
+    needs: () => [['tongs'], ['lancet']],
+    make: (s, op) => new Sellsword(op, s.path.map(P)).all,
+  },
+  'elite-deadpulse': {
+    params: { path: { type: 'path' }, sigil: { type: 'pt' }, period: num(true, [10, 120]) },
+    needs: () => [['lancet'], ['lens']],
+    make: (s, op) => new DeadPulse(op, s.path.map(P), P(s.sigil), s.period).all,
+  },
+  'elite-frostwight': {
+    params: { at: { type: 'pt' }, count: num(true, [3, 6]) },
+    needs: () => [['brand']],
+    make: (s, op) => new FrostWight(P(s.at), op, s.count).all,
+  },
+  'elite-ghoulclaw': {
+    params: { at: { type: 'pt' }, armpit: { type: 'pt' } },
+    needs: () => [['brand'], ['lancet']],
+    make: (s, op) => new GhoulClaw(P(s.at), op, P(s.armpit)).all,
+  },
+  'elite-magus': {
+    params: { at: { type: 'pt' } },
+    needs: () => [['tongs'], ['lens']],
+    make: (s, op) => new ChoirMagus(P(s.at), op).all,
   },
   herald: {
     params: { at: { type: 'pt' } },

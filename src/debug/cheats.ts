@@ -36,6 +36,12 @@ const SPAWN_DEFAULTS: { [K in EntityId]: Omit<Extract<EntitySpec, { e: K }>, 'e'
   'elite-broodcluster': {},
   'elite-cantor': {},
   'elite-fangnest': { angles: [0.9, 1.2, 0.6] },
+  'elite-matriarch': { segments: 5 },
+  'elite-sellsword': {},
+  'elite-deadpulse': { sigil: [0, 0], period: 20 }, // sigil is placed by the cursor below
+  'elite-frostwight': { count: 5 },
+  'elite-ghoulclaw': { armpit: [220, -150] },
+  'elite-magus': {},
   herald: {},
 };
 
@@ -52,9 +58,11 @@ export function spawnAt(op: Operation, id: string, pos: Vec = op.cursor): Entity
     ...extra,
     ...(id === 'incision'
       ? { path: [at, [at[0] + 120, at[1] + 10]] }
-      : id === 'elite-fangnest'
+      : id === 'elite-fangnest' || id === 'elite-sellsword'
         ? { path: [at, [at[0] + 50, at[1] + 30], [at[0] + 70, at[1] - 20]] }
-        : { at }),
+        : id === 'elite-deadpulse'
+          ? { path: [at, [at[0] + 140, at[1] + 10]], sigil: [at[0] + 40, at[1] - 50] }
+          : { at }),
   } as EntitySpec;
   const made = makeEntities(spec, op);
   for (const e of made) op.spawn(e);
