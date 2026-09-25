@@ -12,6 +12,7 @@ import { attachBarkDirector } from '../content/barkDirector';
 import { hex, withAlpha } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { organPalette } from '../render/organs';
+import { underSkinBulges } from '../render/underSkin';
 import { BloodPool, Bubo, Burn, Embedded, Incision, Laceration, Sigil, surfDisc, surfLine } from '../surgery/entities';
 import { EggSac } from '../surgery/lauds';
 import { Particles } from '../render/particles';
@@ -748,6 +749,8 @@ export class OperationScene implements Scene {
     }
     for (const st of op.stains) surfDisc(g, st, st.r, 0, st.a);
     for (const e of ents) e.drawSurface(g, op);
+    // Parasites under the skin raise travelling bulges (ENG-0265).
+    for (const b of underSkinBulges(op.entities, op.elapsed)) surfDisc(g, b, b.r, 0, 0, 0, b.h);
     if (game.input.down && onBody(game.input.pos)) surfDisc(g, game.input.pos, 16, 0.28);
     g.restore();
     g.endLayer();
