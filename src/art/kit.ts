@@ -145,7 +145,8 @@ export const RATING_INK: Record<Rating, [string, string]> = {
   cool: ['#f5d76e', '#7a4a08'],
   good: ['#b8e0c8', '#1a4a30'],
   bad: ['#e0955a', '#4a1a04'],
-  miss: ['#ff6a5a', '#3a0404'],
+  // Crimson, not orange-red: BAD and MISS stay apart for deuteranopes without a filter (ART-0357).
+  miss: ['#e03050', '#3a0404'],
 };
 
 /** Four-frame stamp hit: lifted (large, faint), strike, rebound, rest. */

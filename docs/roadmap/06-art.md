@@ -580,7 +580,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [ ] ART-0354 · Demo · P0 · M · Automated asset lint in CI: dimensions match the spec, power-of-two for textures, no non-premultiplied alpha, file size within budget, no orphaned manifest entries
 - [ ] ART-0355 · Demo · P0 · M · Screenshot-diff regression suite: 20 canonical scenes (each backdrop, the op HUD, each demo boss phase) rendered headless and diffed against approved goldens
 - [ ] ART-0356 · Demo · P0 · S · Resolution pass: every demo screen checked at 1280×720, 1920×1080, 2560×1440, 3840×2160, 1280×800 (Steam Deck) and ultrawide 3440×1440 letterboxed — no blurry upscales, no cropped UI
-- [ ] ART-0357 · Demo · P1 · S · Colour-blind pass (protanopia, deuteranopia, tritanopia simulation) on the ratings, vitals, sigils vs. veins and the curse-violet vs. blood contrast — fixes filed
+- [x] ART-0357 · Demo · P1 · S · Colour-blind pass (protanopia, deuteranopia, tritanopia simulation) on the ratings, vitals, sigils vs. veins and the curse-violet vs. blood contrast — fixes filed
 - [ ] ART-0358 · Demo · P1 · S · Readability pass of every ailment on every flesh set it can appear on in the demo (a matrix screenshot)
 - [ ] ART-0359 · Demo · P1 · S · Gore-level review against the rating target, with the flagged assets listed and resolved before the ratings submission
 - [x] ART-0360 · Demo · P1 · S · Localisation art pass: no baked-in text in any image except the logo; stamps and seals with text use a runtime text layer

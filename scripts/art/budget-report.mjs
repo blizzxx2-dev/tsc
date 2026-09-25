@@ -2,7 +2,7 @@
 // reads the GL registry and the batcher counters — tracked GPU texture/target memory (MB), the
 // number of texture objects by label, atlas pages, and per-frame draw calls, texture flushes and
 // vertices. Operation scenes are also measured at peak VFX (Litany + curse motes + sparks + blood).
-// Usage: npx vite build && node scripts/art/budget-report.mjs [--only <scene-name substring>] [--json out.json]
+// Needs the QA build (debug API): npm run build:qa && node scripts/art/budget-report.mjs [--only <scene-name substring>] [--json out.json]
 import { chromium } from 'playwright';
 import { preview } from 'vite';
 import { writeFileSync } from 'node:fs';
@@ -17,7 +17,7 @@ const SCENES = [
   { name: 'operation (Lauds boss)', query: '', op: 'op2-5', boss: true },
 ];
 
-const server = await preview({ preview: { port: 0, strictPort: false, open: false }, logLevel: 'silent' });
+const server = await preview({ build: { outDir: 'dist-qa' }, preview: { port: 0, strictPort: false, open: false }, logLevel: 'silent' });
 const url = server.resolvedUrls.local[0];
 const browser = await chromium.launch({
   executablePath: resolveChromium(),

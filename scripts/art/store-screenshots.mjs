@@ -2,7 +2,7 @@
 // 2 bosses, 3 story (VN) scenes, the instrument tray and the results screen — with the HUD on and no
 // debug overlay. Everything is driven through the automation API (window.__game.debug) so the set
 // is reproducible; cosmetic randomness is seeded. Writes JPEG q92 (Steam accepts JPG/PNG).
-// Usage: npx vite build && node scripts/art/store-screenshots.mjs [outDir]
+// Needs the QA build (debug API): npm run build:qa && node scripts/art/store-screenshots.mjs [outDir]
 import { chromium } from 'playwright';
 import { preview } from 'vite';
 import { mkdirSync } from 'node:fs';
@@ -27,7 +27,7 @@ const SHOTS = [
 ];
 
 mkdirSync(OUT, { recursive: true });
-const server = await preview({ preview: { port: 0, strictPort: false, open: false }, logLevel: 'silent' });
+const server = await preview({ build: { outDir: 'dist-qa' }, preview: { port: 0, strictPort: false, open: false }, logLevel: 'silent' });
 const url = server.resolvedUrls.local[0];
 const browser = await chromium.launch({
   executablePath: resolveChromium(),

@@ -239,7 +239,7 @@ ART-0353,"Art QA checklist per asset class (resolution, naming, alpha edges, pal
 ART-0354,"Automated asset lint in CI: dimensions match the spec, power-of-two for textures, no non-premultiplied alpha, file size within budget, no orphaned manifest entries",Art QA,P0,M,TBD,not started,,,
 ART-0355,"Screenshot-diff regression suite: 20 canonical scenes (each backdrop, the op HUD, each demo boss phase) rendered headless and diffed against approved goldens",Art QA,P0,M,TBD,not started,,,
 ART-0356,"Resolution pass: every demo screen checked at 1280×720, 1920×1080, 2560×1440, 3840×2160, 1280×800 (Steam Deck) and ultrawide 3440×1440 letterboxed — no blurry upscales, no cropped UI",Art QA,P0,S,TBD,not started,,,
-ART-0357,"Colour-blind pass (protanopia, deuteranopia, tritanopia simulation) on the ratings, vitals, sigils vs. veins and the curse-violet vs. blood contrast — fixes filed",Art QA,P1,S,TBD,not started,,,
+ART-0357,"Colour-blind pass (protanopia, deuteranopia, tritanopia simulation) on the ratings, vitals, sigils vs. veins and the curse-violet vs. blood contrast — fixes filed",Art QA,P1,S,TBD,done,,0,
 ART-0358,Readability pass of every ailment on every flesh set it can appear on in the demo (a matrix screenshot),Art QA,P1,S,TBD,not started,,,
 ART-0359,"Gore-level review against the rating target, with the flagged assets listed and resolved before the ratings submission",Art QA,P1,S,TBD,not started,,,
 ART-0360,Localisation art pass: no baked-in text in any image except the logo; stamps and seals with text use a runtime text layer,Art QA,P1,S,in-house (procedural),done,,0,
