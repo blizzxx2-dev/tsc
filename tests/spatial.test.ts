@@ -1,12 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { Grub, Laceration } from '../src/surgery/entities';
+import type { Entity } from '../src/surgery/entity';
 import { SPATIAL_THRESHOLD, SpatialGrid } from '../src/surgery/spatial';
 import { at, Hand, start, wait } from './harness';
 
 describe('spatial index for crowded fields (ENG-0246)', () => {
   const crowd = () => {
     const op = start((o) => {
-      const out = [new Laceration(at(0, 180), 0, 80, 0.2)];
+      const out: Entity[] = [new Laceration(at(0, 180), 0, 80, 0.2)];
       for (let i = 0; i < 300; i++) out.push(new Grub(at(-300 + (i % 30) * 20, -150 + Math.floor(i / 30) * 30), o, 0));
       return out;
     });

@@ -10,7 +10,7 @@ export class Coverage {
   constructor(
     public center: Vec,
     public radius: number,
-    step = 12,
+    readonly step = 12,
   ) {
     for (let y = -radius; y <= radius; y += step)
       for (let x = -radius; x <= radius; x += step)

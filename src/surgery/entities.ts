@@ -625,6 +625,10 @@ export class Laceration extends Entity {
   readonly length: number;
   readonly stitch: StitchLine;
   private cov: Coverage | null;
+  /** Where the Salve has been laid on a salve-closable cut (the film, ENG-0118). */
+  get salve(): Coverage | null {
+    return this.cov;
+  }
   bleed: number;
   private poolT = 0;
   /** Seconds pus has been seeping into this wound. */
