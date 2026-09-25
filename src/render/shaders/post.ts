@@ -93,6 +93,9 @@ uniform sampler2D u_lutA;
 uniform sampler2D u_lutB;
 uniform float u_lutMix;
 uniform vec4 u_lens; // xy centre (0..1, y up), z radius (fraction of height), w strength
+// Hexstone refraction (ENG-0106): up to 6 glassy regions bending the flesh behind them.
+uniform vec4 u_refract[6]; // xy centre (0..1, y up), z radius (fraction of height), w strength
+uniform int u_refractN;
 uniform float u_beat;    // heartbeat pulse 0..1 from the ECG clock
 uniform float u_curse;   // Malison presence 0..1: ink creeping from the edges
 uniform float u_silence; // Compline's silence 0..1 (ART-0258): grey the world and hatch it like chalk on slate
@@ -159,6 +162,17 @@ void main() {
     float lr = length(lensD) / u_lens.z;
     lensMask = (1.0 - smoothstep(0.96, 1.0, lr)) * lensW;
     uv = mix(uv, u_lens.xy + (uv - u_lens.xy) * (0.72 + 0.2 * lr * lr), lensMask);
+  }
+  for (int i = 0; i < 6; i++) {
+    if (i >= u_refractN) break;
+    vec4 rf = u_refract[i];
+    vec2 d = (uv - rf.xy) * vec2(aspect, 1.0);
+    float r = length(d) / rf.z;
+    if (r < 1.0) {
+      // A lens-shaped bulge: pull toward the centre, strongest mid-radius, zero at the rim.
+      float k = rf.w * r * (1.0 - r) * (1.0 - r) * 0.9;
+      uv -= (d / vec2(aspect, 1.0)) * k;
+    }
   }
   vec3 c;
   // Chromatic aberration grows toward the frame edge (curses, trauma).

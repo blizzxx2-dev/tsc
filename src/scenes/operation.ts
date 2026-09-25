@@ -760,6 +760,7 @@ export class OperationScene implements Scene {
       outcome: [op.status === 'lost' ? Math.min(1, this.endT / 2) : 0, Math.max(op.status === 'won' ? Math.min(1, this.endT / 1.2) : 0, this.compline.restore * 0.8)],
       litanyCenter: this.ctl.litanyCenter,
       lens: op.tool === 'lens' ? [game.input.pos.x, game.input.pos.y, 95, 1] : undefined,
+      refract: this.hexRefraction(),
       litanyAge: inverted ? inverted[1] : op.litanyTime > 0 ? LITANY_DURATION - op.litanyTime : 10,
       hurt: (() => {
         const age = op.elapsed - op.lastHurt.at;
@@ -1175,6 +1176,18 @@ export class OperationScene implements Scene {
     live.push({ x: X(ta.time), y: Y(op.vitals / op.maxVitals) });
     if (live.length > 1) g.polyline(live, 2, hex('#e04040', 0.95));
     if (this.taBest) caps(g, tr('hud.timeattack.new_best'), r.x + r.w / 2, r.y + r.h + 20, 14, hex(INK.goldHi), 'center');
+  }
+
+  /** Hexstone refraction regions (ENG-0106): each visible stone bends the flesh behind it; stilled stones less. */
+  private hexRefraction(): [number, number, number, number][] {
+    const out: [number, number, number, number][] = [];
+    const cam = this.camera.isIdentity ? null : this.camera;
+    for (const e of this.op.entities) {
+      if (out.length >= 6 || !e.alive || e.hidden || !(e instanceof Embedded) || e.kind !== 'hexstone') continue;
+      const v = cam ? cam.toView(e.pos, { x: 0, y: 0 }) : e.pos;
+      out.push([v.x, v.y, e.spec.len * 0.9 * (cam ? cam.zoom : 1), e.calmed ? 0.25 : 0.55]);
+    }
+    return out;
   }
 
   /** One blood colour for the patient's species across particles and drawn effects (ENG-0096). */

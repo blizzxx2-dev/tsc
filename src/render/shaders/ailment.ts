@@ -331,6 +331,14 @@ vec4 hexstone(vec2 q) {
   float pulse = (0.55 + 0.45 * sin(f / 6.0 * 2.0 * PI)) * (1.0 - 0.7 * still);
   float core = exp(-length(q * vec2(0.9, 1.6)) / (L * 0.2));
   col += vec3(0.62, 0.3, 0.95) * core * pulse * 1.1 + vec3(1.0, 0.8, 1.0) * pow(core, 4.0) * pulse * 0.6;
+  // The carved rune (ENG-0106): a staff with two barbs and a crossing stroke, cut into the top
+  // face and glowing with the pulse — dimmer, not dark, once branded still.
+  vec2 rq = q / (L * 0.5);
+  float staff = rsmooth(0.07, 0.03, abs(rq.x)) * rsmooth(0.62, 0.55, abs(rq.y));
+  float barbs = rsmooth(0.06, 0.02, abs(rq.y - 0.3 - abs(rq.x) * 0.9)) * rsmooth(0.35, 0.3, abs(rq.x));
+  float cross = rsmooth(0.06, 0.02, abs(rq.y + 0.15 + rq.x * 0.4)) * rsmooth(0.3, 0.25, abs(rq.x));
+  float rune = max(staff, max(barbs, cross)) * top;
+  col += vec3(1.0, 0.72, 1.0) * rune * (0.35 + 0.65 * pulse);
   // Grab crackle: veins of light race through the crystal.
   float cr = rsmooth(0.06, 0.0, voroEdge(q * 0.18 + vec2(floor(u_time * 14.0) * 0.37, 0.0)));
   col += vec3(0.85, 0.6, 1.0) * cr * crackle;
