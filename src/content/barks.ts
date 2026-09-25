@@ -595,3 +595,31 @@ export const WHISPER_BAND_BARKS: Record<'suspected' | 'accused', Record<'ilse' |
     stroh: ['That is not a thing a man can explain to a jury, Doctor.', 'I had hoped to be wrong about you. I am so rarely wrong.'],
   },
 };
+
+/** Environment barks (NAR-0164): Ilse warns of the table's conditions as the operation opens. */
+export const ENV_BARKS: Record<'rain' | 'cart' | 'candle', readonly string[]> = {
+  rain: [
+    'Rain through the canvas, Doctor. Every drip thins the blood — mind the pools.',
+    'The roof is weeping again. Work around the wet or it will run into the cuts.',
+    'Water on the table. It dilutes what you drain; count on more pools than wounds.',
+    'Listen to it drum. Every few breaths another drip lands in the field.',
+    'The tent leaks where the pole meets the ridge. Keep a leech ready for the puddles.',
+    'Wet hands, wet field, wet everything. Slow and sure, Doctor.',
+  ],
+  cart: [
+    'The road is rutted. The whole table will sway — aim with the swing, not against it.',
+    'We are moving, Doctor. Brace your wrist on the rail; the wheels will not wait.',
+    'The cart lurches every few yards. Watch the field drift and let it come back to you.',
+    'Hold steady. The driver cannot slow on this stretch.',
+    'Every stone in the road is in your hands now. Short strokes, Doctor.',
+    'The patient rocks with the axle. Time your cuts to the lull between jolts.',
+  ],
+  candle: [
+    'One candle, Doctor. The corners are black — bring the work to the light.',
+    'The lamp oil is gone. We have this stub, and it shows only the middle of the table.',
+    'Little light tonight. The lens will struggle; trust your hands where your eyes cannot go.',
+    'Keep inside the candle’s circle. What is outside it may as well be in another room.',
+    'I will hold the candle as close as I dare. Do not ask me to move it.',
+    'The flame gutters when you breathe. Mind what hides at the edge of the field.',
+  ],
+};

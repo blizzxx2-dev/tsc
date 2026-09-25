@@ -251,3 +251,17 @@ describe('Whisper-band barks (NAR-0166)', () => {
     }
   });
 });
+
+describe('environment barks (NAR-0164)', () => {
+  it('Ilse warns of rain, a moving cart and one candle as the operation opens — six lines each', async () => {
+    const { ENV_BARKS } = await import('../src/content/barks');
+    const { Operation } = await import('../src/surgery/operation');
+    for (const k of ['rain', 'cart', 'candle'] as const) expect(new Set(ENV_BARKS[k]).size).toBe(6);
+    const def = allCampaignOperations().find((o) => o.id === 'op1-1')!;
+    const op = new Operation(def, { mutators: ['rain', 'candle'] });
+    const d = new BarkDirector(op, { rng: () => 0 });
+    expect(d.spoken.filter((s) => s.trigger.startsWith('env:')).map((s) => s.trigger)).toEqual(['env:rain', 'env:candle']);
+    const plain = new BarkDirector(new Operation(def), { rng: () => 0 });
+    expect(plain.spoken.some((s) => s.trigger.startsWith('env:'))).toBe(false);
+  });
+});

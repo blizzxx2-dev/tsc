@@ -21,6 +21,7 @@ import {
   type BarkTrigger,
   type PatientTrigger,
   WHISPER_BAND_BARKS,
+  ENV_BARKS,
 } from './barks';
 import type { WhisperBand } from './whisper';
 
@@ -68,6 +69,18 @@ export class BarkDirector {
     resetBarkHistory();
     this.listen();
     this.fire('op-start');
+    this.environment();
+  }
+
+  /** One warning per table condition the operation opens under (NAR-0164): rain, a moving cart, one candle. */
+  private environment(): void {
+    const on = new Set<string>(this.op.opts.mutators ?? []);
+    if (this.op.def.venue === 'field' && this.op.def.id === 'op4-1') on.add('rain');
+    for (const m of ['rain', 'cart', 'candle'] as const) {
+      if (!on.has(m)) continue;
+      const lines = ENV_BARKS[m];
+      this.say(`env:${m}`, lines[Math.floor(this.rng() * lines.length) % lines.length]);
+    }
   }
 
   private listen(): void {

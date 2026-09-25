@@ -256,7 +256,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ### Barks
 - [ ] NAR-0162 · Alpha · P1 · M · Ch3–5 speaker bark sets — Ilse (continues), Orsa (Ch4 field ops), Haller-by-letter (Ch4 briefings), Stroh (Ch3 tooth op, Ch5) ≥ 3 variants per trigger
 - [x] NAR-0163 · Alpha · P1 · M · Malison voice lines — Prime (reading names), Terce (tongues of fire), Sext (false calm), None (death-count), Vespers (lamp-hymn), Compline (silence-verses): 10–14 lines each
-- [ ] NAR-0164 · Alpha · P1 · S · Environment barks — rain in field tent, moving-cart table, candle-only light: 6 lines each warning of the modifier at op start
+- [x] NAR-0164 · Alpha · P1 · S · Environment barks — rain in field tent, moving-cart table, candle-only light: 6 lines each warning of the modifier at op start
 - [ ] NAR-0165 · Alpha · P1 · M · Patient barks for Ch3–5 — 4–6 per named patient (27 patients)
 - [x] NAR-0166 · Alpha · P2 · S · Whisper-band barks — Ilse/Stroh remarks after a Litany cast when Whisper is Suspected or Accused (8 lines)
 - [ ] NAR-0167 · Beta · P1 · S · Challenge-mode barks — neutral "examiner" voice for X-ops (30 lines), no story spoilers
