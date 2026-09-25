@@ -1,6 +1,8 @@
 import type { Game, Scene } from '../core/scene';
 import { glass, heading, INK } from '../ui/hudKit';
 import { DEFAULT_SETTINGS, saveSettings, settings, type Settings } from '../core/settings';
+import { WINDOW_SIZES, windowSizeOf, type WindowSize } from '../core/settings/schema';
+import { platform } from '../platform';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { VIEW_W } from '../ui/layout';
@@ -189,17 +191,19 @@ export function optionRows(tabId: OptionsTab): OptionRow[] {
     case 'display':
       return [
         choice('display_mode', 'displayMode', ['windowed', 'borderless', 'fullscreen'] as const, () => [t('ui.options.mode_windowed'), t('ui.options.mode_borderless'), t('ui.options.mode_fullscreen')]),
+        ...(platform.kind === 'desktop' ? [{ ...choice('window_size', 'windowSize', WINDOW_SIZES, () => WINDOW_SIZES.map((w) => w.replace('x', ' × '))), set: (i: number | boolean) => applyWindowSize(WINDOW_SIZES[i as number]) }] : []),
         toggle('vsync', 'vsync'),
         choice('frame_limit', 'frameCap', [0, 30, 60, 120, 144] as const, () => [t('ui.options.frame_display'), '30', '60', '120', '144'], 'ui.options.frame_limit'),
         choice('render_scale', 'renderScale', [0.5, 0.75, 0.85, 1] as const, () => ['50%', '75%', '85%', t('ui.options.render_native')], 'ui.options.render_scale'),
         slider('brightness', 'brightness', 0.7, 1.3, 0.05, (v) => pct(v)),
         { id: 'calibrate', label: 'ui.options.calibrate', kind: 'action', run: (g) => g.push?.(new CalibrateScene(() => g.pop!())) },
         toggle('bloom', 'bloom'),
+        slider('bloom_amount', 'bloomAmount', 0, 1, 0.05, (v) => pct(v)),
         toggle('grain', 'grain'),
         toggle('vignette', 'vignette'),
         toggle('flicker', 'flicker'),
         toggle('chroma', 'chromaticAberration'),
-        choice('shake', 'shake', [0, 0.5, 1] as const, () => [t('ui.options.shake_off'), t('ui.options.shake_gentle'), t('ui.options.shake_full')], 'ui.options.shake'),
+        slider('shake', 'shake', 0, 1, 0.05, (v) => (v <= 0 ? t('ui.options.shake_off') : pct(v)), 'ui.options.shake'),
       ];
     case 'audio':
       return [
@@ -240,6 +244,22 @@ export function optionRows(tabId: OptionsTab): OptionRow[] {
         },
       ];
     }
+  }
+}
+
+/**
+ * Windowed-mode size preset (UIX-0105). The desktop bridge has no resize channel yet, so this asks
+ * the window itself; Electron honours `resizeTo` for the main window only when the platform allows it,
+ * and the setting is kept for the desktop shell to apply on launch.
+ */
+export function applyWindowSize(size: WindowSize): void {
+  settings.windowSize = size;
+  if (platform.kind !== 'desktop' || settings.displayMode !== 'windowed') return;
+  const { w, h } = windowSizeOf(size);
+  try {
+    (globalThis as { resizeTo?: (w: number, h: number) => void }).resizeTo?.(w, h);
+  } catch {
+    // The shell may refuse: the preset still persists for the next launch.
   }
 }
 

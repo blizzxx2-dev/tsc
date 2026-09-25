@@ -31,7 +31,7 @@ export function playOperation(game: Game, def: OperationDef, onWin: () => void, 
         ({ op, won }) => {
           const legacyBest = won && !op.opts.challenge ? recordBest(save, def.id, op.rank(), op.score) : false;
           store(save);
-          emitGameEvent({ type: 'operation-end', opId: def.id, won, rank: won ? op.rank() : null, score: op.score, assisted: assisted(), litanyUsed: op.litanyUsed });
+          emitGameEvent({ type: 'operation-end', opId: def.id, won, rank: won ? op.rank() : null, score: op.score, assisted: assisted(), litanyUsed: op.litanyUsed, maxCombo: op.maxCombo });
           const summary = finishOperation(op);
           const cp = op.checkpointPhase();
           noteOutcome(def.id, won ? op.rank() : null, op.litanyUsed);

@@ -9,7 +9,7 @@ import type { SteamPlatform } from './types';
 import { log } from './log';
 
 export type GameEvent =
-  | { type: 'operation-end'; opId: string; won: boolean; rank: Rank | null; score: number; assisted: boolean; litanyUsed: boolean }
+  | { type: 'operation-end'; opId: string; won: boolean; rank: Rank | null; score: number; assisted: boolean; litanyUsed: boolean; maxCombo?: number }
   | { type: 'chapter-complete'; chapter: number }
   | { type: 'edition-complete' };
 

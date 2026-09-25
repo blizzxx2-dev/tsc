@@ -51,22 +51,6 @@
     "screenshot": "docs/loc/screens/title.png",
     "note": "\"Oath\" = the surgeon's oath of the hospice; archaic register. Fits the 440 px menu panel on one line."
   },
-  "ui.title.confirm_yes": {
-    "scene": "title",
-    "font": "body",
-    "size": 30,
-    "maxPx": 380,
-    "context": "Title-menu button.",
-    "screenshot": "docs/loc/screens/title.png"
-  },
-  "ui.title.confirm_no": {
-    "scene": "title",
-    "font": "body",
-    "size": 30,
-    "maxPx": 380,
-    "context": "Title-menu button.",
-    "screenshot": "docs/loc/screens/title.png"
-  },
   "ui.title.continue": {
     "scene": "title",
     "font": "body",
@@ -482,14 +466,6 @@
     "font": "body",
     "size": 24,
     "maxPx": 700,
-    "context": "Demo thank-you / wishlist screen.",
-    "screenshot": "docs/loc/screens/demoend.png"
-  },
-  "ui.demoend.ledger_entry": {
-    "scene": "demoend",
-    "font": "body",
-    "size": 24,
-    "maxPx": 300,
     "context": "Demo thank-you / wishlist screen.",
     "screenshot": "docs/loc/screens/demoend.png"
   },
@@ -6226,5 +6202,714 @@
     "maxPx": 260,
     "context": "Beside the cursor over a target the instrument in hand cannot treat; {tool} is the instrument it needs.",
     "screenshot": "docs/loc/screens/operation.png"
+  },
+  "ui.title.chapters": {
+    "scene": "title",
+    "font": "display",
+    "size": 19,
+    "maxPx": 380,
+    "context": "Title-menu entry: opens the chapter cards."
+  },
+  "ui.title.extras": {
+    "scene": "title",
+    "font": "display",
+    "size": 19,
+    "maxPx": 380,
+    "context": "Title-menu entry: demo summary, credits, notices."
+  },
+  "ui.title.credits": {
+    "scene": "title",
+    "font": "display",
+    "size": 19,
+    "maxPx": 380,
+    "context": "Title-menu entry and Extras entry."
+  },
+  "ui.title.quit": {
+    "scene": "title",
+    "font": "display",
+    "size": 19,
+    "maxPx": 380,
+    "context": "Title-menu entry (desktop builds only); confirmed before quitting."
+  },
+  "ui.title.wishlist_note": {
+    "scene": "title",
+    "font": "body",
+    "size": 18,
+    "maxPx": 340,
+    "context": "Tooltip on the wishlist seal.",
+    "maxLines": 2
+  },
+  "ui.title.demo_ribbon": {
+    "scene": "title",
+    "font": "display",
+    "size": 15,
+    "maxPx": 200,
+    "context": "Corner ribbon text in the demo edition; tracked capitals.",
+    "dnt": false
+  },
+  "ui.title.demo_complete_banner": {
+    "scene": "title",
+    "font": "display",
+    "size": 15,
+    "maxPx": 600,
+    "context": "Banner over the menu once the demo has been finished; tracked capitals."
+  },
+  "ui.common.playtime_hm": {
+    "scene": "common",
+    "font": "body",
+    "size": 16,
+    "maxPx": 150,
+    "context": "Play time with hours and minutes, e.g. \"2h 14m\"."
+  },
+  "ui.common.playtime_m": {
+    "scene": "common",
+    "font": "body",
+    "size": 16,
+    "maxPx": 150,
+    "context": "Play time under an hour, e.g. \"48m\"."
+  },
+  "ui.chapters.title": {
+    "scene": "chapters",
+    "font": "display",
+    "size": 30,
+    "maxPx": 420,
+    "context": "Chapter select screen heading."
+  },
+  "ui.chapters.card_title": {
+    "scene": "chapters",
+    "font": "body",
+    "size": 20,
+    "maxPx": 280,
+    "context": "Chapter numeral and title, e.g. \"I. The Hour of Matins\"."
+  },
+  "ui.chapters.completion": {
+    "scene": "chapters",
+    "font": "display",
+    "size": 12,
+    "maxPx": 120,
+    "context": "Caps label over the completion meter on a chapter card."
+  },
+  "ui.chapters.percent": {
+    "scene": "chapters",
+    "font": "display",
+    "size": 20,
+    "maxPx": 70,
+    "context": "Completion percentage on a chapter card."
+  },
+  "ui.chapters.seals": {
+    "scene": "chapters",
+    "font": "display",
+    "size": 12,
+    "maxPx": 180,
+    "context": "Caps label over the rank seals on a chapter card."
+  },
+  "ui.chapters.seal_tally": {
+    "scene": "chapters",
+    "font": "display",
+    "size": 12,
+    "maxPx": 180,
+    "context": "Seals earned out of the chapter's operations."
+  },
+  "ui.chapters.continue": {
+    "scene": "chapters",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 186,
+    "context": "Footer on the current chapter card."
+  },
+  "ui.chapters.replay": {
+    "scene": "chapters",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 186,
+    "context": "Footer on a finished chapter card."
+  },
+  "ui.chapters.not_reached": {
+    "scene": "chapters",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 186,
+    "context": "Footer and tooltip on a chapter the campaign has not reached."
+  },
+  "ui.chapters.later_iii": {
+    "scene": "chapters",
+    "font": "body",
+    "size": 21,
+    "maxPx": 180,
+    "context": "Locked chapter III title on the demo's parchment card.",
+    "maxLines": 2
+  },
+  "ui.chapters.later_iv": {
+    "scene": "chapters",
+    "font": "body",
+    "size": 21,
+    "maxPx": 180,
+    "context": "Locked chapter IV title on the demo's parchment card.",
+    "maxLines": 2
+  },
+  "ui.chapters.later_v": {
+    "scene": "chapters",
+    "font": "body",
+    "size": 21,
+    "maxPx": 180,
+    "context": "Locked chapter V title on the demo's parchment card.",
+    "maxLines": 2
+  },
+  "ui.chapters.locked_short": {
+    "scene": "chapters",
+    "font": "display",
+    "size": 13,
+    "maxPx": 190,
+    "context": "Caps line under the dark seal on a locked chapter card."
+  },
+  "ui.chapters.locked": {
+    "scene": "chapters",
+    "font": "italic",
+    "size": 17,
+    "maxPx": 176,
+    "context": "Note on a locked chapter card.",
+    "maxLines": 2
+  },
+  "ui.chapters.locked_note": {
+    "scene": "chapters",
+    "font": "body",
+    "size": 18,
+    "maxPx": 340,
+    "context": "Tooltip on a locked chapter card.",
+    "maxLines": 3
+  },
+  "ui.slots.title_new": {
+    "scene": "slots",
+    "font": "display",
+    "size": 30,
+    "maxPx": 420,
+    "context": "Save-slot screen heading when starting a new game."
+  },
+  "ui.slots.title_load": {
+    "scene": "slots",
+    "font": "display",
+    "size": 30,
+    "maxPx": 420,
+    "context": "Save-slot screen heading when resuming."
+  },
+  "ui.slots.slot": {
+    "scene": "slots",
+    "font": "display",
+    "size": 13,
+    "maxPx": 280,
+    "context": "Caps label over each save-slot card."
+  },
+  "ui.slots.empty": {
+    "scene": "slots",
+    "font": "italic",
+    "size": 17,
+    "maxPx": 260,
+    "context": "Inside the thumbnail window of an empty slot."
+  },
+  "ui.slots.empty_note": {
+    "scene": "slots",
+    "font": "italic",
+    "size": 17,
+    "maxPx": 272,
+    "context": "Body of an empty slot card."
+  },
+  "ui.slots.no_thumbnail": {
+    "scene": "slots",
+    "font": "italic",
+    "size": 17,
+    "maxPx": 260,
+    "context": "Thumbnail window of a slot saved before an operation was seen."
+  },
+  "ui.slots.begin_here": {
+    "scene": "slots",
+    "font": "display",
+    "size": 16,
+    "maxPx": 260,
+    "context": "Seal button on a slot card: start a new campaign in this slot."
+  },
+  "ui.slots.resume": {
+    "scene": "slots",
+    "font": "display",
+    "size": 16,
+    "maxPx": 120,
+    "context": "Button on an occupied slot card."
+  },
+  "ui.slots.delete": {
+    "scene": "slots",
+    "font": "display",
+    "size": 16,
+    "maxPx": 120,
+    "context": "Button on an occupied slot card: delete the slot."
+  },
+  "ui.slots.delete_note": {
+    "scene": "slots",
+    "font": "body",
+    "size": 18,
+    "maxPx": 340,
+    "context": "Tooltip on the delete button.",
+    "maxLines": 2
+  },
+  "ui.slots.delete_locked": {
+    "scene": "slots",
+    "font": "body",
+    "size": 18,
+    "maxPx": 340,
+    "context": "Tooltip on a disabled delete button.",
+    "maxLines": 3
+  },
+  "ui.slots.delete_title": {
+    "scene": "slots",
+    "font": "display",
+    "size": 24,
+    "maxPx": 300,
+    "context": "Delete confirm dialog title."
+  },
+  "ui.slots.delete_confirm": {
+    "scene": "slots",
+    "font": "body",
+    "size": 22,
+    "maxPx": 520,
+    "context": "First delete confirmation.",
+    "maxLines": 3
+  },
+  "ui.slots.delete_confirm_again": {
+    "scene": "slots",
+    "font": "body",
+    "size": 22,
+    "maxPx": 520,
+    "context": "Second delete confirmation.",
+    "maxLines": 2
+  },
+  "ui.slots.delete_yes": {
+    "scene": "slots",
+    "font": "display",
+    "size": 19,
+    "maxPx": 200,
+    "context": "Yes button of the second delete confirmation."
+  },
+  "ui.slots.overwrite_title": {
+    "scene": "slots",
+    "font": "display",
+    "size": 24,
+    "maxPx": 300,
+    "context": "Overwrite confirm dialog title."
+  },
+  "ui.slots.overwrite": {
+    "scene": "slots",
+    "font": "body",
+    "size": 22,
+    "maxPx": 520,
+    "context": "Overwrite confirmation when New Game picks an occupied slot.",
+    "maxLines": 3
+  },
+  "ui.slots.playtime": {
+    "scene": "slots",
+    "font": "display",
+    "size": 12,
+    "maxPx": 120,
+    "context": "Caps label on a slot card row."
+  },
+  "ui.slots.seals": {
+    "scene": "slots",
+    "font": "display",
+    "size": 12,
+    "maxPx": 120,
+    "context": "Caps label on a slot card row."
+  },
+  "ui.slots.seal_count": {
+    "scene": "slots",
+    "font": "body",
+    "size": 16,
+    "maxPx": 160,
+    "context": "Seal count value on a slot card."
+  },
+  "ui.slots.last_played": {
+    "scene": "slots",
+    "font": "display",
+    "size": 12,
+    "maxPx": 120,
+    "context": "Caps label on a slot card row."
+  },
+  "ui.slots.never": {
+    "scene": "slots",
+    "font": "body",
+    "size": 16,
+    "maxPx": 160,
+    "context": "Last-played value when no date is known."
+  },
+  "ui.slots.in_use": {
+    "scene": "slots",
+    "font": "display",
+    "size": 12,
+    "maxPx": 260,
+    "context": "Caps line on the slot the running session came from."
+  },
+  "ui.slots.story_step": {
+    "scene": "slots",
+    "font": "italic",
+    "size": 17,
+    "maxPx": 272,
+    "context": "Next step when it is a story scene; {place} is the scene's location."
+  },
+  "ui.slots.campaign_done": {
+    "scene": "slots",
+    "font": "body",
+    "size": 20,
+    "maxPx": 272,
+    "context": "Chapter label once the campaign is finished."
+  },
+  "ui.damaged.title": {
+    "scene": "damaged",
+    "font": "display",
+    "size": 26,
+    "maxPx": 560,
+    "context": "Dialog title when the journal could not be read."
+  },
+  "ui.damaged.body": {
+    "scene": "damaged",
+    "font": "body",
+    "size": 20,
+    "maxPx": 570,
+    "context": "Dialog body.",
+    "maxLines": 4
+  },
+  "ui.damaged.backup_found": {
+    "scene": "damaged",
+    "font": "italic",
+    "size": 17,
+    "maxPx": 580,
+    "context": "Which manual slot Restore would use."
+  },
+  "ui.damaged.no_backup": {
+    "scene": "damaged",
+    "font": "italic",
+    "size": 17,
+    "maxPx": 580,
+    "context": "Shown when no manual slot can be restored; also the tooltip on the disabled Restore button."
+  },
+  "ui.damaged.restore": {
+    "scene": "damaged",
+    "font": "display",
+    "size": 17,
+    "maxPx": 230,
+    "context": "Seal button: resume from the newest manual slot."
+  },
+  "ui.damaged.fresh": {
+    "scene": "damaged",
+    "font": "display",
+    "size": 17,
+    "maxPx": 230,
+    "context": "Button: begin a fresh journal."
+  },
+  "ui.credits.section_team": {
+    "scene": "credits",
+    "font": "display",
+    "size": 24,
+    "maxPx": 700,
+    "context": "Credits section heading; tracked capitals."
+  },
+  "ui.credits.section_thanks": {
+    "scene": "credits",
+    "font": "display",
+    "size": 24,
+    "maxPx": 700,
+    "context": "Credits section heading."
+  },
+  "ui.credits.section_type": {
+    "scene": "credits",
+    "font": "display",
+    "size": 24,
+    "maxPx": 700,
+    "context": "Credits section heading for the fonts."
+  },
+  "ui.credits.section_software": {
+    "scene": "credits",
+    "font": "display",
+    "size": 24,
+    "maxPx": 700,
+    "context": "Credits section heading."
+  },
+  "ui.credits.role_direction": {
+    "scene": "credits",
+    "font": "display",
+    "size": 13,
+    "maxPx": 700,
+    "context": "Credits role line."
+  },
+  "ui.credits.role_code": {
+    "scene": "credits",
+    "font": "display",
+    "size": 13,
+    "maxPx": 700,
+    "context": "Credits role line."
+  },
+  "ui.credits.role_art": {
+    "scene": "credits",
+    "font": "display",
+    "size": 13,
+    "maxPx": 700,
+    "context": "Credits role line."
+  },
+  "ui.credits.role_writing": {
+    "scene": "credits",
+    "font": "display",
+    "size": 13,
+    "maxPx": 700,
+    "context": "Credits role line."
+  },
+  "ui.credits.role_audio": {
+    "scene": "credits",
+    "font": "display",
+    "size": 13,
+    "maxPx": 700,
+    "context": "Credits role line."
+  },
+  "ui.credits.role_qa": {
+    "scene": "credits",
+    "font": "display",
+    "size": 13,
+    "maxPx": 700,
+    "context": "Credits role line."
+  },
+  "ui.credits.role_playtest": {
+    "scene": "credits",
+    "font": "display",
+    "size": 13,
+    "maxPx": 700,
+    "context": "Credits role line."
+  },
+  "ui.credits.role_families": {
+    "scene": "credits",
+    "font": "display",
+    "size": 13,
+    "maxPx": 700,
+    "context": "Credits role line before the families line."
+  },
+  "ui.credits.font_line": {
+    "scene": "credits",
+    "font": "body",
+    "size": 22,
+    "maxPx": 900,
+    "context": "One font in the credits: family and style."
+  },
+  "ui.credits.style_regular": {
+    "scene": "credits",
+    "font": "body",
+    "size": 22,
+    "maxPx": 200,
+    "context": "Font style word."
+  },
+  "ui.credits.style_italic": {
+    "scene": "credits",
+    "font": "body",
+    "size": 22,
+    "maxPx": 200,
+    "context": "Font style word."
+  },
+  "ui.credits.ofl_notice": {
+    "scene": "credits",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 900,
+    "context": "OFL attribution line under the fonts."
+  },
+  "ui.credits.software_line": {
+    "scene": "credits",
+    "font": "body",
+    "size": 22,
+    "maxPx": 900,
+    "context": "One third-party component: name and licence."
+  },
+  "ui.credits.notices_hint": {
+    "scene": "credits",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 900,
+    "context": "Line pointing to the notices page."
+  },
+  "ui.credits.thanks_line": {
+    "scene": "credits",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 900,
+    "context": "Last line of the credits."
+  },
+  "ui.credits.hint": {
+    "scene": "credits",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 600,
+    "context": "Hint under the credits roll."
+  },
+  "ui.credits.notices": {
+    "scene": "credits",
+    "font": "display",
+    "size": 16,
+    "maxPx": 280,
+    "context": "Button on the credits and in Extras: opens the notices page."
+  },
+  "ui.notices.title": {
+    "scene": "notices",
+    "font": "display",
+    "size": 28,
+    "maxPx": 420,
+    "context": "Notices page heading."
+  },
+  "ui.notices.component": {
+    "scene": "notices",
+    "font": "display",
+    "size": 12,
+    "maxPx": 300,
+    "context": "Caps column label."
+  },
+  "ui.notices.licence": {
+    "scene": "notices",
+    "font": "display",
+    "size": 12,
+    "maxPx": 300,
+    "context": "Caps column label."
+  },
+  "ui.notices.holder": {
+    "scene": "notices",
+    "font": "body",
+    "size": 18,
+    "maxPx": 340,
+    "context": "Tooltip on a notices row.",
+    "maxLines": 2
+  },
+  "ui.notices.scope_runtime": {
+    "scene": "notices",
+    "font": "display",
+    "size": 12,
+    "maxPx": 160,
+    "context": "Caps tag: component ships in every build."
+  },
+  "ui.notices.scope_desktop": {
+    "scene": "notices",
+    "font": "display",
+    "size": 12,
+    "maxPx": 160,
+    "context": "Caps tag: component ships with the desktop package."
+  },
+  "ui.notices.open_file": {
+    "scene": "notices",
+    "font": "display",
+    "size": 16,
+    "maxPx": 320,
+    "context": "Seal button (desktop): opens THIRD_PARTY_NOTICES.txt."
+  },
+  "ui.notices.file_note": {
+    "scene": "notices",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 900,
+    "context": "Footer on desktop."
+  },
+  "ui.notices.web_note": {
+    "scene": "notices",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 900,
+    "context": "Footer on the web build."
+  },
+  "ui.extras.demo_summary": {
+    "scene": "extras",
+    "font": "display",
+    "size": 19,
+    "maxPx": 380,
+    "context": "Extras entry: shows the demo-complete screen again."
+  },
+  "ui.extras.summary": {
+    "scene": "extras",
+    "font": "display",
+    "size": 19,
+    "maxPx": 380,
+    "context": "Extras entry in the full game."
+  },
+  "ui.extras.summary_locked": {
+    "scene": "extras",
+    "font": "body",
+    "size": 18,
+    "maxPx": 340,
+    "context": "Tooltip on the disabled summary entry.",
+    "maxLines": 2
+  },
+  "ui.demoend.playtime": {
+    "scene": "demoend",
+    "font": "display",
+    "size": 12,
+    "maxPx": 160,
+    "context": "Caps label of a ledger total."
+  },
+  "ui.demoend.xs_count": {
+    "scene": "demoend",
+    "font": "display",
+    "size": 12,
+    "maxPx": 160,
+    "context": "Caps label of a ledger total."
+  },
+  "ui.demoend.of_total": {
+    "scene": "demoend",
+    "font": "display",
+    "size": 22,
+    "maxPx": 165,
+    "context": "XS seals out of all operations."
+  },
+  "ui.demoend.longest_chain": {
+    "scene": "demoend",
+    "font": "display",
+    "size": 12,
+    "maxPx": 160,
+    "context": "Caps label of a ledger total."
+  },
+  "ui.demoend.litany_uses": {
+    "scene": "demoend",
+    "font": "display",
+    "size": 12,
+    "maxPx": 160,
+    "context": "Caps label: how many times the Litany was invoked."
+  },
+  "ui.demoend.replay": {
+    "scene": "demoend",
+    "font": "display",
+    "size": 16,
+    "maxPx": 330,
+    "context": "Button: opens the Operating Theatre."
+  },
+  "ui.demoend.replay_note": {
+    "scene": "demoend",
+    "font": "body",
+    "size": 18,
+    "maxPx": 340,
+    "context": "Tooltip on the replay button.",
+    "maxLines": 2
+  },
+  "ui.options.window_size": {
+    "scene": "options",
+    "font": "body",
+    "size": 20,
+    "maxPx": 380,
+    "context": "Options row label (Display)."
+  },
+  "ui.options.window_size_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description."
+  },
+  "ui.options.bloom_amount": {
+    "scene": "options",
+    "font": "body",
+    "size": 20,
+    "maxPx": 380,
+    "context": "Options row label (Display)."
+  },
+  "ui.options.bloom_amount_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description."
   }
 }
