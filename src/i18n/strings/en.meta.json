@@ -4189,6 +4189,70 @@
     "context": "Options row description.",
     "screenshot": "docs/loc/screens/options.png"
   },
+  "ui.options.boss_reduced_lag": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.boss_reduced_lag_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.boss_lag_readout": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.boss_lag_readout_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.boss_min_brightness": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.boss_min_brightness_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.boss_haze_outline": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.boss_haze_outline_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
   "ui.options.mixer": {
     "scene": "options",
     "font": "body",

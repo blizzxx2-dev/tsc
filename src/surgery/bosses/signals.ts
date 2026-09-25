@@ -19,6 +19,8 @@ export interface BossOpDef extends OperationDef {
   skipCinematics?: boolean;
   /** Story flags that change a fight (e.g. `strohAlly` for the Office). */
   storyFlags?: readonly string[];
+  /** Patients this surgeon has lost (content names from the save) — Prime writes them first (BOS-0055). */
+  lostPatients?: readonly string[];
   /** Boss accessibility assists, copied from the settings when the operation starts. */
   assists?: BossAssists;
 }

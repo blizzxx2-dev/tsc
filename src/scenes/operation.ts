@@ -43,7 +43,7 @@ import { HoldToRetry } from '../input/retry';
 import { bindings } from '../input/bindings';
 import { dragGlyphFor, glyphFor, toolKeyLabel } from '../input/glyphs';
 import { calmWave, drawBossHud, drawLitanyTheft, drawTorpor, ecgCalm, toolBlinded } from '../surgery/bosses/hud';
-import { BossAudio, withBossAssists } from './bossAudio';
+import { BossAudio, withBossContext } from './bossAudio';
 import { BOSS_OPS, watchEncounters } from '../surgery/bosses/codex';
 import { loadProgress, storeProgress } from '../surgery/progress';
 import { codexId } from './codex';
@@ -210,7 +210,7 @@ export class OperationScene implements Scene {
   /** Apply player assists, difficulty and kit to the operation definition. */
   private static create(def: OperationDef, runOpts: OperationOptions = {}): Operation {
     const d = settings.timerAssist === 1 || runOpts.challenge ? def : { ...def, timeLimit: Math.round(def.timeLimit * settings.timerAssist) };
-    return new Operation(withBossAssists(d), operationOptions(def, runOpts));
+    return new Operation(withBossContext(d), operationOptions(def, runOpts));
   }
 
   /** Unsubscribes the hitstop binding (ENG-0058); set on the first update that has a clock. */

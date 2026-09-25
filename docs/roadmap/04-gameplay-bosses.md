@@ -476,14 +476,14 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 ### Counterplay, tells & cues
 - [x] BOS-0053 · Alpha · P1 · S · Stroke tell — nib glint + scratch SFX 0.8 s before each stroke; stroke path pre-drawn as faint indentation
 - [x] BOS-0054 · Alpha · P1 · S · Name completion warning — at final stroke, name glows and a bell tolls once; Ilse "It's nearly written!"
-- [ ] BOS-0055 · Alpha · P2 · S · Names drawn from lost-patient list in the save (fallback to canned names) — fictional names only, never player-entered text
-- [ ] BOS-0056 · Alpha · P2 · S · Audio — monk voice reading a roll, one name per completed stroke set
+- [x] BOS-0055 · Alpha · P2 · S · Names drawn from lost-patient list in the save (fallback to canned names) — fictional names only, never player-entered text
+- [x] BOS-0056 · Alpha · P2 · S · Audio — monk voice reading a roll, one name per completed stroke set
 ### Tuning & tests
 - [ ] BOS-0057 · Alpha · P0 · S · Bot strategy: erase names in heart-proximity priority — steady bot clears in 260–340 s; novice 20/20
 - [x] BOS-0058 · Alpha · P1 · S · Unit tests — reverse-order erase rule, parallel write speeds, ink-to-stroke conversion timer
 - [x] BOS-0059 · Alpha · P1 · S · Farming guard — erased-stroke points count as boss-add (capped)
 - [ ] BOS-0060 · Beta · P1 · S · Prime final pass — playtest gate (≥ 4/5 clear in ≤ 4 attempts) and retune with final art/audio
-- [ ] BOS-0061 · Beta · P2 · S · Prime codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
+- [x] BOS-0061 · Beta · P2 · S · Prime codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
 
 ## BOS-E · Terce — Tongues of Fire (Chapter 3 finale)
 
@@ -493,17 +493,17 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0064 · Alpha · P0 · M · Brand inversion — using the Cautery Brand on Terce or its flames heals it 5 %/s and spreads fire; first use triggers Ilse warning, subsequent uses rate BAD
 - [x] BOS-0065 · Alpha · P0 · M · Phase 2 "Pentecost" (65–30 %): core splits into 3 tongues — each must be doused (Salve full coverage) within 2 s of each other or they re-merge at full HP of the phase
 - [x] BOS-0066 · Alpha · P0 · M · Phase 3 "Ash" (30–0 %): core exposed but surrounded by heat haze that distorts cursor (offset up to 10 px) — Leech-Pipe drawing smoke clears haze 4 s; excise core with encircle
-- [ ] BOS-0067 · Alpha · P1 · S · Salve capacity pressure — Terce op raises SALVE_MAX to 70 and refill delay to 2 s; tuning documented
+- [x] BOS-0067 · Alpha · P1 · S · Salve capacity pressure — Terce op raises SALVE_MAX to 70 and refill delay to 2 s; tuning documented
 ### Counterplay, tells & cues
-- [ ] BOS-0068 · Alpha · P1 · S · Leap tell — target organ glows orange 1.0 s and crackle SFX pans toward it
-- [ ] BOS-0069 · Alpha · P1 · S · Heat-haze shader tied to phase-3 remaining haze — accessibility option replaces distortion with orange outline (cursor offset remains, shown as ghost cursor)
-- [ ] BOS-0070 · Alpha · P2 · S · Tongue audio — each tongue whispers a different syllable; merged core sings full word
+- [x] BOS-0068 · Alpha · P1 · S · Leap tell — target organ glows orange 1.0 s and crackle SFX pans toward it
+- [x] BOS-0069 · Alpha · P1 · S · Heat-haze shader tied to phase-3 remaining haze — accessibility option replaces distortion with orange outline (cursor offset remains, shown as ghost cursor)
+- [x] BOS-0070 · Alpha · P2 · S · Tongue audio — each tongue whispers a different syllable; merged core sings full word
 ### Tuning & tests
 - [ ] BOS-0071 · Alpha · P0 · S · Bot strategy: salve fronts, excise roots, synchronized douse in phase 2 — steady clears 280–360 s
 - [x] BOS-0072 · Alpha · P1 · S · Unit tests — brand heals Terce, re-merge window, haze cursor offset applied to tool pos not visual cursor
 - [x] BOS-0073 · Alpha · P1 · S · Fire-spread cap — ≤ 6 hexfire patches at once; drain budget assertion holds
 - [ ] BOS-0074 · Beta · P1 · S · Terce final pass — playtest gate (≥ 4/5 clear in ≤ 4 attempts) and retune with final art/audio
-- [ ] BOS-0075 · Beta · P2 · S · Terce codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
+- [x] BOS-0075 · Beta · P2 · S · Terce codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
 
 ## BOS-F · Sext — The Noonday Demon (Chapter 4)
 
@@ -515,15 +515,15 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [ ] BOS-0080 · Alpha · P1 · S · Petrification spread from Sext's crust at 3 px/s — stone reaching an organ glyph halves that organ's drain resistance
 - [x] BOS-0081 · Alpha · P1 · S · Player Litany vs Sext — using Litany during its Stillborn cast cancels both (clash FX) and stuns Sext 4 s
 ### Counterplay, tells & cues
-- [ ] BOS-0082 · Alpha · P1 · S · Torpor tell — cursor trail lengthens and HUD edges desaturate proportional to lag; option to show a numeric lag readout
-- [ ] BOS-0083 · Alpha · P1 · S · False-vitals tell — ECG line flat-smooth (too regular) while false; Ilse hint after 10 s "His colour's wrong — check the heart"
-- [ ] BOS-0084 · Alpha · P2 · S · Noon bell audio — midday heat drone, cicada-like buzz rising with torpor
-- [ ] BOS-0085 · Alpha · P1 · S · Accessibility — torpor lag capped at 120 ms when "reduced input lag effects" assist is on
+- [x] BOS-0082 · Alpha · P1 · S · Torpor tell — cursor trail lengthens and HUD edges desaturate proportional to lag; option to show a numeric lag readout
+- [x] BOS-0083 · Alpha · P1 · S · False-vitals tell — ECG line flat-smooth (too regular) while false; Ilse hint after 10 s "His colour's wrong — check the heart"
+- [x] BOS-0084 · Alpha · P2 · S · Noon bell audio — midday heat drone, cicada-like buzz rising with torpor
+- [x] BOS-0085 · Alpha · P1 · S · Accessibility — torpor lag capped at 120 ms when "reduced input lag effects" assist is on
 ### Tuning & tests
 - [ ] BOS-0086 · Alpha · P0 · S · Bot strategy: Tincture(blue) when lag > 150 ms, periodic Lens on heart in phase 2 — steady clears 280–360 s
 - [x] BOS-0087 · Alpha · P1 · S · Unit tests — input-lag queue applied deterministically, false vitals never shown when Lens hovers heart, clash stun
 - [ ] BOS-0088 · Beta · P1 · S · Playtest — confirm torpor reads as boss mechanic not game lag (survey question ≥ 80 % correct)
-- [ ] BOS-0089 · Beta · P2 · S · Sext codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
+- [x] BOS-0089 · Beta · P2 · S · Sext codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
 
 ## BOS-G · None — The Hour of Death (Chapter 4 finale)
 
@@ -536,15 +536,15 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0095 · Alpha · P1 · S · Litany intercept — Litany freezes burrowing fully (not 0.15×) during None; documented exception with test
 - [x] BOS-0096 · Alpha · P1 · S · Tunnel collapse — tunnels left behind become lacerations that open 10 s later
 ### Counterplay, tells & cues
-- [ ] BOS-0097 · Alpha · P1 · S · Burrow tell — skin ripple + heartbeat SFX quickens as head nears heart; audible even with Lens off
-- [ ] BOS-0098 · Alpha · P1 · S · Surfacing tell — skin bulge 0.8 s before exposure point
-- [ ] BOS-0099 · Alpha · P2 · S · Three-o'clock bell toll at phase 3 start — lighting dims to ninth-hour gloom
+- [x] BOS-0097 · Alpha · P1 · S · Burrow tell — skin ripple + heartbeat SFX quickens as head nears heart; audible even with Lens off
+- [x] BOS-0098 · Alpha · P1 · S · Surfacing tell — skin bulge 0.8 s before exposure point
+- [x] BOS-0099 · Alpha · P2 · S · Three-o'clock bell toll at phase 3 start — lighting dims to ninth-hour gloom
 ### Tuning & tests
 - [x] BOS-0100 · Alpha · P0 · S · Bot strategy: intercept prediction along known path — novice bot wins ≥ 19/20 (instant-loss boss needs margin)
 - [x] BOS-0101 · Alpha · P0 · S · Fairness test — no seed spawns the head closer than 8 s travel from the heart at any phase start
 - [x] BOS-0102 · Alpha · P1 · S · Unit tests — split segment count, heart-contact outcomes by phase, extraction window regrowth
 - [ ] BOS-0103 · Beta · P1 · S · Playtest — instant-loss frustration check; checkpoint per phase mandatory
-- [ ] BOS-0104 · Beta · P2 · S · None codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
+- [x] BOS-0104 · Beta · P2 · S · None codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
 
 ## BOS-H · Vespers — The Lamp-Lighting (Chapter 5)
 
@@ -556,15 +556,15 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0109 · Alpha · P0 · M · Phase 3 "Last Light" (25–0 %): one lamp remains and wanders — keep it lit while tracing Vespers' wick back to its root and excising it
 - [x] BOS-0110 · Alpha · P1 · S · Tallow blood — vitals drain rises 0.1/s per un-drained clot; Tincture efficacy halved while ≥ 3 clots
 ### Counterplay, tells & cues
-- [ ] BOS-0111 · Alpha · P1 · S · Snuff tell — lamp flame gutters and leans 1.0 s before snuffing; hiss SFX
-- [ ] BOS-0112 · Alpha · P1 · S · Darkness accessibility — "Minimum brightness" option keeps dark quadrants at ≥ 45 % with Vespers outline
-- [ ] BOS-0113 · Alpha · P2 · S · Evening hymn music layer — each lit lamp adds a harmonic
+- [x] BOS-0111 · Alpha · P1 · S · Snuff tell — lamp flame gutters and leans 1.0 s before snuffing; hiss SFX
+- [x] BOS-0112 · Alpha · P1 · S · Darkness accessibility — "Minimum brightness" option keeps dark quadrants at ≥ 45 % with Vespers outline
+- [x] BOS-0113 · Alpha · P2 · S · Evening hymn music layer — each lit lamp adds a harmonic
 ### Tuning & tests
 - [ ] BOS-0114 · Alpha · P0 · S · Bot strategy: lamp maintenance loop + filament cutting — steady clears 300–380 s
 - [x] BOS-0115 · Alpha · P1 · S · Unit tests — lamp dim timer, quadrant visibility masking of entity hit-tests, silhouette damage rule
 - [ ] BOS-0116 · Alpha · P1 · S · Perf check — dynamic lighting mask ≤ 0.5 ms GPU at 1080p on min-spec
 - [ ] BOS-0117 · Beta · P1 · S · Vespers final pass — playtest gate (≥ 4/5 clear in ≤ 4 attempts) and retune with final art/audio
-- [ ] BOS-0118 · Beta · P2 · S · Vespers codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
+- [x] BOS-0118 · Beta · P2 · S · Vespers codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
 
 ## BOS-I · Compline — The Great Silence (Chapter 5)
 
@@ -585,7 +585,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0130 · Alpha · P1 · S · Unit tests — Litany ownership transfer and restore, mute windows never overlap a lethal attack without visual tell, combo window
 - [ ] BOS-0131 · Alpha · P1 · S · Module reuse test — Compline's Matins/Lauds/Prime sub-phases pass their original boss unit tests in isolation
 - [ ] BOS-0132 · Beta · P1 · S · Playtest + final tuning — checkpoint per phase
-- [ ] BOS-0133 · Beta · P2 · S · Compline codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
+- [x] BOS-0133 · Beta · P2 · S · Compline codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
 
 ## BOS-J · The Office — the Malison's final form (Chapter 5 finale)
 
@@ -594,17 +594,17 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0135 · Beta · P0 · M · Phase 1 "Dial": the lit hour-sigil dictates the active mechanic (random order, each Hour once) — extinguish each by clearing that Hour's counter (8 mini-trials, 20–30 s each)
 - [x] BOS-0136 · Beta · P0 · M · Phase 2 "Unison": two Hours active simultaneously (pairs chosen so tools don't conflict: e.g. Matins+Vespers, Lauds+None) — pairing table in data
 - [x] BOS-0137 · Beta · P0 · M · Phase 3 "The Choir's Heart": the Hollow Choir's conductor-sigil — trace the full 8-stroke Office sigil while Ilse holds vitals (auto-Tincture every 10 s) — story beat
-- [ ] BOS-0138 · Beta · P0 · S · Final Litany — Kreuzer's Litany plus Ilse's prayer: a second star within 3 s of the first grants 12 s Stillness (final phase only)
-- [ ] BOS-0139 · Beta · P1 · S · Stroh branch — if story flag `strohAlly`, Stroh's brand strike clears one hour-sigil in phase 1 automatically
+- [x] BOS-0138 · Beta · P0 · S · Final Litany — Kreuzer's Litany plus Ilse's prayer: a second star within 3 s of the first grants 12 s Stillness (final phase only)
+- [x] BOS-0139 · Beta · P1 · S · Stroh branch — if story flag `strohAlly`, Stroh's brand strike clears one hour-sigil in phase 1 automatically
 ### Counterplay, tells & cues
-- [ ] BOS-0140 · Beta · P1 · S · Dial tell — hand of the clock sweeps to the next Hour over 1.5 s with that Hour's signature sound
+- [x] BOS-0140 · Beta · P1 · S · Dial tell — hand of the clock sweeps to the next Hour over 1.5 s with that Hour's signature sound
 - [ ] BOS-0141 · Beta · P1 · S · All eight Hours' leitmotifs layered as a canon in phase 2 — mix test for clarity of tells
 ### Tuning & tests
 - [ ] BOS-0142 · Beta · P0 · S · Bot completion on 50 seeds all difficulties — steady clears 480–600 s; op timeLimit 720 s
 - [x] BOS-0143 · Beta · P0 · S · Pairing validator — every allowed pair of Hours tested for tool conflicts and drain budget ≤ 2.2/s
-- [ ] BOS-0144 · Beta · P1 · S · Checkpoint after each extinguished hour-sigil in phase 1 on Novice/Surgeon — per phase on Master
+- [x] BOS-0144 · Beta · P1 · S · Checkpoint after each extinguished hour-sigil in phase 1 on Novice/Surgeon — per phase on Master
 - [ ] BOS-0145 · Beta · P1 · S · Playtest gate — ≥ 70 % of playtesters clear within 5 attempts on Surgeon
-- [ ] BOS-0146 · Release · P2 · S · Office codex — ending debrief variants by rank and story flags
+- [x] BOS-0146 · Release · P2 · S · Office codex — ending debrief variants by rank and story flags
 
 ## BOS-K · Mid-bosses & elite ailments
 

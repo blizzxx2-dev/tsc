@@ -1,6 +1,10 @@
 import type { Operation, OperationDef } from '../surgery/operation';
 import type { BossAssists, BossEvent, BossSound } from '../surgery/bosses/signals';
 import { settings } from '../core/settings';
+import { bossStoryFlags } from '../content/flags';
+import { allOperations } from '../content/campaign';
+import { loadProgress } from '../surgery/progress';
+import { patientName } from '../surgery/bosses/prime';
 
 /**
  * Presentation side of the boss signals: synthesises boss sounds (tolls,
@@ -21,6 +25,30 @@ export function withBossAssists<T extends OperationDef>(def: T): T {
   };
   if (!Object.values(assists).some(Boolean)) return def;
   return { ...def, assists } as T;
+}
+
+/** Patients lost on this save (operations with a recorded failure), by their content name (BOS-0055). */
+export function lostPatientsOf(fails: Readonly<Record<string, number>>, ops: readonly OperationDef[] = allOperations()): string[] {
+  const out: string[] = [];
+  for (const d of ops) {
+    const n = (fails[d.id] ?? 0) > 0 ? patientName(d.patient ?? '') : null;
+    if (n && !out.includes(n)) out.push(n);
+  }
+  return out;
+}
+
+/** Everything a boss fight reads from outside the sim: assists, story flags (BOS-0139) and the lost-patient roll (BOS-0055). */
+export function withBossContext<T extends OperationDef>(def: T): T {
+  const d = withBossAssists(def);
+  const storyFlags = bossStoryFlags();
+  let lostPatients: string[];
+  try {
+    lostPatients = lostPatientsOf(loadProgress().fails);
+  } catch {
+    lostPatients = [];
+  }
+  if (!storyFlags.length && !lostPatients.length) return d;
+  return { ...d, ...(storyFlags.length ? { storyFlags } : {}), ...(lostPatients.length ? { lostPatients } : {}) } as T;
 }
 
 /** One partial of a boss sound recipe. */

@@ -114,7 +114,7 @@ export function drawTorpor(g: Gfx, op: Operation, cursor: Vec, view: { x: number
   const e = 70 * k + 20;
   g.rectGrad(view.x, view.y, view.w, e, hex('#a8a8a8', 0.35 * k), hex('#a8a8a8', 0));
   g.rectGrad(view.x, view.y + view.h - e, view.w, e, hex('#a8a8a8', 0), hex('#a8a8a8', 0.35 * k));
-  if (assistsOf(op).lagReadout) g.text(t('hud.boss.lag', { ms: Math.round(lag * 1000) }), cursor.x + 26, cursor.y + 30, { size: 14, color: hex('#b0c8ff'), shadow: hex('#000000', 0.8) });
+  if (assistsOf(op).lagReadout) g.text(t('hud.boss.lag', { ms: Math.round(lag * 1000) }), cursor.x + 26, cursor.y + 30, { size: 16, color: hex('#b0c8ff'), shadow: hex('#000000', 0.8) });
 }
 
 /** Is this instrument blinded by a boss right now (greyed in the tray)? */
