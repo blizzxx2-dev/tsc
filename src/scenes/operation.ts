@@ -14,12 +14,13 @@ import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOW
 import { TOOL_INFO, toolInfo, type ToolId } from '../surgery/types';
 import { anchorShift, PALETTE, viewRect, VIEW_W } from '../ui/layout';
 import { button, inRect, reticle, toolIcon } from '../ui/widgets';
-import { giltText, UI } from '../ui/ornaments';
+import { giltText, UI, waxSeal } from '../ui/ornaments';
+import { RANK_WAX } from './rankArt';
 import type { ActionId } from '../input/actions';
 import { DamageAggregator, ToolHints } from '../ui/hudPrefs';
 import { stackPopup } from '../ui/popupStack';
 import { speciesBlood } from '../render/organs';
-import { band, caps, heading, ratingCallout, diamond, glass, INK, keycap, meter, numerals, titleRule, well } from '../ui/hudKit';
+import { band, caps, heading, heartIcon, phaseSeal, ratingStamp, glass, INK, keycap, meter, numerals, titleRule, well } from '../ui/hudKit';
 import { localeInfo } from '../i18n/locales';
 import { getLocale } from '../i18n';
 import { bloodScale, GORE_LEVEL, presentation } from '../render/presentation';
@@ -88,6 +89,14 @@ export class OperationScene implements Scene {
   /** Callout panel ghosting (UIX-0057): it fades aside when the hand or a live wound is beneath it. */
   private calloutRect: { x: number; y: number; w: number; h: number } | null = null;
   private calloutGhost = 0;
+  /** Score roll-up (UIX-0044): the shown score eases toward the real one. */
+  private shownScore = 0;
+  /** Hurt rings (UIX-0050): a ring blooms where vitals were lost. */
+  private hurtRings: { x: number; y: number; t: number; big: boolean }[] = [];
+  /** Combo milestone banner (UIX-0048). */
+  private milestone: { combo: number; t: number } | null = null;
+  /** Pointer for HUD hover tips (phase seals). */
+  private hoverPos = { x: -1, y: -1 };
   /** Sounds requested since the last tick (deduplicated). */
   private debug = false;
   /** The last 20 callouts, for the pause menu's log (UIX-0060). */
@@ -114,10 +123,12 @@ export class OperationScene implements Scene {
     });
     this.lagV = this.prevV = op.vitals;
     this.lagHold = this.healT = this.digitShakeT = 0;
-    op.events.on('hurt', ({ amount }) => {
+    op.events.on('hurt', ({ amount, pos }) => {
       this.lagHold = 0.5;
       if (amount >= 5) this.digitShakeT = 0.35;
+      if (pos && amount >= 1) this.hurtRings.push({ x: pos.x, y: pos.y, t: 0, big: amount >= 5 });
     });
+    this.shownScore = op.score;
     op.events.on('phase', ({ index }) => (this.banner = { phase: index, t: 0, boss: null }));
     op.events.on('fx', (e) => {
       // Gore level (UIX-0155): fewer blood particles when reduced, none when minimal.
@@ -259,9 +270,16 @@ export class OperationScene implements Scene {
     }
     if (op.combo !== this.lastCombo) {
       this.comboT = 0;
+      if (op.combo > this.lastCombo && op.tuning.scoring.comboMilestones.includes(op.combo)) this.milestone = { combo: op.combo, t: 0 };
       this.lastCombo = op.combo;
     }
     this.comboT += dt;
+    // Presentation timers: score roll-up, hurt rings, milestone banner.
+    this.shownScore += (op.score - this.shownScore) * Math.min(1, dt * 9);
+    if (Math.abs(op.score - this.shownScore) < 1) this.shownScore = op.score;
+    for (const r of this.hurtRings) r.t += dt;
+    this.hurtRings = this.hurtRings.filter((r) => r.t < 0.5);
+    if (this.milestone && (this.milestone.t += dt) > 2.2) this.milestone = null;
     this.lastTool = op.tool;
     this.toolFlash = Math.max(0, this.toolFlash - dt * 3);
 
@@ -437,8 +455,25 @@ export class OperationScene implements Scene {
       if (sub) g.text(sub, VIEW_W / 2, 404, { size: 21, font: 'italic', color: hex(INK.text, a), align: 'center', shadow: hex('#000000', 0.9 * a), soft: true });
     };
     if (op.status === 'intro') card(op.def.title, op.def.patient, Math.min(1, op.elapsed * 3), INK.goldHi, INK.gold);
-    if (op.status === 'won') card(tr('hud.op_complete'), null, 1, INK.goldHi, INK.gold);
-    if (op.status === 'lost') card(tr('hud.patient_lost'), tSource(op.lostReason), 1, '#ffb0a8', '#c0282c');
+    // Win: the card rises and a wax seal presses at 0.6 s; loss: the band bleeds in as ink spreads (UIX-0070).
+    if (op.status === 'won') {
+      const k = Math.min(1, this.endT / 0.5);
+      card(tr('hud.op_complete'), null, k, INK.goldHi, INK.gold);
+      const sk = Math.max(0, Math.min(1, (this.endT - 0.6) / 0.25));
+      if (sk > 0) {
+        const sr = 30 * (settings.reduceMotion ? 1 : 1.5 - 0.5 * sk);
+        waxSeal(g, VIEW_W / 2 + 300, 350, sr, RANK_WAX[op.rank()]);
+        g.text(op.rank(), VIEW_W / 2 + 300, 362, { size: op.rank() === 'XS' ? 24 : 30, font: 'display', color: hex('#ffe8c0', sk), color2: hex('#f0b070', sk), align: 'center', shadow: hex('#2a0204', 0.8) });
+      }
+    }
+    if (op.status === 'lost') {
+      const k = Math.min(1, this.endT / 0.9);
+      const vr2 = viewRect();
+      // Ink spreading from the centre of the band.
+      for (let i = 0; i < 6; i++) g.circle(VIEW_W / 2 + (i - 2.5) * 90, 356 + Math.sin(i * 2.1) * 20, (30 + i * 8) * k, hex('#1a0406', 0.35 * k));
+      g.rect(vr2.x, 296, vr2.w, 128, hex('#2a0608', 0.25 * k));
+      card(tr('hud.patient_lost'), tSource(op.lostReason), k, '#ffb0a8', '#c0282c');
+    }
 
     if (this.paused && !game.push) this.drawPause(g, game);
     if (this.resumeT > 0) {
@@ -450,6 +485,7 @@ export class OperationScene implements Scene {
 
     // Cursor: reticle at the tip with the instrument beside it.
     const p = game.input.pos;
+    this.hoverPos = p;
     if (op.tool === 'tincture' && op.injectT > 0) g.arc(p.x, p.y, 18, 3, hex(PALETTE.good), op.injectT / TINCTURE_TIME);
     toolIcon(g, op.tool, p.x + 20, p.y - 20, 0.8 + this.toolFlash * 0.3, t);
     const aim = op.status === 'running' && !this.paused ? cursorTarget(op, p) : { kind: 'none' as const };
@@ -511,7 +547,8 @@ export class OperationScene implements Scene {
     // ---- Vitals: label, big numeral, pulse trace in a recessed window, and a blood meter.
     const V = { x: 16, y: 14, w: 316, h: 86 };
     glass(g, V, { strength: plateK });
-    caps(g, tr('hud.vitals'), V.x + 18, V.y + 22, 11);
+    caps(g, tr('hud.vitals'), V.x + 34, V.y + 22, 11);
+    heartIcon(g, V.x + 22, V.y + 18, 7, op.status === 'lost' ? 'dead' : op.vitals > 60 ? 'good' : op.vitals > 30 ? 'warn' : 'danger', settings.reduceMotion ? 1 : this.beatPhase % 1);
     const low = op.vitals <= 30;
     const beat = settings.reduceMotion ? 0 : this.pulse;
     const jig = this.digitShakeT > 0 && !settings.reduceMotion ? 2 * Math.sin(g.time * 90) : 0;
@@ -559,12 +596,24 @@ export class OperationScene implements Scene {
     this.drawBanner(g);
     // Minimal HUD (UIX-0071): vitals, timer, tray and Litany only.
     if (settings.minimalHud) return;
+    // Phase seals (UIX-0045): pressed once done, lit while current; hovering names the phase's objective.
+    let tipPhase = -1;
     for (let i = 0; i < op.phaseCount; i++) {
-      const bx = VIEW_W / 2 - ((op.phaseCount - 1) * 18) / 2 + i * 18;
-      const done = i < op.phase;
-      const cur = i === op.phase;
-      diamond(g, bx, T.y + T.h + 12, cur ? 5 : 4, hex(done ? INK.gold : cur ? INK.goldHi : '#3a3024'), hex('#000000', 0.7));
-      if (cur) g.glow(bx, T.y + T.h + 12, 12, hex(INK.gold, 0.25));
+      const bx = VIEW_W / 2 - ((op.phaseCount - 1) * 22) / 2 + i * 22;
+      const by = T.y + T.h + 13;
+      phaseSeal(g, bx, by, i === op.phase ? 6 : 5, i < op.phase ? 'done' : i === op.phase ? 'current' : 'todo', t);
+      if (Math.abs(this.hoverPos.x - bx) < 11 && Math.abs(this.hoverPos.y - by) < 11) tipPhase = i;
+    }
+    if (tipPhase >= 0) {
+      const obj = op.def.phases[tipPhase]?.objective;
+      const lbl = tr('hud.banner.phase', { n: roman(tipPhase + 1) });
+      const body = tipPhase > op.phase ? tr('hud.phase.sealed') : obj ? tSource(obj) : lbl;
+      const bw = Math.min(360, g.measure(body, 16, 'body') + 32);
+      const bx = VIEW_W / 2 - bw / 2;
+      const by = T.y + T.h + 30;
+      glass(g, { x: bx, y: by, w: bw, h: 44 });
+      caps(g, lbl, bx + 16, by + 16, 10, hex(INK.gold));
+      g.text(body, bx + 16, by + 34, { size: 16, color: hex(INK.text), shadow: false });
     }
 
     // ---- Score, patient and chain: right.
@@ -572,13 +621,33 @@ export class OperationScene implements Scene {
     glass(g, S, { strength: plateK });
     caps(g, tr('hud.score'), S.x + S.w - 18, S.y + 22, 11, hex(INK.dim), 'right');
     g.text(op.def.patient, S.x + 18, S.y + 24, { size: 16, font: 'italic', color: hex(INK.dim), shadow: false });
-    numerals(g, formatNumber(op.score), S.x + S.w - 18, S.y + 58, 30, INK.goldHi, INK.gold, 'right');
+    const rolling = Math.abs(op.score - this.shownScore) >= 1;
+    numerals(g, formatNumber(Math.round(this.shownScore)), S.x + S.w - 18, S.y + 58, 30, rolling ? '#ffffff' : INK.goldHi, INK.gold, 'right');
     if (op.combo > 1) {
       const pop = 1 + Math.max(0, 0.3 - (this.comboT ?? 0)) * 1.2;
+      // Combo tiers (UIX-0044): brass ×2–4, gold ×5–9, gilt and glowing ×10–19, blazing ×20+.
+      const tier = op.combo >= 20 ? 3 : op.combo >= 10 ? 2 : op.combo >= 5 ? 1 : 0;
+      const pulse = settings.reduceMotion ? 0 : 0.5 + 0.5 * Math.sin(t * (tier === 3 ? 9 : 4));
+      const [ct, cb] = [
+        ['#e8d0a8', '#a08050'],
+        [INK.goldHi, INK.gold],
+        ['#fff4d0', INK.goldHi],
+        ['#ffffff', '#ffd070'],
+      ][tier];
       const C = { x: S.x + S.w - 128, y: S.y + S.h + 10, w: 128, h: 34 };
-      glass(g, C, { glow: hex(INK.gold, 0.18), glowR: 12 });
-      caps(g, tr('hud.chain'), C.x + 14, C.y + 22, 10, hex(INK.dim));
-      numerals(g, `×${op.combo}`, C.x + C.w - 14, C.y + 25, 22 * Math.min(1.25, pop), INK.goldHi, INK.gold, 'right');
+      glass(g, C, { glow: tier >= 2 ? hex(tier === 3 ? '#ffb040' : INK.gold, 0.25 + 0.2 * pulse) : tier === 1 ? hex(INK.gold, 0.18) : undefined, glowR: 12 + tier * 4, border: tier >= 2 ? hex(INK.goldHi, 0.9) : undefined });
+      caps(g, tr(tier === 3 ? 'hud.chain.blazing' : tier === 2 ? 'hud.chain.gilt' : 'hud.chain'), C.x + 14, C.y + 22, 10, hex(tier >= 2 ? INK.gold : INK.dim));
+      numerals(g, `×${op.combo}`, C.x + C.w - 14, C.y + 25, 22 * Math.min(1.25, pop), ct, cb, 'right');
+    }
+    // Combo milestone banner (UIX-0048): a short gilt band under the clock.
+    if (this.milestone && !settings.minimalHud) {
+      const m = this.milestone;
+      const a = Math.min(1, m.t * 4) * Math.max(0, Math.min(1, (2.2 - m.t) / 0.4));
+      const label = tr('hud.chain.milestone', { combo: m.combo });
+      const w = g.measure(label.toUpperCase(), 14, 'display', 0.2) + 60;
+      const y = T.y + T.h + 42;
+      band(g, y - 14, 30, a * 0.8, VIEW_W / 2 - w / 2, w);
+      g.text(label.toUpperCase(), VIEW_W / 2, y + 5, { size: 14, font: 'display', color: hex('#fff4d0', a), color2: hex(INK.gold, a), align: 'center', tracking: 0.2, shadow: hex('#000000', 0.9 * a), soft: true });
     }
   }
 
@@ -659,6 +728,12 @@ export class OperationScene implements Scene {
     const ready = op.canInvokeLitany();
     g.plate(lx - 40, ly - 40, 80, 80, { radius: 40, top: hex('#1a1411', 0.88), bottom: hex('#0a0807', 0.92), border: hex(ready ? INK.gold : '#5a4a34', 0.9), borderW: 1.4, bevel: 0.7, shadow: [0.6, 14, 4], glow: ready ? hex(INK.gold, 0.22) : undefined, glowR: 16 });
     starReliquary(g, lx, ly, 28, { fill: op.litanyTime > 0 ? op.litanyTime / LITANY_DURATION : ready ? 1 : 0, spent: !ready && op.litanyTime <= 0, glint: ready, active: op.litanyTime > 0 });
+    // Last two seconds of Stillness (UIX-0068): the reliquary flickers and the caption counts down.
+    if (op.litanyTime > 0 && op.litanyTime < 2) {
+      const fl = settings.reduceFlashing || settings.reduceMotion ? 1 : 0.6 + 0.4 * Math.sin(g.time * 14);
+      g.arc(lx, ly, 36, 2, hex('#ffd070', 0.9 * fl));
+      caps(g, tr('hud.litany.ending', { s: Math.ceil(op.litanyTime) }), lx - 52, ly + 34, 11, hex('#ffd070', fl), 'right');
+    }
     const label = ready ? { draw: `${dragGlyphFor('litany.draw')} ★`, key: glyphFor('litany.key'), both: `${dragGlyphFor('litany.draw')} ★ / ${glyphFor('litany.key')}` }[litanyMode()] : op.litanyTime > 0 ? tr('hud.litany.active') : tr('hud.litany.spent');
     caps(g, tr('hud.litany'), lx - 52, ly - 8, 11, hex(ready ? INK.gold : INK.faint), 'right');
     g.text(label, lx - 52, ly + 14, { size: 16, font: 'italic', color: hex(ready ? INK.text : INK.faint, 0.9), align: 'right', shadow: hex('#000000', 0.8), soft: true });
@@ -710,6 +785,13 @@ export class OperationScene implements Scene {
 
   private drawPopups(g: Gfx): void {
     const still = settings.reduceMotion;
+    // Hurt rings (UIX-0050): a red ring blooms out of the spot that bled.
+    for (const r of this.hurtRings) {
+      const k = still ? 0.6 : r.t / 0.5;
+      const a = 1 - k;
+      g.arc(r.x, r.y, (r.big ? 18 : 12) + k * (r.big ? 34 : 22), r.big ? 3 : 2, hex('#ff5a4a', 0.8 * a));
+      if (r.big) g.glow(r.x, r.y, 30 + k * 20, hex('#ff2a1a', 0.3 * a));
+    }
     for (const p of this.popups) {
       const a = Math.min(1, (1.1 - p.t) * 3);
       // Reduced Motion: popups neither rise nor pop (UIX-0152).
@@ -724,7 +806,7 @@ export class OperationScene implements Scene {
       const pop = still ? 1 : 1 + Math.max(0, 0.22 - p.t) * 2.2;
       const word = tr(`rating.${p.rating}`);
       // Colour filters swap the stamp inks; the stamp shapes and tilt still tell the ratings apart (UIX-0147).
-      ratingCallout(g, word, x, y, still ? 1 : p.t, a, settings.colorFilter === 'none' ? RATING_INK[p.rating] : palette()[p.rating], 30);
+      ratingStamp(g, p.rating, word, x, y, still ? 1 : p.t, a, settings.colorFilter === 'none' ? RATING_INK[p.rating] : palette()[p.rating], 30);
       if (p.label) g.text(tSource(p.label), x, y - 36 * pop, { size: 16, font: 'italic', color: hex(UI.parch, a * 0.9), align: 'center' });
       if (p.combo && p.combo > 1 && (p.rating === 'cool' || p.rating === 'good')) g.text(tr('hud.chain_combo', { combo: p.combo }), x, y + 20, { size: 16, color: hex(UI.gilt, a * 0.9), align: 'center' });
     }

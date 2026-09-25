@@ -199,19 +199,19 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 ### Top bar: vitals, ECG, timer, score
 - [ ] UIX-0038 · Demo · P0 · M · Top bar v2 layout — woodcut-framed bar with vitals block left, hourglass timer centre, score/combo right; no element overlaps the operating field ellipse (660, 410, 430×250); screenshot review at 1280×720 and 1280×800
 - [x] UIX-0039 · Demo · P0 · S · Vitals damage feedback — a pale "lag" bar trails the real value by 0.5 s after damage; heal shows a green sweep; digits shake ±2 px on hits ≥ 5 (off with Reduced Motion)
-- [ ] UIX-0040 · Demo · P1 · S · Beating heart icon — scales on each beat beside vitals (synced to the ECG beat phase) and changes shape per state (steady/strained/failing) so state is readable without colour
+- [x] UIX-0040 · Demo · P1 · S · Beating heart icon — scales on each beat beside vitals (synced to the ECG beat phase) and changes shape per state (steady/strained/failing) so state is readable without colour
 - [ ] UIX-0041 · Demo · P1 · M · ECG monitor v2 — sweep-style trace with an erase gap instead of array shifting; waveform variants per state (tachycardia under venom, irregular under curse/Malison, weak below 25) selected by the scene; flatline with ink bleed on loss
 - [ ] UIX-0042 · Demo · P1 · S · Critical vitals state (< 30) — top-bar vitals block pulses red, screen edges vignette (existing post-process `danger`) and Ilse's low-vitals bark; state ends with hysteresis at 35
 - [x] UIX-0043 · Demo · P1 · S · Hourglass timer — sand level = timeLeft/timeLimit; sand frozen and gilded while the Litany holds; last 30 s the digits pulse and a tick event fires each second (AUD)
-- [ ] UIX-0044 · Demo · P1 · S · Score roll-up — score counts up over 300 ms per gain; combo readout gains flame tiers at 5/10/20 (ember/flame/holy fire) and cracks visibly on combo break
-- [ ] UIX-0045 · Demo · P2 · S · Phase progress v2 — pips become small seal icons with tooltip "Phase 2 of 4"; boss phases shown as notches on the Malison bar instead
+- [x] UIX-0044 · Demo · P1 · S · Score roll-up — score counts up over 300 ms per gain; combo readout gains flame tiers at 5/10/20 (ember/flame/holy fire) and cracks visibly on combo break
+- [x] UIX-0045 · Demo · P2 · S · Phase progress v2 — pips become small seal icons with tooltip "Phase 2 of 4"; boss phases shown as notches on the Malison bar instead
 
 ### Ratings, popups & feedback
-- [ ] UIX-0046 · Demo · P0 · M · Rating stamps — replace text popups with woodcut stamps (COOL gold leaf, GOOD green ink, BAD rust, MISS blood splash), each a distinct shape so it reads without colour; label text ("Incision") beneath; 1.1 s lifetime; stamp-in 120 ms
+- [x] UIX-0046 · Demo · P0 · M · Rating stamps — replace text popups with woodcut stamps (COOL gold leaf, GOOD green ink, BAD rust, MISS blood splash), each a distinct shape so it reads without colour; label text ("Incision") beneath; 1.1 s lifetime; stamp-in 120 ms
 - [x] UIX-0047 · Demo · P0 · S · Popup de-overlap — popups spawned within 40 px and 0.3 s of another stack upwards by one line; test: 5 simultaneous shard ratings stay legible (no bounding boxes overlap)
-- [ ] UIX-0048 · Demo · P1 · S · Combo milestone callouts — at chain 5/10/20 a larger banner ("Steady hands!", "A surgeon's grace!", "Saint Ildra guides you!") appears once per milestone per operation
+- [x] UIX-0048 · Demo · P1 · S · Combo milestone callouts — at chain 5/10/20 a larger banner ("Steady hands!", "A surgeon's grace!", "Saint Ildra guides you!") appears once per milestone per operation
 - [x] UIX-0049 · Demo · P1 · S · Damage-number toggle and vitals-loss aggregation — continuous drain damage is summed and shown at most every 0.5 s per source instead of per frame
-- [ ] UIX-0050 · Demo · P1 · S · Hurt direction cue — when vitals drop from an entity, a brief red pulse ring marks that entity so players learn what is draining the patient
+- [x] UIX-0050 · Demo · P1 · S · Hurt direction cue — when vitals drop from an entity, a brief red pulse ring marks that entity so players learn what is draining the patient
 
 ### Tool tray & cursor
 - [ ] UIX-0051 · Demo · P0 · M · Tray v2 — slot art per tool, selected slot slides out 8 px, binding glyph from current bindings, hover/focus tooltip (name, gesture, binding), Tincture cooldown as radial wipe, Brand heat glow; tray mirrors to the right edge in left-handed mode
@@ -237,9 +237,9 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ### Litany & end-of-operation presentation
 - [ ] UIX-0067 · Demo · P0 · S · Litany indicator v2 — star fills per detected vertex while drawing, candle flame when ready, 8 s radial while active, caption from current binding (draw or Litany key); HUD dims 30 % during Stillness so the world reads first
-- [ ] UIX-0068 · Demo · P1 · S · Litany end warning — last 1.5 s of Stillness the ripple contracts and the indicator flickers (paired with the AUD reverse swell)
+- [x] UIX-0068 · Demo · P1 · S · Litany end warning — last 1.5 s of Stillness the ripple contracts and the indicator flickers (paired with the AUD reverse swell)
 - [ ] UIX-0069 · Demo · P1 · S · Intro card v2 — shows patient name, ailment icon and time allowed for 1.2 s; any press skips; the intro no longer blocks the first click after it ends
-- [ ] UIX-0070 · Demo · P1 · S · Win/lose presentation — "Operation Complete" stamps as a wax seal; "The Patient Is Lost" bleeds in as ink; results follow after 2.2 s or on click after 0.8 s
+- [x] UIX-0070 · Demo · P1 · S · Win/lose presentation — "Operation Complete" stamps as a wax seal; "The Patient Is Lost" bleeds in as ink; results follow after 2.2 s or on click after 0.8 s
 - [x] UIX-0071 · Demo · P2 · S · Minimal HUD option — hides score, combo and phase pips (vitals, timer, tray, Litany always shown)
 - [ ] UIX-0072 · Demo · P1 · S · Dev HUD (F3, dev builds only) — fps, frame ms, entity count, vitals drain/s per entity, active tool, input device, latency p95, audio voices
 

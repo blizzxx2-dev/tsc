@@ -203,3 +203,85 @@ export function ratingCallout(g: Gfx, word: string, x: number, y: number, t: num
   rule(g, x, y + s * 0.3, w + 20, hex(inks[0], 0.8 * a), 1.5);
   if (t < 0.3) g.glow(x, y - s * 0.3, s * 2, hex(inks[0], 0.25 * (1 - t / 0.3) * a));
 }
+
+// ---------------------------------------------------------------- in-operation stamps and seals
+
+/**
+ * Woodcut rating stamps (UIX-0046): each rating has its own shape as well as its ink, so it reads
+ * without colour — COOL a gilt sunburst seal, GOOD a laurel lozenge, BAD a rust chevron, MISS a
+ * blood blot. `t` is seconds since the stamp landed.
+ */
+export function ratingStamp(g: Gfx, rating: 'cool' | 'good' | 'bad' | 'miss', word: string, x: number, y: number, t: number, a: number, inks: [string, string], size = 30): void {
+  const pop = t < 0.15 ? 1.35 - (t / 0.15) * 0.35 : 1;
+  const s = size * pop;
+  const up = word.toUpperCase();
+  const w = g.measure(up, s, 'display', 0.12);
+  const ink = hex(inks[0], 0.9 * a);
+  const dark = hex('#000000', 0.55 * a);
+  const cy = y - s * 0.32;
+  if (rating === 'cool') {
+    // Sunburst: twelve rays round a ring.
+    const pts: { x: number; y: number }[] = [];
+    for (let i = 0; i < 24; i++) {
+      const ang = (i / 24) * Math.PI * 2 + t * 0.6;
+      const r = (i % 2 ? s * 0.55 : s * 0.8) * (0.8 + 0.2 * Math.min(1, t / 0.25));
+      pts.push({ x: x + Math.cos(ang) * r * 2.4, y: cy + Math.sin(ang) * r });
+    }
+    g.poly(pts, hex(inks[1], 0.18 * a), ink);
+    g.arc(x, cy, s * 0.72, 2, ink);
+    g.glow(x, cy, s * 2.2, hex(inks[0], 0.22 * Math.max(0, 1 - t / 0.6) * a));
+  } else if (rating === 'good') {
+    // Laurel lozenge: a soft diamond with two leaf ticks.
+    const hw = w * 0.62 + 14;
+    const hh = s * 0.62;
+    g.poly([{ x: x - hw, y: cy }, { x: x, y: cy - hh }, { x: x + hw, y: cy }, { x: x, y: cy + hh }], hex(inks[1], 0.16 * a), ink);
+    for (const sx of [-1, 1]) g.line({ x: x + sx * (hw + 4), y: cy }, { x: x + sx * (hw + 14), y: cy - 6 }, 2, ink);
+  } else if (rating === 'bad') {
+    // Rust chevron pointing down: a warning, not a wound.
+    const hw = w * 0.55 + 10;
+    g.poly([{ x: x - hw, y: cy - s * 0.55 }, { x: x + hw, y: cy - s * 0.55 }, { x: x, y: cy + s * 0.75 }], hex(inks[1], 0.22 * a), ink);
+    g.poly([{ x: x - hw * 0.6, y: cy - s * 0.55 }, { x: x + hw * 0.6, y: cy - s * 0.55 }, { x: x, y: cy + s * 0.25 }], dark);
+  } else {
+    // Blood blot: irregular splash, spreading for a moment.
+    const k = 0.7 + 0.3 * Math.min(1, t / 0.3);
+    for (let i = 0; i < 7; i++) {
+      const ang = i * 2.4;
+      const r = (i === 0 ? s * 0.75 : s * (0.28 + 0.12 * (i % 3))) * k;
+      const d = i === 0 ? 0 : s * (0.5 + 0.25 * (i % 2)) * k;
+      g.circle(x + Math.cos(ang) * d * 1.6, cy + Math.sin(ang) * d * 0.6, r, hex(inks[1], 0.55 * a));
+    }
+  }
+  g.text(up, x, y, { size: s, font: 'display', color: hex('#ffffff', a), color2: hex(inks[0], a), align: 'center', tracking: 0.12, shadow: hex('#000000', 0.9 * a), soft: true });
+}
+
+/** The vitals heart (UIX-0040): steady, hurried, failing (arrhythmic, red-lit) or stopped (grey, cracked). `beat` is 0..1 within the pulse. */
+export function heartIcon(g: Gfx, x: number, y: number, r: number, state: 'good' | 'warn' | 'danger' | 'dead', beat: number): void {
+  const squeeze = state === 'dead' ? 1 : 1 + 0.12 * Math.exp(-beat * 6);
+  const R = r * squeeze;
+  const col = state === 'dead' ? '#6a5a58' : state === 'danger' ? '#ff4a3a' : state === 'warn' ? '#e8664a' : '#c83a3a';
+  const hi = state === 'dead' ? '#8a7a78' : '#ff9a8a';
+  if (state === 'danger') g.glow(x, y, R * 2.6, hex('#ff2a1a', 0.35 * Math.exp(-beat * 4)));
+  const pts: { x: number; y: number }[] = [];
+  for (let i = 0; i <= 28; i++) {
+    const u = (i / 28) * Math.PI * 2;
+    // The classic cardioid-ish heart curve.
+    const hx = 16 * Math.sin(u) ** 3;
+    const hy = -(13 * Math.cos(u) - 5 * Math.cos(2 * u) - 2 * Math.cos(3 * u) - Math.cos(4 * u));
+    pts.push({ x: x + (hx / 17) * R, y: y + (hy / 17) * R });
+  }
+  g.poly(pts, hex(col), hex(hi, 0.8));
+  g.circle(x - R * 0.35, y - R * 0.3, R * 0.22, hex('#ffffff', 0.25));
+  if (state === 'dead') g.polyline([{ x: x - R * 0.1, y: y - R * 0.8 }, { x: x + R * 0.15, y: y - R * 0.2 }, { x: x - R * 0.12, y: y + R * 0.2 }, { x: x + R * 0.1, y: y + R * 0.7 }], 1.5, hex('#2a1a18', 0.9));
+}
+
+/** A phase seal (UIX-0045): pressed gold once done, lit while current, an empty ring to come. */
+export function phaseSeal(g: Gfx, x: number, y: number, r: number, state: 'done' | 'current' | 'todo', time: number): void {
+  if (state === 'todo') {
+    g.arc(x, y, r, 1.2, hex('#5a4a34', 0.9));
+    return;
+  }
+  if (state === 'current') g.glow(x, y, r * 3, hex(INK.gold, 0.22 + 0.08 * Math.sin(time * 3)));
+  g.circleGrad(x, y, r, hex(state === 'current' ? INK.goldHi : INK.gold), hex(state === 'current' ? INK.gold : '#7a5a2a'));
+  g.arc(x, y, r, 1, hex('#000000', 0.6));
+  diamond(g, x, y, r * 0.45, hex('#2a1a08', 0.8));
+}

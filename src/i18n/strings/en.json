@@ -738,5 +738,10 @@
   "ui.notice.continue": "Continue",
   "ui.notice.comfort": "Comfort Options",
   "hud.needs": "Needs: {tool}",
-  "ui.pause.feedback": "Send Feedback"
+  "ui.pause.feedback": "Send Feedback",
+  "hud.chain.gilt": "gilt chain",
+  "hud.chain.blazing": "blazing chain",
+  "hud.chain.milestone": "Steady hands — chain ×{combo, number}",
+  "hud.phase.sealed": "Not yet: finish the phase at hand.",
+  "hud.litany.ending": "{s, number} s of stillness left"
 }

@@ -6234,5 +6234,45 @@
     "maxPx": 340,
     "context": "Pause menu entry opening the feedback form in the browser (shown only when a feedback URL is configured).",
     "screenshot": "docs/loc/screens/pause.png"
+  },
+  "hud.chain.gilt": {
+    "scene": "operation",
+    "font": "display",
+    "size": 11,
+    "maxPx": 300,
+    "context": "Chain label at ×10–19.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "hud.chain.blazing": {
+    "scene": "operation",
+    "font": "display",
+    "size": 11,
+    "maxPx": 300,
+    "context": "Chain label at ×20 and above.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "hud.chain.milestone": {
+    "scene": "operation",
+    "font": "display",
+    "size": 11,
+    "maxPx": 520,
+    "context": "Short gilt banner under the clock at a combo milestone (×5, ×10, ×20).",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "hud.phase.sealed": {
+    "scene": "operation",
+    "font": "body",
+    "size": 16,
+    "maxPx": 300,
+    "context": "Tooltip over a future phase seal.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "hud.litany.ending": {
+    "scene": "operation",
+    "font": "display",
+    "size": 11,
+    "maxPx": 300,
+    "context": "Countdown caption under the Litany reliquary in its last two seconds.",
+    "screenshot": "docs/loc/screens/operation.png"
   }
 }
