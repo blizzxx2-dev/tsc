@@ -1,4 +1,5 @@
 import { dist, type Vec } from '../../core/math';
+import { drawBoneView } from '../../art/boneView';
 import { hex } from '../../render/color';
 import type { Gfx } from '../../render/gfx';
 import { angleDiff, BloodPool, surfDisc } from '../entities';
@@ -187,9 +188,8 @@ export class Fracture extends Entity {
   }
 
   draw(g: Gfx, op: Operation): void {
-    // Ghost of where the bone belongs (guides only).
-    if (op.guides)
-      for (const f of this.fragments) if (!f.set) g.line(this.end(f.target, f.targetRot, -1), this.end(f.target, f.targetRot, 1), 14, hex('#ffffff', 0.08));
+    // The vellum anatomy plate (ENG-0273): the inked bone, its breaks and, with guides on, where each fragment goes.
+    drawBoneView(g, this, op.elapsed, op.guides);
     for (const f of this.fragments) {
       const a = this.end(f.pos, f.rot, -1);
       const b = this.end(f.pos, f.rot, 1);
