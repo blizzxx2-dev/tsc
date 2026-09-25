@@ -306,11 +306,11 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ## CON · Epic 1 — Data-driven content pipeline (Demo foundation)
 
 ### Operation data format
-- [ ] CON-0001 · Demo · P0 · L · Serialisable operation schema — OperationDef phases expressed as JSON/TS data (entity type + params) instead of `spawn` closures; op1-1…op2-5 ported with identical seeded outcomes (golden test)
-- [ ] CON-0002 · Demo · P0 · M · Entity registry — string ids (laceration, incision, embedded, burn, bubo, rot, venom, grub, sigil, malison-matins, malison-lauds…) mapped to constructors with typed param validation
-- [ ] CON-0003 · Demo · P0 · S · Schema validation — Zod (or hand-rolled) validator rejects unknown entity ids, out-of-field positions, tools missing for required entities; runs in Vitest over all ops
-- [ ] CON-0004 · Demo · P1 · S · Tool-requirement check — test asserts every spawned entity is resolvable with the op's `tools` list (e.g. Embedded needs tongs, Grub needs brand)
-- [ ] CON-0005 · Demo · P1 · S · Remove non-setting `race` values `'elf' | 'halfling' | 'orc'` from OperationDef — replace with `'human' | 'mountainfolk' | 'hornfolk' | 'giant'` flesh tints
+- [x] CON-0001 · Demo · P0 · L · Serialisable operation schema — OperationDef phases expressed as JSON/TS data (entity type + params) instead of `spawn` closures; op1-1…op2-5 ported with identical seeded outcomes (golden test)
+- [x] CON-0002 · Demo · P0 · M · Entity registry — string ids (laceration, incision, embedded, burn, bubo, rot, venom, grub, sigil, malison-matins, malison-lauds…) mapped to constructors with typed param validation
+- [x] CON-0003 · Demo · P0 · S · Schema validation — Zod (or hand-rolled) validator rejects unknown entity ids, out-of-field positions, tools missing for required entities; runs in Vitest over all ops
+- [x] CON-0004 · Demo · P1 · S · Tool-requirement check — test asserts every spawned entity is resolvable with the op's `tools` list (e.g. Embedded needs tongs, Grub needs brand)
+- [x] CON-0005 · Demo · P1 · S · Remove non-setting `race` values `'elf' | 'halfling' | 'orc'` from OperationDef — replace with `'human' | 'mountainfolk' | 'hornfolk' | 'giant'` flesh tints
 - [ ] CON-0006 · Demo · P1 · S · Callout text moved to string keys — `callout` arrays reference loc keys; missing-key test
 - [ ] CON-0007 · Demo · P1 · M · Campaign graph data — chapters as ordered step lists with optional branch nodes (`if flag`), replacing the hard-coded `CAMPAIGN` array; demo graph = Ch1+Ch2 only
 - [ ] CON-0008 · Demo · P1 · S · Flag store — named boolean/int campaign flags (cantorMercy, litanySeenCount) persisted in save; unit tests for set/get/serialise

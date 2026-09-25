@@ -72,7 +72,15 @@ describe('Ch1–2 replay through the audio director', () => {
     op.events.on('cue', (c) => cues.push(c));
     for (; t < 12; t += 1 / 60) {
       op.update(1 / 60);
-      sys.op.frame({ op, dt: 1 / 60, paused: false, beatPhase: 0, bpm: 70, input: { pos: { x: 100, y: 100 }, down: false, pressed: false, released: false, rightDown: false }, keyPressed: () => false });
+      sys.op.frame({
+        op,
+        dt: 1 / 60,
+        paused: false,
+        beatPhase: 0,
+        bpm: 70,
+        input: { pos: { x: 100, y: 100 }, down: false, pressed: false, released: false, rightDown: false },
+        keyPressed: () => false,
+      });
     }
     expect(cues).not.toContain('litany');
     expect(cues).toContain('sfx.lauds.hymn');
@@ -94,7 +102,15 @@ describe('Ch1–2 replay through the audio director', () => {
 describe('low-vitals snapshot', () => {
   const def = allOperations()[0];
   const frame = (sys: AudioSystem, op: Operation) =>
-    sys.op.frame({ op, dt: 1 / 60, paused: false, beatPhase: 0, bpm: 80, input: { pos: { x: 0, y: 0 }, down: false, pressed: false, released: false, rightDown: false }, keyPressed: () => false });
+    sys.op.frame({
+      op,
+      dt: 1 / 60,
+      paused: false,
+      beatPhase: 0,
+      bpm: 80,
+      input: { pos: { x: 0, y: 0 }, down: false, pressed: false, released: false, rightDown: false },
+      keyPressed: () => false,
+    });
 
   it('engages below 30, holds to 35, and is off with "Reduce audio stress"', () => {
     const sys = new AudioSystem();
@@ -142,7 +158,7 @@ describe('heartbeat scheduling', () => {
     let phase = 0;
     const scheduled: number[] = [];
     let seed = 7;
-    const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+    const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
     while (t < 20) {
       const dt = 0.008 + rand() * 0.03;
       t += dt;
@@ -187,7 +203,16 @@ describe('captions and subtitles', () => {
   });
 
   it('gameplay-relevant events carry captions', () => {
-    for (const id of ['sfx.matins.rejoinWarn', 'sfx.lauds.hymn', 'sfx.vitals.warn30', 'sfx.heart.beat', 'sfx.litany.endWarn', 'sfx.bell.matins', 'loop.grub.chitter'] as EventId[]) expect(eventDef(id).caption, id).toBeTruthy();
+    for (const id of [
+      'sfx.matins.rejoinWarn',
+      'sfx.lauds.hymn',
+      'sfx.vitals.warn30',
+      'sfx.heart.beat',
+      'sfx.litany.endWarn',
+      'sfx.bell.matins',
+      'loop.grub.chitter',
+    ] as EventId[])
+      expect(eventDef(id).caption, id).toBeTruthy();
   });
 
   it('subtitles wrap to at most two lines', () => {
@@ -200,7 +225,7 @@ describe('captions and subtitles', () => {
 
 describe('helpers', () => {
   it('patient voice types', () => {
-    expect(patientVoice('Grenn, a dwarf miner', 'dwarf')).toBe(3);
+    expect(patientVoice('Grenn, a mountainfolk miner', 'mountainfolk')).toBe(3);
     expect(patientVoice('Mother Agathe, a widow')).toBe(1);
     expect(patientVoice('Old Tomas, a ferryman')).toBe(2);
     expect(patientVoice('Jost, a pikeman')).toBe(0);
@@ -208,8 +233,12 @@ describe('helpers', () => {
 
   it('counts the corners of a drawn star', () => {
     const pts: { x: number; y: number }[] = [];
-    const v = [0, 2, 4, 1, 3, 0].map((i) => ({ x: 300 + 120 * Math.cos(-Math.PI / 2 + (i * 2 * Math.PI) / 5), y: 300 + 120 * Math.sin(-Math.PI / 2 + (i * 2 * Math.PI) / 5) }));
-    for (let i = 1; i < v.length; i++) for (let k = 0; k < 20; k++) pts.push({ x: v[i - 1].x + ((v[i].x - v[i - 1].x) * k) / 20, y: v[i - 1].y + ((v[i].y - v[i - 1].y) * k) / 20 });
+    const v = [0, 2, 4, 1, 3, 0].map((i) => ({
+      x: 300 + 120 * Math.cos(-Math.PI / 2 + (i * 2 * Math.PI) / 5),
+      y: 300 + 120 * Math.sin(-Math.PI / 2 + (i * 2 * Math.PI) / 5),
+    }));
+    for (let i = 1; i < v.length; i++)
+      for (let k = 0; k < 20; k++) pts.push({ x: v[i - 1].x + ((v[i].x - v[i - 1].x) * k) / 20, y: v[i - 1].y + ((v[i].y - v[i - 1].y) * k) / 20 });
     expect(countCorners(pts)).toBe(4);
   });
 

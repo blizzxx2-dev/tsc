@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { Rng } from '../../src/core/math';
 import { MusicPlayer } from '../../src/audio/music/player';
 import { MUSIC_STATES, themeFor, transition } from '../../src/audio/music/state';
 import { HOURS, LAYERS, loopSeconds, THEMES, type LayerId } from '../../src/audio/music/themes';
@@ -63,6 +64,13 @@ describe('music state machine', () => {
 });
 
 describe('procedural themes render', () => {
+  // The synth's noise and detune use Math.random; seed it so the level checks are repeatable.
+  beforeEach(() => {
+    const rng = new Rng(1234);
+    vi.spyOn(Math, 'random').mockImplementation(() => rng.next());
+  });
+  afterEach(() => vi.restoreAllMocks());
+
   for (const id of Object.keys(THEMES)) {
     it(`${id}: full stack is audible and leaves headroom`, async () => {
       const all = Object.fromEntries(LAYERS.map((l) => [l, l === 'stillness' ? 0 : 1]));

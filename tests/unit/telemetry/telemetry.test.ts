@@ -9,7 +9,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { allOperations } from '../../../src/content/campaign';
 import { OP_1_1, OP_1_2 } from '../../../src/content/chapter1';
-import { Operation } from '../../../src/surgery/operation';
+import { Operation, type OperationDef } from '../../../src/surgery/operation';
 import { allows, loadPrefs, parseConfig, PREFS_KEY, readConfig, storageConfigSource, CONFIG_OVERRIDE_KEY } from '../../../src/telemetry/config';
 import { EventFactory, quantise, uuid, type EventProps, type TelemetryEvent } from '../../../src/telemetry/events';
 import { TelemetryObserver, type SceneInfo } from '../../../src/telemetry/observer';
@@ -25,7 +25,7 @@ const validate = ajv.compile(eventSchema());
 const factory = () => new EventFactory({ session: uuid(), install: uuid(), build: '0.1.0-test', flavour: 'qa', now: () => new Date('2026-09-25T12:00:00Z') });
 
 /** Play an op with the bot while an observer records every event. */
-function observe(def = OP_1_1, opts: { quitAfter?: number; loseBy?: 'timer' } = {}): TelemetryEvent[] {
+function observe(def: OperationDef = OP_1_1, opts: { quitAfter?: number; loseBy?: 'timer' } = {}): TelemetryEvent[] {
   const f = factory();
   const events: TelemetryEvent[] = [];
   const obs = new TelemetryObserver(

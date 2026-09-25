@@ -112,7 +112,7 @@ function metalScrape(s: Synth, at: number, dur: number, gain: number, f = 5200, 
   return s.burst({ at, dur: dur * 0.8, type: 'highpass', f: 3500, gain: gain * 0.4 });
 }
 
-/** A formant-synth patient vocal. Voice type: 0 man, 1 woman, 2 elder, 3 dwarf. */
+/** A formant-synth patient vocal. Voice type: 0 man, 1 woman, 2 elder, 3 deep (mountainfolk, hornfolk, giants). */
 const VOICE_F0 = [118, 215, 100, 88];
 const VOICE_SHIFT = [1, 1.17, 0.97, 0.9];
 function patientVox(s: Synth, type: number, vowel: Vowel, dur: number, contour: readonly (readonly [number, number])[], gain: number, rough = 0, breath = 0.2): number {
@@ -235,7 +235,7 @@ export const RECIPES: Record<string, Recipe> = {
   },
   'sfx.sigil.lash': (s, v) => max(s.burst({ dur: 0.05, f: 3000, q: 0.7, gain: 0.35 }), s.burst({ at: 0.03, dur: 0.3, type: 'highpass', f: 2500, f1: 800, gain: 0.08 }), s.whisper(['a', 'i'], { at: 0, dur: 0.4, gain: 0.06, shift: 0.8 + vr(v) * 0.2 })),
 
-  // ------------------------------------------------ Patient vocals (0 man, 1 woman, 2 elder, 3 dwarf)
+  // ------------------------------------------------ Patient vocals (0 man, 1 woman, 2 elder, 3 deep)
   'sfx.patient.moan': (s, v, p) => patientVox(s, p.voice ?? 0, pick(['o', 'u', 'a'] as Vowel[], v), 0.9, [[0, 1.05], [0.5, 0.92], [0.9, 0.8]], 0.12, 0.1, 0.25),
   'sfx.patient.pain': (s, v, p) => patientVox(s, p.voice ?? 0, pick(['a', 'e'] as Vowel[], v), 0.32, [[0, 1.5], [0.08, 2.1], [0.32, 1.3]], 0.16, 0.2, 0.3),
   'sfx.patient.relief': (s, v, p) => max(s.whisper(['a', 'o'], { dur: 0.8, gain: 0.07, shift: VOICE_SHIFT[(p.voice ?? 0) % 4] }), patientVox(s, p.voice ?? 0, 'o', 0.35, [[0, 1], [0.35, 0.85]], 0.04, 0, 0.5) + vr(v) * 0),

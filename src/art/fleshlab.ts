@@ -17,7 +17,7 @@ import { brassSlider, inRect, reticle } from '../ui/widgets';
 
 const ORGANS: OrganKind[] = ['flesh', 'heart', 'lung', 'gut', 'liver', 'brain', 'bone'];
 type Species = NonNullable<OperationDef['race']>;
-const SPECIES: Species[] = ['human', 'dwarf', 'elf', 'halfling', 'orc'];
+const SPECIES: Species[] = ['human', 'mountainfolk', 'hornfolk', 'giant'];
 const GRADES = ['candle', 'dawn', 'curse', 'failing', 'neutral'];
 
 export class FleshLabScene implements Scene {

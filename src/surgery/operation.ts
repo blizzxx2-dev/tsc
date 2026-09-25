@@ -49,8 +49,8 @@ export interface OperationDef {
   patient: string;
   diagnosis: string;
   organ: OrganKind;
-  /** Species of patient, for flesh tint. */
-  race?: 'human' | 'dwarf' | 'elf' | 'halfling' | 'orc';
+  /** Folk of the patient, for flesh tint (setting peoples only: see docs/content/op-checklist.md). */
+  race?: 'human' | 'mountainfolk' | 'hornfolk' | 'giant';
   timeLimit: number;
   vitals?: number;
   /** Passive vitals loss per second, independent of wounds. */
