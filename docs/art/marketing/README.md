@@ -16,7 +16,6 @@
 | Social kit: avatar, X/Bluesky banner 1500×500, YouTube banner 2560×1440, Discord icon 512 and banner 960×540 | ART-0328 | `renders/social-avatar.png`, `renders/x-banner.png`, `renders/youtube-banner.png`, `renders/discord-icon.png`, `renders/discord-banner.png` |
 | Livestream overlays: frame, lower third, "Wishlist" bug (transparent PNG) | ART-0337 | `renders/stream-frame.png`, `renders/stream-lower-third.png`, `renders/stream-wishlist.png` |
 | Six Wound Man promo plates (one per demo ailment family), 1080×1080 | ART-0330 | `renders/promo-*.png` |
-| Store screenshots (10, 1920×1080) | ART-0323 | `screenshots/*.jpg` (`npm run build:qa && node scripts/art/store-screenshots.mjs`) |
 
 The cards and banners are drawn in-engine in the woodcut style (`src/art/marketingCards.ts`).
 Review one at `?scene=cards&card=<id>` and re-export them all at their delivery sizes with
