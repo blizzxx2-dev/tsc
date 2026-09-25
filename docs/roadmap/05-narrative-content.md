@@ -164,7 +164,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] NAR-0101 · Alpha · P0 · M · Stroh arc doc — chartered agent of the council; his charter has lapsed (Ch4 reveal); trust meter drives whether he defends or prosecutes Kreuzer in Ch5
 - [ ] NAR-0102 · Alpha · P1 · S · Stroh dental op scene "The Most Hated Avocation" (Ch3) — interrogation between groans; trust +1 on S rank
 - [x] NAR-0103 · Alpha · P1 · S · Charter-lapse reveal scene (Ch4) — Mauer produces the council roll; Stroh's authority is now void; 14 lines
-- [ ] NAR-0104 · Alpha · P1 · S · Stroh trust flags list — every choice that moves it (cantorMercy, certificate signing, Stroh's tooth rank, Litany seen count) with deltas
+- [x] NAR-0104 · Alpha · P1 · S · Stroh trust flags list — every choice that moves it (cantorMercy, certificate signing, Stroh's tooth rank, Litany seen count) with deltas
 
 ### Captain Mauer
 - [ ] NAR-0105 · Alpha · P1 · M · Mauer arc doc — loyal to his men over the council; Sext host in Ch4; leads the Watch against the Tribunal on Hollow Night if saved at rank ≥ B
@@ -246,7 +246,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] NAR-0157 · Alpha · P0 · L · Endings — 4 endings (The Quiet Night averted with Stroh's pardon; Exile with Ilse; The Pyre Refused; The Perfect End — failure-state bad ending) each 20–40 lines plus epilogue cards per surviving character
 
 ### Endgame and branching
-- [ ] NAR-0158 · Alpha · P0 · M · Ending matrix — table mapping (strohTrust, Whisper band, hornchildCertificate, mauerFate, hallerFate) → ending; every combination reachable and covered by test
+- [x] NAR-0158 · Alpha · P0 · M · Ending matrix — table mapping (strohTrust, Whisper band, hornchildCertificate, mauerFate, hallerFate) → ending; every combination reachable and covered by test
 - [ ] NAR-0159 · Beta · P1 · S · Epilogue cards — 12 characters × survives/dies/absent variants, woodcut caption style, ≤ 50 words each
 - [ ] NAR-0160 · Beta · P1 · S · Post-credits sting — the Unsung Hour hymn fragment unlocking challenge mode's secret op
 - [x] NAR-0161 · Beta · P2 · S · Chapter-select recap text — 3-sentence "previously" for each chapter shown when starting from chapter select

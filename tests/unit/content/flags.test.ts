@@ -279,8 +279,9 @@ describe('campaign branch nodes (CON-0007)', () => {
     expect(stepOpen(ch.steps[3], f)).toBe(true);
   });
 
-  it('every shipped chapter is linear today: no step carries a condition', () => {
-    for (const c of FULL_CAMPAIGN) for (const s of c.steps) expect((s as Step).if, `${c.id} ${stepId(s)}`).toBeUndefined();
+  it('every shipped chapter is linear except the endings: only the three ending scenes carry a condition', () => {
+    const conditional = FULL_CAMPAIGN.flatMap((c) => c.steps.filter((s) => (s as Step).if).map(stepId));
+    expect(conditional).toEqual(['s5-end', 's5-end-pyre', 's5-end-exile']);
   });
 });
 
@@ -501,7 +502,7 @@ describe('chapter flag contracts (NAR-0116, NAR-0131, NAR-0145)', () => {
     applyOpFlags('op3-11', 'C', f);
     expect(f.get('hallerFate')).toBe('lost');
     applyOpFlags('op1-1', 'S', f);
-    expect(Object.keys(f.all())).toEqual(['strohTooth', 'hallerFate']);
+    expect(Object.keys(f.all())).toEqual(['strohTooth', 'strohToothFine', 'hallerFate']);
   });
 });
 

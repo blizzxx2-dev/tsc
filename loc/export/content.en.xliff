@@ -1910,6 +1910,128 @@
         <note from="context">Speaker name shown for a3-10.002.</note>
       </trans-unit>
     </group>
+    <group id="ch5/story" resname="ch5/story">
+      <trans-unit id="s5-end-perfect.place" resname="s5-end-perfect.place">
+        <source>Kessendorf — Hollow Night, after Compline</source>
+        <note from="context">Place caption of the perfect end: failure scene when the finale (op5-9) is lost, before the retry prompt &quot;s5-end-perfect&quot;.</note>
+      </trans-unit>
+      <trans-unit id="s5-end-perfect.001" resname="s5-end-perfect.001">
+        <source>The last sigil on the Precentor’s heart turns, and the clock-face of eight Hours is complete.</source>
+        <note from="context">The Perfect End: failure scene when the finale (op5-9) is lost, before the retry prompt &quot;s5-end-perfect&quot; (Kessendorf — Hollow Night, after Compline), line 1 of 18.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="s5-end-perfect.002" resname="s5-end-perfect.002">
+        <source>He does not die. He only stops. And the silence goes out of him like a tide.</source>
+        <note from="context">The Perfect End: failure scene when the finale (op5-9) is lost, before the retry prompt &quot;s5-end-perfect&quot; (Kessendorf — Hollow Night, after Compline), line 2 of 18.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="s5-end-perfect.003" resname="s5-end-perfect.003">
+        <source>Now let your servant depart in peace.</source>
+        <note from="context">The Perfect End: failure scene when the finale (op5-9) is lost, before the retry prompt &quot;s5-end-perfect&quot; (Kessendorf — Hollow Night, after Compline), line 3 of 18.</note>
+        <note from="speaker">The Precentor</note>
+      </trans-unit>
+      <trans-unit id="s5-end-perfect.004" resname="s5-end-perfect.004">
+        <source>It reaches the crypt first. Orsa sits down on the stone floor with her pick across her knees and closes her eyes.</source>
+        <note from="context">The Perfect End: failure scene when the finale (op5-9) is lost, before the retry prompt &quot;s5-end-perfect&quot; (Kessendorf — Hollow Night, after Compline), line 4 of 18.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="s5-end-perfect.005" resname="s5-end-perfect.005">
+        <source>Then the stair. Then the street. Then the ward.</source>
+        <note from="context">The Perfect End: failure scene when the finale (op5-9) is lost, before the retry prompt &quot;s5-end-perfect&quot; (Kessendorf — Hollow Night, after Compline), line 5 of 18.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="s5-end-perfect.006" resname="s5-end-perfect.006">
+        <source>Doctor — the patients. Their breathing. It’s slowing, all of them, together, like one—</source>
+        <note from="context">The Perfect End: failure scene when the finale (op5-9) is lost, before the retry prompt &quot;s5-end-perfect&quot; (Kessendorf — Hollow Night, after Compline), line 6 of 18.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="s5-end-perfect.007" resname="s5-end-perfect.007">
+        <source>She does not finish the word. She lies down on the ward floor beside the cots, very neatly, as if she means to rest a moment.</source>
+        <note from="context">The Perfect End: failure scene when the finale (op5-9) is lost, before the retry prompt &quot;s5-end-perfect&quot; (Kessendorf — Hollow Night, after Compline), line 7 of 18.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="s5-end-perfect.008" resname="s5-end-perfect.008">
+        <source>The Watch on the Penny Stair lowers its pikes. Mauer counts his men once, and does not reach the end of the count.</source>
+        <note from="context">The Perfect End: failure scene when the finale (op5-9) is lost, before the retry prompt &quot;s5-end-perfect&quot; (Kessendorf — Hollow Night, after Compline), line 8 of 18.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="s5-end-perfect.009" resname="s5-end-perfect.009">
+        <source>The drover at the Crooked Goose puts down his dice. The girl with the horn-buds sleeps, and her mother sleeps beside her.</source>
+        <note from="context">The Perfect End: failure scene when the finale (op5-9) is lost, before the retry prompt &quot;s5-end-perfect&quot; (Kessendorf — Hollow Night, after Compline), line 9 of 18.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="s5-end-perfect.010" resname="s5-end-perfect.010">
+        <source>Every candle in Kessendorf stands perfectly still, and then, one by one, goes quietly out.</source>
+        <note from="context">The Perfect End: failure scene when the finale (op5-9) is lost, before the retry prompt &quot;s5-end-perfect&quot; (Kessendorf — Hollow Night, after Compline), line 10 of 18.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="s5-end-perfect.011" resname="s5-end-perfect.011">
+        <source>Hush the ward, and hush the street; / sleep is kind, and death is sweet.</source>
+        <note from="context">The Perfect End: failure scene when the finale (op5-9) is lost, before the retry prompt &quot;s5-end-perfect&quot; (Kessendorf — Hollow Night, after Compline), line 11 of 18.</note>
+        <note from="speaker">The Choir</note>
+      </trans-unit>
+      <trans-unit id="s5-end-perfect.012" resname="s5-end-perfect.012">
+        <source>Only Kreuzer is awake. The Litany keeps him, the way it kept every patient he ever held together with it.</source>
+        <note from="context">The Perfect End: failure scene when the finale (op5-9) is lost, before the retry prompt &quot;s5-end-perfect&quot; (Kessendorf — Hollow Night, after Compline), line 12 of 18.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="s5-end-perfect.013" resname="s5-end-perfect.013">
+        <source>Aurel. Wake them. You were a surgeon once. You swore to it.</source>
+        <note from="context">The Perfect End: failure scene when the finale (op5-9) is lost, before the retry prompt &quot;s5-end-perfect&quot; (Kessendorf — Hollow Night, after Compline), line 13 of 18.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
+      <trans-unit id="s5-end-perfect.014" resname="s5-end-perfect.014">
+        <source>I am keeping it, Doctor. No more pain. No more plague. No more surgeons. It is the perfect end.</source>
+        <note from="context">The Perfect End: failure scene when the finale (op5-9) is lost, before the retry prompt &quot;s5-end-perfect&quot; (Kessendorf — Hollow Night, after Compline), line 14 of 18.</note>
+        <note from="speaker">The Precentor</note>
+      </trans-unit>
+      <trans-unit id="s5-end-perfect.015" resname="s5-end-perfect.015">
+        <source>It is the end. It is not perfect. There is no such thing as a perfect end. There is only the next patient.</source>
+        <note from="context">The Perfect End: failure scene when the finale (op5-9) is lost, before the retry prompt &quot;s5-end-perfect&quot; (Kessendorf — Hollow Night, after Compline), line 15 of 18.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
+      <trans-unit id="s5-end-perfect.016" resname="s5-end-perfect.016">
+        <source>He picks up the lancet. His hands are the only moving thing in the city.</source>
+        <note from="context">The Perfect End: failure scene when the finale (op5-9) is lost, before the retry prompt &quot;s5-end-perfect&quot; (Kessendorf — Hollow Night, after Compline), line 16 of 18.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="s5-end-perfect.017" resname="s5-end-perfect.017">
+        <source>Again. From the first Hour.</source>
+        <note from="context">The Perfect End: failure scene when the finale (op5-9) is lost, before the retry prompt &quot;s5-end-perfect&quot; (Kessendorf — Hollow Night, after Compline), line 17 of 18.</note>
+        <note from="speaker">Dr. Kreuzer</note>
+      </trans-unit>
+      <trans-unit id="s5-end-perfect.018" resname="s5-end-perfect.018">
+        <source>THE PERFECT END — the Office is complete. Try the operation again.</source>
+        <note from="context">The Perfect End: failure scene when the finale (op5-9) is lost, before the retry prompt &quot;s5-end-perfect&quot; (Kessendorf — Hollow Night, after Compline), line 18 of 18.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="recap.ch5.001" resname="recap.ch5.001">
+        <source>In the rain of the Vennmark, Kreuzer kept Mauer’s men alive through Sext and None, in tents that never stopped leaking.</source>
+        <note from="context">Chapter-select recap before ch5 (&quot;previously&quot;), sentence 1 of 3. Narration.</note>
+      </trans-unit>
+      <trans-unit id="recap.ch5.002" resname="recap.ch5.002">
+        <source>The council roll showed Stroh’s charter had lapsed at the new year; what the Tribunal did since, it did on nothing.</source>
+        <note from="context">Chapter-select recap before ch5 (&quot;previously&quot;), sentence 2 of 3. Narration.</note>
+      </trans-unit>
+      <trans-unit id="recap.ch5.003" resname="recap.ch5.003">
+        <source>They came home to Kessendorf three days before Hollow Night, and a warrant with the Doctor’s name on it.</source>
+        <note from="context">Chapter-select recap before ch5 (&quot;previously&quot;), sentence 3 of 3. Narration.</note>
+      </trans-unit>
+    </group>
+    <group id="ch5/names" resname="ch5/names">
+      <trans-unit id="s5-end-perfect.003.as" resname="s5-end-perfect.003.as">
+        <source>The Precentor</source>
+        <note from="context">Speaker name shown for s5-end-perfect.003.</note>
+      </trans-unit>
+      <trans-unit id="s5-end-perfect.011.as" resname="s5-end-perfect.011.as">
+        <source>The Choir</source>
+        <note from="context">Speaker name shown for s5-end-perfect.011.</note>
+      </trans-unit>
+      <trans-unit id="s5-end-perfect.014.as" resname="s5-end-perfect.014.as">
+        <source>The Precentor</source>
+        <note from="context">Speaker name shown for s5-end-perfect.014.</note>
+      </trans-unit>
+    </group>
     <group id="ch4/story" resname="ch4/story">
       <trans-unit id="recap.ch4.001" resname="recap.ch4.001">
         <source>In the Kilnrows, Kreuzer examined a hornchild for the Tribunal and wrote a certificate that will follow him.</source>
@@ -1922,20 +2044,6 @@
       <trans-unit id="recap.ch4.003" resname="recap.ch4.003">
         <source>Now Kessendorf hires out its war, and the Watch marches east to the Vennmark with its surgeon in the second wagon.</source>
         <note from="context">Chapter-select recap before ch4 (&quot;previously&quot;), sentence 3 of 3. Narration.</note>
-      </trans-unit>
-    </group>
-    <group id="ch5/story" resname="ch5/story">
-      <trans-unit id="recap.ch5.001" resname="recap.ch5.001">
-        <source>In the rain of the Vennmark, Kreuzer kept Mauer’s men alive through Sext and None, in tents that never stopped leaking.</source>
-        <note from="context">Chapter-select recap before ch5 (&quot;previously&quot;), sentence 1 of 3. Narration.</note>
-      </trans-unit>
-      <trans-unit id="recap.ch5.002" resname="recap.ch5.002">
-        <source>The council roll showed Stroh’s charter had lapsed at the new year; what the Tribunal did since, it did on nothing.</source>
-        <note from="context">Chapter-select recap before ch5 (&quot;previously&quot;), sentence 2 of 3. Narration.</note>
-      </trans-unit>
-      <trans-unit id="recap.ch5.003" resname="recap.ch5.003">
-        <source>They came home to Kessendorf three days before Hollow Night, and a warrant with the Doctor’s name on it.</source>
-        <note from="context">Chapter-select recap before ch5 (&quot;previously&quot;), sentence 3 of 3. Narration.</note>
       </trans-unit>
     </group>
     <group id="global/barks" resname="global/barks">

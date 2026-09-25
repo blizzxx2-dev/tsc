@@ -542,7 +542,7 @@ export const CHAPTER_3: Chapter = {
   numeral: 'III',
   title: 'Prime and Terce',
   // NAR-0116: reads the demo's choice and Litany count; writes the certificate, Stroh's tooth (op3-9) and Haller's fate (op3-11).
-  flags: { reads: ['cantorMercy', 'litanySeenCount', 'hornchildCertificate'], writes: ['hornchildCertificate', 'strohTooth', 'hallerFate'] },
+  flags: { reads: ['cantorMercy', 'litanySeenCount', 'hornchildCertificate'], writes: ['hornchildCertificate', 'strohTooth', 'strohToothFine', 'hallerFate'] },
   steps: [
     { kind: 'story', story: STORY_3_1 },
     { kind: 'story', story: STORY_3_2 },

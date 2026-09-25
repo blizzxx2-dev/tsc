@@ -549,7 +549,7 @@ export const CHAPTER_4: Chapter = {
   title: 'Sext and None',
   // NAR-0131: reads Chapter III's outcomes; writes `thirstChoice` (s4-6). `mauerFate`, `charterRevealed`,
   // `deadManVerdict` and `strohTrust` are not authored yet — see docs/narrative/flags.md.
-  flags: { reads: ['hallerFate', 'hornchildCertificate', 'litanySeenCount'], writes: ['thirstChoice'] },
+  flags: { reads: ['hallerFate', 'hornchildCertificate', 'litanySeenCount'], writes: ['thirstChoice', 'mauerFate'] },
   steps: [
     { kind: 'story', story: STORY_4_1 },
     { kind: 'op', op: OP_4_1 },

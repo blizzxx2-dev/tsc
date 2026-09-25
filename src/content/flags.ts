@@ -149,7 +149,9 @@ export function conditionReads(c: FlagCondition): string[] {
 /** Flags an operation writes when it is won in the campaign, from its rank (CON-0129, CON-0136). */
 export const OP_FLAG_WRITES: Readonly<Record<string, (rank: Rank) => FlagRecord>> = {
   // Stroh's rotten molar: the Inquisitor owes the surgeon a tooth, and remembers it (CON-0129).
-  'op3-9': () => ({ strohTooth: true }),
+  'op3-9': (rank) => ({ strohTooth: true, strohToothFine: rank === 'XS' || rank === 'S' }),
+  // Sext in Mauer: a captain hale enough to lead the Watch on Hollow Night, or maimed (NAR-0105).
+  'op4-7': (rank) => ({ mauerFate: rank === 'C' ? 'maimed' : 'hale' }),
   // Terce, then Haller's burned hands: how much of the old man's craft survives (CON-0136).
   'op3-11': (rank) => ({ hallerFate: rank === 'XS' || rank === 'S' ? 'hands' : rank === 'C' ? 'lost' : 'scarred' }),
 };

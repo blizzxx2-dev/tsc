@@ -84,6 +84,8 @@ apart, or if a scene is missing. Operations happen between the scenes around the
 | s5-11 | Hollow Night | Compline | `The crypt — Compline` |
 | s5-12 | Hollow Night | after Compline | `The crypt — after Compline` |
 | s5-end | 1 Wonnemond | dawn | `Kessendorf — the morning after Hollow Night` |
+| s5-end-pyre | 1 Wonnemond | dawn | `Kessendorf — the east gate, the morning after Hollow Night` |
+| s5-end-exile | 1 Wonnemond | dawn | `The Timber Road — dawn, the morning after Hollow Night` |
 
 *Note: s5-9 is captioned "Vespers" though it follows the Compline-hour streets of s5-5…s5-8: on
 Hollow Night the Choir's Office runs to its own clock, and the hospice's lamps are lit late. Keep.*

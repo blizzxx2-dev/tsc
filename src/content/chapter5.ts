@@ -1,3 +1,4 @@
+import { ENDING_EXILE, ENDING_PARDON, ENDING_PYRE, endingIs } from './endings';
 import { whisperThought } from './whisper';
 import { Embedded, Incision, Laceration, Rot } from '../surgery/entities';
 import { TinctureSite, Vessel } from '../surgery/ailments/kilnrows';
@@ -217,24 +218,8 @@ export const STORY_5_12: StoryDef = {
   ],
 };
 
-export const STORY_5_END: StoryDef = {
-  id: 's5-end',
-  place: 'Kessendorf — the morning after Hollow Night',
-  backdrop: 'hospice',
-  lines: [
-    n('Dawn comes up on Kessendorf, and the city wakes: which is to say it complains, and coughs, and goes to work.'),
-    n('Aurel Vennholt lives, in a Tribunal cell, and asks each morning for news of the patients. He has not sung since.'),
-    say('stroh', 'The council has withdrawn the warrant. The Widow Reiss has left the city, in a carriage without a crest.'),
-    say('stroh', 'I have written to the Tribunal that the matter of the Doctor’s hands is closed. I did not say how I closed it.'),
-    say('mauer', 'Thirty-five. All thirty-five, Doctor. I said the names at the gate this morning, the six and the thirty-five.'),
-    say('patient', 'I have named a new mine for you. The Kreuzer Hope. It is a very good mine. It has not fallen in once.', 'Orsa Flintvein'),
-    say('haller', 'I read your letter. Unsang it, you say. Well. I only ever taught you to sing it. The rest was your own.'),
-    say('ilse', 'Doctor. There’s a drover on the table. Somebody at the Crooked Goose disagreed with his dice.'),
-    say('kreuzer', 'Knife wounds. Simple work.'),
-    say('ilse', 'And in this hospice, we do not lose patients to simple work.'),
-    n('THE END — THE QUIET NIGHT, AVERTED'),
-  ],
-};
+/** The pardon ending keeps the historical id `s5-end` (NAR-0157; the others live in endings.ts). */
+export const STORY_5_END: StoryDef = ENDING_PARDON;
 
 // ====================================================================== operations
 
@@ -472,8 +457,8 @@ export const CHAPTER_5: Chapter = {
   id: 'ch5',
   numeral: 'V',
   title: 'Vespers and Compline',
-  // NAR-0145: the finale reads every prior flag; the `ending` enum is written when the branching endings are authored.
-  flags: { reads: ['cantorMercy', 'litanySeenCount', 'hornchildCertificate', 'strohTooth', 'hallerFate', 'thirstChoice'], writes: [] },
+  // NAR-0145/0158: the finale reads every prior flag; the ending is derived from them (src/content/endings.ts).
+  flags: { reads: ['cantorMercy', 'litanySeenCount', 'hornchildCertificate', 'strohTooth', 'strohToothFine', 'hallerFate', 'thirstChoice', 'mauerFate'], writes: [] },
   steps: [
     { kind: 'story', story: STORY_5_1 },
     { kind: 'story', story: STORY_5_2 },
@@ -497,6 +482,9 @@ export const CHAPTER_5: Chapter = {
     { kind: 'op', op: OP_5_8 },
     { kind: 'story', story: STORY_5_12 },
     { kind: 'op', op: OP_5_9 },
-    { kind: 'story', story: STORY_5_END },
+    // The ending matrix (NAR-0158): one of three for a won finale; the Perfect End is its failure scene.
+    { kind: 'story', story: STORY_5_END, if: endingIs('pardon') },
+    { kind: 'story', story: ENDING_PYRE, if: endingIs('pyre') },
+    { kind: 'story', story: ENDING_EXILE, if: endingIs('exile') },
   ],
 };
