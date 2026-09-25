@@ -1,3 +1,4 @@
+import { tallowClotArt } from '../../art/lateAilmentArt';
 import { fxRandom } from '../fxRandom';
 import { dist, pointSegment, segmentsIntersect, type Vec } from '../../core/math';
 import { hex } from '../../render/color';
@@ -187,10 +188,8 @@ export class TallowClot extends Entity {
     surfDisc(g, this.pos, this.r * 1.6, 0, 0.3, 0, 0.5);
   }
   draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    const shrink = 1 - this.draw_ / 1.2;
-    g.circleGrad(x, y, this.r * shrink, hex(this.softened ? '#f0d890' : '#e8e0c8'), hex('#a09070', 0.7));
-    if (this.softened) g.glow(x, y, this.r * 1.5, hex('#ffb040', 0.15 + 0.05 * Math.sin(op.elapsed * 6)));
+    // Waxy clot that softens, glosses and runs under the Brand (ART-0194).
+    tallowClotArt(g, this.pos, this.r, { soft: this.softened ? Math.min(1, 0.5 + this.heat) : Math.min(0.45, this.heat * 1.5), drawn: this.draw_ / 0.9, t: op.elapsed, seed: this.id, scorched: this.scorched });
   }
 }
 

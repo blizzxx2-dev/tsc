@@ -5,6 +5,7 @@
  * `?page=2&t=1.5` opens a page with time frozen, for screenshots; ←/→ step one frame at 12 fps,
  * Space toggles playback. A QA tool: each ailment should be checked here before it ships.
  */
+import { petrifyCrustArt, petrifyPlateArt, tallowClotArt } from './lateAilmentArt';
 import type { Game, Scene } from '../core/scene';
 import type { Vec } from '../core/math';
 import { hex } from '../render/color';
@@ -93,6 +94,14 @@ const PAGES: { title: string; cells: Cell[]; custom?: (g: Gfx, t: number) => voi
       ['Venom web', (g, c, t) => venomArt(g, c, 20 + 30 * loop(t, 3), 0, [0.05, 0.1, 0.03], 1)],
       ['Venom, tincture fade', (g, c, t) => venomArt(g, c, 44, loop(t, 2), [0.05, 0.1, 0.03], 2)],
       ['Curse venom', (g, c) => venomArt(g, c, 44, 0, [0.08, 0.03, 0.12], 3)],
+    ],
+  },
+  {
+    title: 'Chapters III–V ailments',
+    cells: [
+      ['Tallow: set → molten', (g, c, t) => [0, 0.5, 1].forEach((k, i) => tallowClotArt(g, off(c, -52 + i * 52, 0), 18, { soft: k, drawn: 0, t, seed: i }))],
+      ['Petrify crust: 4 stages', (g, c) => petrifyCrustArt(g, Array.from({ length: 12 }, (_, i) => off(c, -70 + i * 13, Math.sin(i * 0.6) * 8)), Array.from({ length: 12 }, (_, i) => (11 - i) * 0.9), 1)],
+      ['Plate crack-apart (6 f)', (g, c, t) => petrifyPlateArt(g, c, 16, { index: 0, next: true, crackAge: loop(t, 1.2) * 0.8 - 0.2 })],
     ],
   },
   {

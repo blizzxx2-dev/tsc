@@ -44,6 +44,9 @@ function isPatientName(name: string): boolean {
   return /^\p{Lu}[\p{L}’'-]+(?: \p{Lu}[\p{L}’'-]+){0,2}$/u.test(name) && !/^(?:A|An|The)\b/.test(name);
 }
 
+/** Frames in a stroke's write-on (ART-0222). */
+export const NAME_WRITE_FRAMES = 20;
+
 /** Erased-stroke ratings are capped so a player cannot farm points by letting Prime write. */
 export const PRIME_STROKE_RATING_CAP = 36;
 const strokeRatings = new WeakMap<Operation, number>();
@@ -238,7 +241,8 @@ export class NameSigil extends Entity {
         // The stroke being written, and a faint indentation of the path it will take.
         g.dashed(s, 1.5, hex('#e8dcc0', 0.25), 4, 5);
         const total = samplePath(s, 4);
-        const upto = Math.max(1, Math.floor(total.length * this.writeT));
+        // The write-on runs as a 20-frame woodcut flipbook (ART-0222).
+        const upto = Math.max(1, Math.floor(total.length * (Math.floor(this.writeT * NAME_WRITE_FRAMES) / NAME_WRITE_FRAMES)));
         if (upto > 1) g.polyline(total.slice(0, upto), 5, hex(ink, 0.9));
         const nib = total[Math.min(total.length - 1, upto)];
         g.circle(nib.x, nib.y, 3, hex('#f0e0ff', 0.8));

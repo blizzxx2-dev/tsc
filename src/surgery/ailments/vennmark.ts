@@ -4,6 +4,7 @@
  * swallowed strongbox, a bite-tranced heart, a thirsted neck and the stone
  * bride's petrification — plus the rain that drips through the tent.
  */
+import { petrifyCrustArt, petrifyPlateArt } from '../../art/lateAilmentArt';
 import { dist, pointSegment, type Vec } from '../../core/math';
 import { hex } from '../../render/color';
 import type { Gfx } from '../../render/gfx';
@@ -585,7 +586,8 @@ export class BiteChannel extends Entity {
 export class PetrifyFront extends Entity {
   s = 0;
   readonly total: number;
-  plates: { pos: Vec; cracked: boolean }[] = [];
+  /** `crackedAt`: world time the lancet broke it (the crack-apart flipbook plays from there). */
+  plates: { pos: Vec; cracked: boolean; crackedAt?: number }[] = [];
   next = 0;
   margin: Coverage | null = null;
   constructor(
@@ -629,6 +631,7 @@ export class PetrifyFront extends Entity {
       return true;
     }
     this.plates[i].cracked = true;
+    this.plates[i].crackedAt = op.elapsed;
     this.next++;
     op.cues.push('pluck');
     op.emit('dust', ptr.pos, 6);
@@ -653,19 +656,20 @@ export class PetrifyFront extends Entity {
     if (pts.length > 1) surfLine(g, pts, 40, 0, 0.1, 0.2, 0.3);
   }
   draw(g: Gfx, op: Operation): void {
+    // The crust in four stages by age (ART-0221): a point the front passed d px ago has been stone d/speed seconds.
     const pts: Vec[] = [];
-    for (let s = 0; s <= this.s; s += 12) pts.push(pointAlong(this.path, s));
+    const ages: number[] = [];
+    for (let s = 0; s <= this.s; s += 12) {
+      pts.push(pointAlong(this.path, s));
+      ages.push((this.s - s) / Math.max(0.1, this.speed));
+    }
     pts.push(this.frontPos);
-    if (pts.length > 1) g.polyline(pts, 34, hex('#9a968c', 0.75));
+    ages.push(0);
+    if (pts.length > 1) petrifyCrustArt(g, pts, ages, this.id);
     g.dashed(this.path, 1.5, hex('#e8dcc0', 0.2), 5, 7);
     const f = this.frontPos;
     g.glow(f.x, f.y, 30, hex('#d0d0c0', 0.3 + 0.1 * Math.sin(op.elapsed * 4)));
-    this.plates.forEach((p, i) => {
-      if (p.cracked) return;
-      g.circle(p.pos.x, p.pos.y, 14, hex('#b0aca0'));
-      g.arc(p.pos.x, p.pos.y, 14, 2, hex(i === this.next ? '#f5d76e' : '#5a564c'));
-      g.text(String(i + 1), p.pos.x, p.pos.y + 6, { size: 16, color: hex('#2a2620'), align: 'center', shadow: false });
-    });
+    this.plates.forEach((p, i) => petrifyPlateArt(g, p.pos, 14, { index: i, next: i === this.next, crackAge: p.cracked ? op.elapsed - (p.crackedAt ?? -99) : -1, seed: i * 1.3 }));
     if (this.margin) for (const c of this.margin.cells) if (c.done) g.circleGrad(this.margin.center.x + c.x, this.margin.center.y + c.y, 10, hex('#bff0c8', 0.35), hex('#bff0c8', 0));
   }
 }

@@ -307,7 +307,7 @@ Ailment standard: painted sprite(s) in the woodcut-over-paint style at 2× virtu
 - [x] ART-0191 · Demo · P0 · S · Pus and black-bile variants of the pool set (colour, opacity, viscosity highlight) for `BloodPool` kinds
 - [x] ART-0192 · Demo · P1 · S · Arterial spurt flipbook (6 frames, 3 directions) for severed-vessel events
 - [x] ART-0193 · Demo · P1 · S · Salve (Saint's Salve) coverage decal: pale-gold paste with a glisten, fading over 1.5 s once absorbed
-- [ ] ART-0194 · Alpha · P2 · S · Tallow-clot sprites (for Vespers) with a melt animation under the Brand
+- [x] ART-0194 · Alpha · P2 · S · Tallow-clot sprites (for Vespers) with a melt animation under the Brand
 
 ### Embedded objects
 - [x] ART-0195 · Demo · P0 · M · Arrow: a painted goose-fletched shaft with a broadhead, the embedded end masked into the tissue, plus a wobble-on-grab 4-frame loop
@@ -344,8 +344,8 @@ Ailment standard: painted sprite(s) in the woodcut-over-paint style at 2× virtu
 ### Curses & sigils
 - [x] ART-0219 · Demo · P0 · M · Curse-sigil set: 8 original sigil glyphs (IP-checked, no eight-pointed stars), each with stroke-order data for trace-to-erase and a searing-out animation
 - [x] ART-0220 · Demo · P0 · S · Sigil glow states: dormant (faint), draining (pulsing violet) and seared (charred gold)
-- [ ] ART-0221 · Beta · P1 · M · Petrification: creeping stone-crust decal (4 stages) and a crack-apart flipbook for the Tongs
-- [ ] ART-0222 · Beta · P2 · S · Name-sigils (for Prime): blackletter names written stroke by stroke as a 20-frame write-on effect
+- [x] ART-0221 · Beta · P1 · M · Petrification: creeping stone-crust decal (4 stages) and a crack-apart flipbook for the Tongs
+- [x] ART-0222 · Beta · P2 · S · Name-sigils (for Prime): blackletter names written stroke by stroke as a 20-frame write-on effect
 
 ### Discipline-specific
 - [ ] ART-0223 · Alpha · P2 · M · Bone-setting: fracture sprites (simple, comminuted, compound with bone-end), splint and bandage wrap art
