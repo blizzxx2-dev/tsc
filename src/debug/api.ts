@@ -21,7 +21,7 @@ import { StoryScene } from '../scenes/story';
 import { TitleScene } from '../scenes/title';
 import { Incision } from '../surgery/entities';
 import { MAX_VITALS, Operation, type OperationDef, type Status } from '../surgery/operation';
-import { TOOL_INFO, type Rank, type ToolId } from '../surgery/types';
+import { TOOL_INFO, type Pointer, type Rank, type ToolId } from '../surgery/types';
 import { isPresetName, PRESET_NAMES, presetSave } from './presets';
 import { opView, stateHash, type OpView } from './state';
 
@@ -42,6 +42,9 @@ export interface DebugState {
   save: { progress: { chapter: number; step: number }; best: Record<string, { rank: Rank; score: number }> };
   settings: Record<string, unknown>;
 }
+
+/** One frame of recorded input: pointer samples (with the tool held) and Litany invocations, in order. */
+export type ReplayFrame = ({ kind: 'pointer'; tool: ToolId; ptr: Pointer; select: boolean } | { kind: 'litany' })[];
 
 export interface StepOptions {
   dt?: number;
@@ -145,6 +148,11 @@ export class DebugApi {
     this.frozen = false;
   }
 
+  /** Set the renderer's animation clock (shader time), so captures are repeatable. */
+  setClock(seconds: number): void {
+    this.game.gfx.time = seconds;
+  }
+
   isFrozen(): boolean {
     return this.frozen;
   }
@@ -225,6 +233,27 @@ export class DebugApi {
       };
       poll();
     });
+  }
+
+  /**
+   * Re-simulate an operation headlessly in this runtime from a per-frame input log and return its
+   * state hash (runtime parity, QAT-0056: the same log must hash identically in Node and here).
+   */
+  replay(opId: string, frames: ReplayFrame[]): { hash: string; status: Status; score: number; counts: Operation['counts']; frames: number } {
+    const def = findOp(opId);
+    if (!def) throw new Error(`unknown operation ${opId}`);
+    const op = new Operation(def);
+    for (const events of frames) {
+      for (const ev of events) {
+        if (ev.kind === 'litany') op.invokeLitany();
+        else {
+          if (ev.select) op.setTool(ev.tool);
+          op.handlePointer(ev.ptr, 1 / 60);
+        }
+      }
+      op.update(1 / 60);
+    }
+    return { hash: stateHash(op), status: op.status, score: op.score, counts: { ...op.counts }, frames: frames.length };
   }
 
   // ------------------------------------------------------------------ operation cheats
@@ -349,7 +378,8 @@ export class DebugApi {
     op.maxCombo = 8;
     op.vitals = won ? 72 : 0;
     op.timeLeft = won ? def.timeLimit / 3 : 0;
-    if (!won) op.lostReason = 'The patient has died.';
+    if (won) op.bonus = { vitals: Math.round(op.vitals) * 20, time: Math.round(op.timeLeft) * 10 };
+    else op.lostReason = 'The patient has died.';
     const back = () => this.game.go(new TitleScene());
     this.game.go(new ResultsScene(op, won, false, { next: won ? back : undefined, retry: back, quit: back }));
     return this.state();

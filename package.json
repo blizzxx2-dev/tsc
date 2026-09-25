@@ -14,7 +14,7 @@
     "test:unit": "vitest run --project unit",
     "test:sim": "vitest run --project sim",
     "test:e2e": "vitest run --project e2e",
-    "test:visual": "vitest run --project e2e tests/e2e/visual",
+    "test:visual": "vitest run --project visual",
     "visual:update": "node scripts/qa/visual-update.mjs",
     "bench": "vitest bench --project sim --run",
     "lint": "eslint .",
