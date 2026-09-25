@@ -8,7 +8,7 @@ import type { Quality } from './quality';
 import { PARTICLE_SHAPES, PARTICLE_SIZE_RANGE } from './shaders/particle';
 
 /** Built-in effect kinds the simulation emits (`op.emit`); every one is an entry in fx/emitters.json. */
-export type FxKind = 'blood' | 'pus' | 'spark' | 'smoke' | 'mote' | 'gold' | 'dust' | 'curl' | 'knot' | 'suck';
+export type FxKind = 'blood' | 'pus' | 'spark' | 'smoke' | 'mote' | 'gold' | 'dust' | 'curl' | 'knot' | 'suck' | 'leaf' | 'ember';
 
 /** Seconds of the knot-tie flourish when a stitch line is finished (GAM-0039). */
 export const KNOT_SECONDS = 0.6;
@@ -80,6 +80,9 @@ interface Rows {
  * of non-gameplay effects scales with the tier (ENG-0145). Blood and pus droplets also feed the fluid
  * layer (so spray merges into pools) and leave stains where they land.
  */
+/** Live-particle caps per emitter family (ART-0373): a burst past the cap is trimmed, never the oldest. */
+export const PARTICLE_CAPS: Partial<Record<string, number>> = { blood: 64, spark: 48, mote: 32, leaf: 40, ember: 40, pus: 48, gold: 48 };
+
 export class Particles {
   /** One pool per priority class; eviction takes the lowest class first. */
   private pools: Record<FxPriority, P[]> = { ambient: [], feedback: [], gameplay: [] };
@@ -149,6 +152,8 @@ export class Particles {
       const want = count * PARTICLE_EMISSION[this.quality];
       count = Math.floor(want) + (rng.next() < want - Math.floor(want) ? 1 : 0);
     }
+    const cap = PARTICLE_CAPS[id];
+    if (cap !== undefined) count = Math.min(count, Math.max(0, cap - this.countOf(id)));
     const [j0, j1] = def.speedJitter ?? [1, 1];
     const dir = o.dir ?? def.dir;
     const cone = o.spread ?? def.cone;
@@ -309,6 +314,13 @@ export class Particles {
   /** Live particles by class. */
   counts(): Record<FxPriority, number> {
     return { ambient: this.pools.ambient.length, feedback: this.pools.feedback.length, gameplay: this.pools.gameplay.length };
+  }
+
+  /** Live particles of one emitter family. */
+  countOf(id: string): number {
+    let n = 0;
+    for (const pool of Object.values(this.pools)) for (const p of pool) if (p.id === id) n++;
+    return n;
   }
 
   get count(): number {

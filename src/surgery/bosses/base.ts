@@ -1,3 +1,5 @@
+import { MATINS_DEATH_FRAMES, matinsDeathEye, matinsUnravel } from '../../art/bossVfx';
+import { FPS, frameOf } from '../../art/timing';
 import type { Vec } from '../../core/math';
 import { hex } from '../../render/color';
 import type { Gfx } from '../../render/gfx';
@@ -299,7 +301,12 @@ export class BossDeath extends Entity {
   }
   draw(g: Gfx): void {
     const [mode, size] = this.look;
-    if (this.t < DEATH_SECONDS) g.creature(mode, this.pos.x, this.pos.y, size, { seed: this.id, dissolve: Math.min(1, this.t / DEATH_SECONDS), health: 0.6 });
+    if (mode === 0 && this.t < DEATH_SECONDS) {
+      // Matins (ART-0233): 24 stepped frames — the shroud unravels into threads and motes, then the eye closes.
+      const f = frameOf(this.t, FPS.woodcut, MATINS_DEATH_FRAMES);
+      g.creature(0, this.pos.x, this.pos.y, size, { seed: this.id, dissolve: f / (MATINS_DEATH_FRAMES - 1), open: matinsDeathEye(f), health: 0.6 });
+      matinsUnravel(g, this.pos.x, this.pos.y, size, f, this.id);
+    } else if (this.t < DEATH_SECONDS) g.creature(mode, this.pos.x, this.pos.y, size, { seed: this.id, dissolve: Math.min(1, this.t / DEATH_SECONDS), health: 0.6 });
     const w = Math.max(0, 1 - this.t / WITHER_SECONDS);
     for (const p of this.ghosts) {
       g.circle(p.x, p.y, 3 + 7 * w, hex('#2a2018', 0.7 * w));

@@ -93,6 +93,10 @@ uniform vec3 u_base;
 uniform vec3 u_deep;
 uniform vec3 u_vein;
 uniform float u_pulse;
+// Tissue warp (ART-0298): per-axis scale of the field about its centre from the organ's warp map
+// (src/art/tissueWarp.ts). The operation draws wounds, fluids and ailments through the same scale,
+// so nothing slides over the moving tissue. (0,0) = unset: the legacy rim-only swell.
+uniform vec2 u_warp;
 uniform vec2 u_light;
 uniform float u_corrupt;
 uniform sampler2D u_surface;
@@ -129,11 +133,12 @@ float surfH(vec2 uv) {
 }
 void main() {
   vec2 px = vec2(v_uv.x, 1.0 - v_uv.y) * u_view;
-  vec2 q = (px - u_center) / u_radii;
+  bool warped = u_warp.x > 0.0;
+  vec2 q = (px - u_center) / (u_radii * (warped ? u_warp : vec2(1.0)));
   // Organs swell faintly with the heartbeat.
   // Heartbeat: the heart contracts ~5% in systole; other tissue barely stirs.
   float beat = u_pulse * u_pulse * (3.0 - 2.0 * u_pulse);
-  float swell = 1.0 + beat * (u_kind == 1 ? 0.05 : 0.012);
+  float swell = warped ? 1.0 : 1.0 + beat * (u_kind == 1 ? 0.05 : 0.012);
   float r = length(q) / swell;
   float edge = r + (fbm(q * 3.0 + 4.0) - 0.5) * 0.08;
 

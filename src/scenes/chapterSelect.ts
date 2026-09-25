@@ -43,6 +43,8 @@ export function cardRect(i: number, n: number): Rect {
 }
 
 export class ChapterSelectScene implements Scene {
+  /** A menu page: moving between two plays the page-turn transition (ART-0306). */
+  readonly menuPage = true;
   readonly ui = new Ui('chapters');
   private t = 0;
 

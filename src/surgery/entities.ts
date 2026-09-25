@@ -1,5 +1,5 @@
 import { clamp, dist, pointSegment, type Vec } from '../core/math';
-import { drawBlotch, presentation } from '../render/presentation';
+import { drawBlotch, flinchCurl, presentation, shaftTwitch } from '../render/presentation';
 import { hex, rgba } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { Coverage } from './coverage';
@@ -1055,7 +1055,7 @@ export class Embedded extends Entity {
         // Painted missiles (ART-0195–0197): goose-fletched arrow, barbed head (nicked / torn states),
         // the square-headed quarrel and its leather-vaned variant. The part still in the flesh is hidden.
         const kind = this.kind === 'bolt' ? (this.id % 2 ? 'bolt-leather' : 'bolt') : this.barbed || this.nicks > 0 || this.tore ? 'barbed' : 'arrow';
-        missileArt(g, { x, y }, this.angle, this.spec.len, entry, { kind, wobble: this.grabbed ? 1 : 0, nicks: this.nicks, torn: this.tore && !this.snapped, snapped: this.snapped, seed: this.id });
+        missileArt(g, { x, y }, this.grabbed ? this.angle : this.angle + shaftTwitch(presentation.pulse), this.spec.len, entry, { kind, wobble: this.grabbed ? 1 : 0, nicks: this.nicks, torn: this.tore && !this.snapped, snapped: this.snapped, seed: this.id });
         if (this.kind === 'bolt' && this.grabbed && !this.staged) {
           const f = dist(this.pos, this.origin) / this.spec.len;
           if (f > 0.3) g.arc(x, y, 18, 2, hex('#ffebbe', 0.6), Math.min(1, this.stillT / 0.3));
@@ -1943,7 +1943,7 @@ export class Grub extends Entity {
     let burrow = 0;
     if (op.def.tools.includes('lens') && this.heat === 0 && !this.grabbed) burrow = clamp((this.sinceSurface - (G.burrowAfter - 0.8)) / 0.8, 0, 1);
     if (this.revealedAt >= 0) burrow = Math.max(burrow, 1 - (op.elapsed - this.revealedAt) / 0.6);
-    grubArt(g, this.pos, this.heading, 34 * s, { burrowed: clamp(burrow, 0, 0.98), squirm: this.grabbed ? 1 : 0, heat: Math.min(1, this.heat * 1.5), seed: this.id });
+    grubArt(g, this.pos, this.heading, 34 * s, { burrowed: clamp(burrow, 0, 0.98), squirm: Math.max(this.grabbed ? 1 : 0, flinchCurl(op.elapsed - (presentation.flinch.get(this) ?? -9))), heat: Math.min(1, this.heat * 1.5), seed: this.id });
     if (this.heat > 0) {
       const need = DEFAULT_TUNING.brand.grubHold * (this.small ? 0.5 : 1);
       g.glow(this.pos.x, this.pos.y, 26, hex('#ff9040', Math.min(1, this.heat)));

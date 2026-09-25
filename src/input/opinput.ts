@@ -55,6 +55,8 @@ export function litanyMode(b: Bindings = defaultBindings): LitanyInput {
  */
 export class OperationInput {
   starTrail: Vec[] = [];
+  /** Presentation hook: a finished star gesture (trail in view space, and whether it read) — VFX only. */
+  onStar: ((trail: Vec[], ok: boolean) => void) | null = null;
   litanyCenter: [number, number] = [0.5, 0.5];
   readonly radial = new RadialMenu();
   /** The previous-instrument key is down (keyboard): held past WHEEL_HOLD_MS it opens the wheel instead. */
@@ -480,6 +482,7 @@ export class OperationInput {
     const trail = this.starTrail;
     this.starTrail = [];
     const res = analyzeStar(trail, { profile: this.pad ? 'gamepad' : 'pointer' });
+    this.onStar?.(trail, res.ok);
     if (op.litanyPractice) {
       if (res.ok || trail.length > 8) op.practiceStar(res.ok);
       return;

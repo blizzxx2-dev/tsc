@@ -368,14 +368,14 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [x] ART-0230 · Demo · P0 · M · Matins concept: a shrouded vigil-mass of candle-wax cloth with one great lidded eye — callout sheet with closed/opening/open states
 - [x] ART-0231 · Demo · P0 · L · Matins sprites: shroud body (idle breathing 12-frame loop), eye open/close flipbook (10 frames), hurt flash and 3 phase-degradation states, replacing the vector `Malison`
 - [x] ART-0232 · Demo · P0 · M · Matins shader VFX spec: shroud cloth distortion (vertex wobble), eye iris glow ramp and a darkness-vignette pulse on the "watching" rhythm
-- [ ] ART-0233 · Demo · P0 · M · Matins death sequence: the shroud unravels into threads and motes (24 frames) with a final eye-close
+- [x] ART-0233 · Demo · P0 · M · Matins death sequence: the shroud unravels into threads and motes (24 frames) with a final eye-close
 - [ ] ART-0234 · Demo · P1 · S · Matins Book-of-Hours card and a boss-intro splash (night vigil miniature)
 
 ### Lauds (Chapter 2 — demo)
 - [ ] ART-0235 · Demo · P0 · M · Lauds concept: two antiphonal bodies (a "choir" of mouths each) joined by a light-thread, with a fused phase-3 form — callout sheet
-- [ ] ART-0236 · Demo · P0 · L · Lauds sprites: body A and body B idle loops, "call" and "answer" singing flipbooks (8 frames each), hurt and heal-answer states
-- [ ] ART-0237 · Demo · P0 · M · Lauds light-thread VFX: a stretchable beam sprite with travelling pulses, a sever animation (Lancet) and a tie-off (Thread)
-- [ ] ART-0238 · Demo · P0 · M · Lauds dawn-flare VFX spec: full-screen gold bloom burst that blinds the Scrying Lens view, with an ENG shader-parameter table (intensity curve, duration)
+- [x] ART-0236 · Demo · P0 · L · Lauds sprites: body A and body B idle loops, "call" and "answer" singing flipbooks (8 frames each), hurt and heal-answer states
+- [x] ART-0237 · Demo · P0 · M · Lauds light-thread VFX: a stretchable beam sprite with travelling pulses, a sever animation (Lancet) and a tie-off (Thread)
+- [x] ART-0238 · Demo · P0 · M · Lauds dawn-flare VFX spec: full-screen gold bloom burst that blinds the Scrying Lens view, with an ENG shader-parameter table (intensity curve, duration)
 - [ ] ART-0239 · Demo · P0 · L · Lauds phase-3 fused form: merge transition (20 frames), fused idle loop and death sequence
 - [ ] ART-0240 · Demo · P1 · S · Lauds Book-of-Hours card (dawn psalm miniature) and boss-intro splash
 
@@ -407,7 +407,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 ### Compline (Chapter 5 finale)
 - [ ] ART-0256 · Alpha · P0 · M · Compline concept: a veiled sleeper made of every Hour's motif, with a "Great Silence" form — callout sheet with 3 phases
 - [ ] ART-0257 · Beta · P0 · L · Compline sprites: 3 phase forms, silence-node sprites (intact/broken), a Litany-theft animation and a two-hand-combo final vulnerable state
-- [ ] ART-0258 · Beta · P0 · M · Compline VFX spec: audio-mute visual (desaturate + chalk-line hatching), an inverted Litany ripple and a final death that restores colour
+- [x] ART-0258 · Beta · P0 · M · Compline VFX spec: audio-mute visual (desaturate + chalk-line hatching), an inverted Litany ripple and a final death that restores colour
 - [ ] ART-0259 · Beta · P1 · M · Compline Book-of-Hours card, intro splash and a full-screen finale CG
 
 ### The Unsung Hour (secret, post-game)
@@ -423,51 +423,51 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [x] ART-0263 · Demo · P0 · M · 8 painted tool icons (Lancet, Tongs, Leech-Pipe, Gut Thread, Saint's Salve, Tincture, Cautery Brand, Scrying Lens) at 128² with a brass-engraved style, replacing vector `toolIcon()`
 - [x] ART-0264 · Demo · P0 · S · Icon states for each tool: idle, selected (gilt rim), disabled (tarnished) and cooldown (tincture/salve refill)
 - [ ] ART-0265 · Demo · P0 · S · Silhouette test: all 8 icons distinguishable in pure black at 48 px (5-tester hallway test, ≥ 95% correct)
-- [ ] ART-0266 · Demo · P1 · S · Small 32 px icon variants for the tutorial text inline glyphs and the keybind options page
+- [x] ART-0266 · Demo · P1 · S · Small 32 px icon variants for the tutorial text inline glyphs and the keybind options page
 - [ ] ART-0267 · Demo · P1 · S · Leech-Pipe live-leech detail: a 4-frame squirm loop on the tray icon
-- [ ] ART-0268 · Alpha · P2 · S · Discipline-tool icons (splint, bone saw, triage tag, evidence tongs, magnifier) in the same style
+- [x] ART-0268 · Alpha · P2 · S · Discipline-tool icons (splint, bone saw, triage tag, evidence tongs, magnifier) in the same style
 
 ### Cursors & in-field tool sprites
-- [ ] ART-0269 · Demo · P0 · M · In-field tool sprites for all 8 tools, drawn at the pointer during use (lancet blade, tong jaws open/closed, pipe nozzle, needle + thread trail, salve spatula, syringe, glowing brand, lens rim)
-- [ ] ART-0270 · Demo · P0 · S · Tool hotspot definitions (tip pixel) for each tool sprite, verified with a debug crosshair so hits land where the tip is
-- [ ] ART-0271 · Demo · P0 · S · Menu cursor (quill) and a busy cursor (hourglass), plus the hardware-cursor fallback PNGs at 32² and 64²
+- [x] ART-0269 · Demo · P0 · M · In-field tool sprites for all 8 tools, drawn at the pointer during use (lancet blade, tong jaws open/closed, pipe nozzle, needle + thread trail, salve spatula, syringe, glowing brand, lens rim)
+- [x] ART-0270 · Demo · P0 · S · Tool hotspot definitions (tip pixel) for each tool sprite, verified with a debug crosshair so hits land where the tip is
+- [x] ART-0271 · Demo · P0 · S · Menu cursor (quill) and a busy cursor (hourglass), plus the hardware-cursor fallback PNGs at 32² and 64²
 - [x] ART-0272 · Demo · P1 · S · Replace `reticle()` with a brass crosshair and a context tint (green valid target, red invalid)
-- [ ] ART-0273 · Demo · P1 · S · Gamepad/Steam Deck virtual-cursor art (larger ring, 1.5× size) and the button-prompt glyph set (Xbox, PlayStation, Deck)
-- [ ] ART-0274 · Demo · P1 · S · Litany star-trace cursor trail: a gilt ink stroke that fades over 0.6 s
+- [x] ART-0273 · Demo · P1 · S · Gamepad/Steam Deck virtual-cursor art (larger ring, 1.5× size) and the button-prompt glyph set (Xbox, PlayStation, Deck)
+- [x] ART-0274 · Demo · P1 · S · Litany star-trace cursor trail: a gilt ink stroke that fades over 0.6 s
 
 ---
 
 ## ART-K · VFX
 
 ### Surgical VFX
-- [ ] ART-0275 · Demo · P0 · M · Blood VFX: droplet particles (6 sprites), a splatter decal set (8), a Lancet-cut spray and a Leech-Pipe suction swirl
-- [ ] ART-0276 · Demo · P0 · S · Cautery Brand VFX: contact sparks (8-frame), a smoke puff and a sear-glow decal that cools from orange to black over 2 s
-- [ ] ART-0277 · Demo · P0 · S · Tincture injection VFX: a vein-glow ripple from the needle point and a stabilised "calm" shimmer
-- [ ] ART-0278 · Demo · P0 · S · Scrying Lens VFX: a lens-edge distortion ring and an ink-wash reveal of hidden objects (sepia underlay)
-- [ ] ART-0279 · Demo · P1 · S · Salve apply VFX: a smear stroke texture and a glint sparkle on completion
-- [ ] ART-0280 · Demo · P1 · S · Suture completion VFX: a thread-tighten glint and a small gilt "sealed" flash
-- [ ] ART-0281 · Demo · P1 · S · Tongs pickup and drop VFX: a flesh-pull stretch decal and a clink spark on the kidney dish
+- [x] ART-0275 · Demo · P0 · M · Blood VFX: droplet particles (6 sprites), a splatter decal set (8), a Lancet-cut spray and a Leech-Pipe suction swirl
+- [x] ART-0276 · Demo · P0 · S · Cautery Brand VFX: contact sparks (8-frame), a smoke puff and a sear-glow decal that cools from orange to black over 2 s
+- [x] ART-0277 · Demo · P0 · S · Tincture injection VFX: a vein-glow ripple from the needle point and a stabilised "calm" shimmer
+- [x] ART-0278 · Demo · P0 · S · Scrying Lens VFX: a lens-edge distortion ring and an ink-wash reveal of hidden objects (sepia underlay)
+- [x] ART-0279 · Demo · P1 · S · Salve apply VFX: a smear stroke texture and a glint sparkle on completion
+- [x] ART-0280 · Demo · P1 · S · Suture completion VFX: a thread-tighten glint and a small gilt "sealed" flash
+- [x] ART-0281 · Demo · P1 · S · Tongs pickup and drop VFX: a flesh-pull stretch decal and a clink spark on the kidney dish
 
 ### Curse & Malison VFX
-- [ ] ART-0282 · Demo · P0 · M · Curse motes: 4 violet mote sprites with trailing wisps, a spawn burst and a Brand-kill pop
-- [ ] ART-0283 · Demo · P0 · S · Curse-hit feedback: a violet crackle along new lacerations when the Malison attacks
-- [ ] ART-0284 · Demo · P1 · S · Sigil sear VFX: gold embers rising from each seared stroke
-- [ ] ART-0285 · Demo · P1 · S · Malison phase-change VFX: a thread-snap shockwave ring and screen-edge violet ink bleed
+- [x] ART-0282 · Demo · P0 · M · Curse motes: 4 violet mote sprites with trailing wisps, a spawn burst and a Brand-kill pop
+- [x] ART-0283 · Demo · P0 · S · Curse-hit feedback: a violet crackle along new lacerations when the Malison attacks
+- [x] ART-0284 · Demo · P1 · S · Sigil sear VFX: gold embers rising from each seared stroke
+- [x] ART-0285 · Demo · P1 · S · Malison phase-change VFX: a thread-snap shockwave ring and screen-edge violet ink bleed
 
 ### Litany of Stillness
-- [ ] ART-0286 · Demo · P0 · M · Litany activation: a gilt five-pointed star that burns in along the traced path, then expands into the sepia ripple (art timing matched to the `u_litany` curve)
-- [ ] ART-0287 · Demo · P0 · S · Litany active overlay: slow drifting dust motes frozen in air, and marginalia glyphs at the screen edge that fade as the 8 s run out
-- [ ] ART-0288 · Demo · P1 · S · Litany end: the star fractures and falls as gold leaf (12 frames)
-- [ ] ART-0289 · Demo · P1 · S · Failed-gesture feedback: a smudged ink stroke that fizzles
+- [x] ART-0286 · Demo · P0 · M · Litany activation: a gilt five-pointed star that burns in along the traced path, then expands into the sepia ripple (art timing matched to the `u_litany` curve)
+- [x] ART-0287 · Demo · P0 · S · Litany active overlay: slow drifting dust motes frozen in air, and marginalia glyphs at the screen edge that fade as the 8 s run out
+- [x] ART-0288 · Demo · P1 · S · Litany end: the star fractures and falls as gold leaf (12 frames)
+- [x] ART-0289 · Demo · P1 · S · Failed-gesture feedback: a smudged ink stroke that fizzles
 
 ### Feedback & HUD VFX
 - [x] ART-0290 · Demo · P0 · S · COOL rating burst: gilt stamp with a halo of leaf flakes; GOOD, BAD and MISS each with their own lighter treatment
-- [ ] ART-0291 · Demo · P1 · S · Low-vitals VFX art: a cracked-glass overlay on the vitals gauge and blood-vessel creep at the screen edges, in sync with the red pulse
-- [ ] ART-0292 · Demo · P1 · S · Operation success and failure transitions: a woodcut page-turn wipe (success) and an ink-flood to a Holbein skeleton (failure)
-- [ ] ART-0293 · Demo · P2 · S · Combo milestone VFX at ×5 and ×10 (a ribbon unfurl with gilt edges)
+- [x] ART-0291 · Demo · P1 · S · Low-vitals VFX art: a cracked-glass overlay on the vitals gauge and blood-vessel creep at the screen edges, in sync with the red pulse
+- [x] ART-0292 · Demo · P1 · S · Operation success and failure transitions: a woodcut page-turn wipe (success) and an ink-flood to a Holbein skeleton (failure)
+- [x] ART-0293 · Demo · P2 · S · Combo milestone VFX at ×5 and ×10 (a ribbon unfurl with gilt edges)
 
 ### VFX system standards
-- [ ] ART-0294 · Demo · P0 · S · VFX spec template (sprite, frames, fps, blend mode, lifetime, max concurrent) filled for every Demo effect in `docs/art/vfx/`
+- [x] ART-0294 · Demo · P0 · S · VFX spec template (sprite, frames, fps, blend mode, lifetime, max concurrent) filled for every Demo effect in `docs/art/vfx/`
 - [x] ART-0295 · Demo · P1 · S · Reduced-flashing variants for the Lauds dawn-flare, the Litany burst and low-vitals pulse (accessibility toggle) — peak luminance change under 3 flashes/s
 - [ ] ART-0296 · Alpha · P2 · M · VFX for Chapter 3–5 ailments (petrify crack, tallow melt, name-sigil write-on, dragon-breath embers) using the same template
 
@@ -476,20 +476,20 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 ## ART-L · Animation
 
 ### Operation-field animation
-- [ ] ART-0297 · Demo · P0 · S · Animation timing sheet: standard fps (12 for woodcut flipbooks, 24 for VFX), ease curves and hit-pause frames, applied to every flipbook in the demo
-- [ ] ART-0298 · Demo · P1 · M · Tissue breathing and heartbeat deformation: a mesh-warp map per flesh set synced to `u_pulse` (no visible sliding of ailment sprites)
-- [ ] ART-0299 · Demo · P1 · S · Embedded-object reaction animation: the arrow shaft twitches with the heartbeat (3-frame), and the grub flinches on a Lancet near-miss
+- [x] ART-0297 · Demo · P0 · S · Animation timing sheet: standard fps (12 for woodcut flipbooks, 24 for VFX), ease curves and hit-pause frames, applied to every flipbook in the demo
+- [x] ART-0298 · Demo · P1 · M · Tissue breathing and heartbeat deformation: a mesh-warp map per flesh set synced to `u_pulse` (no visible sliding of ailment sprites)
+- [x] ART-0299 · Demo · P1 · S · Embedded-object reaction animation: the arrow shaft twitches with the heartbeat (3-frame), and the grub flinches on a Lancet near-miss
 - [x] ART-0300 · Beta · P2 · M · Organ-specific motion: lung inflate/deflate and gut peristalsis flipbooks for Chapters 3–5 organ sets
 
 ### Portrait & VN animation
 - [x] ART-0301 · Demo · P0 · S · Blink timing (random 2–6 s interval, 3 frames) and lip-flap timing tied to text reveal speed for all demo portraits
 - [x] ART-0302 · Demo · P1 · M · Idle breathing (a 2-layer mesh warp) on Kreuzer, Ilse, Haller, Stroh and Mauer portraits
-- [ ] ART-0303 · Demo · P2 · M · Hollow Choir mask animation: a slow tilt and a violet glow breathing from the mask's mouth
+- [x] ART-0303 · Demo · P2 · M · Hollow Choir mask animation: a slow tilt and a violet glow breathing from the mask's mouth
 - [ ] ART-0304 · Beta · P2 · M · Idle breathing on Chapter 3–5 principal portraits
 
 ### Title & menu animation
-- [ ] ART-0305 · Demo · P1 · M · Title screen animated layers: candle flicker, drifting ash and a slow key-art parallax (10 s loop)
-- [ ] ART-0306 · Demo · P2 · S · Menu transitions: a page-turn (8 frames) between menu pages and a wax-seal break on "New Game"
+- [x] ART-0305 · Demo · P1 · M · Title screen animated layers: candle flicker, drifting ash and a slow key-art parallax (10 s loop)
+- [x] ART-0306 · Demo · P2 · S · Menu transitions: a page-turn (8 frames) between menu pages and a wax-seal break on "New Game"
 - [ ] ART-0307 · Demo · P2 · S · Animated logo sting (3 s) for the game's boot sequence
 
 ---
@@ -504,7 +504,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 
 ### Key art
 - [ ] ART-0312 · Demo · P0 · L · Key art: Kreuzer over a Wound-Man patient, with Ilse at his side, Stroh in shadow and the Malison eye above — 6000×3375 master, layered so it can be recomposed
-- [ ] ART-0313 · Demo · P0 · S · Key-art crop map documenting safe areas for every store size (capsules, hero, library, social)
+- [x] ART-0313 · Demo · P0 · S · Key-art crop map documenting safe areas for every store size (capsules, hero, library, social)
 - [ ] ART-0314 · Demo · P1 · M · Title-screen composition derived from the key art with room for menu items (in-engine at 1920×1080)
 - [ ] ART-0315 · Beta · P2 · L · Launch key art v2 (Compline-teaser version) for 1.0
 
@@ -524,14 +524,14 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 ### Screenshots & store media
 - [ ] ART-0323 · Demo · P0 · M · 10 store screenshots at 1920×1080 captured in-engine from final demo art (3 ops, 2 bosses, 3 VN, the tool tray, results), with the HUD and no debug overlay
 - [ ] ART-0324 · Demo · P1 · S · 5 animated GIF/WebM clips (≤ 3 MB each) for the store description: arrow extraction, Litany, Matins eye, Lauds thread sever and the rank seal
-- [ ] ART-0325 · Demo · P1 · S · Store description section-header banners (616 px wide) in the woodcut style: "Operate", "The Malison", "Kessendorf"
+- [x] ART-0325 · Demo · P1 · S · Store description section-header banners (616 px wide) in the woodcut style: "Operate", "The Malison", "Kessendorf"
 - [ ] ART-0326 · Beta · P1 · M · 1.0 screenshot refresh covering Chapters 3–5 (≥ 5 new shots)
 - [ ] ART-0327 · Release · P1 · S · Seasonal/sale capsule overlays (template) for the Steam sale calendar
 
 ### Marketing & social
-- [ ] ART-0328 · Demo · P1 · M · Social media kit: avatar, X/Bluesky banner (1500×500), YouTube banner, a Discord server icon and banner
+- [x] ART-0328 · Demo · P1 · M · Social media kit: avatar, X/Bluesky banner (1500×500), YouTube banner, a Discord server icon and banner
 - [ ] ART-0329 · Demo · P1 · S · Press kit art folder: logo pack, key art, 10 screenshots and character renders on transparent backgrounds
-- [ ] ART-0330 · Demo · P2 · M · 6 "Wound Man" woodcut promo illustrations (one per demo ailment family) for social posts
+- [x] ART-0330 · Demo · P2 · M · 6 "Wound Man" woodcut promo illustrations (one per demo ailment family) for social posts
 - [ ] ART-0331 · Beta · P2 · M · Physical/merch-ready art: a print-resolution (300 dpi, CMYK proof) key art and an A2 poster layout
 
 ---
@@ -539,18 +539,18 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 ## ART-O · Trailer storyboards
 
 ### Demo / announce trailer
-- [ ] ART-0332 · Demo · P0 · M · Announce trailer (60–75 s) beat sheet: hook (the barbed arrow), the world (Kessendorf), the tools, the Malison, the Litany, the title card and the wishlist call-to-action
+- [x] ART-0332 · Demo · P0 · M · Announce trailer (60–75 s) beat sheet: hook (the barbed arrow), the world (Kessendorf), the tools, the Malison, the Litany, the title card and the wishlist call-to-action
 - [ ] ART-0333 · Demo · P0 · M · Announce trailer storyboard: ≥ 30 panels with shot duration, camera move and the in-engine capture setup per panel
-- [ ] ART-0334 · Demo · P1 · S · Trailer capture scene list: debug seeds and states needed to reproduce each shot deterministically (with ENG's replay tool)
-- [ ] ART-0335 · Demo · P1 · S · Trailer title cards and end slate (logo, "Free Demo on Steam", platforms, rating placeholder) in the woodcut style
-- [ ] ART-0336 · Demo · P1 · S · Steam store autoplay cut (30 s) storyboard, readable with sound off (burned-in woodcut captions)
-- [ ] ART-0337 · Demo · P2 · S · Next Fest livestream overlay art: a frame, lower-thirds and a "Wishlist" bug
+- [x] ART-0334 · Demo · P1 · S · Trailer capture scene list: debug seeds and states needed to reproduce each shot deterministically (with ENG's replay tool)
+- [x] ART-0335 · Demo · P1 · S · Trailer title cards and end slate (logo, "Free Demo on Steam", platforms, rating placeholder) in the woodcut style
+- [x] ART-0336 · Demo · P1 · S · Steam store autoplay cut (30 s) storyboard, readable with sound off (burned-in woodcut captions)
+- [x] ART-0337 · Demo · P2 · S · Next Fest livestream overlay art: a frame, lower-thirds and a "Wishlist" bug
 
 ### Launch & post-launch trailers
-- [ ] ART-0338 · Beta · P1 · M · Launch trailer (90 s) storyboard including Chapters 3–5 Hours (Prime through Compline, with no final-form spoilers)
-- [ ] ART-0339 · Beta · P2 · M · Gameplay deep-dive trailer (2–3 min) storyboard with tool-by-tool callouts
-- [ ] ART-0340 · Release · P2 · S · Accolades trailer template (laurels layout) for post-launch reviews
-- [ ] ART-0341 · Post · P3 · M · DLC or free-update trailer storyboard template
+- [x] ART-0338 · Beta · P1 · M · Launch trailer (90 s) storyboard including Chapters 3–5 Hours (Prime through Compline, with no final-form spoilers)
+- [x] ART-0339 · Beta · P2 · M · Gameplay deep-dive trailer (2–3 min) storyboard with tool-by-tool callouts
+- [x] ART-0340 · Release · P2 · S · Accolades trailer template (laurels layout) for post-launch reviews
+- [x] ART-0341 · Post · P3 · M · DLC or free-update trailer storyboard template
 
 ---
 
@@ -560,16 +560,16 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [ ] ART-0342 · Demo · P0 · M · Outsourcing brief pack: art bible, style frames, naming/export specs, a sample finished asset per class and the IP-avoidance checklist — one zip per asset class
 - [ ] ART-0343 · Demo · P0 · M · Paid test task for 3 candidate vendors/freelancers (1 portrait with 3 expressions + 1 ailment sprite set), scored on a rubric (style match, turnaround, revisions needed)
 - [x] ART-0344 · Demo · P0 · S · Contract terms checklist: work-for-hire/full IP assignment, no AI-generated content without disclosure, source files delivered, credit line
-- [ ] ART-0345 · Demo · P1 · S · Asset tracker sheet (asset ID, vendor, stage, due, cost, approved-by) covering every Demo asset in this file
-- [ ] ART-0346 · Demo · P1 · S · Feedback protocol: paintover-based notes, max 2 revision rounds per stage, 48 h review SLA from our side
+- [x] ART-0345 · Demo · P1 · S · Asset tracker sheet (asset ID, vendor, stage, due, cost, approved-by) covering every Demo asset in this file
+- [x] ART-0346 · Demo · P1 · S · Feedback protocol: paintover-based notes, max 2 revision rounds per stage, 48 h review SLA from our side
 - [ ] ART-0347 · Demo · P1 · S · Shared delivery folder with automated naming/format validation (the CI script from ART-C run on upload)
 - [ ] ART-0348 · Alpha · P1 · M · Chapter 3–5 outsourcing plan: asset counts, vendor allocation and budget per chapter, with the portrait and background vendors locked
 - [ ] ART-0349 · Alpha · P2 · S · Vendor style-drift check: every 20th delivered asset placed next to the style frames in a monthly review
 
 ### Budget & schedule
-- [ ] ART-0350 · Demo · P0 · M · Demo art budget and schedule: cost and weeks per asset class (portraits, backgrounds, flesh sets, ailments, bosses, UI, store) with a 15% contingency
+- [x] ART-0350 · Demo · P0 · M · Demo art budget and schedule: cost and weeks per asset class (portraits, backgrounds, flesh sets, ailments, bosses, UI, store) with a 15% contingency
 - [ ] ART-0351 · Alpha · P1 · M · Full-game art budget re-forecast after demo actuals (cost per asset vs estimate)
-- [ ] ART-0352 · Demo · P1 · S · Credits list for all art contributors maintained in `docs/art/credits.md`, feeding the in-game credits
+- [x] ART-0352 · Demo · P1 · S · Credits list for all art contributors maintained in `docs/art/credits.md`, feeding the in-game credits
 
 ---
 
@@ -580,12 +580,12 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [ ] ART-0354 · Demo · P0 · M · Automated asset lint in CI: dimensions match the spec, power-of-two for textures, no non-premultiplied alpha, file size within budget, no orphaned manifest entries
 - [ ] ART-0355 · Demo · P0 · M · Screenshot-diff regression suite: 20 canonical scenes (each backdrop, the op HUD, each demo boss phase) rendered headless and diffed against approved goldens
 - [ ] ART-0356 · Demo · P0 · S · Resolution pass: every demo screen checked at 1280×720, 1920×1080, 2560×1440, 3840×2160, 1280×800 (Steam Deck) and ultrawide 3440×1440 letterboxed — no blurry upscales, no cropped UI
-- [ ] ART-0357 · Demo · P1 · S · Colour-blind pass (protanopia, deuteranopia, tritanopia simulation) on the ratings, vitals, sigils vs. veins and the curse-violet vs. blood contrast — fixes filed
+- [x] ART-0357 · Demo · P1 · S · Colour-blind pass (protanopia, deuteranopia, tritanopia simulation) on the ratings, vitals, sigils vs. veins and the curse-violet vs. blood contrast — fixes filed
 - [ ] ART-0358 · Demo · P1 · S · Readability pass of every ailment on every flesh set it can appear on in the demo (a matrix screenshot)
 - [ ] ART-0359 · Demo · P1 · S · Gore-level review against the rating target, with the flagged assets listed and resolved before the ratings submission
 - [x] ART-0360 · Demo · P1 · S · Localisation art pass: no baked-in text in any image except the logo; stamps and seals with text use a runtime text layer
 - [x] ART-0361 · Demo · P1 · S · Placeholder sweep: the build report shows 0 `placeholder` assets in Chapters 1–2 (from the manifest tags)
-- [ ] ART-0362 · Demo · P2 · S · Z-order and overlap audit: ailment sprites never draw under blood pools unless intended; HUD never overlaps a Malison weak point at 16:10
+- [x] ART-0362 · Demo · P2 · S · Z-order and overlap audit: ailment sprites never draw under blood pools unless intended; HUD never overlaps a Malison weak point at 16:10
 - [ ] ART-0363 · Beta · P0 · M · Full-game art QA pass of Chapters 3–5 with the same checklist, suite and matrices
 - [ ] ART-0364 · Release · P1 · S · Final IP audit of every shipped asset (Games Workshop and other third-party look-alike check) signed off by the producer
 
@@ -594,15 +594,15 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 ## ART-R · Performance budgets for art
 
 ### Budgets
-- [ ] ART-0365 · Demo · P0 · S · Texture-memory budget: ≤ 256 MB GPU texture memory in any scene on the min-spec (integrated GPU), documented per scene type
-- [ ] ART-0366 · Demo · P0 · S · Atlas budget: ≤ 6 2048² atlas pages resident in an operation (UI, tools, ailments, VFX, boss, portraits-callout)
+- [x] ART-0365 · Demo · P0 · S · Texture-memory budget: ≤ 256 MB GPU texture memory in any scene on the min-spec (integrated GPU), documented per scene type
+- [x] ART-0366 · Demo · P0 · S · Atlas budget: ≤ 6 2048² atlas pages resident in an operation (UI, tools, ailments, VFX, boss, portraits-callout)
 - [ ] ART-0367 · Demo · P0 · S · Flesh texture budget: 1 organ set resident at a time at 1024² (KTX2/BasisU, ~5.3 MB with mips), with a 512² fallback for low settings
 - [ ] ART-0368 · Demo · P0 · S · Draw-budget rule for art: an operation frame ≤ 3 texture binds and ≤ 20k batched verts at peak VFX, measured with the ENG profiler overlay
 - [ ] ART-0369 · Demo · P0 · S · Overdraw budget: additive VFX ≤ 4× overdraw on the hot area at peak (Litany + motes + sparks), verified on the Steam Deck
-- [ ] ART-0370 · Demo · P1 · S · Download-size budget: demo art ≤ 400 MB on disk; the build report lists the 20 largest assets
+- [x] ART-0370 · Demo · P1 · S · Download-size budget: demo art ≤ 400 MB on disk; the build report lists the 20 largest assets
 - [ ] ART-0371 · Demo · P1 · S · Backgrounds: ≤ 4 layers × 1920×1080 WebP resident per story scene, with the next scene's background preloaded
 - [ ] ART-0372 · Demo · P1 · S · Portrait budget: ≤ 4 portraits resident (2048² atlas page each, expressions packed together)
-- [ ] ART-0373 · Demo · P1 · S · Particle caps per effect (blood 64, sparks 48, motes 32, leaf 40) set in the VFX specs and enforced in code
+- [x] ART-0373 · Demo · P1 · S · Particle caps per effect (blood 64, sparks 48, motes 32, leaf 40) set in the VFX specs and enforced in code
 - [ ] ART-0374 · Demo · P1 · M · Low/Medium/High art quality tiers: texture resolution, particle density, parallax layers and animated background FX per tier, reviewed on the Steam Deck (target 60 fps at Medium)
 - [ ] ART-0375 · Alpha · P1 · S · Per-chapter memory re-check when Chapter 3–5 art lands; budget overruns filed as P1 bugs
 - [ ] ART-0376 · Release · P1 · S · Final art-size optimisation pass: unused assets removed (manifest reference check), and recompression tuned to hit the 1.0 download budget
@@ -613,8 +613,8 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 
 ### Updates & DLC art
 - [ ] ART-0377 · Post · P2 · M · Unsung Hour challenge-mode card art and a leaderboard frame
-- [ ] ART-0378 · Post · P2 · L · DLC chapter art package template (1 new location set, 4 portraits, 1 Malison variant, 6 ailments) with a cost estimate
-- [ ] ART-0379 · Post · P3 · M · Alternate cosmetic tool skins (bone-handled, gilt, Pyre-blackened) for the instrument tray and in-field sprites
+- [x] ART-0378 · Post · P2 · L · DLC chapter art package template (1 new location set, 4 portraits, 1 Malison variant, 6 ailments) with a cost estimate
+- [x] ART-0379 · Post · P3 · M · Alternate cosmetic tool skins (bone-handled, gilt, Pyre-blackened) for the instrument tray and in-field sprites
 - [ ] ART-0380 · Post · P3 · S · Steam trading cards (5 cards, 5 backgrounds, emoticons) from existing woodcut and portrait art
 - [ ] ART-0381 · Post · P3 · S · Anniversary key-art variant and a seasonal title-screen skin (Winter Vigil)
 - [ ] ART-0382 · Post · P3 · M · Digital artbook (PDF, 80 pages) from concept archives with artist commentary

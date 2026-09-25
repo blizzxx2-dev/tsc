@@ -1388,5 +1388,114 @@
         0.85
       ]
     ]
+  },
+  "ember": {
+    "layer": "Particles",
+    "shape": {
+      "kind": "point"
+    },
+    "speedJitter": [
+      0.6,
+      1.2
+    ],
+    "cone": 3.14,
+    "alphaOverLife": [
+      [
+        0,
+        0.7
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "sizeOverLife": 1,
+    "priority": "feedback",
+    "blend": "add",
+    "burst": 1,
+    "speed": 10,
+    "life": [
+      0.12,
+      0.22
+    ],
+    "size": [
+      10,
+      16
+    ],
+    "drag": 1,
+    "particle": "glow",
+    "color": [
+      [
+        0,
+        "#fff4d8",
+        1
+      ],
+      [
+        0.5,
+        "#ffb050",
+        1
+      ],
+      [
+        1,
+        "#ff5010",
+        1
+      ]
+    ],
+    "rate": 30
+  },
+  "leaf": {
+    "priority": "feedback",
+    "blend": "alpha",
+    "layer": "Particles",
+    "shape": {
+      "kind": "point"
+    },
+    "burst": 2,
+    "speed": 60,
+    "speedJitter": [
+      0.35,
+      1.25
+    ],
+    "cone": 1.2,
+    "life": [
+      0.9,
+      1.6
+    ],
+    "size": [
+      2.5,
+      5
+    ],
+    "drag": 2,
+    "gravity": 40,
+    "wobble": 30,
+    "spin": 3,
+    "particle": "shard",
+    "color": [
+      [
+        0,
+        "#e8c46a",
+        1
+      ],
+      [
+        1,
+        "#6a4a1a",
+        0.9
+      ]
+    ],
+    "sizeOverLife": 1,
+    "alphaOverLife": [
+      [
+        0,
+        1
+      ],
+      [
+        0.7,
+        0.9
+      ],
+      [
+        1,
+        0
+      ]
+    ]
   }
 }

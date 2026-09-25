@@ -6,6 +6,7 @@ import type { Vec } from '../core/math';
 import { hex, vec3, type RGBA } from '../render/color';
 import type { Gfx, TextOpts } from '../render/gfx';
 import type { ToolId } from '../surgery/types';
+import { FPS } from './timing';
 
 export interface Rect {
   x: number;
@@ -40,7 +41,7 @@ export const ART = {
 } as const;
 
 /** Woodcut flipbook rate for UI animation (12 fps). */
-export const FLIPBOOK_FPS = 12;
+export const FLIPBOOK_FPS: number = FPS.woodcut;
 export const frameAt = (t: number, frames: number, fps = FLIPBOOK_FPS): number => Math.max(0, Math.min(frames - 1, Math.floor(t * fps)));
 
 const TOOL_INDEX: Record<ToolId, number> = { lancet: 0, tongs: 1, leech: 2, thread: 3, salve: 4, tincture: 5, brand: 6, lens: 7 };
@@ -144,7 +145,8 @@ export const RATING_INK: Record<Rating, [string, string]> = {
   cool: ['#f5d76e', '#7a4a08'],
   good: ['#b8e0c8', '#1a4a30'],
   bad: ['#e0955a', '#4a1a04'],
-  miss: ['#ff6a5a', '#3a0404'],
+  // Crimson, not orange-red: BAD and MISS stay apart for deuteranopes without a filter (ART-0357).
+  miss: ['#e03050', '#3a0404'],
 };
 
 /** Four-frame stamp hit: lifted (large, faint), strike, rebound, rest. */
@@ -267,9 +269,14 @@ export function tallyRibbon(g: Gfx, cx: number, cy: number, w: number, h: number
 export type ToolState = 'idle' | 'selected' | 'disabled' | 'cooldown';
 const TOOL_STATE: Record<ToolState, number> = { idle: 0, selected: 1, disabled: 2, cooldown: 3 };
 
+/** Cosmetic instrument skins (ART-0379): the tray icon and the in-field sprite share them. */
+export type ToolSkin = 'steel' | 'bone' | 'gilt' | 'pyre';
+export const TOOL_SKINS: readonly ToolSkin[] = ['steel', 'bone', 'gilt', 'pyre'];
+const SKIN_INDEX: Record<ToolSkin, number> = { steel: 0, bone: 1, gilt: 2, pyre: 3 };
+
 /** Brass-engraved instrument icon, `size` px square. */
-export function toolArt(g: Gfx, tool: ToolId, x: number, y: number, size: number, state: ToolState = 'idle', cooldown = 0): void {
-  g.ornament(ART.tool, x - size / 2, y - size / 2, size, size, { a: [TOOL_INDEX[tool], TOOL_STATE[state], cooldown, 0] });
+export function toolArt(g: Gfx, tool: ToolId, x: number, y: number, size: number, state: ToolState = 'idle', cooldown = 0, skin: ToolSkin = 'steel'): void {
+  g.ornament(ART.tool, x - size / 2, y - size / 2, size, size, { a: [TOOL_INDEX[tool], TOOL_STATE[state], cooldown, SKIN_INDEX[skin]] });
 }
 
 /** Brass crosshair; `tint` shades the brass (green valid target, red invalid). */

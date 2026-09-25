@@ -43,3 +43,6 @@ export function speciesBlood(paletteBlood: string, look: SpeciesLook): string {
   const out = c.map((v, i) => Math.max(0, Math.min(1, v * (look.blood[i] / Math.max(0.01, human[i])))));
   return `#${out.map((v) => Math.round(v * 255).toString(16).padStart(2, '0')).join('')}`;
 }
+
+/** Each organ set's base vein colour (for the colour-blind pass, ART-0357). */
+export const ORGAN_VEINS = Object.fromEntries(Object.entries(ORGAN).map(([k, v]) => [k, v.vein])) as Record<OrganKind, string>;

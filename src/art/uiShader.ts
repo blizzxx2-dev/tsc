@@ -688,7 +688,16 @@ vec4 toolIcon(vec2 px, vec2 sz, float aa) {
   if (mat == 3.0) { alb = vec3(0.3, 0.08, 0.1) * (0.8 + 0.3 * sin(p.x * 40.0)); rough = 0.3; }
   if (mat == 4.0) { alb = vec3(0.5, 0.7, 0.75); rough = 0.1; }
   if (mat == 5.0) { alb = vec3(0.88, 0.8, 0.6); rough = 0.8; }
+  // Cosmetic skins (ART-0379, u_a.w): 1 bone-handled, 2 gilt, 3 Pyre-blackened.
+  float skin = u_a.w;
+  bool steelPart = mat != 1.0 && mat != 3.0 && mat != 4.0 && mat != 5.0 && mat != 6.0;
+  if (skin > 0.5 && skin < 1.5 && mat == 1.0) { alb = vec3(0.86, 0.8, 0.66) * (0.85 + 0.2 * noise(p * vec2(6.0, 40.0))); rough = 0.6; }
+  if (skin > 1.5 && skin < 2.5 && steelPart) { alb = BRASS * vec3(1.15, 1.05, 0.7); rough = 0.2; }
+  if (skin > 2.5 && steelPart) { alb = vec3(0.14, 0.12, 0.11); rough = 0.55; }
+  if (skin > 2.5 && mat == 1.0) { alb = vec3(0.09, 0.06, 0.05) * (0.7 + 0.6 * noise(p * vec2(8.0, 30.0))); }
   vec3 col = mat == 1.0 || mat == 3.0 || mat == 5.0 ? glossy(alb, n, 20.0, 0.25) : envMetal(alb, n, rough);
+  // Pyre-blackened: embers still glow in the cracks.
+  if (skin > 2.5 && (steelPart || mat == 1.0)) col += vec3(1.0, 0.45, 0.1) * rsmooth(0.08, 0.0, abs(noise(p * 9.0) - 0.5)) * 0.35;
   if (mat == 4.0) {
     col = mix(col, tool == 5 ? vec3(0.3, 0.9, 0.5) : (tool == 4 ? vec3(0.95, 0.85, 0.5) : vec3(0.55, 0.75, 1.0)), 0.45);
     col += vec3(1.0) * rsmooth(0.08, 0.0, abs(p.x + p.y + 0.3)) * 0.3;

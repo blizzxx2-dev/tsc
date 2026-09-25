@@ -314,6 +314,8 @@ export function resetTab(tabId: OptionsTab): void {
  * Back. Reachable from the title and the pause menu (as an overlay).
  */
 export class OptionsScene implements Scene {
+  /** A menu page: moving between two plays the page-turn transition (ART-0306). */
+  readonly menuPage = true;
   readonly ui = new Ui('options');
   private tab: OptionsTab = 'gameplay';
   private tabT = 0;

@@ -10,6 +10,8 @@ import type { Gfx } from '../render/gfx';
 import type { ToolId } from '../surgery/types';
 import { parchmentSheet, UI } from './ornaments';
 import { uiButton } from '../audio/ui-hooks';
+import { applyHardwareCursor, PAD_CURSOR_SCALE, padCursorRing } from '../art/cursors';
+import { glyphContext } from '../input/glyphs';
 import { crosshairArt, toolArt, type ToolState } from '../art/kit';
 
 const TAU = Math.PI * 2;
@@ -89,7 +91,13 @@ export function star(g: Gfx, x: number, y: number, r: number, c: number): void {
  */
 export function reticle(g: Gfx, p: Vec, tint?: string): void {
   // Cursor visibility (UIX-0056): size and colour settings, and a dark outline behind the crosshair.
-  const size = settings.cursorSize;
+  // Hardware cursor option (ART-0271): the OS draws the fallback PNG instead.
+  if (settings.hardwareCursor) return applyHardwareCursor(tint ? 'crosshair' : 'quill');
+  applyHardwareCursor(null);
+  // Gamepad/Deck virtual cursor (ART-0273): 1.5× larger, inside a brass ring.
+  const pad = glyphContext().device === 'pad';
+  if (pad) padCursorRing(g, p, g.time, settings.cursorSize);
+  const size = settings.cursorSize * (pad ? PAD_CURSOR_SCALE : 1);
   if (tint) {
     crosshairArt(g, p, '#000000', 34 * size);
     crosshairArt(g, p, cursorColour(tint, settings.cursorColor), 30 * size);

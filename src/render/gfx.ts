@@ -117,6 +117,8 @@ export interface FleshParams {
   deep: [number, number, number];
   vein: [number, number, number];
   pulse: number;
+  /** Tissue warp scale [x, y] about `center` (ART-0298, src/art/tissueWarp.ts); omitted = rim-only swell. */
+  warp?: [number, number];
   light: Vec;
   corrupt: number;
   /** Voronoi edge softness per organ (smaller = crisper membranes). */
@@ -164,6 +166,8 @@ export interface PostParams {
   beat?: number;
   /** Malison presence 0..1 (ink creeps from the frame edges). */
   curse?: number;
+  /** Compline's silence 0..1 (ART-0258): desaturate and chalk-hatch the frame. */
+  silence?: number;
   /** [flatline 0..1, victory 0..1] outcome transitions. */
   outcome?: [number, number];
   /** Bloom threshold override (per scene preset). */
@@ -246,6 +250,8 @@ export class Gfx {
   readonly gpuTimer: GpuTimer;
   /** Per-frame batcher counters (ENG-0024); reset by `resetStats()`. */
   stats: FrameStats = emptyStats();
+  /** The last finished frame's counters (for budget reports and automation). */
+  lastStats: FrameStats = emptyStats();
   /** World render scale 0.5–1 of the backbuffer (ENG-0181); UI and text always render at native resolution. */
   renderScale = 1;
   /** Shader quality tier in effect (ENG-0082); `setShaderQuality` changes it, `displayPrefs.quality` applies it lazily. */
@@ -619,8 +625,6 @@ export class Gfx {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   }
 
-  /** The last finished frame's counters (debug overlays read these). */
-  lastStats: FrameStats = emptyStats();
   private sectionName = '';
   private sectionStart = 0;
 
@@ -808,6 +812,7 @@ export class Gfx {
     gl.uniform1f(this.u(this.post, 'u_flash'), dp.flash ?? 1);
     gl.uniform1f(this.u(this.post, 'u_beat'), p.beat ?? 0);
     gl.uniform1f(this.u(this.post, 'u_curse'), p.curse ?? 0);
+    gl.uniform1f(this.u(this.post, 'u_silence'), p.silence ?? 0);
     gl.uniform2fv(this.u(this.post, 'u_outcome'), p.outcome ?? [0, 0]);
     gl.uniform1f(this.u(this.post, 'u_hdr'), this.floatTargets ? 1 : 0);
     const shake = p.trauma !== undefined ? shakeOffset(p.trauma, this.time, { scale: dp.still ? 0 : 1 }) : p.shake;
@@ -1454,6 +1459,7 @@ export class Gfx {
     gl.uniform3fv(this.u(pr, 'u_deep'), f.deep);
     gl.uniform3fv(this.u(pr, 'u_vein'), f.vein);
     gl.uniform1f(this.u(pr, 'u_pulse'), f.pulse);
+    gl.uniform2f(this.u(pr, 'u_warp'), f.warp?.[0] ?? 0, f.warp?.[1] ?? 0);
     gl.uniform2f(this.u(pr, 'u_light'), f.light.x, f.light.y);
     gl.uniform1f(this.u(pr, 'u_corrupt'), f.corrupt);
     gl.uniform1f(this.u(pr, 'u_cellSoft'), f.cellSoft ?? 0.08);

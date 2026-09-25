@@ -3,6 +3,7 @@ import { eggSacArt } from '../art/ailmentArt';
 import { drawBlotch, presentation } from '../render/presentation';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
+import { dawnFlare, flareIntensity, laudsChoir, lightThread, THREAD_SEVER_S, THREAD_TIE_S, type ChoirState } from '../art/bossVfx';
 import { Entity } from './entity';
 import { Embedded, Laceration, Rot, surfDisc } from './entities';
 import { FIELD, onBody, type Operation } from './operation';
@@ -109,6 +110,8 @@ export class LaudsMalison extends MalisonBase {
   partner: LaudsBody | null = null;
   thread: LightThread | null = null;
   pending: { from: 'core' | 'partner'; amount: number; t: number } | null = null;
+  /** Presentation only: which body last sang the other's wound closed, and when (ART-0236 heal-answer). */
+  lastHeal: { at: 'core' | 'partner'; time: number } | null = null;
   /** Phase 3: the dawn flare and the surfaced window. */
   private flare: Cadence;
   flareT = 0;
@@ -238,12 +241,21 @@ export class LaudsMalison extends MalisonBase {
         // Unanswered: the other body sings the wound half closed.
         const heal = this.pending.amount * 0.5;
         const at = this.pending.from === 'core' ? this.pos : (this.partner?.pos ?? this.pos);
+        this.lastHeal = { at: this.pending.from, time: op.elapsed };
         this.pending = null;
         this.hp = Math.min(this.maxHp * this.phases[this.phaseIx].from, this.hp + heal);
         op.popup('It answers itself', { ...at }, '#e0c0ff');
         op.sayOnce('lauds-response', 'It heals from the other body! Strike one, then the other — quickly!');
       }
     }
+  }
+
+  /** The choir state of one linked body (ART-0236), for drawing. */
+  choirState(which: 'core' | 'partner', op: Operation): ChoirState {
+    if (this.lastHeal && this.lastHeal.at === which && op.elapsed - this.lastHeal.time < 1.2) return 'heal';
+    if (this.hurtFlash > 0.5) return 'hurt';
+    if (this.pending) return this.pending.from === which ? 'call' : 'answer';
+    return 'idle';
   }
 
   /** Is the light-thread cut (bodies unlinked)? */
@@ -462,6 +474,7 @@ export class LaudsMalison extends MalisonBase {
     g.glow(x, y, this.radius * 2.8, hex(bare ? '#ff9050' : '#c0a0ff', 0.25));
     g.creature(1, x, y, this.radius * 4, { seed: this.id, open: bare ? 1 : 0, health: this.frac, flash: this.hurtFlash });
     if (this.phase.key === 'call' && bare) g.arc(x, y, this.radius + 16, 3, hex('#ff8040'), 1 - this.bareT / this.tune.exposure);
+    if (this.phase.key === 'response' && this.partner) laudsChoir(g, x, y, this.radius, this.choirState('core', op), op.elapsed, this.partner.pos);
     if (this.pending && this.pending.from === 'core') g.arc(x, y, this.radius + 20, 3, hex('#ffe0a0'), this.pending.t / this.tune.response);
     g.arc(x, y, this.radius + 10, 3, hex('#b478ff', 0.7), this.frac);
   }
@@ -471,14 +484,10 @@ export class LaudsMalison extends MalisonBase {
     if (this.phase.key !== 'dawn') return;
     // Flash intensity slider (GAM-0239, BOS-0038): the dawn flare and its horizon glow scale with it.
     const soften = presentation.flash;
-    if (this.flare.telling) {
-      const k = Math.min(1, (this.flare.t - (this.tune.flareEvery - this.flare.lead)) / this.flare.lead);
-      g.glow(FIELD.cx, FIELD.cy - FIELD.ry - 40, 520, hex('#ffc860', 0.35 * k * soften));
-    }
-    if (this.flareT > 0) {
-      const k = this.flareT / this.tune.flareFor;
-      g.glow(FIELD.cx, FIELD.cy, 900, hex('#fff0c0', 0.55 * k * soften));
-    }
+    // The dawn flare (ART-0238, docs/art/vfx/dawn-flare.md): a horizon glow foretells it, then a gold bloom burst whites out the Lens.
+    const tellK = this.flare.telling ? Math.min(1, (this.flare.t - (this.tune.flareEvery - this.flare.lead)) / this.flare.lead) : 0;
+    const k = this.flareT > 0 ? flareIntensity(this.tune.flareFor - this.flareT, this.tune.flareFor) : 0;
+    if (tellK > 0 || k > 0) dawnFlare(g, { x: -400, y: -400, w: 2080, h: 1520 }, { x: FIELD.cx, y: FIELD.cy - FIELD.ry }, k, tellK, soften, op.tool === 'lens' ? op.pointer : undefined);
     // Ripples where it swims (the Lens finds them).
     if (this.submerged && op.tool === 'lens' && !this.blinded) {
       const r = 20 + ((op.elapsed * 30) % 30);
@@ -534,9 +543,9 @@ export class LaudsBody extends Entity {
     const { x, y } = this.pos;
     g.glow(x, y, this.radius * 2.6, hex('#ffb070', 0.22));
     g.creature(1, x, y, this.radius * 4, { seed: this.id + 7, open: 1, health: this.core.frac, flash: this.core.hurtFlash });
+    laudsChoir(g, x, y, this.radius, this.core.choirState('partner', op), op.elapsed + 0.37, this.core.pos);
     const p = this.core.pending;
     if (p && p.from === 'partner') g.arc(x, y, this.radius + 20, 3, hex('#ffe0a0'), p.t / this.core.tune.response);
-    void op;
   }
 }
 
@@ -613,16 +622,17 @@ export class LightThread extends Entity {
     const pa = this.a.pos;
     const pb = this.b.pos;
     if (this.unlinkT > 0) {
+      // Severed (ART-0237): the halves recoil, a ghost line waits, then the ends reach back and knot.
       const k = this.unlinkT / this.a.tune.unlink;
+      const since = this.a.tune.unlink - this.unlinkT;
       g.dashed([pa, pb], 1.5, hex('#e0c0ff', 0.25 * (1 - k) + 0.05), 6, 10);
+      if (since < THREAD_SEVER_S) lightThread(g, pa, pb, op.elapsed, { bright: 0.75, sever: since / THREAD_SEVER_S, tie: null });
+      else if (this.unlinkT < THREAD_TIE_S) lightThread(g, pa, pb, op.elapsed, { bright: 0.75, sever: null, tie: 1 - this.unlinkT / THREAD_TIE_S });
       return;
     }
     const tellK = this.dim.telling ? 0.5 + 0.5 * Math.sin(op.elapsed * 20) : 0;
     const bright = this.dimmed ? 0.18 : 0.75 - 0.3 * tellK;
-    g.setBlend('add');
-    g.line(pa, pb, 9, hex('#ffd8a0', bright * 0.3));
-    g.line(pa, pb, 3, hex('#fff0d0', bright));
-    g.setBlend('alpha');
+    lightThread(g, pa, pb, op.elapsed, { bright, sever: null, tie: null });
     // The response window, as an arc filling between the bodies.
     const p = this.a.pending;
     if (p) {

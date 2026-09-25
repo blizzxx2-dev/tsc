@@ -50,6 +50,8 @@ export function creditRows(): Row[] {
 const ROW_H: Record<Row['kind'], number> = { title: 96, heading: 64, role: 30, name: 34, note: 34, gap: 36 };
 
 export class CreditsScene implements Scene {
+  /** A menu page: moving between two plays the page-turn transition (ART-0306). */
+  readonly menuPage = true;
   readonly ui = new Ui('credits');
   private t = 0;
   /** Roll offset; starts with the lockup already rising from the bottom edge. */

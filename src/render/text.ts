@@ -156,7 +156,12 @@ export class GlyphAtlas {
       return g;
     }
     const w = Math.ceil(adv + PAD * 2 + 8);
-    const h = m.ascent + m.descent + PAD * 2;
+    // Glyphs that reach past the face's 'Hgjy|' box (Cinzel's J and Q tails, accents) get a taller
+    // cell, so they never paint into the row below and show up as a stray hook under another letter.
+    const gm = ctx.measureText(ch);
+    const asc = Math.max(m.ascent, Math.ceil(gm.actualBoundingBoxAscent + 2));
+    const desc = Math.max(m.descent, Math.ceil(gm.actualBoundingBoxDescent + 2));
+    const h = asc + desc + PAD * 2;
     if (this.penY === 0) this.penY = 8;
     if (this.penX + w > SIZE) {
       this.penX = 8;
@@ -177,7 +182,13 @@ export class GlyphAtlas {
     }
     ctx.fillStyle = '#fff';
     ctx.textBaseline = 'alphabetic';
-    ctx.fillText(ch, this.penX + PAD + 4, this.penY + PAD + m.ascent);
+    // Clip to the cell: nothing a glyph draws may land in a neighbour's cell.
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(this.penX, this.penY, w, h);
+    ctx.clip();
+    ctx.fillText(ch, this.penX + PAD + 4, this.penY + PAD + asc);
+    ctx.restore();
     const fallback = this.isFallback(ch, f);
     ctx.font = this.font(f, px);
     g = {
@@ -188,7 +199,7 @@ export class GlyphAtlas {
       w,
       h,
       ox: -PAD - 4,
-      oy: -PAD,
+      oy: -PAD - (asc - m.ascent),
       adv,
       fallback,
     };

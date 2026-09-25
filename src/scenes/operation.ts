@@ -27,7 +27,7 @@ import { BUILD } from '../platform/build';
 import { takeLog } from '../surgery/replay';
 import { FlashLimiter } from '../render/flashLimiter';
 import { Malison, MalisonShard } from '../surgery/malison';
-import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOWN, TINCTURE_TIME, type OperationDef, type Popup } from '../surgery/operation';
+import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOWN, TINCTURE_TIME, TINCTURE_HEX, type OperationDef, type Popup } from '../surgery/operation';
 import { TOOL_INFO, type ToolId } from '../surgery/types';
 import { anchorShift, PALETTE, viewRect, VIEW_W } from '../ui/layout';
 import { button, reticle, toolIcon } from '../ui/widgets';
@@ -68,6 +68,12 @@ import { operationOptions } from '../surgery/session';
 import type { OperationOptions } from '../surgery/operation';
 import { drawDebug, drawDialogue, drawDrainArrow, drawFieldOverlays, drawLitanyPractice, drawSecondaryVitals, drawTrayState, drawTutorial } from './gameplayHud';
 import { PauseScene, type PauseResult } from './pause';
+import { VfxLayer } from '../art/vfx';
+import { ComplineLook } from '../art/complineLook';
+import { inkFlood } from '../art/outcomeArt';
+import { nextTransitionStyle } from '../ui/transition';
+import { pushWarp, tissueWarp } from '../art/tissueWarp';
+import { drawFieldTool, drawTipDebug } from '../art/toolSprites';
 
 export interface OperationOutcome {
   op: Operation;
@@ -123,6 +129,14 @@ export class OperationScene implements Scene {
   private uiFx = new Particles();
   /** Emitters driven by the operation's state and events (ENG-0133–0142). */
   private vfx = new OperationVfx(() => this.particles);
+  /** Procedural VFX over the particles (ART-0275…0293). */
+  private artVfx = new VfxLayer(this.particles);
+  /** Compline's silence, stolen-Litany ripple and colour restore (ART-0258). */
+  private compline = new ComplineLook();
+  /** The star that just read, handed to the Litany burn-in when the `litany` event follows. */
+  /** Recent pointer positions while the Gut Thread works, for the trailing thread. */
+  private threadTrail: { x: number; y: number }[] = [];
+  private pendingStar: { pts: { x: number; y: number }[]; c: { x: number; y: number } } | null = null;
   private flashLimit = new FlashLimiter();
   private comboT = 0;
   private lastCombo = 0;
@@ -227,6 +241,17 @@ export class OperationScene implements Scene {
       if (this.calloutLog.length > 20) this.calloutLog.splice(0, this.calloutLog.length - 20);
     });
     this.bossAudio.listen(op);
+    this.artVfx.listen(op);
+    this.ctl.onStar = (trail, ok) => {
+      if (ok) this.pendingStar = { pts: trail, c: { x: trail.reduce((a, p) => a + p.x, 0) / trail.length, y: trail.reduce((a, p) => a + p.y, 0) / trail.length } };
+      else if (trail.length > 8) this.artVfx.gestureFailed(trail);
+      this.artVfx.trailReleased(trail);
+    };
+    op.events.on('litany', () => {
+      const st = this.pendingStar;
+      this.pendingStar = null;
+      this.artVfx.litanyStart(st?.pts ?? null, st?.c ?? { x: FIELD.cx, y: FIELD.cy - 40 });
+    });
     // The first meeting with an Hour opens its codex page.
     watchEncounters(op, (boss) => {
       const p = loadProgress();
@@ -461,6 +486,8 @@ export class OperationScene implements Scene {
     this.fleshCurse += (Math.max(cursed, curseSource(op.entities) ? 0.55 : 0) - this.fleshCurse) * Math.min(1, dt * 1.5);
 
     // Visual effects arrive as `fx` events; landed droplets become stains. Particles run on world time.
+    this.compline.update(op, dt);
+    this.artVfx.update(op, { dt, pointer: op.pointer, down: input.down, pulse: this.pulse, reduceMotion: settings.reduceMotion, reduceFlashing: settings.reduceFlashing, gore: bloodScale(presentation.gore) });
     this.particles.update(dt * op.timeScale, (p, kind, size) => {
       if (kind === 'blood' && onBody(p)) op.stain(p, size * 2.6, 0.3);
       // Landed droplets stamp persistent blood (ENG-0114).
@@ -490,7 +517,11 @@ export class OperationScene implements Scene {
 
     if (op.status === 'won' || op.status === 'lost') {
       this.endT += dt;
-      if (this.endT > 2.2) this.onEnd({ op, won: op.status === 'won' });
+      if (this.endT > 2.2) {
+        // A saved patient leaves by the woodcut page turn (ART-0292); a lost one is already under the ink.
+        if (op.status === 'won') nextTransitionStyle('page');
+        this.onEnd({ op, won: op.status === 'won' });
+      }
     }
   }
 
@@ -552,6 +583,7 @@ export class OperationScene implements Scene {
     op.calloutPace = localeInfo(getLocale())?.reading ?? 1;
     presentation.gore = GORE_LEVEL[settings.goreLevel];
     presentation.flash = flashScale(settings);
+    presentation.pulse = settings.reduceMotion ? 0 : this.pulse;
     const pal = organPalette(op.def);
     const t = g.time;
     const sk = settings.reduceMotion ? 0 : op.shake * settings.shake;
@@ -569,7 +601,10 @@ export class OperationScene implements Scene {
     this.decals.setQuality(g.shaderQuality);
     this.decals.flush();
     const light = { x: FIELD.cx - 220 + Math.sin(t * 0.7) * 30, y: 60 + Math.sin(t * 1.3) * 10 };
+    // Tissue breathing and heartbeat (ART-0298): the flesh, its wounds, fluids and ailments share one warp.
+    const warp = tissueWarp(pal.kind, this.pulse, t, settings.reduceMotion);
     g.beginLayer('surface');
+    pushWarp(g, FIELD.cx, FIELD.cy, warp);
     for (const sc of op.scars) {
       surfLine(g, sc, 7, 0.18, 0.15, 0, 0.1);
       surfLine(g, sc, 12, 0, 0, 0, 0.2);
@@ -577,10 +612,13 @@ export class OperationScene implements Scene {
     for (const st of op.stains) surfDisc(g, st, st.r, 0, st.a);
     for (const e of ents) e.drawSurface(g, op);
     if (game.input.down && onBody(game.input.pos)) surfDisc(g, game.input.pos, 16, 0.28);
+    g.restore();
     g.endLayer();
     g.beginLayer('fluid');
+    pushWarp(g, FIELD.cx, FIELD.cy, warp);
     for (const e of ents) e.drawFluid(g, op);
     this.particles.drawFluid(g);
+    g.restore();
     g.endLayer();
 
     // ---------------------------------------------------------------- world
@@ -594,6 +632,7 @@ export class OperationScene implements Scene {
       deep: pal.deep,
       vein: pal.vein,
       pulse: this.pulse,
+      warp,
       light,
       corrupt: this.fleshCurse,
       corruptAt: curse?.at,
@@ -618,6 +657,7 @@ export class OperationScene implements Scene {
     this.tray.draw(g, op.elapsed, { tray: op.def.tools.includes('tongs'), lead: op.entities.some((e) => e instanceof Embedded && e.kind === 'hexstone') });
     // Closed wounds: the sutured scar (ART-0188) over the carved channel; it also appears on the results card.
     for (const sc of op.scars) scarArt(g, sc, 4, 0, presentation.gore === 2 ? 0.5 : 1);
+    pushWarp(g, FIELD.cx, FIELD.cy, warp);
     for (const e of ents) e.draw(g, op);
     // High contrast: a 2 px ring around everything that takes an instrument.
     if (highContrast()) for (const e of ents) if (e.required) g.arc(e.pos.x, e.pos.y, 28, 2, hex('#ffffff', 0.85), 1);
@@ -627,6 +667,8 @@ export class OperationScene implements Scene {
     this.vanish.draw(g, op.elapsed);
     this.particles.draw(g);
     this.blade.draw(g);
+    g.restore();
+    this.artVfx.drawWorld(g, op, game.input.pos);
 
     // Scrying lens: shimmer where something hides.
     if (op.tool === 'lens') {
@@ -637,22 +679,19 @@ export class OperationScene implements Scene {
       }
     }
 
-    if (this.ctl.starTrail.length > 1) {
-      g.setBlend('add');
-      g.polyline(this.ctl.starTrail, 8, hex('#f5d76e', 0.25));
-      g.polyline(this.ctl.starTrail, 3, hex('#fff0b0', 0.9));
-      g.setBlend('alpha');
-    }
+    this.artVfx.drawLiveTrail(g, this.ctl.starTrail, g.time);
 
     const soften = flashScale(settings);
     const danger = (op.status === 'running' ? Math.max(0, (35 - op.vitals) / 35) : op.status === 'lost' ? 1 : 0) * soften;
     const litany = op.litanyTime > 0 ? Math.min(1, op.litanyTime, (LITANY_DURATION - op.litanyTime) * 3) * soften : 0;
     const ch2 = op.def.id.startsWith('op2');
+    const inverted = this.compline.invertedLitany();
     g.endWorld({
       trauma,
       spot: { cx: FIELD.cx, cy: FIELD.cy, rx: FIELD.rx, ry: FIELD.ry, k: 0.62 + 0.25 * soften * (op.entities.find((e): e is Malison => e instanceof Malison && e.alive)?.watching(op.elapsed) ?? 0) },
-      litany,
+      litany: inverted ? Math.max(litany, inverted[0] * soften) : litany,
       danger,
+      silence: this.compline.silence,
       shake,
       // Bloom preset (ENG-0149): the Malison fights glow harder than ordinary cases.
       bloom: this.corrupt > 0.5 ? 'malison' : 'operation',
@@ -662,10 +701,10 @@ export class OperationScene implements Scene {
       lutMix: Math.max(this.corrupt * 0.8, danger > 0.5 ? (danger - 0.5) * 1.2 : 0),
       beat: this.pulse,
       curse: this.corrupt * 0.9 * soften,
-      outcome: [op.status === 'lost' ? Math.min(1, this.endT / 2) : 0, op.status === 'won' ? Math.min(1, this.endT / 1.2) : 0],
+      outcome: [op.status === 'lost' ? Math.min(1, this.endT / 2) : 0, Math.max(op.status === 'won' ? Math.min(1, this.endT / 1.2) : 0, this.compline.restore * 0.8)],
       litanyCenter: this.ctl.litanyCenter,
       lens: op.tool === 'lens' ? [game.input.pos.x, game.input.pos.y, 95, 1] : undefined,
-      litanyAge: op.litanyTime > 0 ? LITANY_DURATION - op.litanyTime : 10,
+      litanyAge: inverted ? inverted[1] : op.litanyTime > 0 ? LITANY_DURATION - op.litanyTime : 10,
       hurt: (() => {
         const age = op.elapsed - op.lastHurt.at;
         const k = this.flashLimit.filter(Math.max(0, 1 - age / 0.45) * Math.min(1, op.lastHurt.amount / 6) * soften, 1 / 60);
@@ -682,6 +721,7 @@ export class OperationScene implements Scene {
     }
 
     // ---------------------------------------------------------------- UI
+    this.artVfx.drawScreen(g, op, viewRect(), { x: 16, y: 14 + anchorShift('top'), w: 316, h: 86 });
     drawFieldOverlays(g, op);
     // Brand smoke hangs over the field for a moment after heavy searing (GAM-0051).
     if (this.smoke.veil > 0.01) g.glow(op.cursor.x, op.cursor.y - 30, 260, hex('#9a9088', this.smoke.veil * 0.45));
@@ -740,6 +780,8 @@ export class OperationScene implements Scene {
       // Ink spreading from the centre of the band.
       for (let i = 0; i < 6; i++) g.circle(VIEW_W / 2 + (i - 2.5) * 90, 356 + Math.sin(i * 2.1) * 20, (30 + i * 8) * k, hex('#1a0406', 0.35 * k));
       g.rect(vr2.x, 296, vr2.w, 128, hex('#2a0608', 0.25 * k));
+      // Ink floods in from the edges until a Dance-of-Death skeleton stands in it (ART-0292).
+      inkFlood(g, vr2, this.endT, settings.reduceMotion);
       card(tr('hud.patient_lost'), tSource(op.lostReason), k, '#ffb0a8', '#c0282c');
     }
 
@@ -757,8 +799,16 @@ export class OperationScene implements Scene {
     if (op.tool === 'tincture' && op.injectT > 0) g.arc(p.x, p.y, 18, 3, hex(PALETTE.good), op.injectT / TINCTURE_TIME);
     this.drawHoldRing(g, p);
     drawTorpor(g, op, p, viewRect());
-    toolIcon(g, op.tool, p.x + 20, p.y - 20, 0.8 + this.toolFlash * 0.3, t);
-    if (op.tool === 'tongs') drawTongsJaws(g, p, op.held !== null);
+    // In use on the field, the instrument itself is drawn with its tip on the pointer (ART-0269/0270); otherwise its icon rides beside.
+    const working = game.input.down && op.status === 'running' && !this.paused && onBody(this.ctl.toWorld(p));
+    if (op.tool === 'thread' && working) {
+      this.threadTrail.push({ x: p.x, y: p.y });
+      if (this.threadTrail.length > 24) this.threadTrail.shift();
+    } else this.threadTrail.length = 0;
+    if (working) drawFieldTool(g, op.tool, p, { closed: !!op.held, heat: Math.min(1, 0.45 + op.brandHeat / 3), trail: this.threadTrail, tint: TINCTURE_HEX[op.tinctureColor] }, t);
+    else toolIcon(g, op.tool, p.x + 20, p.y - 20, 0.8 + this.toolFlash * 0.3, t);
+    if (this.debug) drawTipDebug(g, op.tool, p);
+    if (op.tool === 'tongs' && !working) drawTongsJaws(g, p, op.held !== null);
     const aim = op.status === 'running' && !this.paused ? cursorTarget(op, p) : { kind: 'none' as const };
     const cpal = palette();
     const tint = aim.kind === 'valid' ? '#9fe0a8' : aim.kind === 'needs' ? '#ff9a6a' : cursorTint(op, p);
@@ -898,7 +948,11 @@ export class OperationScene implements Scene {
     const S = { ...HUD_SCORE };
     glass(g, S, { strength: plateK });
     caps(g, tr('hud.score'), S.x + S.w - 18, S.y + 22, 11, hex(INK.dim), 'right');
-    g.text(op.def.patient, S.x + 18, S.y + 24, { size: 16, font: 'italic', color: hex(INK.dim), shadow: false });
+    // A long patient name is cut with an ellipsis before it reaches the SCORE label (never shrunk below 16 px).
+    const nameRoom = S.w - 36 - g.measure(tr('hud.score').toUpperCase(), 11, 'display', 0.2) - 14;
+    let patient = op.def.patient;
+    while (patient.length > 4 && g.measure(patient, 16, 'italic') > nameRoom) patient = patient.slice(0, -2).trimEnd() + '…';
+    g.text(patient, S.x + 18, S.y + 24, { size: 16, font: 'italic', color: hex(INK.dim), shadow: false });
     const rolling = Math.abs(op.score - this.shownScore) >= 1;
     numerals(g, formatNumber(Math.round(this.shownScore)), S.x + S.w - 18, S.y + 58, 30, rolling ? '#ffffff' : INK.goldHi, INK.gold, 'right');
     if (op.combo > 1) {

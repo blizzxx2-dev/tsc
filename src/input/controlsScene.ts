@@ -1,3 +1,5 @@
+import { TOOL_INFO } from '../surgery/types';
+import { TOOL_GLYPH_SIZE, toolGlyph } from '../art/toolSprites';
 import { t as tr } from '../i18n';
 import { caps, glass, heading, hglow, INK, menuItem, rule } from '../ui/hudKit';
 import { arrow } from '../ui/controls';
@@ -147,6 +149,8 @@ const DECK_LAYOUT: [string, string][] = [
  * mouse, keyboard and gamepad.
  */
 export class ControlsScene implements Scene {
+  /** A menu page: moving between two plays the page-turn transition (ART-0306). */
+  readonly menuPage = true;
   private tab = 0;
   private row = 0;
   private col = 0;
@@ -464,6 +468,9 @@ export class ControlsScene implements Scene {
         const def = ACTIONS.find((a) => a.id === id)!;
         rowGlow(r, i === this.row);
         rowLabel(tr(`action.${def.id}`), r, i === this.row);
+        // Instrument rows carry the tool's 32 px glyph in the margin (ART-0266).
+        const tool = id.startsWith('tool.select.') ? TOOL_INFO[Number(id.slice(12)) - 1]?.id : undefined;
+        if (tool) toolGlyph(g, tool, r.x - 20, r.y + r.h / 2, TOOL_GLYPH_SIZE);
         SLOTS.forEach((slot, c) => {
           const cr = this.cellRect(i, c);
           const code = set[slot.kind][slot.index];
