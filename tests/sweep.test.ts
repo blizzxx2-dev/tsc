@@ -36,7 +36,8 @@ const median = (xs: number[]) => {
 
 describe('balance sweep (20 seeds × 5 profiles × every demo op)', () => {
   const rows: Row[] = [];
-  const t0 = Date.now();
+  // CPU time, not wall time: the other suites share the machine's cores while this one runs.
+  const cpu0 = process.cpuUsage();
   for (const def of allOperations())
     for (const profile of PROFILES)
       for (let seed = 1; seed <= SEEDS; seed++) {
@@ -53,7 +54,8 @@ describe('balance sweep (20 seeds × 5 profiles × every demo op)', () => {
           litany: op.litanyUsed,
         });
       }
-  const elapsed = (Date.now() - t0) / 1000;
+  const used = process.cpuUsage(cpu0);
+  const elapsed = (used.user + used.system) / 1e6;
 
   it('GAM-0188: the full 10-op × 5-profile × 20-seed sweep runs in under 60 s', () => {
     expect(rows.length).toBe(allOperations().length * PROFILES.length * SEEDS);
@@ -84,14 +86,26 @@ describe('balance sweep (20 seeds × 5 profiles × every demo op)', () => {
 
   it('GAM-0186: balance report CSV, diffed against the committed baseline (> 10 % shift flags)', () => {
     if (!existsSync(REPORT_DIR)) mkdirSync(REPORT_DIR, { recursive: true });
-    const csv = ['op,profile,seed,status,score,rank,time_used,min_vitals,litany', ...rows.map((r) => [r.op, r.profile, r.seed, r.status, r.score, r.rank, r.timeUsed, r.minVitals, r.litany ? 1 : 0].join(','))].join('\n');
+    const csv = [
+      'op,profile,seed,status,score,rank,time_used,min_vitals,litany',
+      ...rows.map((r) => [r.op, r.profile, r.seed, r.status, r.score, r.rank, r.timeUsed, r.minVitals, r.litany ? 1 : 0].join(',')),
+    ].join('\n');
     writeFileSync(join(REPORT_DIR, 'report.csv'), csv + '\n');
     // Medians per op × profile.
     const summary: string[] = ['op,profile,median_score,median_time_used,median_min_vitals,win_rate'];
     for (const def of allOperations())
       for (const p of PROFILES) {
         const rs = rows.filter((r) => r.op === def.id && r.profile === p);
-        summary.push([def.id, p, median(rs.map((r) => r.score)), median(rs.map((r) => r.timeUsed)), median(rs.map((r) => r.minVitals)), (rs.filter((r) => r.status === 'won').length / rs.length).toFixed(2)].join(','));
+        summary.push(
+          [
+            def.id,
+            p,
+            median(rs.map((r) => r.score)),
+            median(rs.map((r) => r.timeUsed)),
+            median(rs.map((r) => r.minVitals)),
+            (rs.filter((r) => r.status === 'won').length / rs.length).toFixed(2),
+          ].join(','),
+        );
       }
     const text = summary.join('\n') + '\n';
     if (process.env.UPDATE_BASELINE || !existsSync(BASELINE)) {

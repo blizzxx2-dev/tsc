@@ -11,7 +11,7 @@ export const at = (dx: number, dy: number): Vec => ({ x: FIELD.cx + dx, y: FIELD
 const incisionOf = (op: Operation): Incision | undefined => op.entities.find((e): e is Incision => e instanceof Incision);
 
 /** Final phase shared by every open operation: stitch the incision shut. */
-export const closeIncision = (lines = ['Everything’s clear. Close the incision with the thread.']) => ({
+export const closeIncision = (lines = ['Everything’s clear. Close the incision with the Gut Thread.']) => ({
   callout: lines,
   spawn(op: Operation) {
     incisionOf(op)?.beginClosing();

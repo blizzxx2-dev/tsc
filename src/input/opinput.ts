@@ -31,6 +31,10 @@ const MAX_TRAIL = 4000;
 export const CHATTER_MS = 60;
 /** …"still" means the pointer moved no more than this many px between the release and the press. */
 export const CHATTER_PX = 3;
+/** Holding the previous-instrument key (Q) this long opens the instrument wheel (GAM-0056). */
+export const WHEEL_HOLD_MS = 300;
+/** The wheel always shows every instrument slot, clockwise from the top; ones not in the kit are greyed. */
+export const WHEEL_TOOLS: readonly ToolId[] = TOOL_INFO.map((i) => i.id);
 
 /** HUD hit-test: return a tool to select it, 'consume' to swallow the press, or null to let it through. */
 export type HudHit = (p: Vec) => ToolId | 'consume' | null;
@@ -52,6 +56,8 @@ export class OperationInput {
   starTrail: Vec[] = [];
   litanyCenter: [number, number] = [0.5, 0.5];
   readonly radial = new RadialMenu();
+  /** The previous-instrument key is down (keyboard): held past WHEEL_HOLD_MS it opens the wheel instead. */
+  private cycleHold: { t: number; before: ToolId; opened: boolean } | null = null;
   /** Shown over the pause menu after a controller disconnect. */
   disconnectNotice = false;
   /** Toggle-hold: a hold tool is running without the button held. */
@@ -107,6 +113,7 @@ export class OperationInput {
     this.drawing = false;
     this.starTrail = [];
     this.radial.close();
+    this.cycleHold = null;
   }
 
   update(op: Operation, input: Input, dt: number, hud?: HudHit): void {
@@ -131,7 +138,15 @@ export class OperationInput {
     if (noSpan && !this.pending) this.send(op, 'hold', this.cursor, dt);
     this.trayShake = Math.max(0, this.trayShake - dt * 4);
 
+    // Hold Q: the tap already stepped back one instrument; the hold undoes that and opens the wheel.
+    if (this.cycleHold && !this.cycleHold.opened && !this.radial.isOpen && f.t - this.cycleHold.t >= WHEEL_HOLD_MS) {
+      this.cycleHold.opened = true;
+      if (op.tool !== this.cycleHold.before) this.setTool(op, f.t, this.cycleHold.before);
+      this.openWheel(op, 'pointer');
+    }
     this.radial.update(this.cursor, f.sticks, dt);
+    // The world runs at 0.35× while the wheel is open (never stacking with the Litany's own slow).
+    op.wheelOpen = this.radial.isOpen;
     // Aim assist and the right-stick nudge for the next frame's virtual cursor.
     input.nudge = !this.radial.isOpen;
     input.cursorSlow = this.pad && prefs.aimAssist ? (p) => aimSlow(this.toWorld(p), zonesFor(op, op.tool)) : () => 1;
@@ -179,10 +194,8 @@ export class OperationInput {
     }
     if (a === 'litany.draw') return press ? this.beginStar(op, e.t) : this.endStar(op);
     if (!press) {
-      if (a === 'tool.radial') {
-        const pick = this.radial.close();
-        if (pick) this.setTool(op, e.t, pick);
-      }
+      if (a === 'tool.radial' || (a === 'tool.prev' && this.cycleHold?.opened)) this.pickFromWheel(op, e.t);
+      if (a === 'tool.prev') this.cycleHold = null;
       return;
     }
     if (a === 'litany.key') {
@@ -201,6 +214,7 @@ export class OperationInput {
       else this.setTool(op, e.t, tool);
       return;
     }
+    if (a === 'tool.prev' && ev?.type === 'down' && ev.code.startsWith('key:')) this.cycleHold = { t: e.t, before: op.tool, opened: false };
     if (a === 'tool.next' || a === 'tool.prev') return this.cycle(op, e.t, a === 'tool.next' ? 1 : -1);
     if (a === 'tool.quickSwap') {
       this.commitRelease(op);
@@ -209,7 +223,18 @@ export class OperationInput {
       op.quickSwap();
       return;
     }
-    if (a === 'tool.radial') this.radial.open(this.cursor, op.def.tools, this.pad ? 'stick' : 'pointer');
+    if (a === 'tool.radial') this.openWheel(op, this.pad ? 'stick' : 'pointer');
+  }
+
+  private openWheel(op: Operation, via: 'pointer' | 'stick'): void {
+    this.radial.open(this.cursor, WHEEL_TOOLS, via, op.def.tools);
+  }
+
+  private pickFromWheel(op: Operation, t: number): void {
+    const pick = this.radial.close();
+    if (!pick) return;
+    if (op.def.tools.includes(pick)) this.setTool(op, t, pick);
+    else this.unavailable(op);
   }
 
   private setTool(op: Operation, t: number, tool: ToolId): void {

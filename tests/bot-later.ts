@@ -98,7 +98,8 @@ function planBosses(op: Operation, k: BotKit, ents: Entity[], vis: Entity[], lag
   if (sext) {
     const known = sext.trueVitals !== null ? sext.lastSeen : op.vitals;
     if (op.injectCooldown === 0 && (lag > 0.15 || known < 45)) return inject();
-    if (sext.trueVitals !== null && op.elapsed - sext.lastSeenAt > 6) return k.hold('lens', () => sext.heart, 0.5 + lag);
+    // The X5 remix's false vitals never clear under the lens: don't stand there looking.
+    if (sext.trueVitals !== null && !sext.tune.permanentFalse && op.elapsed - sext.lastSeenAt > 6) return k.hold('lens', () => sext.heart, 0.5 + lag);
     if (sext.stillborn && op.canInvokeLitany()) op.invokeLitany();
     const dial = find(SunDial);
     if (dial) return k.hold('brand', live(dial), 1.0 + lag);

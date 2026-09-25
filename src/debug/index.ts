@@ -21,7 +21,11 @@ export function installDebug(game: DebugGame, hooks: ConsoleHooks = {}): Install
   Object.assign(api, { run: installed.run, history: installed.history });
   (window as unknown as { __game: { debug?: DebugApi } }).__game.debug = api;
   new DebugOverlay(api, reg);
-  const preset = new URLSearchParams(location.search).get('preset');
+  const params = new URLSearchParams(location.search);
+  const preset = params.get('preset');
   if (preset) api.preset(preset);
+  // ?botplay=<op>[&profile=expert][&speed=4] — watch the bot surgeon (GAM-0189).
+  const botplay = params.get('botplay');
+  if (botplay) api.botPlay(botplay, params.get('profile') ?? 'steady', Number(params.get('speed') ?? 1));
   return installed;
 }

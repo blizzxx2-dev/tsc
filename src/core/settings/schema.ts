@@ -85,6 +85,8 @@ export interface Settings {
   textSpeed: number;
   /** Dampen full-screen flashes and pulses. */
   reduceFlashing: boolean;
+  /** Flash intensity 0..1 for boss flares and hit flashes (GAM-0239); Reduce flashing caps it at 35 %. */
+  flashIntensity: number;
   reduceMotion: boolean;
   colorFilter: 'none' | 'protanopia' | 'deuteranopia' | 'tritanopia' | 'highContrast';
   cursorSize: number;
@@ -212,6 +214,7 @@ export const SETTINGS_SCHEMA: readonly SettingDef[] = [
   d('muteWhenUnfocused', 'audio', 'toggle', { type: 'bool' }),
   d('textSpeed', 'accessibility', 'slider', { type: 'number', min: 0.5, max: 3, step: 0.25 }),
   d('reduceFlashing', 'accessibility', 'toggle', { type: 'bool' }),
+  d('flashIntensity', 'accessibility', 'slider', { type: 'number', min: 0, max: 1, step: 0.05 }),
   d('reduceMotion', 'accessibility', 'toggle', { type: 'bool' }),
   d('colorFilter', 'accessibility', 'choice', { type: 'enum', options: ['none', 'protanopia', 'deuteranopia', 'tritanopia', 'highContrast'] }),
   d('cursorSize', 'accessibility', 'slider', { type: 'number', min: 0.75, max: 2, step: 0.25 }),
@@ -284,6 +287,7 @@ export const DEFAULT_SETTINGS: Readonly<Settings> = Object.freeze({
   muteWhenUnfocused: true,
   textSpeed: 1,
   reduceFlashing: false,
+  flashIntensity: 1,
   reduceMotion: false,
   colorFilter: 'none',
   cursorSize: 1,

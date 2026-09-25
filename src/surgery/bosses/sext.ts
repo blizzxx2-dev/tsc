@@ -23,6 +23,8 @@ export interface SextTuning {
   plates: number;
   /** Brand damage per second while exposed. */
   dps: number;
+  /** X5 remix: the torpor never falls below this lag (s), even just after a tincture. */
+  lagFloor?: number;
   /** False vitals never clear, even under the lens (X-op "Noonday Demon"). */
   permanentFalse?: boolean;
 }
@@ -106,6 +108,8 @@ export class HeartTruth extends Entity {
   override onReveal(op: Operation, p: Vec): void {
     if (dist(p, this.pos) < 60) this.owner.reveal(op);
   }
+  /** Not a thing to be found: the heart's truth is a reading, and the Lens must keep reading it (so the auto-lens assist leaves it be). */
+  override reveal(): void {}
   draw(): void {}
 }
 
@@ -173,7 +177,8 @@ export class SextMalison extends Entity {
   /** The instruments' current lag in seconds. */
   get lag(): number {
     if (this.stillborn) return Math.min(this.lagCap, this.tune.stillLag);
-    return Math.min(this.lagCap, this.tune.lagMax * clamp(this.torporT / this.tune.lagRamp, 0, 1));
+    const floor = this.tune.lagFloor ?? 0;
+    return Math.min(this.lagCap, floor + (this.tune.lagMax - floor) * clamp(this.torporT / this.tune.lagRamp, 0, 1));
   }
 
   /** The "reduced input-lag effects" assist caps the torpor at 120 ms (BOS-0085). */

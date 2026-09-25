@@ -2,7 +2,6 @@ import { dist, pointSegment, segmentsIntersect, type Vec } from '../core/math';
 import { drawBlotch, presentation } from '../render/presentation';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
-import { settings } from '../core/settings';
 import { Entity } from './entity';
 import { Embedded, Laceration, Rot, surfDisc } from './entities';
 import { FIELD, onBody, type Operation } from './operation';
@@ -360,15 +359,23 @@ export class LaudsMalison extends MalisonBase {
       return;
     }
     this.lensT += dt;
-    if (this.lensT > 0.5) {
-      this.submerged = false;
-      this.hidden = false;
-      this.lensT = 0;
-      this.surfacedT = this.tune.surfaceFor;
-      op.popup('Found it!', this.pos, '#b9d7ff');
-      op.cues.push('good');
-      op.sayOnce('lauds-surface', 'There! It’s surfacing — brand it before it dives!');
-    }
+    if (this.lensT > 0.5) this.surface(op);
+  }
+
+  /** The auto-lens assist (or any other reveal) brings it up exactly as the Lens does — never visible yet still submerged. */
+  override reveal(op: Operation): void {
+    if (this.submerged) this.surface(op);
+    else super.reveal(op);
+  }
+
+  private surface(op: Operation): void {
+    this.submerged = false;
+    this.hidden = false;
+    this.lensT = 0;
+    this.surfacedT = this.tune.surfaceFor;
+    op.popup('Found it!', this.pos, '#b9d7ff');
+    op.cues.push('good');
+    op.sayOnce('lauds-surface', 'There! It’s surfacing — brand it before it dives!');
   }
 
   override onSweep(op: Operation, ptr: Pointer, tool: ToolId, dt: number): void {
@@ -461,7 +468,8 @@ export class LaudsMalison extends MalisonBase {
   /** Dawn flare and its horizon glow (drawn even while the core is hidden, by the thread-less overlay). */
   drawDawn(g: Gfx, op: Operation): void {
     if (this.phase.key !== 'dawn') return;
-    const soften = settings.reduceFlashing ? 0.35 : 1;
+    // Flash intensity slider (GAM-0239, BOS-0038): the dawn flare and its horizon glow scale with it.
+    const soften = presentation.flash;
     if (this.flare.telling) {
       const k = Math.min(1, (this.flare.t - (this.tune.flareEvery - this.flare.lead)) / this.flare.lead);
       g.glow(FIELD.cx, FIELD.cy - FIELD.ry - 40, 520, hex('#ffc860', 0.35 * k * soften));

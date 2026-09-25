@@ -9,6 +9,7 @@ import { CAMPAIGN } from '../content/campaign';
 import type { DebugApi } from './api';
 import type { CommandRegistry } from './commands';
 import { PRESET_NAMES } from './presets';
+import { SPAWN_IDS } from './cheats';
 
 const CSS = `
 .qa-ovl{position:fixed;z-index:1000;font:14px/1.35 ui-monospace,Menlo,Consolas,monospace;color:#f3e6c8;background:rgba(12,8,6,.92);border:1px solid #8a6a3a;box-shadow:0 4px 24px #000a}
@@ -156,6 +157,9 @@ export class DebugOverlay {
         this.cmd('Lose (timer)', 'lose time'),
         this.cmd('Vitals → 99', 'vitals 99'),
         this.cmd('Vitals → 10', 'vitals 10'),
+        this.cmd('Freeze drain', 'nodrain on'),
+        this.cmd('Release drain', 'nodrain off'),
+        { label: 'Spawn at cursor ▸', sub: () => SPAWN_IDS.map((id) => this.cmd(id, `spawn ${id}`)) },
         this.cmd('Time → 10 s', 'time 10'),
         this.cmd('Invoke the Litany', 'litany'),
       );

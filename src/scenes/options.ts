@@ -252,11 +252,17 @@ export function optionRows(tabId: OptionsTab): OptionRow[] {
         slider('box_opacity', 'textBoxOpacity', 0.6, 1, 0.1, (v) => pct(v)),
         toggle('reduce_motion', 'reduceMotion'),
         toggle('reduce_flashing', 'reduceFlashing', 'ui.options.reduce_flashing'),
+        slider('flash_intensity', 'flashIntensity', 0, 1, 0.05, (v) => pct(v)),
         { ...choice('colour_filter', 'colorFilter', Object.keys(PALETTES) as PaletteId[], () => (Object.keys(PALETTES) as PaletteId[]).map((k) => t(`ui.options.filter_${k}`))), preview: 'palette' },
         choice('cursor_size', 'cursorSize', [1, 1.25, 1.5, 2] as const, () => ['100%', '125%', '150%', '200%']),
         choice('cursor_colour', 'cursorColor', ['brass', 'white', 'cyan', 'magenta'] as const, () => [t('ui.options.cursor_brass'), t('ui.options.cursor_white'), t('ui.options.cursor_cyan'), t('ui.options.cursor_magenta')]),
         toggle('resume_countdown', 'resumeCountdown'),
         toggle('skip_unread', 'skipUnread'),
+        // Boss accessibility (BOS-0069, BOS-0082, BOS-0085, BOS-0112).
+        toggle('boss_reduced_lag', 'bossReducedLag'),
+        toggle('boss_lag_readout', 'bossLagReadout'),
+        toggle('boss_min_brightness', 'bossMinBrightness'),
+        toggle('boss_haze_outline', 'bossHazeOutline'),
       ];
     case 'language': {
       const list = menuLocales();

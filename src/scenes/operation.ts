@@ -11,6 +11,8 @@ import { organPalette } from '../render/organs';
 import { Bubo, Sigil, surfDisc, surfLine } from '../surgery/entities';
 import { EggSac } from '../surgery/lauds';
 import { Particles } from '../render/particles';
+import { brandMaterial, BrandSmoke } from '../render/brandSmoke';
+import { BladeFeedback } from '../render/bladeFeedback';
 import { FlashLimiter } from '../render/flashLimiter';
 import { Malison, MalisonShard } from '../surgery/malison';
 import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOWN, TINCTURE_TIME, type OperationDef, type Popup } from '../surgery/operation';
@@ -22,15 +24,16 @@ import { RANK_WAX } from './rankArt';
 import type { ActionId } from '../input/actions';
 import { DamageAggregator, ToolHints } from '../ui/hudPrefs';
 import { stackPopup } from '../ui/popupStack';
+import { clearOfHud, HUD_SCORE, HUD_TIMER, HUD_VITALS, operationHud } from '../ui/popupPlacement';
 import { speciesBlood } from '../render/organs';
 import { band, caps, heading, heartIcon, phaseSeal, ratingStamp, glass, INK, keycap, meter, numerals, titleRule, well } from '../ui/hudKit';
 import { localeInfo } from '../i18n/locales';
 import { getLocale } from '../i18n';
-import { bloodScale, GORE_LEVEL, presentation } from '../render/presentation';
+import { bloodScale, flashScale, GORE_LEVEL, presentation } from '../render/presentation';
 import { highContrast, palette } from '../ui/theme';
 import { giltNumerals } from '../ui/ornaments';
 import { RATING_INK, starReliquary, vialArt } from '../art/kit';
-import { cursorTarget, cursorTint, vialLevel } from '../art/hud';
+import { cursorTarget, cursorTint, drawTongsJaws, vialLevel } from '../art/hud';
 import { CAST } from '../content/characters';
 import { ASSISTANT_NAME } from '../content/characters';
 import { vec3 } from '../render/color';
@@ -42,11 +45,13 @@ import { drawGraspOutline } from '../input/hover';
 import { HoldToRetry } from '../input/retry';
 import { bindings } from '../input/bindings';
 import { dragGlyphFor, glyphFor, toolKeyLabel } from '../input/glyphs';
-import { calmWave, drawBossHud, drawLitanyTheft, drawTorpor, ecgCalm, toolBlinded } from '../surgery/bosses/hud';
-import { BossAudio, withBossAssists } from './bossAudio';
+import { bossBarRect, calmWave, drawBossHud, drawLitanyTheft, drawTorpor, ecgCalm, toolBlinded } from '../surgery/bosses/hud';
+import { activeBoss } from '../surgery/bosses/base';
+import { BossAudio, withBossContext } from './bossAudio';
 import { BOSS_OPS, watchEncounters } from '../surgery/bosses/codex';
 import { loadProgress, storeProgress } from '../surgery/progress';
 import { codexId } from './codex';
+import { watchManual } from '../content/manual';
 import { operationOptions } from '../surgery/session';
 import type { OperationOptions } from '../surgery/operation';
 import { drawDebug, drawDialogue, drawDrainArrow, drawFieldOverlays, drawLitanyPractice, drawSecondaryVitals, drawTrayState, drawTutorial } from './gameplayHud';
@@ -56,6 +61,14 @@ export interface OperationOutcome {
   op: Operation;
   won: boolean;
 }
+
+/** The boss HP bar, when a Malison or elite is on the table (popups keep off it too). */
+const bossPlates = (op: Operation) => {
+  const b = activeBoss(op);
+  if (!b) return [];
+  const r = bossBarRect(b);
+  return [{ x: r.x, y: r.y - 24, w: r.w, h: r.h + 28 }]; // the bar and the Hour's name above it
+};
 
 /** 1 → I, 2 → II … for phase banners. */
 const roman = (n: number): string => ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'][n - 1] ?? String(n);
@@ -159,6 +172,8 @@ export class OperationScene implements Scene {
     });
     this.lagV = this.prevV = op.vitals;
     this.lagHold = this.healT = this.digitShakeT = 0;
+    // A BAD lancet stroke jolts the view for 40 ms (GAM-0026).
+    op.events.on('rate', ({ rating }) => rating === 'bad' && op.tool === 'lancet' && this.blade.bad());
     op.events.on('hurt', ({ amount, pos }) => {
       this.lagHold = 0.5;
       if (amount >= 5) this.digitShakeT = 0.35;
@@ -187,6 +202,13 @@ export class OperationScene implements Scene {
       p.codex.push(codexId(boss));
       storeProgress(p);
     });
+    // The Surgeon's Manual opens a page for each instrument and ailment met (GAM-0209).
+    watchManual(op, (id) => {
+      const p = loadProgress();
+      if (p.codex.includes(id)) return;
+      p.codex.push(id);
+      storeProgress(p);
+    });
     if (!this.runOpts.practice) attachBarkDirector(op);
   }
 
@@ -199,6 +221,10 @@ export class OperationScene implements Scene {
   }
   /** Boss sounds, ambience and adaptive-music hooks (BOS-0008/0017/0020). */
   private bossAudio = new BossAudio();
+  /** Cautery smoke and its veil (GAM-0051). */
+  private smoke = new BrandSmoke();
+  /** Lancet trail, wet parting and the BAD micro-shake (GAM-0026). */
+  private blade = new BladeFeedback();
 
   private closePause(r: PauseResult): void {
     if (r === 'restart') return this.restart();
@@ -210,7 +236,7 @@ export class OperationScene implements Scene {
   /** Apply player assists, difficulty and kit to the operation definition. */
   private static create(def: OperationDef, runOpts: OperationOptions = {}): Operation {
     const d = settings.timerAssist === 1 || runOpts.challenge ? def : { ...def, timeLimit: Math.round(def.timeLimit * settings.timerAssist) };
-    return new Operation(withBossAssists(d), operationOptions(def, runOpts));
+    return new Operation(withBossContext(d), operationOptions(def, runOpts));
   }
 
   /** Unsubscribes the hitstop binding (ENG-0058); set on the first update that has a clock. */
@@ -374,6 +400,13 @@ export class OperationScene implements Scene {
     this.particles.update(dt * op.timeScale, (p, kind, size) => {
       if (kind === 'blood' && onBody(p)) op.stain(p, size * 2.6, 0.3);
     });
+    // The lancet's trail and wet parting follow the tip while it is pressed (GAM-0026).
+    const cutting = op.status === 'running' && op.tool === 'lancet' && game.input.down;
+    this.blade.update(dt, cutting ? op.cursor : null, onBody(op.cursor));
+    // Cautery smoke by what is being seared, and the veil it leaves (GAM-0051, cosmetic).
+    const searing = op.status === 'running' && op.tool === 'brand' && op.holdingBrand && onBody(op.cursor) ? brandMaterial(op, op.cursor) : null;
+    const puffs = this.smoke.update(dt, searing);
+    if (puffs > 0) this.particles.spawn({ kind: 'smoke', pos: { ...op.cursor }, n: puffs, dir: -Math.PI / 2, spread: 0.8 });
     if (op.litanyTime > 0 && Math.random() < dt * 30) this.particles.spawn({ kind: 'dust', pos: { x: FIELD.cx + (Math.random() - 0.5) * FIELD.rx * 2, y: FIELD.cy + (Math.random() - 0.5) * FIELD.ry * 2 }, n: 1 });
 
     // op.cues are drained by the audio director (src/audio/director.ts) right after this update.
@@ -400,12 +433,15 @@ export class OperationScene implements Scene {
     presentation.creatureFilter = settings.creatureFilter;
     op.calloutPace = localeInfo(getLocale())?.reading ?? 1;
     presentation.gore = GORE_LEVEL[settings.goreLevel];
+    presentation.flash = flashScale(settings);
     const pal = organPalette(op.def);
     const t = g.time;
     const sk = settings.reduceMotion ? 0 : op.shake * settings.shake;
     const sway = op.sway();
     // Trauma shake (ENG-0051): deterministic smooth noise in the post pass; the patient's sway stays as an offset.
-    const shake = sway;
+    // A BAD lancet stroke adds a 40 ms micro-shake (GAM-0026).
+    const micro = this.blade.shakeOffset(settings.reduceMotion ? 0 : settings.shake);
+    const shake = { x: sway.x + micro.x, y: sway.y + micro.y };
     const trauma = sk > 0 ? Math.min(1, sk / 12) : undefined;
 
     // ---------------------------------------------------------------- data layers
@@ -455,6 +491,7 @@ export class OperationScene implements Scene {
     // Tongs in hand: outline the graspable the next press would seize (INP-0042).
     if (!this.paused) drawGraspOutline(g, op, this.ctl.toWorld(game.input.pos), bindings.prefs.hitScale, t);
     this.particles.draw(g);
+    this.blade.draw(g);
 
     // Scrying lens: shimmer where something hides.
     if (op.tool === 'lens') {
@@ -472,7 +509,7 @@ export class OperationScene implements Scene {
       g.setBlend('alpha');
     }
 
-    const soften = settings.reduceFlashing ? 0.35 : 1;
+    const soften = flashScale(settings);
     const danger = (op.status === 'running' ? Math.max(0, (35 - op.vitals) / 35) : op.status === 'lost' ? 1 : 0) * soften;
     const litany = op.litanyTime > 0 ? Math.min(1, op.litanyTime, (LITANY_DURATION - op.litanyTime) * 3) * soften : 0;
     const ch2 = op.def.id.startsWith('op2');
@@ -504,6 +541,8 @@ export class OperationScene implements Scene {
 
     // ---------------------------------------------------------------- UI
     drawFieldOverlays(g, op);
+    // Brand smoke hangs over the field for a moment after heavy searing (GAM-0051).
+    if (this.smoke.veil > 0.01) g.glow(op.cursor.x, op.cursor.y - 30, 260, hex('#9a9088', this.smoke.veil * 0.45));
     if (!settings.minimalHud) this.drawThreatRings(g);
     drawTutorial(g, op);
     this.drawPopups(g);
@@ -574,6 +613,7 @@ export class OperationScene implements Scene {
     this.drawHoldRing(g, p);
     drawTorpor(g, op, p, viewRect());
     toolIcon(g, op.tool, p.x + 20, p.y - 20, 0.8 + this.toolFlash * 0.3, t);
+    if (op.tool === 'tongs') drawTongsJaws(g, p, op.held !== null);
     const aim = op.status === 'running' && !this.paused ? cursorTarget(op, p) : { kind: 'none' as const };
     const cpal = palette();
     const tint = aim.kind === 'valid' ? '#9fe0a8' : aim.kind === 'needs' ? '#ff9a6a' : cursorTint(op, p);
@@ -634,7 +674,7 @@ export class OperationScene implements Scene {
     const plateK = pal.plate > 0 ? 1.15 : 1;
 
     // ---- Vitals: label, big numeral, pulse trace in a recessed window, and a blood meter.
-    const V = { x: 16, y: 14, w: 316, h: 86 };
+    const V = { ...HUD_VITALS };
     glass(g, V, { strength: plateK });
     caps(g, tr('hud.vitals'), V.x + 34, V.y + 22, 11);
     heartIcon(g, V.x + 22, V.y + 18, 7, op.status === 'lost' ? 'dead' : op.vitals > 60 ? 'good' : op.vitals > 30 ? 'warn' : 'danger', settings.reduceMotion ? 1 : this.beatPhase % 1);
@@ -674,7 +714,7 @@ export class OperationScene implements Scene {
     drawSecondaryVitals(g, op, V.x + 18, V.y + V.h + 22);
 
     // ---- Operation title, the clock, and phase lozenges: a chamfered plate at top centre.
-    const T = { x: VIEW_W / 2 - 130, y: 14, w: 260, h: 70 };
+    const T = { ...HUD_TIMER };
     glass(g, T, { chamfer: true, radius: 12, strength: plateK });
     caps(g, op.def.title, VIEW_W / 2, T.y + 22, 11, hex(INK.dim), 'center');
     const lowT = op.timeLeft < op.tuning.flow.timerWarn && op.status === 'running';
@@ -709,7 +749,7 @@ export class OperationScene implements Scene {
     drawBossHud(g, op);
 
     // ---- Score, patient and chain: right.
-    const S = { x: VIEW_W - 16 - 250, y: 14, w: 250, h: 70 };
+    const S = { ...HUD_SCORE };
     glass(g, S, { strength: plateK });
     caps(g, tr('hud.score'), S.x + S.w - 18, S.y + 22, 11, hex(INK.dim), 'right');
     g.text(op.def.patient, S.x + 18, S.y + 24, { size: 16, font: 'italic', color: hex(INK.dim), shadow: false });
@@ -1034,12 +1074,13 @@ export class OperationScene implements Scene {
       g.arc(r.x, r.y, (r.big ? 18 : 12) + k * (r.big ? 34 : 22), r.big ? 3 : 2, hex('#ff5a4a', 0.8 * a));
       if (r.big) g.glow(r.x, r.y, 30 + k * 20, hex('#ff2a1a', 0.3 * a));
     }
+    // Popups step off the HUD plates (GAM-0144): never under the vitals, clock, score, chain, tray or reliquary.
+    const hud = this.popups.length ? operationHud({ tools: this.op.def.tools.length, traySide: traySide(), litany: this.op.def.litany !== false, callout: !!this.calloutRect, extra: [this.pauseRect, ...bossPlates(this.op)] }) : [];
     for (const p of this.popups) {
       const a = Math.min(1, (1.1 - p.t) * 3);
       // Reduced Motion: popups neither rise nor pop (UIX-0152).
       const rise = still ? 0 : p.t * 40;
-      const x = p.pos.x;
-      const y = p.pos.y - 26 - rise - (p.lift ?? 0);
+      const { x, y } = clearOfHud(p.pos.x, p.pos.y - 26 - rise - (p.lift ?? 0), hud);
       if (!p.rating) {
         if (/^[+\-×\d]/.test(p.text)) giltNumerals(g, p.text, x, y, 20, a);
         else g.text(tSource(p.text), x, y, { size: 20, color: withAlpha(hex(p.color), a), align: 'center' });

@@ -221,6 +221,13 @@ export const RECIPES: Record<string, Recipe> = {
 
   // ------------------------------------------------ Grubs & spiderlings
   'sfx.grub.seared': (s, v) => max(s.tone(1900 + vr(v) * 500, 0.22, { f1: 3100, gain: 0.05, vib: [30, 80], type: 'triangle' }), s.tone(2600, 0.18, { at: 0.18, f1: 1100, gain: 0.04, vib: [30, 80], type: 'triangle' }), s.crackle({ dur: 0.35, gain: 0.3, hp: 2500 }), pop(s, 0.05, 0.1, 500)),
+  // Three distinct dying squeals (GAM-0085): a rising whistle, a chirping pair, a falling wail. `variant` picks one.
+  'sfx.grub.squeal': (s, v, p) => {
+    const k = (p.variant ?? v) % 3;
+    if (k === 0) return s.tone(1700, 0.28, { f1: 3400, gain: 0.045, vib: [40, 90], type: 'triangle' });
+    if (k === 1) return max(s.tone(2400, 0.1, { f1: 2900, gain: 0.04, type: 'triangle' }), s.tone(2600, 0.12, { at: 0.13, f1: 3300, gain: 0.04, type: 'triangle' }));
+    return s.tone(3200, 0.34, { f1: 1200, gain: 0.045, vib: [25, 70], type: 'sawtooth' });
+  },
   'sfx.grub.plucked': (s, v) => max(s.tone(1500 + vr(v) * 400, 0.12, { f1: 2600, gain: 0.05, type: 'triangle', vib: [25, 60] }), wetSquelch(s, 0, 0.08, 0.1, 400, 1000)),
   'sfx.grub.burrow': (s, v) => max(s.burst({ dur: 0.4, type: 'lowpass', f: 900, f1: 250, gain: 0.12, color: 'pink', a: 0.05 }), s.bubbles(4, 250, 500, 0.3, 0.05) + vr(v) * 0),
   'sfx.spider.seared': (s, v) => max(s.tone(2600 + vr(v) * 500, 0.14, { f1: 3800, gain: 0.04, vib: [40, 90], type: 'triangle' }), s.crackle({ dur: 0.25, gain: 0.3, hp: 3000 })),

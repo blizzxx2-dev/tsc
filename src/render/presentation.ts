@@ -11,7 +11,12 @@ export const presentation = {
   creatureFilter: false,
   /** 0 full, 1 reduced (browned blood, no spurts), 2 minimal (flat stains, no spray). */
   gore: 0 as 0 | 1 | 2,
+  /** Flash intensity 0..1 (GAM-0239): boss flares, opening flashes and hit flashes scale by it. */
+  flash: 1,
 };
+
+/** The flash multiplier from the player's settings: the slider, capped at 35 % by Reduce flashing. */
+export const flashScale = (s: { flashIntensity: number; reduceFlashing: boolean }): number => (s.reduceFlashing ? Math.min(0.35, s.flashIntensity) : s.flashIntensity);
 
 export const GORE_LEVEL = { full: 0, reduced: 1, minimal: 2 } as const;
 

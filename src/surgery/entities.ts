@@ -402,12 +402,19 @@ export class StitchLine {
 
 // ============================================================ blood
 
+/** Suction droplets per second at the Leech-Pipe's full draw (GAM-0035). */
+export const LEECH_DROPS = 30;
+
 export class BloodPool extends Entity {
   private startR: number;
   private contactT = -1;
   private touched = false;
   /** The wound that feeds this pool (a wound's refills only pay once). */
   sourceId = 0;
+  /** How hard the Leech-Pipe is drawing on it right now, 0–1 of the best possible rate (presentation: GAM-0035). */
+  flow = 0;
+  private suckAcc = 0;
+  private swept = false;
   noun = 'the pooled blood';
   constructor(
     pos: Vec,
@@ -456,6 +463,16 @@ export class BloodPool extends Entity {
     const falloff = 1 - (1 - B.rimFactor) * clamp(d / (this.r + B.reach), 0, 1);
     const mult = op.upgrades.has('deep-leech') ? 1.2 : 1;
     this.r -= rate * falloff * mult * dt;
+    // Suction feedback scales linearly with the draw: droplets stream up the pipe at up to LEECH_DROPS/s.
+    this.flow = (falloff * mult) / 1.2;
+    this.swept = true;
+    this.suckAcc += LEECH_DROPS * this.flow * dt;
+    const n = Math.floor(this.suckAcc);
+    if (n > 0) {
+      this.suckAcc -= n;
+      const a = Math.atan2(ptr.pos.y - this.pos.y, ptr.pos.x - this.pos.x);
+      op.emit('suck', { x: this.pos.x + Math.cos(a) * this.r * 0.6, y: this.pos.y + Math.sin(a) * this.r * 0.6 }, n, a, 0.25, 40 + d * 2);
+    }
     if (this.r < Math.max(3, this.startR * B.autoClear)) {
       this.kill();
       op.flags.add('drained-any');
@@ -466,6 +483,12 @@ export class BloodPool extends Entity {
       if (this.startR >= B.minRated && took <= B.goodTime) op.rate(took <= B.coolTime ? 'cool' : 'good', this.pos, 'Drained', this.sourceId === 0);
       if (this.ichor === 'blood') op.stain(this.pos, this.startR * 0.9, 0.35);
     }
+  }
+
+  override update(_op: Operation, _dt: number): void {
+    // The draw lasts only while the pipe is on the pool.
+    if (!this.swept) this.flow = 0;
+    this.swept = false;
   }
 
   override drawFluid(g: Gfx, op: Operation): void {
@@ -484,7 +507,30 @@ export class BloodPool extends Entity {
   draw(g: Gfx): void {
     // Liquids render through the fluid layer (drawFluid); bone dust is a pale powder.
     if (this.ichor === 'bonedust') g.circleGrad(this.pos.x, this.pos.y, this.r * 1.3, hex('#e8e0d0', 0.7), hex('#e8e0d0', 0));
+    // Colour-blind safe (GAM-0236): pus is marked by bubbles, not only by its yellow.
+    if (this.ichor === 'pus') for (const b of pusBubbles(this.r)) g.arc(this.pos.x + b.x, this.pos.y + b.y, b.r, 1.5, hex('#fff8d8', 0.7));
   }
+}
+
+/**
+ * The shape marks that tell the look-alike ailments apart without colour (GAM-0236): venom is
+ * branching veins with twin punctures, hexstone a hexagon ring, rot speckled blotches, pus bubbles.
+ */
+export const AILMENT_MARKS = { venom: 'veins', hexstone: 'hexagon', rot: 'speckle', pus: 'bubbles' } as const;
+
+/** A closed hexagon around a point. */
+export function hexagon(c: Vec, r: number, turn = 0): Vec[] {
+  return Array.from({ length: 7 }, (_, i) => ({ x: c.x + Math.cos(turn + (i * Math.PI) / 3) * r, y: c.y + Math.sin(turn + (i * Math.PI) / 3) * r }));
+}
+
+/** Fixed bubble spots inside a pus pool of radius r (a pattern, not noise: the same every frame). */
+export function pusBubbles(r: number): { x: number; y: number; r: number }[] {
+  const n = Math.max(3, Math.min(9, Math.round(r / 5)));
+  return Array.from({ length: n }, (_, i) => {
+    const a = i * 2.39996;
+    const d = r * 0.62 * Math.sqrt((i + 0.5) / n);
+    return { x: Math.cos(a) * d, y: Math.sin(a) * d, r: 2.5 + (i % 3) };
+  });
 }
 
 /** Find (or open) the pool a wound bleeds into. */
@@ -598,6 +644,8 @@ export class Laceration extends Entity {
         this.kill();
         op.scars.push([{ ...this.a }, { ...this.b }]);
         op.rate(this.stitch.quality(op), this.pos, 'Stitched');
+        // The knot is tied off at the far end of the line (GAM-0039).
+        op.emit('knot', this.b, 1, Math.atan2(this.b.y - this.a.y, this.b.x - this.a.x));
       }
     } else if (tool === 'salve') {
       if (!this.cov) {
@@ -971,6 +1019,8 @@ export class Embedded extends Entity {
           c,
         );
         if (warp && !this.calmed && this.calmT > 0) g.arc(this.origin.x, this.origin.y, 24, 3, hex('#ff9040'), this.calmT / 0.5);
+        // Colour-blind safe (GAM-0236): hexstone wears a hexagon ring, so it never reads as a plain shard by hue alone.
+        if (warp) g.polyline(hexagon(this.origin, 17, op.elapsed * 0.6), 2, hex('#f8e0b0', 0.8));
         break;
       }
     }
@@ -1755,6 +1805,7 @@ export class Grub extends Entity {
     if (this.heat >= need) {
       this.kill();
       op.cues.push('burn');
+      op.emit('curl', this.pos, 1, this.heading);
       op.emit('spark', this.pos, 12);
       op.emit('smoke', this.pos, 4);
       op.stain(this.pos, 10, 0.3);

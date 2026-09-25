@@ -112,7 +112,8 @@ function saw(a: Vec, b: Vec, strokes: number): Action {
 export function botPlanAlpha(ctx: BotContext): Action | null {
   const op = ctx.op;
   const vis = op.entities.filter((e) => e.alive && !e.hidden);
-  const find = <T extends Entity>(cls: new (...a: never[]) => T, pred: (e: T) => boolean = () => true) => vis.find((e): e is T => e instanceof cls && pred(e as T));
+  const find = <T extends Entity>(cls: new (...a: never[]) => T, pred: (e: T) => boolean = () => true) =>
+    vis.find((e): e is T => e instanceof cls && pred(e as T));
   const has = ctx.has;
 
   const artery = find(Artery, (a) => !a.clamped);
@@ -138,7 +139,11 @@ export function botPlanAlpha(ctx: BotContext): Action | null {
 
   const acid = find(AlchemicalAcid);
   if (acid) {
-    if (!acid.neutralised) return withTincture('amber', hold('tincture', () => (acid.alive && !acid.neutralised ? acid.pos : null), 0.9));
+    if (!acid.neutralised)
+      return withTincture(
+        'amber',
+        hold('tincture', () => (acid.alive && !acid.neutralised ? acid.pos : null), 0.9),
+      );
     return hold('leech', () => (acid.alive ? acid.pos : null), 1.3);
   }
 
@@ -186,8 +191,18 @@ export function botPlanAlpha(ctx: BotContext): Action | null {
     if (v) {
       const mid = { x: (v.a.x + v.b.x) / 2, y: (v.a.y + v.b.y) / 2 };
       const a = Math.atan2(v.b.y - v.a.y, v.b.x - v.a.x) + Math.PI / 2;
-      return drag('thread', [{ x: mid.x - Math.cos(a) * 20, y: mid.y - Math.sin(a) * 20 }, { x: mid.x + Math.cos(a) * 20, y: mid.y + Math.sin(a) * 20 }], 250);
+      return drag(
+        'thread',
+        [
+          { x: mid.x - Math.cos(a) * 20, y: mid.y - Math.sin(a) * 20 },
+          { x: mid.x + Math.cos(a) * 20, y: mid.y + Math.sin(a) * 20 },
+        ],
+        250,
+      );
     }
+    // Simplified gestures: tap-and-hold on the rim excises (GAM-0238).
+    if (!growth.excised && ctx.op.assists.simpleGestures)
+      return hold('lancet', () => (growth.alive && !growth.excised ? { x: growth.pos.x + growth.r + 12, y: growth.pos.y } : null), 1.3);
     if (!growth.excised) return drag('lancet', circlePath(growth.pos, growth.r + 12, 40), 400);
     return drag('tongs', [growth.pos, TRAY_DISH], 450, 0.1);
   }
@@ -209,14 +224,28 @@ export function botPlanAlpha(ctx: BotContext): Action | null {
   const spill = find(Spill);
   if (spill) return hold('leech', () => (spill.alive ? spill.pos : null), 1.2);
   const ulcer = find(Ulcer);
-  if (ulcer && !op.entities.some((e) => e.alive && e.constructor.name === 'BloodPool' && (e as unknown as { ichor: string }).ichor === 'blackbile' && dist(e.pos, ulcer.pos) < ulcer.radius)) {
+  if (
+    ulcer &&
+    !op.entities.some(
+      (e) =>
+        e.alive && e.constructor.name === 'BloodPool' && (e as unknown as { ichor: string }).ichor === 'blackbile' && dist(e.pos, ulcer.pos) < ulcer.radius,
+    )
+  ) {
     const r = ulcer.radius - ulcer.healed * ULCER.ringW - ULCER.ringW / 2;
     return drag('salve', circlePath(ulcer.pos, r, 40), 400);
   }
 
   const regen = find(RegenWound);
   if (regen) {
-    if (!regen.open) return drag('lancet', [{ x: regen.pos.x - 28, y: regen.pos.y }, { x: regen.pos.x + 28, y: regen.pos.y }], 300);
+    if (!regen.open)
+      return drag(
+        'lancet',
+        [
+          { x: regen.pos.x - 28, y: regen.pos.y },
+          { x: regen.pos.x + 28, y: regen.pos.y },
+        ],
+        300,
+      );
     if (!regen.sealed) return drag('brand', circlePath(regen.pos, REGEN.rimR, 36), 700);
   }
 
@@ -277,7 +306,10 @@ export function botPlanAlpha(ctx: BotContext): Action | null {
   const larvae = op.entities.some((e) => e.alive && e instanceof Larvae);
   const busy = op.entities.some((e) => e.alive && e.required && !e.hidden);
   if (larvae && !busy && has('tincture') && op.tinctures.includes('green') && op.injectCooldown === 0)
-    return withTincture('green', hold('tincture', () => ({ x: FIELD.cx + 330, y: FIELD.cy + 20 }), 0.8));
+    return withTincture(
+      'green',
+      hold('tincture', () => ({ x: FIELD.cx + 330, y: FIELD.cy + 20 }), 0.8),
+    );
 
   return null;
 }

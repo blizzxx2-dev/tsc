@@ -1271,6 +1271,8 @@ export class Operation {
       e.age += edt;
       this.as(e, () => e.update(this, edt));
       if (e.alive) drain += e.drain(this);
+      // The auto-lens clock runs while a thing stays hidden, and starts over whenever it hides again.
+      if (this.assists.autoLens && e.alive && !e.hidden) this.hiddenT.delete(e);
       if (e.alive && e.hidden && this.assists.autoLens) {
         const t = (this.hiddenT.get(e) ?? 0) + dt;
         this.hiddenT.set(e, t);
@@ -1457,6 +1459,11 @@ export class Operation {
   /** Freeze all drain for a while (resume grace; dev cheat). */
   graceTime(seconds: number): void {
     this.graceT = Math.max(this.graceT, seconds);
+  }
+
+  /** End any drain-free grace at once (the dev "freeze drain" cheat switched off). */
+  endGrace(): void {
+    this.graceT = 0;
   }
 
   /** Advance the dialogue insert; resumes with a short drain-free grace. */

@@ -245,7 +245,9 @@ export class VespersMalison extends Entity {
       this.lamps.push(l);
       op.spawn(l);
     }
-    for (let i = 0; i < tune.filaments; i++) this.addFilament(op, i % 4);
+    // Filaments hide only where a lamp can light them (the X7 remix has three lamps, so one quadrant stays empty).
+    const lampQuadrants = [...new Set(this.lamps.map((l) => l.quadrant))];
+    for (let i = 0; i < tune.filaments; i++) this.addFilament(op, lampQuadrants[i % lampQuadrants.length]);
   }
 
   get radius(): number {

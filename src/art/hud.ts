@@ -24,6 +24,16 @@ export function cursorTarget(op: Operation, p: Vec): CursorTarget {
   return best?.t ?? { kind: 'none' };
 }
 
+/**
+ * The tongs' jaws at the tip of the reticle (GAM-0031): spread open while hunting, snapped shut
+ * the moment they close on something.
+ */
+export function drawTongsJaws(g: Gfx, p: Vec, closed: boolean, colour = '#d8d0c0'): void {
+  const spread = closed ? 1.5 : 9;
+  for (const s of [-1, 1]) g.line({ x: p.x + 16, y: p.y - 16 + s * 3 }, { x: p.x + 4, y: p.y - 4 + s * spread }, 2, hex(colour, 0.9));
+  if (closed) g.circle(p.x + 4, p.y - 4, 2.5, hex(colour));
+}
+
 /** Crosshair tint: green over a live target, red where the Brand would sear healthy flesh, gilt otherwise. */
 export function cursorTint(op: Operation, p: Vec): string {
   if (!onBody(p)) return '#c8a060';

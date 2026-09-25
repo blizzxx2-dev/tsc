@@ -157,6 +157,14 @@ export const OP_FLAG_WRITES: Readonly<Record<string, (rank: Rank) => FlagRecord>
 /** Flags written by the engine rather than by content, so the flag audit knows their source. */
 export const ENGINE_FLAG_WRITES: readonly string[] = ['litanySeenCount'];
 
+/**
+ * Story flags a boss fight reads (`BossOpDef.storyFlags`). `strohAlly`: the Inquisitor owes the
+ * surgeon his tooth (op3-9) and stands with them at the Office (BOS-0139, BOS-0146).
+ */
+export function bossStoryFlags(f: FlagReader = flags): string[] {
+  return f.truthy('strohTooth') ? ['strohAlly'] : [];
+}
+
 /** Apply an operation's outcome flags to the store. */
 export function applyOpFlags(opId: string, rank: Rank, store: FlagStore = flags): void {
   const w = OP_FLAG_WRITES[opId];

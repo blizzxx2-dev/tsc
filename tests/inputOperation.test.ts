@@ -310,13 +310,47 @@ describe('tool switching (INP-0049, INP-0051, INP-0050, INP-0086)', () => {
     const h = harness(() => [new Rot(off(300), 20)], ['lancet', 'tongs', 'leech', 'thread']);
     h.move(C).down('mouse:1').tick();
     expect(h.ctl.radial.isOpen).toBe(true);
-    h.move(off(80, 0)).tick(); // right = slot 1 of 4 (clockwise from the top)
+    h.move(off(80, 0)).tick(); // right = slot 3 of 8 (clockwise from the top: lancet, tongs, leech…)
     h.up('mouse:1').tick();
-    expect(h.op.tool).toBe('tongs');
+    expect(h.op.tool).toBe('leech');
     h.move(C).down('mouse:1').tick();
     h.move(off(5, 5)).tick();
     h.up('mouse:1').tick();
+    expect(h.op.tool).toBe('leech');
+  });
+
+  it('GAM-0056: the wheel has 8 slots, runs the world at 0.35× while open (not stacking with the Litany)', () => {
+    const h = harness(() => [new Rot(off(300), 20)], ['lancet', 'tongs', 'leech', 'thread']);
+    h.move(C).down('mouse:1').tick();
+    expect(h.ctl.radial.tools.length).toBe(8);
+    expect(h.op.wheelOpen).toBe(true);
+    expect(h.op.timeScale).toBeCloseTo(0.35);
+    h.op.litanyTime = 5;
+    expect(h.op.timeScale).toBeCloseTo(Math.min(0.35, h.op.tuning.litany.scale));
+    h.op.litanyTime = 0;
+    // A slot outside the kit (the Tincture, lower left) cannot be taken.
+    h.move(off(-60, 60)).tick();
+    h.up('mouse:1').tick();
+    expect(h.op.tool).toBe('lancet');
+    expect(h.op.wheelOpen).toBe(false);
+    expect(h.op.timeScale).toBe(1);
+  });
+
+  it('GAM-0056: tapping Q steps back one instrument; holding it opens the wheel', () => {
+    const h = harness(() => [new Rot(off(300), 20)], ['lancet', 'tongs', 'leech', 'thread']);
+    h.op.setTool('leech');
+    h.key('KeyQ').tick();
     expect(h.op.tool).toBe('tongs');
+    expect(h.ctl.radial.isOpen).toBe(false);
+    h.move(C).down('key:KeyQ').tick();
+    expect(h.op.tool).toBe('lancet');
+    for (let i = 0; i < 20; i++) h.tick();
+    expect(h.ctl.radial.isOpen).toBe(true);
+    expect(h.op.tool).toBe('tongs'); // the hold undid its own step back
+    h.move(off(60, 60)).tick(); // lower right = slot 4 of 8 (thread)
+    h.up('key:KeyQ').tick();
+    expect(h.op.tool).toBe('thread');
+    expect(h.ctl.radial.isOpen).toBe(false);
   });
 
   it('gamepad: RB cycles on release; LB+RB held 0.6 s speaks the Litany without cycling', () => {

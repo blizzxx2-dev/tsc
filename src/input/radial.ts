@@ -20,14 +20,17 @@ export class RadialMenu {
   isOpen = false;
   center: Vec = { x: 0, y: 0 };
   tools: readonly ToolId[] = [];
+  /** Instruments in this operation's kit; the others are shown greyed and cannot be taken. */
+  available: readonly ToolId[] = [];
   selected = -1;
   private via: 'pointer' | 'stick' = 'pointer';
   private openT = 0;
 
-  open(center: Vec, tools: readonly ToolId[], via: 'pointer' | 'stick'): void {
+  open(center: Vec, tools: readonly ToolId[], via: 'pointer' | 'stick', available: readonly ToolId[] = tools): void {
     this.isOpen = true;
     this.center = { ...center };
     this.tools = tools;
+    this.available = available;
     this.selected = -1;
     this.via = via;
     this.openT = 0;
@@ -72,10 +75,13 @@ export class RadialMenu {
       const px = x + Math.cos(ang) * RADIAL_RADIUS;
       const py = y + Math.sin(ang) * RADIAL_RADIUS;
       const sel = i === this.selected;
-      if (sel) g.glow(px, py, 44, hex('#ffb050', 0.3 * a));
+      const inKit = this.available.includes(id);
+      if (sel && inKit) g.glow(px, py, 44, hex('#ffb050', 0.3 * a));
       g.circle(px, py, 30, hex(sel ? '#3a1a0a' : '#1a0e08', 0.9 * a));
-      g.arc(px, py, 30, sel ? 3 : 1.5, hex(id === current ? '#f5d76e' : '#8a6a3a', a));
+      g.arc(px, py, 30, sel ? 3 : 1.5, hex(id === current ? '#f5d76e' : '#8a6a3a', inKit ? a : 0.35 * a));
       toolIcon(g, id, px, py, sel ? 1.1 : 0.85, g.time);
+      // Not in this operation's kit: veiled, and a pick only shakes the tray.
+      if (!inKit) g.circle(px, py, 30, hex('#0a0504', 0.65 * a));
     });
     if (this.selected >= 0) g.text(toolInfo(this.tools[this.selected]).name, x, y + 6, { size: 16, color: hex('#f5d76e', a), align: 'center' });
   }

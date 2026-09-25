@@ -6,7 +6,7 @@ import { DEFAULT_PREFS, type Bindings, type InputPrefs } from './bindings';
  * applying one is a reset followed by those changes; `presetChanges` lists what would
  * differ from the player's current setup so the Controls screen can preview it first.
  */
-export type PresetId = 'default' | 'left' | 'trackpad';
+export type PresetId = 'default' | 'left' | 'trackpad' | 'onehand';
 
 export interface BindingPreset {
   id: PresetId;
@@ -32,6 +32,19 @@ export const PRESETS: readonly BindingPreset[] = [
     id: 'trackpad',
     bindings: { 'tool.radial': { kbm: ['key:KeyF', 'mouse:1'], pad: ['pad:3'] } },
     prefs: { holdMode: 'toggle', grabMode: 'toggle', litanyInput: 'both' },
+  },
+  {
+    // One hand, on the mouse (GAM-0241): the side buttons cycle the instruments (the wheel still does), the
+    // right button speaks the Litany instead of drawing it, and nothing needs the keyboard.
+    id: 'onehand',
+    bindings: {
+      'tool.prev': { kbm: ['mouse:3', 'wheel:up'], pad: ['pad:4'] },
+      'tool.next': { kbm: ['mouse:4', 'wheel:down'], pad: ['pad:5'] },
+      'tool.quickSwap': { kbm: ['key:Tab'], pad: ['pad:14'] },
+      'litany.draw': { kbm: [], pad: ['pad:6'] },
+      'litany.key': { kbm: ['mouse:2'], pad: ['pad:4+pad:5'] },
+    },
+    prefs: { litanyInput: 'key', wrapWheel: true },
   },
 ];
 

@@ -28,7 +28,7 @@ export const OP_2_1 = defineOp({
     {
       objective: 'Draw out the venom',
 
-      callout: ['The venom first — hold the tincture on the bite until it takes.', 'The longer it spreads, the harder it drags on him.'],
+      callout: ['The venom first — hold the Tincture on the bite until it takes.', 'The longer it spreads, the harder it drags on him.'],
       spawn: [{ e: 'venom', at: [-120, -30], rate: 7 }],
     },
     {
@@ -126,7 +126,7 @@ export const OP_2_3 = defineOp({
     {
       objective: 'Lance the egg sacs',
 
-      callout: ['The sacs — lance each one with a single touch, then sear the hatchlings with the brand.', 'Mind the ones that are close to hatching.'],
+      callout: ['The sacs — lance each with one touch, then sear the hatchlings with the Cautery Brand.', 'Mind the ones that are close to hatching.'],
       spawn: [
         { e: 'eggsac', at: [-170, 30], brood: 3, hatchIn: 16 },
         { e: 'eggsac', at: [0, 70], brood: 3, hatchIn: 22 },
@@ -136,13 +136,13 @@ export const OP_2_3 = defineOp({
     {
       objective: 'Cut the brood-cluster free',
 
-      callout: ['Her brood-cluster — three sacs under one skin.', 'Cut the membrane right around them with the lancet first, or they’ll wake as one.'],
+      callout: ['Her brood-cluster — three sacs under one skin.', 'Cut the membrane right around them with the Lancet first, or they’ll wake as one.'],
       spawn: [{ e: 'elite-broodcluster', at: [-20, 20], hatchIn: 26 }],
     },
     {
       objective: 'Find the last sac',
 
-      callout: ['One more sac, deeper. Use the lens to find it, then open it.', 'And he’s taken a fever-bubo from the bite — lance and cleanse it.'],
+      callout: ['One more sac, deeper. Use the Scrying Lens to find it, then open it.', 'And he’s taken a fever-bubo from the bite — lance and cleanse it.'],
       spawn: [
         { e: 'eggsac', at: [90, 90], brood: 4, hatchIn: 30, hidden: true },
         { e: 'bubo', at: [-120, -40], r: 22 },
@@ -169,7 +169,7 @@ export const OP_2_4 = defineOp({
     {
       objective: 'Counter the poison',
 
-      callout: ['The poison he swallowed — tincture, now, or he’s gone before we start.'],
+      callout: ['The poison he swallowed — Tincture, now, or he’s gone before we start.'],
       spawn: [{ e: 'venom', at: [0, 20], rate: 5 }],
     },
     {
@@ -191,7 +191,7 @@ export const OP_2_4 = defineOp({
     {
       objective: 'Dress the hexfire burns',
 
-      callout: ['The hexfire burns. Pluck the eschar, then salve them.'],
+      callout: ['The hexfire burns. Pluck the eschar, then Saint’s Salve on them.'],
       spawn: [
         { e: 'burn', at: [-150, 60], r: 44, source: 'hexfire' },
         { e: 'burn', at: [150, 70], r: 40, source: 'hexfire' },
@@ -201,7 +201,7 @@ export const OP_2_4 = defineOp({
     {
       objective: 'Brand the maggots',
 
-      callout: ['Maggots in an old sore — the Tribunal’s cells are filthy. Brand them.'],
+      callout: ['Maggots in an old sore — the Tribunal’s cells are filthy. Cautery Brand.'],
       spawn: [
         { e: 'grub', at: [-40, 20], speed: 45 },
         { e: 'grub', at: [50, 30], speed: 45 },
@@ -234,7 +234,7 @@ export const OP_2_5 = defineOp({
     {
       objective: 'Silence the choir',
 
-      callout: ['Saints… it has a choir. Those little lights are its Voices — hold the brand on each as it circles.', 'Silence all of them and its heart will be bare.'],
+      callout: ['A choir! Those lights are its Voices — hold the Cautery Brand on each as it circles.', 'Silence all of them and its heart will be bare.'],
       spawn: [{ e: 'malison-lauds', at: [0, 30] }],
     },
     {

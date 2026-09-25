@@ -40,7 +40,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0016 · Demo · P1 · S · Event bus for sim → presentation (`op.events` — rated, spawned, phaseStart, vitalsWarn, litany…) replacing `op.cues` string array
 - [x] GAM-0017 · Demo · P1 · S · Operation telemetry summary — per op: time per phase, ratings histogram, vitals minimum, tools used, Litany timing; written to results scene and debug log
 - [x] GAM-0018 · Demo · P2 · S · Debug overlay (F3) — entity hitboxes, drain per entity, vitals delta/s, active timers, combo state
-- [ ] GAM-0019 · Demo · P2 · S · Debug cheats (dev builds only) — skip phase, set vitals, freeze drain, spawn any entity at cursor
+- [x] GAM-0019 · Demo · P2 · S · Debug cheats (dev builds only) — skip phase, set vitals, freeze drain, spawn any entity at cursor
 - [x] GAM-0020 · Alpha · P1 · M · Data-driven ailment schema — ailments declared in content files (`{kind, pos, params}`) validated by a zod-style schema at load; bad content fails CI
 
 ## GAM-C · Tool feel & tuning (Demo)
@@ -51,26 +51,26 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0023 · Demo · P1 · S · Dotted guide line fades in 0.3 s and shows start/end nubs — hidden on Hard/Master (see difficulty)
 - [x] GAM-0024 · Demo · P1 · S · Encircle-excise gesture — closed loop around a growth (gap ≤ 18 px) excises; loop cutting into healthy tissue > 25 % of its length rates BAD
 - [x] GAM-0025 · Demo · P1 · S · Cutting across an existing stitched line reopens it (test) — prevents accidental score farming via re-stitching
-- [ ] GAM-0026 · Demo · P2 · S · Lancet haptic/visual feedback — blade trail, wet parting shader on flesh, 40 ms micro-shake on BAD
+- [x] GAM-0026 · Demo · P2 · S · Lancet haptic/visual feedback — blade trail, wet parting shader on flesh, 40 ms micro-shake on BAD
 
 ### Tongs
 - [x] GAM-0027 · Demo · P0 · S · Grab tolerance radius 22 px (+6 px Assist mode) — grabbing empty flesh is a MISS only if held > 0.25 s (prevents mis-click penalties)
 - [x] GAM-0028 · Demo · P0 · M · Extraction angle rule — pulling within ±25° of the embed axis is COOL, ±50° GOOD, otherwise tears (laceration spawn + BAD); unit test for arrow/bolt/tooth
 - [x] GAM-0029 · Demo · P1 · S · Drop-off zone — objects must be dragged off the body silhouette (tray at screen edge) to count; release on body re-embeds shallowly
 - [x] GAM-0030 · Demo · P1 · S · Held-object drag inertia (lag 60 ms) so heavy items (bolts, lead shot) feel weighty — light items (glass) have none
-- [ ] GAM-0031 · Demo · P2 · S · Tongs clack SFX pitch by object weight — grip closes visually on grab
+- [x] GAM-0031 · Demo · P2 · S · Tongs clack SFX pitch by object weight — grip closes visually on grab
 
 ### Leech-Pipe
 - [x] GAM-0032 · Demo · P0 · S · Drain rate 1 pool-unit per 0.9 s at centre, falloff to 40 % at rim — pools < 10 % auto-clear as GOOD
 - [x] GAM-0033 · Demo · P1 · S · Pool rating by speed — cleared within 1.5 s of first contact COOL, 3 s GOOD
 - [x] GAM-0034 · Demo · P1 · S · Blood refill rule — pools over an open laceration refill at the laceration's bleed rate; teaches stitch-first (tutorial callout on third refill)
-- [ ] GAM-0035 · Demo · P2 · S · Leech-Pipe audio/visual feedback — gurgle loop volume and suction particle count scale linearly with current drain rate
+- [x] GAM-0035 · Demo · P2 · S · Leech-Pipe audio/visual feedback — gurgle loop volume and suction particle count scale linearly with current drain rate
 
 ### Gut Thread
 - [x] GAM-0036 · Demo · P0 · M · Zig-zag stitch detection — each crossing of the wound axis counts one stitch; stitch spacing 10–28 px COOL, 6–40 px GOOD; sparse lines leave "gaps" that keep bleeding at 30 % (test)
 - [x] GAM-0037 · Demo · P1 · S · Minimum stitches per wound = ceil(length/22) — fewer never closes the wound
 - [x] GAM-0038 · Demo · P1 · S · Final incision closure — long closing suture rated as one action with bonus 200 on COOL; stitched line persists visually to results
-- [ ] GAM-0039 · Demo · P2 · S · Thread tension visual — (taut line from last stitch to cursor) and knot tie flourish on completion
+- [x] GAM-0039 · Demo · P2 · S · Thread tension visual — (taut line from last stitch to cursor) and knot tie flourish on completion
 
 ### Saint's Salve
 - [x] GAM-0040 · Demo · P0 · S · Salve capacity `SALVE_MAX = 46` covers one medium rot; refill is automatic after 3 s idle — document and expose in HUD as a meter
@@ -88,7 +88,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0048 · Demo · P0 · S · Brand hold times — grub 0.8 s, sigil node 1.0 s, Malison flesh continuous DPS 18/s; values from tuning table
 - [x] GAM-0049 · Demo · P1 · S · Branding healthy flesh > 0.5 s creates a Burn(fire) and BAD — prevents holding brand everywhere
 - [x] GAM-0050 · Demo · P1 · S · Brand overheat meter — 6 s continuous use locks it for 2 s; shown as glowing tip colour
-- [ ] GAM-0051 · Demo · P2 · S · Sizzle SFX and smoke particles scale with target type — brand smoke obscures field briefly (cosmetic only)
+- [x] GAM-0051 · Demo · P2 · S · Sizzle SFX and smoke particles scale with target type — brand smoke obscures field briefly (cosmetic only)
 
 ### Scrying Lens
 - [x] GAM-0052 · Demo · P0 · S · Lens reveal radius 90 px — hidden entities become "found" after 0.4 s hover and stay visible (test)
@@ -97,7 +97,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 
 ### Tool switching
 - [x] GAM-0055 · Demo · P0 · S · Tool switch latency: hotkeys 1–8 immediate, mouse wheel 80 ms step debounce — switching mid-drag cancels the drag without rating
-- [ ] GAM-0056 · Demo · P1 · M · Radial tool wheel (hold Q or middle mouse) with 8 slots, 0.35× time while open (not stacking with Litany) — also used for controller
+- [x] GAM-0056 · Demo · P1 · M · Radial tool wheel (hold Q or middle mouse) with 8 slots, 0.35× time while open (not stacking with Litany) — also used for controller
 - [x] GAM-0057 · Demo · P1 · S · Context auto-suggest (Assist only) — tool icon pulses when cursor hovers an entity that needs it
 - [x] GAM-0058 · Demo · P2 · S · Wrong-tool feedback — using a tool on an entity it cannot affect shows a one-shot hint (e.g. "Tongs won't sear a grub") without rating MISS
 
@@ -144,7 +144,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 ### Grub
 - [x] GAM-0083 · Demo · P0 · S · Grub behaviour — crawls toward nearest open wound, burrows after 6 s leaving a hidden grub (Lens); brand 0.8 s or tongs-drag off body
 - [x] GAM-0084 · Demo · P1 · S · Grub split — branding under 0.4 s then releasing splits it into two small grubs (BAD); tell: grub puffs up
-- [ ] GAM-0085 · Demo · P2 · S · Grub feedback — 3 squeal SFX variants (random by seeded RNG) and 0.4 s death-curl animation on brand kill
+- [x] GAM-0085 · Demo · P2 · S · Grub feedback — 3 squeal SFX variants (random by seeded RNG) and 0.4 s death-curl animation on brand kill
 
 ### Curse-sigil
 - [x] GAM-0086 · Demo · P0 · M · Sigil tracing — trace the glyph's strokes in order (numbered faint dots on Normal); wrong order snaps a stroke and spawns a laceration whip
@@ -237,7 +237,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0141 · Demo · P0 · S · MISS policy — only tool-on-nothing actions > 0.25 s or wrong-organ actions rate MISS; plain clicks on empty flesh never do (test)
 - [x] GAM-0142 · Demo · P1 · S · Combo timeout — combo resets if no rated action for 6 s (prevents idling on a combo); Litany pauses the timeout
 - [x] GAM-0143 · Demo · P1 · S · Combo milestones — at ×10 and ×20 play chime + "Steady hands!" callout; no score change beyond multiplier
-- [ ] GAM-0144 · Demo · P1 · S · Popup text consistency — COOL/GOOD/BAD/MISS + combo "×N" placement never overlaps HUD (layout test at 1280×720 and 3840×2160)
+- [x] GAM-0144 · Demo · P1 · S · Popup text consistency — COOL/GOOD/BAD/MISS + combo "×N" placement never overlaps HUD (layout test at 1280×720 and 3840×2160)
 
 ### Slow-play farming fix (known issue)
 - [x] GAM-0145 · Demo · P0 · S · Reproduce farming — bot variant `farm` stalls Matins/Lauds kill for 120 s; test asserts farm score > fast score (current failing behaviour captured)
@@ -299,12 +299,12 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0186 · Demo · P1 · S · Balance report CLI `npm run balance` — CSV per op/profile/seed: score, rank, time used, min vitals, Litany used; diffed against committed baseline in CI (> 10 % shift flags)
 - [x] GAM-0187 · Demo · P1 · S · Bot uses Litany at its heuristic best moment (largest simultaneous drain) — expert XS reachable on every demo op (test)
 - [x] GAM-0188 · Demo · P1 · S · Bot-harness perf — full 10-op × 5-profile × 20-seed sweep < 60 s in CI
-- [ ] GAM-0189 · Demo · P2 · S · Bot visual playback — dev scene that replays a bot run with the real renderer for eyeballing
+- [x] GAM-0189 · Demo · P2 · S · Bot visual playback — dev scene that replays a bot run with the real renderer for eyeballing
 - [x] GAM-0190 · Alpha · P1 · M · Bot extensions for Alpha mechanics — fracture alignment, stone chipping order, frost tap-thaw, amputation saw rhythm, antidote colour matching
 
 ### Per-operation tuning (demo)
-- [ ] GAM-0191 · Demo · P0 · S · op1-1 A Tavern Knife tuning — first-op pass: novice-bot min vitals ≥ 60, steady time used ≤ 50 %; 2 lacerations + 1 pool; no hidden entities
-- [ ] GAM-0192 · Demo · P0 · S · op1-2 The Barbed Shaft tuning — barb-nick taught; sloppy bot (no nick) still wins at C/B; ranks recalibrated
+- [x] GAM-0191 · Demo · P0 · S · op1-1 A Tavern Knife tuning — first-op pass: novice-bot min vitals ≥ 60, steady time used ≤ 50 %; 2 lacerations + 1 pool; no hidden entities
+- [x] GAM-0192 · Demo · P0 · S · op1-2 The Barbed Shaft tuning — barb-nick taught; sloppy bot (no nick) still wins at C/B; ranks recalibrated
 - [x] GAM-0193 · Demo · P0 · S · op1-3 Powder Burns tuning — shot + wadding + fire burns; steady ≤ 70 % time; wadding-miss fever phase survivable by novice
 - [x] GAM-0194 · Demo · P0 · S · op1-4 Pestilent Humours tuning — bubo swell timers ≥ 30 s so novice lances all before bursts on at least 18/20 seeds
 - [ ] GAM-0195 · Demo · P0 · S · op2-1 Gravehound tuning — fang angles readable; claw lacerations total ≤ 5; steady rank B–A
@@ -312,9 +312,9 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [ ] GAM-0197 · Demo · P0 · S · op2-3 Brood-Mother's Kiss tuning — venom mote count and grub spawn cadence set so drain peaks ≤ 1.2/s steady
 - [x] GAM-0198 · Demo · P0 · S · op2-4 The Silenced Cantor tuning — sigil stroke counts 4–7; regress timer 4 s verified fair for novice
 - [ ] GAM-0199 · Demo · P1 · S · Difficulty curve check — steady-bot median min-vitals decreases monotonically op1-1 → op2-5 except post-boss breather op2-1 (documented chart in balance report)
-- [ ] GAM-0200 · Alpha · P1 · S · Ch3 op tuning — every Ch3 op passes 20-seed steady/novice sweep and has committed thresholds
-- [ ] GAM-0201 · Alpha · P1 · S · Ch4 op tuning — every Ch4 op passes 20-seed steady/novice sweep and has committed thresholds
-- [ ] GAM-0202 · Beta · P1 · S · Ch5 op tuning — every Ch5 op passes 20-seed steady/novice sweep and has committed thresholds
+- [x] GAM-0200 · Alpha · P1 · S · Ch3 op tuning — every Ch3 op passes 20-seed steady/novice sweep and has committed thresholds
+- [x] GAM-0201 · Alpha · P1 · S · Ch4 op tuning — every Ch4 op passes 20-seed steady/novice sweep and has committed thresholds
+- [x] GAM-0202 · Beta · P1 · S · Ch5 op tuning — every Ch5 op passes 20-seed steady/novice sweep and has committed thresholds
 - [ ] GAM-0203 · Beta · P1 · M · Human telemetry balance pass — opt-in beta telemetry (fail rate per op); any op with > 35 % first-attempt fail on Surgeon gets a tuning task
 
 ## GAM-K · Tutorialisation (Demo)
@@ -324,7 +324,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0206 · Demo · P0 · S · Litany tutorial — prompted star practice in a paused frame before Matins phase 2 with 3 attempts and a "skip" fallback that auto-triggers the Litany
 - [x] GAM-0207 · Demo · P1 · S · Contextual first-time hints (one per mechanic, save-tracked) — barb nick, bolt pull, wadding, rot coverage, sigil order, hexstone dish, venom ligature
 - [x] GAM-0208 · Demo · P1 · S · Tutorial skip for returning players — (option + "I've operated before" prompt on new save)
-- [ ] GAM-0209 · Demo · P1 · S · Surgeon's Manual — in-game codex page per tool and ailment unlocked on first encounter, with 3-frame animated diagram
+- [x] GAM-0209 · Demo · P1 · S · Surgeon's Manual — in-game codex page per tool and ailment unlocked on first encounter, with 3-frame animated diagram
 - [x] GAM-0210 · Demo · P1 · S · Practice Theatre — sandbox scene with dummy patient to try each tool without scoring; accessible from pause menu
 - [x] GAM-0211 · Demo · P2 · S · Tutorial input glyphs — prompts switch between mouse/keyboard and controller glyphs within 1 frame of last-used device changing
 - [ ] GAM-0212 · Alpha · P1 · S · Chapter 3–5 new-mechanic intro ops each have a no-fail first phase that teaches the mechanic — (fracture, stone, frost, amputation)
@@ -334,7 +334,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 ### Rules & structure
 - [x] GAM-0213 · Demo · P1 · M · Demo X-op: "X1 — Matins, Unveiled" unlocks on Ch2 clear; Matins with 1.5× HP, 3 s veil / 2 s open rhythm, no checkpoint, Master-only drain
 - [x] GAM-0214 · Demo · P1 · S · X-op rules: no Assist toggles, no retry-at-Novice, Litany allowed once — results show rank and a global demo best time
-- [ ] GAM-0215 · Alpha · P1 · L · Full X-op ladder — X1–X8, one per Malison Hour, each a remixed escalated boss unlocked by clearing its story chapter at A rank or better
+- [x] GAM-0215 · Alpha · P1 · L · Full X-op ladder — X1–X8, one per Malison Hour, each a remixed escalated boss unlocked by clearing its story chapter at A rank or better
 - [x] GAM-0216 · Alpha · P1 · S · X-op modifiers table (data): drain×, time×, HP×, tell speed×, add cadence× — each X-op declares its modifiers
 - [ ] GAM-0217 · Alpha · P2 · M · Time-attack mode — any cleared op replayable against the clock; ghost vitals graph of personal best overlaid on HUD
 - [x] GAM-0218 · Beta · P1 · M · Symptom Loom — procedural challenge ops built from 3 adjacent "verses" out of 12 symptom modules; seed shown and shareable
@@ -363,14 +363,14 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 
 - [x] GAM-0234 · Demo · P0 · S · Hold-to-toggle option — tools needing a held button (Leech, Brand, Tincture, Lens) can be click-to-start/click-to-stop
 - [x] GAM-0235 · Demo · P0 · S · Every audio tell has a visual twin (e.g. Hymn ring, shroud opening) — checklist test lists cue ids with both channels
-- [ ] GAM-0236 · Demo · P1 · S · Colour-blind safe ailments — venom, hexstone, rot, pus distinguished by shape/pattern not hue alone; verified under deuteranopia/protanopia/tritanopia filters
+- [x] GAM-0236 · Demo · P1 · S · Colour-blind safe ailments — venom, hexstone, rot, pus distinguished by shape/pattern not hue alone; verified under deuteranopia/protanopia/tritanopia filters
 - [x] GAM-0237 · Demo · P1 · S · Game-speed slider 70–100 % — (flags results, disables leaderboard)
 - [x] GAM-0238 · Demo · P1 · S · Gesture simplification — zig-zag stitches can be replaced by click-per-stitch; encircle can be replaced by tap-and-hold 1 s; star can be a hold key
-- [ ] GAM-0239 · Demo · P1 · S · Screen shake and flash intensity sliders honoured by all boss effects — (Matins open flash, Lauds dawn flare)
+- [x] GAM-0239 · Demo · P1 · S · Screen shake and flash intensity sliders honoured by all boss effects — (Matins open flash, Lauds dawn flare)
 - [x] GAM-0240 · Demo · P2 · S · Cursor options — cursor size (1×/1.5×/2×) and high-contrast target outlines toggle, applied to all entities
-- [ ] GAM-0241 · Alpha · P1 · S · One-handed mode — tool cycle on mouse side buttons, Litany via hold key; every Alpha mechanic validated completable
+- [x] GAM-0241 · Alpha · P1 · S · One-handed mode — tool cycle on mouse side buttons, Litany via hold key; every Alpha mechanic validated completable
 - [x] GAM-0242 · Alpha · P2 · S · Rhythm mechanics — (amputation saw, heart beats) have a "no rhythm" assist with widened windows ×2
-- [ ] GAM-0243 · Beta · P1 · S · Accessibility audit of all 5 chapters — each op completable with all assists on by the bot using simplified gestures
+- [x] GAM-0243 · Beta · P1 · S · Accessibility audit of all 5 chapters — each op completable with all assists on by the bot using simplified gestures
 
 ## GAM-O · Environment & patient modifiers (Alpha)
 
@@ -385,7 +385,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0249 · Demo · P0 · S · Phase transitions — phase ends when all required entities cleared; 1.5 s breather with drain frozen and Ilse line; unit test that phase N+1 spawns only after
 - [x] GAM-0250 · Demo · P0 · S · Pause (Esc) freezes sim completely, blurs field (prevents planning exploit on hidden entities — Lens reveal off while paused)
 - [x] GAM-0251 · Demo · P1 · S · Ilse callout priority queue — max 1 line per 2.5 s, priority (danger > instruction > praise); `sayOnce` keys persisted per op run
-- [ ] GAM-0252 · Demo · P1 · S · Callout audit — every demo op callout ≤ 90 chars, references tools by display name from `TOOL_INFO` (test scans content)
+- [x] GAM-0252 · Demo · P1 · S · Callout audit — every demo op callout ≤ 90 chars, references tools by display name from `TOOL_INFO` (test scans content)
 - [x] GAM-0253 · Demo · P1 · S · Timer rules — timer out = loss; last 30 s timer turns red with ticking; time bonus 0 below 10 s
 - [x] GAM-0254 · Demo · P1 · S · Operation intro — 2 s "Begin" beat where input is ignored; first-frame drain = 0 (test)
 - [x] GAM-0255 · Demo · P1 · S · Closing step — every op ends with final suture of the initial incision unless op declares `noClose`; skipped closure impossible
@@ -413,7 +413,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0006 · Demo · P1 · S · Boss drain budget — sum of boss + adds drain never exceeds 2.0/s on Surgeon (sim assertion in debug builds)
 - [x] BOS-0007 · Demo · P1 · S · Boss bot-harness contract — every boss exports a `botStrategy` used by `tests/bot.ts`; completion test on 20 seeds per difficulty
 - [x] BOS-0008 · Demo · P1 · S · Hollow Choir leitmotif hooks — boss emits `music.intensity` 0–3 by phase for adaptive music
-- [ ] BOS-0009 · Alpha · P1 · S · Boss content lint — every boss phase has ≥ 1 tell, ≥ 1 counter, an Ilse hint line, and codex text
+- [x] BOS-0009 · Alpha · P1 · S · Boss content lint — every boss phase has ≥ 1 tell, ≥ 1 counter, an Ilse hint line, and codex text
 
 ## BOS-B · Matins — The Night Vigil (Chapter 1 boss, Demo polish)
 
@@ -476,14 +476,14 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 ### Counterplay, tells & cues
 - [x] BOS-0053 · Alpha · P1 · S · Stroke tell — nib glint + scratch SFX 0.8 s before each stroke; stroke path pre-drawn as faint indentation
 - [x] BOS-0054 · Alpha · P1 · S · Name completion warning — at final stroke, name glows and a bell tolls once; Ilse "It's nearly written!"
-- [ ] BOS-0055 · Alpha · P2 · S · Names drawn from lost-patient list in the save (fallback to canned names) — fictional names only, never player-entered text
-- [ ] BOS-0056 · Alpha · P2 · S · Audio — monk voice reading a roll, one name per completed stroke set
+- [x] BOS-0055 · Alpha · P2 · S · Names drawn from lost-patient list in the save (fallback to canned names) — fictional names only, never player-entered text
+- [x] BOS-0056 · Alpha · P2 · S · Audio — monk voice reading a roll, one name per completed stroke set
 ### Tuning & tests
 - [ ] BOS-0057 · Alpha · P0 · S · Bot strategy: erase names in heart-proximity priority — steady bot clears in 260–340 s; novice 20/20
 - [x] BOS-0058 · Alpha · P1 · S · Unit tests — reverse-order erase rule, parallel write speeds, ink-to-stroke conversion timer
 - [x] BOS-0059 · Alpha · P1 · S · Farming guard — erased-stroke points count as boss-add (capped)
 - [ ] BOS-0060 · Beta · P1 · S · Prime final pass — playtest gate (≥ 4/5 clear in ≤ 4 attempts) and retune with final art/audio
-- [ ] BOS-0061 · Beta · P2 · S · Prime codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
+- [x] BOS-0061 · Beta · P2 · S · Prime codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
 
 ## BOS-E · Terce — Tongues of Fire (Chapter 3 finale)
 
@@ -493,17 +493,17 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0064 · Alpha · P0 · M · Brand inversion — using the Cautery Brand on Terce or its flames heals it 5 %/s and spreads fire; first use triggers Ilse warning, subsequent uses rate BAD
 - [x] BOS-0065 · Alpha · P0 · M · Phase 2 "Pentecost" (65–30 %): core splits into 3 tongues — each must be doused (Salve full coverage) within 2 s of each other or they re-merge at full HP of the phase
 - [x] BOS-0066 · Alpha · P0 · M · Phase 3 "Ash" (30–0 %): core exposed but surrounded by heat haze that distorts cursor (offset up to 10 px) — Leech-Pipe drawing smoke clears haze 4 s; excise core with encircle
-- [ ] BOS-0067 · Alpha · P1 · S · Salve capacity pressure — Terce op raises SALVE_MAX to 70 and refill delay to 2 s; tuning documented
+- [x] BOS-0067 · Alpha · P1 · S · Salve capacity pressure — Terce op raises SALVE_MAX to 70 and refill delay to 2 s; tuning documented
 ### Counterplay, tells & cues
-- [ ] BOS-0068 · Alpha · P1 · S · Leap tell — target organ glows orange 1.0 s and crackle SFX pans toward it
-- [ ] BOS-0069 · Alpha · P1 · S · Heat-haze shader tied to phase-3 remaining haze — accessibility option replaces distortion with orange outline (cursor offset remains, shown as ghost cursor)
-- [ ] BOS-0070 · Alpha · P2 · S · Tongue audio — each tongue whispers a different syllable; merged core sings full word
+- [x] BOS-0068 · Alpha · P1 · S · Leap tell — target organ glows orange 1.0 s and crackle SFX pans toward it
+- [x] BOS-0069 · Alpha · P1 · S · Heat-haze shader tied to phase-3 remaining haze — accessibility option replaces distortion with orange outline (cursor offset remains, shown as ghost cursor)
+- [x] BOS-0070 · Alpha · P2 · S · Tongue audio — each tongue whispers a different syllable; merged core sings full word
 ### Tuning & tests
 - [ ] BOS-0071 · Alpha · P0 · S · Bot strategy: salve fronts, excise roots, synchronized douse in phase 2 — steady clears 280–360 s
 - [x] BOS-0072 · Alpha · P1 · S · Unit tests — brand heals Terce, re-merge window, haze cursor offset applied to tool pos not visual cursor
 - [x] BOS-0073 · Alpha · P1 · S · Fire-spread cap — ≤ 6 hexfire patches at once; drain budget assertion holds
 - [ ] BOS-0074 · Beta · P1 · S · Terce final pass — playtest gate (≥ 4/5 clear in ≤ 4 attempts) and retune with final art/audio
-- [ ] BOS-0075 · Beta · P2 · S · Terce codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
+- [x] BOS-0075 · Beta · P2 · S · Terce codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
 
 ## BOS-F · Sext — The Noonday Demon (Chapter 4)
 
@@ -515,15 +515,15 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [ ] BOS-0080 · Alpha · P1 · S · Petrification spread from Sext's crust at 3 px/s — stone reaching an organ glyph halves that organ's drain resistance
 - [x] BOS-0081 · Alpha · P1 · S · Player Litany vs Sext — using Litany during its Stillborn cast cancels both (clash FX) and stuns Sext 4 s
 ### Counterplay, tells & cues
-- [ ] BOS-0082 · Alpha · P1 · S · Torpor tell — cursor trail lengthens and HUD edges desaturate proportional to lag; option to show a numeric lag readout
-- [ ] BOS-0083 · Alpha · P1 · S · False-vitals tell — ECG line flat-smooth (too regular) while false; Ilse hint after 10 s "His colour's wrong — check the heart"
-- [ ] BOS-0084 · Alpha · P2 · S · Noon bell audio — midday heat drone, cicada-like buzz rising with torpor
-- [ ] BOS-0085 · Alpha · P1 · S · Accessibility — torpor lag capped at 120 ms when "reduced input lag effects" assist is on
+- [x] BOS-0082 · Alpha · P1 · S · Torpor tell — cursor trail lengthens and HUD edges desaturate proportional to lag; option to show a numeric lag readout
+- [x] BOS-0083 · Alpha · P1 · S · False-vitals tell — ECG line flat-smooth (too regular) while false; Ilse hint after 10 s "His colour's wrong — check the heart"
+- [x] BOS-0084 · Alpha · P2 · S · Noon bell audio — midday heat drone, cicada-like buzz rising with torpor
+- [x] BOS-0085 · Alpha · P1 · S · Accessibility — torpor lag capped at 120 ms when "reduced input lag effects" assist is on
 ### Tuning & tests
 - [ ] BOS-0086 · Alpha · P0 · S · Bot strategy: Tincture(blue) when lag > 150 ms, periodic Lens on heart in phase 2 — steady clears 280–360 s
 - [x] BOS-0087 · Alpha · P1 · S · Unit tests — input-lag queue applied deterministically, false vitals never shown when Lens hovers heart, clash stun
 - [ ] BOS-0088 · Beta · P1 · S · Playtest — confirm torpor reads as boss mechanic not game lag (survey question ≥ 80 % correct)
-- [ ] BOS-0089 · Beta · P2 · S · Sext codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
+- [x] BOS-0089 · Beta · P2 · S · Sext codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
 
 ## BOS-G · None — The Hour of Death (Chapter 4 finale)
 
@@ -536,15 +536,15 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0095 · Alpha · P1 · S · Litany intercept — Litany freezes burrowing fully (not 0.15×) during None; documented exception with test
 - [x] BOS-0096 · Alpha · P1 · S · Tunnel collapse — tunnels left behind become lacerations that open 10 s later
 ### Counterplay, tells & cues
-- [ ] BOS-0097 · Alpha · P1 · S · Burrow tell — skin ripple + heartbeat SFX quickens as head nears heart; audible even with Lens off
-- [ ] BOS-0098 · Alpha · P1 · S · Surfacing tell — skin bulge 0.8 s before exposure point
-- [ ] BOS-0099 · Alpha · P2 · S · Three-o'clock bell toll at phase 3 start — lighting dims to ninth-hour gloom
+- [x] BOS-0097 · Alpha · P1 · S · Burrow tell — skin ripple + heartbeat SFX quickens as head nears heart; audible even with Lens off
+- [x] BOS-0098 · Alpha · P1 · S · Surfacing tell — skin bulge 0.8 s before exposure point
+- [x] BOS-0099 · Alpha · P2 · S · Three-o'clock bell toll at phase 3 start — lighting dims to ninth-hour gloom
 ### Tuning & tests
 - [x] BOS-0100 · Alpha · P0 · S · Bot strategy: intercept prediction along known path — novice bot wins ≥ 19/20 (instant-loss boss needs margin)
 - [x] BOS-0101 · Alpha · P0 · S · Fairness test — no seed spawns the head closer than 8 s travel from the heart at any phase start
 - [x] BOS-0102 · Alpha · P1 · S · Unit tests — split segment count, heart-contact outcomes by phase, extraction window regrowth
 - [ ] BOS-0103 · Beta · P1 · S · Playtest — instant-loss frustration check; checkpoint per phase mandatory
-- [ ] BOS-0104 · Beta · P2 · S · None codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
+- [x] BOS-0104 · Beta · P2 · S · None codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
 
 ## BOS-H · Vespers — The Lamp-Lighting (Chapter 5)
 
@@ -556,15 +556,15 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0109 · Alpha · P0 · M · Phase 3 "Last Light" (25–0 %): one lamp remains and wanders — keep it lit while tracing Vespers' wick back to its root and excising it
 - [x] BOS-0110 · Alpha · P1 · S · Tallow blood — vitals drain rises 0.1/s per un-drained clot; Tincture efficacy halved while ≥ 3 clots
 ### Counterplay, tells & cues
-- [ ] BOS-0111 · Alpha · P1 · S · Snuff tell — lamp flame gutters and leans 1.0 s before snuffing; hiss SFX
-- [ ] BOS-0112 · Alpha · P1 · S · Darkness accessibility — "Minimum brightness" option keeps dark quadrants at ≥ 45 % with Vespers outline
-- [ ] BOS-0113 · Alpha · P2 · S · Evening hymn music layer — each lit lamp adds a harmonic
+- [x] BOS-0111 · Alpha · P1 · S · Snuff tell — lamp flame gutters and leans 1.0 s before snuffing; hiss SFX
+- [x] BOS-0112 · Alpha · P1 · S · Darkness accessibility — "Minimum brightness" option keeps dark quadrants at ≥ 45 % with Vespers outline
+- [x] BOS-0113 · Alpha · P2 · S · Evening hymn music layer — each lit lamp adds a harmonic
 ### Tuning & tests
 - [ ] BOS-0114 · Alpha · P0 · S · Bot strategy: lamp maintenance loop + filament cutting — steady clears 300–380 s
 - [x] BOS-0115 · Alpha · P1 · S · Unit tests — lamp dim timer, quadrant visibility masking of entity hit-tests, silhouette damage rule
 - [ ] BOS-0116 · Alpha · P1 · S · Perf check — dynamic lighting mask ≤ 0.5 ms GPU at 1080p on min-spec
 - [ ] BOS-0117 · Beta · P1 · S · Vespers final pass — playtest gate (≥ 4/5 clear in ≤ 4 attempts) and retune with final art/audio
-- [ ] BOS-0118 · Beta · P2 · S · Vespers codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
+- [x] BOS-0118 · Beta · P2 · S · Vespers codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
 
 ## BOS-I · Compline — The Great Silence (Chapter 5)
 
@@ -583,9 +583,9 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 ### Tuning & tests
 - [ ] BOS-0129 · Alpha · P0 · S · Bot strategy covers stolen-Litany slow, node breaking, two-tool combo — steady clears 380–480 s; novice ≥ 19/20
 - [x] BOS-0130 · Alpha · P1 · S · Unit tests — Litany ownership transfer and restore, mute windows never overlap a lethal attack without visual tell, combo window
-- [ ] BOS-0131 · Alpha · P1 · S · Module reuse test — Compline's Matins/Lauds/Prime sub-phases pass their original boss unit tests in isolation
+- [x] BOS-0131 · Alpha · P1 · S · Module reuse test — Compline's Matins/Lauds/Prime sub-phases pass their original boss unit tests in isolation
 - [ ] BOS-0132 · Beta · P1 · S · Playtest + final tuning — checkpoint per phase
-- [ ] BOS-0133 · Beta · P2 · S · Compline codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
+- [x] BOS-0133 · Beta · P2 · S · Compline codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
 
 ## BOS-J · The Office — the Malison's final form (Chapter 5 finale)
 
@@ -594,17 +594,17 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0135 · Beta · P0 · M · Phase 1 "Dial": the lit hour-sigil dictates the active mechanic (random order, each Hour once) — extinguish each by clearing that Hour's counter (8 mini-trials, 20–30 s each)
 - [x] BOS-0136 · Beta · P0 · M · Phase 2 "Unison": two Hours active simultaneously (pairs chosen so tools don't conflict: e.g. Matins+Vespers, Lauds+None) — pairing table in data
 - [x] BOS-0137 · Beta · P0 · M · Phase 3 "The Choir's Heart": the Hollow Choir's conductor-sigil — trace the full 8-stroke Office sigil while Ilse holds vitals (auto-Tincture every 10 s) — story beat
-- [ ] BOS-0138 · Beta · P0 · S · Final Litany — Kreuzer's Litany plus Ilse's prayer: a second star within 3 s of the first grants 12 s Stillness (final phase only)
-- [ ] BOS-0139 · Beta · P1 · S · Stroh branch — if story flag `strohAlly`, Stroh's brand strike clears one hour-sigil in phase 1 automatically
+- [x] BOS-0138 · Beta · P0 · S · Final Litany — Kreuzer's Litany plus Ilse's prayer: a second star within 3 s of the first grants 12 s Stillness (final phase only)
+- [x] BOS-0139 · Beta · P1 · S · Stroh branch — if story flag `strohAlly`, Stroh's brand strike clears one hour-sigil in phase 1 automatically
 ### Counterplay, tells & cues
-- [ ] BOS-0140 · Beta · P1 · S · Dial tell — hand of the clock sweeps to the next Hour over 1.5 s with that Hour's signature sound
+- [x] BOS-0140 · Beta · P1 · S · Dial tell — hand of the clock sweeps to the next Hour over 1.5 s with that Hour's signature sound
 - [ ] BOS-0141 · Beta · P1 · S · All eight Hours' leitmotifs layered as a canon in phase 2 — mix test for clarity of tells
 ### Tuning & tests
 - [ ] BOS-0142 · Beta · P0 · S · Bot completion on 50 seeds all difficulties — steady clears 480–600 s; op timeLimit 720 s
 - [x] BOS-0143 · Beta · P0 · S · Pairing validator — every allowed pair of Hours tested for tool conflicts and drain budget ≤ 2.2/s
-- [ ] BOS-0144 · Beta · P1 · S · Checkpoint after each extinguished hour-sigil in phase 1 on Novice/Surgeon — per phase on Master
+- [x] BOS-0144 · Beta · P1 · S · Checkpoint after each extinguished hour-sigil in phase 1 on Novice/Surgeon — per phase on Master
 - [ ] BOS-0145 · Beta · P1 · S · Playtest gate — ≥ 70 % of playtesters clear within 5 attempts on Surgeon
-- [ ] BOS-0146 · Release · P2 · S · Office codex — ending debrief variants by rank and story flags
+- [x] BOS-0146 · Release · P2 · S · Office codex — ending debrief variants by rank and story flags
 
 ## BOS-K · Mid-bosses & elite ailments
 
@@ -631,14 +631,14 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 
 ## BOS-L · Boss X-op remixes (challenge mode)
 
-- [ ] BOS-0164 · Demo · P1 · S · X1 Matins remix — 1.5× HP, 3 s/2 s rhythm, eye phase from start alongside shroud; bot expert clears on 20 seeds
-- [ ] BOS-0165 · Alpha · P1 · S · X2 Lauds remix — 6 Voices, response window 1.0 s, dawn flare every 8 s
-- [ ] BOS-0166 · Alpha · P1 · S · X3 Prime remix — writes 4 names in parallel from start; ink blots become strokes after 5 s
-- [ ] BOS-0167 · Alpha · P1 · S · X4 Terce remix — Salve capacity back to 46; tongues leap every 3.5 s
-- [ ] BOS-0168 · Beta · P1 · S · X5 Sext remix — torpor starts at 150 ms; false vitals permanent
-- [ ] BOS-0169 · Beta · P1 · S · X6 None remix — 5 split segments; heart contact always instant loss
-- [ ] BOS-0170 · Beta · P1 · S · X7 Vespers remix — only 3 lamps, dim over 9 s
-- [ ] BOS-0171 · Beta · P1 · S · X8 Compline remix — no silence nodes; Litany permanently stolen; two-tool combo window 0.4 s
+- [x] BOS-0164 · Demo · P1 · S · X1 Matins remix — 1.5× HP, 3 s/2 s rhythm, eye phase from start alongside shroud; bot expert clears on 20 seeds
+- [x] BOS-0165 · Alpha · P1 · S · X2 Lauds remix — 6 Voices, response window 1.0 s, dawn flare every 8 s
+- [x] BOS-0166 · Alpha · P1 · S · X3 Prime remix — writes 4 names in parallel from start; ink blots become strokes after 5 s
+- [x] BOS-0167 · Alpha · P1 · S · X4 Terce remix — Salve capacity back to 46; tongues leap every 3.5 s
+- [x] BOS-0168 · Beta · P1 · S · X5 Sext remix — torpor starts at 150 ms; false vitals permanent
+- [x] BOS-0169 · Beta · P1 · S · X6 None remix — 5 split segments; heart contact always instant loss
+- [x] BOS-0170 · Beta · P1 · S · X7 Vespers remix — only 3 lamps, dim over 9 s
+- [x] BOS-0171 · Beta · P1 · S · X8 Compline remix — no silence nodes; Litany permanently stolen; two-tool combo window 0.4 s
 - [ ] BOS-0172 · Beta · P1 · S · X-op remix validation — each remix cleared by expert bot on ≥ 18/20 seeds and by a designer by hand (recorded replay committed)
 
 ## BOS-M · Boss release polish & post-launch
@@ -647,8 +647,8 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [ ] BOS-0174 · Beta · P1 · S · Boss audio mix pass — tells audible over music at all volume presets (loudness test −3 dB margin)
 - [ ] BOS-0175 · Release · P0 · S · Final bot sweep — all bosses/elites × 3 difficulties × 50 seeds pass on release candidate build
 - [ ] BOS-0176 · Release · P1 · S · Replay-verified boss speedrun leaderboards — (fastest clear per Hour) enabled
-- [ ] BOS-0177 · Release · P1 · S · Crash/soft-lock audit — each boss run with random-input fuzz bot for 10 min × 20 seeds; no exceptions, no stuck phases
-- [ ] BOS-0178 · Post · P2 · M · Boss Rush mode — all 8 Hours back-to-back with carried vitals, one Litany total
+- [x] BOS-0177 · Release · P1 · S · Crash/soft-lock audit — each boss run with random-input fuzz bot for 10 min × 20 seeds; no exceptions, no stuck phases
+- [x] BOS-0178 · Post · P2 · M · Boss Rush mode — all 8 Hours back-to-back with carried vitals, one Litany total
 - [ ] BOS-0179 · Post · P3 · L · Free update boss "Lauds Reprised" — Ilse-as-patient variant with new antiphon mechanic
 - [ ] BOS-0180 · Post · P2 · S · Post-launch balance patch — tune from Steam telemetry fail rates per boss phase (any phase > 40 % fail on Surgeon adjusted)
 

@@ -5,9 +5,9 @@
  * the heartbeat, rings vitals alarms, ticks the clock, sets music layers and
  * boss sections, and applies the Litany, low-vitals and pause snapshots.
  */
-import { dist, type Vec } from '../core/math';
+import { dist, Rng, type Vec } from '../core/math';
 import { settings } from '../core/settings';
-import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, Sigil, Venom } from '../surgery/entities';
+import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, Sigil, Venom, type EmbeddedKind } from '../surgery/entities';
 import type { Entity } from '../surgery/entity';
 import { ChoirVoice, EggSac, LaudsMalison, SpiderlingGrub } from '../surgery/lauds';
 import { Malison, MalisonShard } from '../surgery/malison';
@@ -17,6 +17,7 @@ import type { LoopHandle, PlayOpts } from './engine';
 import { isEventId, type EventId } from './events';
 import { countCorners, heartParams, HeartbeatScheduler } from './heartbeat';
 import { dbToGain } from './mixer';
+import { brandMaterial } from '../render/brandSmoke';
 import type { HourId } from './music/themes';
 import type { AudioSystem } from './system';
 
@@ -95,6 +96,19 @@ const TOOL_SELECT: Record<ToolId, EventId> = {
 const TOOL_KEYS: Record<string, ToolId> = { Digit1: 'lancet', Digit2: 'tongs', Digit3: 'leech', Digit4: 'thread', Digit5: 'salve', Digit6: 'tincture', Digit7: 'brand', Digit8: 'lens' };
 
 const peek = <T>(o: object, k: string): T | undefined => (o as Record<string, unknown>)[k] as T | undefined;
+
+/** Relative weight of each embedded object (lead shot heaviest, glass lightest). */
+export const EMBED_WEIGHT: Record<EmbeddedKind, number> = { shot: 1, bolt: 0.85, arrow: 0.6, hexstone: 0.55, tooth: 0.4, shard: 0.35, glass: 0.15 };
+
+/** Pitch of the tongs' clack on an embedded object: heavy things clack low, light ones high (GAM-0031). */
+export function clackPitch(kind: EmbeddedKind): number {
+  return 1.3 - 0.55 * EMBED_WEIGHT[kind];
+}
+
+/** Which of the three grub squeals (0–2) a seared grub gives: seeded by the operation and the grub, so replays match. */
+export function squealVariant(seed: number, id: number): 0 | 1 | 2 {
+  return new Rng(seed * 7919 + id * 104729).int(0, 2) as 0 | 1 | 2;
+}
 
 export class OperationAudio {
   op: Operation | null = null;
@@ -320,7 +334,9 @@ export class OperationAudio {
         }
         case 'pluck': {
           const near = op.entities.find((e) => e.alive && dist(e.pos, pos) < 40 && (e instanceof Embedded || e instanceof Grub || e instanceof MalisonShard));
-          this.play(near instanceof Embedded ? 'sfx.tongs.grabHard' : 'sfx.tongs.grabFlesh', { pan });
+          // The clack drops in pitch with the weight of what the tongs close on (GAM-0031).
+          if (near instanceof Embedded) this.play('sfx.tongs.grabHard', { pan, pitch: clackPitch(near.kind) });
+          else this.play('sfx.tongs.grabFlesh', { pan });
           break;
         }
         case 'burn': {
@@ -390,6 +406,9 @@ export class OperationAudio {
         if (p.label === 'Seared') {
           const s = died.find((e) => e instanceof SpiderlingGrub);
           this.play(s ? 'sfx.spider.seared' : 'sfx.grub.seared', { pan });
+          // The grub's dying squeal: one of three, picked by the operation's seed and the grub (GAM-0085).
+          const grub = s ? null : died.find((e) => e instanceof Grub);
+          if (grub) this.play('sfx.grub.squeal', { pan, params: { variant: squealVariant(op.def.seed ?? 1, grub.id) } });
           covered.add('burn');
         } else if (p.label === 'Lanced') {
           this.play(died.some((e) => e instanceof EggSac) ? 'sfx.eggsac.lance' : 'sfx.bubo.lance', { pan });
@@ -483,7 +502,8 @@ export class OperationAudio {
     const ichor = pool ? (pool.ichor === 'blood' ? 0 : pool.ichor === 'pus' ? 1 : 2) : 0;
     if (pool && this.loops.get('leech') && this.leechIchor !== ichor) this.loop('leech', 'loop.leech.suck', false);
     this.leechIchor = ichor;
-    this.loop('leech', 'loop.leech.suck', !!pool, pool ? { intensity: Math.min(1, pool.r / 60), ichor } : {}, pan, 40);
+    // The gurgle follows the draw itself (GAM-0035): louder the harder the pipe is pulling.
+    this.loop('leech', 'loop.leech.suck', !!pool, pool ? { intensity: Math.min(1, pool.flow), ichor } : {}, pan, 40);
 
     // Salve: smear while brushing a salvable wound.
     const salving = running && op.tool === 'salve' && input.down && op.entities.some((e) => (e instanceof Rot || e instanceof Burn || (e instanceof Bubo && e.lanced) || (e instanceof Laceration && e.small)) && dist(e.pos, pos) < 70);
@@ -501,16 +521,8 @@ export class OperationAudio {
     // Cautery brand: ember hum in hand, sizzle on contact, quench on release.
     this.loop('ember', 'loop.brand.ember', running && op.tool === 'brand', {}, pan, 120);
     const branding = running && op.tool === 'brand' && input.down && onBody(pos);
-    let material = 0;
-    if (branding) {
-      for (const e of op.entities) {
-        if (!e.alive || e.hidden) continue;
-        if ((e instanceof Malison || e instanceof LaudsMalison) && dist(e.pos, pos) < e.radius) material = 3;
-        else if (e instanceof ChoirVoice && dist(e.pos, pos) < 22) material = 3;
-        else if (e instanceof Sigil && e.segs.some((s) => distToSeg(pos, s.a, s.b) < 14)) material = Math.max(material, 2);
-        else if (e instanceof Grub && dist(e.pos, pos) < 20) material = Math.max(material, 1);
-      }
-    }
+    // The sizzle follows the same material as the smoke (GAM-0051): flesh, grub, sigil, Malison.
+    const material = branding ? brandMaterial(op, pos) : 0;
     if (branding && this.loops.get('sizzle') && this.sizzleMat !== material) this.loop('sizzle', 'loop.brand.sizzle', false, {}, pan, 30);
     this.sizzleMat = material;
     const wasSizzling = !!this.loops.get('sizzle');

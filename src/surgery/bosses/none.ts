@@ -166,7 +166,7 @@ export class BurrowSegment extends Entity {
     this.pos = pointAlong(this.path, this.s);
     if (this.s >= this.total) {
       this.kill();
-      if (this.lethal) return op.lose('A burrower reached the heart.');
+      if (this.lethal && !op.assists.noFail) return op.lose('A burrower reached the heart.');
       op.hurt(this.heartHit, this.pos);
       op.rate('miss', this.pos, 'It reached the heart');
       op.shake = 14;
@@ -342,7 +342,14 @@ export class NoneMalison extends Entity {
       const ahead = pointAlong(this.path, this.s + 5);
       op.spawn(new TunnelScar({ ...this.pos }, Math.atan2(ahead.y - this.pos.y, ahead.x - this.pos.x)));
     }
-    if (this.s >= this.total) op.lose('The burrower reached the heart.');
+    if (this.s >= this.total) {
+      // The no-fail assist is the floor BOS-0090 promises: the heart is struck, not stopped, and it burrows out again.
+      if (!op.assists.noFail) return op.lose('The burrower reached the heart.');
+      op.hurt(this.tune.heartHit, this.pos);
+      op.rate('miss', this.pos, 'It reached the heart');
+      op.shake = 14;
+      this.newPath(op, 2, this.speed);
+    }
   }
 
   override onReveal(op: Operation, p: Vec, dt: number): void {

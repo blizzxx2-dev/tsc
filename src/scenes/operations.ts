@@ -11,6 +11,7 @@ import { drawBackdrop } from './backdrop';
 import { playOperation, save } from './flow';
 import { TitleScene } from './title';
 import { CodexScene } from './codex';
+import { ManualScene } from './manual';
 
 /** Replay any operation already reached in the campaign, chasing better ranks. */
 export class OperationsScene implements Scene {
@@ -49,8 +50,9 @@ export class OperationsScene implements Scene {
         playOperation(game, def, back, back);
       }
     });
-    if (button(g, game.input, t('ui.codex.open'), VIEW_W / 2 - 170, 650, 24)) game.go(new CodexScene(() => game.go(new OperationsScene())));
-    if (button(g, game.input, t('ui.common.back'), VIEW_W / 2 + 170, 650, 26)) game.go(new TitleScene());
+    if (button(g, game.input, t('ui.codex.open'), VIEW_W / 2 - 250, 650, 24)) game.go(new CodexScene(() => game.go(new OperationsScene())));
+    if (button(g, game.input, t('ui.manual.open'), VIEW_W / 2, 650, 24)) game.go(new ManualScene(() => game.go(new OperationsScene())));
+    if (button(g, game.input, t('ui.common.back'), VIEW_W / 2 + 250, 650, 26)) game.go(new TitleScene());
     reticle(g, game.input.pos);
     g.endFrame();
   }

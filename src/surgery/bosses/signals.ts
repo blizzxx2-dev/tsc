@@ -19,6 +19,8 @@ export interface BossOpDef extends OperationDef {
   skipCinematics?: boolean;
   /** Story flags that change a fight (e.g. `strohAlly` for the Office). */
   storyFlags?: readonly string[];
+  /** Patients this surgeon has lost (content names from the save) — Prime writes them first (BOS-0055). */
+  lostPatients?: readonly string[];
   /** Boss accessibility assists, copied from the settings when the operation starts. */
   assists?: BossAssists;
 }
@@ -127,6 +129,8 @@ export const BOSS_TELLS: Record<string, Record<string, TellSpec>> = {
     leap: { lead: 1.0, visual: 'target organ glows orange', audio: 'crackle panned toward the target' },
   },
   sext: {
+    torpor: { lead: 1.0, visual: 'cursor trail lengthens; HUD edges desaturate with the lag', audio: 'noon drone rises with the lag' },
+    falseNoon: { lead: 1.0, visual: 'the ECG runs flat-smooth, too regular', audio: 'drone; Ilse: “His colour’s wrong”' },
     stillborn: { lead: 1.0, visual: 'sun-dials rise; HUD edges bleach', audio: 'drone' },
   },
   none: {
@@ -134,6 +138,7 @@ export const BOSS_TELLS: Record<string, Record<string, TellSpec>> = {
     heart: { lead: 2.0, visual: 'skin ripple quickens toward the heart', audio: 'ripple (quickening)' },
   },
   vespers: {
+    dim: { lead: 1.0, visual: 'a lamp’s light shrinks over 15 s and its quadrant darkens', audio: 'the evening hymn loses that lamp’s harmonic' },
     snuff: { lead: 1.0, visual: 'lamp flame gutters and leans', audio: 'hiss' },
   },
   compline: {
@@ -147,7 +152,8 @@ export const BOSS_TELLS: Record<string, Record<string, TellSpec>> = {
     hatch: { lead: 3.0, visual: 'the sacs swell and churn', audio: 'hum' },
   },
   office: {
-    dial:{ lead: 1.5, visual: 'the clock hand sweeps to the next Hour', audio: 'dial + that Hour’s signature' },
+    dial: { lead: 1.5, visual: 'the clock hand sweeps to the next Hour', audio: 'dial + that Hour’s signature' },
+    lash: { lead: 1.0, visual: 'the conductor-sigil’s inner ring fills before each lash', audio: 'Ilse’s prayer (she holds the vitals)' },
   },
 };
 

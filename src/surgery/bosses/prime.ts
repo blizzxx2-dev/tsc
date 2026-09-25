@@ -7,6 +7,7 @@ import { FIELD, onBody, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
 import { distortion, drawBossRing, fxRange, randomOnBody, samplePath, stepToward, TAU } from './common';
 import { Voice } from './voices';
+import { bossSound, type BossOpDef } from './signals';
 
 /**
  * The roll of the dead that Prime writes into its host. Original Kessendorf
@@ -21,6 +22,26 @@ export const PRIME_NAMES: readonly string[] = [
   'Trude Haberland', 'Clemens Nagl', 'Walpurga Dorn', 'Benedikt Schrot', 'Ottilie Brandt', 'Lutz Weidner',
   'Rosamund Keil', 'Ambros Hecht', 'Gundel Riese', 'Severin Lamm',
 ];
+
+/**
+ * The names Prime writes (BOS-0055): first the patients this surgeon has lost (from the save,
+ * passed in as `BossOpDef.lostPatients`), then the canned roll. Only content-authored patient
+ * names reach it — a name must look like a fictional given name (never player-entered text).
+ */
+export function primeRoll(op: Operation): readonly string[] {
+  const lost = ((op.def as BossOpDef).lostPatients ?? []).filter(isPatientName);
+  return lost.length ? [...new Set(lost), ...PRIME_NAMES] : PRIME_NAMES;
+}
+
+/** A content patient line ("Jost, drover") → the name part, or null when it is not a personal name. */
+export function patientName(patient: string): string | null {
+  const name = patient.split(',')[0].trim();
+  return isPatientName(name) ? name : null;
+}
+
+function isPatientName(name: string): boolean {
+  return /^\p{Lu}[\p{L}’'-]+(?: \p{Lu}[\p{L}’'-]+){0,2}$/u.test(name) && !/^(?:A|An|The)\b/.test(name);
+}
 
 /** Erased-stroke ratings are capped so a player cannot farm points by letting Prime write. */
 export const PRIME_STROKE_RATING_CAP = 36;
@@ -118,6 +139,8 @@ export class NameSigil extends Entity {
     op.hurt(this.damage, this.pos);
     op.rate('miss', this.pos, 'The name is written');
     op.cues.push('bell');
+    // The monk reads the finished name from the roll (BOS-0056).
+    bossSound(op, 'reading', this.pos);
     op.shake = Math.max(op.shake, 8);
     // Every letter splits open as a shallow cut.
     for (const s of this.strokes) {
@@ -259,14 +282,16 @@ export class InkBlot extends BloodPool {
   override update(op: Operation, dt: number): void {
     if (op.litanyTime > 0) return;
     this.age += dt;
-    if (this.age >= 8 && this.prime.alive) {
+    const writes = this.prime.tune.inkWrites ?? 8;
+    if (this.age >= writes && this.prime.alive) {
       this.kill();
       op.say('The ink is writing by itself!');
-      this.prime.adopt(op, new NameSigil({ ...this.pos }, op.rng.pick(PRIME_NAMES), op, 1.6, 3, 12));
+      this.prime.adopt(op, new NameSigil({ ...this.pos }, op.rng.pick(primeRoll(op)), op, 1.6, 3, 12));
     }
   }
   override draw(g?: Gfx, op?: Operation): void {
-    if (g && op && this.age > 5) g.arc(this.pos.x, this.pos.y, this.r + 6, 2, hex('#b478ff', 0.4 + 0.3 * Math.sin(op.elapsed * 10)), 1 - (this.age - 5) / 3);
+    const writes = this.prime.tune.inkWrites ?? 8;
+    if (g && op && this.age > writes - 3) g.arc(this.pos.x, this.pos.y, this.r + 6, 2, hex('#b478ff', 0.4 + 0.3 * Math.sin(op.elapsed * 10)), 1 - (this.age - (writes - 3)) / 3);
   }
 }
 
@@ -281,6 +306,10 @@ export interface PrimeTuning {
   stroke2: number;
   /** Names written in parallel in phase 2 (grows by one below 45 % hp). */
   parallel: number;
+  /** X3 remix: this many names are written in parallel from the very start. */
+  parallelFromStart?: number;
+  /** Seconds before a spilt ink blot starts writing a name of its own (default 8; X3 remix 5). */
+  inkWrites?: number;
 }
 
 export const PRIME_DEFAULT: PrimeTuning = { hp: 100, dps: 7, exposure: 3, stroke1: 1.2, stroke2: 2.4, parallel: 2 };
@@ -306,6 +335,7 @@ export class PrimeMalison extends Entity {
   private wroteKreuzer = false;
   readonly heart: Vec;
   private nameIx: number;
+  private readonly roll: readonly string[];
 
   constructor(
     pos: Vec,
@@ -318,7 +348,9 @@ export class PrimeMalison extends Entity {
     this.hp = this.maxHp = tune.hp;
     this.target = { ...pos };
     this.heart = heart ?? { x: FIELD.cx - 70, y: FIELD.cy - 20 };
-    this.nameIx = op.rng.int(0, PRIME_NAMES.length - 1);
+    this.roll = primeRoll(op);
+    // Lost patients are read first; the canned roll starts at a seeded place.
+    this.nameIx = this.roll === PRIME_NAMES ? op.rng.int(0, PRIME_NAMES.length - 1) : -1;
   }
 
   get phaseNo(): 1 | 2 | 3 {
@@ -343,8 +375,9 @@ export class PrimeMalison extends Entity {
   }
 
   private nextName(): string {
-    this.nameIx = (this.nameIx + 7) % PRIME_NAMES.length;
-    return PRIME_NAMES[this.nameIx];
+    if (this.roll !== PRIME_NAMES && this.nameIx + 1 < this.roll.length - PRIME_NAMES.length) return this.roll[++this.nameIx];
+    this.nameIx = (Math.max(0, this.nameIx) + 7) % this.roll.length;
+    return this.roll[this.nameIx];
   }
 
   adopt(op: Operation, n: NameSigil): void {
@@ -407,14 +440,14 @@ export class PrimeMalison extends Entity {
     if (live.length && live.every((n) => n.paused)) live[0].paused = false;
     this.spawnT -= dt;
     if (phase === 1) {
-      if (live.length === 0 && !this.exposed && this.spawnT <= 0) {
+      if (live.length < (this.tune.parallelFromStart ?? 1) && !this.exposed && this.spawnT <= 0) {
         this.spawnT = 1;
         this.adopt(op, new NameSigil(this.spot(op), this.nextName(), op, this.tune.stroke1));
         op.sayOnce('prime-writes', 'It’s writing a name into him! Trace the strokes out with the lancet — newest first!');
       }
     } else if (phase === 2) {
       // Two names, and a third (slower) one late in the Ledger.
-      const want = this.tune.parallel + (this.hp / this.maxHp < 0.4 ? 1 : 0);
+      const want = Math.max(this.tune.parallel + (this.hp / this.maxHp < 0.4 ? 1 : 0), this.tune.parallelFromStart ?? 0);
       if (live.length < want && this.spawnT <= 0) {
         this.spawnT = 3;
         const p = this.spot(op);

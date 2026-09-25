@@ -394,7 +394,7 @@ export const OP_5_7: OperationDef = {
   timeLimit: 300,
   baseDrain: 0.05,
   tools: ALL,
-  ranks: { S: 9380, A: 7500, B: 5630 },
+  ranks: { S: 9370, A: 7500, B: 5620 },
   litany: true,
   seed: 57,
   phases: [
@@ -426,7 +426,7 @@ export const OP_5_8: OperationDef = {
   timeLimit: 480,
   baseDrain: 0.05,
   tools: ALL,
-  ranks: { S: 8910, A: 7130, B: 5350 },
+  ranks: { S: 7210, A: 5770, B: 4330 },
   litany: true,
   seed: 58,
   phases: [
@@ -450,7 +450,7 @@ export const OP_5_9: OperationDef = {
   timeLimit: 720,
   baseDrain: 0.05,
   tools: ALL,
-  ranks: { S: 16240, A: 12990, B: 9740 },
+  ranks: { S: 12600, A: 10080, B: 7560 },
   litany: true,
   seed: 59,
   phases: [
