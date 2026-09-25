@@ -3,7 +3,11 @@
 export default {
   extends: ['@commitlint/config-conventional'],
   rules: {
-    'type-enum': [2, 'always', ['feat', 'fix', 'perf', 'refactor', 'test', 'docs', 'build', 'ci', 'chore', 'style', 'revert', 'content', 'art', 'audio', 'loc']],
+    'type-enum': [
+      2,
+      'always',
+      ['feat', 'fix', 'perf', 'refactor', 'test', 'docs', 'build', 'ci', 'chore', 'style', 'revert', 'content', 'art', 'audio', 'loc'],
+    ],
     // Roadmap commits cite task ids and file lists; allow long bodies and footers.
     'body-max-line-length': [0],
     'footer-max-line-length': [0],

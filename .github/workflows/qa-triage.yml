@@ -1,0 +1,56 @@
+# Bug-process automation (QAT-0087 labels, QAT-0089 triage SLA + weekly trend, QAT-0092 metrics).
+name: QA triage
+
+on:
+  schedule:
+    - cron: '23 * * * *' # hourly: SLA watch
+    - cron: '41 6 * * 1' # Mondays: weekly metrics for the status note / sprint review
+  push:
+    branches: [main]
+    paths: ['.github/labels.json']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  labels:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node scripts/qa/sync-labels.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  sla:
+    if: github.event_name == 'schedule' && github.event.schedule == '23 * * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node scripts/qa/triage-sla.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  metrics:
+    if: (github.event_name == 'schedule' && github.event.schedule == '41 6 * * 1') || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node scripts/qa/bug-metrics.mjs 8
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qa-metrics
+          path: reports/qa-metrics.md

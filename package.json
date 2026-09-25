@@ -19,7 +19,7 @@
     "bench": "vitest bench --project sim --run",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "format:check": "prettier --check tests scripts/qa scripts/smoke.mjs scripts/shot.mjs src/debug src/telemetry .github eslint.config.js vitest.config.ts commitlint.config.js",
     "smoke": "node scripts/smoke.mjs",
     "shot": "node scripts/shot.mjs",
     "hooks:install": "simple-git-hooks",

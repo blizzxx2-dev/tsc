@@ -1,0 +1,32 @@
+# PR policy checks (QAT-0032/0057 behaviour-change label, QAT-0090 regression tests for S1/S2 fixes,
+# QAT-0058 replay-first). Re-runs when labels change so adding `behaviour-change` clears the check.
+name: QA policy
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled, edited]
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Changed files
+        run: git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }} > changed.txt
+      - name: Policy
+        run: node scripts/qa/check-pr-policy.mjs changed.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}

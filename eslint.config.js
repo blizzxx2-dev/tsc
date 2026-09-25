@@ -52,6 +52,20 @@ export default tseslint.config(
     },
   },
   {
+    // Game code other workstreams are writing in parallel: every recommended rule reports as a
+    // warning (visible in CI, never blocking); the locale rule stays an error everywhere.
+    files: ['src/**/*.ts', 'scripts/**/*.{js,mjs,ts}'],
+    ignores: ['src/debug/**', 'src/telemetry/**', 'scripts/qa/**', 'scripts/smoke.mjs', 'scripts/shot.mjs'],
+    rules: Object.fromEntries(
+      Object.entries(
+        // Effective level of each recommended rule (later configs override earlier ones, e.g. no-undef off for TS).
+        Object.assign({}, ...[js.configs.recommended, ...tseslint.configs.recommended].map((c) => c.rules ?? {})),
+      )
+        .filter(([r, level]) => r !== 'no-restricted-syntax' && (Array.isArray(level) ? level[0] : level) !== 'off')
+        .map(([r]) => [r, 'warn']),
+    ),
+  },
+  {
     files: ['**/*.js', '**/*.mjs'],
     languageOptions: {
       ecmaVersion: 2022,

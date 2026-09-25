@@ -1,0 +1,215 @@
+# QA pipeline for every PR and push to main (QAT-0001/0004/0005/0007/0009/0010/0015/0016/0059).
+name: QA CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: qa-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  CI: 'true'
+  NODE_VERSION: '22'
+
+jobs:
+  lint:
+    name: Lint, format, types, commits
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: ESLint (includes the test-code rules — no .only, no unlinked .skip, every test asserts)
+        run: npx eslint .
+      - name: Prettier (formatter-owned paths; legacy src/ keeps its hand formatting)
+        run: npm run format:check
+      - name: TypeScript
+        run: npx tsc --noEmit
+      - name: Conventional commits (PR check)
+        if: github.event_name == 'pull_request'
+        run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+
+  unit:
+    name: Unit + characterisation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: vitest --project unit
+        run: npx vitest run --project unit
+        env:
+          JUNIT_FILE: reports/unit/junit.xml
+          QA_SUMMARY_FILE: reports/unit/qa-summary.json
+      - name: Test summary (slow unit tests > 2 s are flagged)
+        if: always()
+        run: node scripts/qa/test-summary.mjs reports/unit
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unit-reports
+          path: reports/unit
+
+  sim:
+    name: Simulation (bots, balance, fuzz)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: vitest --project sim
+        run: npx vitest run --project sim
+        env:
+          JUNIT_FILE: reports/sim/junit.xml
+          QA_SUMMARY_FILE: reports/sim/qa-summary.json
+          SIM_REPORT_FILE: reports/sim/sim-report.json
+      - if: always()
+        run: node scripts/qa/test-summary.mjs reports/sim
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sim-reports
+          path: reports/sim
+
+  build:
+    name: Builds (release + QA)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Release build
+        run: npm run build
+      - name: Debug tooling stripped from the release build
+        run: node scripts/qa/check-debug-stripped.mjs dist
+      - name: QA build (debug API, console, cheat menu)
+        run: npm run build:qa
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-qa
+          path: dist-qa
+
+  smoke:
+    name: Smoke (Chromium, SwiftShader)
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-qa
+          path: dist-qa
+      - name: Smoke (exits 1 on page errors or after 90 s)
+        run: node scripts/smoke.mjs shots/smoke
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-shots
+          path: shots/smoke
+
+  e2e:
+    name: E2E shard ${{ matrix.shard }}/4
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-qa
+          path: dist-qa
+      - name: vitest --project e2e (2 retries in CI; pass-on-retry = flaky)
+        run: npx vitest run --project e2e --shard=${{ matrix.shard }}/4 --reporter=default --reporter=blob --reporter=./tests/reporters/qa-summary.ts --reporter=junit
+        env:
+          JUNIT_FILE: reports/e2e/junit-${{ matrix.shard }}.xml
+          QA_SUMMARY_FILE: reports/e2e/qa-summary-${{ matrix.shard }}.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-blob-${{ matrix.shard }}
+          path: .vitest-reports
+          include-hidden-files: true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-reports-${{ matrix.shard }}
+          path: |
+            reports/e2e
+            test-results/e2e
+
+  e2e-report:
+    name: E2E report (merged)
+    needs: e2e
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: e2e-blob-*
+          path: .vitest-reports
+          merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: e2e-reports-*
+          path: reports/e2e-all
+          merge-multiple: true
+      - name: One merged HTML report
+        run: npx vitest --merge-reports --reporter=html --outputFile.html=reports/e2e-html/index.html || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: e2e-html-report
+          path: reports/e2e-html
+      - name: Summary
+        run: node scripts/qa/test-summary.mjs reports/e2e-all
+      - name: File flaky tests (main only)
+        if: github.ref == 'refs/heads/main'
+        run: node scripts/qa/file-flaky.mjs reports/e2e-all
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

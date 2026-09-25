@@ -1,0 +1,136 @@
+# Nightly QA (QAT-0014): deep sim/characterisation/fuzz suites, E2E + visual flows, smoke, benchmark
+# tracking (QAT-0072), localised/pseudo-loc captures and playtest-replay re-sims when those suites
+# exist. Posts a summary to the job summary and the team Discord; failures open a `nightly` issue.
+name: QA nightly
+
+on:
+  schedule:
+    - cron: '17 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+env:
+  CI: 'true'
+
+jobs:
+  suites:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build:qa
+
+      - name: Unit + characterisation
+        id: unit
+        continue-on-error: true
+        run: npx vitest run --project unit
+        env: { QA_SUMMARY_FILE: reports/nightly/qa-summary-unit.json, JUNIT_FILE: reports/nightly/junit-unit.xml }
+      - name: Simulation with deep fuzzing (200 runs per op)
+        id: sim
+        continue-on-error: true
+        run: npx vitest run --project sim
+        env:
+          {
+            FC_RUNS: '200',
+            QA_SUMMARY_FILE: reports/nightly/qa-summary-sim.json,
+            JUNIT_FILE: reports/nightly/junit-sim.xml,
+            SIM_REPORT_FILE: reports/nightly/sim-report.json,
+          }
+      - name: E2E flows
+        id: e2e
+        continue-on-error: true
+        run: npx vitest run --project e2e
+        env: { QA_SUMMARY_FILE: reports/nightly/qa-summary-e2e.json, JUNIT_FILE: reports/nightly/junit-e2e.xml }
+      - name: Visual flows
+        id: visual
+        continue-on-error: true
+        run: npx vitest run --project visual
+        env: { QA_SUMMARY_FILE: reports/nightly/qa-summary-visual.json, JUNIT_FILE: reports/nightly/junit-visual.xml }
+      - name: Smoke
+        id: smoke
+        continue-on-error: true
+        run: node scripts/smoke.mjs shots/nightly
+      # Suites owned by other workstreams join automatically once their npm scripts exist.
+      - name: Localised capture set (LOC/UIX)
+        id: loc
+        continue-on-error: true
+        run: npm run --if-present qa:loc-captures
+      - name: Pseudo-loc capture set (UIX)
+        id: pseudo
+        continue-on-error: true
+        run: npm run --if-present qa:pseudo-captures
+      - name: Playtest replay re-sims (ENG/GAM recorder)
+        id: replays
+        continue-on-error: true
+        run: npm run --if-present qa:replays
+
+      - name: Benchmarks
+        id: bench
+        continue-on-error: true
+        run: npx vitest bench --project sim --run --outputJson reports/nightly/bench.json
+      - name: Previous nightly benchmarks
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          id=$(gh run list --workflow qa-nightly.yml --status success --limit 1 --json databaseId -q '.[0].databaseId')
+          if [ -n "$id" ]; then gh run download "$id" -n nightly-bench -D reports/previous || true; fi
+      - name: Compare benchmarks (> 20 % slower opens an issue)
+        id: benchcmp
+        continue-on-error: true
+        run: node scripts/qa/bench-compare.mjs reports/nightly/bench.json reports/previous/bench.json
+      - name: File benchmark regression
+        if: steps.benchcmp.outcome == 'failure'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node -e "import('./scripts/qa/gh.mjs').then(async (g) => { const fs = await import('node:fs'); const n = await g.upsertIssue('Simulation benchmark regression', fs.readFileSync('reports/bench-regressions.md','utf8') + '\n\n' + g.runUrl(), ['perf-regression']); console.log('#' + n); })"
+
+      - name: Summary
+        if: always()
+        run: |
+          node scripts/qa/test-summary.mjs reports/nightly > /dev/null
+          {
+            echo "unit: ${{ steps.unit.outcome }} · sim: ${{ steps.sim.outcome }} · e2e: ${{ steps.e2e.outcome }} · visual: ${{ steps.visual.outcome }} · smoke: ${{ steps.smoke.outcome }}"
+            echo "loc: ${{ steps.loc.outcome }} · pseudo-loc: ${{ steps.pseudo.outcome }} · replays: ${{ steps.replays.outcome }} · bench: ${{ steps.benchcmp.outcome }}"
+          } > reports/nightly/status.md
+          cat reports/nightly/status.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nightly-reports
+          path: |
+            reports/nightly
+            test-results
+            shots/nightly
+      - uses: actions/upload-artifact@v4
+        if: steps.bench.outcome == 'success'
+        with:
+          name: nightly-bench
+          path: reports/nightly/bench.json
+      - name: Notify (Discord + nightly issue on failure)
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          QA_DISCORD_WEBHOOK: ${{ secrets.QA_DISCORD_WEBHOOK }}
+        run: |
+          status=success
+          for o in "${{ steps.unit.outcome }}" "${{ steps.sim.outcome }}" "${{ steps.e2e.outcome }}" "${{ steps.visual.outcome }}" "${{ steps.smoke.outcome }}" "${{ steps.loc.outcome }}" "${{ steps.pseudo.outcome }}" "${{ steps.replays.outcome }}"; do
+            if [ "$o" = "failure" ]; then status=failure; fi
+          done
+          node scripts/qa/notify.mjs "$status" reports/nightly/status.md
+          if [ "$status" = "failure" ]; then exit 1; fi
+      - name: File flaky tests
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/qa/file-flaky.mjs reports/nightly

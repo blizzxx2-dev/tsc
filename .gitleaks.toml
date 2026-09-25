@@ -1,0 +1,71 @@
+# Secret scanning (QAT-0008). Run on every PR and push by .github/workflows/qa-secrets.yml.
+# Extends gitleaks' built-in rules with the credentials this project will handle.
+# The allow-list is reviewed at every milestone gate (docs/qa/secret-scanning.md).
+
+title = "Suture & Steel secret scanning"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "steamworks-builder-password"
+description = "Steamworks build account password in scripts or CI config (SteamPipe)"
+regex = '''(?i)(steam[_-]?(builder|build|deploy)?[_-]?(password|pass|pwd))\s*[:=]\s*['"]?[^\s'"$]{8,}'''
+keywords = ["steam"]
+
+[[rules]]
+id = "steamworks-config-vdf"
+description = "Steam client auth cache (config.vdf / ssfn sentry) committed — lets anyone upload builds"
+path = '''(?i)(^|/)(config\.vdf|ssfn\d+)$'''
+
+[[rules]]
+id = "steam-web-api-key"
+description = "Steam Web API publisher key"
+regex = '''(?i)(steam[_-]?(web)?[_-]?api[_-]?key|publisher[_-]?key)\s*[:=]\s*['"]?[0-9A-F]{32}\b'''
+keywords = ["steam", "publisher"]
+
+[[rules]]
+id = "sentry-auth-token"
+description = "Crash reporter (Sentry) auth token"
+regex = '''\bsntrys_[A-Za-z0-9+/=_-]{40,}'''
+keywords = ["sntrys_"]
+
+[[rules]]
+id = "sentry-dsn-with-secret"
+description = "Crash reporter DSN containing a secret key (public DSNs have no ':secret@')"
+regex = '''https://[0-9a-f]{32}:[0-9a-f]{32}@[a-z0-9.-]+/\d+'''
+
+[[rules]]
+id = "telemetry-ingest-token"
+description = "Telemetry ingest / kill-switch admin token"
+regex = '''(?i)(telemetry|ingest|posthog)[_-]?(api|admin|write|project)?[_-]?(key|token|secret)\s*[:=]\s*['"]?[A-Za-z0-9_\-]{20,}'''
+keywords = ["telemetry", "ingest", "posthog"]
+
+[[rules]]
+id = "discord-webhook"
+description = "Discord webhook URL (QA notifications)"
+regex = '''https://(?:ptb\.|canary\.)?discord(?:app)?\.com/api/webhooks/\d+/[A-Za-z0-9_-]{30,}'''
+keywords = ["discord"]
+
+[[rules]]
+id = "code-signing-material"
+description = "Code-signing certificates and keys (Windows Authenticode, Apple Developer ID)"
+path = '''(?i)\.(pfx|p12|p8|cer|mobileprovision|keystore|jks)$'''
+
+[[rules]]
+id = "signing-password"
+description = "Signing certificate / notarization password"
+regex = '''(?i)(cert(ificate)?|signing|codesign|notar(y|ize|ization)|apple[_-]?id|app[_-]?specific)[_-]?(password|pass|pwd)\s*[:=]\s*['"]?[^\s'"$]{8,}'''
+keywords = ["password", "pass", "pwd"]
+
+[allowlist]
+description = "Reviewed exceptions — every entry needs a reason and the milestone it was last reviewed at"
+paths = [
+  # Lockfile integrity hashes look like secrets to entropy rules. Reviewed: Demo.
+  '''package-lock\.json''',
+  # Build output is never committed (gitignored); a working-tree scan would flag minified code. Reviewed: Demo.
+  '''^dist(-[a-z]+)?/''',
+  # Documentation of the rules themselves. Reviewed: Demo.
+  '''docs/qa/secret-scanning\.md''',
+  '''\.gitleaks\.toml''',
+]

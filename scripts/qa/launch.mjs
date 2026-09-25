@@ -1,6 +1,7 @@
 // Shared launcher for the browser scripts (smoke, shot): serves a build with `vite preview` on a free
 // port and opens it in Chromium with WebGL2 through SwiftShader, so it runs on GPU-less CI machines.
 // Browser: $CHROMIUM if set, else Playwright's bundled Chromium (`npx playwright install chromium`).
+import { spawnSync } from 'node:child_process';
 import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { chromium } from 'playwright';
@@ -32,13 +33,28 @@ export function resolveChromium() {
   return undefined;
 }
 
+/**
+ * The browser scripts need the QA build (debug API). Build it when it is missing, so pipelines that
+ * only produced the release build (`dist/`) can still run `node scripts/smoke.mjs`.
+ */
+export function ensureQaBuild(outDir = 'dist-qa') {
+  if (existsSync(join(outDir, 'index.html')) && !process.env.QA_REBUILD) return;
+  console.log(`building the QA bundle into ${outDir}/ (vite build --mode qa)…`);
+  const r = spawnSync('npx', ['vite', 'build', '--mode', 'qa', '--outDir', outDir, '--logLevel', 'warn'], {
+    stdio: 'inherit',
+    shell: process.platform === 'win32',
+  });
+  if (r.status !== 0) throw new Error('QA build failed');
+}
+
 export const CHROMIUM_ARGS = ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'];
 
 /**
  * @param {{ outDir?: string, viewport?: { width: number, height: number } }} [opts]
  */
 export async function launchGame(opts = {}) {
-  const outDir = opts.outDir ?? 'dist-qa';
+  const outDir = opts.outDir ?? process.env.QA_DIST ?? 'dist-qa';
+  ensureQaBuild(outDir);
   const server = await preview({ build: { outDir }, preview: { port: 0, strictPort: false, open: false }, logLevel: 'silent' });
   const url = server.resolvedUrls.local[0];
   const browser = await chromium.launch({ executablePath: resolveChromium(), args: CHROMIUM_ARGS });

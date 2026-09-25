@@ -1,0 +1,98 @@
+name: Bug report
+description: Something in the game does not work as it should (gameplay, UI, audio, save, platform).
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks! Severity guide: **S1** crash / save loss / progression block · **S2** major feature broken, no workaround ·
+        **S3** workaround exists or clearly visible · **S4** cosmetic. Details: docs/qa/bug-process.md.
+        Gameplay bugs: press **F8** in game and attach the bundle (it includes a replay) — or say why you can't.
+  - type: input
+    id: build
+    attributes:
+      label: Build id
+      description: Shown on the title screen / in the F8 bundle (e.g. 0.3.1+a1b2c3d4, demo, Steam branch `qa`).
+      placeholder: 0.3.1+a1b2c3d4 demo
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity (your estimate — triage confirms)
+      options:
+        - 'S1 — crash, save loss or progression block'
+        - 'S2 — major feature broken without workaround'
+        - 'S3 — workaround exists or clearly visible'
+        - 'S4 — cosmetic'
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - 'sim (operation rules, entities, scoring)'
+        - render
+        - audio
+        - ui
+        - story
+        - loc
+        - input
+        - save
+        - platform
+        - perf
+        - legal
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: OS
+      placeholder: Windows 11 23H2 / SteamOS 3.6 (Deck) / Ubuntu 24.04
+    validations:
+      required: true
+  - type: input
+    id: gpu
+    attributes:
+      label: GPU and driver
+      placeholder: NVIDIA RTX 3060, 560.94
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: From launch. Name the operation (e.g. op1-5) and phase, tool and what you did.
+      placeholder: |
+        1. Continue from chapter I, step 9 (or `preset pre-matins` in the QA console)
+        2. Start op1-5 and reach the Malison
+        3. …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual
+    validations:
+      required: true
+  - type: dropdown
+    id: repro
+    attributes:
+      label: How often does it happen?
+      options: [Always, Often (more than half the time), Rarely (less than half the time), Once]
+    validations:
+      required: true
+  - type: textarea
+    id: bundle
+    attributes:
+      label: F8 bundle / replay
+      description: Drag the F8 bundle (.zip) here. Gameplay S1/S2 bugs need it, or a line starting "No replay because".
+    validations:
+      required: true
