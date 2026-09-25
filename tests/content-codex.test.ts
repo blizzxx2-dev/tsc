@@ -100,7 +100,8 @@ describe('codex content (NAR-0080…0085, NAR-0016, NAR-0048)', () => {
   });
 
   it('NAR-0084: Matins and Lauds in full, six locked silhouettes titled with the hour names only', () => {
-    const hours = CODEX.filter((e) => e.category === 'The Hours');
+    // The hymnal pages (NAR-0172) share the category; this is the Hours' own entries.
+    const hours = CODEX.filter((e) => e.category === 'The Hours' && !e.id.startsWith('hymn-'));
     expect(
       hours
         .filter((e) => !e.silhouette)
@@ -193,5 +194,23 @@ describe('the Precentor’s letters (NAR-0110)', () => {
       expect(l.body).toMatch(/— A\.V\.$/);
       expect(l.body.split(/\\s+/).length).toBeLessThanOrEqual(180);
     }
+  });
+});
+
+describe('the hymnal and On Mercy (NAR-0171, NAR-0172)', () => {
+  it('eight hymns, each opening as its Malison falls; On Mercy opens only when every other page is readable', () => {
+    const hymns = CODEX.filter((e) => e.id.startsWith('hymn-'));
+    expect(hymns.map((e) => e.id)).toEqual(['matins', 'lauds', 'prime', 'terce', 'sext', 'none', 'vespers', 'compline'].map((h) => `hymn-${h}`));
+    for (const h of hymns) expect(h.unlock.kind).toBe('op');
+    const mercy = CODEX.find((e) => e.id === 'on-mercy')!;
+    expect(wordCount(mercy.body)).toBeLessThanOrEqual(180);
+    const everything = {
+      won: Object.fromEntries(CODEX.flatMap((e) => (e.unlock.kind === 'op' ? [[e.unlock.op, 'XS']] : []))),
+      stories: CODEX.flatMap((e) => (e.unlock.kind === 'story' ? [e.unlock.story] : [])),
+      chapters: [1, 2, 3, 4, 5],
+      flags: CODEX.flatMap((e) => (e.unlock.kind === 'flag' ? [e.unlock.flag] : [])),
+    };
+    expect(unlocked(mercy.unlock, everything as never)).toBe(true);
+    expect(unlocked(mercy.unlock, { ...everything, chapters: [1, 2, 3, 4] } as never)).toBe(false);
   });
 });

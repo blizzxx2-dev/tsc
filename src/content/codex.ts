@@ -22,7 +22,9 @@ export type CodexUnlock =
   /** After this chapter (1-based) is complete. */
   | { kind: 'chapter'; chapter: number }
   /** After a persistent story flag is set (see KNOWN_STORY_FLAGS). */
-  | { kind: 'flag'; flag: string };
+  | { kind: 'flag'; flag: string }
+  /** When every other entry is readable (NAR-0171). */
+  | { kind: 'complete' };
 
 export interface CodexEntry {
   id: string;
@@ -491,7 +493,45 @@ const LETTERS: CodexEntry[] = [
   },
 ];
 
-export const CODEX: readonly CodexEntry[] = [...PEOPLE, ...INSTRUMENTS, ...AFFLICTIONS, ...PLACES, ...ORDERS, ...LETTERS, ...HOURS];
+// ------------------------------------------------------------------ The hymnal (NAR-0172)
+
+/** The Office in full: each Hour's hymn, collected as its Malison falls. Original verse. */
+const HYMNS: readonly [string, string, string][] = [
+  ['matins', 'op1-5', 'Wake, and watch, and do not weep; / the night is long, the vigil deep. / One eye open, one eye blind: / the dark keeps all it leaves behind.'],
+  ['lauds', 'op2-5', 'Answer, answer, voice to voice; / the dawn is sung and gives no choice. / Who keeps the watch before the sun / shall sing until the song is done.'],
+  ['prime', 'op3-10', 'Read the roll, and read it slow; / each name a debt the living owe. / The first work of the day is this: / to count the dead, and none to miss.'],
+  ['terce', 'op3-11', 'Kindle, kindle, third of day; / what burns is sung, and what is sung will stay. / The hands that heal, the hands that hold, / the fire makes them all one gold.'],
+  ['sext', 'op4-7', 'Noon is stone, and stone is still; / the heart sets hard against its will. / Stand, and do not move again; / the sun has turned the world to men.'],
+  ['none', 'op4-9', 'Ninth hour, and the heart stood still; / the world went under, and it will. / Burrow down where no light goes; / what the earth keeps, no one knows.'],
+  ['vespers', 'op5-6', 'Light the lamp, and let it fail; / every flame must learn to kneel. / Wax the vein and wax the eye; / the lamp is lit for those who die.'],
+  ['compline', 'op5-8', 'Hush the ward, and hush the street; / sleep is kind, and death is sweet. / Now let thy servant go in peace; / the Office ends, and all things cease.'],
+];
+
+const HYMNAL: CodexEntry[] = HYMNS.map(
+  ([hour, opId, verse]): CodexEntry => ({
+    id: `hymn-${hour}`,
+    title: `Hymnal: ${hour[0].toUpperCase()}${hour.slice(1)}`,
+    category: 'The Hours',
+    unlock: op(opId),
+    image: `wc-hymn-${hour}`,
+    // The demo's two Hours open in the demo; the six after it are listed as locked pages.
+    silhouette: hour !== 'matins' && hour !== 'lauds' ? true : undefined,
+    body: `${verse} — Sung by the Hollow Choir into the Hour of ${hour[0].toUpperCase()}${hour.slice(1)}; set down by Dr. Kreuzer after it fell silent.`,
+  }),
+);
+
+/** Kreuzer's essay, the codex's last page (NAR-0171). */
+const ON_MERCY: CodexEntry = {
+  id: 'on-mercy',
+  title: 'On Mercy, by Dr. Kreuzer',
+  category: 'People',
+  unlock: { kind: 'complete' },
+  image: 'wc-on-mercy',
+  silhouette: true,
+  body: 'Aurel Vennholt believed mercy was stillness: no more pain, no more fear, a quiet night and a perfect end. Haller believed mercy was a rule, and struck him off for breaking it. Stroh believed it was a ledger. Ilse believes it is a habit, practised daily and never finished. I have come to believe it is only this: to keep a person going a little longer than the world intended, and then to give them back to it. The Litany taught me to hold things still. The table taught me that stillness is not the point. The point is the next breath, and the one after, and the drover with his dice. Every mercy I ever managed was unfinished. I have stopped thinking that a flaw.',
+};
+
+export const CODEX: readonly CodexEntry[] = [...PEOPLE, ...INSTRUMENTS, ...AFFLICTIONS, ...PLACES, ...ORDERS, ...LETTERS, ...HOURS, ...HYMNAL, ON_MERCY];
 
 export const codexEntry = (id: string): CodexEntry | undefined => CODEX.find((e) => e.id === id);
 
@@ -523,6 +563,8 @@ export function unlocked(u: CodexUnlock, p: CodexProgress): boolean {
       return p.chapters.includes(u.chapter);
     case 'flag':
       return p.flags.includes(u.flag);
+    case 'complete':
+      return CODEX.every((e) => e.unlock.kind === 'complete' || unlocked(e.unlock, p));
   }
 }
 
