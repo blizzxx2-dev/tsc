@@ -136,7 +136,14 @@ describe('Gfx batching with a fake WebGL2 context (ENG-0024/0026/0031/0032)', ()
   };
   const pageTex = (g: Gfx, name: string) => {
     const t = new Texture(g.registry, checkerPixels(16), { label: name });
-    g.sprites.add({ name, pages: [{ file: '', w: 16, h: 16 }], frames: { [`${name}/a`]: { page: 0, x: 0, y: 0, w: 8, h: 8 }, [`${name}/b`]: { page: 0, x: 8, y: 8, w: 8, h: 8, px: 0, py: 0 } } }, [{ tex: t.tex, w: 16, h: 16 }]);
+    g.sprites.add(
+      {
+        name,
+        pages: [{ file: '', w: 16, h: 16 }],
+        frames: { [`${name}/a`]: { page: 0, x: 0, y: 0, w: 8, h: 8 }, [`${name}/b`]: { page: 0, x: 8, y: 8, w: 8, h: 8, px: 0, py: 0 } },
+      },
+      [{ tex: t.tex, w: 16, h: 16 }],
+    );
     return t;
   };
 
@@ -144,7 +151,7 @@ describe('Gfx batching with a fake WebGL2 context (ENG-0024/0026/0031/0032)', ()
     const { f, g } = mk();
     for (const n of ['p1', 'p2', 'p3']) pageTex(g, n);
     g.beginScreen();
-    const before = f.count('drawArrays');
+    const before = f.count('drawElements');
     g.text('Lancet', 100, 100, { shadow: false });
     g.sprite('p1/a', 10, 10);
     g.rect(0, 0, 10, 10, 0xffffffff);
@@ -152,7 +159,7 @@ describe('Gfx batching with a fake WebGL2 context (ENG-0024/0026/0031/0032)', ()
     g.sprite('p3/b', 30, 10);
     g.text('COOL', 200, 100, { shadow: false });
     g.endFrame();
-    expect(f.count('drawArrays') - before).toBe(1);
+    expect(f.count('drawElements') - before).toBe(1);
     expect(g.stats.drawCalls).toBe(1);
   });
 
@@ -173,7 +180,7 @@ describe('Gfx batching with a fake WebGL2 context (ENG-0024/0026/0031/0032)', ()
     g.beginScreen();
     g.sprite('p/b', 50, 60, { scale: 2 });
     g.endFrame();
-    const call = f.calls.filter((c) => c.fn === 'bufferSubData').pop()!;
+    const call = f.calls.filter((c) => c.fn === 'bufferSubData' && c.args[0] === f.gl.ARRAY_BUFFER).pop()!;
     const data = call.args[2] as Float32Array;
     // First vertex: top-left at the pivot (0,0) → (50,60); UV (0.5, 0.5); unit 1.
     expect([data[0], data[1], data[2], data[3], data[5]]).toEqual([50, 60, 0.5, 0.5, 1]);
@@ -184,15 +191,19 @@ describe('Gfx batching with a fake WebGL2 context (ENG-0024/0026/0031/0032)', ()
   it('nineSlice keeps corners at their pixel size at any rect size (ENG-0035)', () => {
     const { g, f } = mk();
     const t = new Texture(g.registry, checkerPixels(32), { label: 'panel' });
-    g.sprites.add({ name: 'ui', pages: [{ file: '', w: 32, h: 32 }], frames: { 'ui/panel': { page: 0, x: 0, y: 0, w: 32, h: 32 } } }, [{ tex: t.tex, w: 32, h: 32 }]);
+    g.sprites.add({ name: 'ui', pages: [{ file: '', w: 32, h: 32 }], frames: { 'ui/panel': { page: 0, x: 0, y: 0, w: 32, h: 32 } } }, [
+      { tex: t.tex, w: 32, h: 32 },
+    ]);
     g.beginScreen();
     g.nineSlice('ui/panel', { x: 100, y: 50, w: 400, h: 300 }, { l: 8, t: 8, r: 8, b: 8 });
     g.endFrame();
-    const d = f.calls.filter((c) => c.fn === 'bufferSubData').pop()!.args[2] as Float32Array;
+    const d = f.calls.filter((c) => c.fn === 'bufferSubData' && c.args[0] === f.gl.ARRAY_BUFFER).pop()!.args[2] as Float32Array;
     // First quad = top-left corner: 8×8 px at the rect origin, UVs 0..0.25.
     expect([d[0], d[1], d[6], d[7], d[12], d[13]]).toEqual([100, 50, 108, 50, 108, 58]);
     expect([d[14], d[15]]).toEqual([0.25, 0.25]);
-    expect(g.stats.vertices).toBe(54);
+    // Indexed quads (ENG-0020): 9 quads are 36 vertices and 54 indices.
+    expect(g.stats.vertices).toBe(36);
+    expect(g.stats.indices).toBe(54);
   });
 
   it('textured meshes map frame-relative UVs into the atlas (ENG-0039)', () => {
@@ -201,7 +212,7 @@ describe('Gfx batching with a fake WebGL2 context (ENG-0024/0026/0031/0032)', ()
     g.beginScreen();
     g.mesh([0, 0, 10, 0, 10, 10], [0, 0, 1, 0, 1, 1], [0, 1, 2], 'm/b');
     g.endFrame();
-    const d = f.calls.filter((c) => c.fn === 'bufferSubData').pop()!.args[2] as Float32Array;
+    const d = f.calls.filter((c) => c.fn === 'bufferSubData' && c.args[0] === f.gl.ARRAY_BUFFER).pop()!.args[2] as Float32Array;
     expect([d[2], d[3], d[14], d[15], d[5]]).toEqual([0.5, 0.5, 1, 1, 1]);
   });
 
@@ -212,7 +223,8 @@ describe('Gfx batching with a fake WebGL2 context (ENG-0024/0026/0031/0032)', ()
     expect(() => g.polyline(pts, 2, 0xffffffff)).not.toThrow();
     g.endFrame();
     expect(g.stats.flushes.overflow).toBeGreaterThan(10);
-    expect(g.stats.vertices).toBe((pts.length - 1) * 6);
+    expect(g.stats.vertices).toBe((pts.length - 1) * 4);
+    expect(g.stats.indices).toBe((pts.length - 1) * 6);
   });
 
   it('missing sprite frames draw the magenta checker instead of throwing', () => {
@@ -239,11 +251,11 @@ describe('Gfx batching with a fake WebGL2 context (ENG-0024/0026/0031/0032)', ()
     g.beginScreen();
     g.rect(10, 10, 5, 5, 0xffffffff);
     g.flush();
-    const a = Array.from((f.calls.filter((c) => c.fn === 'bufferSubData').pop()!.args[2] as Float32Array).slice(0, 36));
+    const a = Array.from((f.calls.filter((c) => c.fn === 'bufferSubData' && c.args[0] === f.gl.ARRAY_BUFFER).pop()!.args[2] as Float32Array).slice(0, 36));
     g.setCamera([2, 0, 0, 2, -300, -100]);
     g.rect(10, 10, 5, 5, 0xffffffff);
     g.flush();
-    const b = Array.from((f.calls.filter((c) => c.fn === 'bufferSubData').pop()!.args[2] as Float32Array).slice(0, 36));
+    const b = Array.from((f.calls.filter((c) => c.fn === 'bufferSubData' && c.args[0] === f.gl.ARRAY_BUFFER).pop()!.args[2] as Float32Array).slice(0, 36));
     expect(b).toEqual(a);
     const xf = f.calls.filter((c) => c.fn === 'uniformMatrix3fv').pop()!.args[2] as Float32Array;
     expect(Array.from(xf)).toEqual([2, 0, 0, 0, 2, 0, -300, -100, 1]);
@@ -256,7 +268,7 @@ describe('Gfx batching with a fake WebGL2 context (ENG-0024/0026/0031/0032)', ()
     expect(g.registry.count()).toBe(0);
     g.contextRestored();
     expect(g.registry.count('program')).toBe(programs);
-    expect(g.registry.count('buffer')).toBe(1);
+    expect(g.registry.count('buffer')).toBe(2); // vertex + index buffer (ENG-0020)
     expect(g.registry.count('texture')).toBeGreaterThanOrEqual(1);
     g.beginScreen();
     g.text('ok', 0, 0);

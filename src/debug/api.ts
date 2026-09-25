@@ -35,6 +35,9 @@ import { isPresetName, PRESET_NAMES, presetSave } from './presets';
 import { opView, stateHash, type OpView } from './state';
 import { freezeDrain, spawnAt } from './cheats';
 import { BotPlaybackScene, isProfile } from './botPlayback';
+import { checkpoint, describeDesync, firstDesync, HASH_EVERY, replayHashes, type Checkpoint } from './desync';
+import { takeLog } from '../surgery/replay';
+import { mapUVToField } from '../render/decals';
 
 export const DEBUG_API_VERSION = 1;
 
@@ -120,6 +123,8 @@ export class DebugApi {
   readonly version = DEBUG_API_VERSION;
   private frozen = false;
   private stepping = false;
+  /** God mode (ENG-0234): vitals held at maximum. */
+  god = false;
   /** Story/test flags outside an operation (the game has no persistent story flags yet). */
   readonly flags = new Map<string, string>();
   readonly presets = PRESET_NAMES;
@@ -127,9 +132,9 @@ export class DebugApi {
   constructor(private game: DebugGame) {
     this.wrapInput();
     const go = game.go.bind(game);
-    game.go = (scene: Scene) => {
+    game.go = (scene: Scene, opts?: Parameters<DebugGame['go']>[1]) => {
       this.wrapScene(scene);
-      go(scene);
+      go(scene, opts);
     };
     if (game.scene) this.wrapScene(game.scene);
   }
@@ -174,7 +179,12 @@ export class DebugApi {
     const update = scene.update.bind(scene);
     scene.update = (dt, game) => {
       if (this.frozen && !this.stepping) return;
+      // God mode (ENG-0234): vitals are topped up around every tick so the patient cannot die.
+      const op = this.god && scene instanceof OperationScene ? scene.op : null;
+      if (op) op.vitals = MAX_VITALS;
       update(dt, game);
+      if (op) op.vitals = MAX_VITALS;
+      if (scene instanceof OperationScene) this.trackHashes(scene.op);
     };
     // Frozen means frozen: the canvas keeps its last frame, so a slow software renderer (CI) is not
     // kept busy drawing an unchanging scene while automation steps the game frame by frame.
@@ -280,7 +290,11 @@ export class DebugApi {
         g.gfx.time += dt;
         g.input.beginFrame();
         g.scene?.update(dt, g);
-        if (mode === 'all' || (mode === 'last' && i === frames - 1)) g.scene?.render(g.gfx, g);
+        if (mode === 'all' || (mode === 'last' && i === frames - 1)) {
+          g.scene?.render(g.gfx, g);
+          // Global overlays (ENG-0066) — debug views included — on top of the stepped frame.
+          (g as { overlays?: { draw(gfx: typeof g.gfx): void } }).overlays?.draw(g.gfx);
+        }
         g.input.endFrame();
       }
     } finally {
@@ -422,6 +436,94 @@ export class DebugApi {
   spawn(id: string): DebugState {
     spawnAt(this.requireOp(), id);
     return this.state();
+  }
+
+  /** Live checkpoints of the running operation, one every HASH_EVERY logged ticks (ENG-0254). */
+  private hashes: { op: Operation; seen: number; ticks: number; list: Checkpoint[] } | null = null;
+  private trackHashes(op: Operation): void {
+    const log = op.log;
+    if (!log) return;
+    let h = this.hashes;
+    if (!h || h.op !== op) h = this.hashes = { op, seen: 0, ticks: 0, list: [] };
+    for (; h.seen < log.length; h.seen++) if (log[h.seen][0] === 'u' && ++h.ticks % HASH_EVERY === 0) h.list.push(checkpoint(op, h.ticks));
+  }
+
+  /**
+   * Desync detector (ENG-0254): re-simulate the running operation from its input log and compare
+   * checkpoint hashes with the live run; reports the first divergent tick and entity.
+   */
+  desync(): string {
+    const op = this.requireOp();
+    if (!op.log || !this.hashes || this.hashes.op !== op) throw new Error('no live checkpoints yet for this operation');
+    const replayed = replayHashes(op.def, takeLog(op));
+    return `${describeDesync(firstDesync(this.hashes.list, replayed))} (${this.hashes.list.length} checkpoints)`;
+  }
+
+  /** Advance to phase `n` (1-based) by clearing the phases before it (ENG-0234). */
+  phase(n: number): DebugState {
+    const op = this.requireOp();
+    const target = Math.max(0, Math.floor(n) - 1);
+    if (target < op.phase) throw new Error(`already past phase ${n} (at ${op.phase + 1}); restart with "seed" or "op"`);
+    for (let i = 0; i < 50 && (op.status === 'intro' || (op.status === 'running' && op.phase < target)); i++) this.skipPhase();
+    return this.state();
+  }
+
+  /** Decal map coverage (ENG-0116): fraction of the field-space map above a density threshold, from a 64×36 GPU readback. */
+  decalCoverage(map: 'blood' | 'scorch' = 'blood', threshold = 0.1): number {
+    const s = this.game.scene as unknown as { decals?: { coverage(m: string, t: number): number } | null };
+    if (!(this.game.scene instanceof OperationScene)) throw new Error(`no operation is running (scene: ${this.scene})`);
+    return s.decals ? s.decals.coverage(map, threshold) : 0;
+  }
+
+  /** Mean blood-map density (0..1) within `r` of a field point, from the 64×36 readback (ENG-0116). */
+  decalDensity(x: number, y: number, r: number, map: 'blood' | 'scorch' = 'blood'): number {
+    const s = this.game.scene as unknown as { decals?: { readDensity(m: string, w: number, h: number): Float32Array } | null };
+    if (!(this.game.scene instanceof OperationScene)) throw new Error(`no operation is running (scene: ${this.scene})`);
+    if (!s.decals) return 0;
+    const d = s.decals.readDensity(map, 64, 36);
+    let sum = 0;
+    let n = 0;
+    for (let j = 0; j < 36; j++)
+      for (let i = 0; i < 64; i++) {
+        const p = mapUVToField((i + 0.5) / 64, 1 - (j + 0.5) / 36);
+        if (Math.hypot(p.x - x, p.y - y) > r) continue;
+        sum += d[j * 64 + i];
+        n++;
+      }
+    return n ? sum / n : 0;
+  }
+
+  /** Toggle (or set) god mode; returns the new state. */
+  setGod(on = !this.god): boolean {
+    this.god = on;
+    return on;
+  }
+
+  /** Dev time scale (ENG-0234/0236), via the main loop's DevTime; returns the applied scale. */
+  timescale(x?: number): number {
+    const dt = (this.game as { devTime?: { scale: number; setScale(x: number): number } }).devTime;
+    if (!dt) throw new Error('time controls are not available in this build');
+    return x === undefined ? dt.scale : dt.setScale(x);
+  }
+
+  /** Restart the running operation with RNG seed `seed` (ENG-0234). */
+  reseed(seed: number): DebugState {
+    const op = this.requireOp();
+    const back = () => this.game.go(new TitleScene());
+    const run = () => this.game.go(new OperationScene(op.def, back, back, { seed: Math.floor(seed) }));
+    const g = this.game as DebugGame & { instant?: (fn: () => void) => void };
+    if (g.instant) g.instant(run);
+    else run();
+    return this.state();
+  }
+
+  /** Simulate a WebGL context loss, restoring after `ms` (ENG-0234, exercises ENG-0199/0200). */
+  loseContext(ms = 1000): boolean {
+    const ext = this.game.gfx.gl.getExtension('WEBGL_lose_context');
+    if (!ext) return false;
+    ext.loseContext();
+    setTimeout(() => ext.restoreContext(), ms);
+    return true;
   }
 
   setVitals(v: number): DebugState {

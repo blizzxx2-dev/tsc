@@ -8,6 +8,8 @@ import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import type { Operation } from '../surgery/operation';
 import { VIEW_W } from '../ui/layout';
+import { Particles } from '../render/particles';
+import { fitText } from '../ui/text';
 import { caps, glass, heading, INK, numerals, tallyMarks } from '../ui/hudKit';
 import { failSeal, rankSeal } from '../art/kit';
 import { button, reticle } from '../ui/widgets';
@@ -42,10 +44,16 @@ export class ResultsScene implements Scene {
     if (this.won && this.op.rank() === 'XS') setTimeout(() => game.audio.play('bell'), 350);
   }
 
+  /** Rank-reveal ink splash (ENG-0144). */
+  private fx = new Particles();
+  private splashAt: { x: number; y: number } | null = null;
+
   update(dt: number, game: Game): void {
     this.t += dt;
+    this.fx.update(dt, () => {});
     if (this.won && !this.stamped && this.t > 1.9) {
       this.stamped = true;
+      if (this.splashAt) this.fx.burst('inkSplash', this.splashAt);
       game.audio.play('squelch');
     }
     // Results skip (UIX-0117): the first press completes the tally, the second continues.
@@ -71,14 +79,28 @@ export class ResultsScene implements Scene {
     return { actions, costly: worst ? t('ui.results.costly', { n: worst[1], label: worst[0] }) : null };
   }
 
+  /** The field as it was left (ENG-0122), pinned beside the ledger like a sketch in the case book. */
+  private drawSnapshot(g: Gfx, a: number): void {
+    const snap = g.fieldSnapshot;
+    if (!snap || a <= 0) return;
+    const w = 248;
+    const h = Math.round((w * snap.h) / snap.w);
+    const x = 30;
+    const y = 250;
+    g.plate(x - 8, y - 8, w + 16, h + 44, { radius: 3, alpha: a, border: hex(INK.gilt, 0.7) });
+    g.texQuad(snap.tex, x, y, w, h, hex('#ffffff', a), true);
+    fitText(g, 'results.field', t('ui.results.field'), x + w / 2, y + h + 26, w, { size: 16, font: 'italic', color: hex(INK.dim, a), align: 'center', shadow: false });
+  }
+
   render(g: Gfx, game: Game): void {
     const op = this.op;
     g.beginWorld();
     drawBackdrop(g, 'results', g.time);
-    g.endWorld({ litany: 0, danger: this.won ? 0 : 0.4, shake: { x: 0, y: 0 }, bloom: 1, defocus: 8 });
+    g.endWorld({ litany: 0, danger: this.won ? 0 : 0.4, shake: { x: 0, y: 0 }, bloom: 'menu', defocus: 8 });
 
     const r = { x: 300, y: 36, w: 680, h: 580 };
     const a = Math.min(1, this.t * 3);
+    this.drawSnapshot(g, a);
     glass(g, r, { alpha: a, strength: 1.12 });
     heading(g, t('ui.results.title'), VIEW_W / 2, r.y + 60, 420, a, 30);
     g.text(t('ui.results.subtitle', { title: op.def.title, patient: op.def.patient }), VIEW_W / 2, r.y + 108, { size: 19, font: 'italic', color: hex(INK.dim, a), align: 'center', shadow: false });
@@ -134,6 +156,7 @@ export class ResultsScene implements Scene {
     // The rank seal presses down.
     const sx = r.x + 530;
     const sy = r.y + 320;
+    this.splashAt = { x: sx, y: sy };
     if (this.won && this.t > 1.6) {
       const rank = op.rank();
       const k = Math.min(1, (this.t - 1.6) / 0.3);
@@ -150,6 +173,7 @@ export class ResultsScene implements Scene {
     } else if (!this.won) {
       failSeal(g, sx, sy, 70, this.t - 0.4);
     }
+    this.fx.draw(g, 'UI');
 
     // Margin notes: what the next rank needs, why not XS, flags, fees, tips.
     if (this.t > 2) {

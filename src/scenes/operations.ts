@@ -33,7 +33,7 @@ export class OperationsScene implements Scene {
   render(g: Gfx, game: Game): void {
     g.beginWorld();
     drawBackdrop(g, 'theatre', g.time);
-    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1, defocus: 8 });
+    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 'menu', defocus: 8 });
     panel(g, { x: 200, y: 40, w: 880, h: 640 });
     heading(g, t('ui.theatre.title'), VIEW_W / 2, 96, 420, 1, 30);
     this.list.forEach(({ chapter, def }, i) => {

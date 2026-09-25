@@ -122,7 +122,7 @@ export class SetupScene implements Scene {
     const k = tween(this.t, MOTION.panel);
     g.beginWorld();
     drawBackdrop(g, 'night', g.time);
-    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1, defocus: 10 });
+    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 'menu', defocus: 10 });
     const vr = g.viewRect();
     g.rect(vr.x, vr.y, vr.w, vr.h, hex('#050303', 0.78));
     heading(g, t('ui.setup.heading'), VIEW_W / 2, 92, 520, 1);

@@ -83,13 +83,17 @@ export class GpuTimer {
 export interface FrameStats {
   drawCalls: number;
   vertices: number;
+  /** Batch indices drawn (ENG-0020): vertices ÷ indices shows the quad savings. */
+  indices: number;
   flushes: Record<FlushReason, number>;
   textureUploads: number;
+  /** Draw calls per frame section (layers, world, post, ui) for the debug overlay (ENG-0232). */
+  sections: Record<string, number>;
 }
 export type FlushReason = 'blend' | 'texture' | 'program' | 'overflow' | 'camera' | 'clip' | 'end';
 
 export function emptyStats(): FrameStats {
-  return { drawCalls: 0, vertices: 0, flushes: { blend: 0, texture: 0, program: 0, overflow: 0, camera: 0, clip: 0, end: 0 }, textureUploads: 0 };
+  return { drawCalls: 0, vertices: 0, indices: 0, flushes: { blend: 0, texture: 0, program: 0, overflow: 0, camera: 0, clip: 0, end: 0 }, textureUploads: 0, sections: {} };
 }
 
 /**

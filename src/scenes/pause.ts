@@ -14,7 +14,7 @@ import { fitText, wrapLines } from '../ui/text';
 import { uiEvents } from '../ui/events';
 import { reticle } from '../ui/widgets';
 import { platform } from '../platform';
-import { IS_DEMO } from '../platform/build';
+import { buildStamp, IS_DEMO } from '../platform/build';
 import { EDITIONS, FEEDBACK_URL } from '../platform/editions';
 import { flag } from '../platform/flags';
 import { confirm } from './confirm';
@@ -118,6 +118,8 @@ export class PauseScene implements Scene {
     if (this.showLog) this.drawLog(g, pr);
     else this.drawNotes(g, pr);
     g.restore();
+    // Build stamp (ENG-0240): which build and GPU path, for screenshots and bug reports.
+    g.text(buildStamp(settings.gpuTier, g.caps.renderer), vr.x + vr.w - 16, vr.y + vr.h - 12, { size: 16, color: hex(INK.dim, 0.7 * k), align: 'right', shadow: false });
     drawTooltip(g, this.ui);
     reticle(g, game.input.pos);
   }

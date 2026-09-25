@@ -92,7 +92,7 @@ export class CreditsScene implements Scene {
   render(g: Gfx, game: Game): void {
     g.beginWorld();
     drawBackdrop(g, 'night', g.time);
-    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1.1, defocus: 8 });
+    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: { preset: 'menu', intensity: 1.1 }, defocus: 8 });
     const vr = g.viewRect();
     g.rect(vr.x, vr.y, vr.w, vr.h, hex('#050303', 0.62));
     const cx = VIEW_W / 2;

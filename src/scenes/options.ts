@@ -414,7 +414,7 @@ export class OptionsScene implements Scene {
     } else if (this.overWorld) {
       g.beginWorld();
       drawBackdrop(g, 'chapel', g.time);
-      g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1, defocus: 8 });
+      g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 'menu', defocus: 8 });
     } else g.beginScreen();
     const pr = { x: 180, y: 34, w: 920, h: 656 };
     glass(g, pr, { strength: 1.12, alpha: k });

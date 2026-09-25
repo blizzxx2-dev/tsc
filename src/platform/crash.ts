@@ -10,6 +10,7 @@
  */
 import { BUILD } from './build';
 import { log, scrub } from './log';
+import { replayForReport } from './lastReplay';
 
 export interface Dsn {
   host: string;
@@ -34,6 +35,8 @@ export interface ErrorReport {
   edition: string;
   os: string;
   logTail: string[];
+  /** The running (or last) operation's replay, base64 (ENG-0256). */
+  replay?: { opId: string; base64: string };
 }
 
 const hex32 = (): string => {
@@ -55,6 +58,7 @@ export function makeReport(err: unknown, level: ErrorReport['level'], os: string
     edition: BUILD.edition,
     os,
     logTail: log.lines(200),
+    replay: replayForReport(),
   };
 }
 
@@ -69,7 +73,7 @@ export function sentryEnvelope(r: ErrorReport, dsn: Dsn): { url: string; body: s
     environment: r.edition,
     tags: { os: r.os, edition: r.edition },
     exception: { values: [{ type: r.message.split(':')[0], value: r.message, stacktrace: { frames: [] as unknown[] }, raw_stacktrace: r.stack }] },
-    extra: { stack: r.stack, log: r.logTail.join('\n') },
+    extra: { stack: r.stack, log: r.logTail.join('\n'), ...(r.replay ? { replayOp: r.replay.opId, replay: r.replay.base64 } : {}) },
   };
   const body = [JSON.stringify({ event_id: r.eventId, sent_at: new Date().toISOString(), dsn: `${dsn.protocol}://${dsn.publicKey}@${dsn.host}/${dsn.projectId}` }), JSON.stringify({ type: 'event' }), JSON.stringify(event)].join('\n');
   return { url: `${dsn.protocol}://${dsn.host}/api/${dsn.projectId}/envelope/?sentry_key=${dsn.publicKey}&sentry_version=7`, body };

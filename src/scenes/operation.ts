@@ -8,11 +8,19 @@ import { attachBarkDirector } from '../content/barkDirector';
 import { hex, withAlpha } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { organPalette } from '../render/organs';
-import { Bubo, Sigil, surfDisc, surfLine } from '../surgery/entities';
+import { BloodPool, Bubo, Burn, Incision, Laceration, Sigil, surfDisc, surfLine } from '../surgery/entities';
 import { EggSac } from '../surgery/lauds';
 import { Particles } from '../render/particles';
 import { brandMaterial, BrandSmoke } from '../render/brandSmoke';
 import { BladeFeedback } from '../render/bladeFeedback';
+import { OperationVfx } from './opVfx';
+import { drawOrder } from '../render/layers';
+import { DecalMaps } from '../render/decals';
+import { candleFlicker } from '../render/flicker';
+import { contentHash } from '../core/replayCodec';
+import { rememberReplay, setLiveReplay } from '../platform/lastReplay';
+import { BUILD } from '../platform/build';
+import { takeLog } from '../surgery/replay';
 import { FlashLimiter } from '../render/flashLimiter';
 import { Malison, MalisonShard } from '../surgery/malison';
 import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOWN, TINCTURE_TIME, type OperationDef, type Popup } from '../surgery/operation';
@@ -93,6 +101,18 @@ export class OperationScene implements Scene {
   /** Phase banner (ART-0078 / UIX-0061): a ribbon that slides in at each phase start. */
   private banner: { phase: number; t: number; boss: boolean | null } | null = null;
   private particles = new Particles();
+  /** Persistent field-space decal maps (ENG-0108–0121): blood that stays, dries and is drained away. */
+  private decals: DecalMaps | null = null;
+  /** The end-of-operation field snapshot has been taken (ENG-0122). */
+  private snapped = false;
+  /** Seconds until each open wound next weeps onto the blood map (ENG-0113). */
+  private weepT = 0;
+  /** Radius at which each pool last stained the field. */
+  private poolStains = new WeakMap<object, number>();
+  /** HUD particles (ENG-0144): COOL sparkle, chain-milestone flare; real time, UI layer. */
+  private uiFx = new Particles();
+  /** Emitters driven by the operation's state and events (ENG-0133–0142). */
+  private vfx = new OperationVfx(() => this.particles);
   private flashLimit = new FlashLimiter();
   private comboT = 0;
   private lastCombo = 0;
@@ -162,6 +182,8 @@ export class OperationScene implements Scene {
   ) {
     this.op = OperationScene.create(def, runOpts);
     this.presRng = new Rng(def.seed ?? 1);
+    // Emitter streams seeded from the operation seed (ENG-0131).
+    this.particles.seed(this.runOpts.seed ?? this.def.seed ?? 1);
     this.listen(this.op);
   }
 
@@ -210,6 +232,28 @@ export class OperationScene implements Scene {
       storeProgress(p);
     });
     if (!this.runOpts.practice) attachBarkDirector(op);
+    this.vfx = new OperationVfx(() => this.particles);
+    this.vfx.listen(op, () => bloodScale(presentation.gore));
+    // Burns leave scars on the scorch map; hexfire keeps a violet rim (ENG-0117).
+    op.events.on('spawn', ({ entity }) => {
+      if (!(entity instanceof Burn) || !this.decals) return;
+      const t = op.elapsed;
+      const { x, y } = entity.pos;
+      const r = entity.radius;
+      this.decals.stamp({ map: 'scorch', brush: 'splat', x, y, r: r * 1.1, rot: this.presRng.next() * 6.28, value: [entity.source === 'acid' ? 0.35 : 0.7, 0, 0], mode: 'add', t, seed: this.presRng.next() });
+      if (entity.source === 'hexfire') this.decals.stamp({ map: 'scorch', brush: 'ring', x, y, r: r * 1.25, value: [0, 1, 0], mode: 'add', t });
+    });
+    op.events.on('rate', ({ rating, pos }) => rating === 'cool' && this.uiFx.burst('uiSparkle', pos));
+    // Replay for bug reports (ENG-0256): live while the operation runs, packed once it ends.
+    const header = () => ({ build: BUILD.id, content: contentHash(op.def) });
+    setLiveReplay(() => (op.log && this.op === op ? { log: takeLog(op), header: header() } : null));
+    const done = () => {
+      if (!op.log) return;
+      setLiveReplay(null);
+      void rememberReplay(takeLog(op), header()).catch(() => undefined);
+    };
+    op.events.on('win', done);
+    op.events.on('lose', done);
   }
 
   /** Open the "Respite" overlay (UIX-0100). The operation stops updating until it closes. */
@@ -236,7 +280,8 @@ export class OperationScene implements Scene {
   /** Apply player assists, difficulty and kit to the operation definition. */
   private static create(def: OperationDef, runOpts: OperationOptions = {}): Operation {
     const d = settings.timerAssist === 1 || runOpts.challenge ? def : { ...def, timeLimit: Math.round(def.timeLimit * settings.timerAssist) };
-    return new Operation(withBossContext(d), operationOptions(def, runOpts));
+    // Every run records its inputs (ENG-0256): bug reports carry the replay of the run that went wrong.
+    return new Operation(withBossContext(d), { ...operationOptions(def, runOpts), record: true });
   }
 
   /** Unsubscribes the hitstop binding (ENG-0058); set on the first update that has a clock. */
@@ -247,6 +292,9 @@ export class OperationScene implements Scene {
     this.unbindHitstop = null;
     this.bossAudio.dispose();
     this.op.events.clear();
+    // Decal maps belong to this operation: free them so VRAM returns to baseline (ENG-0121).
+    this.decals?.release();
+    this.decals = null;
   }
 
   exit(game: Game): void {
@@ -272,7 +320,9 @@ export class OperationScene implements Scene {
     this.popups.length = 0;
     this.listen(this.op);
     this.camera.reset();
-    this.particles = new Particles();
+    this.particles = new Particles(undefined, this.runOpts.seed ?? this.def.seed ?? 1);
+    this.decals?.reset();
+    this.snapped = false;
     this.ctl = new OperationInput();
     this.paused = false;
     this.resumeT = 0;
@@ -366,7 +416,10 @@ export class OperationScene implements Scene {
     }
     if (op.combo !== this.lastCombo) {
       this.comboT = 0;
-      if (op.combo > this.lastCombo && op.tuning.scoring.comboMilestones.includes(op.combo)) this.milestone = { combo: op.combo, t: 0 };
+      if (op.combo > this.lastCombo && op.tuning.scoring.comboMilestones.includes(op.combo)) {
+        this.milestone = { combo: op.combo, t: 0 };
+        this.uiFx.burst('uiFlare', { x: VIEW_W / 2 - 110, y: 130 });
+      }
       this.lastCombo = op.combo;
     }
     this.comboT += dt;
@@ -399,6 +452,8 @@ export class OperationScene implements Scene {
     // Visual effects arrive as `fx` events; landed droplets become stains. Particles run on world time.
     this.particles.update(dt * op.timeScale, (p, kind, size) => {
       if (kind === 'blood' && onBody(p)) op.stain(p, size * 2.6, 0.3);
+      // Landed droplets stamp persistent blood (ENG-0114).
+      if (kind === 'blood') this.decals?.stamp({ map: 'blood', brush: 'splat', x: p.x, y: p.y, r: size * 2.4, rot: this.presRng.next() * 6.28, value: [0.7, 1, 0], mode: 'add', t: op.elapsed, seed: this.presRng.next() });
     });
     // The lancet's trail and wet parting follow the tip while it is pressed (GAM-0026).
     const cutting = op.status === 'running' && op.tool === 'lancet' && game.input.down;
@@ -407,7 +462,11 @@ export class OperationScene implements Scene {
     const searing = op.status === 'running' && op.tool === 'brand' && op.holdingBrand && onBody(op.cursor) ? brandMaterial(op, op.cursor) : null;
     const puffs = this.smoke.update(dt, searing);
     if (puffs > 0) this.particles.spawn({ kind: 'smoke', pos: { ...op.cursor }, n: puffs, dir: -Math.PI / 2, spread: 0.8 });
-    if (op.litanyTime > 0 && Math.random() < dt * 30) this.particles.spawn({ kind: 'dust', pos: { x: FIELD.cx + (Math.random() - 0.5) * FIELD.rx * 2, y: FIELD.cy + (Math.random() - 0.5) * FIELD.ry * 2 }, n: 1 });
+    this.stampFluids(op, game);
+    // Particle quality setting (ENG-0145): budget and non-gameplay emission follow it.
+    this.particles.quality = this.uiFx.quality = settings.particleQuality;
+    this.uiFx.update(dt, () => {});
+    this.vfx.update(op, dt * op.timeScale, { beat: this.beatPhase, pointer: game.input.pos, down: game.input.down, light: { x: FIELD.cx - 220, y: 60 }, starTrail: this.ctl.starTrail, gore: bloodScale(presentation.gore) });
 
     // op.cues are drained by the audio director (src/audio/director.ts) right after this update.
     // Popups are presentation: they age in real time here, not in the sim.
@@ -421,6 +480,54 @@ export class OperationScene implements Scene {
     if (op.status === 'won' || op.status === 'lost') {
       this.endT += dt;
       if (this.endT > 2.2) this.onEnd({ op, won: op.status === 'won' });
+    }
+  }
+
+  /**
+   * Pools soak into the field beneath them; the Leech-Pipe erases the blood map under the pipe while
+   * it draws a pool off, so the field visibly cleans as the sim removes the blood (ENG-0115).
+   */
+  private stampFluids(op: Operation, game: Game): void {
+    // Created with the first GL frame or tick (headless sims have no renderer and skip decals).
+    if (!this.decals && game.gfx?.targets) this.decals = new DecalMaps(game.gfx, game.gfx.shaderQuality);
+    const d = this.decals;
+    if (!d) return;
+    const draining = op.tool === 'leech' && game.input.down && op.status === 'running';
+    const t = op.elapsed;
+    // Cautery (ENG-0117): the Brand sears where it touches tissue.
+    if (op.tool === 'brand' && game.input.down && op.status === 'running' && onBody(game.input.pos))
+      d.stamp({ map: 'scorch', brush: 'soft', x: game.input.pos.x, y: game.input.pos.y, r: 11, value: [0.035, 0, 0], mode: 'add', t });
+    // Fresh cuts weep along their length until they are sutured (ENG-0113).
+    this.weepT -= op.timeScale / 120;
+    const weep = this.weepT <= 0 && op.status === 'running';
+    if (weep) this.weepT = 0.35;
+    for (const e of op.entities) {
+      if (!weep || !e.alive) continue;
+      if (e instanceof Laceration && e.bleed > 0) {
+        const k = this.presRng.next();
+        const ang = Math.atan2(e.b.y - e.a.y, e.b.x - e.a.x);
+        d.stamp({ map: 'blood', brush: 'streak', x: e.a.x + (e.b.x - e.a.x) * k, y: e.a.y + (e.b.y - e.a.y) * k, r: 7 + 5 * e.bleed, rot: ang, value: [0.22 * Math.min(2, e.bleed), 1, 0], mode: 'add', t });
+      } else if (e instanceof Incision && e.state === 'open' && e.points.length > 1) {
+        const i = Math.min(e.points.length - 2, Math.floor(this.presRng.next() * (e.points.length - 1)));
+        const a = e.points[i];
+        const b = e.points[i + 1];
+        d.stamp({ map: 'blood', brush: 'streak', x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, r: 8, rot: Math.atan2(b.y - a.y, b.x - a.x), value: [0.18, 1, 0], mode: 'add', t });
+      }
+    }
+    for (const e of op.entities) {
+      if (!(e instanceof BloodPool) || !e.alive || e.ichor !== 'blood') continue;
+      // A pool stains the field once as it spreads (each 6 px of growth), not every frame.
+      const stained = this.poolStains.get(e) ?? 0;
+      if (e.r > stained + 6) {
+        this.poolStains.set(e, e.r);
+        d.stamp({ map: 'blood', brush: 'soft', x: e.pos.x, y: e.pos.y, r: e.r, value: [0.45, 0.8, 0], mode: 'add', t: op.elapsed });
+      }
+      // The pipe draws the pool off: its stain fades with it, strongest under the pipe.
+      if (draining && dist(e.pos, game.input.pos) < e.r + 12) {
+        d.stamp({ map: 'blood', brush: 'soft', x: e.pos.x, y: e.pos.y, r: e.r * 1.15, value: [0.05, 0, 0], mode: 'erase', t: op.elapsed });
+        d.stamp({ map: 'blood', brush: 'soft', x: game.input.pos.x, y: game.input.pos.y, r: 34, value: [0.12, 0, 0], mode: 'erase', t: op.elapsed });
+        this.poolStains.set(e, Math.min(stained, e.r));
+      }
     }
   }
 
@@ -445,7 +552,11 @@ export class OperationScene implements Scene {
     const trauma = sk > 0 ? Math.min(1, sk / 12) : undefined;
 
     // ---------------------------------------------------------------- data layers
-    const ents = op.visibleEntities().sort((a, b) => a.layer - b.layer);
+    // Entities layer order (ENG-0042): by layer, then spawn order.
+    const ents = drawOrder(op.visibleEntities());
+    this.decals ??= new DecalMaps(g, g.shaderQuality);
+    this.decals.setQuality(g.shaderQuality);
+    this.decals.flush();
     const light = { x: FIELD.cx - 220 + Math.sin(t * 0.7) * 30, y: 60 + Math.sin(t * 1.3) * 10 };
     g.beginLayer('surface');
     for (const sc of op.scars) {
@@ -479,12 +590,16 @@ export class OperationScene implements Scene {
       species: pal.species,
       lights: [
         { x: light.x, y: light.y, h: 1.1, i: 1.1, col: [0.95, 0.9, 0.82] },
-        { x: FIELD.cx - FIELD.rx - 60, y: FIELD.cy + 120, h: 0.35, i: 0.45 * (0.85 + 0.15 * Math.sin(t * 9.3) * Math.sin(t * 4.1)), col: [1.0, 0.6, 0.3] },
-        { x: FIELD.cx + FIELD.rx + 60, y: FIELD.cy - 60, h: 0.35, i: 0.4 * (0.85 + 0.15 * Math.sin(t * 8.1 + 2.0) * Math.sin(t * 3.3)), col: [1.0, 0.62, 0.32] },
+        { x: FIELD.cx - FIELD.rx - 60, y: FIELD.cy + 120, h: 0.35, i: 0.45 * candleFlicker(t, 0, g.displayPrefs.flicker), col: [1.0, 0.6, 0.3] },
+        { x: FIELD.cx + FIELD.rx + 60, y: FIELD.cy - 60, h: 0.35, i: 0.4 * candleFlicker(t, 2, g.displayPrefs.flicker), col: [1.0, 0.62, 0.32] },
       ],
     });
     const colours = palette();
+    this.decals.drawScorch(t);
+    this.decals.drawBlood(op.elapsed, { fresh: vec3(speciesBlood(colours.blood, pal.species)), light: { x: (light.x - FIELD.cx) / FIELD.rx, y: -(light.y - FIELD.cy) / FIELD.ry } });
     g.fluidComposite(light, { blood: speciesBlood(colours.blood, pal.species), pus: colours.pus, bile: colours.bile, gore: presentation.gore });
+    // Entities, particles and world FX go through the world camera (ENG-0045); endWorld resets it.
+    g.setCamera(this.camera.isIdentity ? null : this.camera.matrix());
     for (const e of ents) e.draw(g, op);
     // High contrast: a 2 px ring around everything that takes an instrument.
     if (highContrast()) for (const e of ents) if (e.required) g.arc(e.pos.x, e.pos.y, 28, 2, hex('#ffffff', 0.85), 1);
@@ -519,7 +634,8 @@ export class OperationScene implements Scene {
       litany,
       danger,
       shake,
-      bloom: 0.7,
+      // Bloom preset (ENG-0149): the Malison fights glow harder than ordinary cases.
+      bloom: this.corrupt > 0.5 ? 'malison' : 'operation',
       chroma: (this.corrupt * 1.2 + danger * 0.8 + Math.min(1, op.shake / 10) * 0.6) * soften,
       lutA: ch2 ? 'dawn' : 'candle',
       lutB: danger > 0.5 ? 'failing' : 'curse',
@@ -539,13 +655,22 @@ export class OperationScene implements Scene {
       lift: ch2 ? [0.0, 0.004, 0.012] : [0.012, 0.004, 0.0],
     });
 
+    // Field snapshot (ENG-0122): the finished field, for the results screen and the slot thumbnail.
+    if (!this.snapped && (op.status === 'won' || op.status === 'lost') && this.endT > 0.9) {
+      this.snapped = true;
+      g.snapshotWorld();
+    }
+
     // ---------------------------------------------------------------- UI
     drawFieldOverlays(g, op);
     // Brand smoke hangs over the field for a moment after heavy searing (GAM-0051).
     if (this.smoke.veil > 0.01) g.glow(op.cursor.x, op.cursor.y - 30, 260, hex('#9a9088', this.smoke.veil * 0.45));
     if (!settings.minimalHud) this.drawThreatRings(g);
     drawTutorial(g, op);
+    // WorldUI (ENG-0044): popups and hurt rings after post, through the world camera.
+    g.setCamera(this.camera.isIdentity ? null : this.camera.matrix());
     this.drawPopups(g);
+    g.setCamera(null);
     // HUD bars anchor to the visible top/bottom edges on 16:10 and 4:3 (ENG-0184).
     g.save();
     g.translate(0, anchorShift('top'));
@@ -725,6 +850,7 @@ export class OperationScene implements Scene {
     const tf = op.timeLeft / op.def.timeLimit;
     g.rect(T.x + 22, T.y + T.h - 7, (T.w - 44) * tf, 1.5, hex(lowT ? '#ff5a4a' : INK.gilt, 0.8));
     this.drawBanner(g);
+    this.uiFx.draw(g, 'UI');
     // Minimal HUD (UIX-0071): vitals, timer, tray and Litany only.
     if (settings.minimalHud) return;
     // Phase seals (UIX-0045): pressed once done, lit while current; hovering names the phase's objective.

@@ -8167,6 +8167,39 @@
     "context": "Results ledger row: elapsed time.",
     "screenshot": "docs/loc/screens/results.png"
   },
+  "ui.hwaccel.title": {
+    "scene": "boot",
+    "font": "body",
+    "size": 16,
+    "maxPx": 520,
+    "context": "One-time notice title when the GPU renderer is a software rasteriser.",
+    "screenshot": "docs/loc/screens/title.png"
+  },
+  "ui.hwaccel.body": {
+    "scene": "boot",
+    "font": "body",
+    "size": 16,
+    "maxPx": 620,
+    "maxLines": 4,
+    "context": "One-time notice body: the game runs in software rendering and switched to Low quality.",
+    "screenshot": "docs/loc/screens/title.png"
+  },
+  "ui.hwaccel.help": {
+    "scene": "boot",
+    "font": "body",
+    "size": 16,
+    "maxPx": 260,
+    "context": "Button: opens a help page on enabling hardware acceleration.",
+    "screenshot": "docs/loc/screens/title.png"
+  },
+  "ui.results.field": {
+    "scene": "results",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 248,
+    "context": "Results screen: caption under the snapshot of the operating field at the end of the operation.",
+    "screenshot": "docs/loc/screens/results.png"
+  },
   "ui.results.litany_used": {
     "scene": "results",
     "font": "display",

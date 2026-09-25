@@ -26,6 +26,11 @@ import { SceneAudio } from './audio/scenes';
 import { bindUiAudio } from './audio/ui-hooks';
 import { Input } from './core/input';
 import { FIXED_DT, FixedStep, FrameLimiter, RefreshEstimator, stepEndTimes } from './core/loop';
+import { DevTime } from './core/devTime';
+import { frameVecs } from './core/vecPool';
+import { precompileCatalog, shaderCatalog } from './render/shaderCatalog';
+import { effectiveCap, idleCap } from './core/idle';
+import { OverlayHost } from './ui/overlayHost';
 import { SceneStack, sceneName, type Game, type Scene } from './core/scene';
 import { lampsVeil, splashDone, splashProgress } from './core/splash';
 import { Gfx } from './render/gfx';
@@ -33,7 +38,7 @@ import { classifyTier, describeCaps } from './render/caps';
 import { Profiler } from './render/profiler';
 import { loadDetectedTier, storeDetectedTier } from './render/tierCache';
 import { HEAP_BUDGET, VRAM_BUDGET } from './render/registry';
-import { computeView } from './render/viewport';
+import { backbufferSize, computeView, watchDevicePixelRatio, type ResizeEntryLike } from './render/viewport';
 import { createAssets, withTimeout } from './assets/browser';
 import type { AssetLoader } from './assets/loader';
 import { allOperations } from './content/campaign';
@@ -52,7 +57,7 @@ import { OperationScene } from './scenes/operation';
 import { bindings } from './input/bindings';
 import { loadLayoutLabels } from './input/glyphs';
 import { downloadRecording, parseRecording, Recorder, Replayer } from './input/record';
-import { Transition } from './ui/transition';
+import { Transition, type TransitionOptions } from './ui/transition';
 import { GalleryScene } from './scenes/gallery';
 import { displayPrefs } from './ui/display';
 import { setFallbackHighlight, setReadableFont } from './render/text';
@@ -61,7 +66,11 @@ import { bindUiSounds } from './ui/events';
 /** Dev/QA tooling ships in dev and QA builds; `vite build --mode release` strips it (ENG-0237). */
 const DEV_TOOLS = import.meta.env.DEV || import.meta.env.MODE !== 'release';
 import { platform } from './platform';
+import { HWACCEL_HELP_URL, softwareRenderPlan, SOFTWARE_TIER } from './platform/hwaccel';
+import { prompt as platformPrompt } from './platform/ui';
+import { t as tr } from './i18n';
 import { installPlatform, platformFrame, sceneChanged } from './platform/session';
+import { buildStamp } from './platform/build';
 import { installTelemetry } from './telemetry';
 import { installQaHooks } from './debug/hooks';
 import { artDevScene } from './art/devScenes';
@@ -77,14 +86,21 @@ class Main implements Game {
   readonly profiler = new Profiler();
   readonly boundary: ErrorBoundary;
   private fixed = new FixedStep();
+  /** Dev time controls (ENG-0236): F7 speed, F9 pause, F10 single tick; inert in release builds. */
+  readonly devTime = new DevTime();
   private refresh = new RefreshEstimator();
   private limiter = new FrameLimiter();
   private last = performance.now();
   private contextLost = false;
   private hidden = false;
   private losses: number[] = [];
+  /** Real time (s) of the last input event, for idle throttling (ENG-0229). */
+  private lastInputAt = 0;
+  private throttled = false;
   /** Scene transitions (UIX-0009): fade through black, input blocked, no double-trigger. */
   readonly transition = new Transition();
+  /** Game-wide overlays drawn above every scene (ENG-0066): toasts, achievement popups, FPS, Steam veil. */
+  readonly overlays = new OverlayHost();
 
   constructor(private canvas: HTMLCanvasElement) {
     this.audio.volume = settings.volume;
@@ -94,15 +110,35 @@ class Main implements Game {
     console.info(describeCaps(this.gfx.caps));
     this.gfx.renderScale = settings.renderScale;
     this.input = new Input(canvas, VIEW_W, VIEW_H);
+    // Every device event marks activity; while throttled it also lets the very next frame render.
+    const push = this.input.push.bind(this.input);
+    this.input.push = (ev) => {
+      this.lastInputAt = performance.now() / 1000;
+      if (this.throttled) this.limiter.reset();
+      push(ev);
+    };
     this.assets = createAssets(this.gfx);
     this.scenes = new SceneStack(this);
     this.clock.reduceMotion = settings.reduceMotion;
     this.limiter.cap = settings.frameCap;
+    // The profiler/FPS counter is a global overlay: drawn whatever the scene (F3).
+    this.overlays.add({ id: 'profiler', order: 100, draw: (g) => this.profiler.draw(g, g.stats, g.registry, g.plan.gpuProfiler ? g.gpuTimer : null) });
     this.boundary = new ErrorBoundary(
       (rec) => this.scenes.go(new InkRunScene(rec, () => this.scenes.go(new TitleScene()))),
       (rec) => this.fatal(rec),
     );
     window.addEventListener('resize', () => this.resize());
+    // Exact device-pixel backbuffer (ENG-0186): the observer reports the canvas's physical pixel box,
+    // and a DPR watcher re-evaluates when the window moves to a monitor with another scale.
+    if (typeof ResizeObserver !== 'undefined') {
+      const ro = new ResizeObserver((entries) => this.fitBackbuffer(entries[0] as ResizeEntryLike));
+      try {
+        ro.observe(canvas, { box: 'device-pixel-content-box' });
+      } catch {
+        ro.observe(canvas);
+      }
+    }
+    watchDevicePixelRatio(() => this.resize());
     onSettingChange('uiScale', () => this.resize());
     canvas.addEventListener('pointerdown', () => this.audio.unlock());
     window.addEventListener('keydown', (e) => {
@@ -117,6 +153,7 @@ class Main implements Game {
       }
       if (DEV_TOOLS && e.code === 'F4') this.dumpFrameCsv();
       if (DEV_TOOLS && e.code === 'F6') this.sceneAudio.debug = !this.sceneAudio.debug;
+      if (DEV_TOOLS && this.devTime.onKey(e.code, { ctrl: e.ctrlKey, shift: e.shiftKey })) e.preventDefault();
     });
     // Hidden/minimised window: stop ticking and silence audio; resume with no dt spike (ENG-0059).
     document.addEventListener('visibilitychange', () => {
@@ -169,12 +206,25 @@ class Main implements Game {
     const dpr = window.devicePixelRatio || 1;
     this.canvas.style.width = `${cssW}px`;
     this.canvas.style.height = `${cssH}px`;
-    this.canvas.width = Math.max(1, Math.round(cssW * dpr));
-    this.canvas.height = Math.max(1, Math.round(cssH * dpr));
+    const bb = backbufferSize(this.lastBox, cssW, cssH, dpr);
+    this.canvas.width = bb.w;
+    this.canvas.height = bb.h;
     Object.assign(VIEW, { w: v.w, h: v.h, ox: v.ox, oy: v.oy });
     Object.assign(this.input.view, { w: v.w, h: v.h, ox: v.ox, oy: v.oy });
     this.input.resized();
     this.gfx.setView(v.w, v.h, v.ox, v.oy);
+  }
+
+  /** Last device-pixel content box the ResizeObserver reported (null until it fires). */
+  private lastBox: ResizeEntryLike | null = null;
+  private fitBackbuffer(e: ResizeEntryLike): void {
+    this.lastBox = e;
+    const css = { w: parseFloat(this.canvas.style.width) || this.canvas.clientWidth, h: parseFloat(this.canvas.style.height) || this.canvas.clientHeight };
+    const bb = backbufferSize(e, css.w, css.h, window.devicePixelRatio || 1);
+    if (bb.w !== this.canvas.width || bb.h !== this.canvas.height) {
+      this.canvas.width = bb.w;
+      this.canvas.height = bb.h;
+    }
   }
 
   /** The active (top) scene — kept as `scene` for tools that script the game (scripts/shoot.mjs). */
@@ -186,9 +236,9 @@ class Main implements Game {
   recorder: Recorder | null = null;
   private recording: OperationScene | null = null;
 
-  go(scene: Scene): void {
+  go(scene: Scene, opts?: TransitionOptions): void {
     if (this.instantGo) this.goNow(scene);
-    else this.transition.request(() => this.goNow(scene));
+    else this.transition.request(() => this.goNow(scene), opts);
   }
 
   /** Dev/automation jumps (`?op=`, `?ui=`) change scene without a transition. */
@@ -239,6 +289,12 @@ class Main implements Game {
         return;
       }
       this.refresh.sample(dt);
+      // Idle throttling (ENG-0229): menus and paused states with no input drop to 30 fps.
+      const top = this.scenes.top as unknown as { op?: { status: string }; paused?: boolean; animating?: boolean } | null;
+      const playing = this.scenes.top instanceof OperationScene && !top?.paused && (top?.op?.status === 'running' || top?.op?.status === 'intro');
+      const idle = idleCap({ now: now / 1000, lastInput: this.lastInputAt, playing, transition: this.transition.busy, animating: top?.animating === true });
+      this.throttled = idle > 0;
+      this.limiter.cap = effectiveCap(settings.frameCap, idle);
       if (!this.limiter.shouldRender(now, this.refresh.hz)) return;
       this.last = now;
       this.tick(now, dt);
@@ -250,7 +306,8 @@ class Main implements Game {
   private tick(now: number, dt: number): void {
     const p = this.profiler;
     const t0 = performance.now();
-    const steps = this.fixed.advance(dt);
+    frameVecs.reset(); // scratch vectors for view code are recycled every frame (ENG-0226)
+    const steps = this.fixed.advance(this.devTime.frameTime(dt)) + this.devTime.takeSteps();
     const ends = stepEndTimes(now, steps, FIXED_DT, this.fixed.pending);
     this.clock.frame(Math.min(dt, 0.25));
     this.gfx.time = this.clock.real;
@@ -261,7 +318,6 @@ class Main implements Game {
     setReadableFont(settings.readableFont);
     this.clock.reduceMotion = settings.reduceMotion;
     this.gfx.gpuTimer.enabled = this.profiler.enabled && this.gfx.plan.gpuProfiler;
-    this.limiter.cap = settings.frameCap;
     p.begin('sim');
     for (let i = 0; i < steps; i++) {
       this.input.beginStep(ends[i]);
@@ -286,13 +342,29 @@ class Main implements Game {
     p.end('render');
     this.gfx.setCamera(null);
     this.transition.draw(this.gfx);
-    this.profiler.draw(this.gfx, this.gfx.stats, this.gfx.registry, this.gfx.plan.gpuProfiler ? this.gfx.gpuTimer : null);
+    this.overlays.update(Math.min(dt, 0.25));
+    // While the QA API holds the frame frozen the canvas keeps its last image; stepping draws overlays itself.
+    if (!(this as { debug?: { isFrozen(): boolean } }).debug?.isFrozen()) this.overlays.draw(this.gfx);
+    // Not under automation (goldens must not carry a sha), nor while the QA API holds the frame frozen.
+    if (DEV_TOOLS && !navigator.webdriver && !(this as { debug?: { isFrozen(): boolean } }).debug?.isFrozen()) this.drawDevStamp();
     this.gfx.endFrame();
     this.gfx.gpuTimer.collect();
     this.input.endFrame();
     this.gfx.resetStats();
     p.frame(performance.now() - t0 + 0);
     if (clock.frames % 300 === 0) this.checkBudgets();
+  }
+
+  /** Dev/QA corner stamp (ENG-0240) and the dev time-control state (ENG-0236). */
+  private stampText = '';
+  private drawDevStamp(): void {
+    const g = this.gfx;
+    const tier = settings.gpuTier === 'auto' ? (loadDetectedTier()?.tier ?? 'auto') : settings.gpuTier;
+    if (!this.stampText || this.clock.frames % 120 === 0) this.stampText = buildStamp(tier, g.caps.renderer);
+    const vr = g.viewRect();
+    g.text(this.stampText, vr.x + 10, vr.y + vr.h - 10, { size: 16, color: 0x8cffffff, shadow: 0xb0000000 });
+    const dt = this.devTime.label();
+    if (dt) g.text(dt, vr.x + vr.w - 12, vr.y + 28, { size: 20, color: 0xff60d0ff, align: 'right', shadow: 0xc0000000 });
   }
 
   /** VRAM/heap budgets (ENG-0227): log once with the top consumers when exceeded. */
@@ -361,10 +433,36 @@ async function boot(): Promise<void> {
     6000,
   );
   if (ok === false) console.warn('boot bundle timed out; continuing with fallback fonts');
+  // Parallel shader compile (ENG-0202): every variant compiles while the boot screen animates, warming
+  // the driver's program cache for the lazily built programs. Automation skips it to keep boots short.
+  if (game.gfx.caps.parallelCompile && !navigator.webdriver) {
+    const fails = await precompileCatalog(game.gfx.gl, shaderCatalog(), (n, total) => splashProgress(0.7 + (0.05 * n) / total, 'Mixing the tinctures…'));
+    for (const f of fails) console.error(`[shader] ${f.name} (${f.stage}):\n${f.log}`);
+  }
   splashProgress(0.75, 'Warming the instruments…');
   game.gfx.atlas.warm();
   game.gfx.prewarm();
   game.detectTier();
+  // Software rasteriser (ENG-0194): Low tier for the session, and a one-time explanation with a help
+  // link. Automation (navigator.webdriver) keeps its configured tier so captures stay comparable.
+  if (!navigator.webdriver) {
+    let store: Storage | null = null;
+    try {
+      store = window.localStorage;
+    } catch {
+      store = null;
+    }
+    const sw = softwareRenderPlan(game.gfx.caps, store);
+    if (sw.forceLow) {
+      Object.assign(settings, SOFTWARE_TIER);
+      game.gfx.setShaderQuality('low');
+      console.warn(`[gpu] software renderer (${game.gfx.caps.renderer}): Low tier forced`);
+    }
+    if (sw.notify)
+      void platformPrompt({ title: tr('ui.hwaccel.title'), message: tr('ui.hwaccel.body'), buttons: [tr('ui.hwaccel.help'), tr('ui.common.done')] }).then((i) => {
+        if (i === 0) platform.open({ url: HWACCEL_HELP_URL });
+      });
+  }
   game.assets.prefetch('title');
   game.assets.prefetch('ops-common');
   // 3D sets: registered with the backdrop as they arrive (the procedural scene shows until then).

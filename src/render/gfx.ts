@@ -1,7 +1,8 @@
 import type { Vec } from '../core/math';
 import { alphaOf, hex, withAlpha, type RGBA } from './color';
 import { bakeLut, GRADES, LUT_SIZE } from './lut';
-import { fallbackHighlight, GlyphAtlas, type FontId } from './text';
+import { fallbackHighlight, GlyphAtlas, readableFont, type FontId, type Glyph } from './text';
+import { graphemes, TextLayouter, type LayoutOptions, type LaidGlyph, type TextLayout, type TextMeasurer } from './textLayout';
 import { BRIGHT_FS, CREATURE_FS, DOWN_FS, FLUID_FS, FULL_VS, IMAGE_FS, IMAGE_VS, PORTRAIT_FS, POST_FS, RECT_VS, SCENE_FS, UP_FS } from './shaders';
 import { BATCH_FS, BATCH_UNITS, BATCH_VS, FALLBACK_VS, FXAA_FS } from './batch-shaders';
 import { fallbackPlan, FULL_CAPS, probeCaps, toMediump, type FallbackPlan, type GpuCaps } from './caps';
@@ -12,6 +13,7 @@ import { fleshVariantKey, isQuality, SHADER_TIERS, type Quality } from './qualit
 import { fleshShaderSource } from './shaders/flesh';
 import { shakeOffset } from './shake';
 import { GlRegistry } from './registry';
+import { GlStateCache } from './stateCache';
 import { SpriteBank, type SpriteOpts } from './sprites';
 import { RenderTargetPool, type Target } from './targets';
 import { checkerPixels, Texture } from './texture';
@@ -20,6 +22,9 @@ import { UI_ART_FS } from '../art/uiShader';
 import { PLATE_FS } from './shaders/plate';
 import { SPECIES_PROFILES, type SpeciesLook } from '../surgery/species';
 import { Renderer3D, type Scene3D } from './renderer3d';
+import type { CurveAtlas } from './curves';
+import { resolveBloom, type BloomSpec } from './bloom';
+import { PARTICLE_FS, PARTICLE_SIZE_RANGE, PARTICLE_VS } from './shaders/particle';
 
 /** Bilinear upsample of a reduced-resolution layer. */
 export const UPSAMPLE_FS = `#version 300 es
@@ -37,6 +42,8 @@ const MAGENTA: RGBA = hex('#ff00ff');
 /** '#rrggbb' → [r, g, b] in 0..1. */
 const rgb01 = (h: string): [number, number, number] => [parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255];
 const MAX_VERTS = 60000;
+/** Index budget: quads use 6 indices over 4 vertices (ENG-0020). */
+const MAX_INDICES = 90000;
 const STRIDE = 6; // x, y, u, v (f32) + rgba (u32) + texture unit (f32)
 const UNITS = Array.from({ length: BATCH_UNITS }, (_, i) => i);
 /** Scratch vectors for shape helpers (no per-call allocation, ENG-0225/0226). */
@@ -134,7 +141,8 @@ export interface PostParams {
    * presentation time, so the scene passes no random jitter and the sim stays pure.
    */
   trauma?: number;
-  bloom: number;
+  /** Bloom preset per scene type, with an optional intensity override (ENG-0149); a number is a menu-preset intensity. */
+  bloom: BloomSpec;
   /** Chromatic aberration strength (curses, damage). */
   chroma?: number;
   /** Colour grade: multiplicative tint and lift, per chapter/location. */
@@ -171,6 +179,32 @@ export interface GfxOptions {
   plan?: Partial<FallbackPlan>;
 }
 
+/**
+ * A baked text run (ENG-0177): the glyphs of one string in one face and raster tier with their pen
+ * positions (layout units, kerning applied), reused while the atlas page is unchanged so labels
+ * drawn every frame skip segmentation, glyph lookups and kerning.
+ */
+interface TextRun {
+  gen: number;
+  base: Glyph[];
+  tiered: Glyph[];
+  pens: Float32Array;
+  width: number;
+}
+const MAX_RUNS = 4096;
+
+/** Options for drawing a laid-out text block (`Gfx.drawLayout`). */
+export interface DrawLayoutOpts {
+  /** Default glyph colour (spans with `[color]` override it). */
+  color?: RGBA;
+  color2?: RGBA;
+  shadow?: RGBA | false;
+  /** Glyphs revealed (typewriter, ENG-0175); all when omitted. */
+  reveal?: number;
+  /** Draws inline icons and key caps (`[icon=…]`, `[key=…]`) at the pen position; x/y are the glyph box's left and baseline. */
+  icon?: (g: Gfx, icon: NonNullable<LaidGlyph['icon']>, x: number, baseline: number, size: number, w: number) => void;
+}
+
 /** Unit-circle cos/sin tables per segment count (ENG-0023). */
 const trigTables = new Map<number, Float32Array>();
 function trig(n: number): Float32Array {
@@ -193,6 +227,7 @@ function trig(n: number): Float32Array {
  */
 export class Gfx {
   readonly gl: WebGL2RenderingContext;
+  readonly stateCache: GlStateCache;
   /** Every GL object, for leak counts, VRAM budget and context restore (ENG-0198). */
   readonly registry: GlRegistry;
   /** Player display options as renderer multipliers (UIX-0105); the shell refreshes it every frame. */
@@ -227,6 +262,10 @@ export class Gfx {
   private f32 = new Float32Array(MAX_VERTS * STRIDE);
   private u32 = new Uint32Array(this.f32.buffer);
   private n = 0;
+  /** Indexed batch (ENG-0020): rects, glyphs and sprites are 4 vertices + 6 indices. */
+  private idx = new Uint16Array(MAX_INDICES);
+  private ni = 0;
+  private ibo!: WebGLBuffer;
   private blend: Blend = 'alpha';
   private tf = [1, 0, 0, 1, 0, 0];
   private stack: number[][] = [];
@@ -269,6 +308,11 @@ export class Gfx {
   private pw = 0;
   private ph = 0;
   readonly atlas: GlyphAtlas;
+  /** Static text cache (ENG-0177); `textCache = false` bypasses it (A/B timing). */
+  private runs = new Map<string, TextRun>();
+  textCache = true;
+  /** Cached text layouts (ENG-0173) measured with the glyph atlas. */
+  readonly layouter: TextLayouter;
   private uniforms = new Map<WebGLProgram, Map<string, WebGLUniformLocation | null>>();
   time = 0;
   /** Current output target size in device pixels. */
@@ -282,9 +326,11 @@ export class Gfx {
     public vh: number,
     opts: GfxOptions = {},
   ) {
-    const gl = canvas.getContext('webgl2', { antialias: false, alpha: false, premultipliedAlpha: false, powerPreference: 'high-performance' });
-    if (!gl) throw new Error('WebGL2 is not available on this system.');
-    this.gl = gl;
+    const raw = canvas.getContext('webgl2', { antialias: false, alpha: false, premultipliedAlpha: false, powerPreference: 'high-performance' });
+    if (!raw) throw new Error('WebGL2 is not available on this system.');
+    // Every GL call goes through the state cache (ENG-0029): redundant binds and state sets are dropped.
+    this.stateCache = new GlStateCache(raw);
+    const gl = (this.gl = this.stateCache.gl);
     this.registry = new GlRegistry(gl);
     this.caps = opts.caps ?? (gl.isContextLost() ? FULL_CAPS : probeCaps(gl));
     this.plan = { ...fallbackPlan(this.caps), ...opts.plan };
@@ -292,6 +338,16 @@ export class Gfx {
     this.targets = new RenderTargetPool(this.registry, this.floatTargets);
     this.gpuTimer = new GpuTimer(this.registry);
     this.atlas = new GlyphAtlas(gl, this.registry);
+    const atlas = this.atlas;
+    const measurer: TextMeasurer = {
+      baseSize: atlas.baseSize,
+      advance: (c, f) => atlas.glyph(c, f).adv,
+      kern: (a, b, f) => atlas.kern(a, b, f),
+      get generation() {
+        return atlas.generation * 2 + (readableFont() ? 1 : 0);
+      },
+    };
+    this.layouter = new TextLayouter(measurer);
     this.init();
     // Restore order: our programs/buffers first, then textures (order 10), then everything else.
     this.registry.onRestore(() => this.init(), 0);
@@ -321,6 +377,7 @@ export class Gfx {
     this.sceneProgs.clear();
     this.uiArtProg = null;
     this.plateProg = null;
+    this.part = null;
     this.upsampleProg = null;
     this.downProg = reg.createProgram('bloom-down', FULL_VS, DOWN_FS);
     this.upProg = reg.createProgram('bloom-up', FULL_VS, UP_FS);
@@ -335,6 +392,11 @@ export class Gfx {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
     gl.bufferData(gl.ARRAY_BUFFER, this.f32.byteLength, gl.DYNAMIC_DRAW);
     reg.setBytes(this.vbo, this.f32.byteLength);
+    // The element buffer belongs to the batch VAO.
+    this.ibo = reg.createBuffer('batch indices');
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ibo);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.idx.byteLength, gl.DYNAMIC_DRAW);
+    reg.setBytes(this.ibo, this.idx.byteLength);
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, STRIDE * 4, 0);
     gl.enableVertexAttribArray(1);
@@ -346,6 +408,7 @@ export class Gfx {
     gl.bindVertexArray(null);
 
     this.n = 0;
+    this.ni = 0;
     this.pw = this.ph = 0;
     this.msaaFb = this.msaaRb = this.msaaDepth = null;
     gl.enable(gl.BLEND);
@@ -396,6 +459,79 @@ export class Gfx {
     x[8] = 1;
   }
 
+  /** The last field snapshot (ENG-0122): the finished world target at 480×270, until the next one. */
+  fieldSnapshot: Target | null = null;
+  private snapshotGen = 0;
+  private snapshotUrl: { gen: number; url: string | null } = { gen: -1, url: null };
+
+  /**
+   * Copy the world target (call after `endWorld`) into a small RGBA8 texture — the results screen
+   * shows it and the save slot keeps it as a thumbnail. Returns the snapshot target.
+   */
+  snapshotWorld(w = 480, h = 270): Target {
+    this.flush('program');
+    const gl = this.gl;
+    const t = this.targets.acquire('field-snapshot', w, h);
+    this.bindTarget(t);
+    const up = (this.upsampleProg ??= this.registry.createProgram('scene-upsample', FULL_VS, UPSAMPLE_FS));
+    gl.useProgram(up);
+    gl.disable(gl.BLEND);
+    gl.bindVertexArray(this.emptyVao);
+    this.bindTex(this.scene.tex, 0);
+    gl.uniform1i(this.u(up, 'u_tex'), 0);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    this.stats.drawCalls++;
+    gl.enable(gl.BLEND);
+    this.applyBlend();
+    this.bindTarget(null);
+    this.fieldSnapshot = t;
+    this.snapshotGen++;
+    return t;
+  }
+
+  /** The field snapshot as a small JPEG data URL for save-slot thumbnails (cached per snapshot). */
+  fieldSnapshotDataUrl(w = 192, h = 108): string | null {
+    const t = this.fieldSnapshot;
+    if (!t || typeof document === 'undefined') return null;
+    if (this.snapshotUrl.gen === this.snapshotGen) return this.snapshotUrl.url;
+    let url: string | null;
+    try {
+      const gl = this.gl;
+      const px = new Uint8ClampedArray(t.w * t.h * 4);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, t.fb);
+      gl.readPixels(0, 0, t.w, t.h, gl.RGBA, gl.UNSIGNED_BYTE, px);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      // GL rows run bottom-up: flip while copying into the canvas.
+      const src = document.createElement('canvas');
+      src.width = t.w;
+      src.height = t.h;
+      const ctx = src.getContext('2d')!;
+      const img = ctx.createImageData(t.w, t.h);
+      for (let y = 0; y < t.h; y++) img.data.set(px.subarray((t.h - 1 - y) * t.w * 4, (t.h - y) * t.w * 4), y * t.w * 4);
+      ctx.putImageData(img, 0, 0);
+      const c = document.createElement('canvas');
+      c.width = w;
+      c.height = h;
+      c.getContext('2d')?.drawImage(src, 0, 0, w, h);
+      url = c.toDataURL('image/jpeg', 0.7);
+    } catch {
+      url = null;
+    }
+    this.snapshotUrl = { gen: this.snapshotGen, url };
+    return url;
+  }
+
+  /** The view transform uploaded as `u_xf` (safe-area origin × camera), for custom world-space passes. */
+  viewTransform(): Float32Array {
+    return this.xf;
+  }
+
+  /** Re-apply the batch blend state after a pass changed GL blending directly. */
+  resyncBlend(): void {
+    this.gl.enable(this.gl.BLEND);
+    this.applyBlend();
+  }
+
   /** Current tessellation scale: on-screen pixels per virtual unit including camera zoom (ENG-0050). */
   private lodScale(): number {
     const zoom = this.camera ? Math.hypot(this.camera[0], this.camera[1]) : 1;
@@ -404,6 +540,7 @@ export class Gfx {
 
   /** Call on `webglcontextlost`: every handle is dead. */
   contextLost(): void {
+    this.stateCache.reset();
     this.registry.contextLost();
     this.targets.forget();
     this.gpuTimer.reset();
@@ -413,6 +550,7 @@ export class Gfx {
 
   /** Call on `webglcontextrestored`: recreate programs, buffers, textures, targets and images (ENG-0200). */
   contextRestored(): void {
+    this.stateCache.reset();
     this.registry.contextRestored();
     this.gpuTimer.rebind();
     for (const [h, src] of this.imageSources) this.uploadImage(h, src);
@@ -476,11 +614,41 @@ export class Gfx {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   }
 
+  /** The last finished frame's counters (debug overlays read these). */
+  lastStats: FrameStats = emptyStats();
+  private sectionName = '';
+  private sectionStart = 0;
+
+  /** Attribute draw calls since the previous section mark to it, and start `name` (ENG-0232). */
+  private section(name: string): void {
+    const st = this.stats;
+    if (this.sectionName) st.sections[this.sectionName] = (st.sections[this.sectionName] ?? 0) + st.drawCalls - this.sectionStart;
+    this.sectionName = name;
+    this.sectionStart = st.drawCalls;
+  }
+
   /** Zero the per-frame counters (call at frame start); returns the finished frame's stats. */
   resetStats(): FrameStats {
+    this.section('');
     const s = this.stats;
+    this.lastStats = s;
     this.stats = emptyStats();
+    this.sectionStart = 0;
     return s;
+  }
+
+  /** Every texture worth inspecting (ENG-0233): render targets, LUTs, the glyph atlas, baked noise, the field snapshot. */
+  debugTextures(): { name: string; tex: WebGLTexture; w: number; h: number; flip: boolean }[] {
+    const out: { name: string; tex: WebGLTexture; w: number; h: number; flip: boolean }[] = [];
+    for (const k of this.targets.keys()) {
+      const t = this.targets.get(k)!;
+      out.push({ name: k, tex: t.tex, w: t.w, h: t.h, flip: true });
+    }
+    for (const [name, tex] of this.luts) out.push({ name: `lut:${name}`, tex, w: LUT_SIZE * LUT_SIZE, h: LUT_SIZE, flip: false });
+    out.push({ name: 'glyph-atlas', tex: this.atlas.texture, w: 2048, h: 2048, flip: false });
+    if (this.noiseTex) out.push({ name: 'noise-fbm', tex: this.noiseTex, w: 512, h: 512, flip: false });
+    if (this.cellsTex) out.push({ name: 'noise-cells', tex: this.cellsTex, w: 512, h: 512, flip: false });
+    return out;
   }
 
   private u(p: WebGLProgram, name: string): WebGLUniformLocation | null {
@@ -553,6 +721,7 @@ export class Gfx {
     if (q && q !== this.shaderQuality) this.setShaderQuality(q);
     this.ensureTargets();
     this.gpuTimer.mark('world');
+    this.section('world');
     if (this.msaaFb) {
       this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.msaaFb);
       this.outW = this.scene.w;
@@ -568,6 +737,7 @@ export class Gfx {
   endWorld(p: PostParams): void {
     this.flush('end');
     this.gpuTimer.mark('post');
+    this.section('post');
     const gl = this.gl;
     if (this.msaaFb) {
       gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.msaaFb);
@@ -583,14 +753,15 @@ export class Gfx {
     // Bloom v2: soft-knee bright pass into mip 0, box downsample to 1/32, tent upsample back up.
     // Skipped entirely when the pass is off or the player set bloom to 0 % (ENG-0146/0164).
     const m = this.mips;
-    const bloomAmt = p.bloom * 0.35 * this.displayPrefs.bloom;
+    const bp = resolveBloom(p.bloom);
+    const bloomAmt = bp.intensity * 0.35 * this.displayPrefs.bloom;
     const bloomOn = bloomAmt > 0 && this.postChain.enabled('bloom');
     if (bloomOn) {
       this.bindTarget(m[0]);
       gl.useProgram(this.bright);
       this.bindTex(world, 0);
       gl.uniform1i(this.u(this.bright, 'u_tex'), 0);
-      gl.uniform1f(this.u(this.bright, 'u_threshold'), p.bloomThreshold ?? 0.78);
+      gl.uniform1f(this.u(this.bright, 'u_threshold'), p.bloomThreshold ?? bp.threshold);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       gl.useProgram(this.downProg);
       gl.uniform1i(this.u(this.downProg, 'u_tex'), 0);
@@ -602,7 +773,7 @@ export class Gfx {
       }
       gl.useProgram(this.upProg);
       gl.uniform1i(this.u(this.upProg, 'u_tex'), 0);
-      gl.uniform1f(this.u(this.upProg, 'u_radius'), 1.0);
+      gl.uniform1f(this.u(this.upProg, 'u_radius'), bp.radius);
       gl.enable(gl.BLEND);
       gl.blendFunc(gl.ONE, gl.ONE);
       for (let i = m.length - 1; i > 0; i--) {
@@ -664,6 +835,7 @@ export class Gfx {
     this.tf = [1, 0, 0, 1, 0, 0];
     this.setCamera(null);
     this.gpuTimer.mark('ui');
+    this.section('ui');
   }
 
   /** FXAA fallback when the world target has no MSAA (ENG-0193); returns the texture post should read. */
@@ -684,6 +856,7 @@ export class Gfx {
   /** Draw a screen with no world layer (menus, story): UI straight to the screen. */
   beginScreen(clear: [number, number, number] = [0.03, 0.025, 0.025]): void {
     this.gpuTimer.mark('ui');
+    this.section('ui');
     this.setCamera(null);
     this.bindTarget(null);
     this.gl.clearColor(clear[0], clear[1], clear[2], 1);
@@ -820,6 +993,7 @@ export class Gfx {
     this.ensureTargets();
     this.flush('program');
     this.gpuTimer.mark('layers');
+    this.section('layers');
     this.bindTarget(which === 'surface' ? this.surface : this.fluid);
     this.gl.clearColor(0, 0, 0, 0);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
@@ -980,6 +1154,67 @@ export class Gfx {
     gl.uniform1f(this.u(pr, 'u_alpha'), o.alpha ?? 1);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
+    this.applyBlend();
+  }
+
+  /** Instanced particle program, VAO, static corner buffer and instance buffer (ENG-0124). */
+  private part: { prog: WebGLProgram; vao: WebGLVertexArrayObject; inst: WebGLBuffer; bytes: number } | null = null;
+
+  /**
+   * Draw `count` particle instances (layout: particles.ts PARTICLE_STRIDE) in one instanced call
+   * with premultiplied `alpha` or additive blending. Curves are sampled from the baked texture.
+   */
+  drawParticles(data: Float32Array, count: number, blend: 'alpha' | 'add', curves: CurveAtlas): void {
+    if (count <= 0) return;
+    this.flush('program');
+    const gl = this.gl;
+    const reg = this.registry;
+    if (!this.part) {
+      const prog = reg.createProgram('particle', PARTICLE_VS, PARTICLE_FS);
+      const vao = reg.createVertexArray('particle');
+      gl.bindVertexArray(vao);
+      const corners = reg.createBuffer('particle corners');
+      gl.bindBuffer(gl.ARRAY_BUFFER, corners);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+      reg.setBytes(corners, 32);
+      gl.enableVertexAttribArray(0);
+      gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 8, 0);
+      const inst = reg.createBuffer('particle instances');
+      gl.bindBuffer(gl.ARRAY_BUFFER, inst);
+      const stride = 48;
+      for (let i = 0; i < 3; i++) {
+        gl.enableVertexAttribArray(1 + i);
+        gl.vertexAttribPointer(1 + i, 4, gl.FLOAT, false, stride, i * 16);
+        gl.vertexAttribDivisor(1 + i, 1);
+      }
+      gl.bindVertexArray(null);
+      this.part = { prog, vao, inst, bytes: 0 };
+    }
+    const p = this.part;
+    const pr = p.prog;
+    gl.useProgram(pr);
+    gl.bindVertexArray(p.vao);
+    gl.bindBuffer(gl.ARRAY_BUFFER, p.inst);
+    const bytes = count * 48;
+    // Orphan and refill: a fresh store each frame so the driver never waits on last frame's draw.
+    if (bytes > p.bytes) {
+      p.bytes = Math.max(bytes, 64 * 1024);
+      reg.setBytes(p.inst, p.bytes);
+    }
+    gl.bufferData(gl.ARRAY_BUFFER, p.bytes, gl.STREAM_DRAW);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, data, 0, count * 12);
+    this.bindTex(curves.texture(gl, reg), 0);
+    gl.uniform1i(this.u(pr, 'u_curves'), 0);
+    gl.uniform2f(this.u(pr, 'u_view'), this.vw, this.vh);
+    gl.uniformMatrix3fv(this.u(pr, 'u_xf'), false, this.xf);
+    gl.uniform1f(this.u(pr, 'u_sizeRange'), PARTICLE_SIZE_RANGE);
+    gl.uniform1f(this.u(pr, 'u_stretch'), 0.03);
+    if (blend === 'add') gl.blendFunc(gl.ONE, gl.ONE);
+    else gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, count);
+    gl.bindVertexArray(null);
+    this.stats.drawCalls++;
+    this.stats.vertices += count * 4;
     this.applyBlend();
   }
 
@@ -1257,6 +1492,7 @@ export class Gfx {
     const st = this.stats;
     st.drawCalls++;
     st.vertices += this.n;
+    st.indices += this.ni;
     st.flushes[reason]++;
     if (this.atlas.upload()) st.textureUploads++;
     const pr = this.prim;
@@ -1269,8 +1505,11 @@ export class Gfx {
     gl.uniform1iv(this.u(pr, 'u_tex'), UNITS);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.f32, 0, this.n * STRIDE);
-    gl.drawArrays(gl.TRIANGLES, 0, this.n);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ibo);
+    gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, 0, this.idx, 0, this.ni);
+    gl.drawElements(gl.TRIANGLES, this.ni, gl.UNSIGNED_SHORT, 0);
     this.n = 0;
+    this.ni = 0;
     for (let i = 1; i < BATCH_UNITS; i++) this.slots[i] = null;
     this.slotCount = 1;
   }
@@ -1295,8 +1534,33 @@ export class Gfx {
     this.n++;
   }
 
-  private room(verts: number): void {
-    if (this.n + verts > MAX_VERTS) this.flush('overflow');
+  private room(verts: number, indices = verts): void {
+    if (this.n + verts > MAX_VERTS || this.ni + indices > MAX_INDICES) this.flush('overflow');
+  }
+
+  /** Index the three vertices just written as one triangle. */
+  private triIdx(): void {
+    const b = this.n - 3;
+    const ix = this.idx;
+    const i = this.ni;
+    ix[i] = b;
+    ix[i + 1] = b + 1;
+    ix[i + 2] = b + 2;
+    this.ni = i + 3;
+  }
+
+  /** Index the four vertices just written (corners in order) as two triangles: 4 vertices, not 6. */
+  private quadIdx(): void {
+    const b = this.n - 4;
+    const ix = this.idx;
+    const i = this.ni;
+    ix[i] = b;
+    ix[i + 1] = b + 1;
+    ix[i + 2] = b + 2;
+    ix[i + 3] = b;
+    ix[i + 4] = b + 2;
+    ix[i + 5] = b + 3;
+    this.ni = i + 6;
   }
 
   tri(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, c1: RGBA, c2 = c1, c3 = c1): void {
@@ -1306,6 +1570,19 @@ export class Gfx {
     this.vert(x1, y1, w.u, w.v, c1);
     this.vert(x2, y2, w.u, w.v, c2);
     this.vert(x3, y3, w.u, w.v, c3);
+    this.triIdx();
+  }
+
+  /** Untextured quad with per-corner colours (top-left, top-right, bottom-right, bottom-left). */
+  private colorQuad(x0: number, y0: number, x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, c0: RGBA, c1: RGBA, c2: RGBA, c3: RGBA): void {
+    if (alphaOf(c0) === 0 && alphaOf(c1) === 0 && alphaOf(c2) === 0 && alphaOf(c3) === 0) return;
+    this.room(4, 6);
+    const w = this.atlas.white;
+    this.vert(x0, y0, w.u, w.v, c0);
+    this.vert(x1, y1, w.u, w.v, c1);
+    this.vert(x2, y2, w.u, w.v, c2);
+    this.vert(x3, y3, w.u, w.v, c3);
+    this.quadIdx();
   }
 
   // ------------------------------------------------------------ transforms
@@ -1319,7 +1596,10 @@ export class Gfx {
   }
   restore(): void {
     if (this.depth === 0) {
-      this.tf = [1, 0, 0, 1, 0, 0];
+      // Unbalanced restore: back to identity, in place (no allocation, ENG-0226).
+      const t = this.tf;
+      t[0] = t[3] = 1;
+      t[1] = t[2] = t[4] = t[5] = 0;
       return;
     }
     const e = this.stack[--this.depth];
@@ -1351,13 +1631,11 @@ export class Gfx {
   // ------------------------------------------------------------ shapes
 
   rect(x: number, y: number, w: number, h: number, c: RGBA): void {
-    this.tri(x, y, x + w, y, x + w, y + h, c);
-    this.tri(x, y, x + w, y + h, x, y + h, c);
+    this.colorQuad(x, y, x + w, y, x + w, y + h, x, y + h, c, c, c, c);
   }
 
   rectGrad(x: number, y: number, w: number, h: number, top: RGBA, bottom: RGBA): void {
-    this.tri(x, y, x + w, y, x + w, y + h, top, top, bottom);
-    this.tri(x, y, x + w, y + h, x, y + h, top, bottom, bottom);
+    this.colorQuad(x, y, x + w, y, x + w, y + h, x, y + h, top, top, bottom, bottom);
   }
 
   rectLine(x: number, y: number, w: number, h: number, lw: number, c: RGBA): void {
@@ -1376,21 +1654,29 @@ export class Gfx {
   }
 
   ellipse(x: number, y: number, rx: number, ry: number, rot: number, c: RGBA, cEdge = c): void {
+    if (alphaOf(c) === 0 && alphaOf(cEdge) === 0) return;
     const n = this.segs(Math.max(rx, ry));
     const cr = Math.cos(rot);
     const sr = Math.sin(rot);
-    let px = x + cr * rx;
-    let py = y + sr * rx;
     const tb = trig(n);
-    for (let i = 1; i <= n; i++) {
+    // An indexed fan (ENG-0020): the centre and each rim vertex are shared, n + 2 vertices for n triangles.
+    this.room(n + 2, n * 3);
+    const w = this.atlas.white;
+    const base = this.n;
+    this.vert(x, y, w.u, w.v, c);
+    for (let i = 0; i <= n; i++) {
       const ex = tb[i * 2] * rx;
       const ey = tb[i * 2 + 1] * ry;
-      const nx = x + ex * cr - ey * sr;
-      const ny = y + ex * sr + ey * cr;
-      this.tri(x, y, px, py, nx, ny, c, cEdge, cEdge);
-      px = nx;
-      py = ny;
+      this.vert(x + ex * cr - ey * sr, y + ex * sr + ey * cr, w.u, w.v, cEdge);
     }
+    const ix = this.idx;
+    let k = this.ni;
+    for (let i = 1; i <= n; i++) {
+      ix[k++] = base;
+      ix[k++] = base + i;
+      ix[k++] = base + i + 1;
+    }
+    this.ni = k;
   }
 
   /** Radial gradient disc. */
@@ -1434,8 +1720,7 @@ export class Gfx {
     }
     const nx = (-dy / l) * (w / 2);
     const ny = (dx / l) * (w / 2);
-    this.tri(a.x + nx, a.y + ny, b.x + nx, b.y + ny, b.x - nx, b.y - ny, c);
-    this.tri(a.x + nx, a.y + ny, b.x - nx, b.y - ny, a.x - nx, a.y - ny, c);
+    this.colorQuad(a.x + nx, a.y + ny, b.x + nx, b.y + ny, b.x - nx, b.y - ny, a.x - nx, a.y - ny, c, c, c, c);
     if (round && w > 3) {
       this.circle(a.x, a.y, w / 2, c);
       this.circle(b.x, b.y, w / 2, c);
@@ -1483,8 +1768,7 @@ export class Gfx {
       const t0 = a0 + (i / n) * TAU * f;
       const t1 = a0 + ((i + 1) / n) * TAU * f;
       const c0 = Math.cos(t0), s0 = Math.sin(t0), c1 = Math.cos(t1), s1 = Math.sin(t1);
-      this.tri(x + c0 * ri, y + s0 * ri, x + c0 * ro, y + s0 * ro, x + c1 * ro, y + s1 * ro, c);
-      this.tri(x + c0 * ri, y + s0 * ri, x + c1 * ro, y + s1 * ro, x + c1 * ri, y + s1 * ri, c);
+      this.colorQuad(x + c0 * ri, y + s0 * ri, x + c0 * ro, y + s0 * ro, x + c1 * ro, y + s1 * ro, x + c1 * ri, y + s1 * ri, c, c, c, c);
     }
   }
 
@@ -1533,7 +1817,7 @@ export class Gfx {
     const sy = (typeof o.scale === 'object' ? o.scale.y : o.scale ?? 1) * (o.flipY ? -1 : 1);
     let tint = (o.tint ?? 0xffffffff) >>> 0;
     if (o.alpha !== undefined) tint = ((Math.round(((tint >>> 24) & 255) * Math.max(0, Math.min(1, o.alpha))) << 24) | (tint & 0xffffff)) >>> 0;
-    this.room(6);
+    this.room(4, 6);
     const unit = this.unitFor(tex);
     this.save();
     this.translate(x, y);
@@ -1547,16 +1831,15 @@ export class Gfx {
     this.vert(x0, y0, u0, v0, tint);
     this.vert(x1, y0, u1, v0, tint);
     this.vert(x1, y1, u1, v1, tint);
-    this.vert(x0, y0, u0, v0, tint);
-    this.vert(x1, y1, u1, v1, tint);
     this.vert(x0, y1, u0, v1, tint);
+    this.quadIdx();
     this.texUnit = 0;
     this.restore();
   }
 
   /** Draw a whole texture into a rect through the batch; `flipV` for render-target textures (GL origin bottom-left). */
   texQuad(tex: WebGLTexture, x: number, y: number, w: number, h: number, tint: RGBA = 0xffffffff, flipV = false): void {
-    this.room(6);
+    this.room(4, 6);
     const unit = this.unitFor(tex);
     const v0 = flipV ? 1 : 0;
     const v1 = flipV ? 0 : 1;
@@ -1564,9 +1847,8 @@ export class Gfx {
     this.vert(x, y, 0, v0, tint);
     this.vert(x + w, y, 1, v0, tint);
     this.vert(x + w, y + h, 1, v1, tint);
-    this.vert(x, y, 0, v0, tint);
-    this.vert(x + w, y + h, 1, v1, tint);
     this.vert(x, y + h, 0, v1, tint);
+    this.quadIdx();
     this.texUnit = 0;
   }
 
@@ -1586,7 +1868,7 @@ export class Gfx {
     const ys = [r.y, r.y + insets.t * k, r.y + r.h - insets.b * k, r.y + r.h];
     const us = [f.u0, f.u0 + insets.l * du, f.u1 - insets.r * du, f.u1];
     const vs = [f.v0, f.v0 + insets.t * dv, f.v1 - insets.b * dv, f.v1];
-    this.room(54);
+    this.room(36, 54);
     this.texUnit = this.unitFor(f.tex);
     for (let j = 0; j < 3; j++)
       for (let i = 0; i < 3; i++) {
@@ -1594,9 +1876,8 @@ export class Gfx {
         this.vert(xs[i], ys[j], us[i], vs[j], tint);
         this.vert(xs[i + 1], ys[j], us[i + 1], vs[j], tint);
         this.vert(xs[i + 1], ys[j + 1], us[i + 1], vs[j + 1], tint);
-        this.vert(xs[i], ys[j], us[i], vs[j], tint);
-        this.vert(xs[i + 1], ys[j + 1], us[i + 1], vs[j + 1], tint);
         this.vert(xs[i], ys[j + 1], us[i], vs[j + 1], tint);
+        this.quadIdx();
       }
     this.texUnit = 0;
   }
@@ -1629,6 +1910,7 @@ export class Gfx {
         const v = t && uvs ? v0 + uvs[j * 2 + 1] * sv : w.v;
         this.vert(verts[j * 2], verts[j * 2 + 1], u, v, color);
       }
+      this.triIdx();
     }
     this.texUnit = 0;
   }
@@ -1674,8 +1956,95 @@ export class Gfx {
   // ------------------------------------------------------------ text
 
   measure(str: string, size = 20, font: FontId = 'body', tracking = 0): number {
-    const n = [...str].length;
-    return this.atlas.measure(str, font) * (size / this.atlas.baseSize) + (n > 1 ? (n - 1) * tracking * size : 0);
+    const r = this.run(str, font, this.atlas.baseSize);
+    const n = r.base.length;
+    return r.width * (size / this.atlas.baseSize) + (n > 1 ? (n - 1) * tracking * size : 0);
+  }
+
+  /** The baked run for `str` in `font` at raster tier `tier` (ENG-0177), built on a miss. */
+  private run(str: string, font: FontId, tier: number): TextRun {
+    const atlas = this.atlas;
+    const key = `${font}${readableFont() ? '~r' : ''}@${tier}|${str}`;
+    let r = this.textCache ? this.runs.get(key) : undefined;
+    if (r && r.gen === atlas.generation) return r;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const gen = atlas.generation;
+      const cl = graphemes(str);
+      const base: Glyph[] = new Array(cl.length);
+      const tiered: Glyph[] = new Array(cl.length);
+      const pens = new Float32Array(cl.length);
+      let pen = 0;
+      for (let i = 0; i < cl.length; i++) {
+        const b = atlas.glyph(cl[i], font);
+        base[i] = b;
+        tiered[i] = tier === atlas.baseSize ? b : atlas.glyph(cl[i], font, tier);
+        pens[i] = pen;
+        pen += b.adv + (i + 1 < cl.length ? atlas.kern(cl[i], cl[i + 1], font) : 0);
+      }
+      r = { gen, base, tiered, pens, width: pen };
+      // The page wrapped while rasterising this run: the early glyphs are stale, rebuild once.
+      if (atlas.generation === gen) break;
+    }
+    if (this.textCache) {
+      if (this.runs.size >= MAX_RUNS) this.runs.clear();
+      this.runs.set(key, r!);
+    }
+    return r!;
+  }
+
+  /** Lay out text once and reuse it across frames (ENG-0173): wrap, align, line height, max lines with ellipsis, rich markup. */
+  layout(str: string, o: LayoutOptions = {}): TextLayout {
+    return this.layouter.layout(str, o);
+  }
+
+  /**
+   * Draw a layout with its anchor at (x, baseline y of the first line). Glyphs come from the raster
+   * tier for the on-screen size; `reveal` limits how many are shown (typewriter).
+   */
+  drawLayout(l: TextLayout, x: number, y: number, o: DrawLayoutOpts = {}): void {
+    const color = o.color ?? 0xffc0dce8;
+    if (o.shadow !== false) {
+      const sc = o.shadow ?? (0xb0000000 >>> 0);
+      this.layoutPass(l, x + l.size * 0.06, y + l.size * 0.08, sc, sc, o.reveal, true, undefined);
+    }
+    this.layoutPass(l, x, y, color, o.color2 ?? color, o.reveal, false, o.icon);
+  }
+
+  private layoutPass(l: TextLayout, x: number, y: number, c: RGBA, c2: RGBA, reveal = Infinity, shadow: boolean, icon: DrawLayoutOpts['icon']): void {
+    const atlas = this.atlas;
+    const size = l.size;
+    const tier = atlas.tier(size * this.pixelScale());
+    const ts = size / tier;
+    const n = Math.min(l.glyphs.length, reveal);
+    for (let i = 0; i < n; i++) {
+      const lg = l.glyphs[i];
+      const by = y + lg.line * l.lineStep;
+      if (lg.icon) {
+        if (!shadow && icon) icon(this, lg.icon, x + lg.x, by, size, lg.adv);
+        continue;
+      }
+      if (!lg.ch || lg.ch === ' ') continue;
+      const g = atlas.glyph(lg.ch, lg.font, tier);
+      if (g.w <= 0) continue;
+      const top = by - atlas.ascent(lg.font, tier) * ts;
+      const col = shadow ? c : (lg.color ?? c);
+      const col2 = shadow ? c2 : (lg.color ?? c2);
+      // Faux bold: a second pass nudged right by 3% of the size.
+      for (let pass = 0; pass < (lg.bold ? 2 : 1); pass++) this.glyphQuad(g, x + lg.x + pass * size * 0.03, top, ts, col, col2);
+    }
+  }
+
+  private glyphQuad(g: Glyph, px: number, top: number, ts: number, c: RGBA, c2: RGBA): void {
+    this.room(4, 6);
+    const x0 = px + g.ox * ts;
+    const y0 = top + g.oy * ts;
+    const x1 = x0 + g.w * ts;
+    const y1 = y0 + g.h * ts;
+    this.vert(x0, y0, g.u0, g.v0, c);
+    this.vert(x1, y0, g.u1, g.v0, c);
+    this.vert(x1, y1, g.u1, g.v1, c2);
+    this.vert(x0, y1, g.u0, g.v1, c2);
+    this.quadIdx();
   }
 
   text(str: string, x: number, y: number, o: TextOpts = {}): void {
@@ -1737,28 +2106,17 @@ export class Gfx {
     const s = size / this.atlas.baseSize;
     const tier = this.atlas.tier(size * this.pixelScale());
     const ts = size / tier;
-    const w = this.measure(str, size, font, tracking);
-    let cx = align === 'center' ? x - w / 2 : align === 'right' ? x - w : x;
+    const r = this.run(str, font, tier);
+    const n = r.base.length;
+    const w = r.width * s + (n > 1 ? (n - 1) * tracking * size : 0);
+    const x0 = align === 'center' ? x - w / 2 : align === 'right' ? x - w : x;
     const top = y - this.atlas.ascent(font, tier) * ts;
     const lqa = fallbackHighlight();
-    for (const ch of str) {
-      const base = this.atlas.glyph(ch, font);
-      const g = tier === this.atlas.baseSize ? base : this.atlas.glyph(ch, font, tier);
-      if (g.w > 0) {
-        if (lqa && g.fallback) c = c2 = MAGENTA;
-        this.room(6);
-        const x0 = cx + g.ox * ts;
-        const y0 = top + g.oy * ts;
-        const x1 = x0 + g.w * ts;
-        const y1 = y0 + g.h * ts;
-        this.vert(x0, y0, g.u0, g.v0, c);
-        this.vert(x1, y0, g.u1, g.v0, c);
-        this.vert(x1, y1, g.u1, g.v1, c2);
-        this.vert(x0, y0, g.u0, g.v0, c);
-        this.vert(x1, y1, g.u1, g.v1, c2);
-        this.vert(x0, y1, g.u0, g.v1, c2);
-      }
-      cx += base.adv * s + tracking * size;
+    for (let i = 0; i < n; i++) {
+      const g = r.tiered[i];
+      if (g.w <= 0) continue;
+      if (lqa && g.fallback) c = c2 = MAGENTA;
+      this.glyphQuad(g, x0 + r.pens[i] * s + i * tracking * size, top, ts, c, c2);
     }
   }
 }

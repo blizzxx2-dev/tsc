@@ -8,6 +8,8 @@ import { SPAWN_IDS } from './cheats';
 const RANKS: Rank[] = ['XS', 'S', 'A', 'B', 'C'];
 
 export interface ConsoleHooks {
+  /** Visual debug overlays (ENG-0232/0233). */
+  visual?: { shapes: boolean; targets: boolean };
   /** Telemetry controls, when the telemetry module is present. */
   telemetry?: { setEnabled(on: boolean): void; enabled(): boolean; dump(): unknown[] };
 }
@@ -77,6 +79,39 @@ export function buildCommands(api: DebugApi, hooks: ConsoleHooks = {}): CommandR
       help: 'lose the operation (by vitals, or by timer with "time")',
       run: (a, [why]) => (a.lose(why === 'time' ? 'Time has run out.' : undefined), brief(a)),
     },
+    {
+      name: 'phase',
+      usage: '<n>',
+      min: 1,
+      help: 'jump to phase n (1-based) by clearing the phases before it',
+      run: (a, [n]) => (a.phase(intArg(n, 'phase')), brief(a)),
+    },
+    {
+      name: 'god',
+      usage: '[on|off]',
+      help: 'god mode: vitals held at maximum',
+      run: (a, [v]) => `god ${a.setGod(v === undefined ? undefined : boolArg(v)) ? 'on' : 'off'}`,
+    },
+    {
+      name: 'timescale',
+      usage: '[x]',
+      help: 'show or set the dev time scale (0.25 slow-mo, 4 fast-forward)',
+      run: (a, [x]) => `timescale ${a.timescale(x === undefined ? undefined : numArg(x, 'scale'))}x`,
+    },
+    { name: 'seed', usage: '<n>', min: 1, help: 'restart the running operation with RNG seed n', run: (a, [n]) => (a.reseed(intArg(n, 'seed')), brief(a)) },
+    {
+      name: 'tier',
+      usage: '<low|med|high>',
+      min: 1,
+      help: 'switch the shader quality tier',
+      run: (a, [q]) => `tier ${a.shaderQuality(q === 'med' ? 'medium' : q).quality}`,
+    },
+    {
+      name: 'lose-context',
+      usage: '[ms]',
+      help: 'simulate a WebGL context loss, restored after ms (default 1000)',
+      run: (a, [ms]) => (a.loseContext(ms ? numArg(ms, 'ms') : 1000) ? 'context lost' : 'WEBGL_lose_context unavailable'),
+    },
     { name: 'vitals', usage: '<0-99>', min: 1, help: 'set vitals', run: (a, [v]) => (a.setVitals(numArg(v, 'vitals')), brief(a)) },
     {
       name: 'botplay',
@@ -101,6 +136,7 @@ export function buildCommands(api: DebugApi, hooks: ConsoleHooks = {}): CommandR
     { name: 'thaw', help: 'resume normal updates', run: (a) => (a.thaw(), 'running') },
     { name: 'step', usage: '[frames]', help: 'run whole frames while frozen', run: (a, [n]) => (a.step(n ? intArg(n, 'frames') : 1), brief(a)) },
     { name: 'hash', help: 'state hash of the running operation', run: (a) => a.hash() },
+    { name: 'desync', help: 're-simulate the running operation from its inputs and report the first divergent tick/entity', run: (a) => a.desync() },
     // Rendering (ENG-0146)
     {
       name: 'post',
@@ -128,6 +164,29 @@ export function buildCommands(api: DebugApi, hooks: ConsoleHooks = {}): CommandR
       },
     },
   );
+  if (hooks.visual) {
+    const v = hooks.visual;
+    reg.add(
+      {
+        name: 'overlay',
+        usage: '[on|off]',
+        help: 'hit shapes, ids, FIELD outline, pointer samples, camera bounds, draw counts (F2)',
+        run: (_a, [x]) => {
+          v.shapes = x === undefined ? !v.shapes : boolArg(x);
+          return `overlay ${v.shapes ? 'on' : 'off'}`;
+        },
+      },
+      {
+        name: 'targets',
+        usage: '[on|off]',
+        help: 'render-target viewer: thumbnails, click to enlarge (Shift+F2)',
+        run: (_a, [x]) => {
+          v.targets = x === undefined ? !v.targets : boolArg(x);
+          return `targets ${v.targets ? 'on' : 'off'}`;
+        },
+      },
+    );
+  }
   if (hooks.telemetry) {
     const t = hooks.telemetry;
     reg.add({

@@ -45,7 +45,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ### Render state & batching
 - [ ] ENG-0018 · Demo · P1 · M · Split `Gfx` into `GlDevice` (programs, targets, state), `Batcher` (vertex building) and `Painter` (shape/text API) modules with no behaviour change — smoke screenshots differ by <0.5% of pixels
 - [ ] ENG-0019 · Demo · P1 · M · Batch key = (program, texture set, blend, layer); `flush()` fires only when the key changes — unit test with a mock `WebGL2RenderingContext` asserts ≤6 draw calls for the op1-5 HUD frame
-- [ ] ENG-0020 · Demo · P2 · M · Add a static quad index buffer so rects/glyphs/sprites cost 4 vertices instead of 6 — vertex count on the results screen drops ≥30% (`gfx.stats`)
+- [x] ENG-0020 · Demo · P2 · M · Add a static quad index buffer so rects/glyphs/sprites cost 4 vertices instead of 6 — vertex count on the results screen drops ≥30% (`gfx.stats`)
 - [ ] ENG-0021 · Demo · P2 · M · Replace full-range `bufferSubData` each flush with a 3-segment orphaned ring buffer — Chrome GPU trace shows no implicit sync stalls during an operation
 - [x] ENG-0022 · Demo · P1 · S · Guard against `MAX_VERTS` overflow for single primitives larger than the buffer (split or grow) — drawing a 200k-vertex polyline renders correctly in a test
 - [x] ENG-0023 · Demo · P2 · S · Precomputed unit-circle cos/sin tables per segment count for `ellipse`/`arc`/`circleGrad` — micro-benchmark shows ≥2× faster tessellation
@@ -54,7 +54,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0026 · Demo · P2 · S · `multiply` and `screen` blend modes — plus `withBlend(mode, fn)` that restores the previous mode even if `fn` throws
 - [x] ENG-0027 · Demo · P1 · S · Scissor clip stack `pushClip(rect)`/`popClip()` — virtual coords converted to device px (unit test for letterbox + DPR) for scrolling text panels
 - [ ] ENG-0028 · Demo · P1 · M · Stencil mask API (`beginMask`/`endMask`/`clearMask`) on the world target (depth-stencil attachment) — entities inside an incision are clipped to the opening outline
-- [ ] ENG-0029 · Demo · P2 · S · GL state cache (program, VAO, bound textures per unit, blend, framebuffer) — WebGL inspector reports 0 redundant state calls in a steady-state operation frame
+- [x] ENG-0029 · Demo · P2 · S · GL state cache (program, VAO, bound textures per unit, blend, framebuffer) — WebGL inspector reports 0 redundant state calls in a steady-state operation frame
 
 ### Textures & sprite sheets
 - [x] ENG-0030 · Demo · P0 · M · `Texture` wrapper — load from `ImageBitmap` (`createImageBitmap`, premultiply option), filtering/wrap/mip settings, byte size tracked for the VRAM budget
@@ -70,10 +70,10 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0040 · Demo · P2 · M · Deformable sprite grid — N×M mesh with per-vertex offsets for heartbeat squash/stretch, grub bulges and Malison flinches
 
 ### Render layers & ordering
-- [ ] ENG-0041 · Demo · P1 · M · Explicit render layers — enum (Backdrop, Field, Decals, Entities, Particles, WorldFX, WorldUI, UI, Overlay, Debug) with per-layer command lists submitted in order regardless of call order
-- [ ] ENG-0042 · Demo · P1 · S · Stable sort of the Entities layer by `Entity.layer` then spawn order — replaces the implicit array draw order in `OperationScene.render`
-- [ ] ENG-0043 · Demo · P1 · S · Documented layer contract + test — UI and Overlay layers never receive grain, vignette, LUT or shake
-- [ ] ENG-0044 · Demo · P2 · S · WorldUI layer — callouts/popups anchored to world positions drawn after post but through the camera transform (stay attached when zoomed)
+- [x] ENG-0041 · Demo · P1 · M · Explicit render layers — enum (Backdrop, Field, Decals, Entities, Particles, WorldFX, WorldUI, UI, Overlay, Debug) with per-layer command lists submitted in order regardless of call order
+- [x] ENG-0042 · Demo · P1 · S · Stable sort of the Entities layer by `Entity.layer` then spawn order — replaces the implicit array draw order in `OperationScene.render`
+- [x] ENG-0043 · Demo · P1 · S · Documented layer contract + test — UI and Overlay layers never receive grain, vignette, LUT or shake
+- [x] ENG-0044 · Demo · P2 · S · WorldUI layer — callouts/popups anchored to world positions drawn after post but through the camera transform (stay attached when zoomed)
 
 ### Camera & close-ups
 - [x] ENG-0045 · Demo · P0 · M · `Camera2D` view matrix — position/zoom/rotation applied as a uniform in `PRIM_VS` instead of CPU vertex transforms, so zooming does not re-tessellate or rebuild batches
@@ -101,9 +101,9 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ### Scene state machine
 - [x] ENG-0062 · Demo · P0 · M · Scene lifecycle `enter/exit/pause/resume/dispose`; `go()` disposes the outgoing scene — 50 operation restarts leave GL object and listener counts unchanged (leak test)
 - [x] ENG-0063 · Demo · P0 · M · Scene stack — push/pop overlays (pause, options, confirm dialog, glossary) over a live scene that stops updating but keeps rendering underneath
-- [ ] ENG-0064 · Demo · P1 · M · Transition system — fade, iris and ink-bleed wipes rendered on the Overlay layer; `go(scene, {transition:'ink', ms:600})`; input blocked during transitions
+- [x] ENG-0064 · Demo · P1 · M · Transition system — fade, iris and ink-bleed wipes rendered on the Overlay layer; `go(scene, {transition:'ink', ms:600})`; input blocked during transitions
 - [x] ENG-0065 · Demo · P1 · M · Async scene loading — `LoadingScene` awaits the next scene's asset bundle with a progress quill; skipped when already resident, never flashes for <300 ms
-- [ ] ENG-0066 · Demo · P1 · S · Global overlay host — toasts, autosave quill, achievement popups, FPS counter and Steam-overlay pause veil render independently of the active scene
+- [x] ENG-0066 · Demo · P1 · S · Global overlay host — toasts, autosave quill, achievement popups, FPS counter and Steam-overlay pause veil render independently of the active scene
 - [ ] ENG-0067 · Demo · P1 · M · Typed scene router — routes for title, story, briefing, operation, results, options, chapterSelect, credits, demoEnd with `?scene=` dev deep links, replacing ad-hoc constructors in `flow.ts`
 - [ ] ENG-0068 · Demo · P1 · M · Service container — replace the module-level `save` singleton in `scenes/flow.ts` with injected `game.services` (save, settings, audio, platform, assets) so scenes run in tests with fakes
 - [x] ENG-0069 · Demo · P0 · M · Error boundary — exceptions in `update`/`render` are caught, logged with scene + frame context, and routed to an in-fiction "The ink has run" screen with Return to Title, instead of killing the rAF loop
@@ -159,53 +159,53 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 
 ### Render-target infrastructure
 - [x] ENG-0107 · Demo · P0 · M · `RenderTargetPool`: create/resize/release targets by key with format (RGBA8, R8, RG8, RGBA16F), optional depth-stencil, and byte accounting — replaces private `makeTarget`/`freeTarget`
-- [ ] ENG-0108 · Demo · P0 · S · Field-space UV convention — decal/mask maps cover the field bounding rect independent of camera zoom and window size (2048×1152 High, 1024×576 Low)
-- [ ] ENG-0109 · Demo · P0 · M · Batched `stampDecal(map, brush, pos, rot, scale, color, mode)` API — all stamps to one map per frame go out in a single draw; 500 stamps ≤0.5 ms
+- [x] ENG-0108 · Demo · P0 · S · Field-space UV convention — decal/mask maps cover the field bounding rect independent of camera zoom and window size (2048×1152 High, 1024×576 Low)
+- [x] ENG-0109 · Demo · P0 · M · Batched `stampDecal(map, brush, pos, rot, scale, color, mode)` API — all stamps to one map per frame go out in a single draw; 500 stamps ≤0.5 ms
 - [x] ENG-0110 · Demo · P1 · S · Brush textures in the effects atlas — soft round, splatter ×4, drag streak, scorch, stitch mark, erase
 
 ### Cut masks
 - [x] ENG-0111 · Demo · P0 · M · Cut mask map (R8) — `Incision`/`Laceration` stamp open width along their path; flesh shader renders parted tissue with inner-wall shading and depth darkening
 - [ ] ENG-0112 · Demo · P1 · M · Suture closure — completing a `StitchLine` erodes the cut mask along the thread over 0.4 s and leaves stitch-mark decals
-- [ ] ENG-0113 · Demo · P1 · S · Cut edge bleed — mask edges feed the blood decal map so fresh cuts weep along their length until sutured
+- [x] ENG-0113 · Demo · P1 · S · Cut edge bleed — mask edges feed the blood decal map so fresh cuts weep along their length until sutured
 
 ### Blood & wound decal maps
-- [ ] ENG-0114 · Demo · P0 · M · Blood decal map (RGBA: colour, wetness, age) — pools, spurts and droplets stamp persistent blood that darkens and dries over ~20 s of world time
-- [ ] ENG-0115 · Demo · P0 · S · Leech-Pipe drain erases the blood map under the pipe — visible field cleaning matches `BloodPool` removal in sim
-- [ ] ENG-0116 · Demo · P1 · S · Low-res readback (64×36) of blood coverage for tests and the debug overlay — draining a pool reduces coverage within tolerance (Playwright test)
-- [ ] ENG-0117 · Demo · P1 · M · Scorch/sear decals from Cautery Brand and burns — hexfire leaves violet-ringed scars that persist to the results snapshot
+- [x] ENG-0114 · Demo · P0 · M · Blood decal map (RGBA: colour, wetness, age) — pools, spurts and droplets stamp persistent blood that darkens and dries over ~20 s of world time
+- [x] ENG-0115 · Demo · P0 · S · Leech-Pipe drain erases the blood map under the pipe — visible field cleaning matches `BloodPool` removal in sim
+- [x] ENG-0116 · Demo · P1 · S · Low-res readback (64×36) of blood coverage for tests and the debug overlay — draining a pool reduces coverage within tolerance (Playwright test)
+- [x] ENG-0117 · Demo · P1 · M · Scorch/sear decals from Cautery Brand and burns — hexfire leaves violet-ringed scars that persist to the results snapshot
 - [ ] ENG-0118 · Demo · P1 · S · Saint's Salve film layer — glossy translucent gel decal with high specular that fades as the sim marks the wound set
 - [ ] ENG-0119 · Demo · P2 · M · 10 Hz decal update pass (ping-pong) for time-based effects: blood drying, pus spreading, corruption creep — cost ≤0.3 ms
-- [ ] ENG-0120 · Demo · P0 · M · Rebuildable decal maps — maps regenerate from a recorded stamp log (sim events) so context loss or render-scale changes restore identical fields
-- [ ] ENG-0121 · Demo · P1 · S · Decal lifecycle — mask/decal maps reset on operation restart and released on exit; VRAM counter returns to baseline
-- [ ] ENG-0122 · Demo · P2 · S · Results "field snapshot" — final world target copied to a 480×270 texture shown on the results screen and saved as the slot thumbnail
+- [x] ENG-0120 · Demo · P0 · M · Rebuildable decal maps — maps regenerate from a recorded stamp log (sim events) so context loss or render-scale changes restore identical fields
+- [x] ENG-0121 · Demo · P1 · S · Decal lifecycle — mask/decal maps reset on operation restart and released on exit; VRAM counter returns to baseline
+- [x] ENG-0122 · Demo · P2 · S · Results "field snapshot" — final world target copied to a 480×270 texture shown on the results screen and saved as the slot thumbnail
 
 ## ENG-F · GPU particle system (Demo)
 
 ### Core system
 - [ ] ENG-0123 · Demo · P0 · M · Spike — CPU-simulated instanced particles vs WebGL2 transform-feedback simulation at 20k particles on Intel UHD 620 and Steam Deck; pick one and record the decision (ADR) with measurements
-- [ ] ENG-0124 · Demo · P0 · L · Instanced particle renderer — per-instance position, velocity, life, size, rotation, colour, frame; quad expanded in the vertex shader; alpha and additive batches; one draw per blend per layer
+- [x] ENG-0124 · Demo · P0 · L · Instanced particle renderer — per-instance position, velocity, life, size, rotation, colour, frame; quad expanded in the vertex shader; alpha and additive batches; one draw per blend per layer
 - [ ] ENG-0125 · Demo · P1 · L · Transform-feedback simulation path — ping-pong buffers, gravity, drag, curl-noise turbulence (if chosen by the spike), CPU fallback when the capability probe fails
-- [ ] ENG-0126 · Demo · P0 · M · Emitter definitions as data (JSON) — rate/burst, spawn shape (point, line, arc, ellipse, path), velocity cone, gravity, drag, size/colour/alpha-over-life curves, frame sequence, blend, layer
-- [ ] ENG-0127 · Demo · P1 · S · Curve/gradient utilities — baked 64-sample LUTs uploaded as a texture; unit tests for curve sampling
-- [ ] ENG-0128 · Demo · P0 · S · Particle budget per quality tier (High 16k, Medium 8k, Low 4k) with priority classes — gameplay-readable effects never culled before ambient ones
+- [x] ENG-0126 · Demo · P0 · M · Emitter definitions as data (JSON) — rate/burst, spawn shape (point, line, arc, ellipse, path), velocity cone, gravity, drag, size/colour/alpha-over-life curves, frame sequence, blend, layer
+- [x] ENG-0127 · Demo · P1 · S · Curve/gradient utilities — baked 64-sample LUTs uploaded as a texture; unit tests for curve sampling
+- [x] ENG-0128 · Demo · P0 · S · Particle budget per quality tier (High 16k, Medium 8k, Low 4k) with priority classes — gameplay-readable effects never culled before ambient ones
 - [x] ENG-0129 · Demo · P1 · M · Collision against the field — blood droplets that land stamp the blood decal map (splat size ∝ velocity); sparks bounce once off the field plane
 - [x] ENG-0130 · Demo · P0 · S · Particles in world time slow to 0.15× during the Litany — UI particles run on real time (unit test on clock routing)
-- [ ] ENG-0131 · Demo · P1 · S · Deterministic spawn — emitter RNG seeded from operation seed + emitter id so replays and golden screenshots are reproducible
+- [x] ENG-0131 · Demo · P1 · S · Deterministic spawn — emitter RNG seeded from operation seed + emitter id so replays and golden screenshots are reproducible
 - [ ] ENG-0132 · Demo · P2 · M · Dev particle panel — live-tweak emitter parameters on a running operation, preview in isolation, copy JSON to clipboard
 
 ### Effects for Chapters 1–2
-- [ ] ENG-0133 · Demo · P0 · M · Arterial spray — pulsing jet synced to the heartbeat clock from severe lacerations, strength ∝ bleed rate, droplets stamping decals
-- [ ] ENG-0134 · Demo · P0 · S · Cut spatter — lancet strokes and barb tears emit a directional burst scaled by severity (MISS cut on healthy flesh is visibly worse)
-- [ ] ENG-0135 · Demo · P0 · M · Cautery — white-hot sparks, rising smoke wisps and ember glow while the Brand touches tissue; smoke drifts toward the light rig
-- [ ] ENG-0136 · Demo · P1 · M · Hexfire flames — violet/green flame and spark emitters, with curse motes drifting toward live Sigils
+- [x] ENG-0133 · Demo · P0 · M · Arterial spray — pulsing jet synced to the heartbeat clock from severe lacerations, strength ∝ bleed rate, droplets stamping decals
+- [x] ENG-0134 · Demo · P0 · S · Cut spatter — lancet strokes and barb tears emit a directional burst scaled by severity (MISS cut on healthy flesh is visibly worse)
+- [x] ENG-0135 · Demo · P0 · M · Cautery — white-hot sparks, rising smoke wisps and ember glow while the Brand touches tissue; smoke drifts toward the light rig
+- [x] ENG-0136 · Demo · P1 · M · Hexfire flames — violet/green flame and spark emitters, with curse motes drifting toward live Sigils
 - [x] ENG-0137 · Demo · P0 · M · Malison motes and ash — dark motes orbit Matins/Lauds, bursts on hit, shard dissolve into ash on defeat
 - [x] ENG-0138 · Demo · P1 · S · Bubo lancing splash — pus or black-bile burst coloured from the pool type
-- [ ] ENG-0139 · Demo · P1 · S · Venom mist rising from `Venom` entities — stops when neutralised
-- [ ] ENG-0140 · Demo · P1 · S · Grub extraction gore — squish burst and twitching segment particles on extraction
-- [ ] ENG-0141 · Demo · P2 · S · Tincture and Salve VFX — injection shimmer at the needle, droplets along the salve stroke
-- [ ] ENG-0142 · Demo · P1 · S · Litany dust — gold motes along the star trail, suspended "held time" motes drifting at 0.15× until the Litany ends
+- [x] ENG-0139 · Demo · P1 · S · Venom mist rising from `Venom` entities — stops when neutralised
+- [x] ENG-0140 · Demo · P1 · S · Grub extraction gore — squish burst and twitching segment particles on extraction
+- [x] ENG-0141 · Demo · P2 · S · Tincture and Salve VFX — injection shimmer at the needle, droplets along the salve stroke
+- [x] ENG-0142 · Demo · P1 · S · Litany dust — gold motes along the star trail, suspended "held time" motes drifting at 0.15× until the Litany ends
 - [ ] ENG-0143 · Demo · P2 · S · Ambient backdrop particles — candle flames, dust in light shafts, chapel incense (story scenes)
-- [ ] ENG-0144 · Demo · P2 · S · UI particles — COOL rating sparkle, rank-reveal ink splash, chain-milestone flare
+- [x] ENG-0144 · Demo · P2 · S · UI particles — COOL rating sparkle, rank-reveal ink splash, chain-milestone flare
 - [ ] ENG-0145 · Demo · P1 · S · Particle quality setting scales emission and max count — Low reduces particle GPU time ≥50% on the Malison fight (profiler capture)
 
 ## ENG-G · Post-processing (Demo)
@@ -214,7 +214,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0146 · Demo · P0 · M · Post pipeline as an ordered pass list (bloom, CA, Litany, damage, LUT, vignette, grain, dither) with per-pass enable flags and uniforms, replacing the monolithic `POST_FS` — toggleable from the debug overlay
 - [x] ENG-0147 · Demo · P1 · M · HDR scene target (RGBA16F via `EXT_color_buffer_float`) with a filmic tonemap — RGBA8 fallback path keeps visual parity within tolerance
 - [x] ENG-0148 · Demo · P1 · M · Bloom v2: 5-level downsample/upsample mip-chain bloom with soft-knee threshold (replacing 2× 5-tap quarter-res blur and the hard-coded threshold in `endWorld`) — no bloom shimmer on small highlights in a static scene
-- [ ] ENG-0149 · Demo · P1 · S · Bloom presets per scene type (operation, story, menu, Malison) as data — `PostParams.bloom` becomes a preset id + intensity override
+- [x] ENG-0149 · Demo · P1 · S · Bloom presets per scene type (operation, story, menu, Malison) as data — `PostParams.bloom` becomes a preset id + intensity override
 - [x] ENG-0150 · Demo · P1 · S · Dither at final output (blue-noise ±0.5 LSB) — gradient test capture shows no visible banding in the dark vignette
 
 ### Grading & look
@@ -223,7 +223,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0153 · Demo · P1 · S · Chapter 1–2 LUTs — per-location grades (hospice, theatre, street, chapel, night) selected by story backdrop and operation def
 - [x] ENG-0154 · Demo · P1 · S · Aspect-aware vignette — parameters derived from aspect ratio so 21:9/32:9 edges are not over-darkened and 16:10 not under-darkened
 - [x] ENG-0155 · Demo · P2 · S · Blue-noise film grain — tiled texture animated by offset replaces `hash(v_uv*900)`; grain size in virtual units so 720p and 4K match
-- [ ] ENG-0156 · Demo · P2 · S · Candle flicker on the light rig — luminance amplitude ≤3%, disabled by the reduce-flashing setting
+- [x] ENG-0156 · Demo · P2 · S · Candle flicker on the light rig — luminance amplitude ≤3%, disabled by the reduce-flashing setting
 
 ### Gameplay feedback effects
 - [x] ENG-0157 · Demo · P0 · M · Litany v2 — star-shaped ripple radiating from the gesture centroid, sepia with gold highlight retention, radial "clock-hand" blur on onset, smooth ramp driven by the `litanyTime` curve
@@ -243,18 +243,18 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ### Atlas & shader
 - [ ] ENG-0166 · Demo · P0 · M · Build-time MSDF atlas generation — msdf-atlas-gen for IM Fell English regular/italic and UnifrakturMaguntia with JSON metrics and kerning, cached by font hash
 - [ ] ENG-0167 · Demo · P0 · M · MSDF text shader (median-of-RGB, screen-px range from derivatives) integrated into the batcher — headings crisp from 12 px to 160 px and under 2.5× camera zoom
-- [ ] ENG-0168 · Demo · P1 · S · Kerning pairs applied in layout (currently per-glyph advance only) — "AV", "To", "Wa" measured narrower than unkerned
+- [x] ENG-0168 · Demo · P1 · S · Kerning pairs applied in layout (currently per-glyph advance only) — "AV", "To", "Wa" measured narrower than unkerned
 - [ ] ENG-0169 · Demo · P1 · M · Shader text effects: outline, soft drop shadow, outer glow, embossed display style — replaces drawing a second shadow copy in `Gfx.text()`
 - [ ] ENG-0170 · Demo · P1 · M · Dynamic fallback for glyphs outside the prebuilt set (player-entered text, rare punctuation) via the existing canvas rasteriser on a separate page — mixed-string render test
 - [x] ENG-0171 · Demo · P1 · S · Fix upload hitch: `GlyphAtlas.upload()` re-uploads the full 2048² canvas and regenerates mips per new glyph — switch to `texSubImage2D` of dirty rects (no frame >4 ms when new glyphs appear)
 - [ ] ENG-0172 · Demo · P2 · S · Multi-page dynamic glyph atlas — LRU eviction instead of clearing every glyph when the page fills
 
 ### Layout
-- [ ] ENG-0173 · Demo · P0 · M · Text layout engine — wrap with cached measurements, alignment, line height, max lines with ellipsis, returns glyph runs reusable across frames
-- [ ] ENG-0174 · Demo · P1 · M · Rich-text markup — `[b]`, `[i]`, `[color=blood]`, `[font=display]`, inline icons (`[icon=lancet]`, `[key=Litany]`) resolved to current input glyphs
-- [ ] ENG-0175 · Demo · P1 · S · Typewriter reveal for the story VN — per-glyph timing with punctuation pauses, skip-to-end, layout computed once
-- [ ] ENG-0176 · Demo · P1 · S · Grapheme-cluster iteration (`Intl.Segmenter`) and precomposed/combining diacritics for German, French, Polish, Spanish — render test string passes visual check
-- [ ] ENG-0177 · Demo · P2 · S · Static text cache: unchanged labels reuse baked vertex runs (no per-frame layout) — CPU text cost on the results screen drops ≥50%
+- [x] ENG-0173 · Demo · P0 · M · Text layout engine — wrap with cached measurements, alignment, line height, max lines with ellipsis, returns glyph runs reusable across frames
+- [x] ENG-0174 · Demo · P1 · M · Rich-text markup — `[b]`, `[i]`, `[color=blood]`, `[font=display]`, inline icons (`[icon=lancet]`, `[key=Litany]`) resolved to current input glyphs
+- [x] ENG-0175 · Demo · P1 · S · Typewriter reveal for the story VN — per-glyph timing with punctuation pauses, skip-to-end, layout computed once
+- [x] ENG-0176 · Demo · P1 · S · Grapheme-cluster iteration (`Intl.Segmenter`) and precomposed/combining diacritics for German, French, Polish, Spanish — render test string passes visual check
+- [x] ENG-0177 · Demo · P2 · S · Static text cache: unchanged labels reuse baked vertex runs (no per-frame layout) — CPU text cost on the results screen drops ≥50%
 - [ ] ENG-0178 · Beta · P1 · M · Script fallback fonts — subset Noto Serif MSDF pages for Cyrillic and CJK loaded per language when Fell/Fraktur lack the glyphs
 - [ ] ENG-0179 · Beta · P2 · M · CJK dynamic MSDF generation or pre-baked frequency subsets (≤4k glyphs) with on-demand extra glyphs — memory ≤32 MB per CJK language
 
@@ -266,8 +266,8 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0183 · Demo · P0 · S · 16:10 (Steam Deck 1280×800, MacBook) extends the view vertically with no letterbox bars — HUD anchors verified
 - [x] ENG-0184 · Demo · P0 · M · Anchor-based layout helpers (`anchor('top-left', offset)`, safe-area insets) replacing absolute coordinates in HUD/menus — layout verified at 16:9, 16:10, 21:9, 32:9, 4:3
 - [x] ENG-0185 · Demo · P0 · S · Pointer mapping correct under every aspect mode, letterbox and render scale — unit tests with synthetic bounding rects replace the plain `getBoundingClientRect` ratio in `Input.move`
-- [ ] ENG-0186 · Demo · P1 · S · `ResizeObserver` with `devicePixelContentBoxSize` for exact backbuffer sizing — re-evaluate DPR when the window moves between monitors of different scale
-- [ ] ENG-0187 · Demo · P1 · S · Minimum supported window 1024×576 — below that the UI scales down uniformly and remains usable (test at 800×450)
+- [x] ENG-0186 · Demo · P1 · S · `ResizeObserver` with `devicePixelContentBoxSize` for exact backbuffer sizing — re-evaluate DPR when the window moves between monitors of different scale
+- [x] ENG-0187 · Demo · P1 · S · Minimum supported window 1024×576 — below that the UI scales down uniformly and remains usable (test at 800×450)
 - [x] ENG-0188 · Demo · P1 · S · UI scale setting — 80–130% applied to HUD and menu panels within the safe area for large monitors and Steam Deck legibility
 - [ ] ENG-0189 · Demo · P1 · M · Multi-resolution screenshot regression — 1280×720, 1920×1080, 2560×1440, 3840×2160, 2560×1080, 3440×1440, 5120×1440, 1280×800 goldens in CI (SwiftShader)
 
@@ -278,7 +278,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0191 · Demo · P0 · M · GPU tier classification (Low/Medium/High) from caps plus a 2 s first-launch micro-benchmark of the flesh pass — stored in settings and user-overridable
 - [x] ENG-0192 · Demo · P1 · S · Driver quirks table — renderer regex → forced tier/workarounds shipped as JSON so fixes need no code change
 - [x] ENG-0193 · Demo · P0 · M · Fallback matrix implemented and tested — no float RT → RGBA8 bloom; no MSAA → FXAA; `MAX_TEXTURE_SIZE` 4096 → split atlas pages; no timer query → CPU-only profiler; mediump-only FS → simplified flesh variant
-- [ ] ENG-0194 · Demo · P1 · S · Software-rendering detection — SwiftShader/llvmpipe renderer strings force Low tier and show a one-time "hardware acceleration is off" notice with help link
+- [x] ENG-0194 · Demo · P1 · S · Software-rendering detection — SwiftShader/llvmpipe renderer strings force Low tier and show a one-time "hardware acceleration is off" notice with help link
 - [ ] ENG-0195 · Demo · P1 · S · Request the discrete GPU on hybrid laptops (`powerPreference: 'high-performance'` + desktop wrapper switch) — verified on an Optimus laptop via renderer string
 - [ ] ENG-0196 · Demo · P1 · M · ANGLE backend test matrix for the desktop build (D3D11 on Windows, Metal on macOS, GL/Vulkan on Linux/Deck) — documented defaults and a `--gl-backend` override for support
 - [ ] ENG-0197 · Demo · P1 · S · Desktop-build fatal screen when WebGL2 fails — GPU/driver info, "update your graphics driver" guidance, log folder button, safe-mode relaunch button
@@ -288,7 +288,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0199 · Demo · P0 · S · `webglcontextlost` — `preventDefault()`, pause sim and audio, show a "Restoring the lamps…" overlay drawn without GL (DOM)
 - [x] ENG-0200 · Demo · P0 · M · `webglcontextrestored`: recreate programs, VAOs, buffers, textures (from retained `ImageBitmap`s/URLs), glyph/MSDF atlases, render targets and decal maps from the stamp log, then resume — Playwright test with `WEBGL_lose_context` mid-operation continues correctly
 - [x] ENG-0201 · Demo · P1 · S · Repeated context loss — 3 losses within 60 s drop to Low tier and log a GPU-instability event for crash reporting
-- [ ] ENG-0202 · Demo · P1 · M · Parallel shader compilation via `KHR_parallel_shader_compile` during the boot screen — readable compile errors with variant defines and source line numbers
+- [x] ENG-0202 · Demo · P1 · M · Parallel shader compilation via `KHR_parallel_shader_compile` during the boot screen — readable compile errors with variant defines and source line numbers
 - [x] ENG-0203 · Demo · P1 · S · Shader pre-warm — every program/variant drawn once off-screen during loading so first use in an operation causes no hitch (no frame >25 ms on first Malison appearance)
 
 ## ENG-K · Asset pipeline & preloading (Demo)
@@ -324,24 +324,24 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 
 ### CPU & memory
 - [x] ENG-0225 · Demo · P0 · M · Remove per-frame allocations in hot paths: `entities.filter` in `Operation.update`, `visibleEntities().sort` per pointer event, `{...pos}` copies in `Input`, `tf.slice()` in `save()`, point arrays in `quadCurve`/`dashed` — steady-state allocation <50 KB/s in a Chrome allocation profile
-- [ ] ENG-0226 · Demo · P1 · S · Scratch-vector pool — in-place math variants for draw code; zero `Vec` allocations in `Gfx` shape calls (allocation profile)
+- [x] ENG-0226 · Demo · P1 · S · Scratch-vector pool — in-place math variants for draw code; zero `Vec` allocations in `Gfx` shape calls (allocation profile)
 - [x] ENG-0227 · Demo · P0 · S · Memory budgets — VRAM ≤384 MB (Low) / ≤768 MB (High), JS heap ≤300 MB, tracked live by the resource registry; exceeding budget logs a warning with the top 10 consumers
 - [ ] ENG-0228 · Demo · P1 · M · Soak test — 2-hour automated loop through all Ch1–2 operations with JS heap growth <5% and GL object count stable
-- [ ] ENG-0229 · Demo · P1 · S · Idle throttling — menus and paused states drop to 30 fps when nothing animates; resumes instantly on input (laptop/Deck battery)
+- [x] ENG-0229 · Demo · P1 · S · Idle throttling — menus and paused states drop to 30 fps when nothing animates; resumes instantly on input (laptop/Deck battery)
 - [ ] ENG-0230 · Demo · P2 · S · Web Worker evaluation — move save serialisation and replay compression off the main thread only if the measured saving is ≥1 ms per operation
 
 ## ENG-M · Developer tooling & debug overlays (Demo)
 
 - [ ] ENG-0231 · Demo · P1 · M · Shader hot reload — saving a `.glsl` file recompiles affected programs at runtime; a failed compile keeps the previous program and shows the error on an overlay
-- [ ] ENG-0232 · Demo · P1 · M · Debug overlays (dev builds) — entity hit shapes and ids, `FIELD`/opening outline, pointer path samples, camera bounds, layer draw counts
-- [ ] ENG-0233 · Demo · P1 · S · Render-target viewer — thumbnails of scene, bloom mips, cut mask, blood/corruption decal maps, LUT, with click-to-enlarge
-- [ ] ENG-0234 · Demo · P1 · M · Dev console (backtick) — `op <id>`, `phase <n>`, `vitals <n>`, `litany`, `win`, `lose`, `timescale <x>`, `seed <n>`, `god`, `tier <low|med|high>`, `lose-context`
+- [x] ENG-0232 · Demo · P1 · M · Debug overlays (dev builds) — entity hit shapes and ids, `FIELD`/opening outline, pointer path samples, camera bounds, layer draw counts
+- [x] ENG-0233 · Demo · P1 · S · Render-target viewer — thumbnails of scene, bloom mips, cut mask, blood/corruption decal maps, LUT, with click-to-enlarge
+- [x] ENG-0234 · Demo · P1 · M · Dev console (backtick) — `op <id>`, `phase <n>`, `vitals <n>`, `litany`, `win`, `lose`, `timescale <x>`, `seed <n>`, `god`, `tier <low|med|high>`, `lose-context`
 - [ ] ENG-0235 · Demo · P2 · M · Tweakables panel — shader/post/particle uniforms editable live, save-to-JSON writes back into content/preset files in dev
-- [ ] ENG-0236 · Demo · P1 · S · Time controls in dev — pause, single-step one fixed tick, 0.25× slow-mo, 4× fast-forward
+- [x] ENG-0236 · Demo · P1 · S · Time controls in dev — pause, single-step one fixed tick, 0.25× slow-mo, 4× fast-forward
 - [x] ENG-0237 · Demo · P0 · S · Dev-only code behind `import.meta.env.DEV` and stripped from release bundles — CI greps the release bundle for dev console strings and `window.__game`
 - [ ] ENG-0238 · Demo · P0 · M · Visual regression harness — Playwright + SwiftShader renders fixed-seed scenes (title, story, each Ch1–2 operation at set ticks) and pixel-diffs against goldens with per-test tolerance; runs on every PR
 - [x] ENG-0239 · Demo · P1 · S · Screenshot capture (F12) of the backbuffer (`preserveDrawingBuffer`-free via readPixels after the final pass) saved as PNG — hook reused by Steam screenshots
-- [ ] ENG-0240 · Demo · P2 · S · Build stamp — version, git sha, tier and renderer shown in dev/QA builds and in the release pause menu
+- [x] ENG-0240 · Demo · P2 · S · Build stamp — version, git sha, tier and renderer shown in dev/QA builds and in the release pause menu
 
 ## ENG-N · Entity model evolution & sim/render separation (Demo)
 
@@ -360,11 +360,11 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ## ENG-O · Determinism & replays (Demo → Alpha)
 
 - [ ] ENG-0252 · Demo · P1 · S · Determinism lint rule — bans `Math.random`, `Date.now`, `performance.now` and DOM access inside `src/surgery` and `src/content`
-- [ ] ENG-0253 · Demo · P1 · M · Input recording — per-tick pointer/tool/key events delta+varint encoded; a 5-minute operation replay file ≤50 KB
-- [ ] ENG-0254 · Demo · P1 · M · State hashing every 60 ticks — replaying a recording reproduces identical hashes, and the dev desync detector reports the first divergent tick and entity
+- [x] ENG-0253 · Demo · P1 · M · Input recording — per-tick pointer/tool/key events delta+varint encoded; a 5-minute operation replay file ≤50 KB
+- [x] ENG-0254 · Demo · P1 · M · State hashing every 60 ticks — replaying a recording reproduces identical hashes, and the dev desync detector reports the first divergent tick and entity
 - [x] ENG-0255 · Demo · P1 · M · Golden-run regression suite — one recorded run per Ch1–2 operation re-simulated headlessly in CI; final score, rank, vitals and hash must match exactly
-- [ ] ENG-0256 · Demo · P2 · S · Replay in bug reports — last operation's replay attached automatically to crash reports and in-game bug reports
-- [ ] ENG-0257 · Alpha · P1 · S · Replay file header with format version, build id and content hash — incompatible replays refuse to load with a clear message
+- [x] ENG-0256 · Demo · P2 · S · Replay in bug reports — last operation's replay attached automatically to crash reports and in-game bug reports
+- [x] ENG-0257 · Alpha · P1 · S · Replay file header with format version, build id and content hash — incompatible replays refuse to load with a clear message
 - [ ] ENG-0258 · Alpha · P2 · M · Replay player scene — play/pause, 0.25×–4× speed, scrub via keyframe snapshots every 5 s, HUD toggle
 - [ ] ENG-0259 · Alpha · P1 · M · Cross-platform determinism test — recordings made on Windows re-simulate with identical hashes on macOS and Linux builds (same runtime version)
 - [ ] ENG-0260 · Alpha · P2 · S · Golden runs for Chapters 3–5 — suite extended to every new operation and challenge-mode variant as content lands

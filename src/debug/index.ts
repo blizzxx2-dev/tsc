@@ -6,6 +6,7 @@
 import { DebugApi, type DebugGame } from './api';
 import { buildCommands, type ConsoleHooks } from './console-commands';
 import { DebugOverlay } from './overlay';
+import { VisualDebug } from './visual';
 
 export interface InstalledDebug {
   api: DebugApi;
@@ -15,7 +16,12 @@ export interface InstalledDebug {
 
 export function installDebug(game: DebugGame, hooks: ConsoleHooks = {}): InstalledDebug {
   const api = new DebugApi(game);
-  const reg = buildCommands(api, hooks);
+  // Hit shapes / layer counts (F2) and the render-target viewer (Shift+F2), ENG-0232/0233.
+  const visual = new VisualDebug(game);
+  window.addEventListener('keydown', (e) => {
+    if (visual.onKey(e)) e.preventDefault();
+  });
+  const reg = buildCommands(api, { ...hooks, visual });
   const installed: InstalledDebug = { api, run: (l) => reg.run(l), history: () => [...reg.history] };
   // The API object itself carries the console so automation can drive both.
   Object.assign(api, { run: installed.run, history: installed.history });

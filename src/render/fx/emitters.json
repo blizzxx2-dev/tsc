@@ -1,0 +1,1392 @@
+{
+  "blood": {
+    "priority": "gameplay",
+    "blend": "alpha",
+    "layer": "Particles",
+    "shape": {
+      "kind": "point"
+    },
+    "burst": 10,
+    "speed": 180,
+    "speedJitter": [
+      0.35,
+      1.25
+    ],
+    "cone": 0.9,
+    "life": [
+      0.33,
+      0.77
+    ],
+    "size": [
+      1.9,
+      4.8
+    ],
+    "drag": 5,
+    "particle": "disc",
+    "color": [
+      [
+        0,
+        "#6a0208",
+        0.95
+      ],
+      [
+        1,
+        "#5a0206",
+        0.95
+      ]
+    ],
+    "sizeOverLife": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0.6
+      ]
+    ],
+    "alphaOverLife": 1,
+    "fluid": "blood"
+  },
+  "pus": {
+    "priority": "gameplay",
+    "blend": "alpha",
+    "layer": "Particles",
+    "shape": {
+      "kind": "point"
+    },
+    "burst": 10,
+    "speed": 120,
+    "speedJitter": [
+      0.35,
+      1.25
+    ],
+    "cone": 1.0,
+    "life": [
+      0.3,
+      0.7
+    ],
+    "size": [
+      2.1,
+      5.25
+    ],
+    "drag": 5,
+    "particle": "disc",
+    "color": [
+      [
+        0,
+        "#b8a848",
+        0.9
+      ],
+      [
+        1,
+        "#a89838",
+        0.9
+      ]
+    ],
+    "sizeOverLife": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0.6
+      ]
+    ],
+    "alphaOverLife": 1,
+    "fluid": "pus"
+  },
+  "spark": {
+    "priority": "feedback",
+    "blend": "add",
+    "layer": "Particles",
+    "shape": {
+      "kind": "point"
+    },
+    "burst": 6,
+    "speed": 260,
+    "speedJitter": [
+      0.35,
+      1.25
+    ],
+    "cone": 1.4,
+    "life": [
+      0.21,
+      0.49
+    ],
+    "size": [
+      1,
+      2.4
+    ],
+    "drag": 2.5,
+    "particle": "streak",
+    "stretch": 0.03,
+    "color": [
+      [
+        0,
+        "#fff0c0",
+        1
+      ],
+      [
+        0.4,
+        "#ffc070",
+        1
+      ],
+      [
+        1,
+        "#ff8030",
+        1
+      ]
+    ],
+    "sizeOverLife": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0.7
+      ]
+    ],
+    "alphaOverLife": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0
+      ]
+    ]
+  },
+  "smoke": {
+    "priority": "ambient",
+    "blend": "alpha",
+    "layer": "Particles",
+    "shape": {
+      "kind": "point"
+    },
+    "burst": 4,
+    "speed": 25,
+    "speedJitter": [
+      0.35,
+      1.25
+    ],
+    "cone": 3.14,
+    "life": [
+      0.96,
+      2.24
+    ],
+    "size": [
+      6,
+      15
+    ],
+    "drag": 1,
+    "gravity": -18,
+    "particle": "smoke",
+    "color": "#9a9088",
+    "sizeOverLife": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        2
+      ]
+    ],
+    "alphaOverLife": [
+      [
+        0,
+        0.18
+      ],
+      [
+        1,
+        0
+      ]
+    ]
+  },
+  "mote": {
+    "priority": "feedback",
+    "blend": "add",
+    "layer": "Particles",
+    "shape": {
+      "kind": "point"
+    },
+    "burst": 3,
+    "speed": 30,
+    "speedJitter": [
+      0.35,
+      1.25
+    ],
+    "cone": 3.14,
+    "life": [
+      1.32,
+      3.08
+    ],
+    "size": [
+      4,
+      9.9
+    ],
+    "drag": 1,
+    "gravity": -10,
+    "wobble": 20,
+    "particle": "glow",
+    "color": "#c080ff",
+    "sizeOverLife": 1,
+    "alphaOverLife": [
+      [
+        0,
+        0
+      ],
+      [
+        0.25,
+        0.5
+      ],
+      [
+        0.5,
+        0.7
+      ],
+      [
+        0.75,
+        0.5
+      ],
+      [
+        1,
+        0
+      ]
+    ]
+  },
+  "gold": {
+    "priority": "feedback",
+    "blend": "add",
+    "layer": "Particles",
+    "shape": {
+      "kind": "point"
+    },
+    "burst": 8,
+    "speed": 90,
+    "speedJitter": [
+      0.35,
+      1.25
+    ],
+    "cone": 3.14,
+    "life": [
+      0.54,
+      1.26
+    ],
+    "size": [
+      3.6,
+      9
+    ],
+    "drag": 1,
+    "particle": "glow",
+    "color": "#ffe090",
+    "sizeOverLife": 1,
+    "alphaOverLife": [
+      [
+        0,
+        0.9
+      ],
+      [
+        1,
+        0
+      ]
+    ]
+  },
+  "dust": {
+    "priority": "ambient",
+    "blend": "add",
+    "layer": "Particles",
+    "shape": {
+      "kind": "point"
+    },
+    "burst": 1,
+    "speed": 20,
+    "speedJitter": [
+      0.35,
+      1.25
+    ],
+    "cone": 3.14,
+    "life": [
+      1.8,
+      4.2
+    ],
+    "size": [
+      2.7,
+      6.75
+    ],
+    "drag": 1,
+    "particle": "glow",
+    "color": "#fff0c0",
+    "sizeOverLife": 1,
+    "alphaOverLife": [
+      [
+        0,
+        0
+      ],
+      [
+        0.25,
+        0.25
+      ],
+      [
+        0.5,
+        0.35
+      ],
+      [
+        0.75,
+        0.25
+      ],
+      [
+        1,
+        0
+      ]
+    ]
+  },
+  "arterial": {
+    "layer": "Particles",
+    "shape": {
+      "kind": "point"
+    },
+    "speedJitter": [
+      0.55,
+      1.25
+    ],
+    "cone": 0.18,
+    "alphaOverLife": 1,
+    "sizeOverLife": [
+      [
+        0,
+        1.2
+      ],
+      [
+        1,
+        0.7
+      ]
+    ],
+    "priority": "gameplay",
+    "blend": "alpha",
+    "burst": 14,
+    "speed": 260,
+    "life": [
+      0.35,
+      0.7
+    ],
+    "size": [
+      1.6,
+      3.8
+    ],
+    "drag": 3.2,
+    "gravity": 160,
+    "particle": "disc",
+    "color": [
+      [
+        0,
+        "#8a0610",
+        0.97
+      ],
+      [
+        1,
+        "#5a0206",
+        0.95
+      ]
+    ],
+    "fluid": "blood"
+  },
+  "arterialMist": {
+    "layer": "Particles",
+    "shape": {
+      "kind": "point"
+    },
+    "speedJitter": [
+      0.6,
+      1.2
+    ],
+    "cone": 0.35,
+    "alphaOverLife": [
+      [
+        0,
+        0.35
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "sizeOverLife": [
+      [
+        0,
+        0.6
+      ],
+      [
+        1,
+        1.6
+      ]
+    ],
+    "priority": "feedback",
+    "blend": "alpha",
+    "burst": 6,
+    "speed": 150,
+    "life": [
+      0.25,
+      0.5
+    ],
+    "size": [
+      3,
+      6
+    ],
+    "drag": 4,
+    "particle": "glow",
+    "color": "#7a0410"
+  },
+  "spatter": {
+    "layer": "Particles",
+    "shape": {
+      "kind": "point"
+    },
+    "speedJitter": [
+      0.4,
+      1.3
+    ],
+    "cone": 0.5,
+    "alphaOverLife": 1,
+    "sizeOverLife": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0.55
+      ]
+    ],
+    "priority": "gameplay",
+    "blend": "alpha",
+    "burst": 6,
+    "speed": 210,
+    "life": [
+      0.18,
+      0.45
+    ],
+    "size": [
+      1.2,
+      3.2
+    ],
+    "drag": 6,
+    "particle": "disc",
+    "color": [
+      [
+        0,
+        "#9a0812",
+        0.95
+      ],
+      [
+        1,
+        "#5a0206",
+        0.9
+      ]
+    ],
+    "fluid": "blood"
+  },
+  "searSpark": {
+    "layer": "Particles",
+    "shape": {
+      "kind": "point"
+    },
+    "speedJitter": [
+      0.4,
+      1.3
+    ],
+    "cone": 1.2,
+    "alphaOverLife": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "sizeOverLife": 1,
+    "priority": "feedback",
+    "blend": "add",
+    "burst": 3,
+    "speed": 240,
+    "dir": -1.5708,
+    "life": [
+      0.15,
+      0.4
+    ],
+    "size": [
+      0.8,
+      1.8
+    ],
+    "drag": 2.2,
+    "gravity": 320,
+    "particle": "streak",
+    "stretch": 0.025,
+    "color": [
+      [
+        0,
+        "#ffffff",
+        1
+      ],
+      [
+        0.3,
+        "#fff2c8",
+        1
+      ],
+      [
+        1,
+        "#ff9040",
+        1
+      ]
+    ],
+    "rate": 50
+  },
+  "searSmoke": {
+    "layer": "Particles",
+    "shape": {
+      "kind": "point"
+    },
+    "speedJitter": [
+      0.6,
+      1.2
+    ],
+    "cone": 0.35,
+    "alphaOverLife": [
+      [
+        0,
+        0
+      ],
+      [
+        0.15,
+        0.32
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "sizeOverLife": [
+      [
+        0,
+        0.8
+      ],
+      [
+        1,
+        2.6
+      ]
+    ],
+    "priority": "ambient",
+    "blend": "alpha",
+    "burst": 1,
+    "speed": 36,
+    "dir": -1.5708,
+    "life": [
+      1.2,
+      2.2
+    ],
+    "size": [
+      5,
+      9
+    ],
+    "drag": 0.6,
+    "gravity": -14,
+    "wobble": 12,
+    "particle": "smoke",
+    "color": [
+      [
+        0,
+        "#b8aca0",
+        1
+      ],
+      [
+        1,
+        "#8a8078",
+        1
+      ]
+    ],
+    "rate": 14
+  },
+  "searEmber": {
+    "layer": "Particles",
+    "shape": {
+      "kind": "point"
+    },
+    "speedJitter": [
+      0.6,
+      1.2
+    ],
+    "cone": 3.14,
+    "alphaOverLife": [
+      [
+        0,
+        0.7
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "sizeOverLife": 1,
+    "priority": "feedback",
+    "blend": "add",
+    "burst": 1,
+    "speed": 10,
+    "life": [
+      0.12,
+      0.22
+    ],
+    "size": [
+      10,
+      16
+    ],
+    "drag": 1,
+    "particle": "glow",
+    "color": [
+      [
+        0,
+        "#fff4d8",
+        1
+      ],
+      [
+        0.5,
+        "#ffb050",
+        1
+      ],
+      [
+        1,
+        "#ff5010",
+        1
+      ]
+    ],
+    "rate": 30
+  },
+  "hexFlame": {
+    "layer": "Particles",
+    "shape": {
+      "kind": "ellipse",
+      "rx": 14,
+      "ry": 6
+    },
+    "speedJitter": [
+      0.6,
+      1.2
+    ],
+    "cone": 0.3,
+    "alphaOverLife": [
+      [
+        0,
+        0
+      ],
+      [
+        0.15,
+        0.8
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "sizeOverLife": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0.3
+      ]
+    ],
+    "priority": "feedback",
+    "blend": "add",
+    "burst": 1,
+    "rate": 26,
+    "speed": 46,
+    "dir": -1.5708,
+    "life": [
+      0.4,
+      0.8
+    ],
+    "size": [
+      5,
+      10
+    ],
+    "drag": 1.2,
+    "gravity": -60,
+    "wobble": 30,
+    "particle": "glow",
+    "color": [
+      [
+        0,
+        "#e0c0ff",
+        1
+      ],
+      [
+        0.35,
+        "#9040e0",
+        1
+      ],
+      [
+        0.75,
+        "#30c070",
+        1
+      ],
+      [
+        1,
+        "#104020",
+        1
+      ]
+    ]
+  },
+  "hexSpark": {
+    "layer": "Particles",
+    "shape": {
+      "kind": "ellipse",
+      "rx": 12,
+      "ry": 6
+    },
+    "speedJitter": [
+      0.6,
+      1.2
+    ],
+    "cone": 0.7,
+    "alphaOverLife": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "sizeOverLife": 1,
+    "priority": "feedback",
+    "blend": "add",
+    "burst": 1,
+    "rate": 6,
+    "speed": 90,
+    "dir": -1.5708,
+    "life": [
+      0.3,
+      0.6
+    ],
+    "size": [
+      0.8,
+      1.6
+    ],
+    "drag": 1.5,
+    "gravity": -40,
+    "particle": "streak",
+    "stretch": 0.02,
+    "color": [
+      [
+        0,
+        "#d0ffe0",
+        1
+      ],
+      [
+        1,
+        "#40e080",
+        1
+      ]
+    ]
+  },
+  "curseMote": {
+    "layer": "Particles",
+    "shape": {
+      "kind": "point"
+    },
+    "speedJitter": [
+      0.7,
+      1.1
+    ],
+    "cone": 0.25,
+    "alphaOverLife": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        0.75
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "sizeOverLife": 1,
+    "priority": "feedback",
+    "blend": "add",
+    "burst": 1,
+    "speed": 55,
+    "life": [
+      1.2,
+      2.0
+    ],
+    "size": [
+      3,
+      6
+    ],
+    "drag": 0.3,
+    "wobble": 14,
+    "particle": "glow",
+    "color": "#b070ff",
+    "rate": 3
+  },
+  "venomMist": {
+    "layer": "Particles",
+    "shape": {
+      "kind": "ellipse",
+      "rx": 14,
+      "ry": 8
+    },
+    "speedJitter": [
+      0.6,
+      1.2
+    ],
+    "cone": 0.6,
+    "alphaOverLife": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        0.3
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "sizeOverLife": [
+      [
+        0,
+        0.7
+      ],
+      [
+        1,
+        2.2
+      ]
+    ],
+    "priority": "ambient",
+    "blend": "alpha",
+    "burst": 1,
+    "rate": 10,
+    "speed": 18,
+    "dir": -1.5708,
+    "life": [
+      1.0,
+      1.8
+    ],
+    "size": [
+      6,
+      11
+    ],
+    "drag": 0.8,
+    "gravity": -10,
+    "wobble": 10,
+    "particle": "smoke",
+    "color": [
+      [
+        0,
+        "#50a040",
+        1
+      ],
+      [
+        1,
+        "#1a3010",
+        1
+      ]
+    ]
+  },
+  "grubSquish": {
+    "layer": "Particles",
+    "shape": {
+      "kind": "point"
+    },
+    "speedJitter": [
+      0.3,
+      1.3
+    ],
+    "cone": 3.14,
+    "alphaOverLife": 1,
+    "sizeOverLife": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0.6
+      ]
+    ],
+    "priority": "gameplay",
+    "blend": "alpha",
+    "burst": 16,
+    "speed": 150,
+    "life": [
+      0.25,
+      0.6
+    ],
+    "size": [
+      1.6,
+      4
+    ],
+    "drag": 5,
+    "particle": "disc",
+    "color": [
+      [
+        0,
+        "#c8c070",
+        0.95
+      ],
+      [
+        1,
+        "#7a6a30",
+        0.9
+      ]
+    ],
+    "fluid": "pus"
+  },
+  "grubSegment": {
+    "layer": "Particles",
+    "shape": {
+      "kind": "point"
+    },
+    "speedJitter": [
+      0.5,
+      1.2
+    ],
+    "cone": 3.14,
+    "alphaOverLife": [
+      [
+        0,
+        1
+      ],
+      [
+        0.7,
+        1
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "sizeOverLife": 1,
+    "priority": "feedback",
+    "blend": "alpha",
+    "burst": 5,
+    "speed": 90,
+    "life": [
+      0.6,
+      1.1
+    ],
+    "size": [
+      3,
+      5
+    ],
+    "drag": 3,
+    "wobble": 90,
+    "spin": 14,
+    "particle": "shard",
+    "color": [
+      [
+        0,
+        "#e8d8a0",
+        1
+      ],
+      [
+        1,
+        "#8a7a50",
+        1
+      ]
+    ]
+  },
+  "tinctureShimmer": {
+    "layer": "Particles",
+    "shape": {
+      "kind": "arc",
+      "r": 8,
+      "a0": 0,
+      "a1": 6.2832
+    },
+    "speedJitter": [
+      0.6,
+      1.2
+    ],
+    "cone": 3.14,
+    "alphaOverLife": [
+      [
+        0,
+        0.8
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "sizeOverLife": 1,
+    "priority": "feedback",
+    "blend": "add",
+    "burst": 8,
+    "speed": 30,
+    "life": [
+      0.3,
+      0.6
+    ],
+    "size": [
+      3,
+      6
+    ],
+    "drag": 2,
+    "gravity": -30,
+    "particle": "glow",
+    "color": [
+      [
+        0,
+        "#e0fff0",
+        1
+      ],
+      [
+        1,
+        "#60c0a0",
+        1
+      ]
+    ]
+  },
+  "salveDrop": {
+    "layer": "Particles",
+    "shape": {
+      "kind": "point"
+    },
+    "speedJitter": [
+      0.6,
+      1.2
+    ],
+    "cone": 3.14,
+    "alphaOverLife": 1,
+    "sizeOverLife": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0.7
+      ]
+    ],
+    "priority": "feedback",
+    "blend": "alpha",
+    "burst": 1,
+    "speed": 30,
+    "life": [
+      0.35,
+      0.7
+    ],
+    "size": [
+      1.4,
+      2.6
+    ],
+    "drag": 3,
+    "gravity": 60,
+    "particle": "disc",
+    "color": [
+      [
+        0,
+        "#f0e0b0",
+        0.85
+      ],
+      [
+        1,
+        "#c8b080",
+        0.6
+      ]
+    ],
+    "rate": 24
+  },
+  "litanyGold": {
+    "layer": "Particles",
+    "shape": {
+      "kind": "point"
+    },
+    "speedJitter": [
+      0.6,
+      1.2
+    ],
+    "cone": 3.14,
+    "alphaOverLife": [
+      [
+        0,
+        0.9
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "sizeOverLife": 1,
+    "priority": "feedback",
+    "blend": "add",
+    "burst": 2,
+    "speed": 24,
+    "life": [
+      0.6,
+      1.2
+    ],
+    "size": [
+      2.5,
+      5
+    ],
+    "drag": 1.2,
+    "gravity": -8,
+    "particle": "glow",
+    "color": [
+      [
+        0,
+        "#fff4c0",
+        1
+      ],
+      [
+        1,
+        "#e0b050",
+        1
+      ]
+    ]
+  },
+  "heldMote": {
+    "layer": "Particles",
+    "shape": {
+      "kind": "ellipse",
+      "rx": 430,
+      "ry": 250
+    },
+    "speedJitter": [
+      0.6,
+      1.2
+    ],
+    "cone": 3.14,
+    "alphaOverLife": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        0.4
+      ],
+      [
+        0.8,
+        0.4
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "sizeOverLife": 1,
+    "priority": "ambient",
+    "blend": "add",
+    "burst": 1,
+    "rate": 30,
+    "speed": 14,
+    "life": [
+      3,
+      6
+    ],
+    "size": [
+      1.8,
+      4
+    ],
+    "drag": 0.2,
+    "wobble": 6,
+    "particle": "glow",
+    "color": "#ffe8b0"
+  },
+  "uiSparkle": {
+    "layer": "UI",
+    "shape": {
+      "kind": "point"
+    },
+    "speedJitter": [
+      0.6,
+      1.2
+    ],
+    "cone": 3.14,
+    "alphaOverLife": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "sizeOverLife": [
+      [
+        0,
+        1.4
+      ],
+      [
+        1,
+        0.4
+      ]
+    ],
+    "priority": "feedback",
+    "blend": "add",
+    "burst": 10,
+    "speed": 90,
+    "life": [
+      0.35,
+      0.7
+    ],
+    "size": [
+      2,
+      4.5
+    ],
+    "drag": 3,
+    "particle": "shard",
+    "spin": 6,
+    "color": [
+      [
+        0,
+        "#ffffff",
+        1
+      ],
+      [
+        0.4,
+        "#fff0b0",
+        1
+      ],
+      [
+        1,
+        "#e0b050",
+        1
+      ]
+    ]
+  },
+  "uiFlare": {
+    "layer": "UI",
+    "shape": {
+      "kind": "line",
+      "dx": 220,
+      "dy": 0
+    },
+    "speedJitter": [
+      0.6,
+      1.2
+    ],
+    "cone": 0.6,
+    "alphaOverLife": [
+      [
+        0,
+        0
+      ],
+      [
+        0.15,
+        0.8
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "sizeOverLife": 1,
+    "priority": "feedback",
+    "blend": "add",
+    "burst": 18,
+    "speed": 40,
+    "dir": -1.5708,
+    "life": [
+      0.5,
+      1.0
+    ],
+    "size": [
+      5,
+      10
+    ],
+    "drag": 1.5,
+    "gravity": -20,
+    "particle": "glow",
+    "color": [
+      [
+        0,
+        "#fff4d0",
+        1
+      ],
+      [
+        1,
+        "#e0a040",
+        1
+      ]
+    ]
+  },
+  "inkSplash": {
+    "layer": "UI",
+    "shape": {
+      "kind": "point"
+    },
+    "speedJitter": [
+      0.3,
+      1.2
+    ],
+    "cone": 3.14,
+    "alphaOverLife": [
+      [
+        0,
+        1
+      ],
+      [
+        0.7,
+        1
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "sizeOverLife": [
+      [
+        0,
+        1.2
+      ],
+      [
+        1,
+        0.8
+      ]
+    ],
+    "priority": "feedback",
+    "blend": "alpha",
+    "burst": 26,
+    "speed": 260,
+    "life": [
+      0.3,
+      0.7
+    ],
+    "size": [
+      2,
+      6
+    ],
+    "drag": 7,
+    "particle": "disc",
+    "color": [
+      [
+        0,
+        "#1a0406",
+        0.95
+      ],
+      [
+        1,
+        "#3a0a0c",
+        0.85
+      ]
+    ]
+  }
+}

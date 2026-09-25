@@ -212,7 +212,8 @@ void main() {
   // LUT grade, crossfading between two looks.
   if (P_LUT > 0.5) c = mix(lut(u_lutA, c), lut(u_lutB, c), u_lutMix);
   float l = dot(c, vec3(0.299, 0.587, 0.114));
-  c *= 1.0 - u_flicker * 0.05 * P_FLICKER;
+  // Candle flicker (ENG-0156): 1.6 % global; with the rig's candles the field stays within 3 %.
+  c *= 1.0 - u_flicker * 0.016 * P_FLICKER;
 
   if (litany > 0.0) {
     // Sepia, but gold highlights survive — the Litany gilds what it touches.

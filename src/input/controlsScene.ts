@@ -390,7 +390,7 @@ export class ControlsScene implements Scene {
     } else if (this.overWorld) {
       g.beginWorld();
       drawBackdrop(g, 'chapel', g.time);
-      g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1 });
+      g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 'menu' });
     } else g.beginScreen();
     panel(g, { x: 160, y: 30, w: 960, h: 660 });
     heading(g, tr('ctl.title'), VIEW_W / 2, 84, 360, 1, 30);

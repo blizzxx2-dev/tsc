@@ -44,3 +44,13 @@ export const BUILD: BuildInfo = makeBuildInfo(
 
 /** Short label for the title-screen corner, e.g. `Demo 0.9.0 · 1a2b3c4d`. */
 export const buildLabel = (b: BuildInfo = BUILD): string => `${b.edition === 'demo' ? 'Demo ' : ''}${b.version} · ${b.sha}`;
+
+/**
+ * Build stamp (ENG-0240): version, git sha, GPU tier and renderer string on one line. Drawn in the
+ * corner of every screen in dev/QA builds and on the pause menu in release builds, so screenshots
+ * and bug reports always say which build and GPU path produced them.
+ */
+export function buildStamp(tier: string, renderer: string, b: BuildInfo = BUILD): string {
+  const r = renderer.replace(/\s+/g, ' ').trim();
+  return `${buildLabel(b)} · ${tier} · ${r.length > 48 ? `${r.slice(0, 47)}…` : r || 'unknown GPU'}`;
+}

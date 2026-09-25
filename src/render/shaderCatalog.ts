@@ -13,6 +13,9 @@ import { UPSAMPLE_FS } from './gfx';
 import { PBR_FS, PBR_VS, SHADOW_FS, SHADOW_VS } from './renderer3d';
 import { fleshShaderSource } from './shaders/flesh';
 import { QUALITIES, SHADER_TIERS } from './quality';
+import { formatShaderLog, shaderDefines } from './registry';
+import { PARTICLE_FS, PARTICLE_VS } from './shaders/particle';
+import { BLOOD_DECAL_FS, COVERAGE_FS, COVERAGE_VS, DECAL_VS, SCORCH_DECAL_FS, STAMP_FS, STAMP_VS } from './shaders/decal';
 
 export interface ShaderVariant {
   name: string;
@@ -42,6 +45,11 @@ export function shaderCatalog(): ShaderVariant[] {
     { name: 'scene-upsample', vs: FULL_VS, fs: UPSAMPLE_FS },
     { name: 'pbr', vs: PBR_VS, fs: PBR_FS },
     { name: 'pbr-shadow', vs: SHADOW_VS, fs: SHADOW_FS },
+    { name: 'particle', vs: PARTICLE_VS, fs: PARTICLE_FS },
+    { name: 'decal-stamp', vs: STAMP_VS, fs: STAMP_FS },
+    { name: 'decal-blood', vs: DECAL_VS, fs: BLOOD_DECAL_FS },
+    { name: 'decal-coverage', vs: COVERAGE_VS, fs: COVERAGE_FS },
+    { name: 'decal-scorch', vs: DECAL_VS, fs: SCORCH_DECAL_FS },
   ];
   // Quality tiers (ENG-0082): each tier's flesh variant, with its mediump fallback, plus the live-noise A/B variant.
   for (const q of QUALITIES) {
@@ -89,3 +97,80 @@ export function compileCatalog(gl: WebGL2RenderingContext, variants = shaderCata
   }
   return fails;
 }
+
+/**
+ * Boot-time parallel compile (ENG-0202): with KHR_parallel_shader_compile every variant's compile
+ * and link are issued at once and polled (COMPLETION_STATUS_KHR) between frames, so the boot screen
+ * keeps animating while the driver works — and the driver's program cache is warm when the renderer
+ * builds the same sources. Without the extension, variants compile a few per frame. Failures carry
+ * the variant's defines and the offending source lines.
+ */
+export async function precompileCatalog(
+  gl: WebGL2RenderingContext,
+  variants: ShaderVariant[] = shaderCatalog(),
+  onProgress: (done: number, total: number) => void = () => undefined,
+  nextFrame: () => Promise<void> = () => new Promise((r) => (typeof requestAnimationFrame !== 'undefined' ? requestAnimationFrame(() => r()) : setTimeout(r, 0))),
+): Promise<ShaderFailure[]> {
+  const ext = gl.getExtension('KHR_parallel_shader_compile') as { COMPLETION_STATUS_KHR: number } | null;
+  const jobs = variants.map((v) => {
+    const vs = gl.createShader(gl.VERTEX_SHADER)!;
+    const fs = gl.createShader(gl.FRAGMENT_SHADER)!;
+    return { v, vs, fs, p: gl.createProgram()!, started: false, done: false };
+  });
+  const start = (j: (typeof jobs)[number]) => {
+    gl.shaderSource(j.vs, j.v.vs);
+    gl.shaderSource(j.fs, j.v.fs);
+    gl.compileShader(j.vs);
+    gl.compileShader(j.fs);
+    gl.attachShader(j.p, j.vs);
+    gl.attachShader(j.p, j.fs);
+    gl.linkProgram(j.p);
+    j.started = true;
+  };
+  if (ext) for (const j of jobs) start(j);
+  const fails: ShaderFailure[] = [];
+  const finish = (j: (typeof jobs)[number]) => {
+    j.done = true;
+    if (!gl.getProgramParameter(j.p, gl.LINK_STATUS)) {
+      const stages: [WebGLShader, 'vertex' | 'fragment', string][] = [
+        [j.vs, 'vertex', j.v.vs],
+        [j.fs, 'fragment', j.v.fs],
+      ];
+      let reported = false;
+      for (const [sh, stage, src] of stages)
+        if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+          fails.push({ name: variantName(j.v), stage, log: formatShaderLog(gl.getShaderInfoLog(sh) ?? 'unknown error', src) });
+          reported = true;
+        }
+      if (!reported) fails.push({ name: variantName(j.v), stage: 'link', log: gl.getProgramInfoLog(j.p) ?? 'unknown error' });
+    }
+    gl.deleteShader(j.vs);
+    gl.deleteShader(j.fs);
+    gl.deleteProgram(j.p);
+  };
+  let done = 0;
+  while (done < jobs.length) {
+    if (ext) {
+      for (const j of jobs)
+        if (!j.done && gl.getProgramParameter(j.p, ext.COMPLETION_STATUS_KHR)) {
+          finish(j);
+          done++;
+        }
+    } else {
+      // No extension: a handful per frame so the boot screen stays responsive.
+      for (const j of jobs.filter((x) => !x.done).slice(0, 4)) {
+        start(j);
+        finish(j);
+        done++;
+      }
+    }
+    onProgress(done, jobs.length);
+    if (done < jobs.length) await nextFrame();
+  }
+  return fails;
+}
+
+const variantName = (v: ShaderVariant) => {
+  const d = shaderDefines(v.fs);
+  return d.length ? `${v.name} [${d.join(' ')}]` : v.name;
+};

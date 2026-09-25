@@ -80,3 +80,42 @@ export function scissorRect(r: { x: number; y: number; w: number; h: number }, v
   const h = Math.max(0, Math.min(th, th - yTop) - y);
   return { x, y, w, h };
 }
+
+/** The part of a ResizeObserverEntry the backbuffer sizing reads. */
+export interface ResizeEntryLike {
+  devicePixelContentBoxSize?: readonly { inlineSize: number; blockSize: number }[];
+  contentBoxSize?: readonly { inlineSize: number; blockSize: number }[];
+}
+
+/**
+ * Exact backbuffer size for a canvas (ENG-0186): the browser's own device-pixel content box when
+ * it reports one (so the canvas maps 1:1 onto physical pixels at fractional DPRs such as 1.25 or
+ * 1.5), else CSS size × DPR rounded.
+ */
+export function backbufferSize(entry: ResizeEntryLike | null, cssW: number, cssH: number, dpr: number): { w: number; h: number; exact: boolean } {
+  const d = entry?.devicePixelContentBoxSize?.[0];
+  // A stale entry (the box has since been resized) disagrees with CSS × DPR by more than rounding.
+  const agrees = d && Math.abs(d.inlineSize - cssW * dpr) <= 2 && Math.abs(d.blockSize - cssH * dpr) <= 2;
+  if (d && agrees && d.inlineSize > 0 && d.blockSize > 0) return { w: Math.round(d.inlineSize), h: Math.round(d.blockSize), exact: true };
+  return { w: Math.max(1, Math.round(cssW * dpr)), h: Math.max(1, Math.round(cssH * dpr)), exact: false };
+}
+
+/**
+ * Calls `onChange` whenever the window's device-pixel ratio changes — dragging it to a monitor with
+ * another scale, or browser zoom — by watching a `(resolution: Ndppx)` media query that is re-armed
+ * for the new ratio each time. Returns a disposer.
+ */
+export function watchDevicePixelRatio(onChange: (dpr: number) => void, win: Pick<Window, 'devicePixelRatio' | 'matchMedia'> = window): () => void {
+  let mq: MediaQueryList | null = null;
+  const arm = () => {
+    mq?.removeEventListener('change', fire);
+    mq = win.matchMedia(`(resolution: ${win.devicePixelRatio}dppx)`);
+    mq.addEventListener('change', fire);
+  };
+  const fire = () => {
+    arm();
+    onChange(win.devicePixelRatio);
+  };
+  arm();
+  return () => mq?.removeEventListener('change', fire);
+}

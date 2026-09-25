@@ -12,8 +12,11 @@ export interface Game {
   clock?: Clock;
   /** Asset loader (bundles are prefetched/unloaded as the campaign moves between chapters). */
   assets?: AssetLoader;
-  /** Replace the whole scene stack; outgoing scenes are exited and disposed. */
-  go(scene: Scene): void;
+  /**
+   * Replace the whole scene stack; outgoing scenes are exited and disposed. `opts` picks the
+   * transition (ENG-0064): `{ transition: 'fade' | 'iris' | 'ink' | 'none', ms }`.
+   */
+  go(scene: Scene, opts?: { transition?: 'fade' | 'iris' | 'ink' | 'none'; ms?: number }): void;
   /** Push an overlay (pause, options, confirm) over the live scene. */
   push?(scene: Scene): void;
   /** Pop the top overlay, resuming the scene beneath. */
