@@ -135,6 +135,8 @@ export interface FleshParams {
   corruptAt?: Vec;
   /** Per-pixel corruption painted by the curse's sources (ENG-0099): the map and its view px → UV transform. Replaces the rim-in `corrupt` spread. */
   curseMap?: { tex: WebGLTexture; xf: Float32Array } | null;
+  /** Venue (ENG-0272/0274): 0 hospice, 1 field triage, 2 forensic slab. */
+  venue?: number;
   /** The Hour's corruption palette (src/art/curse.ts): vein glow and secondary (necrosis/scar) colour. */
   curse?: { vein: readonly [number, number, number]; accent: readonly [number, number, number] };
 }
@@ -1471,6 +1473,7 @@ export class Gfx {
     gl.uniform2f(this.u(pr, 'u_radii'), f.radii.x, f.radii.y);
     gl.uniform1f(this.u(pr, 'u_time'), this.time);
     gl.uniform1i(this.u(pr, 'u_kind'), f.kind);
+    gl.uniform1i(this.u(pr, 'u_venue'), f.venue ?? 0);
     gl.uniform3fv(this.u(pr, 'u_base'), f.base);
     gl.uniform3fv(this.u(pr, 'u_deep'), f.deep);
     gl.uniform3fv(this.u(pr, 'u_vein'), f.vein);

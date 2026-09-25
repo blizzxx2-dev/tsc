@@ -498,7 +498,10 @@ async function boot(): Promise<void> {
   const params = new URLSearchParams(location.search);
   const opId = params.get('op');
   const dev = [SHOWCASE, SHOWCASE_BOSS, showcaseOrgan((params.get('organ') ?? 'heart') as OperationDef['organ'])];
-  const def = opId ? [...allOperations(), ...dev].find((o) => o.id === opId) : undefined;
+  const found = opId ? [...allOperations(), ...dev].find((o) => o.id === opId) : undefined;
+  // ?venue=field|forensic previews an operation in another venue (ENG-0272/0274).
+  const venue = params.get('venue');
+  const def = found && (venue === 'field' || venue === 'forensic' || venue === 'hospice') ? { ...found, venue: venue as OperationDef['venue'] } : found;
   if (def) {
     const back = () => game.go(new TitleScene());
     game.instant(() => playOperation(game, def, back, back));

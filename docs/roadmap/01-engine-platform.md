@@ -386,9 +386,9 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0271 · Alpha · P1 · S · Shared Malison shader chunk — ink flow, sigil glints and dissolve, so each variant is a parameter set plus at most one bespoke function
 
 ### Other disciplines
-- [ ] ENG-0272 · Alpha · P1 · M · Field-triage rendering — tent-canvas/mud drape variant, rain streaks on the view and grime overlay, torch-lit light rig preset
+- [x] ENG-0272 · Alpha · P1 · M · Field-triage rendering — tent-canvas/mud drape variant, rain streaks on the view and grime overlay, torch-lit light rig preset
 - [ ] ENG-0273 · Alpha · P1 · M · Bone-setting view — translucent "vellum anatomy" skeletal overlay shader with fracture highlights and alignment guides
-- [ ] ENG-0274 · Alpha · P1 · M · Forensic/inquisition view — corpse-pallor flesh profile (no pulse, livor mortis pooling), evidence highlight shader for the Scrying Lens
+- [x] ENG-0274 · Alpha · P1 · M · Forensic/inquisition view — corpse-pallor flesh profile (no pulse, livor mortis pooling), evidence highlight shader for the Scrying Lens
 - [ ] ENG-0275 · Alpha · P2 · M · Diagnosis view — full-body chart renderer (patient silhouette with region hover, symptom overlays) reusing sprite/mesh APIs
 - [x] ENG-0276 · Alpha · P2 · S · Drape material presets — hospice linen, noble silk, prison sackcloth, army canvas, selected in the operation def
 

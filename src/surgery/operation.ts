@@ -87,6 +87,8 @@ export interface OperationDef {
   second?: { patient: string; vitals?: number };
   /** Drape cloth around amputations and draped fields (ENG-0276): hospice linen by default. */
   drape?: 'linen' | 'silk' | 'sackcloth' | 'canvas';
+  /** Where it happens (ENG-0272/0274): the hospice by default, a field-triage tent, or the forensic slab. */
+  venue?: 'hospice' | 'field' | 'forensic';
   /** Multi-organ fields: regions with their own sensitivity; with two or more, the camera frames one at a time (GAM-0247). */
   regions?: readonly OrganRegion[];
   events?: readonly ScriptedEvent[];

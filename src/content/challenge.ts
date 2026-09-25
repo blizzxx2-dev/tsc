@@ -222,7 +222,7 @@ export const MUTATORS: Record<MutatorId, MutatorInfo> = {
 export function withMutators(def: OperationDef, opts: OperationOptions, mutators: readonly MutatorId[]): { def: OperationDef; opts: OperationOptions } {
   const rain = mutators.includes('rain');
   const phases = rain ? def.phases.map((p, i) => (i === 0 ? { ...p, spawn: (op: Parameters<PhaseDef['spawn']>[0]) => [...p.spawn(op), new RainDrips()] } : p)) : def.phases;
-  return { def: { ...def, phases }, opts: { ...opts, mutators: [...(opts.mutators ?? []), ...mutators] } };
+  return { def: { ...def, phases, ...(rain ? { venue: 'field' as const } : {}) }, opts: { ...opts, mutators: [...(opts.mutators ?? []), ...mutators] } };
 }
 
 // ====================================================================== the Symptom Loom

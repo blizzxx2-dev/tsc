@@ -218,6 +218,7 @@ export const OP_4_1: OperationDef = {
   ranks: { S: 4840, A: 3870, B: 2900 },
   litany: true,
   seed: 41,
+  venue: 'field',
   phases: [
     {
       callout: ['Clamp the artery first — tongs on the vessel. Then the bolt.'],
@@ -242,6 +243,7 @@ export const OP_4_10: OperationDef = {
   title: 'The Two Cots',
   patient: 'Jorgen, pikeman of the Ostrau company',
   second: { patient: 'Wendel, drummer boy', vitals: 80 },
+  venue: 'field',
   diagnosis: 'Two brought in from the Gorget together: a pikeman with a spear-rent thigh, and the drummer boy trampled in the rout. Keep them both.',
   organ: 'flesh',
   regions: [

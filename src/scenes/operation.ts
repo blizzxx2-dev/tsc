@@ -13,6 +13,7 @@ import { hex, withAlpha } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { organPalette } from '../render/organs';
 import { underSkinBulges } from '../render/underSkin';
+import { drawGrime, drawRain, VENUE_ID, venueLights } from '../render/venues';
 import { BloodPool, Bubo, Burn, Embedded, Incision, Laceration, Sigil, surfDisc, surfLine } from '../surgery/entities';
 import { EggSac } from '../surgery/lauds';
 import { Particles } from '../render/particles';
@@ -21,7 +22,6 @@ import { BladeFeedback } from '../render/bladeFeedback';
 import { OperationVfx } from './opVfx';
 import { drawOrder } from '../render/layers';
 import { DecalMaps } from '../render/decals';
-import { candleFlicker } from '../render/flicker';
 import { contentHash } from '../core/replayCodec';
 import { rememberReplay, setLiveReplay } from '../platform/lastReplay';
 import { BUILD } from '../platform/build';
@@ -779,6 +779,7 @@ export class OperationScene implements Scene {
     g.beginWorld();
     const pallor = anaemia(op);
     const curse = curseSource(op.entities);
+    const venue = op.def.venue ?? 'hospice';
     // The flesh pass works in view space: map the field through the camera (GAM-0247 region views).
     const cam = this.camera.isIdentity ? null : this.camera;
     const vc = (p: { x: number; y: number }) => (cam ? cam.toView(p, { x: 0, y: 0 }) : p);
@@ -791,7 +792,9 @@ export class OperationScene implements Scene {
       base: paleFlesh(pal.base, pallor),
       deep: paleFlesh(pal.deep, pallor * 0.8),
       vein: pal.vein,
-      pulse: this.pulse,
+      // The dead have no pulse (ENG-0274).
+      pulse: venue === 'forensic' ? 0 : this.pulse,
+      venue: VENUE_ID[venue],
       warp,
       light: vc(light),
       corrupt: this.fleshCurse,
@@ -802,11 +805,7 @@ export class OperationScene implements Scene {
       rough: paleRough(pal.rough, pallor),
       gore: presentation.gore,
       species: pal.species,
-      lights: [
-        { ...vc(light), h: 1.1, i: 1.1, col: [0.95, 0.9, 0.82] },
-        { ...vc({ x: FIELD.cx - FIELD.rx - 60, y: FIELD.cy + 120 }), h: 0.35, i: 0.45 * candleFlicker(t, 0, g.displayPrefs.flicker), col: [1.0, 0.6, 0.3] },
-        { ...vc({ x: FIELD.cx + FIELD.rx + 60, y: FIELD.cy - 60 }), h: 0.35, i: 0.4 * candleFlicker(t, 2, g.displayPrefs.flicker), col: [1.0, 0.62, 0.32] },
-      ],
+      lights: venueLights(venue, light, FIELD, t, g.displayPrefs.flicker).map((l) => ({ ...l, ...vc(l) })),
     });
     const colours = palette();
     this.decals.drawScorch(t);
@@ -843,6 +842,16 @@ export class OperationScene implements Scene {
       for (const e of op.entities) {
         if (!e.alive || !e.hidden || dist(e.pos, game.input.pos) > 110) continue;
         g.arc(e.pos.x, e.pos.y, 16 + Math.sin(t * 6) * 4, 2, hex('#b9d7ff', 0.6));
+      }
+      // Forensic slab (ENG-0274): under the lens the evidence fluoresces, a cold violet over everything unresolved.
+      if (op.def.venue === 'forensic') {
+        g.setBlend('add');
+        g.glow(game.input.pos.x, game.input.pos.y, 95, hex('#7a5cff', 0.14));
+        for (const e of op.entities) {
+          if (!e.alive || !e.required || dist(e.pos, game.input.pos) > 110) continue;
+          g.glow(e.pos.x, e.pos.y, 34, hex('#b8a0ff', 0.5 + 0.2 * Math.sin(t * 4)));
+        }
+        g.setBlend('alpha');
       }
     }
 
@@ -890,6 +899,11 @@ export class OperationScene implements Scene {
     }
 
     // ---------------------------------------------------------------- UI
+    // Field triage (ENG-0272): rain streaks down the view and grime gathers at its edges.
+    if (op.def.venue === 'field') {
+      drawGrime(g, VIEW_W, 720, 3);
+      drawRain(g, t, 1, VIEW_W, 720, settings.reduceMotion);
+    }
     this.artVfx.drawScreen(g, op, viewRect(), { x: 16, y: 14 + anchorShift('top'), w: 316, h: 86 });
     drawFieldOverlays(g, op);
     // Brand smoke hangs over the field for a moment after heavy searing (GAM-0051).

@@ -89,6 +89,8 @@ uniform vec2 u_center;
 uniform vec2 u_radii;
 uniform float u_time;
 uniform int u_kind;
+// Venue (ENG-0272/0274): 0 hospice, 1 field triage, 2 forensic slab.
+uniform int u_venue;
 uniform vec3 u_base;
 uniform vec3 u_deep;
 uniform vec3 u_vein;
@@ -173,6 +175,24 @@ void main() {
   float tableMask = smoothstep(2.05, 2.25, rad + 0.1 * fbm(fq * 3.0));
   vec3 oak = vec3(0.14, 0.08, 0.045) * (0.6 + 0.5 * noise(vec2(px.x * 0.02, px.y * 0.6))) * (0.4 + 0.6 * rsmooth(1100.0, 200.0, length(px - u_light)));
   drape = mix(drape, oak, tableMask);
+  if (u_venue == 1) {
+    // Field triage (ENG-0272): coarse olive tent canvas, mud-spattered, over trampled earth and straw.
+    float cw = 0.5 + 0.25 * sin(px.x * 1.4) * sin(px.y * 1.4) + 0.25 * noise(px * 0.2);
+    vec3 canvas = mix(vec3(0.24, 0.24, 0.15), vec3(0.36, 0.35, 0.22), cw) * (0.2 + 0.85 * fdiff);
+    float mud = smoothstep(0.55, 0.7, fbm(px * 0.012 + 11.0)) + step(0.965, noise(px * 0.08)) * 0.8;
+    canvas = mix(canvas, vec3(0.12, 0.08, 0.04) * (0.5 + 0.6 * fdiff), clamp(mud, 0.0, 1.0) * 0.8);
+    canvas = mix(canvas, vec3(0.2, 0.02, 0.03) * (0.5 + 0.6 * fdiff), soak * 0.7);
+    float straw = smoothstep(0.82, 0.9, noise(vec2(px.x * 0.15 + px.y * 0.05, px.y * 0.02)));
+    vec3 earth = mix(vec3(0.07, 0.05, 0.03), vec3(0.3, 0.24, 0.1), straw) * (0.5 + 0.5 * noise(px * 0.04));
+    drape = mix(canvas, earth, tableMask);
+  } else if (u_venue == 2) {
+    // Forensic slab (ENG-0274): a grey sheet on cold, veined stone.
+    vec3 sheet = mix(vec3(0.46, 0.47, 0.48), vec3(0.6, 0.61, 0.62), weave) * (0.25 + 0.8 * fdiff);
+    sheet = mix(sheet, vec3(0.25, 0.1, 0.1) * (0.5 + 0.6 * fdiff), soak * 0.35);
+    float vein = smoothstep(0.9, 0.97, 1.0 - abs(fbm(px * 0.004 + 17.0) * 2.0 - 1.0));
+    vec3 stone = mix(vec3(0.3, 0.31, 0.32), vec3(0.18, 0.18, 0.2), vein) * (0.7 + 0.3 * noise(px * 0.05));
+    drape = mix(sheet, stone, tableMask);
+  }
 
   // ---- flesh
   vec2 uv = q * 4.0;
@@ -414,6 +434,14 @@ void main() {
   // The collar's inner lip: dermis in section, as wide as the hide is thick.
   float lip = rsmooth(1.0 + 0.004 + 0.012 * u_layers.x, 1.0, edge) * smoothstep(0.985, 0.995, edge);
   skinCol = mix(skinCol, mix(vec3(0.86, 0.72, 0.64), u_skin, 0.3) * (0.4 + 0.5 * fdiff), lip);
+  if (u_venue == 2) {
+    // A corpse (ENG-0274): waxy grey pallor, and livor mortis pooled purple-red on the dependent (lower) side.
+    float livor = smoothstep(-0.1, 0.8, q.y + (fbm(q * 3.0 + 2.0) - 0.5) * 0.4);
+    col = mix(col, vec3(dot(col, vec3(0.3, 0.5, 0.2))) * vec3(0.95, 0.93, 0.9) + 0.06, 0.6);
+    col = mix(col, vec3(0.34, 0.1, 0.2), livor * 0.55);
+    skinCol = mix(skinCol, vec3(dot(skinCol, vec3(0.3, 0.5, 0.2))) * vec3(0.92, 0.94, 0.95), 0.6);
+    skinCol = mix(skinCol, vec3(0.4, 0.16, 0.26), livor * 0.5);
+  }
   vec3 outc = mix(drape, col * 0.3, rsmooth(1.06, 1.0, edge) * 0.6);
   outc = mix(outc, skinCol, inCollar);
   o = vec4(mix(outc, col, inside), 1.0);
