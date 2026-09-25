@@ -2,6 +2,8 @@ import { Audio } from './core/audio';
 import { ErrorBoundary, type CrashRecord } from './core/boundary';
 import { Clock } from './core/clock';
 import { settings, saveSettings } from './core/settings';
+import { SceneAudio } from './audio/scenes';
+import { bindUiAudio } from './audio/ui-hooks';
 import { Input } from './core/input';
 import { FIXED_DT, FixedStep, FrameLimiter, RefreshEstimator, stepEndTimes } from './core/loop';
 import { SceneStack, sceneName, type Game, type Scene } from './core/scene';
@@ -39,6 +41,7 @@ import { installPlatform, platformFrame, sceneChanged } from './platform/session
 class Main implements Game {
   input: Input;
   audio = new Audio();
+  private sceneAudio = new SceneAudio(this.audio);
   gfx: Gfx;
   clock = new Clock();
   assets: AssetLoader;
@@ -56,6 +59,7 @@ class Main implements Game {
   constructor(private canvas: HTMLCanvasElement) {
     this.audio.volume = settings.volume;
     this.audio.muted = settings.muted;
+    bindUiAudio(this.audio);
     this.gfx = new Gfx(canvas, VIEW_W, VIEW_H);
     console.info(describeCaps(this.gfx.caps));
     this.gfx.renderScale = settings.renderScale;
@@ -81,6 +85,7 @@ class Main implements Game {
         this.profiler.enabled = !this.profiler.enabled;
       }
       if (DEV_TOOLS && e.code === 'F4') this.dumpFrameCsv();
+      if (DEV_TOOLS && e.code === 'F6') this.sceneAudio.debug = !this.sceneAudio.debug;
     });
     // Hidden/minimised window: stop ticking and silence audio; resume with no dt spike (ENG-0059).
     document.addEventListener('visibilitychange', () => {
@@ -214,9 +219,13 @@ class Main implements Game {
     }
     p.end('sim');
     this.input.beginRender();
-    p.begin('render');
     const top = this.scenes.top;
+    p.begin('audio');
+    this.sceneAudio.frame(top, Math.min(dt, 0.25), this.input);
+    p.end('audio');
+    p.begin('render');
     this.boundary.run('render', sceneName(top), clock.frames, clock.ticks, () => this.scenes.render(this.gfx, this.fixed.alpha));
+    this.sceneAudio.overlay(this.gfx);
     p.end('render');
     this.gfx.setCamera(null);
     this.profiler.draw(this.gfx, this.gfx.stats, this.gfx.registry, this.gfx.plan.gpuProfiler ? this.gfx.gpuTimer : null);

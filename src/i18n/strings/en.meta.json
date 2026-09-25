@@ -131,14 +131,6 @@
     "context": "Options screen heading.",
     "screenshot": "docs/loc/screens/options.png"
   },
-  "ui.options.volume": {
-    "scene": "options",
-    "font": "body",
-    "size": 24,
-    "maxPx": 360,
-    "context": "Options row label, left-aligned.",
-    "screenshot": "docs/loc/screens/options.png"
-  },
   "ui.options.volume_value": {
     "scene": "options",
     "font": "body",
@@ -154,6 +146,23 @@
     "maxPx": 360,
     "context": "Options row label, left-aligned.",
     "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.sound_muted": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 280,
+    "context": "Value of an options row, drawn right-aligned between ‹ ›.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.sound_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
   },
   "ui.options.shake": {
     "scene": "options",

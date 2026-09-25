@@ -12,6 +12,7 @@ import { bindings } from '../input/bindings';
 import { ControlsScene } from '../input/controlsScene';
 import { glyphFor } from '../input/glyphs';
 import { litanyMode } from '../input/opinput';
+import { AudioOptionsScene } from '../audio/options-scene';
 
 interface Row {
   /** String-table key of the row label (see src/i18n/strings/en.json). */
@@ -30,21 +31,14 @@ const cycle = <T,>(list: readonly T[], cur: T, dir: number): T => list[(list.ind
 export class OptionsScene implements Scene {
   private rows: Row[] = [
     {
-      label: 'ui.options.volume',
-      value: () => t('ui.options.volume_value', { value: settings.volume }),
-      change: (d, g) => {
-        settings.volume = Math.max(0, Math.min(1, Math.round((settings.volume + d * 0.1) * 10) / 10));
-        g.audio.volume = settings.volume;
-        g.audio.play('select');
-      },
-    },
-    {
       label: 'ui.options.sound',
-      value: () => onOff(!settings.muted),
+      value: () => (settings.muted ? t('ui.options.sound_muted') : `${t('ui.options.volume_value', { value: settings.volume })}  …`),
       change: (_d, g) => {
-        settings.muted = !settings.muted;
-        g.audio.muted = settings.muted;
+        // Pushed over the options (and any paused operation beneath) so Back returns without tearing the stack down.
+        if (g.push && g.pop) g.push(new AudioOptionsScene(() => g.pop?.(), this.overWorld !== false));
+        else g.go(new AudioOptionsScene(() => g.go(this), this.overWorld !== false));
       },
+      note: 'ui.options.sound_note',
     },
     {
       label: 'ui.options.shake',

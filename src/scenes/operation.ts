@@ -1,4 +1,3 @@
-import type { Cue } from '../core/audio';
 import { t as tr, tSource } from '../i18n';
 import { formatClock, formatNumber, formatVitals } from '../i18n/format';
 import { dist, Rng, type Vec } from '../core/math';
@@ -56,7 +55,6 @@ export class OperationScene implements Scene {
   /** Floating rating/damage text, built from the operation's `popup` events (ENG-0243). */
   private popups: Popup[] = [];
   /** Sounds requested since the last tick (deduplicated). */
-  private pendingCues = new Set<Cue>();
 
   constructor(
     private def: OperationDef,
@@ -72,7 +70,6 @@ export class OperationScene implements Scene {
   private listen(op: Operation): void {
     op.events.on('popup', (p) => this.popups.push({ ...p, t: 0 }));
     op.events.on('fx', (e) => this.particles.spawn(e));
-    op.events.on('cue', (c) => this.pendingCues.add(c));
   }
 
   /** Apply player assists to the operation definition. */
@@ -103,7 +100,6 @@ export class OperationScene implements Scene {
     this.op = OperationScene.create(this.def);
     this.presRng = new Rng(this.def.seed ?? 1);
     this.popups.length = 0;
-    this.pendingCues.clear();
     this.listen(this.op);
     this.camera.reset();
     this.particles = new Particles();
@@ -148,13 +144,11 @@ export class OperationScene implements Scene {
 
     op.update(dt);
 
-    // Heartbeat drives the ECG trace, the organ swell and (when failing) an audible thump.
+    // Heartbeat drives the ECG trace and the organ swell (the audio director schedules the thump on its QRS).
+    // The Litany slows the heart with the rest of the world.
     const bpm = op.status === 'lost' ? 0 : 58 + (MAX_VITALS - op.vitals) * 0.9;
-    this.beatPhase += (dt * bpm) / 60;
-    if (this.beatPhase >= 1) {
-      this.beatPhase -= 1;
-      if (op.vitals < 45 && op.status === 'running') game.audio.play('heartbeat');
-    }
+    this.beatPhase += (dt * op.timeScale * bpm) / 60;
+    if (this.beatPhase >= 1) this.beatPhase -= 1;
     this.pulse = Math.exp(-this.beatPhase * 8);
     const samples = Math.max(1, Math.round(dt * 120));
     for (let i = 0; i < samples; i++) {
@@ -171,8 +165,7 @@ export class OperationScene implements Scene {
     });
     if (op.litanyTime > 0 && Math.random() < dt * 30) this.particles.spawn({ kind: 'dust', pos: { x: FIELD.cx + (Math.random() - 0.5) * FIELD.rx * 2, y: FIELD.cy + (Math.random() - 0.5) * FIELD.ry * 2 }, n: 1 });
 
-    for (const c of this.pendingCues) game.audio.play(c);
-    this.pendingCues.clear();
+    // op.cues are drained by the audio director (src/audio/director.ts) right after this update.
     // Popups are presentation: they age in real time here, not in the sim.
     let k = 0;
     for (const p of this.popups) {

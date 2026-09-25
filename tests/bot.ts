@@ -207,6 +207,8 @@ export interface BotOptions {
   maxSeconds?: number;
   /** Called with the fresh operation before play starts (subscribe to its events). */
   onOp?: (op: Operation) => void;
+  /** Observe each frame after the update, before cues are cleared (audio replay tests). */
+  onFrame?: (op: Operation, ptr: Pointer | null, dt: number) => void;
 }
 
 /** Idle frames at the current pointer (pointer up). */
@@ -224,6 +226,7 @@ export function playWithBot(def: OperationDef, opts: BotOptions = {}): BotResult
   let wasDown = false;
   let action: Action | null = null;
   let frames = 0;
+  let last: Pointer | null = null;
   while ((op.status === 'intro' || op.status === 'running') && frames < maxSeconds * 60) {
     frames++;
     if (op.status === 'running') {
@@ -243,11 +246,13 @@ export function playWithBot(def: OperationDef, opts: BotOptions = {}): BotResult
         op.setTool(fr.tool);
         const ptr: Pointer = { pos: fr.pos, prev, down: fr.down, pressed: fr.down && !wasDown, released: !fr.down && wasDown };
         op.handlePointer(ptr, DT);
+        last = ptr;
         wasDown = fr.down;
         prev = fr.pos;
       }
     }
     op.update(DT);
+    opts.onFrame?.(op, last, DT);
   }
   return { op, frames };
 }
