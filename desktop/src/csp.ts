@@ -1,14 +1,15 @@
 /**
  * Content Security Policy for the packaged game (PLT-0014). Everything is served from `app://game/`;
  * the only exceptions are inline styles (index.html's critical CSS), data: images (save thumbnails)
- * and, when crash reporting is configured, the report endpoint's origin.
+ * and, when crash reporting is configured, the report endpoint's origin. 'wasm-unsafe-eval' lets the
+ * KTX2 transcode workers compile the Basis transcoder's WebAssembly; plain eval stays blocked.
  */
 import { extname, normalize, relative, resolve, sep } from 'node:path';
 
 export function buildCsp(connect: readonly string[] = []): string {
   return [
     "default-src 'self'",
-    "script-src 'self'",
+    "script-src 'self' 'wasm-unsafe-eval'",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob:",
     "font-src 'self'",
