@@ -268,7 +268,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0185 · Demo · P0 · S · Pointer mapping correct under every aspect mode, letterbox and render scale — unit tests with synthetic bounding rects replace the plain `getBoundingClientRect` ratio in `Input.move`
 - [ ] ENG-0186 · Demo · P1 · S · `ResizeObserver` with `devicePixelContentBoxSize` for exact backbuffer sizing — re-evaluate DPR when the window moves between monitors of different scale
 - [ ] ENG-0187 · Demo · P1 · S · Minimum supported window 1024×576 — below that the UI scales down uniformly and remains usable (test at 800×450)
-- [ ] ENG-0188 · Demo · P1 · S · UI scale setting — 80–130% applied to HUD and menu panels within the safe area for large monitors and Steam Deck legibility
+- [x] ENG-0188 · Demo · P1 · S · UI scale setting — 80–130% applied to HUD and menu panels within the safe area for large monitors and Steam Deck legibility
 - [ ] ENG-0189 · Demo · P1 · M · Multi-resolution screenshot regression — 1280×720, 1920×1080, 2560×1440, 3840×2160, 2560×1080, 3440×1440, 5120×1440, 1280×800 goldens in CI (SwiftShader)
 
 ## ENG-J · GPU capabilities, fallbacks & context loss (Demo)
@@ -552,7 +552,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] PLT-0090 · Demo · P1 · S · Playtime tracking — excludes pause and idle periods over 5 minutes
 - [x] PLT-0091 · Demo · P1 · S · Per-user saves — namespaced by SteamID (or local profile id outside Steam) so shared PCs keep separate progress
 - [x] PLT-0092 · Demo · P0 · M · Save-compatibility CI suite — fixture saves from every released demo/full build load and migrate correctly on each commit
-- [ ] PLT-0093 · Demo · P2 · S · Support export — "Copy save folder" / zip of saves + logs from the options screen for bug reports
+- [x] PLT-0093 · Demo · P2 · S · Support export — "Copy save folder" / zip of saves + logs from the options screen for bug reports
 - [ ] PLT-0094 · Alpha · P1 · S · Full-game profile fields — Chapters 3–5, challenge mode, disciplines, New Game+ and extras unlocks added via migration with no demo-save breakage
 - [ ] PLT-0095 · Beta · P1 · S · Save data privacy review — only SteamID/local id and gameplay data stored; documented in the privacy policy
 
@@ -599,7 +599,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] PLT-0128 · Demo · P1 · S · Hang watchdog — renderer unresponsive >10 s triggers a capture and a restart offer
 - [x] PLT-0129 · Demo · P0 · S · PII scrubbing — usernames in file paths, SteamID and machine name removed from logs and reports (unit test on sample paths)
 - [ ] PLT-0130 · Demo · P1 · S · Crash-free-session dashboard — demo launch gate of ≥99.5% crash-free sessions on the `beta` branch
-- [ ] PLT-0131 · Demo · P1 · M · QA bug-report key (F8 in QA builds) — screenshot, last 2,000 log lines, replay, save and settings zipped into the support folder or uploaded with a ticket id
+- [x] PLT-0131 · Demo · P1 · M · QA bug-report key (F8 in QA builds) — screenshot, last 2,000 log lines, replay, save and settings zipped into the support folder or uploaded with a ticket id
 
 ## PLT-L · OS file paths & filesystem (Demo)
 

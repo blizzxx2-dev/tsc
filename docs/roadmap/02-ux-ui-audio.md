@@ -288,7 +288,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 ### Options
 - [x] UIX-0103 · M0 · P0 · M · Options v0 — `OptionsScene` with ‹ value › rows for Volume, Sound, Screen shake (Off/Gentle/Full), Reduce flashing, Assist: time allowed, Assist: Litany on Space and Fullscreen, reachable from the pause menu
 - [x] UIX-0104 · Demo · P0 · M · Options shell — tabs Gameplay / Controls / Display / Audio / Accessibility / Language; live preview; per-tab Defaults; changes persist to `settings.json` on Back; reachable from Title and Pause (display mode and language greyed in-operation)
-- [ ] UIX-0105 · Demo · P0 · M · Display tab — window mode, window size, VSync, frame cap (30/60/120/144/unlimited), render scale, UI scale, brightness, bloom intensity, film grain on/off, vignette on/off, screen shake (the v0 Off/Gentle/Full setting extended to 0–100 %)
+- [x] UIX-0105 · Demo · P0 · M · Display tab — window mode, window size, VSync, frame cap (30/60/120/144/unlimited), render scale, UI scale, brightness, bloom intensity, film grain on/off, vignette on/off, screen shake (the v0 Off/Gentle/Full setting extended to 0–100 %)
 - [x] UIX-0106 · Demo · P1 · S · Gameplay tab — tool hints mode, damage numbers, confirm on abandon, wheel invert/wrap, Minimal HUD, skip-seen-tutorials
 - [x] UIX-0107 · Demo · P1 · S · Option descriptions — every option shows a one-line description and, where relevant, a live preview thumbnail (e.g. colour-blind palette on a sample operating field)
 - [x] UIX-0108 · Demo · P1 · S · Options are validated on load — out-of-range or unknown values fall back to defaults (unit tests per option)
@@ -323,11 +323,11 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ### Portraits & presentation
 - [ ] UIX-0129 · Demo · P0 · M · Layered portraits — base + expression + effects layers per character (Kreuzer, Ilse, Stroh, Haller, Mauer, patients, Choir hood); script tag `say('ilse', text, { face: 'worried' })`; missing expression falls back to neutral with a dev warning
-- [ ] UIX-0130 · Demo · P1 · M · Two-slot staging — left/right portrait slots, speaker lit, listener darkened 40 %, enter/exit slide 250 ms, cross-fade on expression change 120 ms
-- [ ] UIX-0131 · Demo · P1 · S · First-appearance title — name plate shows the character's `title` ("Inquisitor Stroh — Order of the Pyre") the first time they speak in a save
-- [ ] UIX-0132 · Demo · P1 · S · Location card — scene opens with "Kessendorf — Hospice of Saint Ildra — before Matins" lettered card and fade (replaces the plain `place` caption)
-- [ ] UIX-0133 · Demo · P1 · M · Script effects — `shake`, `flash` (respects Reduced Flashing), `fade`, `cg` (full-screen illustration) and `sfx`/`music` commands in `StoryDef` lines, executed by `StoryScene`
-- [ ] UIX-0134 · Demo · P2 · S · Inline emphasis markup — `*italic*` and `{term}` highlighting for key terms (Malison, Litany, Hollow Choir) in story text and callouts
+- [x] UIX-0130 · Demo · P1 · M · Two-slot staging — left/right portrait slots, speaker lit, listener darkened 40 %, enter/exit slide 250 ms, cross-fade on expression change 120 ms
+- [x] UIX-0131 · Demo · P1 · S · First-appearance title — name plate shows the character's `title` ("Inquisitor Stroh — Order of the Pyre") the first time they speak in a save
+- [x] UIX-0132 · Demo · P1 · S · Location card — scene opens with "Kessendorf — Hospice of Saint Ildra — before Matins" lettered card and fade (replaces the plain `place` caption)
+- [x] UIX-0133 · Demo · P1 · M · Script effects — `shake`, `flash` (respects Reduced Flashing), `fade`, `cg` (full-screen illustration) and `sfx`/`music` commands in `StoryDef` lines, executed by `StoryScene`
+- [x] UIX-0134 · Demo · P2 · S · Inline emphasis markup — `*italic*` and `{term}` highlighting for key terms (Malison, Litany, Hollow Choir) in story text and callouts
 
 ## Epic UIX-E · Tutorials & first-time user experience (Demo)
 

@@ -287,7 +287,7 @@ Tasks below add the QA, localisation and production/legal work around them.
 
 ## QAT-C · Replay-based QA (Demo; builds on the ENG/GAM recorder and golden runs)
 
-- [ ] QAT-0054 · Demo · P0 · M · Failure-path goldens — per demo op a loss-by-vitals and a loss-by-timer replay, plus a last-second-Litany replay for Matins and Lauds, added to the golden suite so loss handling and results are regression-tested
+- [x] QAT-0054 · Demo · P0 · M · Failure-path goldens — per demo op a loss-by-vitals and a loss-by-timer replay, plus a last-second-Litany replay for Matins and Lauds, added to the golden suite so loss handling and results are regression-tested
 - [ ] QAT-0055 · Demo · P1 · M · Human replay corpus — playtest builds record replays (with consent); one human run per op per playtest round is added to `tests/replays/human/` and re-simulated every nightly
 - [ ] QAT-0056 · Demo · P1 · S · Runtime parity — the same replays re-simulated in Node (Vitest), Chromium (Playwright) and the packaged desktop build produce identical state hashes; any divergence blocks the build
 - [x] QAT-0057 · Demo · P1 · S · Golden-update review — PRs that change golden hashes need the `behaviour-change` label and a GAM reviewer via CODEOWNERS; bot-only changes never rewrite goldens
@@ -524,10 +524,10 @@ Tasks below add the QA, localisation and production/legal work around them.
 
 ### Alpha
 - [x] QAT-0151 · Alpha · P0 · S · Alpha test plan — Ch1–5 playable end to end with placeholder art, all core systems feature-complete; entry/exit criteria and new suites for Ch3–5 listed
-- [ ] QAT-0152 · Alpha · P1 · M · Chapter III functional pass — every op (Prime and Terce included) won, lost by vitals and by timer, retried; story scenes and flags checked; results filed per op
-- [ ] QAT-0153 · Alpha · P1 · M · Chapter IV functional pass — every op (Sext and None included) won, lost by vitals and by timer, retried; story scenes and flags checked
-- [ ] QAT-0154 · Alpha · P1 · M · Chapter V functional pass — every op (Vespers and Compline included) won, lost by vitals and by timer, retried; endings and credits reached
-- [ ] QAT-0155 · Alpha · P1 · S · Campaign graph checks for five chapters — every chapter reachable, unlocks chain correctly, challenge-mode entries reference existing ops, demo carry-over lands on Ch3
+- [x] QAT-0152 · Alpha · P1 · M · Chapter III functional pass — every op (Prime and Terce included) won, lost by vitals and by timer, retried; story scenes and flags checked; results filed per op
+- [x] QAT-0153 · Alpha · P1 · M · Chapter IV functional pass — every op (Sext and None included) won, lost by vitals and by timer, retried; story scenes and flags checked
+- [x] QAT-0154 · Alpha · P1 · M · Chapter V functional pass — every op (Vespers and Compline included) won, lost by vitals and by timer, retried; endings and credits reached
+- [x] QAT-0155 · Alpha · P1 · S · Campaign graph checks for five chapters — every chapter reachable, unlocks chain correctly, challenge-mode entries reference existing ops, demo carry-over lands on Ch3
 
 ### Beta
 - [x] QAT-0156 · Beta · P0 · S · Beta test plan — content complete, all shipped languages, full compatibility matrix, accessibility and performance; exit criteria for the RC

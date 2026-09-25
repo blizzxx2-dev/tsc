@@ -144,7 +144,7 @@ Portrait standard (applies to every task below): half-body at 2048 px master / 1
 ### Design pass (whole cast)
 - [ ] ART-0087 · M0 · P0 · M · Cast line-up sheet: all principal characters side by side at the same scale, with silhouette-readability test (each identifiable as solid black)
 - [ ] ART-0088 · Demo · P0 · S · Expression guide: the 8 base expressions demonstrated on a neutral head, with brow, mouth and eye rules in woodcut shorthand
-- [ ] ART-0089 · Demo · P1 · S · Portrait lighting rule: key light from candle (warm, screen-left), rim light in the speaker's `CAST.color`, and the inactive-speaker darken value (−35% value)
+- [x] ART-0089 · Demo · P1 · S · Portrait lighting rule: key light from candle (warm, screen-left), rim light in the speaker's `CAST.color`, and the inactive-speaker darken value (−35% value)
 
 ### Dr. Kreuzer (player)
 - [ ] ART-0090 · Demo · P0 · M · Kreuzer concept: 3 thumbnail options → chosen design with a turnaround (front, ¾, profile), surgeon's cap, leather apron and a lancet roll
@@ -482,7 +482,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [x] ART-0300 · Beta · P2 · M · Organ-specific motion: lung inflate/deflate and gut peristalsis flipbooks for Chapters 3–5 organ sets
 
 ### Portrait & VN animation
-- [ ] ART-0301 · Demo · P0 · S · Blink timing (random 2–6 s interval, 3 frames) and lip-flap timing tied to text reveal speed for all demo portraits
+- [x] ART-0301 · Demo · P0 · S · Blink timing (random 2–6 s interval, 3 frames) and lip-flap timing tied to text reveal speed for all demo portraits
 - [x] ART-0302 · Demo · P1 · M · Idle breathing (a 2-layer mesh warp) on Kreuzer, Ilse, Haller, Stroh and Mauer portraits
 - [ ] ART-0303 · Demo · P2 · M · Hollow Choir mask animation: a slow tilt and a violet glow breathing from the mask's mouth
 - [ ] ART-0304 · Beta · P2 · M · Idle breathing on Chapter 3–5 principal portraits
