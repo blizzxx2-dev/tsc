@@ -583,7 +583,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 ### Tuning & tests
 - [ ] BOS-0129 · Alpha · P0 · S · Bot strategy covers stolen-Litany slow, node breaking, two-tool combo — steady clears 380–480 s; novice ≥ 19/20
 - [x] BOS-0130 · Alpha · P1 · S · Unit tests — Litany ownership transfer and restore, mute windows never overlap a lethal attack without visual tell, combo window
-- [ ] BOS-0131 · Alpha · P1 · S · Module reuse test — Compline's Matins/Lauds/Prime sub-phases pass their original boss unit tests in isolation
+- [x] BOS-0131 · Alpha · P1 · S · Module reuse test — Compline's Matins/Lauds/Prime sub-phases pass their original boss unit tests in isolation
 - [ ] BOS-0132 · Beta · P1 · S · Playtest + final tuning — checkpoint per phase
 - [x] BOS-0133 · Beta · P2 · S · Compline codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
 
