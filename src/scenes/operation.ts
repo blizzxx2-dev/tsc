@@ -3,6 +3,7 @@ import { formatClock, formatNumber, formatVitals } from '../i18n/format';
 import { dist, Rng } from '../core/math';
 import { Camera2D } from '../render/camera';
 import type { Game, Scene } from '../core/scene';
+import { attachBarkDirector } from '../content/barkDirector';
 import { hex, withAlpha } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { organPalette } from '../render/organs';
@@ -132,6 +133,7 @@ export class OperationScene implements Scene {
       this.calloutLog.push(...lines);
       if (this.calloutLog.length > 20) this.calloutLog.splice(0, this.calloutLog.length - 20);
     });
+    if (!this.runOpts.practice) attachBarkDirector(op);
   }
 
   /** Open the "Respite" overlay (UIX-0100). The operation stops updating until it closes. */
