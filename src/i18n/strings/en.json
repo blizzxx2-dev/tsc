@@ -736,5 +736,6 @@
   "ui.notice.content.body": "Suture & Steel depicts graphic surgery and wounds, blood and gore, plague and disease, body horror, and violence done in the name of faith. Gore and creature detail can be softened in Options, under Accessibility,.",
   "ui.notice.footer": "This notice appears on first launch only.",
   "ui.notice.continue": "Continue",
-  "ui.notice.comfort": "Comfort Options"
+  "ui.notice.comfort": "Comfort Options",
+  "hud.needs": "Needs: {tool}"
 }

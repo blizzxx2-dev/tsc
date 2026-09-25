@@ -217,7 +217,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] UIX-0051 · Demo · P0 · M · Tray v2 — slot art per tool, selected slot slides out 8 px, binding glyph from current bindings, hover/focus tooltip (name, gesture, binding), Tincture cooldown as radial wipe, Brand heat glow; tray mirrors to the right edge in left-handed mode
 - [x] UIX-0052 · M0 · P1 · S · Tool hint tooltip — name + hint panel beside the selected tray slot, fading 2.5 s after each switch (replaced the static text under the tray)
 - [x] UIX-0053 · Demo · P1 · S · Tool hint modes — "Tool hints: Always / First uses / Off"; in First-uses mode the tooltip also re-appears after 5 s idle during a tool's first 3 uses; hint text raised from 13 px to ≥ 16 px
-- [ ] UIX-0054 · Demo · P0 · M · Target-validity cursor — cursor tints green over a valid target for the current tool; over a target needing another tool it shows that tool's ghost icon ("Needs: Leech-Pipe"); shape changes (ring vs cross) so it is colour-independent
+- [x] UIX-0054 · Demo · P0 · M · Target-validity cursor — cursor tints green over a valid target for the current tool; over a target needing another tool it shows that tool's ghost icon ("Needs: Leech-Pipe"); shape changes (ring vs cross) so it is colour-independent
 - [ ] UIX-0055 · Demo · P1 · S · Hold-progress rings on the cursor for every hold tool — Leech (pool remaining), Brand (sear progress on grub/sigil/Malison), Lens reveal (0.4 s), Salve coverage %, Tincture injection (existing)
 - [x] UIX-0056 · Demo · P1 · S · Cursor visibility — reticle has a dark outline and optional size (1×–2×) and colour (brass/white/cyan/magenta) settings; remains visible over dark blood, black bile and bright hexfire
 

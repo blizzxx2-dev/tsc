@@ -26,7 +26,7 @@ import { bloodScale, GORE_LEVEL, presentation } from '../render/presentation';
 import { highContrast, palette } from '../ui/theme';
 import { giltNumerals } from '../ui/ornaments';
 import { RATING_INK, starReliquary, vialArt } from '../art/kit';
-import { cursorTint, vialLevel } from '../art/hud';
+import { cursorTarget, cursorTint, vialLevel } from '../art/hud';
 import { CAST } from '../content/characters';
 import { ASSISTANT_NAME } from '../content/characters';
 import { vec3 } from '../render/color';
@@ -452,9 +452,24 @@ export class OperationScene implements Scene {
     const p = game.input.pos;
     if (op.tool === 'tincture' && op.injectT > 0) g.arc(p.x, p.y, 18, 3, hex(PALETTE.good), op.injectT / TINCTURE_TIME);
     toolIcon(g, op.tool, p.x + 20, p.y - 20, 0.8 + this.toolFlash * 0.3, t);
-    const tint = cursorTint(op, p);
+    const aim = op.status === 'running' && !this.paused ? cursorTarget(op, p) : { kind: 'none' as const };
     const cpal = palette();
+    const tint = aim.kind === 'valid' ? '#9fe0a8' : aim.kind === 'needs' ? '#ff9a6a' : cursorTint(op, p);
     reticle(g, p, settings.colorFilter === 'none' ? tint : tint === '#9fe0a8' ? cpal.validTarget : tint === '#ff5a4a' ? cpal.wrongTarget : tint);
+    // Shape as well as colour (UIX-0054/0147): a ring round a valid target, a cross and the instrument it needs otherwise.
+    const cs = settings.cursorSize;
+    if (aim.kind === 'valid') {
+      g.arc(p.x, p.y, 21 * cs, 3.5, hex('#000000', 0.6));
+      g.arc(p.x, p.y, 21 * cs, 1.8, hex(settings.colorFilter === 'none' ? '#9fe0a8' : cpal.validTarget, 0.95));
+    } else if (aim.kind === 'needs') {
+      const d = 7 * cs;
+      for (const [w, c] of [[4, hex('#000000', 0.6)], [2, hex('#ffb08a', 0.95)]] as const) {
+        g.line({ x: p.x + 16 * cs - d, y: p.y + 16 * cs - d }, { x: p.x + 16 * cs + d, y: p.y + 16 * cs + d }, w, c);
+        g.line({ x: p.x + 16 * cs + d, y: p.y + 16 * cs - d }, { x: p.x + 16 * cs - d, y: p.y + 16 * cs + d }, w, c);
+      }
+      toolIcon(g, aim.tool, p.x - 30, p.y + 30, 0.55, t, 'disabled');
+      caps(g, tr('hud.needs', { tool: tr(`tool.${aim.tool}.name`) }), p.x - 8, p.y + 52, 12, hex('#ffd8c0', 0.95));
+    }
     g.endFrame();
   }
 

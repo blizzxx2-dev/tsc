@@ -6218,5 +6218,13 @@
     "maxPx": 300,
     "context": "Button: open the accessibility options from the first-launch notices.",
     "screenshot": "docs/loc/screens/notice.png"
+  },
+  "hud.needs": {
+    "scene": "operation",
+    "font": "display",
+    "size": 12,
+    "maxPx": 260,
+    "context": "Beside the cursor over a target the instrument in hand cannot treat; {tool} is the instrument it needs.",
+    "screenshot": "docs/loc/screens/operation.png"
   }
 }
