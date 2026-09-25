@@ -104,7 +104,7 @@ export class Fracture extends Entity {
     return FRACTURE.baseDrain + this.fragments.filter((f) => !f.set).length * FRACTURE.perLoose;
   }
 
-  override update(): void {
+  override update(_op: Operation, _dt: number): void {
     if (this.compound && this.aligned) this.stitchBlockRadius = 0;
   }
 
