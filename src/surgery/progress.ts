@@ -68,6 +68,8 @@ export interface Progress {
   feePaid: Record<string, number>;
   upgrades: UpgradeId[];
   fails: Record<string, number>;
+  /** Every operation ever lost on this save, in order (Prime writes those patients' names, BOS-0055). */
+  lost?: string[];
   hintsSeen: string[];
   codex: string[];
   tutorialSkip: boolean;
@@ -133,6 +135,10 @@ export interface RunResult {
 export function recordRun(p: Progress, r: RunResult): { newBest: boolean; fee: number } {
   if (!r.won) {
     p.fails[r.opId] = (p.fails[r.opId] ?? 0) + 1;
+    if (!r.challenge) {
+      p.lost ??= [];
+      if (!p.lost.includes(r.opId)) p.lost.push(r.opId);
+    }
     return { newBest: false, fee: 0 };
   }
   p.fails[r.opId] = 0;

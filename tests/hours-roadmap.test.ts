@@ -6,6 +6,7 @@ import { NameSigil, patientName, PrimeMalison, PRIME_NAMES, primeRoll } from '..
 import type { BossEvent, BossOpDef } from '../src/surgery/bosses/signals';
 import { Operation, type OperationDef } from '../src/surgery/operation';
 import { lostPatientsOf } from '../src/scenes/bossAudio';
+import { freshProgress, recordRun } from '../src/surgery/progress';
 import { optionRows } from '../src/scenes/options';
 import { at, start, wait } from './harness';
 import { LaudsMalison } from '../src/surgery/lauds';
@@ -20,8 +21,12 @@ const boss = (o: Partial<BossOpDef>) => o as Partial<OperationDef>;
 
 describe('Prime: the roll of the dead', () => {
   it('BOS-0055: names come from the lost-patient list first, falling back to the canned roll', () => {
-    const lost = lostPatientsOf({ 'op1-1': 1, 'op2-4': 2, 'op1-2': 0 });
-    expect(lost).toEqual(['Jost']);
+    expect(lostPatientsOf({ fails: { 'op1-1': 1, 'op2-4': 2, 'op1-2': 0 } })).toEqual(['Jost']);
+    // A patient lost once stays on the roll after the retry is won.
+    const save = freshProgress();
+    recordRun(save, { opId: 'op2-2', won: false, rank: 'C', score: 0, difficulty: 'surgeon', flags: [] });
+    recordRun(save, { opId: 'op2-2', won: true, rank: 'B', score: 10, difficulty: 'surgeon', flags: [] });
+    expect(lostPatientsOf(save)).toEqual(['Orsa Flintvein']);
     expect(patientName('A lay-cantor of the Hollow Choir')).toBeNull();
     expect(patientName('Orsa Flintvein, dwarf prospector')).toBe('Orsa Flintvein');
     let p!: PrimeMalison;

@@ -3,7 +3,7 @@ import type { BossAssists, BossEvent, BossSound } from '../surgery/bosses/signal
 import { settings } from '../core/settings';
 import { bossStoryFlags } from '../content/flags';
 import { allOperations } from '../content/campaign';
-import { loadProgress } from '../surgery/progress';
+import { loadProgress, type Progress } from '../surgery/progress';
 import { patientName } from '../surgery/bosses/prime';
 
 /**
@@ -27,11 +27,13 @@ export function withBossAssists<T extends OperationDef>(def: T): T {
   return { ...def, assists } as T;
 }
 
-/** Patients lost on this save (operations with a recorded failure), by their content name (BOS-0055). */
-export function lostPatientsOf(fails: Readonly<Record<string, number>>, ops: readonly OperationDef[] = allOperations()): string[] {
+/** Patients lost on this save (every operation ever failed, else those failing now), by their content name (BOS-0055). */
+export function lostPatientsOf(p: Pick<Progress, 'fails' | 'lost'>, ops: readonly OperationDef[] = allOperations()): string[] {
+  const ids = [...(p.lost ?? []), ...Object.keys(p.fails).filter((id) => p.fails[id] > 0)];
   const out: string[] = [];
-  for (const d of ops) {
-    const n = (fails[d.id] ?? 0) > 0 ? patientName(d.patient ?? '') : null;
+  for (const id of ids) {
+    const d = ops.find((o) => o.id === id);
+    const n = d ? patientName(d.patient ?? '') : null;
     if (n && !out.includes(n)) out.push(n);
   }
   return out;
@@ -43,7 +45,7 @@ export function withBossContext<T extends OperationDef>(def: T): T {
   const storyFlags = bossStoryFlags();
   let lostPatients: string[];
   try {
-    lostPatients = lostPatientsOf(loadProgress().fails);
+    lostPatients = lostPatientsOf(loadProgress());
   } catch {
     lostPatients = [];
   }
