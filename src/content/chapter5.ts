@@ -1,3 +1,4 @@
+import { EPILOGUE_STORY } from './epilogue';
 import { ENDING_EXILE, ENDING_PARDON, ENDING_PYRE, endingIs } from './endings';
 import { whisperThought } from './whisper';
 import { Embedded, Incision, Laceration, Rot } from '../surgery/entities';
@@ -486,5 +487,7 @@ export const CHAPTER_5: Chapter = {
     { kind: 'story', story: STORY_5_END, if: endingIs('pardon') },
     { kind: 'story', story: ENDING_PYRE, if: endingIs('pyre') },
     { kind: 'story', story: ENDING_EXILE, if: endingIs('exile') },
+    // Epilogue cards (NAR-0159): twelve people, each in the fate the ending and the flags earned.
+    { kind: 'story', story: EPILOGUE_STORY },
   ],
 };

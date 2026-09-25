@@ -243,11 +243,11 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] NAR-0154 · Alpha · P0 · M · s5-9 Vespers — Ilse is the host; the lamps of the ward go out one by one
 - [ ] NAR-0155 · Alpha · P0 · M · s5-10 The Precentor — meeting under the Tribunal court; mirror scene; he sings Compline into Stroh (or into the Burgomaster if Stroh was lost)
 - [x] NAR-0156 · Alpha · P0 · M · s5-11 Compline — the Litany stolen; last lines before the final op
-- [ ] NAR-0157 · Alpha · P0 · L · Endings — 4 endings (The Quiet Night averted with Stroh's pardon; Exile with Ilse; The Pyre Refused; The Perfect End — failure-state bad ending) each 20–40 lines plus epilogue cards per surviving character
+- [x] NAR-0157 · Alpha · P0 · L · Endings — 4 endings (The Quiet Night averted with Stroh's pardon; Exile with Ilse; The Pyre Refused; The Perfect End — failure-state bad ending) each 20–40 lines plus epilogue cards per surviving character
 
 ### Endgame and branching
 - [x] NAR-0158 · Alpha · P0 · M · Ending matrix — table mapping (strohTrust, Whisper band, hornchildCertificate, mauerFate, hallerFate) → ending; every combination reachable and covered by test
-- [ ] NAR-0159 · Beta · P1 · S · Epilogue cards — 12 characters × survives/dies/absent variants, woodcut caption style, ≤ 50 words each
+- [x] NAR-0159 · Beta · P1 · S · Epilogue cards — 12 characters × survives/dies/absent variants, woodcut caption style, ≤ 50 words each
 - [ ] NAR-0160 · Beta · P1 · S · Post-credits sting — the Unsung Hour hymn fragment unlocking challenge mode's secret op
 - [x] NAR-0161 · Beta · P2 · S · Chapter-select recap text — 3-sentence "previously" for each chapter shown when starting from chapter select
 

@@ -4,7 +4,7 @@ import { ENDING_STORIES, endingFor, ENDINGS, strohTrust, type EndingInputs } fro
 import { applyOpFlags, evalCondition, FlagStore } from '../src/content/flags';
 import { WHISPER_BANDS } from '../src/content/whisper';
 
-const reader = (vals: Record<string, unknown>) => ({ get: (k: string) => vals[k] });
+const reader = (vals: Record<string, unknown>) => ({ get: (k: string) => vals[k] }) as never;
 
 describe('Stroh’s trust (NAR-0104)', () => {
   it('moves by the documented deltas', () => {
@@ -70,5 +70,26 @@ describe('endings (NAR-0157)', () => {
       expect(n, e).toBeGreaterThanOrEqual(e === 'perfect' ? 18 : 20);
       expect(n, e).toBeLessThanOrEqual(40);
     }
+  });
+});
+
+describe('epilogue cards (NAR-0159)', () => {
+  it('twelve people, three variants each, none over fifty words; exactly one card each after any ending', async () => {
+    const { EPILOGUE, EPILOGUE_STORY, epilogueFor } = await import('../src/content/epilogue');
+    expect(Object.keys(EPILOGUE)).toHaveLength(12);
+    for (const [id, c] of Object.entries(EPILOGUE))
+      for (const v of ['survives', 'dies', 'absent'] as const) expect(c[v].split(/\s+/).length, `${id} ${v}`).toBeLessThanOrEqual(50);
+    for (const vals of [
+      {},
+      { hornchildCertificate: 'turned', cantorMercy: false, strohTooth: true, mauerFate: 'hale', hallerFate: 'lost' },
+      { litanySeenCount: 6 },
+    ]) {
+      const f = new FlagStore();
+      for (const [k, v] of Object.entries(vals)) f.set(k, v as never);
+      const shown = EPILOGUE_STORY.lines.filter((l) => !l.if || evalCondition(l.if, f));
+      expect(shown, JSON.stringify(vals)).toHaveLength(12);
+    }
+    expect(epilogueFor('exile', reader({})).find((c) => c.id === 'ilse')?.fate).toBe('absent');
+    expect(epilogueFor('pardon', reader({ hallerFate: 'lost' })).find((c) => c.id === 'haller')?.fate).toBe('dies');
   });
 });
