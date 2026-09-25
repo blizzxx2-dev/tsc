@@ -163,6 +163,11 @@ export class StoryScene implements Scene {
     return this.shown <= 0 ? 0 : this.typer.tw.visibleAt(this.shown / CPS);
   }
 
+  /** Full frame rate while text types out (idle throttling, ENG-0229). */
+  get animating(): boolean {
+    return this.shown > 0 && this.revealed() < this.plain.length;
+  }
+
   /** Plain (marker-free) text of the current line, the string the typewriter reveals. */
   private get plain(): string {
     return stripMarkup(this.line.text);

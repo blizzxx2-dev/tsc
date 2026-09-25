@@ -98,6 +98,11 @@ export class FrameLimiter {
   private next = 0;
   cap = 0;
 
+  /** Render the next rAF callback whatever the cap (input arrived while throttled, ENG-0229). */
+  reset(): void {
+    this.next = 0;
+  }
+
   /** Returns true if the rAF callback at `nowMs` should render. */
   shouldRender(nowMs: number, refreshHz = 0): boolean {
     if (this.cap <= 0 || (refreshHz > 0 && this.cap >= refreshHz - 0.5)) {

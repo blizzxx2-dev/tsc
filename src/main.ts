@@ -26,6 +26,7 @@ import { bindUiAudio } from './audio/ui-hooks';
 import { Input } from './core/input';
 import { FIXED_DT, FixedStep, FrameLimiter, RefreshEstimator, stepEndTimes } from './core/loop';
 import { DevTime } from './core/devTime';
+import { effectiveCap, idleCap } from './core/idle';
 import { OverlayHost } from './ui/overlayHost';
 import { SceneStack, sceneName, type Game, type Scene } from './core/scene';
 import { lampsVeil, splashDone, splashProgress } from './core/splash';
@@ -90,6 +91,9 @@ class Main implements Game {
   private contextLost = false;
   private hidden = false;
   private losses: number[] = [];
+  /** Real time (s) of the last input event, for idle throttling (ENG-0229). */
+  private lastInputAt = 0;
+  private throttled = false;
   /** Scene transitions (UIX-0009): fade through black, input blocked, no double-trigger. */
   readonly transition = new Transition();
   /** Game-wide overlays drawn above every scene (ENG-0066): toasts, achievement popups, FPS, Steam veil. */
@@ -103,6 +107,13 @@ class Main implements Game {
     console.info(describeCaps(this.gfx.caps));
     this.gfx.renderScale = settings.renderScale;
     this.input = new Input(canvas, VIEW_W, VIEW_H);
+    // Every device event marks activity; while throttled it also lets the very next frame render.
+    const push = this.input.push.bind(this.input);
+    this.input.push = (ev) => {
+      this.lastInputAt = performance.now() / 1000;
+      if (this.throttled) this.limiter.reset();
+      push(ev);
+    };
     this.assets = createAssets(this.gfx);
     this.scenes = new SceneStack(this);
     this.clock.reduceMotion = settings.reduceMotion;
@@ -275,6 +286,12 @@ class Main implements Game {
         return;
       }
       this.refresh.sample(dt);
+      // Idle throttling (ENG-0229): menus and paused states with no input drop to 30 fps.
+      const top = this.scenes.top as unknown as { op?: { status: string }; paused?: boolean; animating?: boolean } | null;
+      const playing = this.scenes.top instanceof OperationScene && !top?.paused && (top?.op?.status === 'running' || top?.op?.status === 'intro');
+      const idle = idleCap({ now: now / 1000, lastInput: this.lastInputAt, playing, transition: this.transition.busy, animating: top?.animating === true });
+      this.throttled = idle > 0;
+      this.limiter.cap = effectiveCap(settings.frameCap, idle);
       if (!this.limiter.shouldRender(now, this.refresh.hz)) return;
       this.last = now;
       this.tick(now, dt);
@@ -297,7 +314,6 @@ class Main implements Game {
     setReadableFont(settings.readableFont);
     this.clock.reduceMotion = settings.reduceMotion;
     this.gfx.gpuTimer.enabled = this.profiler.enabled && this.gfx.plan.gpuProfiler;
-    this.limiter.cap = settings.frameCap;
     p.begin('sim');
     for (let i = 0; i < steps; i++) {
       this.input.beginStep(ends[i]);
