@@ -413,7 +413,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0006 · Demo · P1 · S · Boss drain budget — sum of boss + adds drain never exceeds 2.0/s on Surgeon (sim assertion in debug builds)
 - [x] BOS-0007 · Demo · P1 · S · Boss bot-harness contract — every boss exports a `botStrategy` used by `tests/bot.ts`; completion test on 20 seeds per difficulty
 - [x] BOS-0008 · Demo · P1 · S · Hollow Choir leitmotif hooks — boss emits `music.intensity` 0–3 by phase for adaptive music
-- [ ] BOS-0009 · Alpha · P1 · S · Boss content lint — every boss phase has ≥ 1 tell, ≥ 1 counter, an Ilse hint line, and codex text
+- [x] BOS-0009 · Alpha · P1 · S · Boss content lint — every boss phase has ≥ 1 tell, ≥ 1 counter, an Ilse hint line, and codex text
 
 ## BOS-B · Matins — The Night Vigil (Chapter 1 boss, Demo polish)
 

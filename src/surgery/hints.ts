@@ -1,4 +1,5 @@
 import type { Operation } from './operation';
+import { bossPhaseHint } from './bosses/sheet';
 
 /**
  * Dynamic hints: after every loss Sister Ilse offers one line of strategy
@@ -41,7 +42,14 @@ export const TIP_RULES: readonly TipRule[] = [
 export function tipFor(op: Operation): { id: string; text: string } | null {
   const own = op.def.tips?.[op.lostCause];
   if (own) return { id: `own-${op.lostCause}`, text: own };
-  for (const r of TIP_RULES) if (r.test(op)) return { id: r.id, text: r.tip };
+  for (const r of TIP_RULES) {
+    // Lost to an Hour: Ilse's hint for the phase it was lost in (BOS-0009) comes before the general advice.
+    if (r.id === 'malison') {
+      const phase = op.bossOp ? bossPhaseHint(op) : null;
+      if (phase) return { id: 'boss-phase', text: phase };
+    }
+    if (r.test(op)) return { id: r.id, text: r.tip };
+  }
   return null;
 }
 
