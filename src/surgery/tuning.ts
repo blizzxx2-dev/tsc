@@ -113,6 +113,8 @@ export const DEFAULT_TUNING = {
     goodMax: 40,
     gapBleed: 0.3,
     reach: 40,
+    /** A crossing this close beyond either end of the wound still counts as a stitch (INP-0037). */
+    endReach: 4,
   },
   laceration: {
     baseDrain: 0.05,
@@ -188,6 +190,8 @@ export const DEFAULT_TUNING = {
     grubSplitMin: 0.15,
     grubSplitMax: 0.4,
     sigilNode: 1.0,
+    /** The brand does not hurt healthy flesh for the first N s of a hold (INP-0035): passing between grubs is free. */
+    fleshGrace: 0.12,
     fleshBurnAfter: 0.5,
     fleshHurt: 4,
     overheatAfter: 6,

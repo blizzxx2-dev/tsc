@@ -273,6 +273,25 @@ export class Incision extends Entity {
 
 // ============================================================ stitching
 
+/** Where the stroke p1→p2 meets the line through a→b (null if parallel). */
+function crossingPoint(p1: Vec, p2: Vec, a: Vec, b: Vec): Vec | null {
+  const rx = p2.x - p1.x;
+  const ry = p2.y - p1.y;
+  const sx = b.x - a.x;
+  const sy = b.y - a.y;
+  const den = rx * sy - ry * sx;
+  if (Math.abs(den) < 1e-9) return null;
+  const t = ((a.x - p1.x) * sy - (a.y - p1.y) * sx) / den;
+  return { x: p1.x + rx * t, y: p1.y + ry * t };
+}
+
+/** `a` moved `r` px further away from `b` along their line (a zero-length line stays put). */
+function extendPast(a: Vec, b: Vec, r: number): Vec {
+  const d = dist(a, b);
+  if (d === 0 || r <= 0) return a;
+  return { x: a.x + ((a.x - b.x) / d) * r, y: a.y + ((a.y - b.y) / d) * r };
+}
+
 /**
  * Shared zig-zag stitching logic: each crossing of the wound line is a stitch.
  * A wound needs ceil(length / 22) stitches and closes only when no gap along it
@@ -350,11 +369,21 @@ export class StitchLine {
       return this.add(op, p);
     }
     if (ptr.pressed) return false;
-    for (let i = 1; i < this.points.length; i++) {
-      if (strokeCrosses(ptr.prev, ptr.pos, this.points[i - 1], this.points[i])) {
+    const n = this.points.length;
+    for (let i = 1; i < n; i++) {
+      // The wound's first and last segments reach a little past their ends (INP-0037): a fast swipe
+      // that crosses just beyond the tip of a laceration is still a stitch there.
+      let a = this.points[i - 1];
+      let b = this.points[i];
+      if (i === 1) a = extendPast(a, b, S.endReach);
+      if (i === n - 1) b = extendPast(b, a, S.endReach);
+      if (strokeCrosses(ptr.prev, ptr.pos, a, b)) {
+        // The stitch goes where the thread crossed the wound, not where the sample after it happened to
+        // land: with fast swipes the sample can be several px along, which would foul the spacing rule.
+        const at = crossingPoint(ptr.prev, ptr.pos, a, b) ?? ptr.pos;
         // Reject a stitch too close to an existing one so players must travel the wound.
-        if (this.marks.some((m) => dist(m, ptr.pos) < S.minSpacing)) return false;
-        return this.add(op, ptr.pos);
+        if (this.marks.some((m) => dist(m, at) < S.minSpacing)) return false;
+        return this.add(op, at);
       }
     }
     return false;

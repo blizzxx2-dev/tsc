@@ -17,6 +17,7 @@ import { drawBackdrop } from './backdrop';
 import type { RunSummary } from '../surgery/session';
 import { ACHIEVEMENTS } from '../surgery/achievements';
 import { rankQuip } from '../content/barks';
+import { HoldToRetry } from '../input/retry';
 
 /** The case record: a parchment ledger page, stamped with the rank in wax. */
 export class ResultsScene implements Scene {
@@ -24,6 +25,8 @@ export class ResultsScene implements Scene {
   private stamped = false;
   /** The observer's one-line verdict under the rank (NAR-0078); chosen once per card. */
   private quip = '';
+  /** Hold R (or the pad's View button) for a second to go straight back in (INP-0113). */
+  private retry = new HoldToRetry();
   constructor(
     private op: Operation,
     private won: boolean,
@@ -52,6 +55,7 @@ export class ResultsScene implements Scene {
       if (this.t < ResultsScene.TALLY_DONE) this.t = ResultsScene.TALLY_DONE;
       else if (game.input.actPressed('ui.confirm')) (this.actions.next ?? this.actions.retry)();
     }
+    if (this.retry.update(game.input, dt)) this.actions.retry();
   }
 
   /** Per-action breakdown (UIX-0114): how many of each labelled action, and the costliest category (UIX-0115). */
@@ -180,6 +184,7 @@ export class ResultsScene implements Scene {
       if (button(g, game.input, t('ui.results.leave'), VIEW_W / 2 - 250, 664, 25)) this.actions.quit();
     }
     reticle(g, game.input.pos);
+    this.retry.draw(g, game.input.pos);
     g.endFrame();
   }
 }

@@ -186,6 +186,18 @@ export function bestOf(p: Progress, opId: string): (BestEntry & { difficulty: Di
   return out;
 }
 
+/**
+ * Has this player been on the table before (GAM-0208)? True once any operation was
+ * finished — won (a best entry) or lost (a failure count) — so a new game can offer to
+ * skip the tutorials with an "operated before?" prompt.
+ */
+export function hasOperated(p: Progress): boolean {
+  if (p.chaptersCleared > 0 || p.tutorialSkip) return true;
+  if (Object.values(p.best).some((slot) => Object.keys(slot).length > 0)) return true;
+  if (Object.keys(p.xBest).length > 0) return true;
+  return Object.values(p.fails).some((n) => n > 0);
+}
+
 export function setDifficulty(p: Progress, d: Difficulty): boolean {
   if (d === 'master' && !p.masterUnlocked) return false;
   p.difficulty = d;

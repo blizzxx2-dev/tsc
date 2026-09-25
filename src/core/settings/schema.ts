@@ -137,6 +137,8 @@ export interface Settings {
   gamepadCursorSpeed: number;
   /** Stick response curve exponent-ish acceleration 0..3. */
   gamepadCursorAccel: number;
+  /** Left-handed mode (INP-0069): tray mirrored to the right, mouse buttons swapped for the instrument and the star. */
+  leftHanded: boolean;
   // language
   /** `auto` follows Steam, then the OS locale (PLT-0102). */
   language: string;
@@ -222,6 +224,7 @@ export const SETTINGS_SCHEMA: readonly SettingDef[] = [
   d('swapMouseButtons', 'controls', 'toggle', { type: 'bool' }),
   d('gamepadCursorSpeed', 'controls', 'slider', { type: 'number', min: 200, max: 2000, step: 100 }),
   d('gamepadCursorAccel', 'controls', 'slider', { type: 'number', min: 0, max: 3, step: 0.5 }),
+  d('leftHanded', 'controls', 'toggle', { type: 'bool' }),
   d('language', 'language', 'choice', { type: 'enum', options: ['auto', ...SHIPPED_LANGUAGES] }),
   d('crashReports', 'privacy', 'choice', { type: 'enum', options: ['ask', 'on', 'off'] }),
   d('telemetry', 'privacy', 'choice', { type: 'enum', options: ['ask', 'on', 'off'] }),
@@ -284,6 +287,7 @@ export const DEFAULT_SETTINGS: Readonly<Settings> = Object.freeze({
   swapMouseButtons: false,
   gamepadCursorSpeed: 900,
   gamepadCursorAccel: 1.5,
+  leftHanded: false,
   language: 'auto',
   crashReports: 'ask',
   telemetry: 'ask',

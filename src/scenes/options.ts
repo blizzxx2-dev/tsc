@@ -99,13 +99,14 @@ function slider(id: string, key: keyof Settings, min: number, max: number, step:
   };
 }
 
-const prefToggle = (id: string, pref: 'invertWheel' | 'wrapWheel' | 'aimAssist'): OptionRow => ({
+const prefToggle = (id: string, pref: 'invertWheel' | 'wrapWheel' | 'aimAssist' | 'autoTool' | 'leftHanded', sync?: (v: boolean) => void): OptionRow => ({
   id,
   label: `ui.options.${id}`,
   kind: 'toggle',
   on: () => bindings.prefs[pref],
   set: (v) => {
     bindings.prefs[pref] = !!v;
+    sync?.(!!v);
     bindings.save();
   },
   prefs: [pref],
@@ -184,6 +185,20 @@ export function optionRows(tabId: OptionsTab): OptionRow[] {
           },
           prefs: ['hitScale'],
         },
+        {
+          id: 'grab_mode',
+          label: 'ui.options.grab_mode',
+          kind: 'choice',
+          options: () => [t('ui.options.hold_hold'), t('ui.options.hold_toggle')],
+          index: () => (bindings.prefs.grabMode === 'toggle' ? 1 : 0),
+          set: (i) => {
+            bindings.prefs.grabMode = i ? 'toggle' : 'hold';
+            bindings.save();
+          },
+          prefs: ['grabMode'],
+        },
+        prefToggle('auto_tool', 'autoTool'),
+        prefToggle('left_handed', 'leftHanded', (v) => (settings.leftHanded = v)),
         prefToggle('aim_assist', 'aimAssist'),
       ];
     case 'display':

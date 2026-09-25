@@ -54,31 +54,31 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] INP-0031 · M0 · P0 · S · Hold tools — Leech drains pools under the held cursor, Tincture hold 0.7 s injects (6 s cooldown), Brand sears while held, Lens reveals hidden entities on hover, Salve brushes `Coverage` cells
 - [x] INP-0032 · Demo · P1 · M · Toggle-hold option — "Hold actions: Hold / Toggle"; in Toggle mode one click starts a hold-tool action and a second click (or moving off-body) stops it; synthesised `Pointer.down` drives Leech, Salve, Tincture and Brand (unit test: Brand toggle sears a grub without the button held)
 - [x] INP-0033 · Demo · P2 · S · Hold key — bindable key (default `Shift` during operations; Space is taken by the Litany key) acts as the primary button at the cursor for hold tools, so players can rest the mouse button finger
-- [ ] INP-0034 · Demo · P1 · S · Button-chatter debounce — a release followed by a press within 60 ms (worn mouse switches) does not reset Tincture injection or Brand sear progress and does not start a new `pressId` stroke (unit tests for both tools)
-- [ ] INP-0035 · Demo · P1 · S · Brand healthy-flesh grace — the Brand does not hurt healthy flesh for the first 120 ms of a hold, so brief contact while moving between grubs isn't penalised (unit test: 100 ms on flesh = 0 damage)
+- [x] INP-0034 · Demo · P1 · S · Button-chatter debounce — a release followed by a press within 60 ms (worn mouse switches) does not reset Tincture injection or Brand sear progress and does not start a new `pressId` stroke (unit tests for both tools)
+- [x] INP-0035 · Demo · P1 · S · Brand healthy-flesh grace — the Brand does not hurt healthy flesh for the first 120 ms of a hold, so brief contact while moving between grubs isn't penalised (unit test: 100 ms on flesh = 0 damage)
 
 ### Gesture translation — zig-zag stitching (Gut Thread)
 - [x] INP-0036 · M0 · P0 · S · Zig-zag stitching — each crossing of the wound line is a stitch, crossings within 10 px of an existing mark are rejected, one-stroke closure rates COOL (`StitchLine`)
-- [ ] INP-0037 · Demo · P0 · S · Fast-swipe robustness — with sub-frame samples, a 500 px/s zig-zag at 30 fps registers ≥ 95 % of geometric crossings; crossings within 4 px of a wound endpoint still count (unit test with synthetic stroke)
+- [x] INP-0037 · Demo · P0 · S · Fast-swipe robustness — with sub-frame samples, a 500 px/s zig-zag at 30 fps registers ≥ 95 % of geometric crossings; crossings within 4 px of a wound endpoint still count (unit test with synthetic stroke)
 - [ ] INP-0038 · Demo · P1 · S · Stitch spacing scales with wound length — min spacing = clamp(total/needed × 0.4, 8, 16) px instead of fixed 10 px, so short nicks can't be failed by an over-strict rule (unit tests: 36 px and 120 px lacerations)
 - [x] INP-0039 · Demo · P1 · M · Assisted stitching option — hold primary and run the cursor along the wound; a crossing is auto-generated every wound-length/needed px while within 20 px of the line; ratings capped at GOOD; default on for gamepad if the calibration task shows < 80 % op1-1 completion
 - [ ] INP-0040 · Demo · P2 · S · Stitch direction freedom — stitching may start at either end or the middle and travel either way; verify with tests for reverse-direction strokes
 
 ### Gesture translation — grab & pull-out (Tongs)
 - [x] INP-0041 · M0 · P0 · S · Tongs extraction — grab within 20 px of the handle, drag > 70 px from origin to extract; barbed arrows need two Lancet nicks or they tear (1.6× laceration, BAD) (`Embedded`)
-- [ ] INP-0042 · Demo · P1 · S · Grab snapping — Tongs snap to the nearest graspable within the grab radius (20 px × Target Size assist) and the hovered graspable gets an outline, so near-misses on thin arrow shafts don't fall through to flesh
+- [x] INP-0042 · Demo · P1 · S · Grab snapping — Tongs snap to the nearest graspable within the grab radius (20 px × Target Size assist) and the hovered graspable gets an outline, so near-misses on thin arrow shafts don't fall through to flesh
 - [ ] INP-0043 · Demo · P1 · S · Pull-axis tolerance — while grabbed, a faint axis line shows the shaft direction; pulling within ±35° of the axis keeps COOL/GOOD timing rules, larger deviations cap the rating at GOOD (unit tests at 20° and 60°)
-- [ ] INP-0044 · Demo · P2 · S · Drag-lock option — "Grab: Hold / Click-to-toggle": click once to seize, move, click again to release; Tongs extraction thresholds unchanged (unit test for toggle extraction)
+- [x] INP-0044 · Demo · P2 · S · Drag-lock option — "Grab: Hold / Click-to-toggle": click once to seize, move, click again to release; Tongs extraction thresholds unchanged (unit test for toggle extraction)
 - [x] INP-0045 · Demo · P1 · S · Mid-grab interruptions — switching tool, drawing the Litany star, pausing or losing focus while an object is grabbed returns it to its origin without rating; covered by unit tests for each path
 
 ### Tool switching
 - [x] INP-0046 · M0 · P0 · S · Tool selection — hotkeys 1–8 (`TOOL_INFO.code`), mouse wheel and Q/E cycle, clicking a tray slot; switching releases any capture (`Operation.setTool`)
-- [ ] INP-0047 · Demo · P0 · S · HUD hit-test layer — replace the `trayClick` flag and `x > TRAY.x+TRAY.w+10` filter with a UI hit-test pass where HUD widgets (tray, Litany icon, callout panel, pause button) consume presses first; test: clicking the gap between tray slots with the Lancet never rates MISS
-- [ ] INP-0048 · Demo · P1 · S · Unavailable-tool feedback — pressing the hotkey of a tool not in `def.tools` shakes the tray and shows "Not in the kit for this operation" once per op; no `select` cue spam
+- [x] INP-0047 · Demo · P0 · S · HUD hit-test layer — replace the `trayClick` flag and `x > TRAY.x+TRAY.w+10` filter with a UI hit-test pass where HUD widgets (tray, Litany icon, callout panel, pause button) consume presses first; test: clicking the gap between tray slots with the Lancet never rates MISS
+- [x] INP-0048 · Demo · P1 · S · Unavailable-tool feedback — pressing the hotkey of a tool not in `def.tools` shakes the tray and shows "Not in the kit for this operation" once per op; no `select` cue spam
 - [x] INP-0049 · Demo · P1 · S · Quick-swap — bindable action (default `Tab`/mouse X1) toggles between the current and previous tool; test: 1 → 4 → Tab returns to Lancet, Tab again returns to Gut Thread
 - [x] INP-0050 · Demo · P1 · M · Radial tool menu — hold middle mouse (or gamepad Y) opens a radial of the operation's tools centred on the cursor; flick direction + release selects; world time is not paused; selection latency ≤ 1 frame after release; cancels if released within 12 px of centre
 - [x] INP-0051 · Demo · P2 · S · Wheel options — "Invert wheel" and "Wheel wraps around the tray" settings; default wrap on (current behaviour)
-- [ ] INP-0052 · Demo · P2 · M · Auto-tool assist — optional "Suggest tool on press": pressing on a target with the wrong tool switches to the tool implied by that target (pool → Leech-Pipe, open laceration → Gut Thread, grub → Brand) before dispatching; off by default; unit test for each Ch1–2 entity type
+- [x] INP-0052 · Demo · P2 · M · Auto-tool assist — optional "Suggest tool on press": pressing on a target with the wrong tool switches to the tool implied by that target (pool → Leech-Pipe, open laceration → Gut Thread, grub → Brand) before dispatching; off by default; unit test for each Ch1–2 entity type
 
 ### Litany of Stillness input
 - [x] INP-0053 · M0 · P0 · M · Star recogniser `isStar` — resample to 80 points, closed within 35 % of size, 4–8 self-crossings, ≥ 3 sharp corners; tests accept clean/sloppy pentagrams and reject circle, zig-zag, tiny scribble
@@ -97,9 +97,9 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ### Precision, handedness & motor options
 - [x] INP-0066 · Demo · P1 · S · Global hit-scale — one `hitScale` from the Target Size assist multiplies every entity interaction radius (Incision 22/34, Tongs 20, Embedded nick 30, Leech r+10, Salve 24, lens 60/110); table-driven unit test per entity at 1.5×
-- [ ] INP-0067 · Demo · P2 · S · Precision modifier — while a bindable key (default `Ctrl`) is held in pointer-lock mode, cursor movement is scaled ×0.4 for fine tracing; indicator ring on the reticle while active
+- [x] INP-0067 · Demo · P2 · S · Precision modifier — while a bindable key (default `Ctrl`) is held in pointer-lock mode, cursor movement is scaled ×0.4 for fine tracing; indicator ring on the reticle while active
 - [x] INP-0068 · Demo · P2 · S · Cursor speed — 0.5×–2.0× multiplier applies in pointer-lock and virtual-cursor modes (no effect in absolute OS-cursor mode, greyed with explanation)
-- [ ] INP-0069 · Demo · P1 · S · Left-handed mode (input) — swaps default primary/secondary mouse roles (tool on right button, star on left) independently of the OS setting; bindings screen reflects the swap; HUD mirroring handled in UIX
+- [x] INP-0069 · Demo · P1 · S · Left-handed mode (input) — swaps default primary/secondary mouse roles (tool on right button, star on left) independently of the OS setting; bindings screen reflects the swap; HUD mirroring handled in UIX
 - [ ] INP-0070 · Demo · P2 · S · One-handed mouse preset — operations fully playable without keyboard: wheel/radial for tools, right-drag star, pause via a clickable HUD button; verified by completing op1-1…op1-5 mouse-only
 
 ### Rebinding
@@ -107,7 +107,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] INP-0072 · Demo · P0 · M · Rebinding screen — Options → Controls lists actions by group (Tools, Litany, Story, Menus); "Press a key…" capture with 5 s timeout, Esc cancels, conflict prompt offers Swap/Cancel, per-action and global Reset to defaults; works with mouse, keyboard and gamepad navigation
 - [x] INP-0073 · Demo · P0 · S · Reserved inputs — `Escape` (pause/back), primary mouse (use tool) and gamepad Start cannot be unbound; attempting shows an explanation
 - [x] INP-0074 · Demo · P0 · S · Glyphs from bindings — every prompt ("Right-drag ★" in the Litany indicator, the story footer "Click / Space: advance…", tray hotkey labels, briefing instrument keys) renders via `glyphFor(action)`; test: rebinding `tool.select.1` to `KeyZ` changes the tray label to "Z"
-- [ ] INP-0075 · Demo · P2 · S · Binding presets — Default, Left-handed, One-handed mouse; selecting a preset previews changes before applying
+- [x] INP-0075 · Demo · P2 · S · Binding presets — Default, Left-handed, One-handed mouse; selecting a preset previews changes before applying
 
 ## Epic INP-B · Gamepad & Steam Deck basics (Demo)
 
@@ -577,7 +577,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] INP-0110 · Alpha · P2 · S · Magnifier input for forensic/inquisition scenes — hover pan + wheel zoom 1–4× with smooth zoom around the cursor; gamepad triggers zoom
 - [ ] INP-0111 · Alpha · P1 · M · Timing-window input for rhythmic Malison gimmicks (Ch3–5 hours) — windows ±60 ms (COOL) / ±120 ms (GOOD) measured from event timestamps, compensated by an audio-latency offset from a calibration screen (Options → Audio → Calibrate)
 - [ ] INP-0112 · Alpha · P1 · S · Petrification chip gesture — rapid repeated short Lancet strokes on stone crust register as chips (min 3 per second) with an assist that accepts holding instead
-- [ ] INP-0113 · Alpha · P2 · S · Challenge-mode instant retry — hold `R` (gamepad Back) for 1 s to restart; ring fills on the reticle; not active in story mode
+- [x] INP-0113 · Alpha · P2 · S · Challenge-mode instant retry — hold `R` (gamepad Back) for 1 s to restart; ring fills on the reticle; not active in story mode
 - [ ] INP-0114 · Beta · P1 · M · Gesture tuning pass for Chapters 3–5 — corpus recordings and first-try success ≥ 80 % (mouse) and ≥ 70 % (gamepad) for every new mechanic, tuning committed to `tuning.ts`
 
 ### Advanced devices

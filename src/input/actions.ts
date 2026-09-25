@@ -18,6 +18,8 @@ export type ActionId =
   | 'litany.key'
   | 'op.assist'
   | 'op.leechReverse'
+  | 'op.precision'
+  | 'op.retry'
   | 'op.debug'
   | 'pause'
   | 'ui.confirm'
@@ -77,6 +79,9 @@ export const ACTIONS: readonly ActionDef[] = [
   { id: 'litany.key', group: 'litany', label: 'Speak the Litany', contexts: op, chordHold: 0.6 },
   { id: 'op.assist', group: 'tools', label: 'Call Sister Ilse (once per operation)', contexts: op },
   { id: 'op.leechReverse', group: 'tools', label: 'Reverse the leech', contexts: op },
+  { id: 'op.precision', group: 'tools', label: 'Precision (hold)', contexts: op },
+  // Shares R with the leech tap on purpose: the tap fires at once, the restart only after a 1 s hold.
+  { id: 'op.retry', group: 'menus', label: 'Restart (hold 1 s)', contexts: ['op', 'menu'] },
   { id: 'op.debug', group: 'tools', label: 'Gameplay debug overlay', contexts: op },
   { id: 'pause', group: 'menus', label: 'Pause', contexts: op },
   { id: 'ui.confirm', group: 'menus', label: 'Confirm', contexts: menu },
@@ -120,6 +125,8 @@ export const DEFAULT_BINDINGS: Readonly<Record<ActionId, BindingSet>> = {
   'litany.key': b(['key:Space'], ['pad:4+pad:5']),
   'op.assist': b(['key:KeyH']),
   'op.leechReverse': b(['key:KeyR']),
+  'op.precision': b(['key:ControlLeft'], ['pad:10']),
+  'op.retry': b(['key:KeyR'], ['pad:8']),
   'op.debug': b(['key:F7']),
   pause: b(['key:Escape'], ['pad:9']),
   'ui.confirm': b(['key:Enter', 'key:Space'], ['pad:0']),
