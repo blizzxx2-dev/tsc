@@ -1,20 +1,70 @@
 {
   "$comment": "Asset bundles (ENG-0212). An asset id is its path under assets/ without extension (sprite sheets: sprites/<sheet>). The first matching rule (regex on the id) picks its bundle. See docs/assets.md.",
-  "bundles": ["boot", "title", "story-common", "ops-common", "chapter1", "chapter2"],
+  "bundles": [
+    "boot",
+    "title",
+    "story-common",
+    "ops-common",
+    "chapter1",
+    "chapter2"
+  ],
   "rules": [
-    { "match": "^fonts/", "bundle": "boot" },
-    { "match": "^luts/neutral", "bundle": "boot" },
-    { "match": "^(sprites|backdrops|portraits|luts|audio)/ch1-", "bundle": "chapter1" },
-    { "match": "^(sprites|backdrops|portraits|luts|audio)/ch2-", "bundle": "chapter2" },
-    { "match": "^sprites/(ui|title)", "bundle": "title" },
-    { "match": "^(backdrops|portraits)/", "bundle": "story-common" },
-    { "match": "^(sprites|particles|audio)/", "bundle": "ops-common" }
+    {
+      "match": "^fonts/",
+      "bundle": "boot"
+    },
+    {
+      "match": "^luts/neutral",
+      "bundle": "boot"
+    },
+    {
+      "match": "^(sprites|backdrops|portraits|luts|audio)/ch1-",
+      "bundle": "chapter1"
+    },
+    {
+      "match": "^(sprites|backdrops|portraits|luts|audio)/ch2-",
+      "bundle": "chapter2"
+    },
+    {
+      "match": "^sprites/(ui|title)",
+      "bundle": "title"
+    },
+    {
+      "match": "^(backdrops|portraits)/",
+      "bundle": "story-common"
+    },
+    {
+      "match": "^(sprites|particles|audio)/",
+      "bundle": "ops-common"
+    }
   ],
   "default": "boot",
   "fonts": {
-    "im-fell-english-latin-400-normal": { "family": "IM Fell English", "style": "normal", "weight": "400" },
-    "im-fell-english-latin-400-italic": { "family": "IM Fell English", "style": "italic", "weight": "400" },
-    "unifrakturmaguntia-latin-400-normal": { "family": "UnifrakturMaguntia", "style": "normal", "weight": "400" }
+    "im-fell-english-latin-400-normal": {
+      "family": "IM Fell English",
+      "style": "normal",
+      "weight": "400"
+    },
+    "im-fell-english-latin-400-italic": {
+      "family": "IM Fell English",
+      "style": "italic",
+      "weight": "400"
+    },
+    "unifrakturmaguntia-latin-400-normal": {
+      "family": "UnifrakturMaguntia",
+      "style": "normal",
+      "weight": "400"
+    },
+    "atkinson-hyperlegible-latin-400-normal": {
+      "family": "Atkinson Hyperlegible",
+      "style": "normal",
+      "weight": "400"
+    },
+    "atkinson-hyperlegible-latin-400-italic": {
+      "family": "Atkinson Hyperlegible",
+      "style": "italic",
+      "weight": "400"
+    }
   },
   "budgetMB": 150
 }

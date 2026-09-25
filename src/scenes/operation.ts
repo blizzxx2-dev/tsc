@@ -16,6 +16,9 @@ import { anchorShift, PALETTE, viewRect, VIEW_W } from '../ui/layout';
 import { button, inRect, reticle, toolIcon } from '../ui/widgets';
 import { banner, divider, giltText, hourglass, leatherPanel, medallion, plaque, scroll, UI } from '../ui/ornaments';
 import { buttonSurface } from '../ui/widgets';
+import { DamageAggregator, ToolHints } from '../ui/hudPrefs';
+import { bloodScale, GORE_LEVEL, presentation } from '../render/presentation';
+import { highContrast, palette } from '../ui/theme';
 import { giltNumerals, snuffedVeil } from '../ui/ornaments';
 import { ledgerArt, ratingStamp, ribbonArt, starReliquary, tallyRibbon, tinctureGauge, trayPocketArt, vialArt } from '../art/kit';
 import { cursorTint, quillTrace, vialLevel } from '../art/hud';
@@ -52,6 +55,10 @@ export class OperationScene implements Scene {
   private lastTool: ToolId | null = null;
   private entered = false;
   private hintT = 0;
+  /** Vitals-loss popups summed per source (UIX-0049) and the tooltip policy (UIX-0053). */
+  private dmg = new DamageAggregator();
+  private hints = new ToolHints();
+  private idleT = 0;
   private particles = new Particles();
   private flashLimit = new FlashLimiter();
   private comboT = 0;
@@ -83,8 +90,18 @@ export class OperationScene implements Scene {
 
   /** Subscribe the presentation (popups, particles, audio) to the operation's event bus. */
   private listen(op: Operation): void {
-    op.events.on('popup', (p) => this.popups.push({ ...p, t: 0 }));
-    op.events.on('fx', (e) => this.particles.spawn(e));
+    op.events.on('popup', (p) => {
+      if (!this.dmg.absorb(p.text, p.pos, p.color)) this.popups.push({ ...p, t: 0 });
+    });
+    op.events.on('fx', (e) => {
+      // Gore level (UIX-0155): fewer blood particles when reduced, none when minimal.
+      if (e.kind === 'blood') {
+        const k = bloodScale(presentation.gore);
+        if (k === 0) return;
+        if (k < 1) return this.particles.spawn({ ...e, n: Math.max(1, Math.round(e.n * k)) });
+      }
+      this.particles.spawn(e);
+    });
     op.events.on('say', ({ lines }) => {
       this.calloutLog.push(...lines);
       if (this.calloutLog.length > 20) this.calloutLog.splice(0, this.calloutLog.length - 20);
@@ -192,9 +209,18 @@ export class OperationScene implements Scene {
       const i = op.def.tools.findIndex((_, k) => inRect(p, this.slot(k)));
       return i >= 0 ? op.def.tools[i] : p.x <= TRAY.x + TRAY.w + 10 ? 'consume' : null;
     });
+    this.dmg.enabled = settings.damageNumbers;
+    this.hints.mode = settings.toolHints;
+    for (const p of this.dmg.tick(dt)) this.popups.push({ ...p, t: 0 });
     if (op.tool !== this.lastTool) {
       this.toolFlash = 1;
+      this.hintT = this.hints.selected(op.tool) ? 2.5 : 0;
+    }
+    // Idle during a guided tutorial: remind what the instrument in hand does.
+    this.idleT = input.pressed || input.down ? 0 : this.idleT + dt;
+    if (this.hintT <= 0 && this.hints.remind(this.idleT, op.tutorial !== null)) {
       this.hintT = 2.5;
+      this.idleT = 0;
     }
     this.hintT = Math.max(0, this.hintT - dt);
     if (op.combo !== this.lastCombo) {
@@ -249,6 +275,8 @@ export class OperationScene implements Scene {
 
   render(g: Gfx, game: Game): void {
     const op = this.op;
+    presentation.creatureFilter = settings.creatureFilter;
+    presentation.gore = GORE_LEVEL[settings.goreLevel];
     const pal = organPalette(op.def);
     const t = g.time;
     const sk = settings.reduceMotion ? 0 : op.shake * settings.shake;
@@ -286,14 +314,18 @@ export class OperationScene implements Scene {
       corrupt: this.corrupt,
       cellSoft: pal.cellSoft,
       rough: pal.rough,
+      gore: presentation.gore,
       lights: [
         { x: light.x, y: light.y, h: 1.1, i: 1.1, col: [0.95, 0.9, 0.82] },
         { x: FIELD.cx - FIELD.rx - 60, y: FIELD.cy + 120, h: 0.35, i: 0.45 * (0.85 + 0.15 * Math.sin(t * 9.3) * Math.sin(t * 4.1)), col: [1.0, 0.6, 0.3] },
         { x: FIELD.cx + FIELD.rx + 60, y: FIELD.cy - 60, h: 0.35, i: 0.4 * (0.85 + 0.15 * Math.sin(t * 8.1 + 2.0) * Math.sin(t * 3.3)), col: [1.0, 0.62, 0.32] },
       ],
     });
-    g.fluidComposite(light);
+    const colours = palette();
+    g.fluidComposite(light, { blood: colours.blood, pus: colours.pus, bile: colours.bile, gore: presentation.gore });
     for (const e of ents) e.draw(g, op);
+    // High contrast: a 2 px ring around everything that takes an instrument.
+    if (highContrast()) for (const e of ents) if (e.required) g.arc(e.pos.x, e.pos.y, 28, 2, hex('#ffffff', 0.85), 1);
     this.particles.draw(g);
 
     // Scrying lens: shimmer where something hides.
@@ -387,21 +419,30 @@ export class OperationScene implements Scene {
     const p = game.input.pos;
     if (op.tool === 'tincture' && op.injectT > 0) g.arc(p.x, p.y, 18, 3, hex(PALETTE.good), op.injectT / TINCTURE_TIME);
     toolIcon(g, op.tool, p.x + 20, p.y - 20, 0.8 + this.toolFlash * 0.3, t);
-    reticle(g, p, cursorTint(op, p));
+    const tint = cursorTint(op, p);
+    const cpal = palette();
+    reticle(g, p, settings.colorFilter === 'none' ? tint : tint === '#9fe0a8' ? cpal.validTarget : tint === '#ff5a4a' ? cpal.wrongTarget : tint);
     g.endFrame();
   }
 
   private drawHud(g: Gfx): void {
     const op = this.op;
     const t = g.time;
-    const vcol = op.vitals > 60 ? '#8fe0a0' : op.vitals > 30 ? '#f0c060' : '#ff5040';
+    const pal = palette();
+    const vcol = op.vitals > 60 ? pal.vitalsGood : op.vitals > 30 ? pal.vitalsWarn : pal.vitalsDanger;
 
     // ---- Vitals: heart medallion, engraved number, blood tube and a phosphor pulse-glass.
     leatherPanel(g, { x: 14, y: 10, w: 410, h: 72 }, { corners: false });
     const beat = 1 + this.pulse * 0.18;
     medallion(g, 52, 46, 27, hex('#240608'));
     heart(g, 52, 48, 14 * beat, hex(op.vitals > 30 ? '#c0182a' : '#ff3030'));
-    g.glow(52, 48, 30 * beat, hex('#ff2030', 0.15 + this.pulse * 0.25));
+    g.glow(52, 48, 30 * (settings.reduceMotion ? 1 : beat), hex('#ff2030', settings.reduceMotion ? 0.25 : 0.15 + this.pulse * 0.25));
+    // High contrast (UIX-0149): solid plates behind the HUD's numbers.
+    if (pal.plate > 0) {
+      g.rect(86, 16, 64, 56, hex('#000000', pal.plate));
+      g.rect(VIEW_W / 2 - 20, 44, 96, 34, hex('#000000', pal.plate));
+      if (!settings.minimalHud) g.rect(VIEW_W - 200, 44, 184, 34, hex('#000000', pal.plate));
+    }
     g.text(tr('hud.vitals'), 92, 30, { size: 13, color: hex(UI.brass), shadow: false });
     g.text(formatVitals(op.displayVitals()), 92, 64, { size: 38, font: 'body', color: hex('#ffffff'), color2: hex(vcol), shadow: hex('#000000', 0.9) });
     drawDrainArrow(g, op, 146, 50);
@@ -418,6 +459,8 @@ export class OperationScene implements Scene {
     const low = op.timeLeft < op.tuning.flow.timerWarn && op.status === 'running';
     const tcol = op.litanyTime > 0 ? UI.gilt : low ? (Math.sin(t * 8) > 0 ? '#ff5040' : '#a02018') : UI.parch;
     g.text(formatClock(op.timeLeft), pl.x + 98, pl.y + 31, { size: 28, color: hex(tcol), align: 'center' });
+    // Minimal HUD (UIX-0071): vitals, timer, tray and Litany only.
+    if (settings.minimalHud) return;
     for (let i = 0; i < op.phaseCount; i++) {
       const bx = VIEW_W / 2 - ((op.phaseCount - 1) * 16) / 2 + i * 16;
       const done = i < op.phase;
@@ -464,12 +507,13 @@ export class OperationScene implements Scene {
       const info = toolInfo(op.tool);
       const r = this.slot(op.def.tools.indexOf(op.tool));
       const a = Math.min(1, this.hintT);
-      const tip = { x: r.x + r.w + 14, y: r.y + 2, w: 250, h: r.h - 4 };
+      const ts = settings.textScale;
+      const tip = { x: r.x + r.w + 14, y: r.y + 2, w: Math.round(250 * ts), h: Math.round((r.h - 4) * (0.4 + 0.6 * ts * ts)) };
       g.rect(tip.x + 3, tip.y + 4, tip.w, tip.h, hex('#000000', 0.4 * a));
       g.rectGrad(tip.x, tip.y, tip.w, tip.h, hex('#ecdcb4', 0.95 * a), hex('#cdb688', 0.95 * a));
       g.tri(tip.x, tip.y + tip.h / 2 - 7, tip.x, tip.y + tip.h / 2 + 7, tip.x - 8, tip.y + tip.h / 2, hex('#ddc9a0', 0.95 * a));
-      g.text(tr(`tool.${info.id}.name`), tip.x + 10, tip.y + 19, { size: 17, color: hex('#6a0a10', a), shadow: false });
-      g.textBlock(tr(`tool.${info.id}.hint`), tip.x + 10, tip.y + 35, tip.w - 20, { size: 13, color: hex(UI.inkDark, a), shadow: false }, 1.15);
+      g.text(tr(`tool.${info.id}.name`), tip.x + 10, tip.y + 19 * ts, { size: Math.round(17 * ts), color: hex('#6a0a10', a), shadow: false });
+      g.textBlock(tr(`tool.${info.id}.hint`), tip.x + 10, tip.y + 35 * ts, tip.w - 20, { size: Math.round(13 * ts), color: hex(UI.inkDark, a), shadow: false }, 1.15);
     }
 
     // Litany medallion (only once the rite has been learned).
@@ -498,17 +542,24 @@ export class OperationScene implements Scene {
       seed: 3,
       talk: talking ? 0.5 + 0.5 * Math.sin(t * 16) : 0,
     });
-    const r = { x: mx + 44, y: 652, w: 840, h: 50 };
+    // Text scale (UIX-0148): the callout grows upward and wraps rather than overflowing.
+    const ts = settings.textScale;
+    const size = Math.round(19 * ts);
+    const lines = Math.ceil(g.measure(line, size) / 800);
+    const h = Math.max(50, 30 + lines * size * 1.3);
+    const r = { x: mx + 44, y: 702 - h, w: 840, h };
     scroll(g, r);
     g.text(ASSISTANT_NAME, r.x + 16, r.y + 20, { size: 15, color: hex('#6a0a10'), shadow: false });
-    const shown = line.slice(0, Math.floor(this.op.calloutT * 60));
-    g.text(shown, r.x + 16, r.y + 41, { size: 19, color: hex(UI.inkDark), shadow: false });
+    const shown = line.slice(0, Math.floor(this.op.calloutT * 60 * settings.textSpeed));
+    g.textBlock(shown, r.x + 16, r.y + 22 + size, 808, { size, color: hex(UI.inkDark), shadow: false }, 1.3);
   }
 
   private drawPopups(g: Gfx): void {
+    const still = settings.reduceMotion;
     for (const p of this.popups) {
       const a = Math.min(1, (1.1 - p.t) * 3);
-      const rise = p.t * 40;
+      // Reduced Motion: popups neither rise nor pop (UIX-0152).
+      const rise = still ? 0 : p.t * 40;
       const x = p.pos.x;
       const y = p.pos.y - 26 - rise;
       if (!p.rating) {
@@ -516,9 +567,10 @@ export class OperationScene implements Scene {
         else g.text(tSource(p.text), x, y, { size: 20, color: withAlpha(hex(p.color), a), align: 'center' });
         continue;
       }
-      const pop = 1 + Math.max(0, 0.22 - p.t) * 2.2;
+      const pop = still ? 1 : 1 + Math.max(0, 0.22 - p.t) * 2.2;
       const word = tr(`rating.${p.rating}`);
-      ratingStamp(g, p.rating, word, x, y, p.t, a, 30);
+      // Colour filters swap the stamp inks; the stamp shapes and tilt still tell the ratings apart (UIX-0147).
+      ratingStamp(g, p.rating, word, x, y, still ? 1 : p.t, a, 30, settings.colorFilter === 'none' ? undefined : palette()[p.rating]);
       if (p.label) g.text(tSource(p.label), x, y - 36 * pop, { size: 16, font: 'italic', color: hex(UI.parch, a * 0.9), align: 'center' });
       if (p.combo && p.combo > 1 && (p.rating === 'cool' || p.rating === 'good')) g.text(tr('hud.chain_combo', { combo: p.combo }), x, y + 20, { size: 15, color: hex(UI.gilt, a * 0.9), align: 'center' });
     }

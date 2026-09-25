@@ -93,6 +93,7 @@
     "vitest": "^3.2.7"
   },
   "dependencies": {
+    "@fontsource/atkinson-hyperlegible": "^5.3.0",
     "@fontsource/im-fell-english": "^5.3.0",
     "@fontsource/unifrakturmaguntia": "^5.3.0"
   },

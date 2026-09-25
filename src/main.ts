@@ -35,6 +35,7 @@ import { downloadRecording, parseRecording, Recorder, Replayer } from './input/r
 import { Transition } from './ui/transition';
 import { GalleryScene } from './scenes/gallery';
 import { displayPrefs } from './ui/display';
+import { setReadableFont } from './render/text';
 import { bindUiSounds } from './ui/events';
 
 /** Dev/QA tooling ships in dev and QA builds; `vite build --mode release` strips it (ENG-0237). */
@@ -236,6 +237,7 @@ class Main implements Game {
     const clock = this.clock;
     this.gfx.renderScale = settings.renderScale;
     Object.assign(this.gfx.displayPrefs, displayPrefs(settings));
+    setReadableFont(settings.readableFont);
     this.clock.reduceMotion = settings.reduceMotion;
     this.gfx.gpuTimer.enabled = this.profiler.enabled && this.gfx.plan.gpuProfiler;
     this.limiter.cap = settings.frameCap;

@@ -15,6 +15,8 @@ export type FaceId =
   | 'fell'
   | 'fell-italic'
   | 'fraktur'
+  | 'atkinson'
+  | 'atkinson-italic'
   | 'grenze-gotisch'
   | 'old-standard'
   | 'old-standard-italic'
@@ -38,6 +40,9 @@ export interface Face {
 export const FACES: Record<FaceId, Face> = {
   fell: { family: 'IM Fell English', style: 'normal', file: '@fontsource/im-fell-english/files/im-fell-english-latin-400-normal.woff', shipped: true, licence: 'OFL-1.1', scripts: ['latin', 'pseudo'] },
   'fell-italic': { family: 'IM Fell English', style: 'italic', file: '@fontsource/im-fell-english/files/im-fell-english-latin-400-italic.woff', shipped: true, licence: 'OFL-1.1', scripts: ['latin', 'pseudo'] },
+  // Readable-font option (UIX-0150): replaces body and italic text when enabled.
+  atkinson: { family: 'Atkinson Hyperlegible', style: 'normal', file: '@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-400-normal.woff', shipped: true, licence: 'OFL-1.1', scripts: ['latin', 'pseudo'] },
+  'atkinson-italic': { family: 'Atkinson Hyperlegible', style: 'italic', file: '@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-400-italic.woff', shipped: true, licence: 'OFL-1.1', scripts: ['latin', 'pseudo'] },
   fraktur: { family: 'UnifrakturMaguntia', style: 'normal', file: '@fontsource/unifrakturmaguntia/files/unifrakturmaguntia-latin-400-normal.woff', shipped: true, licence: 'OFL-1.1', scripts: ['latin', 'pseudo'] },
   // Latin Extended-A blackletter candidate for PL display titles (ART approval pending).
   'grenze-gotisch': { family: 'Grenze Gotisch', style: 'normal', shipped: false, licence: 'OFL-1.1', scripts: ['latin', 'pseudo'] },

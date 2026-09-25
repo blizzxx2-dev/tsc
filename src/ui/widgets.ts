@@ -1,3 +1,5 @@
+import { cursorColour } from './hudPrefs';
+import { settings } from '../core/settings';
 import type { Input } from '../core/input';
 import type { Vec } from '../core/math';
 import { hex } from '../render/color';
@@ -103,14 +105,18 @@ export function star(g: Gfx, x: number, y: number, r: number, c: number): void {
  * for a brass crosshair (e.g. green over a valid target, red over an invalid one).
  */
 export function reticle(g: Gfx, p: Vec, tint?: string): void {
+  // Cursor visibility (UIX-0056): size and colour settings, and a dark outline behind the crosshair.
+  const size = settings.cursorSize;
   if (tint) {
-    crosshairArt(g, p, tint);
+    crosshairArt(g, p, '#000000', 34 * size);
+    crosshairArt(g, p, cursorColour(tint, settings.cursorColor), 30 * size);
     return;
   }
   // Quill: the nib tip sits exactly on the pointer.
   g.save();
   g.translate(p.x, p.y);
   g.rotate(-0.55);
+  g.scale(size, size);
   g.poly([{ x: 0, y: 0 }, { x: -2.6, y: 9 }, { x: 0, y: 13 }, { x: 2.6, y: 9 }], hex('#000000', 0.35));
   g.poly([{ x: 0, y: -0.5 }, { x: -2.4, y: 8.5 }, { x: 0, y: 12 }, { x: 2.4, y: 8.5 }], hex(UI.brassHi), hex(UI.brassLo));
   g.line({ x: 0, y: 1.5 }, { x: 0, y: 7.5 }, 0.8, hex('#1a0e04', 0.9));

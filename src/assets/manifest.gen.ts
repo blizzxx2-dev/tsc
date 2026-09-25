@@ -2,6 +2,8 @@
 import type { AssetEntry } from './types';
 
 export type AssetId =
+  | 'fonts/atkinson-hyperlegible-latin-400-italic'
+  | 'fonts/atkinson-hyperlegible-latin-400-normal'
   | 'fonts/im-fell-english-latin-400-italic'
   | 'fonts/im-fell-english-latin-400-normal'
   | 'fonts/unifrakturmaguntia-latin-400-normal'
@@ -10,6 +12,30 @@ export type AssetId =
 export type BundleId = 'boot' | 'title' | 'story-common' | 'ops-common' | 'chapter1' | 'chapter2';
 
 export const MANIFEST: Record<AssetId, AssetEntry> = {
+  "fonts/atkinson-hyperlegible-latin-400-italic": {
+    "type": "font",
+    "url": "assets/fonts_atkinson-hyperlegible-latin-400-italic.bc8825fd43.woff2",
+    "bytes": 18292,
+    "bundle": "boot",
+    "hash": "bc8825fd43",
+    "font": {
+      "family": "Atkinson Hyperlegible",
+      "style": "italic",
+      "weight": "400"
+    }
+  },
+  "fonts/atkinson-hyperlegible-latin-400-normal": {
+    "type": "font",
+    "url": "assets/fonts_atkinson-hyperlegible-latin-400-normal.d64ba838ef.woff2",
+    "bytes": 17208,
+    "bundle": "boot",
+    "hash": "d64ba838ef",
+    "font": {
+      "family": "Atkinson Hyperlegible",
+      "style": "normal",
+      "weight": "400"
+    }
+  },
   "fonts/im-fell-english-latin-400-italic": {
     "type": "font",
     "url": "assets/fonts_im-fell-english-latin-400-italic.8fc678575e.woff2",
@@ -60,6 +86,8 @@ export const MANIFEST: Record<AssetId, AssetEntry> = {
 
 export const BUNDLES: Record<BundleId, readonly AssetId[]> = {
   "boot": [
+    "fonts/atkinson-hyperlegible-latin-400-italic",
+    "fonts/atkinson-hyperlegible-latin-400-normal",
     "fonts/im-fell-english-latin-400-italic",
     "fonts/im-fell-english-latin-400-normal",
     "fonts/unifrakturmaguntia-latin-400-normal"

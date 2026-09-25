@@ -304,6 +304,12 @@ export class DebugApi {
     return this.state();
   }
 
+  /** Change a player setting for this session (not persisted) — for screenshots of comfort options. */
+  setSetting(key: string, value: unknown): void {
+    if (!(key in settings)) throw new Error(`unknown setting ${key}`);
+    (settings as unknown as Record<string, unknown>)[key] = value;
+  }
+
   setTime(seconds: number): DebugState {
     this.requireOp().timeLeft = Math.max(0, seconds);
     return this.state();

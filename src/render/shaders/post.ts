@@ -89,7 +89,7 @@ uniform float u_beat;    // heartbeat pulse 0..1 from the ECG clock
 uniform float u_curse;   // Malison presence 0..1: ink creeping from the edges
 uniform vec2 u_outcome;  // x: flatline 0..1 (desaturate, burn, fade), y: victory 0..1 (warm swell)
 uniform float u_hdr;     // 1 when the scene target is floating point
-uniform vec4 u_prefs;    // player display options (UIX-0105): x grain, y vignette, z brightness gamma, w unused
+uniform vec4 u_prefs;    // player display options (UIX-0105): x grain, y vignette, z brightness gamma, w reduced motion
 out vec4 o;
 // Soft shoulder: identity below the knee, gently compresses HDR highlights above it.
 vec3 shoulder(vec3 c) {
@@ -124,7 +124,8 @@ void main() {
   float aspect = u_res.x / max(u_res.y, 1.0);
   // Litany: a star-shaped ripple radiates from where the sign was drawn; the world holds still.
   float lring = 0.0;
-  if (u_litany > 0.0) {
+  // Reduced Motion (UIX-0152): the Litany keeps its sepia tint but the ripple and wobble stop.
+  if (u_litany > 0.0 && u_prefs.w < 0.5) {
     vec2 lp = (uv - u_litanyCenter) * vec2(aspect, 1.0);
     float sd = starShape(lp);
     float front = u_litanyAge * 0.9;

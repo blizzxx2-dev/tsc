@@ -4184,5 +4184,55 @@
     "context": "Explanation shown under the options list while the row is hovered.",
     "screenshot": "docs/loc/screens/options.png",
     "maxLines": 1
+  },
+  "ui.common.done": {
+    "scene": "common",
+    "font": "body",
+    "size": 28,
+    "maxPx": 300,
+    "context": "Generic button / toggle value.",
+    "screenshot": "docs/loc/screens/common.png"
+  },
+  "ui.calibrate.title": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 700,
+    "context": "Title of the brightness calibration screen.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.calibrate.help": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 2
+  },
+  "ui.calibrate.value": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 280,
+    "context": "Value of an options row, drawn right-aligned between ‹ ›.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.calibrate": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.calibrate_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
   }
 }

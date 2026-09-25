@@ -1,5 +1,13 @@
 export type FontId = 'body' | 'display' | 'italic';
 
+/** Readable-font option (UIX-0150): body and italic text in Atkinson Hyperlegible; titles keep the blackletter. */
+const READABLE = '"Atkinson Hyperlegible", Verdana, "Segoe UI", sans-serif';
+let readable = false;
+export function setReadableFont(on: boolean): void {
+  readable = on;
+}
+export const readableFont = (): boolean => readable;
+
 export const FONT_FAMILIES: Record<FontId, { style: string; family: string }> = {
   body: { style: 'normal', family: '"IM Fell English", "Palatino Linotype", "Book Antiqua", Georgia, serif' },
   italic: { style: 'italic', family: '"IM Fell English", "Palatino Linotype", Georgia, serif' },
@@ -41,7 +49,7 @@ export class GlyphAtlas {
   /** Region changed since the last upload (ENG-0171); `full` forces a whole-page upload. */
   private dirtyRect = { x0: SIZE, y0: SIZE, x1: 0, y1: 0 };
   private full = true;
-  private metrics = new Map<FontId, { ascent: number; descent: number }>();
+  private metrics = new Map<string, { ascent: number; descent: number }>();
 
   constructor(
     private gl: WebGL2RenderingContext,
@@ -80,7 +88,12 @@ export class GlyphAtlas {
 
   private font(f: FontId): string {
     const { style, family } = FONT_FAMILIES[f];
-    return `${style} ${this.baseSize}px ${family}`;
+    return `${style} ${this.baseSize}px ${readable && f !== 'display' ? READABLE : family}`;
+  }
+
+  /** Cache key for a face: the readable swap gets its own glyphs and metrics. */
+  private face(f: FontId): string {
+    return readable && f !== 'display' ? `${f}~r` : f;
   }
 
   ascent(f: FontId): number {
@@ -88,18 +101,18 @@ export class GlyphAtlas {
   }
 
   private metricsFor(f: FontId): { ascent: number; descent: number } {
-    let m = this.metrics.get(f);
+    let m = this.metrics.get(this.face(f));
     if (!m) {
       this.ctx.font = this.font(f);
       const tm = this.ctx.measureText('Hgjy|');
       m = { ascent: Math.ceil(tm.actualBoundingBoxAscent + 4), descent: Math.ceil(tm.actualBoundingBoxDescent + 4) };
-      this.metrics.set(f, m);
+      this.metrics.set(this.face(f), m);
     }
     return m;
   }
 
   glyph(ch: string, f: FontId): Glyph {
-    const key = f + ch;
+    const key = this.face(f) + ch;
     let g = this.glyphs.get(key);
     if (g) return g;
     const ctx = this.ctx;

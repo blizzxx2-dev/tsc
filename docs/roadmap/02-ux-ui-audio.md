@@ -155,12 +155,12 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] UIX-0003 · Demo · P0 · M · Update/draw split — widgets currently handle clicks inside `render()`; introduce a per-frame UI context that processes input in `update()` and draws in `render()`, so menus are testable without WebGL and input is handled exactly once per frame
 - [x] UIX-0004 · Demo · P0 · M · Focus navigation — every interactive widget registers a focus node; directional navigation picks the nearest node in the pressed direction; gold rim + candle-glow focus ring; Enter/A activates; all menus completable with keyboard only (Playwright keyboard script over Title → Options → Chapter Select → Operation → Pause → Results)
 - [ ] UIX-0005 · Demo · P0 · S · Activate-on-release — buttons fire on primary release inside the rect after a press inside the rect (not on press), preventing click-through into the next scene; unit test with synthetic press/release
-- [ ] UIX-0006 · Demo · P0 · M · Control widgets — slider, toggle, stepper (◀ value ▶), dropdown, tab bar, scroll list (wheel/drag/stick), modal confirm dialog; each supports mouse, keyboard and gamepad; gallery page at `?ui=gallery` for visual review
+- [x] UIX-0006 · Demo · P0 · M · Control widgets — slider, toggle, stepper (◀ value ▶), dropdown, tab bar, scroll list (wheel/drag/stick), modal confirm dialog; each supports mouse, keyboard and gamepad; gallery page at `?ui=gallery` for visual review
 - [x] UIX-0007 · Demo · P0 · S · Modal stack — pause, confirm and options can stack; Esc/B pops only the top modal; input never reaches layers underneath (test: Esc in Options-over-Pause returns to Pause, not gameplay)
 - [x] UIX-0008 · Demo · P1 · S · Tooltip widget — 400 ms hover delay (instant on focus for gamepad), auto-flip at screen edges, max width 360 px, used for tray tools, option descriptions and rank seals
 - [x] UIX-0009 · Demo · P1 · S · Scene transitions — `game.go()` routes through a transition manager (ink-wash dissolve or fade-through-black, 300 ms, instant with Reduced Motion); input blocked during transitions; no double-trigger if a button is clicked twice
 - [x] UIX-0010 · Demo · P1 · S · UI event hooks — widgets emit `ui.hover`, `ui.focus`, `ui.confirm`, `ui.back`, `ui.slider`, `ui.tab`, `ui.error` to the audio event bus (sounds defined in AUD)
-- [ ] UIX-0011 · Demo · P1 · S · Text bounds — `textBlock` returns the laid-out height; single-line text ellipsises at its widget width; dev builds log widget id + string when text overflows (runs in the pseudo-loc and text-scale checks)
+- [x] UIX-0011 · Demo · P1 · S · Text bounds — `textBlock` returns the laid-out height; single-line text ellipsises at its widget width; dev builds log widget id + string when text overflows (runs in the pseudo-loc and text-scale checks)
 
 ### Layout, resolution & scaling
 - [ ] UIX-0012 · Demo · P0 · M · 16:10 / Steam Deck layout — decide and implement 1280×800 handling (extend virtual height to 800 with anchored HUD vs themed letterbox bars); HUD anchors (top-left, top-centre, bottom-right…) respect the extra space; screenshots at 1280×800, 1920×1080, 2560×1440, 3440×1440 and 3840×2160 reviewed
@@ -174,13 +174,13 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] UIX-0018 · Demo · P0 · M · 9-slice frames — textured oak panel, parchment sheet, iron-banded frame and torn-edge note replace procedural `panel()`/`parchment()`; single UI atlas ≤ 2048², crisp at 1× and 2× DPR
 - [ ] UIX-0019 · Demo · P0 · L · Woodcut icon set — 8 tool icons, 4 rating stamps, heart, hourglass, Litany star, wax seal, rank seals XS/S/A/B/C, and ailment icons for Ch1–2 (knife wound, bite, arrow, bolt, lead shot, fire/acid/hexfire burn, bubo, rot, venom, grub, egg sac, spiderling, curse-sigil, hexstone, Malison); 32/64/128 px exports in the UI atlas
 - [ ] UIX-0020 · Demo · P1 · M · Tool cursor sprites — per-tool cursor art with the hotspot at the working tip (blade point, tong jaws, pipe mouth…) replacing the procedural `toolIcon` beside the reticle; reticle kept as optional overlay
-- [ ] UIX-0021 · Demo · P1 · S · Wax-seal button — red wax seal with embossed glyph for primary actions ("Scrub In", "Continue", "Wishlist"); press squash 90 ms + crack sound hook; disabled state as cold grey wax
+- [x] UIX-0021 · Demo · P1 · S · Wax-seal button — red wax seal with embossed glyph for primary actions ("Scrub In", "Continue", "Wishlist"); press squash 90 ms + crack sound hook; disabled state as cold grey wax
 - [ ] UIX-0022 · Demo · P1 · S · Illuminated chapter title cards — blackletter chapter numeral, drop-cap border, woodcut vignette for Chapter I and Chapter II
 - [ ] UIX-0023 · Demo · P1 · S · Glyph coverage audit — IM Fell English and UnifrakturMaguntia render every character used in Ch1–2 text and UI (`×`, `★`, `▼`, `—`, `’`, `…`, `é`, `ü`, `ß`); missing glyphs fall back to a matching serif; automated test scans content strings against atlas coverage
 - [ ] UIX-0024 · Demo · P0 · S · Minimum text size — raise every UI string to ≥ 16 px virtual (tray hint and story footer are 13 px, tray keys 14 px today); a test/grep over `g.text(` size literals fails below 16 in HUD/menu code
-- [ ] UIX-0025 · Demo · P0 · S · Contrast audit — all text ≥ 4.5:1 against its background (WCAG AA); fix known weak pairs such as faded ink `#5a4228` on parchment `#c4ae80` and `inkDim` over flesh; results table in the PR
-- [ ] UIX-0026 · Demo · P1 · S · Motion language — easing/duration table (hover 80 ms, panel open 220 ms easeOutQuad, stamp 180 ms easeOutBack, page turn 350 ms) implemented as shared tween helpers; all honour Reduced Motion
-- [ ] UIX-0027 · Demo · P2 · S · Candle-flicker UI lighting — panels receive a subtle 2–3 % luminance flicker synced to the scene's candle light; disabled with Reduced Motion / Reduced Flashing
+- [x] UIX-0025 · Demo · P0 · S · Contrast audit — all text ≥ 4.5:1 against its background (WCAG AA); fix known weak pairs such as faded ink `#5a4228` on parchment `#c4ae80` and `inkDim` over flesh; results table in the PR
+- [x] UIX-0026 · Demo · P1 · S · Motion language — easing/duration table (hover 80 ms, panel open 220 ms easeOutQuad, stamp 180 ms easeOutBack, page turn 350 ms) implemented as shared tween helpers; all honour Reduced Motion
+- [x] UIX-0027 · Demo · P2 · S · Candle-flicker UI lighting — panels receive a subtle 2–3 % luminance flicker synced to the scene's candle light; disabled with Reduced Motion / Reduced Flashing
 
 ## Epic UIX-B · Operation HUD (Demo)
 
@@ -210,22 +210,22 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] UIX-0046 · Demo · P0 · M · Rating stamps — replace text popups with woodcut stamps (COOL gold leaf, GOOD green ink, BAD rust, MISS blood splash), each a distinct shape so it reads without colour; label text ("Incision") beneath; 1.1 s lifetime; stamp-in 120 ms
 - [ ] UIX-0047 · Demo · P0 · S · Popup de-overlap — popups spawned within 40 px and 0.3 s of another stack upwards by one line; test: 5 simultaneous shard ratings stay legible (no bounding boxes overlap)
 - [ ] UIX-0048 · Demo · P1 · S · Combo milestone callouts — at chain 5/10/20 a larger banner ("Steady hands!", "A surgeon's grace!", "Saint Ildra guides you!") appears once per milestone per operation
-- [ ] UIX-0049 · Demo · P1 · S · Damage-number toggle and vitals-loss aggregation — continuous drain damage is summed and shown at most every 0.5 s per source instead of per frame
+- [x] UIX-0049 · Demo · P1 · S · Damage-number toggle and vitals-loss aggregation — continuous drain damage is summed and shown at most every 0.5 s per source instead of per frame
 - [ ] UIX-0050 · Demo · P1 · S · Hurt direction cue — when vitals drop from an entity, a brief red pulse ring marks that entity so players learn what is draining the patient
 
 ### Tool tray & cursor
 - [ ] UIX-0051 · Demo · P0 · M · Tray v2 — slot art per tool, selected slot slides out 8 px, binding glyph from current bindings, hover/focus tooltip (name, gesture, binding), Tincture cooldown as radial wipe, Brand heat glow; tray mirrors to the right edge in left-handed mode
 - [x] UIX-0052 · M0 · P1 · S · Tool hint tooltip — name + hint panel beside the selected tray slot, fading 2.5 s after each switch (replaced the static text under the tray)
-- [ ] UIX-0053 · Demo · P1 · S · Tool hint modes — "Tool hints: Always / First uses / Off"; in First-uses mode the tooltip also re-appears after 5 s idle during a tool's first 3 uses; hint text raised from 13 px to ≥ 16 px
+- [x] UIX-0053 · Demo · P1 · S · Tool hint modes — "Tool hints: Always / First uses / Off"; in First-uses mode the tooltip also re-appears after 5 s idle during a tool's first 3 uses; hint text raised from 13 px to ≥ 16 px
 - [ ] UIX-0054 · Demo · P0 · M · Target-validity cursor — cursor tints green over a valid target for the current tool; over a target needing another tool it shows that tool's ghost icon ("Needs: Leech-Pipe"); shape changes (ring vs cross) so it is colour-independent
 - [ ] UIX-0055 · Demo · P1 · S · Hold-progress rings on the cursor for every hold tool — Leech (pool remaining), Brand (sear progress on grub/sigil/Malison), Lens reveal (0.4 s), Salve coverage %, Tincture injection (existing)
-- [ ] UIX-0056 · Demo · P1 · S · Cursor visibility — reticle has a dark outline and optional size (1×–2×) and colour (brass/white/cyan/magenta) settings; remains visible over dark blood, black bile and bright hexfire
+- [x] UIX-0056 · Demo · P1 · S · Cursor visibility — reticle has a dark outline and optional size (1×–2×) and colour (brass/white/cyan/magenta) settings; remains visible over dark blood, black bile and bright hexfire
 
 ### Callouts & guidance
 - [ ] UIX-0057 · Demo · P0 · S · Callout panel placement — the panel (y 650–708) currently overlaps the bottom of the operating field; move it into a reserved bottom strip or make it click-through and auto-shift away from the active entity; hit-test confirms clicks pass to the field
 - [ ] UIX-0058 · Demo · P1 · M · Callout priorities — `op.say(line, { priority })`: urgent lines (low vitals, shard rejoining, Brand on healthy flesh) interrupt the queue; tips queue; duplicate lines within 10 s are dropped (unit tests on the queue)
 - [ ] UIX-0059 · Demo · P1 · M · Ilse callout bust — portrait in the callout panel with calm/urgent/relieved/worried expressions keyed by line priority or tag; subtle blink and mouth flap while text types
-- [ ] UIX-0060 · Demo · P1 · S · Callout log — last 20 callouts of the current operation viewable from the pause menu
+- [x] UIX-0060 · Demo · P1 · S · Callout log — last 20 callouts of the current operation viewable from the pause menu
 - [ ] UIX-0061 · Demo · P1 · S · Phase objective banner — optional `PhaseDef.objective` ("Close the wounds", "Draw off the blood") shown for 2 s at phase start and kept as a small line under the timer
 - [ ] UIX-0062 · Demo · P2 · S · Threat markers — entities with a countdown (Malison shard rejoin, hexstone corruption every 7 s, bubo swelling) show a thin radial timer ring; edge arrows point to off-attention threats when the cursor is > 400 px away
 
@@ -240,7 +240,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] UIX-0068 · Demo · P1 · S · Litany end warning — last 1.5 s of Stillness the ripple contracts and the indicator flickers (paired with the AUD reverse swell)
 - [ ] UIX-0069 · Demo · P1 · S · Intro card v2 — shows patient name, ailment icon and time allowed for 1.2 s; any press skips; the intro no longer blocks the first click after it ends
 - [ ] UIX-0070 · Demo · P1 · S · Win/lose presentation — "Operation Complete" stamps as a wax seal; "The Patient Is Lost" bleeds in as ink; results follow after 2.2 s or on click after 0.8 s
-- [ ] UIX-0071 · Demo · P2 · S · Minimal HUD option — hides score, combo and phase pips (vitals, timer, tray, Litany always shown)
+- [x] UIX-0071 · Demo · P2 · S · Minimal HUD option — hides score, combo and phase pips (vitals, timer, tray, Litany always shown)
 - [ ] UIX-0072 · Demo · P1 · S · Dev HUD (F3, dev builds only) — fps, frame ms, entity count, vitals drain/s per entity, active tool, input device, latency p95, audio voices
 
 ## Epic UIX-C · Front-end, flow, save & options (Demo)
@@ -249,7 +249,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] UIX-0073 · M0 · P1 · S · WebGL2 failure message — shown in-page instead of a blank canvas (`boot()` fallback)
 - [ ] UIX-0074 · Demo · P0 · S · Boot sequence — studio logo (2 s, skippable), then photosensitivity notice and content warning (gore, plague, body horror, religious violence) on first launch only, with a link to comfort options
 - [ ] UIX-0075 · Demo · P0 · M · First-launch setup — language (English only in demo, list ready), brightness calibration, input device check ("Mouse detected" / "Controller detected"), subtitle size, and "Would you like gentler timings?" assist prompt; every step skippable; runs once per settings file
-- [ ] UIX-0076 · Demo · P1 · S · Brightness calibration screen — woodcut symbol barely visible at correct gamma; slider adjusts the post-process gamma uniform; also in Display options
+- [x] UIX-0076 · Demo · P1 · S · Brightness calibration screen — woodcut symbol barely visible at correct gamma; slider adjusts the post-process gamma uniform; also in Display options
 - [ ] UIX-0077 · Demo · P1 · S · Loading indicator — spinning wax-seal indicator during font/atlas/audio bank loads over 150 ms; no blank frames between boot and title
 
 ### Title screen
@@ -281,16 +281,16 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ### Pause
 - [x] UIX-0099 · M0 · P0 · S · Pause menu "Respite" — Resume, Begin Again, Options, Abandon the Patient; Esc toggles
-- [ ] UIX-0100 · Demo · P0 · M · Pause v2 — Resume, Restart (confirm), Options, Controls card, Callout log, Abandon (confirm), Quit to Desktop (confirm); operation info panel (patient, ailment, time left, current rank pace)
-- [ ] UIX-0101 · Demo · P1 · S · Pause presentation — world blurred and dimmed, parchment menu slides in 220 ms; resume optionally with a 3-2-1 countdown (Accessibility setting, default off)
+- [x] UIX-0100 · Demo · P0 · M · Pause v2 — Resume, Restart (confirm), Options, Controls card, Callout log, Abandon (confirm), Quit to Desktop (confirm); operation info panel (patient, ailment, time left, current rank pace)
+- [x] UIX-0101 · Demo · P1 · S · Pause presentation — world blurred and dimmed, parchment menu slides in 220 ms; resume optionally with a 3-2-1 countdown (Accessibility setting, default off)
 - [ ] UIX-0102 · Demo · P1 · S · Pause button on HUD — clickable/touchable pause glyph in the top bar for mouse-only and Deck touch players
 
 ### Options
 - [x] UIX-0103 · M0 · P0 · M · Options v0 — `OptionsScene` with ‹ value › rows for Volume, Sound, Screen shake (Off/Gentle/Full), Reduce flashing, Assist: time allowed, Assist: Litany on Space and Fullscreen, reachable from the pause menu
-- [ ] UIX-0104 · Demo · P0 · M · Options shell — tabs Gameplay / Controls / Display / Audio / Accessibility / Language; live preview; per-tab Defaults; changes persist to `settings.json` on Back; reachable from Title and Pause (display mode and language greyed in-operation)
+- [x] UIX-0104 · Demo · P0 · M · Options shell — tabs Gameplay / Controls / Display / Audio / Accessibility / Language; live preview; per-tab Defaults; changes persist to `settings.json` on Back; reachable from Title and Pause (display mode and language greyed in-operation)
 - [ ] UIX-0105 · Demo · P0 · M · Display tab — window mode, window size, VSync, frame cap (30/60/120/144/unlimited), render scale, UI scale, brightness, bloom intensity, film grain on/off, vignette on/off, screen shake (the v0 Off/Gentle/Full setting extended to 0–100 %)
-- [ ] UIX-0106 · Demo · P1 · S · Gameplay tab — tool hints mode, damage numbers, confirm on abandon, wheel invert/wrap, Minimal HUD, skip-seen-tutorials
-- [ ] UIX-0107 · Demo · P1 · S · Option descriptions — every option shows a one-line description and, where relevant, a live preview thumbnail (e.g. colour-blind palette on a sample operating field)
+- [x] UIX-0106 · Demo · P1 · S · Gameplay tab — tool hints mode, damage numbers, confirm on abandon, wheel invert/wrap, Minimal HUD, skip-seen-tutorials
+- [x] UIX-0107 · Demo · P1 · S · Option descriptions — every option shows a one-line description and, where relevant, a live preview thumbnail (e.g. colour-blind palette on a sample operating field)
 - [ ] UIX-0108 · Demo · P1 · S · Options are validated on load — out-of-range or unknown values fall back to defaults (unit tests per option)
 
 ### Patient chart (briefing)
@@ -315,11 +315,11 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] UIX-0121 · Demo · P0 · M · Backlog — wheel-up or `vn.log` opens a scrollable log of every line shown in the current scene (speaker + text, VO replay icon when VO exists); Esc/B closes; supports gamepad scrolling
 - [ ] UIX-0122 · Demo · P0 · S · Story pause menu — Esc no longer skips instantly; it opens Resume / Skip Scene (confirm) / Backlog / Options / Return to Title
 - [ ] UIX-0123 · Demo · P1 · S · Auto mode — toggle advances after the line completes plus max(1.2 s, 30 ms/char) or when VO ends; auto icon lit while active; any manual input pauses auto
-- [ ] UIX-0124 · Demo · P1 · M · Read-text tracking — seen line ids stored per save; Ctrl skip passes only seen lines unless "Skip unread text" is on; skip stops at unseen lines with a flash
+- [x] UIX-0124 · Demo · P1 · M · Read-text tracking — seen line ids stored per save; Ctrl skip passes only seen lines unless "Skip unread text" is on; skip stops at unseen lines with a flash
 - [ ] UIX-0125 · Demo · P1 · S · Text-box control strip — clickable Auto / Skip / Log / Hide / Menu icons at the box's bottom-right, with binding tooltips; replaces the 13 px footer hint
 - [ ] UIX-0126 · Demo · P1 · S · Hide UI — `vn.hide` (H / right-click / Y) hides the text box to view art; any input restores
 - [ ] UIX-0127 · Demo · P1 · S · Text speed option — 24/48/72 cps/instant, shared by story text and operation callouts
-- [ ] UIX-0128 · Demo · P1 · S · Text-box readability — optional box opacity 60–100 %, line spacing 1.3, max 3 lines at 125 % text scale without overflow on 1280×800
+- [x] UIX-0128 · Demo · P1 · S · Text-box readability — optional box opacity 60–100 %, line spacing 1.3, max 3 lines at 125 % text scale without overflow on 1280×800
 
 ### Portraits & presentation
 - [ ] UIX-0129 · Demo · P0 · M · Layered portraits — base + expression + effects layers per character (Kreuzer, Ilse, Stroh, Haller, Mauer, patients, Choir hood); script tag `say('ilse', text, { face: 'worried' })`; missing expression falls back to neutral with a dev warning
@@ -338,7 +338,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] UIX-0138 · Demo · P1 · S · Device-aware demos — ghost demos and prompts switch to stick/trigger glyphs when a gamepad is the last-used device
 - [ ] UIX-0139 · Demo · P1 · M · Adaptive re-teaching — two consecutive BAD/MISS on the same mechanic, or 8 s idle with a required entity untouched, replays that ghost demo once; setting "Adaptive hints" on by default
 - [ ] UIX-0140 · Demo · P0 · M · Litany practice — before the op1-5 boss, a practice beat asks the player to draw the star (up to 3 tries with failure reasons, then offers the Litany key assist); success unlocks the Litany for the fight
-- [ ] UIX-0141 · Demo · P1 · S · Controls reference card — per-tool gesture illustrations with current bindings, reachable from briefing and pause
+- [x] UIX-0141 · Demo · P1 · S · Controls reference card — per-tool gesture illustrations with current bindings, reachable from briefing and pause
 - [ ] UIX-0142 · Demo · P1 · S · Tutorial skipping — "Skip tutorials" setting and per-prompt "Don't show again"; skipped tutorials remain viewable from the controls card
 
 ### FTUE validation
@@ -349,19 +349,19 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 ## Epic UIX-F · Accessibility, comfort & assists (Demo)
 
 ### Vision
-- [ ] UIX-0146 · Demo · P0 · M · Colour-blind palettes — deuteranopia, protanopia, tritanopia palette swaps driven by semantic tokens for ratings, vitals states, ichor types (blood/pus/black bile), curse purple and Litany gold; verified with simulator screenshots of every Ch1–2 operation
+- [x] UIX-0146 · Demo · P0 · M · Colour-blind palettes — deuteranopia, protanopia, tritanopia palette swaps driven by semantic tokens for ratings, vitals states, ichor types (blood/pus/black bile), curse purple and Litany gold; verified with simulator screenshots of every Ch1–2 operation
 - [ ] UIX-0147 · Demo · P0 · S · Shape redundancy — every colour-coded state also differs by shape/icon/pattern (rating stamps, vitals heart states, pool hatching per ichor, validity cursor ring vs cross); checklist signed off in greyscale screenshots
-- [ ] UIX-0148 · Demo · P0 · M · Text scaling — 100/125/150/175 % for story text, callouts, subtitles and tooltips; VN box and callout panel grow to 3 lines; no overflow at 175 % on 1280×800
-- [ ] UIX-0149 · Demo · P1 · S · High-contrast mode — solid dark plates behind all HUD text, 2 px outlines on interactable entities and incision guides, stronger reticle outline
-- [ ] UIX-0150 · Demo · P1 · S · Readable font option — swap body text from IM Fell English to Atkinson Hyperlegible (OFL, bundled) everywhere except titles/logo
+- [x] UIX-0148 · Demo · P0 · M · Text scaling — 100/125/150/175 % for story text, callouts, subtitles and tooltips; VN box and callout panel grow to 3 lines; no overflow at 175 % on 1280×800
+- [x] UIX-0149 · Demo · P1 · S · High-contrast mode — solid dark plates behind all HUD text, 2 px outlines on interactable entities and incision guides, stronger reticle outline
+- [x] UIX-0150 · Demo · P1 · S · Readable font option — swap body text from IM Fell English to Atkinson Hyperlegible (OFL, bundled) everywhere except titles/logo
 - [ ] UIX-0151 · Demo · P2 · S · Screen-reader menus (Electron) — focused menu item text mirrored to an ARIA live region so NVDA/Narrator read menus; tested with NVDA on Windows
 
 ### Motion, flashing & gore
-- [ ] UIX-0152 · Demo · P0 · S · Reduced motion — disables screen shake (`op.shake`), popup scale/rise, UI parallax, candle flicker, pulsing glows; Litany ripple becomes a static sepia tint; one toggle, previewed live
+- [x] UIX-0152 · Demo · P0 · S · Reduced motion — disables screen shake (`op.shake`), popup scale/rise, UI parallax, candle flicker, pulsing glows; Litany ripple becomes a static sepia tint; one toggle, previewed live
 - [x] UIX-0153 · M0 · P1 · S · Reduce flashing v0 — scales the failing-vitals red pulse and the Litany ripple to 35 % (`settings.reduceFlashing`)
 - [ ] UIX-0154 · Demo · P0 · M · Reduced flashing — caps bloom spikes, Malison hurt flash, low-vitals red pulse and lightning to ≤ 3 luminance flashes/s and ≤ 20 % area; Harding-style analysis on captured Ch1–2 boss footage passes with the setting on and off
-- [ ] UIX-0155 · Demo · P0 · M · Gore level — Full / Reduced / Minimal: Reduced darkens blood to brown and removes spurts; Minimal renders blood and open wounds as ink-black stylised shapes; applies to `BloodPool`, `Laceration`, `Incision` draw and the flesh shader; gameplay readability unchanged (playtest)
-- [ ] UIX-0156 · Demo · P1 · S · Creature filter — replaces grub, egg-sac and spiderling art (op2-3 "Brood-Mother's Kiss") with abstract blotches and mutes their skitter/chitter SFX, for insect and spider phobia
+- [x] UIX-0155 · Demo · P0 · M · Gore level — Full / Reduced / Minimal: Reduced darkens blood to brown and removes spurts; Minimal renders blood and open wounds as ink-black stylised shapes; applies to `BloodPool`, `Laceration`, `Incision` draw and the flesh shader; gameplay readability unchanged (playtest)
+- [x] UIX-0156 · Demo · P1 · S · Creature filter — replaces grub, egg-sac and spiderling art (op2-3 "Brood-Mother's Kiss") with abstract blotches and mutes their skitter/chitter SFX, for insect and spider phobia
 - [ ] UIX-0157 · Demo · P1 · S · Content warnings — per-chapter warnings listed in Options → Accessibility and on the chapter card (demo: Ch1–2)
 
 ### Assists

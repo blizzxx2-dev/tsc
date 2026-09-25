@@ -6,6 +6,7 @@
  * boss sections, and applies the Litany, low-vitals and pause snapshots.
  */
 import { dist, type Vec } from '../core/math';
+import { settings } from '../core/settings';
 import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, Sigil, Venom } from '../surgery/entities';
 import type { Entity } from '../surgery/entity';
 import { ChoirVoice, EggSac, LaudsMalison, SpiderlingGrub } from '../surgery/lauds';
@@ -558,9 +559,10 @@ export class OperationAudio {
       else if (e instanceof Rot) rot++;
       else if (e instanceof Venom) this.loop(e, 'loop.venom.hiss', true, { spread: Math.min(1, (e.spreadR - 16) / 104) }, pan);
       else if (e instanceof SpiderlingGrub) {
-        if (spiders++ < 4) this.loop(e, 'loop.spider.skitter', true, {}, pan);
+        // The creature filter (UIX-0156) mutes the skittering along with the art.
+        if (spiders++ < 4) this.loop(e, 'loop.spider.skitter', !settings.creatureFilter, {}, pan);
       } else if (e instanceof Grub) {
-        if (grubs++ < 3) this.loop(e, 'loop.grub.chitter', true, {}, pan);
+        if (grubs++ < 3) this.loop(e, 'loop.grub.chitter', !settings.creatureFilter, {}, pan);
       } else if (e instanceof Sigil) {
         this.loop(e, 'loop.sigil.whisper', true, {}, pan);
         const stage = Math.floor(e.progress * 4);

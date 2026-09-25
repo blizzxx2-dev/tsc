@@ -1,4 +1,5 @@
 import { clamp, dist, pointSegment, type Vec } from '../core/math';
+import { drawBlotch, presentation } from '../render/presentation';
 import { hex, rgba } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { Coverage } from './coverage';
@@ -606,7 +607,7 @@ export class Laceration extends Entity {
 
   draw(g: Gfx, op: Operation): void {
     // Carved by the flesh shader; a faint wet glint along the lip, then stitches and salve.
-    g.polyline(this.edge(), 1.5, hex('#ff9090', 0.3));
+    g.polyline(this.edge(), 1.5, hex(presentation.gore === 2 ? '#000000' : '#ff9090', 0.3));
     if (this.pusT > 0) g.polyline(this.edge(), 5, hex('#d8c040', Math.min(0.6, this.pusT / op.tuning.laceration.pusRotTime)));
     this.stitch.draw(g, op);
     if (this.cov) drawCoverage(g, this.cov);
@@ -1753,6 +1754,7 @@ export class Grub extends Entity {
 
   draw(g: Gfx, op: Operation): void {
     const puff = this.heat > 0.15 && this.heat < 0.4 ? 1.25 : 1;
+    if (presentation.creatureFilter) return drawBlotch(g, this.pos.x, this.pos.y, this.small ? 9 : 14);
     const s = (this.small ? 0.65 : 1) * puff;
     g.save();
     g.translate(this.pos.x, this.pos.y);

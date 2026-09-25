@@ -79,7 +79,7 @@ describe('asset loader (ENG-0210/0211/0212)', () => {
   });
 
   it('the generated manifest covers the boot fonts and the fx sprite sheet', () => {
-    expect(BUNDLES.boot.filter((id) => MANIFEST[id].type === 'font').length).toBe(3);
+    expect(BUNDLES.boot.filter((id) => MANIFEST[id].type === 'font').length).toBe(5); // Fell ×2, Fraktur, Atkinson Hyperlegible ×2 (readable-font option, UIX-0150)
     expect(MANIFEST['sprites/fx'].pages!.length).toBeGreaterThan(0);
     for (const e of Object.values(MANIFEST) as AssetEntry[]) expect(e.url).toMatch(/^assets\/.+\.[0-9a-f]{10}\.\w+$/);
   });
@@ -128,7 +128,8 @@ describe('atlas packer (ENG-0033)', () => {
   it('the checked-in fx sheet packs the ENG-0110 brushes', () => {
     const sheetFile = MANIFEST['sprites/fx'].url.replace(/^assets\//, 'public/assets/');
     const json = JSON.parse(readFileSync(sheetFile, 'utf8'));
-    for (const b of ['soft-round', 'splatter-1', 'splatter-2', 'splatter-3', 'splatter-4', 'drag-streak', 'scorch', 'stitch-mark', 'erase']) expect(json.frames[`fx/${b}`]).toBeDefined();
+    for (const b of ['soft-round', 'splatter-1', 'splatter-2', 'splatter-3', 'splatter-4', 'drag-streak', 'scorch', 'stitch-mark', 'erase'])
+      expect(json.frames[`fx/${b}`]).toBeDefined();
   });
 });
 

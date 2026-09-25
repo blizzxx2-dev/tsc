@@ -21,6 +21,7 @@ import { uiEvents } from '../ui/events';
 import { palette, PALETTES, type PaletteId } from '../ui/theme';
 import { ChoiceScene } from './choice';
 import { ControlsCardScene } from './controlsCard';
+import { CalibrateScene } from './calibrate';
 import { AudioOptionsScene } from '../audio/options-scene';
 import { GameplayOptionsScene } from './gameplayOptions';
 
@@ -191,6 +192,7 @@ export function optionRows(tabId: OptionsTab): OptionRow[] {
         choice('frame_limit', 'frameCap', [0, 30, 60, 120, 144] as const, () => [t('ui.options.frame_display'), '30', '60', '120', '144'], 'ui.options.frame_limit'),
         choice('render_scale', 'renderScale', [0.5, 0.75, 0.85, 1] as const, () => ['50%', '75%', '85%', t('ui.options.render_native')], 'ui.options.render_scale'),
         slider('brightness', 'brightness', 0.7, 1.3, 0.05, (v) => pct(v)),
+        { id: 'calibrate', label: 'ui.options.calibrate', kind: 'action', run: (g) => g.push?.(new CalibrateScene(() => g.pop!())) },
         toggle('bloom', 'bloom'),
         toggle('grain', 'grain'),
         toggle('vignette', 'vignette'),

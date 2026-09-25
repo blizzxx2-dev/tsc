@@ -156,9 +156,9 @@ export const STAMP_FRAMES: { scale: number; alpha: number; hit: number }[] = [
 ];
 
 /** An ink-stamp rating: a blackletter word inside an inked double frame. `t` = seconds since the hit. */
-export function ratingStamp(g: Gfx, rating: Rating, word: string, x: number, y: number, t: number, fade = 1, size = 32): void {
+export function ratingStamp(g: Gfx, rating: Rating, word: string, x: number, y: number, t: number, fade = 1, size = 32, inks: [string, string] = RATING_INK[rating]): void {
   const fr = STAMP_FRAMES[frameAt(t, 4, 24)];
-  const [ink, dark] = RATING_INK[rating];
+  const [ink, dark] = inks;
   const s = size * fr.scale;
   const w = g.measure(word, s, 'display') + s * 1.1;
   const h = s * 1.5;

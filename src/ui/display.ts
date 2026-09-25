@@ -13,6 +13,8 @@ export interface DisplayPrefs {
   gamma: number;
   flicker: number;
   chroma: number;
+  /** Reduced Motion: no Litany ripple or screen-space wobble (the sepia tint stays). */
+  still: number;
 }
 
 export function displayPrefs(s: Pick<Settings, 'bloom' | 'grain' | 'vignette' | 'brightness' | 'flicker' | 'chromaticAberration' | 'reduceMotion' | 'reduceFlashing'>): DisplayPrefs {
@@ -24,5 +26,6 @@ export function displayPrefs(s: Pick<Settings, 'bloom' | 'grain' | 'vignette' | 
     // Reduced Motion / Reduced Flashing hold the candle flicker still (UIX-0152/0027).
     flicker: s.flicker && !s.reduceMotion && !s.reduceFlashing ? 1 : 0,
     chroma: s.chromaticAberration ? 1 : 0,
+    still: s.reduceMotion ? 1 : 0,
   };
 }

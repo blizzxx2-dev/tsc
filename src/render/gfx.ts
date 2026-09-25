@@ -23,6 +23,9 @@ void main() { o = vec4(texture(u_tex, v_uv).rgb, 1.0); }`;
 import type { DisplayPrefs } from '../ui/display';
 
 const TAU = Math.PI * 2;
+
+/** '#rrggbb' → [r, g, b] in 0..1. */
+const rgb01 = (h: string): [number, number, number] => [parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255];
 const MAX_VERTS = 60000;
 const STRIDE = 6; // x, y, u, v (f32) + rgba (u32) + texture unit (f32)
 const UNITS = Array.from({ length: BATCH_UNITS }, (_, i) => i);
@@ -80,6 +83,8 @@ export interface FleshParams {
   cellSoft?: number;
   /** Base roughness per organ (0.35–0.6). */
   rough?: number;
+  /** Gore level (UIX-0155): 0 full, 1 reduced, 2 minimal. */
+  gore?: number;
   /** Up to 3 lights: position (virtual px), height, intensity, colour. */
   lights?: { x: number; y: number; h: number; i: number; col: [number, number, number] }[];
 }
@@ -146,7 +151,7 @@ export class Gfx {
   /** Every GL object, for leak counts, VRAM budget and context restore (ENG-0198). */
   readonly registry: GlRegistry;
   /** Player display options as renderer multipliers (UIX-0105); the shell refreshes it every frame. */
-  readonly displayPrefs: DisplayPrefs = { bloom: 1, grain: 1, vignette: 1, gamma: 1, flicker: 1, chroma: 1 };
+  readonly displayPrefs: DisplayPrefs = { bloom: 1, grain: 1, vignette: 1, gamma: 1, flicker: 1, chroma: 1, still: 0 };
   readonly caps: GpuCaps;
   readonly plan: FallbackPlan;
   readonly targets: RenderTargetPool;
@@ -548,7 +553,7 @@ export class Gfx {
     // Mip-chain bloom sums five levels; scale so `bloom` keeps its old meaning.
     gl.uniform1f(this.u(this.post, 'u_bloomAmt'), p.bloom * 0.35 * this.displayPrefs.bloom);
     const dp = this.displayPrefs;
-    gl.uniform4f(this.u(this.post, 'u_prefs'), dp.grain, dp.vignette, dp.gamma, 0);
+    gl.uniform4f(this.u(this.post, 'u_prefs'), dp.grain, dp.vignette, dp.gamma, dp.still);
     gl.uniform1f(this.u(this.post, 'u_beat'), p.beat ?? 0);
     gl.uniform1f(this.u(this.post, 'u_curse'), p.curse ?? 0);
     gl.uniform2fv(this.u(this.post, 'u_outcome'), p.outcome ?? [0, 0]);
@@ -749,7 +754,7 @@ export class Gfx {
   }
 
   /** Composite the liquid layer into the world as glossy, merging fluid. Call after beginWorld. */
-  fluidComposite(light: Vec): void {
+  fluidComposite(light: Vec, look: { blood?: string; pus?: string; bile?: string; gore?: number } = {}): void {
     this.flush('program');
     this.worldFb();
     this.stats.drawCalls++;
@@ -764,6 +769,10 @@ export class Gfx {
     gl.uniform2f(this.u(pr, 'u_view'), this.vw, this.vh);
     gl.uniform2f(this.u(pr, 'u_light'), light.x, light.y);
     gl.uniform1f(this.u(pr, 'u_time'), this.time);
+    gl.uniform3fv(this.u(pr, 'u_blood'), rgb01(look.blood ?? '#8c0510'));
+    gl.uniform3fv(this.u(pr, 'u_pus'), rgb01(look.pus ?? '#c7b24c'));
+    gl.uniform3fv(this.u(pr, 'u_bile'), rgb01(look.bile ?? '#0f0a0f'));
+    gl.uniform1f(this.u(pr, 'u_gore'), look.gore ?? 0);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     this.applyBlend();
   }
@@ -943,6 +952,7 @@ export class Gfx {
     gl.uniform1f(this.u(pr, 'u_corrupt'), f.corrupt);
     gl.uniform1f(this.u(pr, 'u_cellSoft'), f.cellSoft ?? 0.08);
     gl.uniform1f(this.u(pr, 'u_rough'), f.rough ?? 0.45);
+    gl.uniform1f(this.u(pr, 'u_gore'), f.gore ?? 0);
     const lights = f.lights ?? [{ x: f.light.x, y: f.light.y, h: 0.9, i: 1.4, col: [1, 0.9, 0.78] }];
     const lp = new Float32Array(12);
     const lc = new Float32Array(9);

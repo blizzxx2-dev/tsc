@@ -490,5 +490,11 @@
   "ui.options.skip_unread": "Skip unread text",
   "ui.options.skip_unread_note": "Fast-forward also passes story lines you have not read yet.",
   "ui.options.mixer": "Mixer, captions & comfort…",
-  "ui.options.mixer_note": "Bus volumes, heartbeat, comfort options, captions and subtitles."
+  "ui.options.mixer_note": "Bus volumes, heartbeat, comfort options, captions and subtitles.",
+  "ui.common.done": "Done",
+  "ui.calibrate.title": "Brightness",
+  "ui.calibrate.help": "Adjust until the left star is invisible, the middle one barely visible and the right one clear.",
+  "ui.calibrate.value": "{value}%",
+  "ui.options.calibrate": "Calibrate brightness…",
+  "ui.options.calibrate_note": "A test screen for setting brightness to your display."
 }

@@ -8,6 +8,9 @@ import { PALETTE, VIEW_H, VIEW_W } from '../ui/layout';
 import { reticle } from '../ui/widgets';
 import { divider, flowMark, nameCartouche, quillGlyph, scroll, UI } from '../ui/ornaments';
 import { glyphContext, glyphFor } from '../input/glyphs';
+import { settings } from '../core/settings';
+import { canSkip, readLog, ReadLog } from '../ui/readLog';
+import { parchmentArt } from '../art/kit';
 import { drawBackdrop, drawPortrait } from './backdrop';
 
 const CPS = 48; // characters per second
@@ -32,11 +35,17 @@ export class StoryScene implements Scene {
     const { input } = game;
     this.t += dt;
     this.fadeIn = Math.min(1, this.fadeIn + dt * 1.5);
-    const fast = input.act('vn.fast');
-    this.shown += dt * CPS * (fast ? 8 : 1);
+    // Fast-forward passes only lines already read, unless "Skip unread text" is on (UIX-0124).
+    const id = ReadLog.lineId(this.story.id, this.i);
+    const fast = input.act('vn.fast') && canSkip(readLog.has(id), settings.skipUnread);
+    this.shown += dt * CPS * settings.textSpeed * (fast ? 8 : 1);
     const full = this.shown >= this.line.text.length;
+    if (full) readLog.mark(id);
     const advance = input.pressed || input.actPressed('vn.advance') || (fast && full && this.t > 0.08);
-    if (input.actPressed('ui.back')) return this.onDone();
+    if (input.actPressed('ui.back')) {
+      readLog.flush();
+      return this.onDone();
+    }
     if (!advance) return;
     this.t = 0;
     if (!full) {
@@ -47,6 +56,7 @@ export class StoryScene implements Scene {
     this.shown = 0;
     if (this.i >= this.story.lines.length) {
       this.i = this.story.lines.length - 1;
+      readLog.flush();
       this.onDone();
     } else game.audio.play('select');
   }
@@ -55,7 +65,7 @@ export class StoryScene implements Scene {
     const line = this.line;
     const who = CAST[line.who];
     g.beginWorld();
-    drawBackdrop(g, this.story.backdrop, g.time, { lighting: this.story.lighting, pointer: game.input.pos });
+    drawBackdrop(g, this.story.backdrop, g.time, { lighting: this.story.lighting, pointer: settings.reduceMotion ? undefined : game.input.pos });
     if (who.silhouette !== 'none') drawPortrait(g, who, 330, 500, g.time, true, this.shown < line.text.length);
     g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1 });
 
@@ -65,8 +75,13 @@ export class StoryScene implements Scene {
     g.text(this.story.place, 30, 40, { size: 21, font: 'italic', color: hex(UI.parch) });
     divider(g, 30 + Math.min(600, g.measure(this.story.place, 21, 'italic')) / 2, 54, Math.min(600, g.measure(this.story.place, 21, 'italic')), hex(UI.brass, 0.6));
 
-    const box = { x: 90, y: 500, w: VIEW_W - 180, h: 190 };
-    scroll(g, box);
+    // Text scale grows the box upward so three lines fit at 125 % and beyond (UIX-0148); opacity
+    // lets the scene show through (UIX-0128).
+    const ts = settings.textScale;
+    const bh = Math.round(190 + (ts - 1) * 170);
+    const box = { x: 90, y: 690 - bh, w: VIEW_W - 180, h: bh };
+    if (settings.textBoxOpacity >= 0.99) scroll(g, box);
+    else parchmentArt(g, box, 'fresh', 1, box.x + box.y, settings.textBoxOpacity);
     const name = line.as ?? who.name;
     if (name) {
       const w = g.measure(name, 26) + 70;
@@ -75,7 +90,7 @@ export class StoryScene implements Scene {
     }
     const narr = line.who === 'narrator';
     g.textBlock(line.text.slice(0, Math.floor(this.shown)), box.x + 40, box.y + 60, box.w - 80, {
-      size: 25,
+      size: Math.round(25 * ts),
       font: narr ? 'italic' : 'body',
       color: hex(narr ? '#5a4228' : UI.inkDark),
       shadow: false,

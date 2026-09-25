@@ -9,6 +9,11 @@ uniform vec2 u_texel;
 uniform vec2 u_view;
 uniform vec2 u_light;
 uniform float u_time;
+/** Fluid colours (palette tokens) and gore level: 0 full, 1 reduced (browned, dulled), 2 minimal (flat, matte). */
+uniform vec3 u_blood;
+uniform vec3 u_pus;
+uniform vec3 u_bile;
+uniform float u_gore;
 out vec4 o;
 float dens(vec2 uv) { vec4 f = texture(u_fluid, uv); return f.r + f.g + f.b; }
 void main() {
@@ -27,13 +32,20 @@ void main() {
   float spec = pow(max(dot(reflect(-L, n), vec3(0.0, 0.0, 1.0)), 0.0), 90.0);
   float spec2 = pow(max(dot(reflect(-L, n), vec3(0.0, 0.0, 1.0)), 0.0), 12.0);
   vec3 w = f.rgb / max(d, 1e-4);
-  vec3 blood = mix(vec3(0.55, 0.02, 0.05), vec3(0.2, 0.0, 0.015), smoothstep(0.5, 1.6, d));
-  vec3 pus = mix(vec3(0.78, 0.7, 0.3), vec3(0.5, 0.45, 0.16), smoothstep(0.5, 1.6, d));
-  vec3 bile = vec3(0.06, 0.04, 0.06);
+  float deep = smoothstep(0.5, 1.6, d);
+  vec3 blood = mix(u_blood, u_blood * 0.36, deep);
+  vec3 pus = mix(u_pus, u_pus * 0.64, deep);
+  vec3 bile = u_bile;
+  // Reduced gore: blood browned and desaturated; minimal: flat ink-black shapes.
+  vec3 brown = vec3(0.34, 0.2, 0.1) * mix(1.0, 0.5, deep);
+  blood = mix(blood, brown, step(0.5, u_gore));
+  blood = mix(blood, vec3(0.05, 0.04, 0.04), step(1.5, u_gore));
+  pus = mix(pus, vec3(0.42, 0.4, 0.34), step(1.5, u_gore));
   vec3 base = blood * w.r + pus * w.g + bile * w.b;
   // A darker meniscus at the edge, then glossy highlights.
   float edge = 1.0 - smoothstep(0.45, 0.65, d);
   vec3 col = base * (0.55 + 0.6 * diff) * (1.0 - edge * 0.45);
-  col += vec3(1.0, 0.92, 0.9) * spec * 1.3 + vec3(0.6, 0.2, 0.2) * spec2 * 0.15;
+  float gloss = u_gore > 1.5 ? 0.0 : 1.0;
+  col += (vec3(1.0, 0.92, 0.9) * spec * 1.3 + vec3(0.6, 0.2, 0.2) * spec2 * 0.15) * gloss;
   o = vec4(col, a * 0.97);
 }`;

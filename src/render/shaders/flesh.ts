@@ -60,6 +60,8 @@ uniform vec2 u_surfTexel;
 uniform vec4 u_lights[3];
 uniform vec3 u_lightCol[3];
 uniform float u_rough;
+/** Gore level: 0 full, 1 reduced (browned wounds), 2 minimal (ink-black, matte wounds). */
+uniform float u_gore;
 out vec4 o;
 // smoothstep with edge0 > edge1 is undefined in GLSL; this is the portable falling edge.
 float rsmooth(float hi, float lo, float x) { return 1.0 - smoothstep(lo, hi, x); }
@@ -215,7 +217,9 @@ void main() {
   // Wound interior: deep, wet, glistening maroon with a dark rim.
   vec3 woundCol = mix(vec3(0.42, 0.03, 0.05), vec3(0.16, 0.0, 0.02), smoothstep(0.3, 1.0, sf.r));
   float wspec = pow(max(dot(reflect(-L, nrm), vec3(0, 0, 1)), 0.0), 50.0);
-  woundCol += vec3(1.0, 0.8, 0.8) * wspec * 0.8;
+  woundCol = mix(woundCol, vec3(0.3, 0.17, 0.08) * mix(1.0, 0.45, smoothstep(0.3, 1.0, sf.r)), step(0.5, u_gore));
+  woundCol = mix(woundCol, vec3(0.04, 0.035, 0.035), step(1.5, u_gore));
+  woundCol += vec3(1.0, 0.8, 0.8) * wspec * 0.8 * (1.0 - step(1.5, u_gore));
   float rim = smoothstep(0.02, 0.15, sf.r) * (1.0 - smoothstep(0.15, 0.45, sf.r));
   col = mix(col, woundCol, cut);
   col *= 1.0 - rim * 0.35;

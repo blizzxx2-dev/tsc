@@ -1,4 +1,5 @@
 import { dist, type Vec } from '../core/math';
+import { drawBlotch, presentation } from '../render/presentation';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { Entity } from './entity';
@@ -318,6 +319,7 @@ export class EggSac extends Entity {
   draw(g: Gfx, op: Operation): void {
     const { x, y } = this.pos;
     const urgency = Math.max(0, 1 - this.hatchT / 18);
+    if (presentation.creatureFilter) return drawBlotch(g, x, y, 22);
     const wob = 1 + Math.sin(op.elapsed * (4 + urgency * 14)) * 0.05 * (1 + urgency * 2);
     g.ellipse(x, y, 24 * wob, 20 / wob, 0.3, hex('#d8d0b8', 0.95), hex('#8a8068', 0.9));
     for (let i = 0; i < this.brood + 2; i++) {
@@ -368,6 +370,7 @@ export class SpiderlingGrub extends Entity {
   draw(g: Gfx, op: Operation): void {
     const { x, y } = this.pos;
     for (let i = 0; i < 8; i++) {
+    if (presentation.creatureFilter) return drawBlotch(g, x, y, 9);
       const a = (i / 8) * TAU + Math.sin(op.elapsed * 20 + i) * 0.2;
       g.line({ x, y }, { x: x + Math.cos(a) * 11, y: y + Math.sin(a) * 11 }, 1.5, hex('#1a1410'));
     }
