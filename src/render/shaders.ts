@@ -101,13 +101,33 @@ void main() {
   float r = length(q) / swell;
   float edge = r + (fbm(q * 3.0 + 4.0) - 0.5) * 0.08;
 
-  // ---- drape (outside the opening)
-  vec2 w = px * 0.5;
-  float weave = 0.5 + 0.25 * sin(w.x * 3.1) * sin(w.y * 3.1) + 0.25 * fbm(px * 0.02);
-  vec3 drape = mix(vec3(0.10, 0.12, 0.11), vec3(0.2, 0.23, 0.2), weave);
-  drape *= 0.55 + 0.45 * rsmooth(900.0, 200.0, length(px - u_light));
-  // Old bloodstains on the linen.
-  drape = mix(drape, vec3(0.18, 0.04, 0.04), smoothstep(0.62, 0.72, fbm(px * 0.006 + 3.0)) * 0.6);
+  // ---- drape (outside the opening): creased linen over an oak table, lit by the candle.
+  // Folds radiate from the opening: a height field of stretched creases plus slack wrinkles.
+  vec2 fq = (px - u_center) / u_radii;
+  float ang = atan(fq.y, fq.x);
+  float rad = length(fq);
+  float folds = sin(ang * 9.0 + fbm(fq * 2.0) * 3.0) * 0.5 + 0.5;
+  folds *= smoothstep(1.0, 1.35, rad) * (1.0 - smoothstep(1.6, 2.4, rad));
+  float slack = fbm(px * 0.008 + vec2(3.0, 1.0));
+  float fh = folds * 0.6 + slack * 0.8;
+  vec2 fd = vec2(dFdx(fh), dFdy(fh)) * 40.0;
+  vec3 fn = normalize(vec3(-fd, 1.0));
+  vec3 fl = normalize(vec3((u_light - px) / 600.0, 0.7));
+  float fdiff = max(dot(fn, fl), 0.0);
+  // Linen weave.
+  vec2 w = px * 0.9;
+  float weave = 0.5 + 0.18 * sin(w.x * 2.2) * sin(w.y * 2.2) + 0.2 * noise(px * 0.35);
+  vec3 linen = mix(vec3(0.42, 0.40, 0.34), vec3(0.62, 0.59, 0.5), weave);
+  vec3 drape = linen * (0.18 + 0.85 * fdiff);
+  drape *= 0.45 + 0.65 * rsmooth(950.0, 150.0, length(px - u_light));
+  // Blood soaks into the linen nearest the wound, and old stains elsewhere.
+  float soak = rsmooth(1.3, 1.0, rad) * (0.6 + 0.4 * fbm(px * 0.02));
+  drape = mix(drape, vec3(0.22, 0.02, 0.03) * (0.5 + 0.6 * fdiff), soak * 0.85);
+  drape = mix(drape, vec3(0.3, 0.1, 0.07) * (0.5 + 0.5 * fdiff), smoothstep(0.64, 0.74, fbm(px * 0.006 + 3.0)) * 0.55);
+  // Oak table at the frame edges.
+  float tableMask = smoothstep(2.05, 2.25, rad + 0.1 * fbm(fq * 3.0));
+  vec3 oak = vec3(0.14, 0.08, 0.045) * (0.6 + 0.5 * noise(vec2(px.x * 0.02, px.y * 0.6))) * (0.4 + 0.6 * rsmooth(1100.0, 200.0, length(px - u_light)));
+  drape = mix(drape, oak, tableMask);
 
   // ---- flesh
   vec2 uv = q * 4.0;
