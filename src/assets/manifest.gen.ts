@@ -13,6 +13,7 @@ export type AssetId =
   | 'sprites/fx'
   | 'textures/linen-detail'
   | 'textures/skin-detail'
+  | 'textures/skin-mottle'
   | 'textures/suture-rope'
   | 'textures/wood-table';
 
@@ -150,10 +151,18 @@ export const MANIFEST: Record<AssetId, AssetEntry> = {
   },
   "textures/skin-detail": {
     "type": "image",
-    "url": "assets/textures_skin-detail.ae52a87522.jpg",
-    "bytes": 78584,
+    "url": "assets/textures_skin-detail.2ac51dc8ae.jpg",
+    "bytes": 125592,
     "bundle": "ops-common",
-    "hash": "ae52a87522",
+    "hash": "2ac51dc8ae",
+    "status": "final"
+  },
+  "textures/skin-mottle": {
+    "type": "image",
+    "url": "assets/textures_skin-mottle.7d657edc2c.jpg",
+    "bytes": 43634,
+    "bundle": "ops-common",
+    "hash": "7d657edc2c",
     "status": "final"
   },
   "textures/suture-rope": {
@@ -191,6 +200,7 @@ export const BUNDLES: Record<BundleId, readonly AssetId[]> = {
     "sprites/fx",
     "textures/linen-detail",
     "textures/skin-detail",
+    "textures/skin-mottle",
     "textures/suture-rope",
     "textures/wood-table"
   ],

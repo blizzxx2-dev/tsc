@@ -9040,5 +9040,12 @@
     "context": "Small caption above a rating popup naming what was done.",
     "screenshot": "docs/loc/screens/operation.png",
     "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "ui.credits.section_textures": {
+    "scene": "credits",
+    "font": "display",
+    "size": 24,
+    "maxPx": 700,
+    "context": "Credits section heading: third-party surface textures."
   }
 }

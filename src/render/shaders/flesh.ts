@@ -99,6 +99,7 @@ uniform float u_fever;
 uniform sampler2D u_skinMap;  // R,G normal xy, B roughness
 uniform sampler2D u_linenMap; // R,G normal xy, B weave
 uniform sampler2D u_woodMap;  // colour
+uniform sampler2D u_toneMap;  // skin-tone mottling, 0.5 = mean
 uniform float u_maps;
 uniform vec3 u_base;
 uniform vec3 u_deep;
@@ -316,9 +317,12 @@ void main() {
   vec3 skinMap = vec3(0.5);
   float skinK = 0.0;
   if (u_maps > 0.5) {
-    skinMap = texture(u_skinMap, px / 170.0).rgb;
+    skinMap = texture(u_skinMap, px / 110.0).rgb;
     skinK = (u_kind == 0 || u_kind == 8) ? 1.0 : 0.25;
-    grad += (skinMap.rg * 2.0 - 1.0) * 1.6 * skinK;
+    grad += (skinMap.rg * 2.0 - 1.0) * 4.0 * skinK;
+    // Real skin-tone mottling (freckles, flush, capillary blotches) over the field's own colour.
+    vec3 tone = texture(u_toneMap, px / 180.0).rgb * 2.0;
+    col *= mix(vec3(1.0), tone * tone, 0.8 * skinK);
   }
   vec3 nrm = normalize(vec3(-grad * 0.35, 1.0));
   vec3 L = normalize(vec3((u_light - px) / 700.0, 0.9));
@@ -483,8 +487,11 @@ void main() {
   skinCol = mix(skinCol, mix(u_skin, vec3(0.9, 0.78, 0.72), 0.5) * 1.05, scar * 0.6);
   // Light the collar like the drape (it curls away from the opening), with a thin sheen.
   float skinLit = 0.3 + 0.8 * fdiff + 0.25 * pow(max(fdiff, 0.0), 12.0) * (1.0 - u_sheen * 3.0);
-  // The collar's pores catch the lamp too.
-  if (u_maps > 0.5) skinLit *= 1.0 + 0.35 * dot(skinMap.rg * 2.0 - 1.0, normalize(u_light - px));
+  // The collar's pores catch the lamp too, and it carries the same mottled tone.
+  if (u_maps > 0.5) {
+    skinLit *= 1.0 + 0.35 * dot(skinMap.rg * 2.0 - 1.0, normalize(u_light - px));
+    skinCol *= mix(vec3(1.0), texture(u_toneMap, px / 260.0).rgb * 2.0, 0.5);
+  }
   // The skin's scatter glow: strong in the fine-skinned, faint in thick hides.
   skinCol = skinCol * skinLit + u_skin * u_sssCol.rgb * 0.06 * u_sssCol.a;
   // The collar's inner lip: dermis in section, as wide as the hide is thick.

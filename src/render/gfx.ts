@@ -82,6 +82,8 @@ export interface ImageHandle {
 export interface SurfaceMaps {
   /** R,G normal xy, B roughness: skin pores and micro-wrinkles. */
   skin: ImageHandle;
+  /** Skin-tone mottling, normalised so 0.5 grey is the mean tone. */
+  tone: ImageHandle;
   /** R,G normal xy, B weave shading: the linen drape. */
   linen: ImageHandle;
   /** Colour: the table's wood. */
@@ -1498,12 +1500,14 @@ export class Gfx {
     gl.uniform2f(this.u(pr, 'u_fiber'), Math.cos(f.fiber ?? 0), Math.sin(f.fiber ?? 0));
     gl.uniform1f(this.u(pr, 'u_fever'), f.fever ?? 0);
     const mp = f.maps;
-    const mapsOn = !!mp && mp.skin.ready && mp.linen.ready && mp.wood.ready;
+    const mapsOn = !!mp && mp.skin.ready && mp.tone.ready && mp.linen.ready && mp.wood.ready;
     if (mapsOn) {
       this.bindTex(mp.skin.tex!, 5);
       this.bindTex(mp.linen.tex!, 6);
       this.bindTex(mp.wood.tex!, 7);
+      this.bindTex(mp.tone.tex!, 8);
     }
+    gl.uniform1i(this.u(pr, 'u_toneMap'), mapsOn ? 8 : 1);
     // Unbound map samplers point at the surface layer (unit 1) and are ignored.
     gl.uniform1i(this.u(pr, 'u_skinMap'), mapsOn ? 5 : 1);
     gl.uniform1i(this.u(pr, 'u_linenMap'), mapsOn ? 6 : 1);

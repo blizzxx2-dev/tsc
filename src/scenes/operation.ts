@@ -1336,6 +1336,7 @@ export class OperationScene implements Scene {
     const url = (id: AssetId) => import.meta.env.BASE_URL + MANIFEST[id].url;
     return (this.maps ??= {
       skin: g.image(url('textures/skin-detail'), { repeat: true }),
+      tone: g.image(url('textures/skin-mottle'), { repeat: true }),
       linen: g.image(url('textures/linen-detail'), { repeat: true }),
       wood: g.image(url('textures/wood-table'), { repeat: true }),
     });

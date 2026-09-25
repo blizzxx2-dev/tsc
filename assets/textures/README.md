@@ -5,10 +5,11 @@ wounds, curse) — these add micro-surface: pores, weave, grain.
 
 | File | Packing | Source (CC0) |
 |---|---|---|
-| `skin-detail.jpg` | R,G normal xy (×3 gain), B roughness | ambientCG Leather039 — https://ambientcg.com/view?id=Leather039 |
+| `skin-detail.jpg` | R,G normal xy (×2.5 gain), B roughness | Julio Sillet, Material Pack Skin 01 — Skin 03 (CC-BY) — https://juliosillet.gumroad.com/l/IbCT |
+| `skin-mottle.jpg` | colour normalised to its mean (0.5 grey = mean tone) | same, Skin 03 base colour |
 | `linen-detail.jpg` | R,G normal xy, B weave shading | Poly Haven rough_linen — https://polyhaven.com/a/rough_linen |
 | `wood-table.jpg` | colour | Poly Haven dark_wood — https://polyhaven.com/a/dark_wood |
 | `suture-rope.jpg` | colour | ambientCG Rope001 — https://ambientcg.com/view?id=Rope001 |
 
-Both libraries publish under CC0 1.0 (https://docs.ambientcg.com/license/, https://polyhaven.com/license).
+The skin maps are **CC-BY** (Julio Sillet 3D Art — credit required; commercial use allowed, no reselling of the textures). The rest are CC0 1.0 (ambientCG and Poly Haven — https://docs.ambientcg.com/license/, https://polyhaven.com/license).
 Resized to 512² (rope 256²) and repacked with `PIL`; no other changes.

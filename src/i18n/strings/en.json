@@ -1107,5 +1107,6 @@
   "ui.content_notes.ch5": "A trial for witchcraft, with witch-pricking described; an operation in childbirth; imprisonment; a mass sickness of a city; and a curse that offers a perfect, painless death.",
   "ui.content_notes.footer": "You can turn these notes off in Options, under Accessibility.",
   "label.strand_cut": "Strand cut",
-  "label.web_cut_away": "Web cut away"
+  "label.web_cut_away": "Web cut away",
+  "ui.credits.section_textures": "Textures"
 }

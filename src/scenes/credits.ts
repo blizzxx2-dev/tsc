@@ -18,7 +18,7 @@ import { uiEvents } from '../ui/events';
 import { reticle } from '../ui/widgets';
 import { platform } from '../platform';
 import { drawBackdrop } from './backdrop';
-import { CREDIT_SECTIONS, fontCredits, softwareCredits } from './creditsData';
+import { CREDIT_SECTIONS, fontCredits, softwareCredits, TEXTURE_CREDITS } from './creditsData';
 import { NOTICES } from './noticesData';
 import { TitleScene } from './title';
 
@@ -41,6 +41,9 @@ export function creditRows(): Row[] {
   rows.push({ kind: 'heading', text: t('ui.credits.section_type') });
   for (const f of fontCredits()) rows.push({ kind: 'name', text: t('ui.credits.font_line', { family: f.family, style: t(f.style === 'italic' ? 'ui.credits.style_italic' : 'ui.credits.style_regular') }) });
   rows.push({ kind: 'note', text: t('ui.credits.ofl_notice') }, { kind: 'gap', text: '' });
+  rows.push({ kind: 'heading', text: t('ui.credits.section_textures') });
+  for (const x of TEXTURE_CREDITS) rows.push({ kind: 'name', text: t('ui.credits.software_line', { name: x.name, licence: x.licence }) });
+  rows.push({ kind: 'gap', text: '' });
   rows.push({ kind: 'heading', text: t('ui.credits.section_software') });
   for (const s of softwareCredits()) rows.push({ kind: 'name', text: t('ui.credits.software_line', { name: s.name, licence: s.licence }) });
   rows.push({ kind: 'note', text: t('ui.credits.notices_hint') }, { kind: 'gap', text: '' }, { kind: 'gap', text: '' }, { kind: 'note', text: t('ui.credits.thanks_line') });
