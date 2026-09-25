@@ -8671,5 +8671,40 @@
     "size": 15,
     "maxPx": 300,
     "context": "Toggle button in the operating theatre."
+  },
+  "ui.briefing.burns": {
+    "scene": "briefing",
+    "font": "display",
+    "size": 12,
+    "maxPx": 130,
+    "context": "Briefing chart label for the burn-grade row."
+  },
+  "ui.briefing.burn_count": {
+    "scene": "briefing",
+    "font": "body",
+    "size": 16,
+    "maxPx": 160,
+    "context": "Briefing chart: a burn grade and how many of that grade the case has."
+  },
+  "ui.briefing.burn.pink": {
+    "scene": "briefing",
+    "font": "body",
+    "size": 16,
+    "maxPx": 110,
+    "context": "Burn grade 1 on the briefing chart."
+  },
+  "ui.briefing.burn.blistered": {
+    "scene": "briefing",
+    "font": "body",
+    "size": 16,
+    "maxPx": 110,
+    "context": "Burn grade 2 on the briefing chart."
+  },
+  "ui.briefing.burn.charred": {
+    "scene": "briefing",
+    "font": "body",
+    "size": 16,
+    "maxPx": 110,
+    "context": "Burn grade 3 on the briefing chart."
   }
 }

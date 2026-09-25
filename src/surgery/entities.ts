@@ -1,3 +1,4 @@
+import { burnSeverity } from '../art/burnGrades';
 import { clamp, dist, pointSegment, type Vec } from '../core/math';
 import { drawBlotch, flinchCurl, presentation, shaftTwitch } from '../render/presentation';
 import { hex, rgba } from '../render/color';
@@ -1354,7 +1355,8 @@ export class Burn extends Entity {
     const cooled = this.healed();
     const left = this.flakes.length / this.total;
     if (this.source === 'acid') acidBurnArt(g, this.pos, this.radiusNow, this.acidLive ? 0 : 0.35 + 0.65 * cooled, this.id);
-    else fireBurnArt(g, this.pos, this.radiusNow, this.charCore ? 1 : this.flakes.length ? 0.55 + 0.4 * left : 0.45, cooled, this.id);
+    // Severity from the shared grade table (GAM-0074), so the field matches the briefing chart.
+    else fireBurnArt(g, this.pos, this.radiusNow, burnSeverity(this.grade, left), cooled, this.id);
     if (this.source === 'hexfire') {
       const heat = 0.35 + 0.65 * (1 - this.cov.fraction);
       hexfireEdgeArt(g, this.pos, this.radiusNow, this.smoulder >= 0 ? 0.5 + 0.5 * Math.abs(Math.sin(op.elapsed * 6)) : heat, this.id);

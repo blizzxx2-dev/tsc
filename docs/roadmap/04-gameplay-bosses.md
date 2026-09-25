@@ -125,7 +125,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0071 · Demo · P0 · S · Fire burn — Salve heals; dead-tissue char must be excised with Lancet first on grade-3 burns (black centre) — test
 - [x] GAM-0072 · Demo · P1 · S · Acid burn — spreads outward 6 px/s until Leech-Pipe neutralises the pool, then Salve; salving before draining rates BAD
 - [x] GAM-0073 · Demo · P1 · S · Hexfire burn — re-ignites 3 s after salving unless its ember sigil is branded out; tell = green flicker 0.8 s before re-ignite
-- [ ] GAM-0074 · Demo · P2 · S · Burn grades visual — (pink/blistered/charred) consistent between briefing art and field
+- [x] GAM-0074 · Demo · P2 · S · Burn grades visual — (pink/blistered/charred) consistent between briefing art and field
 
 ### Bubo
 - [x] GAM-0075 · Demo · P0 · S · Bubo lancing — single short incision across the crown; cut longer than bubo diameter rates BAD and spawns pus overflow

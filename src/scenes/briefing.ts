@@ -1,3 +1,7 @@
+import { BURN_GRADES, spawnGrade, type BurnGrade } from '../art/burnGrades';
+import { fireBurnArt } from '../art/ailmentArt';
+import { opData } from '../content/schema';
+import { DEFAULT_TUNING } from '../surgery/tuning';
 import type { Game, Scene } from '../core/scene';
 import { t, tSource } from '../i18n';
 import { formatClock } from '../i18n/format';
@@ -18,9 +22,25 @@ import { drawWoundMan, ENGRAVED_INKS, prognosis, woundSites, type Pin } from '..
 import { caps, glass, heading, INK, keycap, numerals } from '../ui/hudKit';
 
 /** The patient chart shown before an operation. */
+/** Fire burns the case spawns, counted by the grade they arrive with (GAM-0074). */
+export function burnCounts(def: OperationDef): { grade: BurnGrade; n: number }[] {
+  const data = opData(def);
+  if (!data) return [];
+  const by = new Map<BurnGrade, number>();
+  for (const ph of data.phases)
+    for (const sp of ph.spawn ?? []) {
+      const b = sp as { e: string; r?: number; source?: string };
+      if (b.e !== 'burn' || (b.source ?? 'fire') !== 'fire' || typeof b.r !== 'number') continue;
+      const gr = spawnGrade(b.r, DEFAULT_TUNING.burn.grade3Radius);
+      by.set(gr, (by.get(gr) ?? 0) + 1);
+    }
+  return [...by].sort((a, b) => b[0] - a[0]).map(([grade, n]) => ({ grade, n }));
+}
+
 export class BriefingScene implements Scene {
   private notes: string[] | null = null;
   private pins: Pin[] | null = null;
+  private burns: { grade: BurnGrade; n: number }[] | null = null;
   /** Ink-writing of the findings (UIX-0112): characters revealed over time; a click or Reduced Motion completes it. */
   private ink = 0;
   /** New-instrument card (UIX-0111): shown once before Scrub In when the case introduces a tool. */
@@ -108,6 +128,18 @@ export class BriefingScene implements Scene {
     this.pins ??= woundSites(d);
     g.plate(r.x + r.w - 236, r.y + 146, 200, 250, { radius: 2, top: hex('#0a0807', 0.6), bottom: hex('#0e0b09', 0.6), border: hex(INK.gilt, 0.25), borderW: 1, bevel: -0.4, shadow: [0, 0, 0], grain: 0.4 });
     drawWoundMan(g, r.x + r.w - 136, r.y + 160, 222, this.pins, g.time, 1, ENGRAVED_INKS);
+    // Burn grades (GAM-0074): each grade this case brings, drawn with the field's own burn art.
+    this.burns ??= burnCounts(d);
+    if (this.burns.length) {
+      caps(g, t('ui.briefing.burns'), lx, r.y + 394, 12);
+      let bx = vx + 14;
+      for (const { grade, n } of this.burns) {
+        fireBurnArt(g, { x: bx, y: r.y + 389 }, 11, BURN_GRADES[grade].severity, 0, grade);
+        const label = t('ui.briefing.burn_count', { grade: t(`ui.briefing.burn.${BURN_GRADES[grade].key}`), n });
+        g.text(label, bx + 18, r.y + 395, { size: 16, color: hex(INK.dim), shadow: false });
+        bx += 40 + g.measure(label, 16);
+      }
+    }
     const prog = prognosis(d);
     caps(g, t('ui.briefing.prognosis'), lx, r.y + 370, 12);
     (['fair', 'guarded', 'grave'] as const).forEach((k, i) => {

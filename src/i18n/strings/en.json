@@ -1059,5 +1059,10 @@
   "ui.theatre.fastest": "Fastest {time}",
   "ui.theatre.not_cleared": "Not yet cleared",
   "ui.theatre.mode_standard": "Mode: Standard",
-  "ui.theatre.mode_timeattack": "Mode: Time attack"
+  "ui.theatre.mode_timeattack": "Mode: Time attack",
+  "ui.briefing.burns": "Burns:",
+  "ui.briefing.burn_count": "{grade} ×{n}",
+  "ui.briefing.burn.pink": "Pink",
+  "ui.briefing.burn.blistered": "Blistered",
+  "ui.briefing.burn.charred": "Charred"
 }
