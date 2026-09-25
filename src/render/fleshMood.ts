@@ -7,6 +7,10 @@ import type { Gfx } from './gfx';
 import { hex } from './color';
 import type { Operation } from '../surgery/operation';
 import { FrostPatch } from '../surgery/ailments/frost';
+import { Gangrene } from '../surgery/ailments/gangrene';
+import { InfectionLine } from '../surgery/ailments/infection';
+import { WoundFever } from '../surgery/ailments/kilnrows';
+import { Bubo, Rot } from '../surgery/entities';
 
 type RGB = [number, number, number];
 
@@ -54,4 +58,19 @@ export function drawBreathFog(g: Gfx, f: number, t: number, view: { x: number; y
     const r = 110 + (i % 3) * 40;
     g.circleGrad(x, y, r, hex('#e8f0ff', 0.1 * f * (0.5 + breath * 0.5)), hex('#e8f0ff', 0));
   }
+}
+
+/**
+ * Fever (ART-0212): 0..1 from the infective ailments alive on the table — buboes and rot burn
+ * hottest, a wound fever outright. The flesh pass flushes the field and beads it with sweat.
+ */
+export function fever(op: Pick<Operation, 'entities'>): number {
+  let f = 0;
+  for (const e of op.entities) {
+    if (!e.alive) continue;
+    if (e instanceof WoundFever) f += 0.6;
+    else if (e instanceof Bubo) f += 0.22;
+    else if (e instanceof Rot || e instanceof Gangrene || e instanceof InfectionLine) f += 0.15;
+  }
+  return Math.min(1, f);
 }

@@ -48,3 +48,16 @@ describe('muscle and skin organ kinds (ENG-0093)', () => {
     expect(s.rough).toBeGreaterThan(m.rough);
   });
 });
+
+describe('fever (ART-0212)', () => {
+  it('rises with infective ailments alive and is zero on a clean field', async () => {
+    const { fever } = await import('../../../src/render/fleshMood');
+    const { Bubo, Rot } = await import('../../../src/surgery/entities');
+    const mk = (n: number) =>
+      ({ entities: Array.from({ length: n }, (_, i) => (i % 2 ? new Rot({ x: 0, y: 0 }, 20) : new Bubo({ x: 0, y: 0 }, 20))) }) as never;
+    expect(fever({ entities: [] } as never)).toBe(0);
+    expect(fever(mk(2))).toBeGreaterThan(0);
+    expect(fever(mk(3))).toBeGreaterThan(fever(mk(2)));
+    expect(fever(mk(20))).toBe(1);
+  });
+});

@@ -101,6 +101,7 @@ const PAGES: { title: string; cells: Cell[]; custom?: (g: Gfx, t: number) => voi
     cells: [
       ['Tallow: set → molten', (g, c, t) => [0, 0.5, 1].forEach((k, i) => tallowClotArt(g, off(c, -52 + i * 52, 0), 18, { soft: k, drawn: 0, t, seed: i }))],
       ['Petrify crust: 4 stages', (g, c) => petrifyCrustArt(g, Array.from({ length: 12 }, (_, i) => off(c, -70 + i * 13, Math.sin(i * 0.6) * 8)), Array.from({ length: 12 }, (_, i) => (11 - i) * 0.9), 1)],
+      ['Dragon-breath: hot → cooled', (g, c) => [1, 0.3, 0.001].forEach((h, i) => fireBurnArt(g, off(c, -58 + i * 58, 0), 22, 1, 0, i, h))],
       ['Brood silk: whole → cut', (g, c, t) => [0, 1].forEach((k) => silkArt(g, off(c, -60, -18 + k * 36), off(c, 60, -18 + k * 36), k ? loop(t, 1.5) : 0, k))],
       ['Plate crack-apart (6 f)', (g, c, t) => petrifyPlateArt(g, c, 16, { index: 0, next: true, crackAge: loop(t, 1.2) * 0.8 - 0.2 })],
     ],

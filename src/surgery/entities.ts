@@ -1366,6 +1366,8 @@ export class Burn extends Entity {
     surfDisc(g, this.pos, r * 1.25, 0, this.source === 'acid' ? 0.5 * (1 - healed) : 0.35 * (1 - healed), char * 0.6, 0);
     surfDisc(g, this.pos, r * 0.9, 0, 0, char * 0.7, 0);
     if (core) surfDisc(g, this.pos, this.radius * 0.45, 0, 0, 1, 0);
+    // Dragon-breath craters deeper (ART-0208): the whole char bed sinks.
+    if (this.source === 'dragon') surfDisc(g, this.pos, r * 0.85, 0.8, 0, 0.6, 0);
   }
 
   draw(g: Gfx, op: Operation): void {

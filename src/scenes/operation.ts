@@ -16,6 +16,7 @@ import type { Gfx } from '../render/gfx';
 import { organPalette } from '../render/organs';
 import { underSkinBulges } from '../render/underSkin';
 import { hourCard } from '../art/hourMiniatures';
+import { clawRakeArt, rakeGroups } from '../art/clawRake';
 import { drawGrime, drawRain, VENUE_ID, venueLights } from '../render/venues';
 import { BloodPool, Bubo, Burn, Embedded, Incision, Laceration, Sigil, surfDisc, surfLine } from '../surgery/entities';
 import { EggSac } from '../surgery/lauds';
@@ -57,7 +58,7 @@ import { settings } from '../core/settings';
 import { OptionsScene } from './options';
 import { litanyMode, OperationInput } from '../input/opinput';
 import { formatSplit, ghostAt, GHOST_STEP, recordTimeAttack, TimeAttackClock, timeAttackBest, type TimeAttackRun } from '../surgery/timeAttack';
-import { anaemia, coldTint, drawBreathFog, frostArea, paleFlesh, paleRough } from '../render/fleshMood';
+import { anaemia, coldTint, drawBreathFog, frostArea, paleFlesh, paleRough, fever } from '../render/fleshMood';
 import { fitText } from '../ui/text';
 import { bloodOf, speciesOf, tintBlood } from '../surgery/species';
 import { setVfxBlood } from '../art/vfx';
@@ -799,6 +800,7 @@ export class OperationScene implements Scene {
       pulse: venue === 'forensic' ? 0 : this.pulse,
       venue: VENUE_ID[venue],
       fiber: op.def.fiber,
+      fever: fever(op),
       warp,
       light: vc(light),
       corrupt: this.fleshCurse,
@@ -828,6 +830,9 @@ export class OperationScene implements Scene {
     for (const sc of op.scars) scarArt(g, sc, 4, 0, presentation.gore === 2 ? 0.5 : 1);
     pushWarp(g, FIELD.cx, FIELD.cy, warp);
     // Between ticks, entities are drawn where they are in between (ENG-0054).
+    // Claw rakes read as one blow (ART-0187): a shared torn band under each group of parallel claw cuts.
+    const claws = ents.filter((e): e is Laceration => e instanceof Laceration && e.source === 'claw');
+    for (const grp of rakeGroups(claws)) clawRakeArt(g, grp, 0, grp[0].id);
     drawInterpolated(ents, settings.reduceMotion ? 1 : alpha, (e) => e.draw(g, op));
     // High contrast: a 2 px ring around everything that takes an instrument.
     if (highContrast()) for (const e of ents) if (e.required) g.arc(e.pos.x, e.pos.y, 28, 2, hex('#ffffff', 0.85), 1);

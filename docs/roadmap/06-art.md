@@ -298,7 +298,7 @@ Ailment standard: painted sprite(s) in the woodcut-over-paint style at 2× virtu
 - [x] ART-0184 · Demo · P0 · M · Incision art: a tileable cut-edge strip sprite (skin lips, fat layer, bleeding edge) drawn along the `Incision` polyline, with an opening animation over 6 frames
 - [x] ART-0185 · Demo · P0 · M · Laceration set: 3 widths × 2 edge types (clean blade, ragged claw), tileable along the path, with a pulse-bleed overlay
 - [x] ART-0186 · Demo · P0 · S · Gut Thread suture art: stitch sprite per crossing (gut-coloured, knotted) plus a tightening pull frame for `StitchLine`
-- [ ] ART-0187 · Demo · P1 · S · Claw-rake variant: 3–4 parallel lacerations as one grouped decal for monster ops (op2-1)
+- [x] ART-0187 · Demo · P1 · S · Claw-rake variant: 3–4 parallel lacerations as one grouped decal for monster ops (op2-1)
 - [x] ART-0188 · Demo · P1 · S · Closed-wound state: a sutured scar sprite that persists to the results screen
 - [ ] ART-0189 · Alpha · P2 · S · Surgical-flap art (retracted skin with a pin clamp) for deep-organ ops in Chapters 3–5
 
@@ -325,13 +325,13 @@ Ailment standard: painted sprite(s) in the woodcut-over-paint style at 2× virtu
 - [x] ART-0205 · Demo · P0 · S · Acid burn: yellow-green etched decal with a bubbling 6-frame loop and a neutralised state
 - [x] ART-0206 · Demo · P0 · M · Hexfire burn: violet-cored flame-edge decal with licking flame flipbook (8 frames) that reignites if untreated
 - [ ] ART-0207 · Demo · P1 · S · Powder burn with embedded black grains (op1-3), with grains as pickable sub-sprites
-- [ ] ART-0208 · Beta · P1 · M · Dragon-breath burn: deep crater with a glassy fused-edge normal and an ember-glow loop
+- [x] ART-0208 · Beta · P1 · M · Dragon-breath burn: deep crater with a glassy fused-edge normal and an ember-glow loop
 
 ### Plague & disease
 - [x] ART-0209 · Demo · P0 · M · Bubo: swelling sprite in 3 sizes with a tension-shine wet map, a lance-open burst flipbook (6 frames) and a drained, deflated state
 - [x] ART-0210 · Demo · P0 · M · Rot/gangrene: spreading necrotic decal (4 growth stages) with a crusted edge and a debrided clean state
-- [ ] ART-0211 · Demo · P1 · S · Pox pustule cluster decal (small, many) for Symptom Loom reuse
-- [ ] ART-0212 · Alpha · P2 · S · Flux/fever flush overlay (full-field tint map) and a sweat-bead sparkle loop
+- [x] ART-0211 · Demo · P1 · S · Pox pustule cluster decal (small, many) for Symptom Loom reuse
+- [x] ART-0212 · Alpha · P2 · S · Flux/fever flush overlay (full-field tint map) and a sweat-bead sparkle loop
 - [ ] ART-0213 · Alpha · P2 · M · Symptom Loom module icons (12 symptom modules) as woodcut roundels for challenge-mode briefings
 
 ### Venom & creatures

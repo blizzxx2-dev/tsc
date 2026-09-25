@@ -398,6 +398,12 @@ vec4 fireBurn(vec2 q) {
   float spark = step(0.93, hash(sp + u_seed)) * rsmooth(0.35, 0.1, length(fract(q * 0.35) - 0.5));
   cc += vec3(1.0, 0.55, 0.15) * spark * (0.5 + 0.5 * sin(u_time * 7.0 + hash(sp) * 30.0)) * (1.0 - cool);
   acc = over(paint(cc, ch), acc);
+  if (dragon > 0.0) {
+    // Dragon-breath's crater edge (ART-0208): flesh fused to a glassy black lip that catches the light.
+    float lip = rsmooth(0.07, 0.0, abs(r - charR - 0.02 + (fbm(q * 0.08 + u_seed) - 0.5) * 0.05));
+    vec3 glass = lit(vec3(0.05, 0.04, 0.05), bumpN(q * 0.15, 4.0), 2.4, 140.0);
+    acc = over(paint(glass, lip * 0.9), acc);
+  }
   return acc * (1.0 - 0.3 * cool);
 }
 

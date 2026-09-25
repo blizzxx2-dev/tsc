@@ -93,6 +93,8 @@ uniform int u_kind;
 uniform int u_venue;
 // Muscle fibre direction (ENG-0093), unit vector in view space (y down).
 uniform vec2 u_fiber;
+// Fever flush and sweat (ART-0212), 0..1.
+uniform float u_fever;
 uniform vec3 u_base;
 uniform vec3 u_deep;
 uniform vec3 u_vein;
@@ -467,6 +469,18 @@ void main() {
   // The collar's inner lip: dermis in section, as wide as the hide is thick.
   float lip = rsmooth(1.0 + 0.004 + 0.012 * u_layers.x, 1.0, edge) * smoothstep(0.985, 0.995, edge);
   skinCol = mix(skinCol, mix(vec3(0.86, 0.72, 0.64), u_skin, 0.3) * (0.4 + 0.5 * fdiff), lip);
+  if (u_fever > 0.001) {
+    // Fever (ART-0212): a blotchy flush over the field, and sweat beads that catch the lamp.
+    float flush = u_fever * (0.55 + 0.45 * fbm(q * 2.2 + 31.0));
+    col = mix(col, col * vec3(1.18, 0.82, 0.8) + vec3(0.06, 0.0, 0.0), flush * 0.5);
+    skinCol = mix(skinCol, skinCol * vec3(1.15, 0.85, 0.82), flush * 0.6);
+    vec2 sbp = floor(px * 0.07);
+    vec2 sbf = fract(px * 0.07) - 0.5 - (vec2(hash(sbp), hash(sbp + 1.7)) - 0.5) * 0.5;
+    float bead = rsmooth(0.12, 0.0, length(sbf)) * step(1.0 - 0.18 * u_fever, hash(sbp + 9.1));
+    float glint = 0.6 + 0.4 * sin(u_time * 3.0 + hash(sbp) * 20.0);
+    col += vec3(1.0, 0.97, 0.92) * bead * glint * 0.35;
+    skinCol += vec3(1.0, 0.97, 0.92) * bead * glint * 0.3;
+  }
   if (u_venue == 2) {
     // A corpse (ENG-0274): waxy grey pallor, and livor mortis pooled purple-red on the dependent (lower) side.
     float livor = smoothstep(-0.1, 0.8, q.y + (fbm(q * 3.0 + 2.0) - 0.5) * 0.4);
