@@ -1,13 +1,25 @@
 import type { Vec } from '../core/math';
 import { alphaOf, type RGBA } from './color';
 import { GlyphAtlas, type FontId } from './text';
-import { BLUR_FS, BRIGHT_FS, FLESH_FS, FLUID_FS, FULL_VS, IMAGE_FS, IMAGE_VS, PORTRAIT_FS, POST_FS, PRIM_FS, PRIM_VS, RECT_VS, SCENE_FS } from './shaders';
+import { BLUR_FS, BRIGHT_FS, FLESH_FS, FLUID_FS, FULL_VS, IMAGE_FS, IMAGE_VS, PORTRAIT_FS, POST_FS, RECT_VS, SCENE_FS } from './shaders';
+import { BATCH_FS, BATCH_UNITS, BATCH_VS, FALLBACK_VS, FXAA_FS } from './batch-shaders';
+import { describeCaps, fallbackPlan, FULL_CAPS, probeCaps, toMediump, type FallbackPlan, type GpuCaps } from './caps';
+import { emptyStats, GpuTimer, type FlushReason, type FrameStats } from './profiler';
+import { GlRegistry } from './registry';
+import { SpriteBank, type SpriteOpts } from './sprites';
+import { RenderTargetPool, type Target } from './targets';
+import { checkerPixels, Texture } from './texture';
+import { scissorRect } from './viewport';
 
 const TAU = Math.PI * 2;
 const MAX_VERTS = 60000;
-const STRIDE = 5; // x, y, u, v (f32) + rgba (u32)
+const STRIDE = 6; // x, y, u, v (f32) + rgba (u32) + texture unit (f32)
+const UNITS = Array.from({ length: BATCH_UNITS }, (_, i) => i);
+/** Scratch vectors for shape helpers (no per-call allocation, ENG-0225/0226). */
+const SA: Vec = { x: 0, y: 0 };
+const SB: Vec = { x: 0, y: 0 };
 
-export type Blend = 'alpha' | 'add' | 'sum';
+export type Blend = 'alpha' | 'add' | 'sum' | 'multiply' | 'screen';
 export type Align = 'left' | 'center' | 'right';
 
 export interface TextOpts {
@@ -67,27 +79,25 @@ export interface PostParams {
   lift?: [number, number, number];
 }
 
-interface Target {
-  fb: WebGLFramebuffer;
-  tex: WebGLTexture;
-  w: number;
-  h: number;
+export interface GfxOptions {
+  /** Override the probed capabilities (tests, forced fallbacks). */
+  caps?: GpuCaps;
+  plan?: Partial<FallbackPlan>;
 }
 
-function compile(gl: WebGL2RenderingContext, vs: string, fs: string): WebGLProgram {
-  const mk = (type: number, src: string) => {
-    const s = gl.createShader(type)!;
-    gl.shaderSource(s, src);
-    gl.compileShader(s);
-    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s) ?? 'shader error');
-    return s;
-  };
-  const p = gl.createProgram()!;
-  gl.attachShader(p, mk(gl.VERTEX_SHADER, vs));
-  gl.attachShader(p, mk(gl.FRAGMENT_SHADER, fs));
-  gl.linkProgram(p);
-  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p) ?? 'link error');
-  return p;
+/** Unit-circle cos/sin tables per segment count (ENG-0023). */
+const trigTables = new Map<number, Float32Array>();
+function trig(n: number): Float32Array {
+  let t = trigTables.get(n);
+  if (!t) {
+    t = new Float32Array((n + 1) * 2);
+    for (let i = 0; i <= n; i++) {
+      t[i * 2] = Math.cos((i / n) * TAU);
+      t[i * 2 + 1] = Math.sin((i / n) * TAU);
+    }
+    trigTables.set(n, t);
+  }
+  return t;
 }
 
 /**
@@ -97,20 +107,46 @@ function compile(gl: WebGL2RenderingContext, vs: string, fs: string): WebGLProgr
  */
 export class Gfx {
   readonly gl: WebGL2RenderingContext;
-  private prim: WebGLProgram;
-  private flesh: WebGLProgram;
-  private bright: WebGLProgram;
-  private blur: WebGLProgram;
-  private post: WebGLProgram;
-  private vao: WebGLVertexArrayObject;
-  private emptyVao: WebGLVertexArrayObject;
-  private vbo: WebGLBuffer;
+  /** Every GL object, for leak counts, VRAM budget and context restore (ENG-0198). */
+  readonly registry: GlRegistry;
+  readonly caps: GpuCaps;
+  readonly plan: FallbackPlan;
+  readonly targets: RenderTargetPool;
+  readonly sprites = new SpriteBank();
+  readonly gpuTimer: GpuTimer;
+  /** Per-frame batcher counters (ENG-0024); reset by `resetStats()`. */
+  stats: FrameStats = emptyStats();
+  /** World render scale 0.5–1 of the backbuffer (ENG-0181); UI and text always render at native resolution. */
+  renderScale = 1;
+  private prim!: WebGLProgram;
+  private flesh!: WebGLProgram;
+  private bright!: WebGLProgram;
+  private blur!: WebGLProgram;
+  private post!: WebGLProgram;
+  private fxaa!: WebGLProgram;
+  private vao!: WebGLVertexArrayObject;
+  private emptyVao!: WebGLVertexArrayObject;
+  private vbo!: WebGLBuffer;
   private f32 = new Float32Array(MAX_VERTS * STRIDE);
   private u32 = new Uint32Array(this.f32.buffer);
   private n = 0;
   private blend: Blend = 'alpha';
   private tf = [1, 0, 0, 1, 0, 0];
   private stack: number[][] = [];
+  private depth = 0;
+  /** Texture bound to each batch unit (unit 0 = glyph atlas). */
+  private slots: (WebGLTexture | null)[] = new Array(BATCH_UNITS).fill(null);
+  private slotCount = 1;
+  /** Texture unit written into vertices by `vert()` (0 = atlas/shapes). */
+  private texUnit = 0;
+  /** View transform uploaded as `u_xf`: aspect-policy origin × camera (ENG-0045/0182). */
+  private xf = new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]);
+  private camera: number[] | null = null;
+  /** Margin (virtual units) left of / above the 1280×720 safe area on wide/tall windows. */
+  ox = 0;
+  oy = 0;
+  private clipStack: { x: number; y: number; w: number; h: number }[] = [];
+  private missing: Texture | null = null;
   private scene!: Target;
   private bloomA!: Target;
   private bloomB!: Target;
@@ -122,11 +158,13 @@ export class Gfx {
   private msaaRb: WebGLRenderbuffer | null = null;
   private samples = 0;
   private floatTargets = false;
-  private fluidProg: WebGLProgram;
-  private imageProg: WebGLProgram;
-  private sceneProg: WebGLProgram;
-  private portraitProg: WebGLProgram;
+  private fluidProg!: WebGLProgram;
+  private imageProg!: WebGLProgram;
+  private sceneProg!: WebGLProgram;
+  private portraitProg!: WebGLProgram;
   private images = new Map<string, ImageHandle>();
+  /** Decoded image sources kept for re-upload after a context loss (ENG-0200). */
+  private imageSources = new Map<ImageHandle, TexImageSource>();
   private pw = 0;
   private ph = 0;
   readonly atlas: GlyphAtlas;
@@ -138,41 +176,196 @@ export class Gfx {
 
   constructor(
     readonly canvas: HTMLCanvasElement,
-    readonly vw: number,
-    readonly vh: number,
+    /** Visible view size in virtual units — the 1280×720 safe area plus aspect-ratio margins (see `setView`). */
+    public vw: number,
+    public vh: number,
+    opts: GfxOptions = {},
   ) {
-    const gl = canvas.getContext('webgl2', { antialias: true, alpha: false, premultipliedAlpha: false });
+    const gl = canvas.getContext('webgl2', { antialias: false, alpha: false, premultipliedAlpha: false, powerPreference: 'high-performance' });
     if (!gl) throw new Error('WebGL2 is not available on this system.');
     this.gl = gl;
-    this.prim = compile(gl, PRIM_VS, PRIM_FS);
-    this.flesh = compile(gl, FULL_VS, FLESH_FS);
-    this.bright = compile(gl, FULL_VS, BRIGHT_FS);
-    this.blur = compile(gl, FULL_VS, BLUR_FS);
-    this.post = compile(gl, FULL_VS, POST_FS);
-    this.fluidProg = compile(gl, FULL_VS, FLUID_FS);
-    this.imageProg = compile(gl, IMAGE_VS, IMAGE_FS);
-    this.sceneProg = compile(gl, FULL_VS, SCENE_FS);
-    this.portraitProg = compile(gl, RECT_VS, PORTRAIT_FS);
-    this.floatTargets = !!gl.getExtension('EXT_color_buffer_float');
-    this.samples = Math.min(4, gl.getParameter(gl.MAX_SAMPLES) as number);
+    this.registry = new GlRegistry(gl);
+    this.caps = opts.caps ?? (gl.isContextLost() ? FULL_CAPS : probeCaps(gl));
+    this.plan = { ...fallbackPlan(this.caps), ...opts.plan };
+    console.info(describeCaps(this.caps));
+    this.floatTargets = this.plan.bloomFormat === 'rgba16f';
+    this.targets = new RenderTargetPool(this.registry, this.floatTargets);
+    this.gpuTimer = new GpuTimer(this.registry);
+    this.atlas = new GlyphAtlas(gl, this.registry);
+    this.init();
+    // Restore order: our programs/buffers first, then textures (order 10), then everything else.
+    this.registry.onRestore(() => this.init(), 0);
+  }
 
-    this.vao = gl.createVertexArray()!;
-    this.emptyVao = gl.createVertexArray()!;
+  /** Create programs, buffers and state. Runs at construction and again after a context restore. */
+  private init(): void {
+    const gl = this.gl;
+    const reg = this.registry;
+    this.uniforms.clear();
+    this.prim = reg.createProgram('batch', BATCH_VS, BATCH_FS);
+    this.flesh = reg.createProgram('flesh', FULL_VS, this.plan.fleshVariant === 'mediump' ? toMediump(FLESH_FS) : FLESH_FS);
+    this.bright = reg.createProgram('bright', FULL_VS, BRIGHT_FS);
+    this.blur = reg.createProgram('blur', FULL_VS, BLUR_FS);
+    this.post = reg.createProgram('post', FULL_VS, POST_FS);
+    this.fxaa = reg.createProgram('fxaa', FALLBACK_VS, FXAA_FS);
+    this.fluidProg = reg.createProgram('fluid', FULL_VS, FLUID_FS);
+    this.imageProg = reg.createProgram('image', IMAGE_VS, IMAGE_FS);
+    this.sceneProg = reg.createProgram('scene', FULL_VS, SCENE_FS);
+    this.portraitProg = reg.createProgram('portrait', RECT_VS, PORTRAIT_FS);
+    this.samples = this.plan.aa === 'msaa' ? Math.min(this.plan.msaaSamples, gl.getParameter(gl.MAX_SAMPLES) as number) : 0;
+
+    this.vao = reg.createVertexArray('batch');
+    this.emptyVao = reg.createVertexArray('fullscreen');
     gl.bindVertexArray(this.vao);
-    this.vbo = gl.createBuffer()!;
+    this.vbo = reg.createBuffer('batch');
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
     gl.bufferData(gl.ARRAY_BUFFER, this.f32.byteLength, gl.DYNAMIC_DRAW);
+    reg.setBytes(this.vbo, this.f32.byteLength);
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, STRIDE * 4, 0);
     gl.enableVertexAttribArray(1);
     gl.vertexAttribPointer(1, 2, gl.FLOAT, false, STRIDE * 4, 8);
     gl.enableVertexAttribArray(2);
     gl.vertexAttribPointer(2, 4, gl.UNSIGNED_BYTE, true, STRIDE * 4, 16);
+    gl.enableVertexAttribArray(3);
+    gl.vertexAttribPointer(3, 1, gl.FLOAT, false, STRIDE * 4, 20);
     gl.bindVertexArray(null);
 
-    this.atlas = new GlyphAtlas(gl);
+    this.n = 0;
+    this.pw = this.ph = 0;
+    this.msaaFb = this.msaaRb = null;
     gl.enable(gl.BLEND);
     this.applyBlend();
+  }
+
+  // ------------------------------------------------------------ view, camera, context
+
+  /**
+   * Set the visible view (ENG-0182/0183): `w`×`h` virtual units, with the
+   * 1280×720 safe area inset by `ox`,`oy`. Game code keeps drawing in
+   * safe-area coordinates; the margins show more world (drape, backdrop).
+   */
+  setView(w: number, h: number, ox: number, oy: number): void {
+    this.flush('camera');
+    this.vw = w;
+    this.vh = h;
+    this.ox = ox;
+    this.oy = oy;
+    this.updateXf();
+  }
+
+  /** Visible rect in safe-area coordinates (for full-bleed fills). */
+  viewRect(): { x: number; y: number; w: number; h: number } {
+    return { x: -this.ox, y: -this.oy, w: this.vw, h: this.vh };
+  }
+
+  /** World camera matrix [a,b,c,d,e,f] (Camera2D.matrix()), or null for identity. Applied on the GPU (ENG-0045). */
+  setCamera(m: ArrayLike<number> | null): void {
+    if (m === null && this.camera === null) return;
+    this.flush('camera');
+    this.camera = m ? Array.from(m) : null;
+    this.updateXf();
+  }
+
+  private updateXf(): void {
+    const m = this.camera ?? [1, 0, 0, 1, 0, 0];
+    const x = this.xf;
+    // Column-major mat3 of T(ox, oy) · M.
+    x[0] = m[0];
+    x[1] = m[1];
+    x[2] = 0;
+    x[3] = m[2];
+    x[4] = m[3];
+    x[5] = 0;
+    x[6] = m[4] + this.ox;
+    x[7] = m[5] + this.oy;
+    x[8] = 1;
+  }
+
+  /** Current tessellation scale: on-screen pixels per virtual unit including camera zoom (ENG-0050). */
+  private lodScale(): number {
+    const zoom = this.camera ? Math.hypot(this.camera[0], this.camera[1]) : 1;
+    return Math.max(1, zoom * Math.max(1, (this.outH || this.vh) / this.vh));
+  }
+
+  /** Call on `webglcontextlost`: every handle is dead. */
+  contextLost(): void {
+    this.registry.contextLost();
+    this.targets.forget();
+    this.gpuTimer.reset();
+    this.missing = null;
+    this.n = 0;
+  }
+
+  /** Call on `webglcontextrestored`: recreate programs, buffers, textures, targets and images (ENG-0200). */
+  contextRestored(): void {
+    this.registry.contextRestored();
+    for (const [h, src] of this.imageSources) this.uploadImage(h, src);
+  }
+
+  /**
+   * First-launch GPU micro-benchmark (ENG-0191): time the flesh pass for up to
+   * `budgetMs`, returning ms per pass scaled to a 1920×1080 target.
+   */
+  benchmarkFlesh(budgetMs = 2000): number {
+    const gl = this.gl;
+    this.ensureTargets();
+    const t = this.targets.acquire('bench', 960, 540);
+    const f: FleshParams = { center: { x: 660, y: 410 }, radii: { x: 430, y: 250 }, kind: 0, base: [0.6, 0.2, 0.2], deep: [0.3, 0.05, 0.05], vein: [0.3, 0.1, 0.3], pulse: 0.5, light: { x: 440, y: 60 }, corrupt: 0.2 };
+    const run = () => {
+      gl.bindFramebuffer(gl.FRAMEBUFFER, t.fb);
+      this.outW = t.w;
+      this.outH = t.h;
+      gl.viewport(0, 0, t.w, t.h);
+      this.fleshPass(f);
+    };
+    run();
+    gl.finish();
+    const start = performance.now();
+    let n = 0;
+    while (performance.now() - start < budgetMs && n < 60) {
+      run();
+      gl.finish();
+      n++;
+    }
+    const ms = (performance.now() - start) / Math.max(1, n);
+    this.targets.release('bench');
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    return ms * ((1920 * 1080) / (t.w * t.h));
+  }
+
+  /** Draw every program once off-screen so first use in play never hitches (ENG-0203). */
+  prewarm(): void {
+    const gl = this.gl;
+    const t = this.targets.acquire('prewarm', 64, 36);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, t.fb);
+    this.outW = t.w;
+    this.outH = t.h;
+    gl.viewport(0, 0, t.w, t.h);
+    gl.bindVertexArray(this.emptyVao);
+    this.bindTex(this.atlas.texture, 1);
+    this.bindTex(this.atlas.texture, 0);
+    for (const p of [this.flesh, this.bright, this.blur, this.post, this.fxaa, this.fluidProg, this.sceneProg]) {
+      gl.useProgram(p);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    this.rect(0, 0, 4, 4, 0xffffffff);
+    this.flush('end');
+    gl.useProgram(this.portraitProg);
+    this.rectQuad(0, 0, 4, 4);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    gl.useProgram(this.imageProg);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    gl.finish();
+    this.targets.release('prewarm');
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  }
+
+  /** Zero the per-frame counters (call at frame start); returns the finished frame's stats. */
+  resetStats(): FrameStats {
+    const s = this.stats;
+    this.stats = emptyStats();
+    return s;
   }
 
   private u(p: WebGLProgram, name: string): WebGLUniformLocation | null {
@@ -182,56 +375,37 @@ export class Gfx {
     return m.get(name)!;
   }
 
-  private makeTarget(w: number, h: number, float = false): Target {
-    const gl = this.gl;
-    const tex = gl.createTexture()!;
-    gl.bindTexture(gl.TEXTURE_2D, tex);
-    if (float) gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, w, h, 0, gl.RGBA, gl.HALF_FLOAT, null);
-    else gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    const fb = gl.createFramebuffer()!;
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
-    return { fb, tex, w, h };
-  }
-
-  private freeTarget(t: Target | undefined): void {
-    if (!t) return;
-    this.gl.deleteFramebuffer(t.fb);
-    this.gl.deleteTexture(t.tex);
+  /** World target size: the backbuffer scaled by the render-scale setting (ENG-0181). */
+  worldSize(): { w: number; h: number } {
+    const s = Math.max(0.5, Math.min(1, this.renderScale));
+    return { w: Math.max(1, Math.round(this.canvas.width * s)), h: Math.max(1, Math.round(this.canvas.height * s)) };
   }
 
   private ensureTargets(): void {
-    const w = this.canvas.width;
-    const h = this.canvas.height;
-    if (w === this.pw && h === this.ph) return;
-    this.freeTarget(this.scene);
-    this.freeTarget(this.bloomA);
-    this.freeTarget(this.bloomB);
-    this.freeTarget(this.surface);
-    this.freeTarget(this.fluid);
-    this.scene = this.makeTarget(w, h);
+    const { w, h } = this.worldSize();
+    if (w === this.pw && h === this.ph && this.scene && this.targets.get('scene') === this.scene) return;
+    const P = this.targets;
+    this.scene = P.acquire('scene', w, h);
     const bw = Math.max(1, w >> 2);
     const bh = Math.max(1, h >> 2);
-    this.bloomA = this.makeTarget(bw, bh);
-    this.bloomB = this.makeTarget(bw, bh);
+    this.bloomA = P.acquire('bloomA', bw, bh, { format: this.plan.bloomFormat });
+    this.bloomB = P.acquire('bloomB', bw, bh, { format: this.plan.bloomFormat });
     const hw = Math.max(1, Math.round(w * 0.6));
     const hh = Math.max(1, Math.round(h * 0.6));
-    this.surface = this.makeTarget(hw, hh);
-    this.fluid = this.makeTarget(hw, hh, this.floatTargets);
+    this.surface = P.acquire('surface', hw, hh);
+    this.fluid = P.acquire('fluid', hw, hh, { format: this.floatTargets ? 'rgba16f' : 'rgba8' });
     // Multisampled world target, resolved into `scene` before post-processing.
     const gl = this.gl;
-    if (this.msaaRb) gl.deleteRenderbuffer(this.msaaRb);
-    if (this.msaaFb) gl.deleteFramebuffer(this.msaaFb);
+    const reg = this.registry;
+    reg.release(this.msaaRb);
+    reg.release(this.msaaFb);
     this.msaaFb = this.msaaRb = null;
     if (this.samples > 1) {
-      this.msaaRb = gl.createRenderbuffer()!;
+      this.msaaRb = reg.createRenderbuffer('msaa world');
       gl.bindRenderbuffer(gl.RENDERBUFFER, this.msaaRb);
       gl.renderbufferStorageMultisample(gl.RENDERBUFFER, this.samples, gl.RGBA8, w, h);
-      this.msaaFb = gl.createFramebuffer()!;
+      reg.setBytes(this.msaaRb, w * h * 4 * this.samples);
+      this.msaaFb = reg.createFramebuffer('msaa world');
       gl.bindFramebuffer(gl.FRAMEBUFFER, this.msaaFb);
       gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, this.msaaRb);
       if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) this.msaaFb = null;
@@ -253,6 +427,7 @@ export class Gfx {
   /** Start the world layer (post-processed). */
   beginWorld(clear: [number, number, number] = [0.02, 0.015, 0.015]): void {
     this.ensureTargets();
+    this.gpuTimer.mark('world');
     if (this.msaaFb) {
       this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.msaaFb);
       this.outW = this.scene.w;
@@ -266,7 +441,8 @@ export class Gfx {
 
   /** Finish the world layer, run post-processing to the screen, and switch to the UI layer. */
   endWorld(p: PostParams): void {
-    this.flush();
+    this.flush('end');
+    this.gpuTimer.mark('post');
     const gl = this.gl;
     if (this.msaaFb) {
       gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.msaaFb);
@@ -277,11 +453,12 @@ export class Gfx {
     }
     gl.disable(gl.BLEND);
     gl.bindVertexArray(this.emptyVao);
+    const world = this.antialiasWorld();
 
     // Bright pass → quarter res, then separable blur.
     this.bindTarget(this.bloomA);
     gl.useProgram(this.bright);
-    this.bindTex(this.scene.tex, 0);
+    this.bindTex(world, 0);
     gl.uniform1i(this.u(this.bright, 'u_tex'), 0);
     gl.uniform1f(this.u(this.bright, 'u_threshold'), 0.78);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -301,7 +478,7 @@ export class Gfx {
     // Composite.
     this.bindTarget(null);
     gl.useProgram(this.post);
-    this.bindTex(this.scene.tex, 0);
+    this.bindTex(world, 0);
     this.bindTex(this.bloomA.tex, 1);
     gl.uniform1i(this.u(this.post, 'u_scene'), 0);
     gl.uniform1i(this.u(this.post, 'u_bloom'), 1);
@@ -317,14 +494,34 @@ export class Gfx {
     gl.uniform2f(this.u(this.post, 'u_res'), this.canvas.width, this.canvas.height);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     gl.activeTexture(gl.TEXTURE0);
+    this.stats.drawCalls += 6;
 
     gl.enable(gl.BLEND);
     this.applyBlend();
     this.tf = [1, 0, 0, 1, 0, 0];
+    this.setCamera(null);
+    this.gpuTimer.mark('ui');
+  }
+
+  /** FXAA fallback when the world target has no MSAA (ENG-0193); returns the texture post should read. */
+  private antialiasWorld(): WebGLTexture {
+    if (this.plan.aa !== 'fxaa' || this.msaaFb) return this.scene.tex;
+    const gl = this.gl;
+    const out = this.targets.acquire('fxaa', this.scene.w, this.scene.h);
+    this.bindTarget(out);
+    gl.useProgram(this.fxaa);
+    this.bindTex(this.scene.tex, 0);
+    gl.uniform1i(this.u(this.fxaa, 'u_tex'), 0);
+    gl.uniform2f(this.u(this.fxaa, 'u_texel'), 1 / this.scene.w, 1 / this.scene.h);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    this.stats.drawCalls++;
+    return out.tex;
   }
 
   /** Draw a screen with no world layer (menus, story): UI straight to the screen. */
   beginScreen(clear: [number, number, number] = [0.03, 0.025, 0.025]): void {
+    this.gpuTimer.mark('ui');
+    this.setCamera(null);
     this.bindTarget(null);
     this.gl.clearColor(clear[0], clear[1], clear[2], 1);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
@@ -332,7 +529,7 @@ export class Gfx {
   }
 
   endFrame(): void {
-    this.flush();
+    this.flush('end');
   }
 
   private bindTex(t: WebGLTexture, unit: number): void {
@@ -350,26 +547,38 @@ export class Gfx {
     this.images.set(url, handle);
     const img = new Image();
     img.onload = () => {
-      const gl = this.gl;
-      const tex = gl.createTexture()!;
-      gl.bindTexture(gl.TEXTURE_2D, tex);
-      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-      gl.generateMipmap(gl.TEXTURE_2D);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      Object.assign(handle, { tex, w: img.naturalWidth, h: img.naturalHeight, ready: true });
+      this.imageSources.set(handle, img);
+      this.uploadImage(handle, img);
     };
     img.src = url;
     return handle;
   }
 
+  private uploadImage(handle: ImageHandle, img: TexImageSource): void {
+    const gl = this.gl;
+    const tex = this.registry.createTexture('image');
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    const el = img as HTMLImageElement;
+    const w = el.naturalWidth ?? (img as ImageBitmap).width;
+    const h = el.naturalHeight ?? (img as ImageBitmap).height;
+    this.registry.setBytes(tex, Math.round(w * h * 4 * (4 / 3)));
+    this.stats.textureUploads++;
+    Object.assign(handle, { tex, w, h, ready: true });
+  }
+
   /** Draw an image into a rect (virtual coords) with period grading. */
   drawImage(h: ImageHandle, x: number, y: number, w: number, hgt: number, o: ImageOpts = {}): void {
     if (!h.ready || !h.tex) return;
-    this.flush();
+    this.flush('program');
+    x += this.ox;
+    y += this.oy;
     const gl = this.gl;
     const pr = this.imageProg;
     gl.useProgram(pr);
@@ -383,6 +592,7 @@ export class Gfx {
       this.f32[b + 2] = quad[i * 4 + 2];
       this.f32[b + 3] = quad[i * 4 + 3];
       this.u32[b + 4] = 0xffffffff;
+      this.f32[b + 5] = 0;
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.f32, 0, 6 * STRIDE);
@@ -429,7 +639,8 @@ export class Gfx {
   /** Begin drawing into an additive data layer (surface or fluid). Colours are data, summed. */
   beginLayer(which: 'surface' | 'fluid'): void {
     this.ensureTargets();
-    this.flush();
+    this.flush('program');
+    this.gpuTimer.mark('layers');
     this.bindTarget(which === 'surface' ? this.surface : this.fluid);
     this.gl.clearColor(0, 0, 0, 0);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
@@ -439,15 +650,17 @@ export class Gfx {
   }
 
   endLayer(): void {
-    this.flush();
+    this.flush('end');
     this.blend = 'alpha';
     this.applyBlend();
   }
 
   /** Composite the liquid layer into the world as glossy, merging fluid. Call after beginWorld. */
   fluidComposite(light: Vec): void {
-    this.flush();
+    this.flush('program');
     this.worldFb();
+    this.stats.drawCalls++;
+    light = { x: light.x + this.ox, y: light.y + this.oy };
     const gl = this.gl;
     const pr = this.fluidProg;
     gl.useProgram(pr);
@@ -464,6 +677,8 @@ export class Gfx {
 
   /** Upload one quad covering a rect with 0..1 UVs, using the batch VBO. */
   private rectQuad(x: number, y: number, w: number, h: number): void {
+    x += this.ox;
+    y += this.oy;
     const q = [x, y, 0, 0, x + w, y, 1, 0, x + w, y + h, 1, 1, x, y, 0, 0, x + w, y + h, 1, 1, x, y + h, 0, 1];
     for (let i = 0; i < 6; i++) {
       const b = i * STRIDE;
@@ -472,6 +687,7 @@ export class Gfx {
       this.f32[b + 2] = q[i * 4 + 2];
       this.f32[b + 3] = q[i * 4 + 3];
       this.u32[b + 4] = 0xffffffff;
+      this.f32[b + 5] = 0;
     }
     const gl = this.gl;
     gl.bindVertexArray(this.vao);
@@ -481,7 +697,8 @@ export class Gfx {
 
   /** Raymarched, candle-lit character bust drawn into a rect (see PORTRAIT_FS). */
   portrait(x: number, y: number, w: number, h: number, p: { style: number; rim: [number, number, number]; cloth: [number, number, number]; skin: [number, number, number]; active: number; seed: number; talk: number; beard?: number; hair?: [number, number, number] }): void {
-    this.flush();
+    this.flush('program');
+    this.stats.drawCalls++;
     const gl = this.gl;
     const pr = this.portraitProg;
     gl.useProgram(pr);
@@ -502,8 +719,9 @@ export class Gfx {
 
   /** Shader-rendered story environment (0 hospice … 5 camp) over the whole world target. */
   sceneField(kind: number): void {
-    this.flush();
+    this.flush('program');
     this.worldFb();
+    this.stats.drawCalls++;
     const gl = this.gl;
     const pr = this.sceneProg;
     gl.useProgram(pr);
@@ -518,8 +736,14 @@ export class Gfx {
 
   /** Draw the procedural body field over the whole world target. */
   fleshField(f: FleshParams): void {
-    this.flush();
+    this.flush('program');
     this.worldFb();
+    this.stats.drawCalls++;
+    // Field coordinates are safe-area space; shaders see the full view, so shift by the margin.
+    this.fleshPass({ ...f, center: { x: f.center.x + this.ox, y: f.center.y + this.oy }, light: { x: f.light.x + this.ox, y: f.light.y + this.oy } });
+  }
+
+  private fleshPass(f: FleshParams): void {
     const gl = this.gl;
     const pr = this.flesh;
     gl.useProgram(pr);
@@ -550,29 +774,64 @@ export class Gfx {
     const gl = this.gl;
     if (this.blend === 'add') gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
     else if (this.blend === 'sum') gl.blendFunc(gl.ONE, gl.ONE);
+    // Multiply: dst × src, faded toward dst by alpha. Screen: 1 − (1 − dst)(1 − src).
+    else if (this.blend === 'multiply') gl.blendFuncSeparate(gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.ZERO, gl.ONE);
+    else if (this.blend === 'screen') gl.blendFuncSeparate(gl.ONE, gl.ONE_MINUS_SRC_COLOR, gl.ZERO, gl.ONE);
     else gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
   }
 
   setBlend(b: Blend): void {
     if (b === this.blend) return;
-    this.flush();
+    this.flush('blend');
     this.blend = b;
     this.applyBlend();
   }
 
-  flush(): void {
+  get currentBlend(): Blend {
+    return this.blend;
+  }
+
+  /** Draw with a blend mode, restoring the previous one even if `fn` throws (ENG-0026). */
+  withBlend(b: Blend, fn: () => void): void {
+    const prev = this.blend;
+    this.setBlend(b);
+    try {
+      fn();
+    } finally {
+      this.setBlend(prev);
+    }
+  }
+
+  flush(reason: FlushReason = 'program'): void {
     if (this.n === 0) return;
     const gl = this.gl;
-    this.atlas.upload();
-    gl.useProgram(this.prim);
+    const st = this.stats;
+    st.drawCalls++;
+    st.vertices += this.n;
+    st.flushes[reason]++;
+    if (this.atlas.upload()) st.textureUploads++;
+    const pr = this.prim;
+    gl.useProgram(pr);
     gl.bindVertexArray(this.vao);
-    gl.uniform2f(this.u(this.prim, 'u_view'), this.vw, this.vh);
-    this.bindTex(this.atlas.texture, 0);
-    gl.uniform1i(this.u(this.prim, 'u_tex'), 0);
+    gl.uniform2f(this.u(pr, 'u_view'), this.vw, this.vh);
+    gl.uniformMatrix3fv(this.u(pr, 'u_xf'), false, this.xf);
+    this.slots[0] = this.atlas.texture;
+    for (let i = BATCH_UNITS - 1; i >= 0; i--) this.bindTex(this.slots[i] ?? this.atlas.texture, i);
+    gl.uniform1iv(this.u(pr, 'u_tex'), UNITS);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.f32, 0, this.n * STRIDE);
     gl.drawArrays(gl.TRIANGLES, 0, this.n);
     this.n = 0;
+    for (let i = 1; i < BATCH_UNITS; i++) this.slots[i] = null;
+    this.slotCount = 1;
+  }
+
+  /** Batch unit for `tex`, flushing when all 8 units are taken (ENG-0031). */
+  private unitFor(tex: WebGLTexture): number {
+    for (let i = 1; i < this.slotCount; i++) if (this.slots[i] === tex) return i;
+    if (this.slotCount >= BATCH_UNITS) this.flush('texture');
+    this.slots[this.slotCount] = tex;
+    return this.slotCount++;
   }
 
   private vert(x: number, y: number, u: number, v: number, c: RGBA): void {
@@ -583,11 +842,12 @@ export class Gfx {
     this.f32[i + 2] = u;
     this.f32[i + 3] = v;
     this.u32[i + 4] = c;
+    this.f32[i + 5] = this.texUnit;
     this.n++;
   }
 
   private room(verts: number): void {
-    if (this.n + verts > MAX_VERTS) this.flush();
+    if (this.n + verts > MAX_VERTS) this.flush('overflow');
   }
 
   tri(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, c1: RGBA, c2 = c1, c3 = c1): void {
@@ -602,10 +862,19 @@ export class Gfx {
   // ------------------------------------------------------------ transforms
 
   save(): void {
-    this.stack.push(this.tf.slice());
+    // Pooled stack entries: no allocation per save() in steady state (ENG-0225).
+    let e = this.stack[this.depth];
+    if (!e) this.stack.push((e = [0, 0, 0, 0, 0, 0]));
+    for (let i = 0; i < 6; i++) e[i] = this.tf[i];
+    this.depth++;
   }
   restore(): void {
-    this.tf = this.stack.pop() ?? [1, 0, 0, 1, 0, 0];
+    if (this.depth === 0) {
+      this.tf = [1, 0, 0, 1, 0, 0];
+      return;
+    }
+    const e = this.stack[--this.depth];
+    for (let i = 0; i < 6; i++) this.tf[i] = e[i];
   }
   translate(x: number, y: number): void {
     const t = this.tf;
@@ -650,7 +919,7 @@ export class Gfx {
   }
 
   private segs(r: number): number {
-    return Math.max(12, Math.min(64, Math.round(r * 0.7)));
+    return Math.max(12, Math.min(64, Math.round(r * 0.7 * this.lodScale())));
   }
 
   circle(x: number, y: number, r: number, c: RGBA): void {
@@ -663,10 +932,10 @@ export class Gfx {
     const sr = Math.sin(rot);
     let px = x + cr * rx;
     let py = y + sr * rx;
+    const tb = trig(n);
     for (let i = 1; i <= n; i++) {
-      const a = (i / n) * TAU;
-      const ex = Math.cos(a) * rx;
-      const ey = Math.sin(a) * ry;
+      const ex = tb[i * 2] * rx;
+      const ey = tb[i * 2 + 1] * ry;
       const nx = x + ex * cr - ey * sr;
       const ny = y + ex * sr + ey * cr;
       this.tri(x, y, px, py, nx, ny, c, cEdge, cEdge);
@@ -742,7 +1011,11 @@ export class Gfx {
         if (inDash) {
           const t0 = s / l;
           const t1 = (s + run) / l;
-          this.line({ x: a.x + (b.x - a.x) * t0, y: a.y + (b.y - a.y) * t0 }, { x: a.x + (b.x - a.x) * t1, y: a.y + (b.y - a.y) * t1 }, w, c, false);
+          SA.x = a.x + (b.x - a.x) * t0;
+          SA.y = a.y + (b.y - a.y) * t0;
+          SB.x = a.x + (b.x - a.x) * t1;
+          SB.y = a.y + (b.y - a.y) * t1;
+          this.line(SA, SB, w, c, false);
         }
         s += run;
         phase = (phase + run) % (dash + gap);
@@ -767,13 +1040,170 @@ export class Gfx {
   }
 
   quadCurve(a: Vec, ctrl: Vec, b: Vec, w: number, c: RGBA, steps = 12): void {
-    const pts: Vec[] = [];
-    for (let i = 0; i <= steps; i++) {
+    // Same output as polyline over the sampled points, without building an array (ENG-0225).
+    SA.x = a.x;
+    SA.y = a.y;
+    for (let i = 1; i <= steps; i++) {
       const t = i / steps;
       const u = 1 - t;
-      pts.push({ x: u * u * a.x + 2 * u * t * ctrl.x + t * t * b.x, y: u * u * a.y + 2 * u * t * ctrl.y + t * t * b.y });
+      SB.x = u * u * a.x + 2 * u * t * ctrl.x + t * t * b.x;
+      SB.y = u * u * a.y + 2 * u * t * ctrl.y + t * t * b.y;
+      this.line(SA, SB, w, c, i === 1 || w > 3);
+      SA.x = SB.x;
+      SA.y = SB.y;
     }
-    this.polyline(pts, w, c);
+  }
+
+  // ------------------------------------------------------------ sprites, meshes, clipping
+
+  /** Magenta checker bound in place of any missing sprite frame (ENG-0210). */
+  private missingTexture(): Texture {
+    if (!this.missing) this.missing = new Texture(this.registry, checkerPixels(), { filter: 'nearest', label: 'missing-checker' });
+    return this.missing;
+  }
+
+  /**
+   * Draw a sprite-sheet frame (ENG-0032) centred on its pivot at (x, y).
+   * Frames from up to 7 pages batch with shapes and text in one draw call.
+   */
+  sprite(frameId: string, x: number, y: number, o: SpriteOpts = {}): void {
+    const f = this.sprites.get(frameId);
+    let tex: WebGLTexture;
+    let u0 = 0, v0 = 0, u1 = 1, v1 = 1, fw = 32, fh = 32, px = 0.5, py = 0.5;
+    if (f) {
+      ({ tex, u0, v0, u1, v1, w: fw, h: fh, px, py } = f);
+    } else {
+      if (import.meta.env.DEV) console.warn(`sprite: missing frame "${frameId}"`);
+      tex = this.missingTexture().tex;
+    }
+    if (o.pivot) {
+      px = o.pivot.x;
+      py = o.pivot.y;
+    }
+    const sx = (typeof o.scale === 'object' ? o.scale.x : o.scale ?? 1) * (o.flipX ? -1 : 1);
+    const sy = (typeof o.scale === 'object' ? o.scale.y : o.scale ?? 1) * (o.flipY ? -1 : 1);
+    let tint = (o.tint ?? 0xffffffff) >>> 0;
+    if (o.alpha !== undefined) tint = ((Math.round(((tint >>> 24) & 255) * Math.max(0, Math.min(1, o.alpha))) << 24) | (tint & 0xffffff)) >>> 0;
+    this.room(6);
+    const unit = this.unitFor(tex);
+    this.save();
+    this.translate(x, y);
+    if (o.rot) this.rotate(o.rot);
+    this.scale(sx, sy);
+    const x0 = -px * fw;
+    const y0 = -py * fh;
+    const x1 = x0 + fw;
+    const y1 = y0 + fh;
+    this.texUnit = unit;
+    this.vert(x0, y0, u0, v0, tint);
+    this.vert(x1, y0, u1, v0, tint);
+    this.vert(x1, y1, u1, v1, tint);
+    this.vert(x0, y0, u0, v0, tint);
+    this.vert(x1, y1, u1, v1, tint);
+    this.vert(x0, y1, u0, v1, tint);
+    this.texUnit = 0;
+    this.restore();
+  }
+
+  /**
+   * Nine-slice a frame into `r` (ENG-0035): corners keep their pixel size,
+   * edges stretch along one axis, the centre stretches both. `insets` are in
+   * frame pixels (left, top, right, bottom).
+   */
+  nineSlice(frameId: string, r: { x: number; y: number; w: number; h: number }, insets: { l: number; t: number; r: number; b: number }, tint: RGBA = 0xffffffff): void {
+    const f = this.sprites.get(frameId);
+    if (!f) return this.sprite(frameId, r.x + r.w / 2, r.y + r.h / 2, { scale: { x: r.w / 32, y: r.h / 32 } });
+    const du = (f.u1 - f.u0) / f.w;
+    const dv = (f.v1 - f.v0) / f.h;
+    // Corners shrink proportionally only if the rect is smaller than the two insets.
+    const k = Math.min(1, r.w / Math.max(1, insets.l + insets.r), r.h / Math.max(1, insets.t + insets.b));
+    const xs = [r.x, r.x + insets.l * k, r.x + r.w - insets.r * k, r.x + r.w];
+    const ys = [r.y, r.y + insets.t * k, r.y + r.h - insets.b * k, r.y + r.h];
+    const us = [f.u0, f.u0 + insets.l * du, f.u1 - insets.r * du, f.u1];
+    const vs = [f.v0, f.v0 + insets.t * dv, f.v1 - insets.b * dv, f.v1];
+    this.room(54);
+    this.texUnit = this.unitFor(f.tex);
+    for (let j = 0; j < 3; j++)
+      for (let i = 0; i < 3; i++) {
+        if (xs[i + 1] <= xs[i] || ys[j + 1] <= ys[j]) continue;
+        this.vert(xs[i], ys[j], us[i], vs[j], tint);
+        this.vert(xs[i + 1], ys[j], us[i + 1], vs[j], tint);
+        this.vert(xs[i + 1], ys[j + 1], us[i + 1], vs[j + 1], tint);
+        this.vert(xs[i], ys[j], us[i], vs[j], tint);
+        this.vert(xs[i + 1], ys[j + 1], us[i + 1], vs[j + 1], tint);
+        this.vert(xs[i], ys[j + 1], us[i], vs[j + 1], tint);
+      }
+    this.texUnit = 0;
+  }
+
+  /**
+   * Textured indexed mesh (ENG-0039): `verts`/`uvs` are flat [x,y,…] arrays,
+   * `indices` triangles; `tex` a texture, a sprite frame id (uvs are then
+   * frame-relative 0..1) or null for untextured (vertex colour only).
+   */
+  mesh(verts: ArrayLike<number>, uvs: ArrayLike<number> | null, indices: ArrayLike<number>, tex: WebGLTexture | string | null, color: RGBA = 0xffffffff): void {
+    let u0 = 0, v0 = 0, su = 1, sv = 1;
+    let t: WebGLTexture | null = null;
+    if (typeof tex === 'string') {
+      const f = this.sprites.get(tex);
+      t = f ? f.tex : this.missingTexture().tex;
+      if (f) {
+        u0 = f.u0;
+        v0 = f.v0;
+        su = f.u1 - f.u0;
+        sv = f.v1 - f.v0;
+      }
+    } else t = tex;
+    const w = this.atlas.white;
+    for (let i = 0; i + 2 < indices.length; i += 3) {
+      this.room(3);
+      this.texUnit = t ? this.unitFor(t) : 0;
+      for (let k = 0; k < 3; k++) {
+        const j = indices[i + k];
+        const u = t && uvs ? u0 + uvs[j * 2] * su : w.u;
+        const v = t && uvs ? v0 + uvs[j * 2 + 1] * sv : w.v;
+        this.vert(verts[j * 2], verts[j * 2 + 1], u, v, color);
+      }
+    }
+    this.texUnit = 0;
+  }
+
+  /**
+   * Push a scissor clip in safe-area virtual coordinates (ENG-0027); nested
+   * clips intersect. Only valid on the screen (UI) layer or world target; the
+   * rect is converted to device pixels of the current target.
+   */
+  pushClip(r: { x: number; y: number; w: number; h: number }): void {
+    this.flush('clip');
+    const top = this.clipStack[this.clipStack.length - 1];
+    let c = { ...r };
+    if (top) {
+      const x0 = Math.max(top.x, c.x);
+      const y0 = Math.max(top.y, c.y);
+      const x1 = Math.min(top.x + top.w, c.x + c.w);
+      const y1 = Math.min(top.y + top.h, c.y + c.h);
+      c = { x: x0, y: y0, w: Math.max(0, x1 - x0), h: Math.max(0, y1 - y0) };
+    }
+    this.clipStack.push(c);
+    this.applyClip();
+  }
+
+  popClip(): void {
+    this.flush('clip');
+    this.clipStack.pop();
+    this.applyClip();
+  }
+
+  private applyClip(): void {
+    const gl = this.gl;
+    const c = this.clipStack[this.clipStack.length - 1];
+    if (!c) {
+      gl.disable(gl.SCISSOR_TEST);
+      return;
+    }
+    const d = scissorRect(c, { w: this.vw, h: this.vh, ox: this.ox, oy: this.oy }, this.outW || this.canvas.width, this.outH || this.canvas.height);
+    gl.enable(gl.SCISSOR_TEST);
+    gl.scissor(d.x, d.y, d.w, d.h);
   }
 
   // ------------------------------------------------------------ text

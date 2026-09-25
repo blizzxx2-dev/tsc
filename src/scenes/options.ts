@@ -59,6 +59,17 @@ export class OptionsScene implements Scene {
       note: 'Press Space instead of drawing the five-pointed star.',
     },
     {
+      label: 'Render scale',
+      value: () => (settings.renderScale >= 1 ? 'Native' : `${Math.round(settings.renderScale * 100)}%`),
+      change: (d) => (settings.renderScale = cycle([0.5, 0.67, 0.75, 0.85, 1], settings.renderScale, d)),
+      note: 'Resolution of the operating field; lettering always stays sharp.',
+    },
+    {
+      label: 'Frame limit',
+      value: () => (settings.frameCap ? `${settings.frameCap} fps` : 'Display'),
+      change: (d) => (settings.frameCap = cycle([0, 30, 40, 60, 90, 120, 144], settings.frameCap, d)),
+    },
+    {
       label: 'Fullscreen',
       value: () => (document.fullscreenElement ? 'On' : 'Off'),
       change: () => {
@@ -71,11 +82,16 @@ export class OptionsScene implements Scene {
 
   constructor(
     private onBack: () => void,
-    private overWorld = true,
-  ) {}
+    /** true: chapel backdrop; false: plain screen; 'overlay': drawn over the live scene beneath (scene stack). */
+    private overWorld: boolean | 'overlay' = true,
+  ) {
+    this.overlay = overWorld === 'overlay';
+  }
+
+  readonly overlay: boolean;
 
   private rowRect(i: number) {
-    return { x: 300, y: 170 + i * 58, w: 680, h: 50 };
+    return { x: 300, y: 140 + i * 50, w: 680, h: 44 };
   }
 
   update(_dt: number, game: Game): void {
@@ -95,7 +111,10 @@ export class OptionsScene implements Scene {
   }
 
   render(g: Gfx, game: Game): void {
-    if (this.overWorld) {
+    if (this.overlay) {
+      const vr = g.viewRect();
+      g.rect(vr.x, vr.y, vr.w, vr.h, hex('#000000', 0.55));
+    } else if (this.overWorld) {
       g.beginWorld();
       drawBackdrop(g, 'chapel', g.time);
       g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1 });
@@ -106,12 +125,12 @@ export class OptionsScene implements Scene {
       const r = this.rowRect(i);
       const hover = i === this.hover;
       if (hover) g.rect(r.x, r.y, r.w, r.h, hex(PALETTE.blood, 0.28));
-      g.text(row.label, r.x + 20, r.y + 34, { size: 24, color: hex(hover ? PALETTE.gold : PALETTE.ink) });
-      g.text(`‹  ${row.value()}  ›`, r.x + r.w - 20, r.y + 34, { size: 24, color: hex(PALETTE.gold), align: 'right' });
+      g.text(row.label, r.x + 20, r.y + 31, { size: 24, color: hex(hover ? PALETTE.gold : PALETTE.ink) });
+      g.text(`‹  ${row.value()}  ›`, r.x + r.w - 20, r.y + 31, { size: 24, color: hex(PALETTE.gold), align: 'right' });
     });
     const note = this.hover >= 0 ? this.rows[this.hover].note : undefined;
-    if (note) g.text(note, VIEW_W / 2, 590, { size: 18, font: 'italic', color: hex(PALETTE.inkDim), align: 'center' });
-    if (button(g, game.input, 'Back', VIEW_W / 2, 645, 28)) this.back();
+    if (note) g.text(note, VIEW_W / 2, 612, { size: 18, font: 'italic', color: hex(PALETTE.inkDim), align: 'center' });
+    if (button(g, game.input, 'Back', VIEW_W / 2, 660, 28)) this.back();
     reticle(g, game.input.pos);
     g.endFrame();
   }

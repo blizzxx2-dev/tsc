@@ -24,7 +24,10 @@ export class TitleScene implements Scene {
     drawBackdrop(g, 'title', g.time);
     g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1.1 });
     const a = Math.min(1, this.t);
-    g.rect(0, 0, VIEW_W, VIEW_H, hex('#000000', 0.35));
+    {
+      const vr = g.viewRect();
+      g.rect(vr.x, vr.y, vr.w, vr.h, hex('#000000', 0.35));
+    }
     g.glow(VIEW_W / 2, 180, 420, hex('#8a1016', 0.3 * a));
     g.text('Suture & Steel', VIEW_W / 2, 200, { size: 116, font: 'display', color: hex('#fff0c0', a), color2: hex('#d8a040', a), align: 'center', shadow: hex('#0a0402', 0.95 * a) });
     divider(g, VIEW_W / 2, 236, 520, hex(UI.brass, a));

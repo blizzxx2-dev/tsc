@@ -237,7 +237,6 @@ export function playWithBot(def: OperationDef, opts: BotOptions = {}): BotResult
       }
     }
     op.update(DT);
-    op.cues.length = 0;
   }
   return { op, frames };
 }
