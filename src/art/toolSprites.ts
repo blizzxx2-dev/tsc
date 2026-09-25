@@ -9,6 +9,7 @@ import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { SWATCHES } from '../render/palette';
 import type { ToolId } from '../surgery/types';
+import type { ToolSkin } from './kit';
 
 export const TOOL_SPRITE_SIZE = 64;
 
@@ -33,7 +34,17 @@ export interface FieldToolState {
   trail?: Vec[];
   /** Tincture colour. */
   tint?: string;
+  /** Cosmetic skin (ART-0379). */
+  skin?: ToolSkin;
 }
+
+/** Skin palettes for the in-field sprites: blade/steel, its shade, and the handle wood. */
+const SKIN_COLS: Record<ToolSkin, { steel: string; steelLo: string; handle: string }> = {
+  steel: { steel: '#d8dce0', steelLo: '#6a7078', handle: SWATCHES.oak },
+  bone: { steel: '#d8dce0', steelLo: '#6a7078', handle: SWATCHES.bone },
+  gilt: { steel: SWATCHES.gilt, steelLo: SWATCHES.giltLo, handle: SWATCHES.leather },
+  pyre: { steel: '#3a3432', steelLo: '#141010', handle: '#1a0e0a' },
+};
 
 /** Top-left of the sprite frame for a pointer at p. */
 export const spriteOrigin = (tool: ToolId, p: Vec): Vec => ({ x: p.x - TOOL_TIPS[tool].x, y: p.y - TOOL_TIPS[tool].y });
@@ -44,8 +55,9 @@ export const tipAt = (tool: ToolId, p: Vec): Vec => {
   return { x: o.x + TOOL_TIPS[tool].x, y: o.y + TOOL_TIPS[tool].y };
 };
 
-const steel = (a = 1) => hex('#d8dce0', a);
-const steelLo = (a = 1) => hex('#6a7078', a);
+let skinCols = SKIN_COLS.steel;
+const steel = (a = 1) => hex(skinCols.steel, a);
+const steelLo = (a = 1) => hex(skinCols.steelLo, a);
 const shadow = hex('#000000', 0.35);
 
 /** Draw `tool` at pointer p, tip on p. */
@@ -55,6 +67,7 @@ export function drawFieldTool(g: Gfx, tool: ToolId, p: Vec, s: FieldToolState = 
     g.polyline(s.trail, 2.2, hex(SWATCHES.soot, 0.4));
     g.polyline(s.trail, 1.2, hex(SWATCHES.linen, 0.9));
   }
+  skinCols = SKIN_COLS[s.skin ?? 'steel'];
   const o = spriteOrigin(tool, p);
   g.save();
   g.translate(o.x, o.y);
@@ -71,7 +84,7 @@ export function drawFieldTool(g: Gfx, tool: ToolId, p: Vec, s: FieldToolState = 
       sh(() => L(4, 60, 58, 6, 6, shadow));
       g.poly([{ x: 4, y: 60 }, { x: 15, y: 43 }, { x: 22, y: 42 }, { x: 21, y: 49 }], steel(), steelLo());
       L(8, 56, 19, 45, 0.8, hex('#ffffff', 0.8));
-      L(22, 42, 58, 6, 6, hex(SWATCHES.bone));
+      L(22, 42, 58, 6, 6, hex(s.skin === 'steel' || !s.skin ? SWATCHES.bone : skinCols.handle));
       L(22, 42, 58, 6, 1.5, hex(SWATCHES.foxing, 0.8));
       for (let i = 0; i < 4; i++) L(30 + i * 7, 34 - i * 7, 33 + i * 7, 37 - i * 7, 1, hex(SWATCHES.inkDark, 0.6));
       break;
@@ -124,7 +137,7 @@ export function drawFieldTool(g: Gfx, tool: ToolId, p: Vec, s: FieldToolState = 
       const heat = Math.max(0, Math.min(1, s.heat ?? 0.6));
       sh(() => L(6, 58, 58, 6, 6, shadow));
       L(12, 52, 44, 20, 3.5, hex('#3a3634'));
-      L(44, 20, 58, 6, 6, hex(SWATCHES.oak));
+      L(44, 20, 58, 6, 6, hex(skinCols.handle));
       g.poly([{ x: 2, y: 56 }, { x: 8, y: 50 }, { x: 14, y: 56 }, { x: 8, y: 62 }], hex('#2a2220'));
       g.setBlend('add');
       const flick = 0.85 + 0.15 * Math.sin(t * 23);
@@ -135,7 +148,7 @@ export function drawFieldTool(g: Gfx, tool: ToolId, p: Vec, s: FieldToolState = 
     }
     case 'lens':
       sh(() => L(33, 33, 60, 60, 6, shadow));
-      L(33, 33, 60, 60, 6, hex(SWATCHES.oak));
+      L(33, 33, 60, 60, 6, hex(skinCols.handle));
       g.arc(24, 24, 13, 4, hex(SWATCHES.brass));
       g.arc(24, 24, 13, 1, hex(SWATCHES.brassHi));
       g.circle(24, 24, 11, hex(SWATCHES.frost, 0.12));

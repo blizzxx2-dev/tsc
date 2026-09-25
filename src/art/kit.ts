@@ -269,9 +269,14 @@ export function tallyRibbon(g: Gfx, cx: number, cy: number, w: number, h: number
 export type ToolState = 'idle' | 'selected' | 'disabled' | 'cooldown';
 const TOOL_STATE: Record<ToolState, number> = { idle: 0, selected: 1, disabled: 2, cooldown: 3 };
 
+/** Cosmetic instrument skins (ART-0379): the tray icon and the in-field sprite share them. */
+export type ToolSkin = 'steel' | 'bone' | 'gilt' | 'pyre';
+export const TOOL_SKINS: readonly ToolSkin[] = ['steel', 'bone', 'gilt', 'pyre'];
+const SKIN_INDEX: Record<ToolSkin, number> = { steel: 0, bone: 1, gilt: 2, pyre: 3 };
+
 /** Brass-engraved instrument icon, `size` px square. */
-export function toolArt(g: Gfx, tool: ToolId, x: number, y: number, size: number, state: ToolState = 'idle', cooldown = 0): void {
-  g.ornament(ART.tool, x - size / 2, y - size / 2, size, size, { a: [TOOL_INDEX[tool], TOOL_STATE[state], cooldown, 0] });
+export function toolArt(g: Gfx, tool: ToolId, x: number, y: number, size: number, state: ToolState = 'idle', cooldown = 0, skin: ToolSkin = 'steel'): void {
+  g.ornament(ART.tool, x - size / 2, y - size / 2, size, size, { a: [TOOL_INDEX[tool], TOOL_STATE[state], cooldown, SKIN_INDEX[skin]] });
 }
 
 /** Brass crosshair; `tint` shades the brass (green valid target, red invalid). */

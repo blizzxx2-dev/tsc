@@ -11,6 +11,7 @@ import { drawVfxSample, VFX_SPECS } from './vfx';
 import { disciplineGlyph, DISCIPLINE_TOOLS, drawFieldTool, drawTipDebug, toolGlyph } from './toolSprites';
 import { busyCursor, padCursorRing } from './cursors';
 import { padGlyph } from './padGlyphs';
+import { toolArt, TOOL_SKINS } from './kit';
 import { inkFlood } from './outcomeArt';
 import { dawnFlare, flareIntensity, laudsChoir, lightThread, MATINS_DEATH_FRAMES, matinsDeathEye, matinsUnravel } from './bossVfx';
 import { PAD_GLYPHS } from '../input/glyphs';
@@ -134,6 +135,15 @@ export class VfxLabScene implements Scene {
     g.text('32 px glyphs', 640, 400, { size: 16, color: hex('#f0e4c8') });
     DISCIPLINE_TOOLS.forEach((d, i) => disciplineGlyph(g, d, 1000 + (i % 3) * 70, 340 + Math.floor(i / 3) * 70, 60));
     g.text('discipline tools', 1000, 430, { size: 16, color: hex('#f0e4c8') });
+    // Cosmetic skins (ART-0379): tray icon and in-field sprite per skin.
+    TOOL_SKINS.forEach((skin, i) => {
+      const x = 860 + i * 105;
+      toolArt(g, 'lancet', x, 500, 56, 'idle', 0, skin);
+      toolArt(g, 'brand', x + 40, 500, 56, 'idle', 0, skin);
+      drawFieldTool(g, 'lancet', { x: x - 10, y: 640 }, { skin }, this.t);
+      drawFieldTool(g, 'brand', { x: x + 30, y: 640 }, { skin, heat: 0.5 }, this.t);
+      g.text(skin, x + 20, 680, { size: 16, color: hex('#f0e4c8'), align: 'center' });
+    });
     // Glyph sets.
     (['xbox', 'playstation', 'deck'] as const).forEach((fam, row) => {
       let x = 40;

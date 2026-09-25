@@ -614,7 +614,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 ### Updates & DLC art
 - [ ] ART-0377 · Post · P2 · M · Unsung Hour challenge-mode card art and a leaderboard frame
 - [ ] ART-0378 · Post · P2 · L · DLC chapter art package template (1 new location set, 4 portraits, 1 Malison variant, 6 ailments) with a cost estimate
-- [ ] ART-0379 · Post · P3 · M · Alternate cosmetic tool skins (bone-handled, gilt, Pyre-blackened) for the instrument tray and in-field sprites
+- [x] ART-0379 · Post · P3 · M · Alternate cosmetic tool skins (bone-handled, gilt, Pyre-blackened) for the instrument tray and in-field sprites
 - [ ] ART-0380 · Post · P3 · S · Steam trading cards (5 cards, 5 backgrounds, emoticons) from existing woodcut and portrait art
 - [ ] ART-0381 · Post · P3 · S · Anniversary key-art variant and a seasonal title-screen skin (Winter Vigil)
 - [ ] ART-0382 · Post · P3 · M · Digital artbook (PDF, 80 pages) from concept archives with artist commentary
