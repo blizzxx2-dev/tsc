@@ -143,6 +143,18 @@ export class AssetLoader {
     return this.bundlesHeld.has(b) && ((this.bundles[b] ?? []) as AssetId[]).every((id) => this.loaded.has(id));
   }
 
+  /** Merge generated entries (the local 3D models manifest) into the manifest and their bundles. */
+  addEntries(entries: Record<string, AssetEntry>): void {
+    this.manifest = { ...this.manifest, ...entries };
+    const bundles: Record<string, string[]> = Object.fromEntries(Object.entries(this.bundles).map(([k, v]) => [k, [...v]]));
+    for (const [id, e] of Object.entries(entries)) (bundles[e.bundle] ??= []).includes(id) || bundles[e.bundle].push(id);
+    this.bundles = bundles;
+  }
+
+  has(id: string): boolean {
+    return id in this.manifest;
+  }
+
   /** How many assets a bundle holds (0 for an empty or unknown bundle). */
   bundleSize(b: BundleId): number {
     return (this.bundles[b] ?? []).length;

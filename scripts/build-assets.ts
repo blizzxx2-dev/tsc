@@ -206,6 +206,14 @@ const perBundle = new Map<string, number>();
 for (const e of Object.values(entries)) perBundle.set(e.bundle, (perBundle.get(e.bundle) ?? 0) + e.bytes);
 const total = [...perBundle.values()].reduce((a, b) => a + b, 0);
 
+// ---- generated 3D models (git-ignored, built locally by npm run art:models) get their own runtime
+// manifest, public/assets/models.json, so the committed manifest is identical on every clone.
+const modelIds = Object.keys(entries)
+  .filter((i) => entries[i].type === 'model')
+  .sort();
+const modelManifest = JSON.stringify({ entries: Object.fromEntries(modelIds.map((i) => [i, entries[i]])) }, null, 2) + '\n';
+for (const i of modelIds) delete entries[i];
+
 // ---- manifest source.
 const ids = Object.keys(entries).sort();
 const manifest =
@@ -220,12 +228,14 @@ const manifest =
 if (CHECK) {
   const stale: string[] = [];
   if (!existsSync(MANIFEST) || readFileSync(MANIFEST, 'utf8') !== manifest) stale.push('src/assets/manifest.gen.ts');
-  for (const [name, data] of files) if (!existsSync(join(OUT, name)) || !readFileSync(join(OUT, name)).equals(data)) stale.push(`public/assets/${name}`);
+  for (const [name, data] of files)
+    if (!name.startsWith('models_') && (!existsSync(join(OUT, name)) || !readFileSync(join(OUT, name)).equals(data))) stale.push(`public/assets/${name}`);
   if (stale.length) errors.push(`generated assets are stale (run npm run assets): ${stale.join(', ')}`);
 } else {
   mkdirSync(OUT, { recursive: true });
-  for (const f of readdirSync(OUT)) if (!files.has(f)) rmSync(join(OUT, f));
+  for (const f of readdirSync(OUT)) if (!files.has(f) && f !== 'models.json') rmSync(join(OUT, f));
   for (const [name, data] of files) writeFileSync(join(OUT, name), data);
+  writeFileSync(join(OUT, 'models.json'), modelManifest);
   mkdirSync(join(ROOT, 'src', 'assets'), { recursive: true });
   writeFileSync(MANIFEST, manifest);
 }

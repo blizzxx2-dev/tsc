@@ -25,6 +25,10 @@ const pos = (m: Mat4): V3 => [m[12], m[13], m[14]];
 const num = (v: unknown, d: number): number => (typeof v === 'number' ? v : d);
 const rgb = (v: unknown, d: V3): V3 => (Array.isArray(v) && v.length >= 3 ? [v[0], v[1], v[2]] : d);
 
+/** Blender's light units (W) → the realtime model's radiance: tuned so sets match their Cycles previews. */
+const KEY_GAIN = 2.6;
+const CANDLE_GAIN = 3.5;
+
 /** Cap on point lights per set; nearby candles merge into one light at their centre. */
 const MAX_POINTS = 6;
 
@@ -50,7 +54,7 @@ export function setScene(model: Model3D, t: number, parallax: [number, number] =
     ? {
         pos: pos(keyA.world),
         target: keyT ? pos(keyT.world) : ([0, 0, 0] as V3),
-        color: rgb(keyA.extras.color, [1, 0.7, 0.4]).map((c) => c * num(keyA.extras.intensity, 10)) as V3,
+        color: rgb(keyA.extras.color, [1, 0.7, 0.4]).map((c) => c * num(keyA.extras.intensity, 10) * KEY_GAIN) as V3,
         cone: num(keyA.extras.cone, 1.2),
         range: num(keyA.extras.range, 10),
         shadow: true,
@@ -59,7 +63,7 @@ export function setScene(model: Model3D, t: number, parallax: [number, number] =
 
   const candles = model.anchors('candle.').map((a) => ({
     pos: pos(a.world),
-    color: rgb(a.extras.color, [1, 0.6, 0.3]).map((c) => c * num(a.extras.intensity, 1)) as V3,
+    color: rgb(a.extras.color, [1, 0.6, 0.3]).map((c) => c * num(a.extras.intensity, 1) * CANDLE_GAIN) as V3,
     range: num(a.extras.range, 5),
     flicker: 0.6,
   }));
@@ -68,9 +72,9 @@ export function setScene(model: Model3D, t: number, parallax: [number, number] =
     camera: { pos: camPos, target: tp, fovY: (num(cam?.extras.fov, 45) * Math.PI) / 180, near: 0.1, far: 40 },
     key,
     lights,
-    ambient: { sky: [0.05, 0.058, 0.085], ground: [0.045, 0.032, 0.024] },
+    ambient: { sky: [0.075, 0.085, 0.12], ground: [0.07, 0.05, 0.036] },
     fog: { color: [0.05, 0.04, 0.035], density: 0.035 },
-    exposure: 1,
+    exposure: 1.3,
     items: [{ model }],
     time: t,
   };

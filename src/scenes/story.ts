@@ -97,10 +97,11 @@ export class StoryScene implements Scene {
     const narr = line.who === 'narrator';
     const size = Math.round(24 * ts);
     // A gold initial opens each scene's first narration (ART-0082).
-    const cap = this.i === 0 && narr && /^\p{Lu}/u.test(line.text);
+    // Only when the narration runs to two lines or more, so the initial has lines to sit beside.
+    const cap = this.i === 0 && narr && /^\p{Lu}/u.test(line.text) && g.wrap(line.text, VIEW_W - 400, Math.round(24 * ts), 'italic').length >= 2;
     const capSize = Math.round(size * 2.6);
     const ty = top + (name ? 94 : 70);
-    if (cap) g.text(line.text[0], tx, ty + capSize * 0.62, { size: capSize, font: 'display', color: hex(INK.goldHi), color2: hex(INK.gold), shadow: hex('#000000', 0.9), soft: true });
+    if (cap) g.text(line.text[0], tx, ty + size * 1.42, { size: capSize, font: 'display', color: hex(INK.goldHi), color2: hex(INK.gold), shadow: hex('#000000', 0.9), soft: true });
     const body = cap ? line.text.slice(1) : line.text;
     const shownBody = cap ? Math.max(0, Math.floor(this.shown) - 1) : Math.floor(this.shown);
     const indent = cap ? g.measure(line.text[0], capSize, 'display') + 10 : 0;

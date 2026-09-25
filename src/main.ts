@@ -1,6 +1,5 @@
 import type { ToolId } from './surgery/types';
 import { registerToolModel, TOOL_MODEL } from './ui/toolIcons3d';
-import { MANIFEST } from './assets/manifest.gen';
 import { registerSet, SETS } from './scenes/sets';
 import type { Model3D } from './render/renderer3d';
 import type { AssetId } from './assets/manifest.gen';
@@ -358,12 +357,19 @@ async function boot(): Promise<void> {
   game.assets.prefetch('title');
   game.assets.prefetch('ops-common');
   // 3D sets: registered with the backdrop as they arrive (the procedural scene shows until then).
-  for (const [tool, id] of Object.entries(TOOL_MODEL).filter(([, id]) => id in MANIFEST))
+  // Generated 3D models have a local manifest (absent on fresh clones: then nothing loads).
+  try {
+    const r = await fetch(`${import.meta.env.BASE_URL}assets/models.json`);
+    if (r.ok) game.assets.addEntries((await r.json()).entries);
+  } catch {
+    // No models built: procedural backdrops and shader icons.
+  }
+  for (const [tool, id] of Object.entries(TOOL_MODEL).filter(([, id]) => game.assets!.has(id)))
     void game.assets.load(id as AssetId).then((a) => {
       if (a.value) registerToolModel(tool as ToolId, a.value as Model3D);
     });
   // Models are generated (npm run art:models) and absent from fresh clones: skip unbuilt sets.
-  for (const [key, id] of Object.entries(SETS).filter(([, id]) => id in MANIFEST))
+  for (const [key, id] of Object.entries(SETS).filter(([, id]) => game.assets!.has(id)))
     void game.assets.load(id as AssetId).then((a) => {
       if (a.value) registerSet(key, a.value as Model3D);
     });
