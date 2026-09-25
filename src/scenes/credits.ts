@@ -52,7 +52,8 @@ const ROW_H: Record<Row['kind'], number> = { title: 96, heading: 64, role: 30, n
 export class CreditsScene implements Scene {
   readonly ui = new Ui('credits');
   private t = 0;
-  private y = 0;
+  /** Roll offset; starts with the lockup already rising from the bottom edge. */
+  private y = 140;
   private rows = creditRows();
   private total = this.rows.reduce((s, r) => s + ROW_H[r.kind], 0);
   private done = false;

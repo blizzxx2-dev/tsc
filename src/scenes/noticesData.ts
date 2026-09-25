@@ -22,7 +22,7 @@ export const NOTICES: readonly Notice[] = [
   { name: 'EB Garamond', pkg: '@fontsource/eb-garamond', licence: 'SIL Open Font License 1.1', holder: 'Georg Duffner, Octavio Pardo', scope: 'runtime' },
   { name: 'Cinzel', pkg: '@fontsource/cinzel', licence: 'SIL Open Font License 1.1', holder: 'Natanael Gama', scope: 'runtime' },
   { name: 'Electron', pkg: 'electron', licence: 'MIT', holder: 'Electron contributors, GitHub Inc.', scope: 'desktop' },
-  { name: 'Chromium', licence: 'BSD-3-Clause and others (see LICENSES.chromium.html)', holder: 'The Chromium Authors', scope: 'desktop' },
+  { name: 'Chromium', licence: 'BSD-3-Clause and others', holder: 'The Chromium Authors', scope: 'desktop' },
   { name: 'Node.js', licence: 'MIT and others', holder: 'Node.js contributors', scope: 'desktop' },
   { name: 'steamworks.js', pkg: 'steamworks.js', licence: 'MIT', holder: 'Ceifa', scope: 'desktop' },
   { name: 'Steamworks SDK', licence: 'Steamworks SDK Access Agreement', holder: 'Valve Corporation', scope: 'desktop' },

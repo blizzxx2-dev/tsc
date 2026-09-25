@@ -440,6 +440,7 @@ async function boot(): Promise<void> {
       slots: () => new SaveSlotsScene('new'),
       credits: () => new CreditsScene(),
       extras: () => new ExtrasScene(),
+      display: () => new OptionsScene(back, true, 'display'),
     };
     const make = screens[params.get('ui') ?? ''];
     if (make) game.instant(() => game.go(make()));
