@@ -1845,6 +1845,40 @@
         <note from="context">Aftermath scene after op3-9 &quot;a3-9&quot; (The hospice — past midnight), line 4 of 4.</note>
         <note from="speaker">Dr. Kreuzer</note>
       </trans-unit>
+      <trans-unit id="teaser-3.place" resname="teaser-3.place">
+        <source>Next — Chapter III: Prime and Terce</source>
+        <note from="context">Place caption of chapter iii teaser read after the demo end card &quot;teaser-3&quot;.</note>
+      </trans-unit>
+      <trans-unit id="teaser-3.001" resname="teaser-3.001">
+        <source>Foundry smoke lies so thick over the Kilnrows that the lamplighters go out at noon.</source>
+        <note from="context">Chapter III teaser read after the demo end card &quot;teaser-3&quot; (Next — Chapter III: Prime and Terce), line 1 of 6.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="teaser-3.002" resname="teaser-3.002">
+        <source>At dusk the river bridges are raised, and the Watch asks every child at the gate to show its forehead.</source>
+        <note from="context">Chapter III teaser read after the demo end card &quot;teaser-3&quot; (Next — Chapter III: Prime and Terce), line 2 of 6.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="teaser-3.003" resname="teaser-3.003">
+        <source>The Guild will put your licence to the vote, boy. I stood in that hall once before. I can stand in it again.</source>
+        <note from="context">Chapter III teaser read after the demo end card &quot;teaser-3&quot; (Next — Chapter III: Prime and Terce), line 3 of 6.</note>
+        <note from="speaker">Master Haller</note>
+      </trans-unit>
+      <trans-unit id="teaser-3.004" resname="teaser-3.004">
+        <source>Doctor, there is a girl at the door with two nubs of horn in her hair, and her mother is praying.</source>
+        <note from="context">Chapter III teaser read after the demo end card &quot;teaser-3&quot; (Next — Chapter III: Prime and Terce), line 4 of 6.</note>
+        <note from="speaker">Sister Ilse</note>
+      </trans-unit>
+      <trans-unit id="teaser-3.005" resname="teaser-3.005">
+        <source>On the steps of the Hall of Records, a registrar reads the roll of the dead aloud, and the names keep coming.</source>
+        <note from="context">Chapter III teaser read after the demo end card &quot;teaser-3&quot; (Next — Chapter III: Prime and Terce), line 5 of 6.</note>
+        <note from="speaker">Narrator</note>
+      </trans-unit>
+      <trans-unit id="teaser-3.006" resname="teaser-3.006">
+        <source>I said we would speak after Prime, Doctor. It is nearly after Prime.</source>
+        <note from="context">Chapter III teaser read after the demo end card &quot;teaser-3&quot; (Next — Chapter III: Prime and Terce), line 6 of 6.</note>
+        <note from="speaker">Inquisitor Stroh</note>
+      </trans-unit>
       <trans-unit id="recap.ch3.001" resname="recap.ch3.001">
         <source>The Watch marched to the barrow-fields with Kreuzer as its surgeon, and brought home a cantor whose chest was a lattice of sigils.</source>
         <note from="context">Chapter-select recap before ch3 (&quot;previously&quot;), sentence 1 of 3. Narration.</note>

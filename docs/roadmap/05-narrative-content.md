@@ -110,7 +110,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### Demo-exclusive framing
 - [x] NAR-0067 · Demo · P0 · S · Demo end card copy — "The Office is not finished. Prime is sung next." + wishlist call to action (≤ 25 words)
-- [ ] NAR-0068 · Demo · P1 · S · Chapter III teaser script — 6-line VN teaser (foundry smoke, raised bridges, Haller's licence vote, Stroh's "After Prime") shown after the end card
+- [x] NAR-0068 · Demo · P1 · S · Chapter III teaser script — 6-line VN teaser (foundry smoke, raised bridges, Haller's licence vote, Stroh's "After Prime") shown after the end card
 - [x] NAR-0069 · Demo · P2 · S · Demo main-menu flavour lines — 8 rotating title-screen epigraphs (hymn fragments, guild notices) all IP-cleared
 
 ## NAR · Epic 4 — Demo barks, codex and case notes

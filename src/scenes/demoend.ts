@@ -1,3 +1,5 @@
+import { TEASER_3 } from '../content/teaser';
+import { StoryScene } from './story';
 import type { Game, Scene } from '../core/scene';
 import { t } from '../i18n';
 import { formatNumber } from '../i18n/format';
@@ -55,7 +57,8 @@ export class DemoEndScene implements Scene {
 
   private leave(game: Game): void {
     if (this.replay) game.go(new ExtrasScene());
-    else game.go(new TitleScene());
+    // After the end card, the Chapter III teaser (NAR-0068), then the title.
+    else game.go(new StoryScene(TEASER_3, () => game.go(new TitleScene())));
   }
 
   update(dt: number, game: Game): void {
