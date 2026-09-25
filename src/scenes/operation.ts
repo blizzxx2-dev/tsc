@@ -13,7 +13,7 @@ import { Malison, MalisonShard } from '../surgery/malison';
 import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOWN, TINCTURE_TIME, type OperationDef, type Popup } from '../surgery/operation';
 import { TOOL_INFO, toolInfo, type ToolId } from '../surgery/types';
 import { anchorShift, PALETTE, viewRect, VIEW_W } from '../ui/layout';
-import { button, inRect, reticle, toolIcon } from '../ui/widgets';
+import { button, reticle, toolIcon } from '../ui/widgets';
 import { giltText, UI } from '../ui/ornaments';
 import type { ActionId } from '../input/actions';
 import { DamageAggregator, ToolHints } from '../ui/hudPrefs';
@@ -33,6 +33,10 @@ import { vec3 } from '../render/color';
 import { settings } from '../core/settings';
 import { OptionsScene } from './options';
 import { litanyMode, OperationInput } from '../input/opinput';
+import { addTray, HudLayer, trayFrame, traySide, traySlot } from '../input/hud';
+import { drawGraspOutline } from '../input/hover';
+import { HoldToRetry } from '../input/retry';
+import { bindings } from '../input/bindings';
 import { dragGlyphFor, glyphFor, toolKeyLabel } from '../input/glyphs';
 import { operationOptions } from '../surgery/session';
 import type { OperationOptions } from '../surgery/operation';
@@ -43,8 +47,6 @@ export interface OperationOutcome {
   op: Operation;
   won: boolean;
 }
-
-const TRAY = { x: 24, y: 124, w: 64, h: 60, gap: 8 };
 
 /** 1 → I, 2 → II … for phase banners. */
 const roman = (n: number): string => ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'][n - 1] ?? String(n);
@@ -94,6 +96,12 @@ export class OperationScene implements Scene {
   readonly calloutLog: string[] = [];
   /** Seconds left of the 3-2-1 resume countdown (UIX-0101). */
   private resumeT = 0;
+  /** HUD widgets under the pointer take presses before the field does (INP-0047); rebuilt as the HUD is drawn. */
+  private hud = new HudLayer();
+  /** Litany reliquary rect for the hit-test layer (mirrored in left-handed mode). */
+  private litanyRect: { x: number; y: number; w: number; h: number } | null = null;
+  /** Hold `op.retry` for a second to restart a challenge run on the spot (INP-0113). */
+  private retry = new HoldToRetry();
 
   constructor(
     private def: OperationDef,
@@ -213,6 +221,8 @@ export class OperationScene implements Scene {
     if (this.paused) return this.ctl.suspend(op);
     this.camera.update(dt);
     if (input.actPressed('op.debug')) this.debug = !this.debug;
+    // Instant retry (INP-0113) is a challenge-mode affordance; story operations restart from the pause menu.
+    if (this.runOpts.challenge && this.retry.update(input, dt)) return this.restart();
 
     // A mid-operation dialogue insert holds everything until read.
     if (op.dialogue.length) {
@@ -231,10 +241,12 @@ export class OperationScene implements Scene {
       const w = this.camera.toWorld(p, { x: 0, y: 0 });
       return { x: w.x - sway.x, y: w.y - sway.y };
     };
-    this.ctl.update(op, input, dt, (p) => {
-      const i = op.def.tools.findIndex((_, k) => inRect(p, this.slot(k)));
-      return i >= 0 ? op.def.tools[i] : p.x <= TRAY.x + TRAY.w + 10 ? 'consume' : null;
-    });
+    // HUD hit-test pass (INP-0047): tray slots select, the tray frame and the reliquary swallow, the callout panel is click-through.
+    this.hud.clear();
+    addTray(this.hud, op.def.tools);
+    if (this.litanyRect) this.hud.add({ kind: 'litany', rect: this.litanyRect });
+    if (this.calloutRect) this.hud.add({ kind: 'callout', rect: this.calloutRect, clickThrough: true });
+    this.ctl.update(op, input, dt, this.hud.hit);
     this.dmg.enabled = settings.damageNumbers;
     this.hints.mode = settings.toolHints;
     for (const p of this.dmg.tick(dt)) this.addPopup({ ...p, t: 0 });
@@ -304,7 +316,7 @@ export class OperationScene implements Scene {
   }
 
   private slot(i: number) {
-    return { x: TRAY.x, y: TRAY.y + i * (TRAY.h + TRAY.gap), w: TRAY.w, h: TRAY.h };
+    return traySlot(i);
   }
 
   render(g: Gfx, game: Game): void {
@@ -362,6 +374,8 @@ export class OperationScene implements Scene {
     for (const e of ents) e.draw(g, op);
     // High contrast: a 2 px ring around everything that takes an instrument.
     if (highContrast()) for (const e of ents) if (e.required) g.arc(e.pos.x, e.pos.y, 28, 2, hex('#ffffff', 0.85), 1);
+    // Tongs in hand: outline the graspable the next press would seize (INP-0042).
+    if (!this.paused) drawGraspOutline(g, op, this.ctl.toWorld(game.input.pos), bindings.prefs.hitScale, t);
     this.particles.draw(g);
 
     // Scrying lens: shimmer where something hides.
@@ -470,6 +484,9 @@ export class OperationScene implements Scene {
       toolIcon(g, aim.tool, p.x - 30, p.y + 30, 0.55, t, 'disabled');
       caps(g, tr('hud.needs', { tool: tr(`tool.${aim.tool}.name`) }), p.x - 8, p.y + 52, 12, hex('#ffd8c0', 0.95));
     }
+    // Precision modifier held (INP-0067): a fine ring round the reticle. Hold-to-retry (INP-0113): a ring that fills.
+    if (game.input.act('op.precision')) g.arc(p.x, p.y, 26 * cs, 1.2, hex(INK.goldHi, 0.8));
+    this.retry.draw(g, p);
     g.endFrame();
   }
 
@@ -605,8 +622,12 @@ export class OperationScene implements Scene {
 
   private drawTray(g: Gfx): void {
     const op = this.op;
-    const n = op.def.tools.length;
-    const frame = { x: TRAY.x - 8, y: TRAY.y - 8, w: TRAY.w + 16, h: n * (TRAY.h + TRAY.gap) - TRAY.gap + 16 };
+    const mirrored = traySide() === 'right';
+    const frame = trayFrame(op.def.tools.length);
+    // The tray shudders when a hotkey names an instrument the kit lacks (INP-0048).
+    const shake = this.ctl.trayShake > 0 && !settings.reduceMotion ? Math.sin(this.ctl.trayShake * 40) * 5 * this.ctl.trayShake : 0;
+    g.save();
+    g.translate(shake, 0);
     glass(g, frame, { strength: palette().plate > 0 ? 1.15 : 1 });
     op.def.tools.forEach((id, i) => {
       const r = this.slot(i);
@@ -633,6 +654,7 @@ export class OperationScene implements Scene {
         vialArt(g, r.x + r.w - 12, r.y + r.h / 2 + 2, 26, vialLevel(f), f > 0.97);
       }
     });
+    g.restore();
 
     // Tool name + hint: a plate beside the selected slot that fades after a switch.
     if (this.hintT > 0) {
@@ -644,24 +666,32 @@ export class OperationScene implements Scene {
       const hs = Math.round(16 * ts);
       const w = Math.round(290 * ts);
       const lines = g.wrap(hint, w - 32, hs).length;
-      const tip = { x: r.x + r.w + 20, y: r.y - 4, w, h: Math.round(40 * ts + lines * hs * 1.25 + 12) };
+      // The tip sits beside the tray, on the field side (left of a mirrored tray).
+      const tip = { x: mirrored ? r.x - 20 - w : r.x + r.w + 20, y: r.y - 4, w, h: Math.round(40 * ts + lines * hs * 1.25 + 12) };
       glass(g, tip, { alpha: a });
-      g.tri(tip.x, r.y + r.h / 2 - 7, tip.x, r.y + r.h / 2 + 7, tip.x - 8, r.y + r.h / 2, hex(INK.gilt, 0.75 * a));
+      if (mirrored) g.tri(tip.x + tip.w, r.y + r.h / 2 - 7, tip.x + tip.w, r.y + r.h / 2 + 7, tip.x + tip.w + 8, r.y + r.h / 2, hex(INK.gilt, 0.75 * a));
+      else g.tri(tip.x, r.y + r.h / 2 - 7, tip.x, r.y + r.h / 2 + 7, tip.x - 8, r.y + r.h / 2, hex(INK.gilt, 0.75 * a));
       caps(g, tr(`tool.${info.id}.name`), tip.x + 16, tip.y + 24 * ts, Math.round(13 * ts), hex(INK.gold, a));
       if (a > 0.3) keycap(g, glyphFor(`tool.select.${TOOL_INFO.findIndex((ti) => ti.id === info.id) + 1}` as ActionId), tip.x + tip.w - 40, tip.y + 20 * ts, 11, a);
       g.textBlock(hint, tip.x + 16, tip.y + 34 * ts + hs * 0.75, tip.w - 32, { size: hs, color: hex(INK.text, a), shadow: false }, 1.25);
     }
 
-    // Litany reliquary (only once the rite has been learned), bottom right.
-    if (op.def.litany === false) return;
-    const lx = VIEW_W - 60;
+    // Litany reliquary (only once the rite has been learned), bottom right — bottom left when the tray is mirrored.
+    if (op.def.litany === false) {
+      this.litanyRect = null;
+      return;
+    }
+    const lx = mirrored ? 60 : VIEW_W - 60;
     const ly = 664 + anchorShift('bottom');
+    this.litanyRect = { x: lx - 40, y: ly - 40, w: 80, h: 80 };
     const ready = op.canInvokeLitany();
     g.plate(lx - 40, ly - 40, 80, 80, { radius: 40, top: hex('#1a1411', 0.88), bottom: hex('#0a0807', 0.92), border: hex(ready ? INK.gold : '#5a4a34', 0.9), borderW: 1.4, bevel: 0.7, shadow: [0.6, 14, 4], glow: ready ? hex(INK.gold, 0.22) : undefined, glowR: 16 });
     starReliquary(g, lx, ly, 28, { fill: op.litanyTime > 0 ? op.litanyTime / LITANY_DURATION : ready ? 1 : 0, spent: !ready && op.litanyTime <= 0, glint: ready, active: op.litanyTime > 0 });
     const label = ready ? { draw: `${dragGlyphFor('litany.draw')} ★`, key: glyphFor('litany.key'), both: `${dragGlyphFor('litany.draw')} ★ / ${glyphFor('litany.key')}` }[litanyMode()] : op.litanyTime > 0 ? tr('hud.litany.active') : tr('hud.litany.spent');
-    caps(g, tr('hud.litany'), lx - 52, ly - 8, 11, hex(ready ? INK.gold : INK.faint), 'right');
-    g.text(label, lx - 52, ly + 14, { size: 16, font: 'italic', color: hex(ready ? INK.text : INK.faint, 0.9), align: 'right', shadow: hex('#000000', 0.8), soft: true });
+    const tx = mirrored ? lx + 52 : lx - 52;
+    const align = mirrored ? 'left' : 'right';
+    caps(g, tr('hud.litany'), tx, ly - 8, 11, hex(ready ? INK.gold : INK.faint), align);
+    g.text(label, tx, ly + 14, { size: 16, font: 'italic', color: hex(ready ? INK.text : INK.faint, 0.9), align, shadow: hex('#000000', 0.8), soft: true });
   }
 
   private drawCallout(g: Gfx, t: number): void {

@@ -11,20 +11,57 @@ import { inRect, panel, reticle, type Rect } from '../ui/widgets';
 import { ACTIONS, CAPTURE_CANCEL, RESERVED, reservedFor, type ActionGroup, type ActionId } from './actions';
 import { bindings, DEFAULT_PREFS, type GlyphSet, type InputPrefs, type Slot } from './bindings';
 import { codeLabel, glyphContext } from './glyphs';
+import { applyPreset, presetChanges, PRESETS, type PresetChange } from './presets';
 import type { InputCode } from './types';
 
 /** How long "Press a key…" waits before giving up. */
 export const CAPTURE_TIMEOUT = 5;
 
-type Tab = ActionGroup | 'handling' | 'deck';
+type Tab = ActionGroup | 'handling' | 'presets' | 'deck';
 const TABS: { id: Tab; label: string }[] = [
   { id: 'tools', label: 'ctl.tab.tools' },
   { id: 'litany', label: 'ctl.tab.litany' },
   { id: 'story', label: 'ctl.tab.story' },
   { id: 'menus', label: 'ctl.tab.menus' },
   { id: 'handling', label: 'ctl.tab.handling' },
+  { id: 'presets', label: 'ctl.tab.presets' },
   { id: 'deck', label: 'ctl.tab.deck' },
 ];
+
+/** Preferences the general settings file mirrors (the options screen reads both). */
+function syncSettings(p: InputPrefs): void {
+  settings.litanyKey = p.litanyInput !== 'draw';
+  settings.holdToToggle = p.holdMode === 'toggle';
+  settings.leftHanded = p.leftHanded;
+  saveSettings();
+}
+
+/** One line of the preset preview: the action or option name and what it changes from and to. */
+export function describeChange(c: PresetChange): string {
+  const name = c.action ? tr(`action.${c.action}`) : tr(PREF_LABEL[c.pref!] ?? 'ctl.tab.handling');
+  const label = (v: string) =>
+    v
+      .split(' / ')
+      .map((code) => (code === '—' || !code.includes(':') ? code : codeLabel(code, glyphContext().glyphs)))
+      .join(' / ');
+  return tr('ctl.preset.change', { name, from: c.action ? label(c.from) : c.from, to: c.action ? label(c.to) : c.to });
+}
+
+const PREF_LABEL: Partial<Record<keyof InputPrefs, string>> = {
+  holdMode: 'ctl.pref.hold_actions',
+  grabMode: 'ctl.pref.grab',
+  hitScale: 'ctl.pref.assist_target_size',
+  assistedStitch: 'ctl.pref.assist_stitching',
+  litanyInput: 'ctl.pref.litany_input',
+  aimAssist: 'ctl.pref.aim_assist_gamepad',
+  cursorSpeed: 'ctl.pref.cursor_speed_gamepad',
+  invertWheel: 'ctl.pref.mouse_wheel',
+  wrapWheel: 'ctl.pref.wheel_wraps_around_the_tray',
+  nintendoLayout: 'ctl.pref.confirm_button',
+  glyphs: 'ctl.pref.button_prompts',
+  autoTool: 'ctl.pref.auto_tool',
+  leftHanded: 'ctl.pref.left_handed',
+};
 
 const SLOTS: Slot[] = [
   { kind: 'kbm', index: 0 },
@@ -44,7 +81,26 @@ const step = (v: number, d: number, lo: number, hi: number, by: number) => Math.
 
 function prefRows(p: InputPrefs): PrefRow[] {
   return [
-    { label: tr('ctl.pref.hold_actions'), value: () => (p.holdMode === 'hold' ? tr('ctl.pref.hold') : tr('ctl.pref.toggle')), change: () => (p.holdMode = p.holdMode === 'hold' ? 'toggle' : 'hold'), note: tr('ctl.pref.toggle_click_once_to_start_the_l') },
+    {
+      label: tr('ctl.pref.hold_actions'),
+      value: () => (p.holdMode === 'hold' ? tr('ctl.pref.hold') : tr('ctl.pref.toggle')),
+      change: () => {
+        p.holdMode = p.holdMode === 'hold' ? 'toggle' : 'hold';
+        syncSettings(p);
+      },
+      note: tr('ctl.pref.toggle_click_once_to_start_the_l'),
+    },
+    { label: tr('ctl.pref.grab'), value: () => (p.grabMode === 'hold' ? tr('ctl.pref.hold') : tr('ctl.pref.toggle')), change: () => (p.grabMode = p.grabMode === 'hold' ? 'toggle' : 'hold'), note: tr('ctl.pref.grab_note') },
+    { label: tr('ctl.pref.auto_tool'), value: () => (p.autoTool ? tr('ctl.pref.on') : tr('ctl.pref.off')), change: () => (p.autoTool = !p.autoTool), note: tr('ctl.pref.auto_tool_note') },
+    {
+      label: tr('ctl.pref.left_handed'),
+      value: () => (p.leftHanded ? tr('ctl.pref.on') : tr('ctl.pref.off')),
+      change: () => {
+        p.leftHanded = !p.leftHanded;
+        syncSettings(p);
+      },
+      note: tr('ctl.pref.left_handed_note'),
+    },
     { label: tr('ctl.pref.assist_target_size'), value: () => `${p.hitScale}×`, change: (d) => (p.hitScale = cycle([1, 1.25, 1.5] as const, p.hitScale, d)), note: tr('ctl.pref.every_grab_cut_and_brush_reaches') },
     { label: tr('ctl.pref.assist_stitching'), value: () => ({ off: tr('ctl.pref.off'), on: tr('ctl.pref.on'), gamepad: tr('ctl.pref.gamepad_only') })[p.assistedStitch], change: (d) => (p.assistedStitch = cycle(['off', 'on', 'gamepad'] as const, p.assistedStitch, d)), note: tr('ctl.pref.hold_and_run_along_the_wound_sti') },
     {
@@ -52,8 +108,7 @@ function prefRows(p: InputPrefs): PrefRow[] {
       value: () => ({ draw: tr('ctl.pref.draw_the_star'), key: tr('ctl.pref.litany_key'), both: tr('ctl.pref.either') })[p.litanyInput],
       change: (d) => {
         p.litanyInput = cycle(['draw', 'key', 'both'] as const, p.litanyInput, d);
-        settings.litanyKey = p.litanyInput !== 'draw';
-        saveSettings();
+        syncSettings(p);
       },
       note: tr('ctl.pref.speaking_the_litany_with_a_key_i'),
     },
@@ -122,8 +177,26 @@ export class ControlsScene implements Scene {
 
   private rowCount(): number {
     if (this.tabId === 'handling') return prefRows(bindings.prefs).length;
+    if (this.tabId === 'presets') return PRESETS.length;
     if (this.tabId === 'deck') return 0;
     return this.actions().length;
+  }
+
+  /** Presets tab: the preview of the focused preset (what applying it would change). */
+  private presetPreview(): PresetChange[] {
+    const i = this.hoverRow >= 0 ? this.hoverRow : this.row;
+    const p = PRESETS[i];
+    return p ? presetChanges(bindings, p) : [];
+  }
+
+  /** Presets tab: apply the focused preset (INP-0075). */
+  private applyFocusedPreset(): void {
+    const p = PRESETS[this.row];
+    if (!p) return;
+    applyPreset(bindings, p);
+    syncSettings(bindings.prefs);
+    bindings.save();
+    this.say(tr('ctl.preset.applied'));
   }
 
   /** First visible row; the list scrolls so the focused row stays in view. */
@@ -171,6 +244,7 @@ export class ControlsScene implements Scene {
 
     const rows = this.rowCount();
     const handling = this.tabId === 'handling';
+    const presets = this.tabId === 'presets';
     // Mouse hover.
     this.hoverRow = -1;
     this.hoverCol = -1;
@@ -184,7 +258,7 @@ export class ControlsScene implements Scene {
     for (let i = 0; i < rows; i++) {
       if (!this.visible(i) || !inRect(input.pos, this.rowRect(i))) continue;
       this.hoverRow = i;
-      if (!handling) for (let c = 0; c < 3; c++) if (inRect(input.pos, this.cellRect(i, c))) this.hoverCol = c;
+      if (!handling && !presets) for (let c = 0; c < 3; c++) if (inRect(input.pos, this.cellRect(i, c))) this.hoverCol = c;
     }
     if (input.pressed) {
       const t = TABS.findIndex((_, i) => inRect(input.pos, this.tabRect(i)));
@@ -193,7 +267,11 @@ export class ControlsScene implements Scene {
       if (f !== undefined) return this.activateFooter(f);
       if (this.hoverRow >= 0) {
         this.row = this.hoverRow;
-        if (handling) {
+        if (presets) {
+          // A click focuses the preset and shows its preview; Apply (or a second click) applies it.
+          if (this.row === this.lastPresetClick) this.applyFocusedPreset();
+          this.lastPresetClick = this.row;
+        } else if (handling) {
           const r = this.rowRect(this.row);
           prefRows(prefs)[this.row].change(input.pos.x < r.x + r.w * 0.6 ? -1 : 1);
           bindings.save();
@@ -205,7 +283,7 @@ export class ControlsScene implements Scene {
       }
     }
     // Right-click clears a slot.
-    if (input.rightPressed && !handling && this.hoverRow >= 0 && this.hoverCol >= 0) {
+    if (input.rightPressed && !handling && !presets && this.hoverRow >= 0 && this.hoverCol >= 0) {
       const r = bindings.clear(this.actions()[this.hoverRow], SLOTS[this.hoverCol]);
       if (!r.ok && r.reason !== 'conflict') this.say(r.message);
       bindings.save();
@@ -232,7 +310,8 @@ export class ControlsScene implements Scene {
     }
     if (input.actPressed('ui.confirm')) {
       if (inFooter) return this.activateFooter(this.col);
-      if (handling) {
+      if (presets) this.applyFocusedPreset();
+      else if (handling) {
         prefRows(prefs)[this.row].change(1);
         bindings.save();
       } else this.beginCapture();
@@ -241,20 +320,23 @@ export class ControlsScene implements Scene {
     if (input.actPressed('ui.back')) this.back();
   }
 
+  private lastPresetClick = -1;
+
   private setTab(t: number): void {
     this.tab = (t + TABS.length) % TABS.length;
     this.row = 0;
     this.col = 0;
+    this.lastPresetClick = -1;
   }
 
   private activateFooter(i: number): void {
     const handling = this.tabId === 'handling';
     if (i === 0) {
-      // Reset the focused row (or, on the handling tab, every handling option).
+      // Reset the focused row (or, on the handling tab, every handling option; on the presets tab, apply).
+      if (this.tabId === 'presets') return this.applyFocusedPreset();
       if (handling) {
         Object.assign(bindings.prefs, JSON.parse(JSON.stringify(DEFAULT_PREFS)));
-        settings.litanyKey = false;
-        saveSettings();
+        syncSettings(bindings.prefs);
       } else if (this.actions()[this.row]) bindings.reset(this.actions()[this.row]);
       bindings.save();
     } else if (i === 1) {
@@ -353,6 +435,23 @@ export class ControlsScene implements Scene {
       });
       const note = list[this.hoverRow >= 0 ? this.hoverRow : this.row]?.note;
       if (note) g.text(note, VIEW_W / 2, 604, { size: 16, font: 'italic', color: hex(INK.dim), align: 'center', shadow: false });
+    } else if (this.tabId === 'presets') {
+      // Presets (INP-0075): a row per preset, and beneath them what the focused one would change.
+      PRESETS.forEach((p, i) => {
+        const r = this.rowRect(i);
+        const focus = i === this.row || i === this.hoverRow;
+        rowGlow(r, focus);
+        rowLabel(tr(`ctl.preset.${p.id}`), r, focus);
+        g.text(tr(`ctl.preset.${p.id}_note`), r.x + r.w - 40, r.y + 20, { size: 16, font: 'italic', color: hex(INK.dim), align: 'right', shadow: false });
+        g.rect(r.x + 10, r.y + r.h + 1, r.w - 20, 1, hex(INK.gilt, 0.1));
+      });
+      const changes = this.presetPreview();
+      const py = 178 + PRESETS.length * 31 + 24;
+      caps(g, tr('ctl.preset.preview'), 210, py, 12, hex(INK.gold));
+      if (!changes.length) g.text(tr('ctl.preset.no_changes'), 210, py + 28, { size: 16, font: 'italic', color: hex(INK.dim), shadow: false });
+      const shown = changes.slice(0, 10);
+      shown.forEach((c, i) => g.text(describeChange(c), 210 + (i % 2) * 440, py + 28 + Math.floor(i / 2) * 26, { size: 16, color: hex(INK.text), shadow: false }));
+      if (changes.length > shown.length) g.text(`+${changes.length - shown.length}`, 210, py + 28 + Math.ceil(shown.length / 2) * 26, { size: 16, color: hex(INK.dim), shadow: false });
     } else {
       caps(g, tr('ctl.col.kbm'), this.cellRect(0, 0).x + 172, 166, 11, hex(INK.dim), 'center');
       caps(g, tr('ctl.col.pad'), this.cellRect(0, 2).x + 84, 166, 11, hex(INK.dim), 'center');
@@ -360,7 +459,8 @@ export class ControlsScene implements Scene {
       this.actions().forEach((id, i) => {
         if (!this.visible(i)) return;
         const r = this.rowRect(i);
-        const set = bindings.get(id);
+        // Shown with the layout preferences applied, so left-handed mode reads "Right mouse" for the instrument.
+        const set = bindings.shown(id);
         const def = ACTIONS.find((a) => a.id === id)!;
         rowGlow(r, i === this.row);
         rowLabel(tr(`action.${def.id}`), r, i === this.row);
@@ -384,7 +484,7 @@ export class ControlsScene implements Scene {
       g.text(tr('ctl.help'), VIEW_W / 2, 604, { size: 16, font: 'italic', color: hex(INK.dim), align: 'center', shadow: false });
     }
 
-    const foot = [this.tabId === 'handling' ? tr('ctl.foot.reset_these') : tr('ctl.foot.reset_row'), tr('ctl.foot.reset_all'), tr('ui.common.back')];
+    const foot = [this.tabId === 'presets' ? tr('ctl.preset.apply') : this.tabId === 'handling' ? tr('ctl.foot.reset_these') : tr('ctl.foot.reset_row'), tr('ctl.foot.reset_all'), tr('ui.common.back')];
     foot.forEach((label, i) => {
       const r = this.footRect(i);
       const focus = (this.row >= rows && this.col === i) || inRect(game.input.pos, r);

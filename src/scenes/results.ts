@@ -12,11 +12,14 @@ import { button, reticle } from '../ui/widgets';
 import { drawBackdrop } from './backdrop';
 import type { RunSummary } from '../surgery/session';
 import { ACHIEVEMENTS } from '../surgery/achievements';
+import { HoldToRetry } from '../input/retry';
 
 /** The case record: a parchment ledger page, stamped with the rank in wax. */
 export class ResultsScene implements Scene {
   private t = 0;
   private stamped = false;
+  /** Hold R (or the pad's View button) for a second to go straight back in (INP-0113). */
+  private retry = new HoldToRetry();
   constructor(
     private op: Operation,
     private won: boolean,
@@ -36,6 +39,7 @@ export class ResultsScene implements Scene {
       game.audio.play('squelch');
     }
     if (game.input.actPressed('ui.confirm') && this.t > 0.5) (this.actions.next ?? this.actions.retry)();
+    if (this.retry.update(game.input, dt)) this.actions.retry();
   }
 
   render(g: Gfx, game: Game): void {
@@ -123,6 +127,7 @@ export class ResultsScene implements Scene {
       if (button(g, game.input, t('ui.results.leave'), VIEW_W / 2 - 250, 664, 25)) this.actions.quit();
     }
     reticle(g, game.input.pos);
+    this.retry.draw(g, game.input.pos);
     g.endFrame();
   }
 }
