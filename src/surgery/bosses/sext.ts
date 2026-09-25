@@ -71,6 +71,56 @@ export class CrustPlate extends Entity {
   }
 }
 
+/** Petrification (BOS-0080): px/s the stone front spreads from Sext while any crust plate stands. */
+export const PETRIFY_SPEED = 3;
+/** Each organ's drain resistance: the share of Sext's drain it shields. Stone halves it. */
+export const ORGAN_RESIST = 0.12;
+
+export type GlyphOrgan = 'heart' | 'lung' | 'liver';
+
+/**
+ * An organ glyph (BOS-0080): an engraved mark over an organ that resists Sext's drain. When the
+ * spreading stone reaches it, the organ petrifies and its resistance is halved.
+ */
+export class OrganGlyph extends Entity {
+  petrified = false;
+  noun = 'the organ';
+  constructor(
+    pos: Vec,
+    public organ: GlyphOrgan,
+  ) {
+    super(pos);
+    this.layer = 1;
+    this.required = false;
+  }
+  get resist(): number {
+    return this.petrified ? ORGAN_RESIST / 2 : ORGAN_RESIST;
+  }
+  override hitTest(): boolean {
+    return false;
+  }
+  draw(g: Gfx): void {
+    const { x, y } = this.pos;
+    const ink = hex(this.petrified ? '#8c8478' : '#d8b870', this.petrified ? 0.9 : 0.55);
+    if (this.petrified) g.circle(x, y, 13, hex('#6c665c', 0.85));
+    g.arc(x, y, 14, 1.6, ink);
+    // The organ's sign: a heart's lobes, the lung's paired leaves, the liver's single wedge.
+    if (this.organ === 'heart') {
+      g.circle(x - 3.5, y - 2, 3.5, ink);
+      g.circle(x + 3.5, y - 2, 3.5, ink);
+      g.tri(x - 7, y - 1, x + 7, y - 1, x, y + 7, ink);
+    } else if (this.organ === 'lung') {
+      g.line({ x, y: y - 8 }, { x, y: y + 2 }, 1.4, ink);
+      g.circle(x - 4, y + 2, 3.5, ink);
+      g.circle(x + 4, y + 2, 3.5, ink);
+    } else g.tri(x - 8, y - 4, x + 8, y - 4, x - 2, y + 7, ink);
+    if (this.petrified) {
+      g.line({ x: x - 9, y: y - 6 }, { x: x + 2, y: y + 1 }, 1.2, hex('#2a2620'));
+      g.line({ x: x + 2, y: y + 1 }, { x: x + 8, y: y + 8 }, 1.2, hex('#2a2620'));
+    }
+  }
+}
+
 /** A sun-dial node holding Sext's Stillness together. Hold the brand on it to break it. */
 export class SunDial extends BrandNode {
   constructor(
@@ -148,6 +198,9 @@ export class SextMalison extends Entity {
   private watch = new InjectionWatch();
   private truth: HeartTruth;
   readonly heart: Vec;
+  /** The stone front's radius from Sext (BOS-0080), and the organ glyphs it can reach. */
+  stone = 0;
+  readonly glyphs: OrganGlyph[] = [];
 
   constructor(
     pos: Vec,
@@ -163,6 +216,22 @@ export class SextMalison extends Entity {
     this.crust(op, tune.plates);
     this.truth = new HeartTruth(this.heart, this);
     op.spawn(this.truth);
+    for (const [organ, at] of [
+      ['heart', this.heart],
+      ['lung', { x: FIELD.cx + 170, y: FIELD.cy - 80 }],
+      ['liver', { x: FIELD.cx + 120, y: FIELD.cy + 90 }],
+    ] as const) {
+      const gl = new OrganGlyph({ ...at }, organ);
+      this.glyphs.push(gl);
+      op.spawn(gl);
+    }
+  }
+
+  /** Drain multiplier from petrified organs: 1 while every glyph holds, up to +18 % with all three stone. */
+  get stoneFactor(): number {
+    let lost = 0;
+    for (const gl of this.glyphs) lost += ORGAN_RESIST - gl.resist;
+    return 1 + lost;
   }
 
   /** The false reading is on the monitors (not the truth under the Lens) — the ECG runs too smooth (BOS-0083). */
@@ -189,7 +258,7 @@ export class SextMalison extends Entity {
   }
 
   override drain(): number {
-    return this.stage === 2 ? this.tune.realDrain : 0.35;
+    return (this.stage === 2 ? this.tune.realDrain : 0.35) * this.stoneFactor;
   }
 
   private crust(op: Operation, n: number): void {
@@ -243,6 +312,15 @@ export class SextMalison extends Entity {
     this.branded = false;
     this.hurtFlash = Math.max(0, this.hurtFlash - dt * 3);
     this.stunT = Math.max(0, this.stunT - dt);
+
+    // Petrification (BOS-0080): stone creeps out from the crust while any plate stands.
+    if (this.plates.some((p) => p.alive)) this.stone += PETRIFY_SPEED * dt;
+    for (const gl of this.glyphs) {
+      if (gl.petrified || dist(gl.pos, this.pos) - 12 > this.stone) continue;
+      gl.petrified = true;
+      op.popup('Stone!', gl.pos, '#b8b0a0');
+      op.sayOnce('sext-stone', 'The stone’s reached an organ — it drains faster now. Get that crust off!');
+    }
 
     // False Noon: keep the true vitals beneath a calm false reading.
     if (this.trueVitals !== null) {
@@ -345,6 +423,11 @@ export class SextMalison extends Entity {
     const { x, y } = this.pos;
     const t = op.elapsed;
     const r = this.radius;
+    // The stone front (BOS-0080): a grey crust creeping out over the flesh.
+    if (this.stone > r) {
+      g.circleGrad(x, y, this.stone, hex('#6c665c', 0.28), hex('#6c665c', 0.12));
+      g.arc(x, y, this.stone, 2, hex('#a8a090', 0.5));
+    }
     g.glow(x, y, r * 2.4, hex(this.exposed ? '#ffd060' : '#a09070', 0.22));
     g.circleGrad(x, y, r, this.hurtFlash > 0 ? hex('#fff0c0') : hex('#c8a860'), hex('#504020', 0.6));
     // A heavy-lidded sun-face, dozing.

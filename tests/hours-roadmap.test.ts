@@ -9,7 +9,7 @@ import { lostPatientsOf } from '../src/scenes/bossAudio';
 import { freshProgress, recordRun } from '../src/surgery/progress';
 import { optionRows } from '../src/scenes/options';
 import { at, Hand, start, wait } from './harness';
-import { HeartTruth, SextMalison } from '../src/surgery/bosses/sext';
+import { HeartTruth, ORGAN_RESIST, PETRIFY_SPEED, SextMalison } from '../src/surgery/bosses/sext';
 import { LaudsMalison } from '../src/surgery/lauds';
 import { Malison } from '../src/surgery/malison';
 import { flashScale, presentation } from '../src/render/presentation';
@@ -161,5 +161,29 @@ describe('GAM-0243: the auto-lens assist never strands an Hour', () => {
     expect(truth.hidden).toBe(true);
     new Hand(op).hold('lens', s.heart, 0.3);
     expect(s.lastSeenAt).toBeGreaterThan(4);
+  });
+});
+
+describe('BOS-0080 Sext petrification', () => {
+  it('stone spreads 3 px/s from the crust; an organ it reaches loses half its drain resistance', () => {
+    let s!: SextMalison;
+    const op = start((o) => [(s = new SextMalison(at(0, 0), o))]);
+    expect(s.glyphs.map((g) => g.organ)).toEqual(['heart', 'lung', 'liver']);
+    expect(s.stoneFactor).toBe(1);
+    const drain0 = s.drain();
+    wait(op, 10);
+    expect(s.stone).toBeCloseTo(10 * PETRIFY_SPEED, 0);
+    // The nearest organ petrifies once the front reaches it.
+    const near = [...s.glyphs].sort((a, b) => Math.hypot(a.pos.x - s.pos.x, a.pos.y - s.pos.y) - Math.hypot(b.pos.x - s.pos.x, b.pos.y - s.pos.y))[0];
+    const reach = (Math.hypot(near.pos.x - s.pos.x, near.pos.y - s.pos.y) - 12) / PETRIFY_SPEED;
+    wait(op, reach - 10 + 1);
+    expect(near.petrified).toBe(true);
+    expect(near.resist).toBeCloseTo(ORGAN_RESIST / 2);
+    expect(s.drain()).toBeGreaterThan(drain0 * 1.05);
+    // With the crust gone the stone stops.
+    for (const p of s.plates) p.kill();
+    const r = s.stone;
+    wait(op, 5);
+    expect(s.stone).toBe(r);
   });
 });

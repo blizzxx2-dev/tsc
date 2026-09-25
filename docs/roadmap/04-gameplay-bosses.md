@@ -512,7 +512,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0077 · Alpha · P0 · M · Phase 1 "Languor" (100–60 %): Sext rests beneath a stone crust — chip crust plates (petrification rules) to expose; torpor ramps
 - [x] BOS-0078 · Alpha · P0 · M · Phase 2 "False Noon" (60–30 %): HUD vitals show a calm false value (smoothed toward 70) — true vitals only via Lens on heart; real drain 1.2/s
 - [x] BOS-0079 · Alpha · P0 · M · Phase 3 "Stillborn Hour" (30–0 %): Sext casts its own Litany — the world slows but the player's tools slow too (inverse); break 3 sun-dial nodes with Brand to end its stillness
-- [ ] BOS-0080 · Alpha · P1 · S · Petrification spread from Sext's crust at 3 px/s — stone reaching an organ glyph halves that organ's drain resistance
+- [x] BOS-0080 · Alpha · P1 · S · Petrification spread from Sext's crust at 3 px/s — stone reaching an organ glyph halves that organ's drain resistance
 - [x] BOS-0081 · Alpha · P1 · S · Player Litany vs Sext — using Litany during its Stillborn cast cancels both (clash FX) and stuns Sext 4 s
 ### Counterplay, tells & cues
 - [x] BOS-0082 · Alpha · P1 · S · Torpor tell — cursor trail lengthens and HUD edges desaturate proportional to lag; option to show a numeric lag readout
