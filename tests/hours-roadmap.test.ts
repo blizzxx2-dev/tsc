@@ -8,7 +8,8 @@ import { Operation, type OperationDef } from '../src/surgery/operation';
 import { lostPatientsOf } from '../src/scenes/bossAudio';
 import { freshProgress, recordRun } from '../src/surgery/progress';
 import { optionRows } from '../src/scenes/options';
-import { at, start, wait } from './harness';
+import { at, Hand, start, wait } from './harness';
+import { HeartTruth, SextMalison } from '../src/surgery/bosses/sext';
 import { LaudsMalison } from '../src/surgery/lauds';
 import { Malison } from '../src/surgery/malison';
 import { flashScale, presentation } from '../src/render/presentation';
@@ -127,5 +128,38 @@ describe('BOS-0090 / BOS-0177: None and the no-fail floor', () => {
     m.s = m.total - 1;
     wait(op2, 0.5);
     expect(op2.status).toBe('lost');
+  });
+});
+
+describe('GAM-0243: the auto-lens assist never strands an Hour', () => {
+  it('Lauds under the skin surfaces (brandable) when the auto-lens finds it, not merely unhidden', () => {
+    let l!: LaudsMalison;
+    const op = start((o) => [(l = new LaudsMalison(at(0, 0), o))], boss({ skipCinematics: true }));
+    op.assists.autoLens = true;
+    l.damage(op, 40);
+    l.damage(op, 40);
+    expect(l.phase.key).toBe('dawn');
+    l.surfacedT = 0;
+    wait(op, 0.1);
+    expect(l.submerged).toBe(true);
+    expect(l.hidden).toBe(true);
+    wait(op, 4.2);
+    expect([l.hidden, l.submerged]).toEqual([false, false]);
+    // It dives again later, and the auto-lens clock starts over: it stays under for a while first.
+    l.surfacedT = 0;
+    wait(op, 1);
+    expect(l.submerged).toBe(true);
+  });
+
+  it('Sext’s heart keeps answering the Lens after the auto-lens has passed over it', () => {
+    let s!: SextMalison;
+    const op = start((o) => [(s = new SextMalison(at(0, 0), o))]);
+    op.assists.autoLens = true;
+    s.trueVitals = 40;
+    wait(op, 5);
+    const truth = op.entities.find((e) => e instanceof HeartTruth)!;
+    expect(truth.hidden).toBe(true);
+    new Hand(op).hold('lens', s.heart, 0.3);
+    expect(s.lastSeenAt).toBeGreaterThan(4);
   });
 });

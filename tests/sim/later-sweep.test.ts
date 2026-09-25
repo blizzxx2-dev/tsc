@@ -5,10 +5,10 @@
  * S = 96 % of its score, A = 80 % of S, B = 60 % of S (tests/balance.test.ts CALIBRATE).
  */
 import { describe, expect, it } from 'vitest';
-import { LATER_CHAPTERS } from '../src/content/later';
-import type { OperationDef } from '../src/surgery/operation';
-import { rankThresholds } from '../src/surgery/ranks';
-import { playWithBot } from './bot';
+import { LATER_CHAPTERS } from '../../src/content/later';
+import type { OperationDef } from '../../src/surgery/operation';
+import { rankThresholds } from '../../src/surgery/ranks';
+import { playWithBot } from '../bot';
 
 const SEEDS = 20;
 const round = (n: number) => Math.round(n / 10) * 10;

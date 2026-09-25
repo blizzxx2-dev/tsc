@@ -1271,6 +1271,8 @@ export class Operation {
       e.age += edt;
       this.as(e, () => e.update(this, edt));
       if (e.alive) drain += e.drain(this);
+      // The auto-lens clock runs while a thing stays hidden, and starts over whenever it hides again.
+      if (this.assists.autoLens && e.alive && !e.hidden) this.hiddenT.delete(e);
       if (e.alive && e.hidden && this.assists.autoLens) {
         const t = (this.hiddenT.get(e) ?? 0) + dt;
         this.hiddenT.set(e, t);

@@ -8,15 +8,15 @@
  * Defaults are CI-sized. The release audit runs `BOSS_FUZZ_MINUTES=10 BOSS_FUZZ_SEEDS=20`.
  */
 import { describe, expect, it } from 'vitest';
-import { allCampaignOperations } from '../src/content/campaign';
-import { Rng, type Vec } from '../src/core/math';
-import { BOSS_OPS } from '../src/surgery/bosses/codex';
-import { bossPhaseIndex, isHour } from '../src/surgery/bosses/sheet';
-import type { Entity } from '../src/surgery/entity';
-import { FIELD, Operation, Reopened, SimpleBurn, type OperationDef } from '../src/surgery/operation';
-import { BloodPool, Laceration } from '../src/surgery/entities';
-import { TOOL_INFO, type Pointer } from '../src/surgery/types';
-import { applyBotEvents, BotDriver, DT } from './bot';
+import { allCampaignOperations } from '../../src/content/campaign';
+import { Rng, type Vec } from '../../src/core/math';
+import { BOSS_OPS } from '../../src/surgery/bosses/codex';
+import { bossPhaseIndex, isHour } from '../../src/surgery/bosses/sheet';
+import type { Entity } from '../../src/surgery/entity';
+import { FIELD, Operation, Reopened, SimpleBurn, type OperationDef } from '../../src/surgery/operation';
+import { BloodPool, Laceration } from '../../src/surgery/entities';
+import { TOOL_INFO, type Pointer } from '../../src/surgery/types';
+import { applyBotEvents, BotDriver, DT } from '../bot';
 
 const MINUTES = Number(process.env.BOSS_FUZZ_MINUTES ?? 0.5);
 const SEEDS = Number(process.env.BOSS_FUZZ_SEEDS ?? 2);

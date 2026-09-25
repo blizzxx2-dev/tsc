@@ -108,6 +108,8 @@ export class HeartTruth extends Entity {
   override onReveal(op: Operation, p: Vec): void {
     if (dist(p, this.pos) < 60) this.owner.reveal(op);
   }
+  /** Not a thing to be found: the heart's truth is a reading, and the Lens must keep reading it (so the auto-lens assist leaves it be). */
+  override reveal(): void {}
   draw(): void {}
 }
 

@@ -370,7 +370,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0240 · Demo · P2 · S · Cursor options — cursor size (1×/1.5×/2×) and high-contrast target outlines toggle, applied to all entities
 - [ ] GAM-0241 · Alpha · P1 · S · One-handed mode — tool cycle on mouse side buttons, Litany via hold key; every Alpha mechanic validated completable
 - [x] GAM-0242 · Alpha · P2 · S · Rhythm mechanics — (amputation saw, heart beats) have a "no rhythm" assist with widened windows ×2
-- [ ] GAM-0243 · Beta · P1 · S · Accessibility audit of all 5 chapters — each op completable with all assists on by the bot using simplified gestures
+- [x] GAM-0243 · Beta · P1 · S · Accessibility audit of all 5 chapters — each op completable with all assists on by the bot using simplified gestures
 
 ## GAM-O · Environment & patient modifiers (Alpha)
 

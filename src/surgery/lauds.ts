@@ -359,15 +359,23 @@ export class LaudsMalison extends MalisonBase {
       return;
     }
     this.lensT += dt;
-    if (this.lensT > 0.5) {
-      this.submerged = false;
-      this.hidden = false;
-      this.lensT = 0;
-      this.surfacedT = this.tune.surfaceFor;
-      op.popup('Found it!', this.pos, '#b9d7ff');
-      op.cues.push('good');
-      op.sayOnce('lauds-surface', 'There! It’s surfacing — brand it before it dives!');
-    }
+    if (this.lensT > 0.5) this.surface(op);
+  }
+
+  /** The auto-lens assist (or any other reveal) brings it up exactly as the Lens does — never visible yet still submerged. */
+  override reveal(op: Operation): void {
+    if (this.submerged) this.surface(op);
+    else super.reveal(op);
+  }
+
+  private surface(op: Operation): void {
+    this.submerged = false;
+    this.hidden = false;
+    this.lensT = 0;
+    this.surfacedT = this.tune.surfaceFor;
+    op.popup('Found it!', this.pos, '#b9d7ff');
+    op.cues.push('good');
+    op.sayOnce('lauds-surface', 'There! It’s surfacing — brand it before it dives!');
   }
 
   override onSweep(op: Operation, ptr: Pointer, tool: ToolId, dt: number): void {

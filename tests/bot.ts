@@ -155,8 +155,48 @@ export function* restitch(lac: Laceration): Action {
   yield { tool: 'thread', pos: p, down: false };
 }
 
-/** The thread stroke for a wound: a fresh zig-zag, or one stab through each remaining gap. */
-export function stitchWound(lac: Laceration): Action {
+/**
+ * Simplified gestures (GAM-0238/0243): one click per stitch — tap evenly along the line, skipping
+ * spots already stitched.
+ */
+export function* clickStitches(points: Vec[], marks: readonly Vec[], needed: number): Action {
+  const total = points.slice(1).reduce((a, p, i) => a + dist(points[i], p), 0);
+  // Where the stitches already are, along the line; clicks go into the gaps, at least 11 px from any.
+  const at = marks.map((m) => projectAlong(points, m).at).sort((a, b) => a - b);
+  const spots: number[] = [];
+  if (!at.length) {
+    const n = Math.max(1, Math.min(needed + 1, Math.floor(total / 11) - 1));
+    for (let i = 1; i <= n; i++) spots.push((total * i) / (n + 1));
+  } else {
+    const edges = [0, ...at, total];
+    for (let i = 1; i < edges.length; i++) {
+      const len = edges[i] - edges[i - 1];
+      const k = Math.floor(len / 11) - 1;
+      for (let j = 1; j <= k; j++) spots.push(edges[i - 1] + (len * j) / (k + 1));
+    }
+  }
+  for (const sAt of spots) {
+    const p = pointOn(points, sAt);
+    yield* tap('thread', p);
+    yield { tool: 'thread', pos: p, down: false };
+  }
+}
+
+function pointOn(points: Vec[], s: number): Vec {
+  for (let i = 1; i < points.length; i++) {
+    const d = dist(points[i - 1], points[i]);
+    if (s <= d || i === points.length - 1) {
+      const k = d ? Math.min(1, s / d) : 0;
+      return { x: points[i - 1].x + (points[i].x - points[i - 1].x) * k, y: points[i - 1].y + (points[i].y - points[i - 1].y) * k };
+    }
+    s -= d;
+  }
+  return points[0];
+}
+
+/** The thread stroke for a wound: a fresh zig-zag, or one stab through each remaining gap (or clicks, with simplified gestures). */
+export function stitchWound(lac: Laceration, simple = false): Action {
+  if (simple) return clickStitches([lac.a, lac.b], lac.stitch.marks, lac.stitch.needed - lac.stitch.count);
   if (lac.stitch.count === 0) {
     // One spare crossing, unless that would pack the stitches too close to the 10 px minimum
     // spacing (short wounds): rejected stitches leave gaps no later stitch can fill.
@@ -314,6 +354,7 @@ function plan(ctx: BotContext): Action | null {
   if (sac) return tap('lancet', ctx.jitter(sac.pos));
 
   const bubo = find(Bubo, (b) => !b.lanced);
+  if (bubo && op.assists.simpleGestures) return tap('lancet', ctx.jitter(bubo.pos)); // one touch lances
   if (bubo) {
     const c = ctx.jitter(bubo.pos);
     const half = ctx.mistake('bubo') ? bubo.r * 1.3 : bubo.r * 0.7;
@@ -381,7 +422,7 @@ function plan(ctx: BotContext): Action | null {
   const lac = find(Laceration);
   if (lac) {
     if (lac.length <= SALVE_MAX && has('salve')) return salveOr(ctx, () => drag('salve', raster(lac.pos, lac.length / 2 + 6), 900));
-    return stitchWound(lac);
+    return stitchWound(lac, op.assists.simpleGestures);
   }
   const re = find(Reopened);
   if (re) return drag('thread', zigzag([re.a, re.b], re.needed + 1), 380);
@@ -407,6 +448,7 @@ function plan(ctx: BotContext): Action | null {
 
   const inc = find(Incision, (i) => i.state === 'mark' || i.state === 'closing');
   if (inc?.state === 'mark') return drag('lancet', [inc.pointAt(inc.progress), ...inc.points.filter((_, i) => i > 0)], 350);
+  if (inc?.state === 'closing' && inc.stitch && op.assists.simpleGestures) return clickStitches(inc.points, inc.stitch.marks, inc.stitch.needed - inc.stitch.count);
   if (inc?.state === 'closing' && inc.stitch) return drag('thread', zigzag(inc.points, Math.max(1, inc.stitch.needed - inc.stitch.count) + 1), 380);
 
   // Tidy up the smaller pools while there's a moment.
@@ -478,6 +520,7 @@ export class BotDriver {
   private aimOff: Vec = { x: 0, y: 0 };
   private readonly think: number;
   private out: BotEvent[] = [];
+  private slowAcc = 0;
   /** Where the bot's hand is (for drawing a cursor during playback). */
   get hand(): Vec {
     return this.prev;
@@ -518,6 +561,15 @@ export class BotDriver {
     const op = this.op;
     const out: BotEvent[] = [];
     if (op.status !== 'running' || op.paused) return out;
+    // The game-speed assist slows the world: the bot's hand keeps pace with it, holding still on the skipped frames.
+    if (op.assists.gameSpeed < 1) {
+      this.slowAcc += op.assists.gameSpeed;
+      if (this.slowAcc < 1) {
+        if (this.wasDown) out.push({ kind: 'pointer', tool: op.tool, ptr: { pos: this.prev, prev: this.prev, down: true, pressed: false, released: false }, select: false });
+        return out;
+      }
+      this.slowAcc -= 1;
+    }
     if (op.dialogue.length) {
       out.push({ kind: 'advance' });
       return out;
@@ -559,6 +611,9 @@ export type BotEvent =
   | { kind: 'litany' }
   | { kind: 'advance' };
 
+/** Instruments the click-to-hold assist latches (Operation's HELD_TOOLS). */
+const TOGGLED: readonly ToolId[] = ['leech', 'brand', 'tincture', 'lens'];
+
 /** Apply bot events straight to the simulation (the headless equivalent of the operation scene). */
 export function applyBotEvents(op: Operation, events: readonly BotEvent[]): void {
   for (const ev of events) {
@@ -568,6 +623,12 @@ export function applyBotEvents(op: Operation, events: readonly BotEvent[]): void
       if (ev.select) op.setTool(ev.tool);
       if (ev.tincture) for (let i = 0; i < 4 && op.tinctureColor !== ev.tincture; i++) op.cycleTincture();
       op.handlePointer(ev.ptr, DT);
+      // Click-to-hold assist: letting go of a held instrument is a second click, not a release.
+      if (ev.ptr.released && op.assists.holdToggle && TOGGLED.includes(op.tool)) {
+        const p = ev.ptr.pos;
+        op.handlePointer({ pos: p, prev: p, down: true, pressed: true, released: false }, DT);
+        op.handlePointer({ pos: p, prev: p, down: false, pressed: false, released: true }, DT);
+      }
       if (ev.wheel) op.wheel(ev.wheel);
     }
   }
