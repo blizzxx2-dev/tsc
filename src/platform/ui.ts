@@ -56,9 +56,9 @@ export function showNotice(message: string, kind: NoticeKind = 'info', ms = 6000
   }, ms);
 }
 
-/** Autosave quill: visible while a write is in flight, and for at least 0.6 s. */
+/** Autosave quill: visible while a write is in flight, and for at least 1 s (UIX-0093). */
 export class SaveIndicator {
-  static readonly MIN_VISIBLE_MS = 600;
+  static readonly MIN_VISIBLE_MS = 1000;
   private el: HTMLDivElement | null = null;
   private shownAt = 0;
   private hideTimer: ReturnType<typeof setTimeout> | null = null;

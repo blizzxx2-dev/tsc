@@ -6,7 +6,23 @@ import { dist, type Vec } from '../core/math';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { onBody, type Operation } from '../surgery/operation';
+import type { ToolId } from '../surgery/types';
 import { vellumStripArt, type Rect } from './kit';
+
+/** What the hand is over (UIX-0054): a target for the instrument in hand, one needing another instrument, or nothing. */
+export type CursorTarget = { kind: 'valid' } | { kind: 'needs'; tool: ToolId } | { kind: 'none' };
+
+export function cursorTarget(op: Operation, p: Vec): CursorTarget {
+  let best: { layer: number; t: CursorTarget } | null = null;
+  for (const e of op.entities) {
+    if (!e.alive || e.hidden || !e.hitTest(p, op.hitPad)) continue;
+    const wants = e.wants(op).filter((t) => op.def.tools.includes(t));
+    if (!wants.length) continue;
+    const t: CursorTarget = wants.includes(op.tool) ? { kind: 'valid' } : { kind: 'needs', tool: wants[0] };
+    if (!best || e.layer > best.layer) best = { layer: e.layer, t };
+  }
+  return best?.t ?? { kind: 'none' };
+}
 
 /** Crosshair tint: green over a live target, red where the Brand would sear healthy flesh, gilt otherwise. */
 export function cursorTint(op: Operation, p: Vec): string {

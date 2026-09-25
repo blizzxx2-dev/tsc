@@ -291,7 +291,7 @@ Tasks below add the QA, localisation and production/legal work around them.
 - [ ] QAT-0055 · Demo · P1 · M · Human replay corpus — playtest builds record replays (with consent); one human run per op per playtest round is added to `tests/replays/human/` and re-simulated every nightly
 - [ ] QAT-0056 · Demo · P1 · S · Runtime parity — the same replays re-simulated in Node (Vitest), Chromium (Playwright) and the packaged desktop build produce identical state hashes; any divergence blocks the build
 - [x] QAT-0057 · Demo · P1 · S · Golden-update review — PRs that change golden hashes need the `behaviour-change` label and a GAM reviewer via CODEOWNERS; bot-only changes never rewrite goldens
-- [ ] QAT-0058 · Demo · P1 · S · Replay-first bug workflow — S1/S2 gameplay bugs carry the PLT/INP F8 replay or a note why not; triage re-simulates it to confirm the repro before assignment
+- [x] QAT-0058 · Demo · P1 · S · Replay-first bug workflow — S1/S2 gameplay bugs carry the PLT/INP F8 replay or a note why not; triage re-simulates it to confirm the repro before assignment
 
 ## QAT-D · End-to-end flows (Demo)
 

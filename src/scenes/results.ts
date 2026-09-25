@@ -1,5 +1,5 @@
 import { assisted } from '../core/settings';
-import { t } from '../i18n';
+import { t, tSource } from '../i18n';
 import { formatNumber } from '../i18n/format';
 import type { Game, Scene } from '../core/scene';
 import { hex } from '../render/color';
@@ -50,6 +50,8 @@ export class ResultsScene implements Scene {
     heading(g, t('ui.results.title'), VIEW_W / 2, r.y + 60, 420, a, 30);
     g.text(t('ui.results.subtitle', { title: op.def.title, patient: op.def.patient }), VIEW_W / 2, r.y + 108, { size: 19, font: 'italic', color: hex(INK.dim, a), align: 'center', shadow: false });
     caps(g, this.won ? t('ui.results.won') : t('ui.results.lost'), VIEW_W / 2, r.y + 146, 15, hex(this.won ? '#9fd8a8' : '#ff8a80', a), 'center');
+    // The cause of death, for vitals and time-out losses alike (UIX-0116).
+    if (!this.won && op.lostReason) g.text(tSource(op.lostReason), VIEW_W / 2, r.y + 170, { size: 17, font: 'italic', color: hex('#e8b0a8', a), align: 'center', shadow: false });
 
     const rows: [string, string][] = [
       [t('rating.cool'), formatNumber(op.counts.cool)],

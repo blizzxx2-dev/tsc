@@ -1,32 +1,37 @@
 # BOS — boss framework (work in progress, not merged)
 
-`wip-boss-framework.patch` holds the uncommitted work of the bosses workstream, salvaged when its agent
-was stopped. It is **not merged**: it reworks the two demo Malisons, and 9 of its 35 new tests
-(`tests/hours.test.ts`) still fail on its own base, so merging it would put the demo boss fights at risk.
+`wip-boss-framework.patch` is a plain diff against the current game branch (`git apply` it). It has
+already been merged forward onto the current code, with conflicts resolved.
 
-What it contains (applies to commit `33931c1`, "Merge input & controls (INP)"):
+What it contains:
 
-- `src/surgery/bosses/base.ts` — a `MalisonBase` framework: HP-threshold phases with a frozen 1.2 s
-  beat, repeat-attempt skip of the cinematic beat, music intensity per phase, death dissolve, a drain
-  budget for adds, checkpoint resume, capped boss-add ratings, `clampToField`.
+- `src/surgery/bosses/base.ts` — `MalisonBase`:
+  - HP-threshold phases, one per blow, with a frozen 1.2 s beat;
+  - cinematic skip on repeat attempts, music intensity per phase, death dissolve;
+  - a drain budget for adds (measured at spawn), checkpoint resume, capped boss-add ratings.
 - `src/surgery/bosses/signals.ts` — declared tells (≥ 0.8 s) and cadences for every attack.
-- `src/surgery/bosses/hud.ts`, `codex.ts`, `elites.ts` — boss HUD (veiled later phases, compact
-  elite bar), boss codex entries, demo elites (egg-cluster, cantor's knot, fang-nest, Matins herald).
-- Matins "Night Vigil" and Lauds "Antiphon" reworked onto the framework; `src/scenes/bossAudio.ts`.
-- `tests/hours.test.ts`, `tests/hours-later.test.ts`, `tests/bot-hours.ts`.
+- `src/surgery/bosses/hud.ts`, `codex.ts`, `elites.ts` — the boss HUD, codex entries, and the demo elites
+  (brood-cluster, cantor's knot, fang-nest, Matins herald).
+- The elites are wired into the op data via new schema ids: `elite-broodcluster`, `elite-cantor`,
+  `elite-fangnest`, `herald`.
+- The reworks:
+  - Matins "Night Vigil": Vigil → Watchfire → The Eye;
+  - Lauds "Antiphon": Call → Response → Dawn;
+  - `src/scenes/bossAudio.ts`.
+- Tests: `tests/hours.test.ts` and `tests/hours-later.test.ts` pass. The Matins/Lauds/EggSac
+  characterisation tests are rewritten for the new fights, and the tool-matrix doc is regenerated.
 
-Failing on its own base (to fix before merging):
+Still failing before it can merge. These are balance and bot-tuning issues, not framework bugs:
 
-1. MalisonBase — phases follow HP thresholds one at a time, with a frozen 1.2 s beat
-2. MalisonBase — music intensity follows the phases and falls silent on death
-3. Matins — The Eye: only the third beat bites, for double damage; off-beat brands rend
-4. Matins — the gaze lash: off the line it misses, on the line it cuts
-5. Lauds — Dawn: the flare blinds the Lens for 2 s after a 1 s horizon-glow tell
-6. Lauds — submerged rot trail stays at 3 patches and scores as a boss add
-7. Brood-Mother sacs — hatch at 10 s with a 3 s swell; never more than 6 live spiderlings
-8. Demo elites — cantor's knot re-ties one stroke per hum, after a hum tell
-9. Demo elites — the Matins herald flees the lens and pays 300 when seared
-
-To resume: `git checkout -b bos-wip 33931c1 && git am docs/handoff/BOS/wip-boss-framework.patch`, fix
-the tests above, then merge into the current branch. Expect conflicts with the GAM merge, which since
-changed `Operation` (op.journal, scoring spec, difficulty) and the bot.
+1. **Rank recalibration:** `CALIBRATE=1 npx vitest run tests/balance.test.ts -t calibrate`, then copy the
+   demo rows into `src/surgery/ranks.ts`. The op1-4 herald bonus makes steady reach XS.
+2. **X2 (Lauds remix) on Master:** the steady bot loses in the Response phase. The patch already eases
+   X2 (hp 1.15, drain 0.85). Next step: shorten `antiphon(l, 20)` bouts in `tests/bot-hours.ts` so the bot
+   heals between strikes.
+3. **Regenerate goldens and baselines once balance holds:**
+   - `UPDATE_GOLDEN=1` for `golden-ops`;
+   - the sweep CSV baseline;
+   - the scoring farm tests;
+   - the audio-director and offline-replay tests;
+   - telemetry.
+4. **i18n:** key the new `sayOnce`/`say` lines (`npm run i18n:check`). Also run the IP-name scan.

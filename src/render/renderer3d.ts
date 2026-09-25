@@ -59,7 +59,7 @@ export interface Scene3D {
   clearColor?: [number, number, number, number];
 }
 
-const VS = /* glsl */ `#version 300 es
+export const PBR_VS = /* glsl */ `#version 300 es
 layout(location=0) in vec3 a_pos;
 layout(location=1) in vec3 a_nrm;
 layout(location=2) in vec2 a_uv;
@@ -86,7 +86,7 @@ void main() {
   gl_Position = u_viewProj * w;
 }`;
 
-const FS = /* glsl */ `#version 300 es
+export const PBR_FS = /* glsl */ `#version 300 es
 precision highp float;
 precision highp sampler2DShadow;
 in vec3 v_world;
@@ -237,13 +237,13 @@ void main() {
   o = vec4(pow(max(col, 0.0), vec3(1.0 / 2.2)), base.a);
 }`;
 
-const SHADOW_VS = /* glsl */ `#version 300 es
+export const SHADOW_VS = /* glsl */ `#version 300 es
 layout(location=0) in vec3 a_pos;
 uniform mat4 u_model;
 uniform mat4 u_lightVP;
 void main() { gl_Position = u_lightVP * u_model * vec4(a_pos, 1.0); }`;
 
-const SHADOW_FS = /* glsl */ `#version 300 es
+export const SHADOW_FS = /* glsl */ `#version 300 es
 precision mediump float;
 out vec4 o;
 void main() { o = vec4(1.0); }`;
@@ -430,7 +430,7 @@ export class Renderer3D {
 
   private build(): void {
     const gl = this.gl;
-    this.prog = this.reg.createProgram('pbr', VS, FS);
+    this.prog = this.reg.createProgram('pbr', PBR_VS, PBR_FS);
     this.shadowProg = this.reg.createProgram('pbr-shadow', SHADOW_VS, SHADOW_FS);
     this.white = this.reg.createTexture('pbr-white');
     gl.bindTexture(gl.TEXTURE_2D, this.white);

@@ -39,7 +39,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0015 · Demo · P1 · M · Input recording & replay — record pointer frames per op to JSON; `replay(def, log)` reproduces final score/rank exactly (test on all 10 demo ops)
 - [x] GAM-0016 · Demo · P1 · S · Event bus for sim → presentation (`op.events` — rated, spawned, phaseStart, vitalsWarn, litany…) replacing `op.cues` string array
 - [x] GAM-0017 · Demo · P1 · S · Operation telemetry summary — per op: time per phase, ratings histogram, vitals minimum, tools used, Litany timing; written to results scene and debug log
-- [ ] GAM-0018 · Demo · P2 · S · Debug overlay (F3) — entity hitboxes, drain per entity, vitals delta/s, active timers, combo state
+- [x] GAM-0018 · Demo · P2 · S · Debug overlay (F3) — entity hitboxes, drain per entity, vitals delta/s, active timers, combo state
 - [ ] GAM-0019 · Demo · P2 · S · Debug cheats (dev builds only) — skip phase, set vitals, freeze drain, spawn any entity at cursor
 - [x] GAM-0020 · Alpha · P1 · M · Data-driven ailment schema — ailments declared in content files (`{kind, pos, params}`) validated by a zod-style schema at load; bad content fails CI
 
@@ -68,21 +68,21 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 
 ### Gut Thread
 - [x] GAM-0036 · Demo · P0 · M · Zig-zag stitch detection — each crossing of the wound axis counts one stitch; stitch spacing 10–28 px COOL, 6–40 px GOOD; sparse lines leave "gaps" that keep bleeding at 30 % (test)
-- [ ] GAM-0037 · Demo · P1 · S · Minimum stitches per wound = ceil(length/22) — fewer never closes the wound
+- [x] GAM-0037 · Demo · P1 · S · Minimum stitches per wound = ceil(length/22) — fewer never closes the wound
 - [x] GAM-0038 · Demo · P1 · S · Final incision closure — long closing suture rated as one action with bonus 200 on COOL; stitched line persists visually to results
 - [ ] GAM-0039 · Demo · P2 · S · Thread tension visual — (taut line from last stitch to cursor) and knot tie flourish on completion
 
 ### Saint's Salve
 - [x] GAM-0040 · Demo · P0 · S · Salve capacity `SALVE_MAX = 46` covers one medium rot; refill is automatic after 3 s idle — document and expose in HUD as a meter
 - [x] GAM-0041 · Demo · P1 · S · Coverage-based rating using `coverage.ts` grid: ≥ 95 % in one stroke COOL, ≥ 80 % GOOD — unsalved remainder regrows at 20 %/s
-- [ ] GAM-0042 · Demo · P1 · S · Salve on large wounds — Salve over open lacerations > 20 px does nothing and shows "Stitch it first" callout once per op
+- [x] GAM-0042 · Demo · P1 · S · Salve on large wounds — Salve over open lacerations > 20 px does nothing and shows "Stitch it first" callout once per op
 - [ ] GAM-0043 · Demo · P2 · S · Salve gloss persists 4 s after application — (shader wetness param)
 
 ### Tincture
 - [x] GAM-0044 · Demo · P0 · S · Tincture rating — injected while vitals < 40 COOL (needed), 40–70 GOOD, > 85 BAD ("wasteful") to stop spam
 - [x] GAM-0045 · Demo · P1 · S · Injection site must be on body and ≥ 30 px from any open wound — else MISS
-- [ ] GAM-0046 · Alpha · P1 · M · Tincture variants — red (vitals), green (antivenom), blue (stimulant vs Sext torpor), amber (anti-fever); selected by pressing 6 repeatedly; colour-coded vial HUD
-- [ ] GAM-0047 · Alpha · P2 · S · Tincture overdose — > 3 doses in 20 s causes 5 s tremor (cursor jitter 4 px); telegraphed by vial going dark
+- [x] GAM-0046 · Alpha · P1 · M · Tincture variants — red (vitals), green (antivenom), blue (stimulant vs Sext torpor), amber (anti-fever); selected by pressing 6 repeatedly; colour-coded vial HUD
+- [x] GAM-0047 · Alpha · P2 · S · Tincture overdose — > 3 doses in 20 s causes 5 s tremor (cursor jitter 4 px); telegraphed by vial going dark
 
 ### Cautery Brand
 - [ ] GAM-0048 · Demo · P0 · S · Brand hold times — grub 0.8 s, sigil node 1.0 s, Malison flesh continuous DPS 18/s; values from tuning table
@@ -117,7 +117,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0065 · Demo · P1 · S · Crossbow bolt — requires two-stage pull (drag 40 %, pause 0.3 s, finish) or it snaps, leaving a hidden fragment that needs the Lens
 - [x] GAM-0066 · Demo · P1 · S · Lead shot — Lens reveals 1–3 cloth wadding fragments; any left in when closing triggers a "wound-fever" mini-phase (+Venom-like drain 0.4/s for 20 s)
 - [x] GAM-0067 · Demo · P1 · S · Glass shard — slicing damage on drag: moving faster than 500 px/s while held spawns a nick; teaches slow extraction
-- [ ] GAM-0068 · Demo · P1 · S · Tooth (gravehound fang) — lodged at an angle, pull axis indicated only by the Lens outline
+- [x] GAM-0068 · Demo · P1 · S · Tooth (gravehound fang) — lodged at an angle, pull axis indicated only by the Lens outline
 - [x] GAM-0069 · Demo · P1 · M · Hexstone — writhes (±8 px jitter) until branded 0.5 s; touching it bare with tongs > 2 s drains 2 vitals ("whisper"); must be dropped in the lead dish tray, not the normal tray
 - [x] GAM-0070 · Demo · P2 · S · Generic shard — fallback kind for debris; confirm drop tray SFX and removal popups for all 7 kinds
 
@@ -134,12 +134,12 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 
 ### Rot
 - [x] GAM-0078 · Demo · P0 · S · Rot spreads 2 px/s radius to max 60 px — Salve coverage ≥ 95 % removes; partial coverage leaves islands that regrow (coverage test)
-- [ ] GAM-0079 · Demo · P2 · S · Rot animation — bubbling speed tied to remaining coverage percentage, stops at 0 %
+- [x] GAM-0079 · Demo · P2 · S · Rot animation — bubbling speed tied to remaining coverage percentage, stops at 0 %
 
 ### Venom
 - [x] GAM-0080 · Demo · P0 · S · Venom mote travel along drawn veins toward heart glyph — reaching it = −10 vitals; branding or leeching a mote removes it
-- [ ] GAM-0081 · Demo · P1 · S · Vein ligature — Gut Thread across a vein stops motes beyond that point (unit test)
-- [ ] GAM-0082 · Demo · P2 · S · Venom colour-coding — (green/violet) groundwork for antidote matching in Alpha
+- [x] GAM-0081 · Demo · P1 · S · Vein ligature — Gut Thread across a vein stops motes beyond that point (unit test)
+- [x] GAM-0082 · Demo · P2 · S · Venom colour-coding — (green/violet) groundwork for antidote matching in Alpha
 
 ### Grub
 - [x] GAM-0083 · Demo · P0 · S · Grub behaviour — crawls toward nearest open wound, burrows after 6 s leaving a hidden grub (Lens); brand 0.8 s or tongs-drag off body
@@ -155,7 +155,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 
 ### Fractures & bone-setting puzzle
 - [x] GAM-0089 · Alpha · P0 · L · Fracture entity — bone split into 2–5 fragments with rotation/translation offsets; Tongs drag + mouse-wheel rotates the held fragment
-- [ ] GAM-0090 · Alpha · P0 · M · Fit rule: fragment within 4 px and 3° of target snaps with COOL, 8 px/6° GOOD — misalignment at pin time rates BAD and reduces end bonus
+- [x] GAM-0090 · Alpha · P0 · M · Fit rule: fragment within 4 px and 3° of target snaps with COOL, 8 px/6° GOOD — misalignment at pin time rates BAD and reduces end bonus
 - [x] GAM-0091 · Alpha · P1 · M · Bone pin/plate step — after alignment, tap 2 pin points with the Lancet-turned-awl (Tincture slot swap) in order
 - [x] GAM-0092 · Alpha · P1 · S · Bone splinter entity — small hidden fragments near fractures revealed by Lens; each left in causes a 0.2/s drain post-closure phase
 - [x] GAM-0093 · Alpha · P1 · S · Compound fracture — bone through skin must be reduced before lacerations can be stitched (stitch blocked with hint)
@@ -165,13 +165,13 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 ### Petrification chipping
 - [x] GAM-0096 · Alpha · P0 · M · Stone-plate entity — plates with visible crack lines; Lancet taps on crack nodes in shown order chip the plate; off-node taps rate BAD and spread stone 10 px
 - [x] GAM-0097 · Alpha · P1 · S · Stone front advances 3 px/s toward a vital organ glyph — reaching it = immediate −30 vitals; Litany freezes advance entirely
-- [ ] GAM-0098 · Alpha · P1 · S · Living margin — tissue under removed plates must be salved within 5 s or it re-stones (unit test)
-- [ ] GAM-0099 · Alpha · P2 · S · Stone-front reveal — Lens shows the true stone front under skin as a grey tide line ahead of visible plates
+- [x] GAM-0098 · Alpha · P1 · S · Living margin — tissue under removed plates must be salved within 5 s or it re-stones (unit test)
+- [x] GAM-0099 · Alpha · P2 · S · Stone-front reveal — Lens shows the true stone front under skin as a grey tide line ahead of visible plates
 
 ### Frost-curse thawing
 - [x] GAM-0100 · Alpha · P0 · M · Frost patch — Brand in low-heat mode (tap rather than hold) thaws; holding > 0.4 s scalds (Burn). Thaw progress ring per patch
 - [x] GAM-0101 · Alpha · P1 · S · Frozen tissue rejects Lancet/Thread — (tools skid, no rating) until thawed
-- [ ] GAM-0102 · Alpha · P1 · S · Ice crystals in vessels: Leech-Pipe draws them out only after thaw — frozen vessel blocks blood flow causing slow drain 0.3/s
+- [x] GAM-0102 · Alpha · P1 · S · Ice crystals in vessels: Leech-Pipe draws them out only after thaw — frozen vessel blocks blood flow causing slow drain 0.3/s
 - [ ] GAM-0103 · Alpha · P2 · S · Frost presentation — breath-fog overlay and cold-blue grade intensity tied to remaining frost area %
 
 ### Tumours & growths
@@ -186,18 +186,18 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 
 ### Ulcers
 - [x] GAM-0110 · Alpha · P1 · M · Ulcer — crater that weeps acid bile; Leech-Pipe then Salve in concentric ring order (outer first); inner-first rates BAD and ulcer perforates (new laceration)
-- [ ] GAM-0111 · Alpha · P2 · S · Perforation spill — perforated ulcer contaminates adjacent organ with Rot after 6 s unless drained
+- [x] GAM-0111 · Alpha · P2 · S · Perforation spill — perforated ulcer contaminates adjacent organ with Rot after 6 s unless drained
 
 ### Troll-regeneration wounds
 - [x] GAM-0112 · Alpha · P0 · M · Regenerating wound — closes over embedded shrapnel in 4 s after opening; brand the rim (trace full circle) to stop regrowth before extraction
-- [ ] GAM-0113 · Alpha · P1 · S · Overgrowth — if closed over an object, the object is hidden and a lump forms; re-incise and repeat
+- [x] GAM-0113 · Alpha · P1 · S · Overgrowth — if closed over an object, the object is hidden and a lump forms; re-incise and repeat
 - [x] GAM-0114 · Alpha · P1 · S · Acid spray on gut opening disables one random tool for 10 s — (greyed hotbar slot, shown in HUD)
-- [ ] GAM-0115 · Alpha · P2 · S · Regrowth rate scaled by patient vitals (healthier = faster) — a deliberate inversion; tooltip in briefing
+- [x] GAM-0115 · Alpha · P2 · S · Regrowth rate scaled by patient vitals (healthier = faster) — a deliberate inversion; tooltip in briefing
 
 ### Vampire bite & blood-drain
 - [x] GAM-0116 · Alpha · P0 · M · Bite channel — two puncture wounds linked by a thrall-thread; lodged tooth fragments (Lens); vitals ceiling reduced to 70 until channel is cauterised
-- [ ] GAM-0117 · Alpha · P1 · S · Blood-drain meter — separate "blood volume" bar that drains; Tincture restores vitals but not volume, transfusion step (Leech-Pipe reversed on a donor bowl) restores volume
-- [ ] GAM-0118 · Alpha · P1 · S · Thrall choice hook — leaving the channel open ends op with flag `thrallKept`; scoring unaffected, story branch recorded
+- [x] GAM-0117 · Alpha · P1 · S · Blood-drain meter — separate "blood volume" bar that drains; Tincture restores vitals but not volume, transfusion step (Leech-Pipe reversed on a donor bowl) restores volume
+- [x] GAM-0118 · Alpha · P1 · S · Thrall choice hook — leaving the channel open ends op with flag `thrallKept`; scoring unaffected, story branch recorded
 - [ ] GAM-0119 · Alpha · P2 · S · Anaemic flesh shader — (pale, reduced wet specular) tied to blood volume
 
 ### Alchemical acid & poisons
@@ -208,7 +208,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 ### Gangrene & amputation
 - [x] GAM-0123 · Alpha · P0 · L · Gangrene spread — black tissue creeps up limb 2 px/s; Lens shows demarcation line; debride with Lancet + Salve if caught below the line
 - [x] GAM-0124 · Alpha · P0 · M · Amputation op flow — saw gesture (back-and-forth Lancet drag, 8 strokes at rhythm), then seal choice: Brand (fast, −15 vitals) vs Thread ligatures (slower, +score)
-- [ ] GAM-0125 · Alpha · P1 · S · Ligature vs cautery scoring — ligature path yields +400 bonus but requires tying 3 vessels within 20 s
+- [x] GAM-0125 · Alpha · P1 · S · Ligature vs cautery scoring — ligature path yields +400 bonus but requires tying 3 vessels within 20 s
 - [ ] GAM-0126 · Alpha · P2 · S · Tone guard — amputation presented through surgical drape framing; no gore beyond chart content-rating guidelines (checked with ESRB/PEGI notes)
 
 ### Parasites & worms
@@ -248,7 +248,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0150 · Demo · P1 · S · Audit non-boss respawners (Bubo overflow, Grub split, rot regrowth) for the same loophole — cap self-inflicted-entity points to 0
 
 ### Ranks
-- [ ] GAM-0151 · Demo · P0 · S · Rank thresholds recalibrated after farming fix via `CALIBRATE=1` — committed per op with calibration date comment
+- [x] GAM-0151 · Demo · P0 · S · Rank thresholds recalibrated after farming fix via `CALIBRATE=1` — committed per op with calibration date comment
 - [x] GAM-0152 · Demo · P0 · S · XS rank requires S score + no BAD/MISS + vitals never < 50 + Litany either unused or used at a scripted peak — documented in results tooltip
 - [ ] GAM-0153 · Demo · P1 · S · Human playtest validation — 5 playtesters' median rank on each demo op falls in B–A; outliers logged as tuning tasks
 - [x] GAM-0154 · Demo · P1 · S · Results breakdown — ratings histogram, max combo, vitals bonus, time bonus, penalties, final rank with the next-rank delta ("312 to A")
@@ -271,19 +271,19 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 
 - [ ] GAM-0166 · Demo · P0 · S · Star recognition tolerance tuned from 200 recorded human stars (≥ 92 % accept, ≤ 2 % false-positive on zig-zag stitch paths) — test data committed
 - [x] GAM-0167 · Demo · P0 · S · Litany does not slow the player's cursor or tool timers (hold durations use real time) — only entity time; unit test
-- [ ] GAM-0168 · Demo · P1 · S · Litany drawn anywhere including off-body — right mouse draws in gold ink with fade trail; failed star shows "The words falter" and does not consume use
+- [x] GAM-0168 · Demo · P1 · S · Litany drawn anywhere including off-body — right mouse draws in gold ink with fade trail; failed star shows "The words falter" and does not consume use
 - [x] GAM-0169 · Demo · P1 · S · Litany extended by COOL chain — each COOL during Litany adds 0.25 s up to +3 s
 - [ ] GAM-0170 · Demo · P1 · S · Litany availability tell — HUD star glyph lit/unlit; op briefing notes if the Litany is sealed for story reasons
-- [ ] GAM-0171 · Demo · P1 · S · Keyboard/controller alternative — hold L then trace star with stick/mouse OR hold key for 1.5 s in Accessibility mode
+- [x] GAM-0171 · Demo · P1 · S · Keyboard/controller alternative — hold L then trace star with stick/mouse OR hold key for 1.5 s in Accessibility mode
 - [x] GAM-0172 · Alpha · P1 · M · Litany variants (unlocked by chapter): Stillness (slow), Vigil (reveal all hidden for 6 s), Mercy (freeze drain 6 s, no slow), Wrath (brand damage ×2 for 6 s) — one selected per op in briefing
-- [ ] GAM-0173 · Alpha · P1 · S · Variant gestures — each variant uses the same star; selection is pre-op to keep a single gesture
+- [x] GAM-0173 · Alpha · P1 · S · Variant gestures — each variant uses the same star; selection is pre-op to keep a single gesture
 - [x] GAM-0174 · Alpha · P2 · S · Whisper meter hook — each Litany use adds +1 Whisper (story system); event emitted, no gameplay effect in sim
 - [x] GAM-0175 · Beta · P2 · S · Two-Litany ops (Compline finale) — second use granted after breaking silence nodes; unit test
 
 ## GAM-I · Difficulty modes & assists
 
 - [x] GAM-0176 · Demo · P0 · M · Difficulty modes: Novice (drain ×0.6, time ×1.4, guides always), Surgeon (baseline), Master (drain ×1.35, time ×0.85, no guides, unlocks after Ch2 clear) — stored per save
-- [ ] GAM-0177 · Demo · P0 · S · Retry flow — on loss offer Retry (same seed), Retry at Novice for this op only, or return to menu; Retry at checkpoint for boss ops (phase start)
+- [x] GAM-0177 · Demo · P0 · S · Retry flow — on loss offer Retry (same seed), Retry at Novice for this op only, or return to menu; Retry at checkpoint for boss ops (phase start)
 - [x] GAM-0178 · Demo · P0 · S · Boss checkpoint — losing on Matins/Lauds phase ≥ 2 restarts at that phase with vitals 70; score marked "checkpointed" (no XS)
 - [x] GAM-0179 · Demo · P1 · S · Assist toggles independent of difficulty: bigger hitboxes (+6 px), guide lines, auto-lens reveal, slower boss tells (×1.25), no-fail vitals floor at 1 — each flagged on results
 - [x] GAM-0180 · Demo · P1 · S · Dynamic hint system — after 2 failures on the same op, Ilse offers a one-line strategy tip specific to the failure cause (e.g. "drain before salving")
@@ -293,7 +293,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 ## GAM-J · Bot harness & balance
 
 ### Harness capabilities
-- [ ] GAM-0183 · Demo · P0 · M · Bot skill profiles: `novice` (think 1.5, ±10 px aim noise), `steady` (1.0, ±5 px), `expert` (0.6, ±2 px), `farm` (stall boss), `sloppy` (30 % wrong-order actions) — seeded noise
+- [x] GAM-0183 · Demo · P0 · M · Bot skill profiles: `novice` (think 1.5, ±10 px aim noise), `steady` (1.0, ±5 px), `expert` (0.6, ±2 px), `farm` (stall boss), `sloppy` (30 % wrong-order actions) — seeded noise
 - [x] GAM-0184 · Demo · P0 · S · Bot handles every entity kind incl. hexstone lead-dish rule, barb nick, bolt two-stage pull, wadding fragments — (fails loudly on unknown entity)
 - [x] GAM-0185 · Demo · P0 · S · Multi-seed sweep — balance test runs each op on 20 seeds; asserts win rate 100 % steady, ≥ 95 % novice
 - [x] GAM-0186 · Demo · P1 · S · Balance report CLI `npm run balance` — CSV per op/profile/seed: score, rank, time used, min vitals, Litany used; diffed against committed baseline in CI (> 10 % shift flags)
@@ -320,13 +320,13 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 ## GAM-K · Tutorialisation (Demo)
 
 - [x] GAM-0204 · Demo · P0 · M · Guided op1-1 — step-gated tutorial: each tool introduced with Ilse line + highlight + input prompt; sim pauses drain until first correct action of each step
-- [ ] GAM-0205 · Demo · P0 · S · Tool introduction schedule: op1-1 Lancet/Leech/Thread/Tincture, op1-2 Tongs, op1-3 Salve/Lens, op1-4 Brand, op1-5 Litany — unit test asserts no op requires an un-introduced tool
+- [x] GAM-0205 · Demo · P0 · S · Tool introduction schedule: op1-1 Lancet/Leech/Thread/Tincture, op1-2 Tongs, op1-3 Salve/Lens, op1-4 Brand, op1-5 Litany — unit test asserts no op requires an un-introduced tool
 - [x] GAM-0206 · Demo · P0 · S · Litany tutorial — prompted star practice in a paused frame before Matins phase 2 with 3 attempts and a "skip" fallback that auto-triggers the Litany
 - [x] GAM-0207 · Demo · P1 · S · Contextual first-time hints (one per mechanic, save-tracked) — barb nick, bolt pull, wadding, rot coverage, sigil order, hexstone dish, venom ligature
 - [ ] GAM-0208 · Demo · P1 · S · Tutorial skip for returning players — (option + "I've operated before" prompt on new save)
 - [ ] GAM-0209 · Demo · P1 · S · Surgeon's Manual — in-game codex page per tool and ailment unlocked on first encounter, with 3-frame animated diagram
 - [x] GAM-0210 · Demo · P1 · S · Practice Theatre — sandbox scene with dummy patient to try each tool without scoring; accessible from pause menu
-- [ ] GAM-0211 · Demo · P2 · S · Tutorial input glyphs — prompts switch between mouse/keyboard and controller glyphs within 1 frame of last-used device changing
+- [x] GAM-0211 · Demo · P2 · S · Tutorial input glyphs — prompts switch between mouse/keyboard and controller glyphs within 1 frame of last-used device changing
 - [ ] GAM-0212 · Alpha · P1 · S · Chapter 3–5 new-mechanic intro ops each have a no-fail first phase that teaches the mechanic — (fracture, stone, frost, amputation)
 
 ## GAM-L · Challenge mode ("X-Operations")
@@ -367,7 +367,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0237 · Demo · P1 · S · Game-speed slider 70–100 % — (flags results, disables leaderboard)
 - [x] GAM-0238 · Demo · P1 · S · Gesture simplification — zig-zag stitches can be replaced by click-per-stitch; encircle can be replaced by tap-and-hold 1 s; star can be a hold key
 - [ ] GAM-0239 · Demo · P1 · S · Screen shake and flash intensity sliders honoured by all boss effects — (Matins open flash, Lauds dawn flare)
-- [ ] GAM-0240 · Demo · P2 · S · Cursor options — cursor size (1×/1.5×/2×) and high-contrast target outlines toggle, applied to all entities
+- [x] GAM-0240 · Demo · P2 · S · Cursor options — cursor size (1×/1.5×/2×) and high-contrast target outlines toggle, applied to all entities
 - [ ] GAM-0241 · Alpha · P1 · S · One-handed mode — tool cycle on mouse side buttons, Litany via hold key; every Alpha mechanic validated completable
 - [x] GAM-0242 · Alpha · P2 · S · Rhythm mechanics — (amputation saw, heart beats) have a "no rhythm" assist with widened windows ×2
 - [ ] GAM-0243 · Beta · P1 · S · Accessibility audit of all 5 chapters — each op completable with all assists on by the bot using simplified gestures
@@ -375,7 +375,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 ## GAM-O · Environment & patient modifiers (Alpha)
 
 - [x] GAM-0244 · Alpha · P2 · S · Patient thrashing — flagellant/penitent ops: field shakes 6 px unless Tincture calms (10 s effect)
-- [ ] GAM-0245 · Alpha · P2 · S · Talking patient interruptions — VN overlay mid-op pauses sim; resumes with 1 s grace
+- [x] GAM-0245 · Alpha · P2 · S · Talking patient interruptions — VN overlay mid-op pauses sim; resumes with 1 s grace
 - [x] GAM-0246 · Alpha · P2 · S · Arterial spray event — unclamped artery adds pool every 1 s; clamp with Tongs hold 0.5 s before extracting nearby objects
 - [ ] GAM-0247 · Alpha · P2 · S · Multi-organ fields — camera pan between two regions (Tab), off-screen entities keep draining with edge arrows
 - [ ] GAM-0248 · Beta · P2 · M · Two-patient triage op (Ch4) — switch patient with Tab; each has separate vitals; fail if either dies
@@ -432,7 +432,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [ ] BOS-0020 · Demo · P2 · S · Matins ambience — choir whisper loop stereo-panned to Matins screen x-position (−1..1)
 ### Tuning & tests
 - [ ] BOS-0021 · Demo · P0 · S · HP and brand DPS tuned so steady bot clears in 150–210 s on Surgeon — novice bot wins 20/20 seeds
-- [ ] BOS-0022 · Demo · P0 · S · Farming regression — `farm` bot Matins score ≤ steady score (depends on GAM farming fix)
+- [x] BOS-0022 · Demo · P0 · S · Farming regression — `farm` bot Matins score ≤ steady score (depends on GAM farming fix)
 - [ ] BOS-0023 · Demo · P1 · S · Unit tests — rhythm timings per phase, eye beat damage multiplier, shard spawn count per veil
 - [ ] BOS-0024 · Demo · P1 · S · Checkpoint at phases 2 and 3 verified — retry resumes with correct HP and no leftover adds
 - [ ] BOS-0025 · Demo · P1 · S · Playtest gate — 5 new players: ≥ 4 clear Matins within 3 attempts on Surgeon
@@ -449,7 +449,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [ ] BOS-0032 · Demo · P1 · S · Hymn ring — max 1 laceration per verse on Surgeon, 2 on Master; ring radius and speed exposed in tuning
 - [ ] BOS-0033 · Demo · P1 · S · Rekindle rules — rekindled Voices spawn at 50 % trace length (partially traced) so repeated rekindles are faster to clear
 - [ ] BOS-0034 · Demo · P1 · S · EggSac hatch timer 10 s with swell tell — hatched spiderlings target open wounds; limit 6 live spiderlings
-- [ ] BOS-0035 · Demo · P1 · S · Submerged Rot trail capped at 3 patches — (existing) and trail Rot rated as boss-add (farming fix)
+- [x] BOS-0035 · Demo · P1 · S · Submerged Rot trail capped at 3 patches — (existing) and trail Rot rated as boss-add (farming fix)
 ### Audio/visual cues
 - [ ] BOS-0036 · Demo · P1 · S · Antiphon audio — each linked body sings one half of a two-note call; response window visualised as an arc filling between them
 - [ ] BOS-0037 · Demo · P1 · S · Hymn tell — choir inhale SFX + ring outline shimmer 0.8 s before expansion
@@ -458,7 +458,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 ### Tuning & tests
 - [ ] BOS-0040 · Demo · P0 · S · Steady bot clears Lauds in 240–320 s — novice bot 20/20; expert XS reachable
 - [ ] BOS-0041 · Demo · P0 · S · Bot strategy handles response window — (strike A then B within 1.5 s) and thread severance timing
-- [ ] BOS-0042 · Demo · P0 · S · Farming regression — `farm` bot Lauds score ≤ steady score
+- [x] BOS-0042 · Demo · P0 · S · Farming regression — `farm` bot Lauds score ≤ steady score
 - [ ] BOS-0043 · Demo · P1 · S · Unit tests — heal-on-unanswered strike, severance unlink duration, flare blind duration, rekindle partial trace
 - [ ] BOS-0044 · Demo · P1 · S · Lauds checkpoints — retry at phases 2 and 3 resumes with correct HP, linked-body state, and no leftover adds (test)
 - [ ] BOS-0045 · Demo · P1 · S · Playtest gate — ≥ 4/5 players clear Lauds in ≤ 4 attempts on Surgeon; median attempt time logged
@@ -511,7 +511,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0076 · Alpha · P0 · L · Sext entity — acedia-curse that inflicts torpor: tool response lag grows 0→250 ms over 20 s unless stimulant Tincture(blue) is injected
 - [x] BOS-0077 · Alpha · P0 · M · Phase 1 "Languor" (100–60 %): Sext rests beneath a stone crust — chip crust plates (petrification rules) to expose; torpor ramps
 - [x] BOS-0078 · Alpha · P0 · M · Phase 2 "False Noon" (60–30 %): HUD vitals show a calm false value (smoothed toward 70) — true vitals only via Lens on heart; real drain 1.2/s
-- [ ] BOS-0079 · Alpha · P0 · M · Phase 3 "Stillborn Hour" (30–0 %): Sext casts its own Litany — the world slows but the player's tools slow too (inverse); break 3 sun-dial nodes with Brand to end its stillness
+- [x] BOS-0079 · Alpha · P0 · M · Phase 3 "Stillborn Hour" (30–0 %): Sext casts its own Litany — the world slows but the player's tools slow too (inverse); break 3 sun-dial nodes with Brand to end its stillness
 - [ ] BOS-0080 · Alpha · P1 · S · Petrification spread from Sext's crust at 3 px/s — stone reaching an organ glyph halves that organ's drain resistance
 - [x] BOS-0081 · Alpha · P1 · S · Player Litany vs Sext — using Litany during its Stillborn cast cancels both (clash FX) and stuns Sext 4 s
 ### Counterplay, tells & cues

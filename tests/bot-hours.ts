@@ -166,7 +166,8 @@ export const laudsStrategy: BotStrategy = (op, k, boss) => {
     if (v) return traceVoice(v);
     return k.hold('brand', () => (l.alive && l.phase.key === 'call' && l.livingVoices.length === 0 ? l.pos : null), 5);
   }
-  if (key === 'response') return antiphon(l, 20);
+  // Short bouts, so the surgeon looks up to heal and tend between them.
+  if (key === 'response') return antiphon(l, 6);
   // Dawn: hunt its ripples between flares, brand it while surfaced.
   if (l.submerged) {
     // Blinded by the flare: tend the rot and the bleeding instead of waiting.

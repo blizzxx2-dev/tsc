@@ -1,5 +1,5 @@
 import { awardAchievements, type AchievementId } from './achievements';
-import { TIP_AFTER_FAILURES, tipFor } from './hints';
+import { tipFor } from './hints';
 import { unlockedLitanies } from './litany';
 import { Operation, type OperationDef, type OperationOptions } from './operation';
 import { DIFFICULTIES } from './difficulty';
@@ -51,8 +51,8 @@ export function finishOperation(op: Operation): RunSummary {
   });
   for (const h of op.hintsShown) if (!progress.hintsSeen.includes(h)) progress.hintsSeen.push(h);
   const achievements = awardAchievements(progress, op);
-  const fails = progress.fails[op.def.id] ?? 0;
-  const tip = !won && fails >= TIP_AFTER_FAILURES ? (tipFor(op)?.text ?? null) : null;
+  // Every failure report carries a tip read from the run (UIX-0116); repeat failures are when Ilse's advice matters most.
+  const tip = !won ? (tipFor(op)?.text ?? null) : null;
   storeProgress(progress);
   return { newBest, fee, achievements, tip };
 }

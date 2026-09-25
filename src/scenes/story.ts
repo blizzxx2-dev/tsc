@@ -10,11 +10,31 @@ import { flowMark } from '../ui/ornaments';
 import { caps, diamond, INK, rule } from '../ui/hudKit';
 import { inkStamp } from '../art/kit';
 import { glyphContext, glyphFor } from '../input/glyphs';
+import type { ActionId } from '../input/actions';
+import { tooltip } from '../ui/controls';
 import { settings } from '../core/settings';
 import { canSkip, readLog, ReadLog } from '../ui/readLog';
 import { drawBackdrop, drawPortrait } from './backdrop';
+import { BacklogScene, StoryMenuScene, type BacklogLine } from './storyMenu';
+import { TitleScene } from './title';
 
 const CPS = 48; // characters per second
+
+/** The text box's control strip (UIX-0125): clickable Auto / Skip / Log / Hide / Menu at the bottom-right. */
+type StripId = 'auto' | 'skip' | 'log' | 'hide' | 'menu';
+const STRIP: readonly { id: StripId; action: ActionId }[] = [
+  { id: 'auto', action: 'vn.auto' },
+  { id: 'skip', action: 'vn.fast' },
+  { id: 'log', action: 'vn.log' },
+  { id: 'hide', action: 'vn.hide' },
+  { id: 'menu', action: 'ui.back' },
+];
+const STRIP_W = 84;
+const STRIP_H = 30;
+function stripRect(i: number): { x: number; y: number; w: number; h: number } {
+  return { x: VIEW_W - 24 - (STRIP.length - i) * (STRIP_W + 6), y: VIEW_H - 44, w: STRIP_W, h: STRIP_H };
+}
+const inside = (p: { x: number; y: number }, r: { x: number; y: number; w: number; h: number }) => p.x >= r.x && p.x <= r.x + r.w && p.y >= r.y && p.y <= r.y + r.h;
 
 /** Visual-novel scene: backdrop, portrait, name plate and a typewriter text box. */
 export class StoryScene implements Scene {
@@ -22,6 +42,12 @@ export class StoryScene implements Scene {
   private shown = 0;
   private t = 0;
   private fadeIn = 0;
+  /** Auto-advance (vn.auto): lines move on by themselves after a reading pause. */
+  private auto = false;
+  /** Text box hidden (vn.hide) to look at the scene; any advance brings it back. */
+  private hidden = false;
+  /** Skip mode toggled from the control strip: fast-forward as if the key were held. */
+  private skipMode = false;
 
   constructor(
     private story: StoryDef,
@@ -32,21 +58,62 @@ export class StoryScene implements Scene {
     return this.story.lines[this.i];
   }
 
+  /** Every line shown so far in this scene, for the backlog (UIX-0121). */
+  private backlog(): BacklogLine[] {
+    return this.story.lines.slice(0, this.i + 1).map((l) => ({ who: l.who === 'narrator' ? '' : (l.as ?? CAST[l.who].name ?? ''), text: l.text, narration: l.who === 'narrator' }));
+  }
+
+  private finish(): void {
+    readLog.flush();
+    this.onDone();
+  }
+
+  /** Esc no longer skips outright: it opens the scene's menu (UIX-0122). */
+  private openMenu(game: Game): void {
+    if (!game.push) return this.finish();
+    game.push(
+      new StoryMenuScene(this.story.place, this.backlog(), (r) => {
+        if (r === 'skip') this.finish();
+        else if (r === 'title') {
+          readLog.flush();
+          game.go(new TitleScene());
+        }
+      }),
+    );
+  }
+
   update(dt: number, game: Game): void {
     const { input } = game;
     this.t += dt;
     this.fadeIn = Math.min(1, this.fadeIn + dt * 1.5);
     // Fast-forward passes only lines already read, unless "Skip unread text" is on (UIX-0124).
     const id = ReadLog.lineId(this.story.id, this.i);
-    const fast = input.act('vn.fast') && canSkip(readLog.has(id), settings.skipUnread);
+    const fast = (input.act('vn.fast') || this.skipMode) && canSkip(readLog.has(id), settings.skipUnread);
+    if (this.skipMode && !canSkip(readLog.has(id), settings.skipUnread)) this.skipMode = false; // skip stops at unread text
     this.shown += dt * CPS * settings.textSpeed * (fast ? 8 : 1);
     const full = this.shown >= this.line.text.length;
     if (full) readLog.mark(id);
-    const advance = input.pressed || input.actPressed('vn.advance') || (fast && full && this.t > 0.08);
-    if (input.actPressed('ui.back')) {
-      readLog.flush();
-      return this.onDone();
+    // The control strip consumes its own clicks.
+    const hit = !this.hidden && input.pressed ? STRIP.find((_, i) => inside(input.pos, stripRect(i)))?.id : undefined;
+    if (input.actPressed('ui.back') || hit === 'menu') return this.openMenu(game);
+    if ((input.actPressed('vn.log') || input.wheel < 0 || hit === 'log') && game.push) return game.push(new BacklogScene(this.backlog()));
+    if (input.actPressed('vn.auto') || hit === 'auto') this.auto = !this.auto;
+    if (hit === 'skip') this.skipMode = !this.skipMode;
+    if (this.hidden) {
+      // Any press only brings the text back (UIX-0126).
+      if (input.pressed || input.rightPressed || input.actPressed('vn.advance') || input.actPressed('vn.hide')) this.hidden = false;
+      return;
     }
+    if (input.actPressed('vn.hide') || input.rightPressed || hit === 'hide') {
+      this.hidden = true;
+      return;
+    }
+    if (hit) return;
+    const click = input.pressed || input.actPressed('vn.advance');
+    // Manual input pauses auto mode (UIX-0123).
+    if (click && this.auto && full) this.auto = false;
+    const autoDue = this.auto && full && this.t > Math.max(1.2, this.line.text.length * 0.03) / settings.textSpeed;
+    const advance = click || (fast && full && this.t > 0.08) || autoDue;
     if (!advance) return;
     this.t = 0;
     if (!full) {
@@ -57,8 +124,7 @@ export class StoryScene implements Scene {
     this.shown = 0;
     if (this.i >= this.story.lines.length) {
       this.i = this.story.lines.length - 1;
-      readLog.flush();
-      this.onDone();
+      this.finish();
     } else game.audio.play('select');
   }
 
@@ -77,6 +143,10 @@ export class StoryScene implements Scene {
     caps(g, this.story.place, 40, 44, 14, hex(INK.gold));
     rule(g, 40 + Math.min(560, g.measure(this.story.place.toUpperCase(), 14, 'display', 0.16)) / 2, 56, Math.min(560, g.measure(this.story.place.toUpperCase(), 14, 'display', 0.16)) + 40, hex(INK.gilt, 0.6));
 
+    if (this.hidden) {
+      reticle(g, game.input.pos);
+      return g.endFrame();
+    }
     // Lower third: a deep shade rising from the bottom edge (its strength follows the text-box
     // opacity option, UIX-0128); text scale grows it upward (UIX-0148).
     const ts = settings.textScale;
@@ -118,9 +188,32 @@ export class StoryScene implements Scene {
       diamond(g, tx + tw + 24, vr.y + vr.h - 46 + (settings.reduceMotion ? 0 : Math.sin(g.time * 4) * 2), 5, hex(INK.gold, pulse), hex('#000000', 0.6));
     }
     if (game.input.act('vn.fast')) flowMark(g, tx + tw + 10, top + 40, 'skip', g.time);
-    const click = glyphContext().device === 'pad' ? '' : t('ui.story.click_prefix');
-    g.text(t('ui.story.controls_fmt', { click, advance: glyphFor('vn.advance'), fast: glyphFor('vn.fast'), skip: glyphFor('ui.back') }), VIEW_W - 30, VIEW_H - 12, { size: 16, color: hex(INK.faint), align: 'right', shadow: false });
+    this.drawStrip(g, game);
     reticle(g, game.input.pos);
     g.endFrame();
+  }
+
+  private drawStrip(g: Gfx, game: Game): void {
+    // Pads have no pointer: the bindings are spelled out instead of the clickable strip.
+    if (glyphContext().device === 'pad') {
+      const hint = t('ui.story.controls_fmt', { advance: glyphFor('vn.advance'), fast: glyphFor('vn.fast'), log: glyphFor('vn.log'), auto: glyphFor('vn.auto'), skip: glyphFor('ui.back') });
+      g.text(hint, VIEW_W - 30, VIEW_H - 12, { size: 16, color: hex(this.auto ? INK.gold : INK.faint), align: 'right', shadow: false });
+      return;
+    }
+    let hover = -1;
+    STRIP.forEach(({ id }, i) => {
+      const r = stripRect(i);
+      const over = inside(game.input.pos, r);
+      if (over) hover = i;
+      const on = (id === 'auto' && this.auto) || (id === 'skip' && (this.skipMode || game.input.act('vn.fast')));
+      const lit = on ? 1 : over ? 0.85 : 0.5;
+      if (on || over) g.rect(r.x + 10, r.y + r.h - 4, r.w - 20, 1.5, hex(INK.gold, on ? 0.9 : 0.5));
+      if (on) diamond(g, r.x + 8, r.y + r.h / 2, 3, hex(INK.goldHi, 0.6 + 0.4 * Math.sin(g.time * 3)));
+      caps(g, t(`ui.story.strip.${id}`), r.x + r.w / 2, r.y + r.h / 2 + 5, 13, hex(on ? INK.goldHi : INK.text, lit), 'center');
+    });
+    if (hover >= 0) {
+      const { id, action } = STRIP[hover];
+      tooltip(g, stripRect(hover), t(`ui.story.strip.${id}`), t('ui.story.strip.key', { key: glyphFor(action) }));
+    }
   }
 }

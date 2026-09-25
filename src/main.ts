@@ -10,6 +10,7 @@ import { ControlsScene } from './input/controlsScene';
 import { GameplayOptionsScene } from './scenes/gameplayOptions';
 import { OperationsScene } from './scenes/operations';
 import { DemoEndScene } from './scenes/demoend';
+import { NoticeScene, noticesDue } from './scenes/notice';
 import { Audio } from './core/audio';
 import { ErrorBoundary, type CrashRecord } from './core/boundary';
 import { Clock } from './core/clock';
@@ -375,7 +376,7 @@ async function boot(): Promise<void> {
     });
   splashProgress(1, 'Ready');
   void loadLayoutLabels();
-  game.start(new TitleScene());
+  game.start(noticesDue() ? new NoticeScene(() => game.go(new TitleScene())) : new TitleScene());
   splashDone();
   console.info(`boot to title: ${Math.round(performance.now() - t0)} ms`);
 
@@ -417,13 +418,14 @@ async function boot(): Promise<void> {
   // ?lqa=1 (dev/QA builds) tints glyphs drawn from a fallback face magenta (LOC-0025).
   setFallbackHighlight(DEV_TOOLS && params.get('lqa') === '1');
   // ?scene=artview|fleshlab opens an art dev page.
-  const artScene = DEV_TOOLS ? artDevScene(params.get('scene')) : null;
+  const artScene = DEV_TOOLS ? artDevScene(params.has('shaderlab') ? 'shaderlab' : params.get('scene')) : null;
   if (artScene) game.go(artScene);
   // ?ui=<screen> opens a screen directly for art review (dev/QA builds).
   if (DEV_TOOLS) {
     const back = () => game.go(new TitleScene());
     const screens: Record<string, () => Scene> = {
       demoend: () => new DemoEndScene(),
+      notice: () => new NoticeScene(back),
       theatre: () => new OperationsScene(),
       gameplay: () => new GameplayOptionsScene(back),
       controls: () => new ControlsScene(back),

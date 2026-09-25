@@ -198,7 +198,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ### Top bar: vitals, ECG, timer, score
 - [ ] UIX-0038 · Demo · P0 · M · Top bar v2 layout — woodcut-framed bar with vitals block left, hourglass timer centre, score/combo right; no element overlaps the operating field ellipse (660, 410, 430×250); screenshot review at 1280×720 and 1280×800
-- [ ] UIX-0039 · Demo · P0 · S · Vitals damage feedback — a pale "lag" bar trails the real value by 0.5 s after damage; heal shows a green sweep; digits shake ±2 px on hits ≥ 5 (off with Reduced Motion)
+- [x] UIX-0039 · Demo · P0 · S · Vitals damage feedback — a pale "lag" bar trails the real value by 0.5 s after damage; heal shows a green sweep; digits shake ±2 px on hits ≥ 5 (off with Reduced Motion)
 - [ ] UIX-0040 · Demo · P1 · S · Beating heart icon — scales on each beat beside vitals (synced to the ECG beat phase) and changes shape per state (steady/strained/failing) so state is readable without colour
 - [ ] UIX-0041 · Demo · P1 · M · ECG monitor v2 — sweep-style trace with an erase gap instead of array shifting; waveform variants per state (tachycardia under venom, irregular under curse/Malison, weak below 25) selected by the scene; flatline with ink bleed on loss
 - [ ] UIX-0042 · Demo · P1 · S · Critical vitals state (< 30) — top-bar vitals block pulses red, screen edges vignette (existing post-process `danger`) and Ilse's low-vitals bark; state ends with hysteresis at 35
@@ -208,7 +208,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ### Ratings, popups & feedback
 - [ ] UIX-0046 · Demo · P0 · M · Rating stamps — replace text popups with woodcut stamps (COOL gold leaf, GOOD green ink, BAD rust, MISS blood splash), each a distinct shape so it reads without colour; label text ("Incision") beneath; 1.1 s lifetime; stamp-in 120 ms
-- [ ] UIX-0047 · Demo · P0 · S · Popup de-overlap — popups spawned within 40 px and 0.3 s of another stack upwards by one line; test: 5 simultaneous shard ratings stay legible (no bounding boxes overlap)
+- [x] UIX-0047 · Demo · P0 · S · Popup de-overlap — popups spawned within 40 px and 0.3 s of another stack upwards by one line; test: 5 simultaneous shard ratings stay legible (no bounding boxes overlap)
 - [ ] UIX-0048 · Demo · P1 · S · Combo milestone callouts — at chain 5/10/20 a larger banner ("Steady hands!", "A surgeon's grace!", "Saint Ildra guides you!") appears once per milestone per operation
 - [x] UIX-0049 · Demo · P1 · S · Damage-number toggle and vitals-loss aggregation — continuous drain damage is summed and shown at most every 0.5 s per source instead of per frame
 - [ ] UIX-0050 · Demo · P1 · S · Hurt direction cue — when vitals drop from an entity, a brief red pulse ring marks that entity so players learn what is draining the patient
@@ -217,12 +217,12 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] UIX-0051 · Demo · P0 · M · Tray v2 — slot art per tool, selected slot slides out 8 px, binding glyph from current bindings, hover/focus tooltip (name, gesture, binding), Tincture cooldown as radial wipe, Brand heat glow; tray mirrors to the right edge in left-handed mode
 - [x] UIX-0052 · M0 · P1 · S · Tool hint tooltip — name + hint panel beside the selected tray slot, fading 2.5 s after each switch (replaced the static text under the tray)
 - [x] UIX-0053 · Demo · P1 · S · Tool hint modes — "Tool hints: Always / First uses / Off"; in First-uses mode the tooltip also re-appears after 5 s idle during a tool's first 3 uses; hint text raised from 13 px to ≥ 16 px
-- [ ] UIX-0054 · Demo · P0 · M · Target-validity cursor — cursor tints green over a valid target for the current tool; over a target needing another tool it shows that tool's ghost icon ("Needs: Leech-Pipe"); shape changes (ring vs cross) so it is colour-independent
+- [x] UIX-0054 · Demo · P0 · M · Target-validity cursor — cursor tints green over a valid target for the current tool; over a target needing another tool it shows that tool's ghost icon ("Needs: Leech-Pipe"); shape changes (ring vs cross) so it is colour-independent
 - [ ] UIX-0055 · Demo · P1 · S · Hold-progress rings on the cursor for every hold tool — Leech (pool remaining), Brand (sear progress on grub/sigil/Malison), Lens reveal (0.4 s), Salve coverage %, Tincture injection (existing)
 - [x] UIX-0056 · Demo · P1 · S · Cursor visibility — reticle has a dark outline and optional size (1×–2×) and colour (brass/white/cyan/magenta) settings; remains visible over dark blood, black bile and bright hexfire
 
 ### Callouts & guidance
-- [ ] UIX-0057 · Demo · P0 · S · Callout panel placement — the panel (y 650–708) currently overlaps the bottom of the operating field; move it into a reserved bottom strip or make it click-through and auto-shift away from the active entity; hit-test confirms clicks pass to the field
+- [x] UIX-0057 · Demo · P0 · S · Callout panel placement — the panel (y 650–708) currently overlaps the bottom of the operating field; move it into a reserved bottom strip or make it click-through and auto-shift away from the active entity; hit-test confirms clicks pass to the field
 - [ ] UIX-0058 · Demo · P1 · M · Callout priorities — `op.say(line, { priority })`: urgent lines (low vitals, shard rejoining, Brand on healthy flesh) interrupt the queue; tips queue; duplicate lines within 10 s are dropped (unit tests on the queue)
 - [ ] UIX-0059 · Demo · P1 · M · Ilse callout bust — portrait in the callout panel with calm/urgent/relieved/worried expressions keyed by line priority or tag; subtle blink and mouth flap while text types
 - [x] UIX-0060 · Demo · P1 · S · Callout log — last 20 callouts of the current operation viewable from the pause menu
@@ -255,7 +255,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 ### Title screen
 - [x] UIX-0078 · M0 · P0 · S · Title — Continue / Take the Oath (new game, with forswear-progress confirm) / Operating Theatre / Sound toggle; fullscreen hint and version string
 - [ ] UIX-0079 · Demo · P0 · M · Title v2 — key-art backdrop (Kessendorf woodcut skyline, animated rain and candlelight), "Suture & Steel — The Malison Hours" logo lockup, menu: Continue, New Game, Chapter Select, Operating Theatre, Options, Credits, Quit; "DEMO" ribbon and Wishlist seal in demo builds
-- [ ] UIX-0080 · Demo · P0 · S · Stale end-of-content text — replace "Chapter I complete. Chapter II is being written…" with build-appropriate messaging (demo: routes to the demo-complete flow; full: nothing)
+- [x] UIX-0080 · Demo · P0 · S · Stale end-of-content text — replace "Chapter I complete. Chapter II is being written…" with build-appropriate messaging (demo: routes to the demo-complete flow; full: nothing)
 - [x] UIX-0081 · M0 · P0 · S · Rename to Suture & Steel — title logo, `index.html` title, WebGL2 failure message and save key `suture-and-steel.save`
 - [ ] UIX-0082 · Demo · P1 · S · Continue preview — tooltip/card shows chapter, next step title, total play time and last-played date
 - [ ] UIX-0083 · Demo · P1 · S · Quit to desktop — confirm dialog, calls Electron `app.quit()`; hidden in browser builds
@@ -272,7 +272,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 ### Save & load
 - [x] UIX-0091 · M0 · P0 · S · Progress autosave — localStorage save after each step plus best rank/score per operation (`save.ts`: `advance`, `recordBest`, `store`)
 - [ ] UIX-0092 · Demo · P0 · M · Save slots — three slots with cards (chapter, next step, play time, seal count, last played); New Game asks for a slot; overwrite needs confirm
-- [ ] UIX-0093 · Demo · P0 · S · Autosave indicator — quill/seal icon in a corner for ≥ 1 s whenever a save is written; tip on first boot "Do not quit while the seal turns"
+- [x] UIX-0093 · Demo · P0 · S · Autosave indicator — quill/seal icon in a corner for ≥ 1 s whenever a save is written; tip on first boot "Do not quit while the seal turns"
 - [ ] UIX-0094 · Demo · P0 · S · Corrupt save handling — today `load()` silently returns `fresh()` on parse failure; instead show "Your records are damaged" with Restore backup / Start fresh, and keep the bad file aside (test with a truncated JSON fixture)
 - [x] UIX-0095 · M0 · P0 · S · Settings file — volume, mute, screen shake, reduce flashing and assists persist under `suture-and-steel.settings`, separate from campaign progress (`src/core/settings.ts`)
 - [ ] UIX-0096 · Demo · P1 · S · Dead save field — remove the unused `SaveData.volume` (settings own volume now) through a v1 → v2 save migration with a fixture test
@@ -303,7 +303,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] UIX-0113 · M0 · P0 · S · Results — rating counts, longest chain, vitals and time bonuses, score, animated rank reveal, "A new best!", Continue / Operate Again / Leave
 - [ ] UIX-0114 · Demo · P0 · M · Chirurgical report — parchment report with tally marks per rating, per-action breakdown (incisions, sutures, extractions, burns dressed…), time taken, vitals remaining, Litany used; rank stamped as a wax seal with bell
 - [ ] UIX-0115 · Demo · P1 · S · Next-rank hint — "S at 1500 — 120 short" and the most costly rating category ("4 BAD sutures")
-- [ ] UIX-0116 · Demo · P0 · S · Failure report — cause of death, targeted tip derived from the run ("Blood pooled for 40 s — drain with the Leech-Pipe"), Try Again / Back to chapter; shown for both vitals and time-out losses
+- [x] UIX-0116 · Demo · P0 · S · Failure report — cause of death, targeted tip derived from the run ("Blood pooled for 40 s — drain with the Leech-Pipe"), Try Again / Back to chapter; shown for both vitals and time-out losses
 - [ ] UIX-0117 · Demo · P1 · S · Results skip — first press completes the tally animation, second press continues; Enter keeps working (existing)
 - [ ] UIX-0118 · Demo · P1 · S · XS rank celebration — gold-leaf seal, choir sting hook, and "Without a single slip" subtitle
 - [ ] UIX-0119 · Demo · P2 · S · Assisted badge — runs with any assist enabled show a small "Assisted" ribbon on the report and in the Operating Theatre (ranks still recorded)
@@ -312,12 +312,12 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ### Text box & controls
 - [x] UIX-0120 · M0 · P0 · S · Story scene — backdrop, procedural portrait, name plate in speaker colour, typewriter at 48 cps, click/Space/Enter advance, Ctrl fast-forward, Esc skips the scene, ▼ continue marker, place caption
-- [ ] UIX-0121 · Demo · P0 · M · Backlog — wheel-up or `vn.log` opens a scrollable log of every line shown in the current scene (speaker + text, VO replay icon when VO exists); Esc/B closes; supports gamepad scrolling
-- [ ] UIX-0122 · Demo · P0 · S · Story pause menu — Esc no longer skips instantly; it opens Resume / Skip Scene (confirm) / Backlog / Options / Return to Title
-- [ ] UIX-0123 · Demo · P1 · S · Auto mode — toggle advances after the line completes plus max(1.2 s, 30 ms/char) or when VO ends; auto icon lit while active; any manual input pauses auto
+- [x] UIX-0121 · Demo · P0 · M · Backlog — wheel-up or `vn.log` opens a scrollable log of every line shown in the current scene (speaker + text, VO replay icon when VO exists); Esc/B closes; supports gamepad scrolling
+- [x] UIX-0122 · Demo · P0 · S · Story pause menu — Esc no longer skips instantly; it opens Resume / Skip Scene (confirm) / Backlog / Options / Return to Title
+- [x] UIX-0123 · Demo · P1 · S · Auto mode — toggle advances after the line completes plus max(1.2 s, 30 ms/char) or when VO ends; auto icon lit while active; any manual input pauses auto
 - [x] UIX-0124 · Demo · P1 · M · Read-text tracking — seen line ids stored per save; Ctrl skip passes only seen lines unless "Skip unread text" is on; skip stops at unseen lines with a flash
-- [ ] UIX-0125 · Demo · P1 · S · Text-box control strip — clickable Auto / Skip / Log / Hide / Menu icons at the box's bottom-right, with binding tooltips; replaces the 13 px footer hint
-- [ ] UIX-0126 · Demo · P1 · S · Hide UI — `vn.hide` (H / right-click / Y) hides the text box to view art; any input restores
+- [x] UIX-0125 · Demo · P1 · S · Text-box control strip — clickable Auto / Skip / Log / Hide / Menu icons at the box's bottom-right, with binding tooltips; replaces the 13 px footer hint
+- [x] UIX-0126 · Demo · P1 · S · Hide UI — `vn.hide` (H / right-click / Y) hides the text box to view art; any input restores
 - [ ] UIX-0127 · Demo · P1 · S · Text speed option — 24/48/72 cps/instant, shared by story text and operation callouts
 - [x] UIX-0128 · Demo · P1 · S · Text-box readability — optional box opacity 60–100 %, line spacing 1.3, max 3 lines at 125 % text scale without overflow on 1280×800
 
@@ -377,7 +377,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ### Demo build gating
 - [ ] UIX-0165 · Demo · P0 · S · Demo build flag — `__DEMO__` (Vite `define`) gates demo-only UI (DEMO ribbon, wishlist seals, locked Ch3–5 cards, demo-complete scene); CI builds and smoke-tests both flavours
-- [ ] UIX-0166 · Demo · P0 · S · Demo campaign end — `playStep` past the last Chapter II step routes to `DemoCompleteScene` in demo builds (today it falls back to `TitleScene`); unit test with a two-chapter campaign stub
+- [x] UIX-0166 · Demo · P0 · S · Demo campaign end — `playStep` past the last Chapter II step routes to `DemoCompleteScene` in demo builds (today it falls back to `TitleScene`); unit test with a two-chapter campaign stub
 
 ### Demo-complete scene
 - [ ] UIX-0167 · Demo · P0 · M · "Here the demo ends" sequence — illuminated card, teaser of the next Malison hour (Prime) as a silhouette with "The Hours are not yet done…", music sting, then the summary; skippable after first view
