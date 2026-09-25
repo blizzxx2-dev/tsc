@@ -64,7 +64,7 @@ export const STORY_4_4: StoryDef = {
   backdrop: 'camp',
   lines: [
     n('A giant of the Ostrau company, Gutram, is brought in by eight men and a cart. He has eaten a strongbox.'),
-    say('mauer', 'The council’s pay-chest. Strongbox, lock and all. He says he was keeping it safe. From whom, Gutram?'),
+    say('mauer', 'Thirty-nine. The council’s pay-chest — strongbox, lock and all. He says he was keeping it safe. From whom, Gutram?'),
     say('patient', 'From… thieves.', 'Gutram'),
     say('mauer', 'And where were the thieves?'),
     say('patient', 'Outside of me.', 'Gutram'),
@@ -120,7 +120,7 @@ export const STORY_4_8: StoryDef = {
   backdrop: 'chapel',
   lines: [
     n('Mauer wakes at dusk, weak as a kitten and furious about it. The first thing he asks for is the strongbox papers.'),
-    say('mauer', 'The council roll. Every chartered office of Kessendorf, signed at the new year. I read it twice. Inquisitor — come here.'),
+    say('mauer', 'Thirty-six, while I slept. The council roll, Doctor: every chartered office, signed at the new year. Inquisitor — here.'),
     say('stroh', 'Captain.'),
     say('mauer', 'The Ash Tribunal’s charter in Kessendorf. It is not on the roll. It was not renewed. It lapsed at the new year.'),
     say('stroh', 'That is a clerk’s error.'),
