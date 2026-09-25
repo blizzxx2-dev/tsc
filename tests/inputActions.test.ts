@@ -36,7 +36,8 @@ describe('action map (INP-0004)', () => {
       f.includes(join('src', 'debug')) ||
       f.endsWith(join('art', 'artview.ts')) ||
       f.endsWith(join('art', 'fleshlab.ts')) ||
-      f.endsWith(join('art', 'shaderlab.ts'));
+      f.endsWith(join('art', 'shaderlab.ts')) ||
+      f.endsWith(join('art', 'woundLab.ts'));
     const offenders = files.filter(
       (f) =>
         !devOnly(f) &&

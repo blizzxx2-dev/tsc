@@ -1,3 +1,4 @@
+import { curseSource } from '../art/curse';
 import { t as tr, tSource } from '../i18n';
 import { formatClock, formatNumber, formatVitals } from '../i18n/format';
 import { dist, Rng } from '../core/math';
@@ -69,6 +70,8 @@ export class OperationScene implements Scene {
   private beatPhase = 0;
   private pulse = 0;
   private corrupt = 0;
+  /** Flesh corruption under any Hour's Malison (ART-0183), smoothed like `corrupt`. */
+  private fleshCurse = 0;
   private toolFlash = 0;
   private lastTool: ToolId | null = null;
   private entered = false;
@@ -369,6 +372,7 @@ export class OperationScene implements Scene {
 
     const cursed = op.entities.some((e) => e instanceof Malison || e instanceof MalisonShard) ? 0.7 : op.entities.some((e) => e instanceof Sigil) ? 0.25 : 0;
     this.corrupt += (cursed - this.corrupt) * Math.min(1, dt * 1.5);
+    this.fleshCurse += (Math.max(cursed, curseSource(op.entities) ? 0.55 : 0) - this.fleshCurse) * Math.min(1, dt * 1.5);
 
     // Visual effects arrive as `fx` events; landed droplets become stains. Particles run on world time.
     this.particles.update(dt * op.timeScale, (p, kind, size) => {
@@ -427,6 +431,7 @@ export class OperationScene implements Scene {
 
     // ---------------------------------------------------------------- world
     g.beginWorld();
+    const curse = curseSource(op.entities);
     g.fleshField({
       center: { x: FIELD.cx, y: FIELD.cy },
       radii: { x: FIELD.rx, y: FIELD.ry },
@@ -436,7 +441,9 @@ export class OperationScene implements Scene {
       vein: pal.vein,
       pulse: this.pulse,
       light,
-      corrupt: this.corrupt,
+      corrupt: this.fleshCurse,
+      corruptAt: curse?.at,
+      curse: curse?.look,
       cellSoft: pal.cellSoft,
       rough: pal.rough,
       gore: presentation.gore,
@@ -478,7 +485,7 @@ export class OperationScene implements Scene {
     const ch2 = op.def.id.startsWith('op2');
     g.endWorld({
       trauma,
-      spot: { cx: FIELD.cx, cy: FIELD.cy, rx: FIELD.rx, ry: FIELD.ry, k: 0.62 },
+      spot: { cx: FIELD.cx, cy: FIELD.cy, rx: FIELD.rx, ry: FIELD.ry, k: 0.62 + 0.25 * soften * (op.entities.find((e): e is Malison => e instanceof Malison && e.alive)?.watching(op.elapsed) ?? 0) },
       litany,
       danger,
       shake,

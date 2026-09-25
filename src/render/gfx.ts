@@ -17,6 +17,7 @@ import { RenderTargetPool, type Target } from './targets';
 import { checkerPixels, Texture } from './texture';
 import { scissorRect } from './viewport';
 import { UI_ART_FS } from '../art/uiShader';
+import { AILMENT_FS } from './shaders/ailment';
 import { PLATE_FS } from './shaders/plate';
 import { SPECIES_PROFILES, type SpeciesLook } from '../surgery/species';
 import { Renderer3D, type Scene3D } from './renderer3d';
@@ -121,6 +122,10 @@ export interface FleshParams {
   lights?: { x: number; y: number; h: number; i: number; col: [number, number, number] }[];
   /** The patient's people: skin, hide depth, scattering and blood (src/surgery/species.ts). */
   species?: SpeciesLook;
+  /** Where the curse flows to (the Malison, virtual px); the corruption veins crawl toward it. Defaults to the field centre. */
+  corruptAt?: Vec;
+  /** The Hour's corruption palette (src/art/curse.ts): vein glow and secondary (necrosis/scar) colour. */
+  curse?: { vein: readonly [number, number, number]; accent: readonly [number, number, number] };
 }
 
 export interface PostParams {
@@ -1040,6 +1045,40 @@ export class Gfx {
     this.applyBlend();
   }
 
+  private ailmentProg: WebGLProgram | null = null;
+
+  /**
+   * Procedural ailment and wound art (AILMENT_FS, src/render/shaders/ailment.ts) in a w×h rect
+   * centred on (x, y), turned by `rot` so the art's +x follows the entity. Premultiplied.
+   * Typed wrappers live in src/art/ailmentArt.ts.
+   */
+  ailment(mode: number, x: number, y: number, w: number, h: number, p: { rot?: number; seed?: number; a?: readonly number[]; b?: readonly number[]; col?: readonly number[]; alpha?: number; blend?: Blend } = {}): void {
+    if (w <= 0 || h <= 0 || (p.alpha ?? 1) <= 0) return;
+    this.flush('program');
+    this.stats.drawCalls++;
+    const gl = this.gl;
+    const pr = (this.ailmentProg ??= this.registry.createProgram('ailment', RECT_VS, AILMENT_FS));
+    gl.useProgram(pr);
+    this.rectQuad(x - w / 2, y - h / 2, w, h);
+    gl.uniform2f(this.u(pr, 'u_view'), this.vw, this.vh);
+    gl.uniform1i(this.u(pr, 'u_mode'), mode);
+    gl.uniform2f(this.u(pr, 'u_size'), w, h);
+    gl.uniform1f(this.u(pr, 'u_time'), this.time);
+    gl.uniform1f(this.u(pr, 'u_seed'), p.seed ?? 0);
+    gl.uniform1f(this.u(pr, 'u_rot'), p.rot ?? 0);
+    gl.uniform1f(this.u(pr, 'u_alpha'), p.alpha ?? 1);
+    const a = p.a ?? [];
+    const b = p.b ?? [];
+    const c = p.col ?? [0.1, 0.16, 0.05];
+    gl.uniform4f(this.u(pr, 'u_a'), a[0] ?? 0, a[1] ?? 0, a[2] ?? 0, a[3] ?? 0);
+    gl.uniform4f(this.u(pr, 'u_b'), b[0] ?? 0, b[1] ?? 0, b[2] ?? 0, b[3] ?? 0);
+    gl.uniform3f(this.u(pr, 'u_col'), c[0], c[1], c[2]);
+    if (p.blend === 'add') gl.blendFunc(gl.ONE, gl.ONE);
+    else gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    this.applyBlend();
+  }
+
   private sceneProgs = new Map<number, WebGLProgram>();
   private upsampleProg: WebGLProgram | null = null;
 
@@ -1096,7 +1135,8 @@ export class Gfx {
     const low = scale < 0.99 ? this.targets.acquire('flesh-low', Math.max(1, Math.round(this.scene.w * scale)), Math.max(1, Math.round(this.scene.h * scale))) : null;
     if (low) this.bindTarget(low);
     // Field coordinates are safe-area space; shaders see the full view, so shift by the margin.
-    this.fleshPass({ ...f, center: { x: f.center.x + this.ox, y: f.center.y + this.oy }, light: { x: f.light.x + this.ox, y: f.light.y + this.oy } });
+    const at = f.corruptAt ?? f.center;
+    this.fleshPass({ ...f, center: { x: f.center.x + this.ox, y: f.center.y + this.oy }, light: { x: f.light.x + this.ox, y: f.light.y + this.oy }, corruptAt: { x: at.x + this.ox, y: at.y + this.oy } });
     if (low) {
       const gl = this.gl;
       this.worldFb();
@@ -1193,6 +1233,12 @@ export class Gfx {
     gl.uniform3fv(this.u(pr, 'u_blood'), sp.blood);
     gl.uniform3fv(this.u(pr, 'u_bloodDeep'), sp.bloodDeep);
     gl.uniform1f(this.u(pr, 'u_sheen'), sp.sheen);
+    const cat = f.corruptAt ?? f.center;
+    gl.uniform2f(this.u(pr, 'u_corruptAt'), cat.x, cat.y);
+    const cv = f.curse?.vein ?? [0.62, 0.3, 0.95];
+    const ca = f.curse?.accent ?? [0.14, 0.04, 0.16];
+    gl.uniform3f(this.u(pr, 'u_curseVein'), cv[0], cv[1], cv[2]);
+    gl.uniform3f(this.u(pr, 'u_curseAccent'), ca[0], ca[1], ca[2]);
     const lights = f.lights ?? [{ x: f.light.x, y: f.light.y, h: 0.9, i: 1.4, col: [1, 0.9, 0.78] }];
     const lp = new Float32Array(12);
     const lc = new Float32Array(9);

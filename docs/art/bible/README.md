@@ -59,6 +59,13 @@ asset contains none of these:
       welcome; ours are designed from scratch (§14)
 - [ ] names, heraldry or place names from any Games Workshop setting
 
+**Curse-sigil set (ART-0219).** The eight burned-in glyphs (`SIGILS` in `src/surgery/entities.ts`:
+eye, trident, hourglass, crown, choir, key, wheel, bell) are original and were checked against this
+list: no star, no eight-fold or eight-rayed device (the wheel is an open seven-sided rim with two
+spokes), no comet, eagle or skull emblem. Each glyph's strokes are listed in tracing order, which is
+the stroke-order data the brand follows; seared strokes flare white-gold and cool to a charred gilt
+scar over 0.8 s.
+
 Banned silhouettes also include the big-pauldron power-armour shape and the Nurgle-style bloated
 plague god. Plague art is medical (buboes, sores), never a deity.
 

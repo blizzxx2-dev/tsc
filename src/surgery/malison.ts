@@ -391,6 +391,17 @@ export class Malison extends MalisonBase {
     surfDisc(g, this.pos, this.radius * 1.8 + (1 - this.frac) * 140, 0.1, 0.4, 0.15, 0.6);
   }
 
+  /**
+   * The watching rhythm (ART-0232), 0..1: the room darkens in a pulse on each beat of the eye while
+   * it is out, holds dim while the shroud is open, and barely breathes otherwise. The operation
+   * scene feeds it to the lamp's surround darkness.
+   */
+  watching(elapsed: number): number {
+    if (this.eyeOut) return 0.35 + 0.65 * Math.exp(-(this.eyeT % this.tune.beat) * 5);
+    if (this.open) return 0.4;
+    return 0.1 * (0.5 + 0.5 * Math.sin(elapsed * 1.2));
+  }
+
   draw(g: Gfx, op: Operation): void {
     const r = this.radius;
     // Opening tell: the shroud trembles, and peels to an inner red glow.

@@ -80,6 +80,29 @@ exports[`Grub & SpiderlingGrub > the tongs pluck a grub off the body: GOOD "Pluc
 "
 `;
 
+exports[`Sigil > bell: breaking it fast is COOL "Curse broken" 1`] = `
+"2.02 initial Sigil @(660,410)
+3.00 cue burn
+3.00 popup "Stroke 1"
+3.02 cue burn
+3.03 cue burn
+3.47 cue burn
+3.57 cue burn
+3.73 cue burn
+3.82 cue burn
+3.83 cue burn
+5.00 cue burn
+5.00 popup "Stroke 2"
+5.08 cue burn
+5.10 cue burn
+6.23 cue burn
+6.23 popup "Stroke 3"
+6.25 cue burn
+6.33 rate COOL "Curse broken" +105 combo=1
+6.38 -- seared: status=running vitals=97.3 score=105 combo=1 counts=1/0/0/0 live=[] segs=10
+"
+`;
+
 exports[`Sigil > breaking it slower than par (strokes × (node hold + 3 s)) is GOOD 1`] = `
 "2.02 initial Sigil @(660,410)
 3.00 cue burn
@@ -225,5 +248,28 @@ exports[`Sigil > trident: breaking it fast is COOL "Curse broken" 1`] = `
 4.73 cue burn
 4.78 rate COOL "Curse broken" +105 combo=1
 4.83 -- seared: status=running vitals=97.9 score=105 combo=1 counts=1/0/0/0 live=[] segs=4
+"
+`;
+
+exports[`Sigil > wheel: breaking it fast is COOL "Curse broken" 1`] = `
+"2.02 initial Sigil @(660,410)
+3.00 cue burn
+3.00 popup "Stroke 1"
+3.02 cue burn
+3.03 cue burn
+3.45 cue burn
+3.55 cue burn
+3.72 cue burn
+3.80 cue burn
+3.82 cue burn
+4.87 cue burn
+4.87 popup "Stroke 2"
+5.03 cue burn
+5.05 cue burn
+6.12 cue burn
+6.12 popup "Stroke 3"
+6.20 cue burn
+6.27 rate COOL "Curse broken" +105 combo=1
+6.32 -- seared: status=running vitals=97.3 score=105 combo=1 counts=1/0/0/0 live=[] segs=8
 "
 `;

@@ -106,8 +106,9 @@ exports[`hexstone and hidden objects > op2-2 hidden shards ignore the tongs unti
 6.45 flag hex-whisper
 6.45 say "It’s whispering to him through the tongs — into the lead dish, quickly!"
 6.45 say "instruction"
+6.45 spawn HexstoneAsh optional @(1207,597)
 6.45 rate GOOD "Hexstone" +63 combo=1
 6.45 spawn Laceration source=blade length=40 bleed=0.8 @(540,370)
-6.47 -- after pull: status=running vitals=91 score=63 combo=1 counts=0/1/0/1 live=[Embedded,Embedded,Laceration]
+6.47 -- after pull: status=running vitals=91 score=63 combo=1 counts=0/1/0/1 live=[Embedded,Embedded,HexstoneAsh,Laceration]
 "
 `;

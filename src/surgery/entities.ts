@@ -7,6 +7,7 @@ import { Entity } from './entity';
 import { FIELD, inLeadDish, isOpenWound, onBody, strokeCrosses, type Operation } from './operation';
 import { DEFAULT_TUNING } from './tuning';
 import type { Pointer, ToolId } from './types';
+import { acidBurnArt, buboArt, fangArt, fireBurnArt, glassArt, grubArt, hexfireEdgeArt, hexstoneArt, missileArt, powderArt, rotArt, shotArt, stitchArt, venomArt, woundArt } from '../art/ailmentArt';
 
 const TAU = Math.PI * 2;
 /** Hexstone writhing frequencies (rad/s). */
@@ -18,6 +19,16 @@ const LABEL_GAP = 10;
 const BURST_COLOR = '#c8c050';
 
 // ============================================================ layer helpers
+
+/** The heartbeat's bleed pulse (1 on the beat, decaying): wounds well in time with it. */
+function beatPulse(op: Operation): number {
+  return Math.exp(-op.beatPhase * 8);
+}
+
+/** Wound art is painted at full and reduced gore (browned, dimmer); minimal gore keeps the ink-black carve only. */
+function woundAlpha(): number {
+  return presentation.gore === 2 ? 0 : presentation.gore === 1 ? 0.55 : 1;
+}
 
 /** Soft-edged channel stroke into the surface layer: stacked widths approximate a falloff. */
 export function surfLine(g: Gfx, pts: Vec[], w: number, r: number, gc = 0, b = 0, a = 0): void {
@@ -98,6 +109,8 @@ export class Incision extends Entity {
   private overshot = false;
   readonly total: number;
   stitch: StitchLine | null = null;
+  /** When the last layer opened (the cut-edge art's opening flipbook runs from here). */
+  private openedAt = -1;
   noun = 'the incision line';
 
   constructor(
@@ -212,6 +225,7 @@ export class Incision extends Entity {
     this.state = 'open';
     this.required = false;
     this.donePress = op.pressId;
+    this.openedAt = op.elapsed;
   }
 
   override onRelease(): void {
@@ -247,9 +261,14 @@ export class Incision extends Entity {
       const head = this.pointAt(this.progress);
       g.glow(head.x, head.y, 22, hex('#ffe0a0', 0.35 * a));
       g.circle(head.x, head.y, 6 + Math.sin(op.elapsed * 6) * 2, hex('#ffebbe', 0.9 * a));
+      // A layer already opened shows its cut edge under the next guide.
+      if (this.depth > 0) woundArt(g, this.points, 3.5, { seed: this.id, alpha: woundAlpha() });
     } else {
-      // The gash itself is carved by the flesh shader (surface layer); add only a wet glint.
-      g.polyline(this.points, 2, hex('#ff9090', 0.25));
+      // The flesh shader carves the gash (surface layer); the cut-edge art paints skin lips, fat and the
+      // bleeding edge over it, opening over 6 frames once the last layer is through.
+      const open = this.openedAt < 0 ? 1 : Math.min(1, (op.elapsed - this.openedAt) / 0.5);
+      woundArt(g, this.points, 5, { open, bleed: this.state === 'open' ? 0.6 : 0.25, beat: beatPulse(op), seed: this.id, alpha: woundAlpha() });
+      g.polyline(this.points, 2, hex('#ff9090', 0.15));
       if (this.state === 'closing') g.dashed(this.points, 2, hex('#ffebbe', 0.35 + 0.2 * Math.sin(op.elapsed * 4)), 6, 10, op.elapsed * 10);
       if (this.stitch) this.stitch.draw(g, op);
     }
@@ -301,6 +320,8 @@ export class StitchLine {
   count = 0;
   strokes = new Set<number>();
   marks: Vec[] = [];
+  /** When each stitch was placed (the pull-tight frame plays from here). */
+  markTimes: number[] = [];
   readonly length: number;
   readonly needed: number;
 
@@ -347,6 +368,7 @@ export class StitchLine {
     this.count++;
     this.strokes.add(op.pressId);
     this.marks.push({ ...p });
+    this.markTimes.push(op.elapsed);
     op.cues.push('stitch');
     op.emit('blood', p, 2, undefined, undefined, 60);
     if (this.count < this.needed) return false;
@@ -390,8 +412,14 @@ export class StitchLine {
   }
 
   draw(g: Gfx, op?: Operation): void {
-    for (let i = 1; i < this.marks.length; i++) g.line(this.marks[i - 1], this.marks[i], 2, hex('#d9cfa8'));
-    for (const m of this.marks) g.rect(m.x - 2, m.y - 2, 4, 4, hex('#efe6c4'));
+    // Gut-thread stitches: one knotted crossing per mark, drawn taut 0.25 s after it is placed.
+    this.marks.forEach((m, i) => {
+      const at = projectAlong(this.points, m).at;
+      const p0 = pointAlong(this.points, Math.max(0, at - 2));
+      const p1 = pointAlong(this.points, Math.min(this.length, at + 2));
+      const tight = op ? Math.min(1, (op.elapsed - (this.markTimes[i] ?? -1)) / 0.25) : 1;
+      stitchArt(g, m, Math.atan2(p1.y - p0.y, p1.x - p0.x), 9, tight, i);
+    });
     // Thread tension: a taut line from the last stitch to the needle while stitching.
     if (op && op.tool === 'thread' && this.marks.length && this.count < this.needed) {
       const last = this.marks[this.marks.length - 1];
@@ -635,7 +663,11 @@ export class Laceration extends Entity {
   }
 
   draw(g: Gfx, op: Operation): void {
-    // Carved by the flesh shader; a faint wet glint along the lip, then stitches and salve.
+    // Carved by the flesh shader; the cut-edge art paints its lips and bleeding edge in three widths,
+    // clean (blade) or ragged (claw), welling on the heartbeat until it is stitched.
+    const closed = this.stitch.count >= this.stitch.needed;
+    const width = this.small ? 3 : this.length < 50 ? 4.5 : 6.5;
+    woundArt(g, this.edge(), width, { claw: this.source === 'claw', bleed: closed ? 0 : Math.min(1, this.bleed), beat: beatPulse(op), seed: this.id, alpha: woundAlpha() });
     g.polyline(this.edge(), 1.5, hex(presentation.gore === 2 ? '#000000' : '#ff9090', 0.3));
     if (this.pusT > 0) g.polyline(this.edge(), 5, hex('#d8c040', Math.min(0.6, this.pusT / op.tuning.laceration.pusRotTime)));
     this.stitch.draw(g, op);
@@ -873,6 +905,8 @@ export class Embedded extends Entity {
     }
     if (off) {
       this.kill();
+      // Hexstone crumbles to curse-ash in the lead dish (ART-0201 dissolve).
+      if (this.kind === 'hexstone') op.spawn(new HexstoneAsh({ ...this.pos }, this.angle, this.spec.len));
       const pull = Math.atan2(this.pos.y - this.origin.y, this.pos.x - this.origin.x);
       op.emit('blood', this.origin, 18, pull, 0.6, 220);
       op.stain(this.origin, 26, 0.4);
@@ -931,36 +965,46 @@ export class Embedded extends Entity {
       const far = { x: this.origin.x + Math.cos(ax) * (this.spec.len + 40), y: this.origin.y + Math.sin(ax) * (this.spec.len + 40) };
       g.dashed([this.origin, far], 1.5, hex(lensNear ? '#b9d7ff' : '#ffebbe', 0.35), 5, 7, -op.elapsed * 10);
     }
-    const tail = { x: x - ca * this.spec.len, y: y - sa * this.spec.len };
+    const entry = this.origin;
     switch (this.kind) {
       case 'arrow':
       case 'bolt': {
-        g.line({ x, y }, tail, this.kind === 'arrow' ? 4 : 6, hex(this.kind === 'arrow' ? '#7a5a36' : '#4d3a26'));
-        const fl = hex(this.kind === 'arrow' ? '#d8d2c0' : '#6d6452');
-        for (const s of [-1, 1]) {
-          g.tri(tail.x, tail.y, tail.x - sa * 8 * s + ca * 14, tail.y + ca * 8 * s + sa * 14, tail.x + ca * 24, tail.y + sa * 24, fl);
-        }
-        if (this.grabbed || dist(this.pos, this.origin) > 1) {
-          g.tri(x + ca * 12, y + sa * 12, x - sa * 6, y + ca * 6, x + sa * 6, y - ca * 6, hex('#9aa0a6'));
-        }
+        // Painted missiles (ART-0195–0197): goose-fletched arrow, barbed head (nicked / torn states),
+        // the square-headed quarrel and its leather-vaned variant. The part still in the flesh is hidden.
+        const kind = this.kind === 'bolt' ? (this.id % 2 ? 'bolt-leather' : 'bolt') : this.barbed || this.nicks > 0 || this.tore ? 'barbed' : 'arrow';
+        missileArt(g, { x, y }, this.angle, this.spec.len, entry, { kind, wobble: this.grabbed ? 1 : 0, nicks: this.nicks, torn: this.tore && !this.snapped, snapped: this.snapped, seed: this.id });
         if (this.kind === 'bolt' && this.grabbed && !this.staged) {
           const f = dist(this.pos, this.origin) / this.spec.len;
           if (f > 0.3) g.arc(x, y, 18, 2, hex('#ffebbe', 0.6), Math.min(1, this.stillT / 0.3));
         }
         break;
       }
-      case 'shot':
-        g.circleGrad(x, y, 9, hex('#d0d0d8'), hex('#3a3a45'));
+      case 'shot': {
+        // Three calibres, a flattened ball every fourth, and powder tattooing round the entry.
+        if (!this.grabbed) powderArt(g, entry, 26, { seed: this.id });
+        const r = [5, 7, 9][this.id % 3];
+        shotArt(g, { x, y }, r, { flattened: this.id % 4 === 3 ? 1 : 0, sunk: this.grabbed ? 0 : 0.45, seed: this.id });
         break;
-      case 'tooth':
-        g.tri(x, y, tail.x - sa * 8, tail.y + ca * 8, tail.x + sa * 8, tail.y - ca * 8, hex('#e8e0c8'), hex('#b8ae90'), hex('#b8ae90'));
+      }
+      case 'tooth': {
+        // Gravehound canine, or a brood-spider fang with a venom-stained root on spider cases.
+        const spider = /spider|brood/i.test(op.def.diagnosis ?? '');
+        fangArt(g, { x, y }, this.angle, Math.max(20, this.spec.len), entry, { spider, venom: spider || /venom/i.test(op.def.diagnosis ?? ''), seed: this.id });
         break;
-      case 'shard':
+      }
       case 'glass':
-      case 'hexstone': {
-        const warp = this.kind === 'hexstone';
-        const c = warp ? hex('#e8a838', 0.75 + 0.25 * Math.sin(op.elapsed * 5)) : this.kind === 'glass' ? hex('#c8e6f0', 0.75) : hex('#8a8f96');
-        if (warp) g.creature(3, x, y, 90, { seed: this.id, blend: 'add' });
+        glassArt(g, { x, y }, this.angle, this.spec.len, entry, { shape: this.id % 5, seed: this.id });
+        g.setBlend('add');
+        g.glow(x - ca * this.spec.len * 0.4, y - sa * this.spec.len * 0.4, 10, hex('#d8f0ff', 0.12 + 0.08 * Math.sin(op.elapsed * 2 + this.id)));
+        g.setBlend('alpha');
+        break;
+      case 'hexstone':
+        g.creature(3, x, y, 90, { seed: this.id, blend: 'add', intensity: this.calmed ? 0.35 : 1 });
+        hexstoneArt(g, { x, y }, this.angle, this.spec.len, { crackle: this.grabbed ? 1 : Math.min(1, this.calmT * 2), stilled: this.calmed ? 1 : 0, seed: this.id });
+        if (!this.calmed && this.calmT > 0) g.arc(this.origin.x, this.origin.y, 24, 3, hex('#ff9040'), this.calmT / 0.5);
+        break;
+      case 'shard': {
+        const tail = { x: x - ca * this.spec.len, y: y - sa * this.spec.len };
         g.poly(
           [
             { x, y },
@@ -968,12 +1012,34 @@ export class Embedded extends Entity {
             { x: tail.x - ca * 6, y: tail.y - sa * 6 },
             { x: tail.x + sa * 7, y: tail.y - ca * 7 },
           ],
-          c,
+          hex('#8a8f96'),
         );
-        if (warp && !this.calmed && this.calmT > 0) g.arc(this.origin.x, this.origin.y, 24, 3, hex('#ff9040'), this.calmT / 0.5);
         break;
       }
     }
+  }
+}
+
+/** Cosmetic: a removed hexstone dissolving to ash (0.8 s), then gone. */
+export class HexstoneAsh extends Entity {
+  private t = 0;
+  constructor(
+    pos: Vec,
+    private angle: number,
+    private len: number,
+  ) {
+    super(pos);
+    this.required = false;
+    this.layer = 3;
+  }
+
+  override update(_op: Operation, dt: number): void {
+    this.t += dt;
+    if (this.t > 0.8) this.kill();
+  }
+
+  draw(g: Gfx): void {
+    hexstoneArt(g, this.pos, this.angle, this.len, { dissolve: Math.min(1, this.t / 0.8), stilled: 1, seed: this.id });
   }
 }
 
@@ -1221,9 +1287,17 @@ export class Burn extends Entity {
 
   draw(g: Gfx, op: Operation): void {
     const { x, y } = this.pos;
-    // Char and rawness come from the surface layer; embers and eschar crusts are drawn here.
-    if (this.source === 'hexfire') g.creature(2, x, y - this.radiusNow * 0.3, this.radiusNow * 3, { seed: this.id, intensity: 0.35 + 0.65 * (1 - this.cov.fraction), blend: 'add' });
-    else if (this.source === 'acid') g.glow(x, y, this.radiusNow * 1.1, hex(this.acidLive ? '#b8e040' : '#708040', 0.14 + (this.acidLive ? 0.06 * Math.sin(op.elapsed * 6) : 0)));
+    // Burn decals (ART-0204–0206): fire by severity (reddened → blistered → charred) cooling as salve
+    // takes; acid etched and bubbling until neutralised; hexfire's violet flame-edge.
+    const cooled = this.healed();
+    const left = this.flakes.length / this.total;
+    if (this.source === 'acid') acidBurnArt(g, this.pos, this.radiusNow, this.acidLive ? 0 : 0.35 + 0.65 * cooled, this.id);
+    else fireBurnArt(g, this.pos, this.radiusNow, this.charCore ? 1 : this.flakes.length ? 0.55 + 0.4 * left : 0.45, cooled, this.id);
+    if (this.source === 'hexfire') {
+      const heat = 0.35 + 0.65 * (1 - this.cov.fraction);
+      hexfireEdgeArt(g, this.pos, this.radiusNow, this.smoulder >= 0 ? 0.5 + 0.5 * Math.abs(Math.sin(op.elapsed * 6)) : heat, this.id);
+      g.creature(2, x, y - this.radiusNow * 0.3, this.radiusNow * 3, { seed: this.id, intensity: heat * 0.6, blend: 'add' });
+    } else if (this.source === 'acid') g.glow(x, y, this.radiusNow * 1.1, hex(this.acidLive ? '#b8e040' : '#708040', 0.08 + (this.acidLive ? 0.04 * Math.sin(op.elapsed * 6) : 0)));
     else if (this.flakes.length) g.glow(x, y, this.radius * 0.9, hex('#ff5a1a', 0.1 + 0.05 * Math.sin(op.elapsed * 5 + this.id)));
     if (this.charCore) g.circleGrad(x, y, this.radius * 0.45, hex('#050302', 0.85), hex('#1a0e08', 0.2));
     for (const f of this.flakes) {
@@ -1249,6 +1323,8 @@ export class Burn extends Entity {
  */
 export class Bubo extends Entity {
   lanced = false;
+  /** When it was lanced or burst (the 6-frame burst flipbook plays from here). */
+  private openedAt = -1;
   readonly cov: Coverage;
   private readonly r0: number;
   private pressAt: Vec | null = null;
@@ -1292,6 +1368,7 @@ export class Bubo extends Entity {
       op.popup('It burst!', this.pos, BURST_COLOR);
       op.spawnPenalty(new BloodPool(this.pos, B.burstPool, 'pus'), new Laceration(this.pos, op.rng.range(0, TAU), B.burstCut, B.burstBleed));
       this.lanced = true;
+      this.openedAt = op.elapsed;
       op.counts.miss++;
       op.combo = 0;
     }
@@ -1319,6 +1396,7 @@ export class Bubo extends Entity {
 
   private lance(op: Operation, at: Vec, len: number): void {
     this.lanced = true;
+    this.openedAt = op.elapsed;
     op.cues.push('squelch');
     op.emit('pus', this.pos, 20, undefined, undefined, 160);
     op.spawn(new BloodPool({ x: this.pos.x, y: this.pos.y + 6 }, this.r * 1.1, 'pus'));
@@ -1359,12 +1437,17 @@ export class Bubo extends Entity {
   draw(g: Gfx, op: Operation): void {
     const { x, y } = this.pos;
     if (!this.lanced) {
-      // Swelling comes from the surface layer; show the ripe head and a tight shine.
+      // Swelling comes from the surface layer; the bubo art adds veins, the ripe head and a tension shine.
       const ripe = this.r / this.maxR;
-      g.circleGrad(x, y, this.r * 0.55, hex('#f0e090', 0.55 + 0.35 * ripe), hex('#c89050', 0));
-      g.ellipse(x - this.r * 0.3, y - this.r * 0.35, this.r * 0.22, this.r * 0.1, -0.6, hex('#ffffff', 0.45), hex('#ffffff', 0));
+      buboArt(g, this.pos, this.r * 0.8, { ripe, seed: this.id });
       if (ripe > 0.75) g.arc(x, y, this.r + 4, 2, hex('#ff503c', 0.4 + 0.4 * Math.sin(op.elapsed * 12)));
-    } else drawCoverage(g, this.cov);
+    } else {
+      // Lanced: the crown splits (6 frames), then deflates once the pus is drawn off.
+      const burst = this.openedAt < 0 ? 1 : Math.min(1, (op.elapsed - this.openedAt) / 0.5);
+      const pus = op.entities.some((e) => e instanceof BloodPool && e.alive && e.ichor === 'pus' && dist(e.pos, this.pos) < 40);
+      buboArt(g, this.pos, this.maxR * 0.6, { ripe: 0.6, burst, drained: pus ? 0 : 1, seed: this.id });
+      drawCoverage(g, this.cov);
+    }
   }
 }
 
@@ -1461,6 +1544,8 @@ export class Rot extends Entity {
 
   draw(g: Gfx, op: Operation): void {
     const { x, y } = this.pos;
+    // The necrotic decal grows through 4 stages with the patch and is scraped back as it is salved.
+    rotArt(g, this.pos, this.r * 1.05, this.r / this.maxR, this.fraction, this.id);
     // Bubbling slows as the rot is salved away.
     const speed = 2 * (1 - this.fraction);
     for (const c of this.cov.cells) {
@@ -1614,6 +1699,8 @@ export class Venom extends Entity {
   draw(g: Gfx, op: Operation): void {
     const { x, y } = this.pos;
     const ink = this.color === 'green' ? '#0e1a0a' : '#140a1e';
+    // The spreading vein web, fading as the tincture takes hold.
+    venomArt(g, this.pos, this.spreadR * 1.5 + 24, Math.min(1, this.holdT / op.tuning.tincture.antivenomHold), this.color === 'green' ? [0.05, 0.1, 0.03] : [0.08, 0.03, 0.12], this.id);
     for (const v of this.veins) {
       const pts: Vec[] = [{ x, y }];
       const r = this.spreadR * v.l;
@@ -1662,6 +1749,8 @@ export class Grub extends Entity {
   private soloBrand = true;
   burrowed = false;
   private sinceSurface = 0;
+  /** When the lens brought it back up (the burrow-out frames play from here). */
+  private revealedAt = -1;
   noun = 'a grub';
   constructor(
     pos: Vec,
@@ -1690,6 +1779,7 @@ export class Grub extends Entity {
     super.reveal(op);
     this.burrowed = false;
     this.sinceSurface = 0;
+    this.revealedAt = op.elapsed;
   }
 
   override update(op: Operation, dt: number): void {
@@ -1785,15 +1875,12 @@ export class Grub extends Entity {
     const puff = this.heat > 0.15 && this.heat < 0.4 ? 1.25 : 1;
     if (presentation.creatureFilter) return drawBlotch(g, this.pos.x, this.pos.y, this.small ? 9 : 14);
     const s = (this.small ? 0.65 : 1) * puff;
-    g.save();
-    g.translate(this.pos.x, this.pos.y);
-    g.rotate(this.heading);
-    g.scale(s);
-    for (let i = 3; i >= 0; i--) {
-      const wig = Math.sin(op.elapsed * 10 + i) * 2;
-      g.circle(-i * 7, wig, 7 - i * 0.8, i === 0 ? hex('#3a2a20') : rgba(220 - i * 10, 210 - i * 12, 170 - i * 10));
-    }
-    g.restore();
+    // Burrow-in over the last 0.8 s before it digs under (lens cases), burrow-out for 0.6 s once found.
+    const G = op.tuning.grub;
+    let burrow = 0;
+    if (op.def.tools.includes('lens') && this.heat === 0 && !this.grabbed) burrow = clamp((this.sinceSurface - (G.burrowAfter - 0.8)) / 0.8, 0, 1);
+    if (this.revealedAt >= 0) burrow = Math.max(burrow, 1 - (op.elapsed - this.revealedAt) / 0.6);
+    grubArt(g, this.pos, this.heading, 34 * s, { burrowed: clamp(burrow, 0, 0.98), squirm: this.grabbed ? 1 : 0, heat: Math.min(1, this.heat * 1.5), seed: this.id });
     if (this.heat > 0) {
       const need = DEFAULT_TUNING.brand.grubHold * (this.small ? 0.5 : 1);
       g.glow(this.pos.x, this.pos.y, 26, hex('#ff9040', Math.min(1, this.heat)));
@@ -1812,7 +1899,8 @@ export class Grub extends Entity {
  * periodically until broken.
  */
 export class Sigil extends Entity {
-  readonly segs: { a: Vec; b: Vec; burned: boolean[]; stroke: number }[] = [];
+  /** `searedAt` is when each piece was burned (op seconds): the searing-out glow cools from it. */
+  readonly segs: { a: Vec; b: Vec; burned: boolean[]; searedAt: number[]; stroke: number }[] = [];
   readonly strokeCount: number;
   /** Stroke start nodes. */
   readonly nodes: Vec[] = [];
@@ -1839,7 +1927,7 @@ export class Sigil extends Entity {
         const a = { x: pos.x + stroke[i - 1].x * size, y: pos.y + stroke[i - 1].y * size };
         const b = { x: pos.x + stroke[i].x * size, y: pos.y + stroke[i].y * size };
         const n = Math.max(2, Math.round(dist(a, b) / 12));
-        this.segs.push({ a, b, burned: new Array(n).fill(false), stroke: si });
+        this.segs.push({ a, b, burned: new Array(n).fill(false), searedAt: new Array(n).fill(-1), stroke: si });
       }
     });
     this.strokeCount = shape.length;
@@ -1935,7 +2023,9 @@ export class Sigil extends Entity {
       if (d >= reach) continue;
       if (s.stroke === cur && this.ignited[cur]) {
         hit = true;
-        s.burned[Math.min(s.burned.length - 1, Math.floor(t * s.burned.length))] = true;
+        const k = Math.min(s.burned.length - 1, Math.floor(t * s.burned.length));
+        if (!s.burned[k]) s.searedAt[k] = op.elapsed;
+        s.burned[k] = true;
       } else if (s.stroke > cur) wrong = true;
       else if (s.stroke === cur) hit = true;
     }
@@ -1974,19 +2064,37 @@ export class Sigil extends Entity {
   }
 
   draw(g: Gfx, op: Operation): void {
+    // Glow states (ART-0220): dormant strokes a faint violet; the stroke being drawn on — and the whole
+    // sigil as its next lash nears — pulses violet as it drains the patient; seared strokes flare
+    // white-gold and cool over 0.8 s to a charred gold scar (the searing-out animation).
     const glow = 0.6 + 0.4 * Math.sin(op.elapsed * 3 + this.id);
-    g.glow(this.pos.x, this.pos.y, this.size * 1.4, hex('#b060ff', 0.12 * glow)); // curse-violet: curse sigil
+    const lashNear = Math.max(0, (this.lashT / this.lashEvery - 0.7) / 0.3);
+    const drain = 0.5 + 0.5 * Math.sin(op.elapsed * (6 + lashNear * 10));
+    g.glow(this.pos.x, this.pos.y, this.size * 1.4, hex('#b060ff', 0.12 * glow + 0.18 * lashNear * drain)); // curse-violet: curse sigil
     const cur = this.current;
     for (const s of this.segs) {
       const n = s.burned.length;
-      const later = s.stroke > cur;
+      const dormant = s.stroke > cur;
+      const draining = s.stroke === cur;
       for (let i = 0; i < n; i++) {
         const p0 = { x: s.a.x + ((s.b.x - s.a.x) * i) / n, y: s.a.y + ((s.b.y - s.a.y) * i) / n };
         const p1 = { x: s.a.x + ((s.b.x - s.a.x) * (i + 1)) / n, y: s.a.y + ((s.b.y - s.a.y) * (i + 1)) / n };
-        if (s.burned[i]) g.line(p0, p1, 5, hex('#2a1a14'));
-        else {
-          g.line(p0, p1, 9, hex('#9040ff', 0.25 * glow * (later ? 0.5 : 1))); // curse-violet: curse sigil
-          g.line(p0, p1, 4, hex('#d0a0ff', glow * (later ? 0.55 : 1))); // curse-violet: curse sigil
+        if (s.burned[i]) {
+          const cool = s.searedAt[i] < 0 ? 1 : Math.min(1, (op.elapsed - s.searedAt[i]) / 0.8);
+          g.line(p0, p1, 6, hex('#1e120c'));
+          g.line(p0, p1, 2.2, hex(cool < 1 ? '#fff0b0' : '#b8862a', 0.55 + 0.45 * (1 - cool)));
+          if (cool < 1) {
+            g.setBlend('add');
+            g.line(p0, p1, 12 * (1 - cool) + 4, hex('#ffb040', 0.5 * (1 - cool)));
+            g.setBlend('alpha');
+          }
+        } else if (dormant) {
+          g.line(p0, p1, 7, hex('#9040ff', 0.12 * glow)); // curse-violet: curse sigil (dormant)
+          g.line(p0, p1, 3, hex('#d0a0ff', 0.35 * glow + 0.3 * lashNear * drain)); // curse-violet: curse sigil (dormant)
+        } else {
+          const k = draining ? 0.55 + 0.45 * drain : glow;
+          g.line(p0, p1, 10, hex('#9040ff', 0.3 * k)); // curse-violet: curse sigil (draining)
+          g.line(p0, p1, 4, hex('#e0b8ff', k)); // curse-violet: curse sigil (draining)
         }
       }
     }
@@ -2089,6 +2197,48 @@ export const SIGILS = {
       { x: -0.6, y: 0 },
       { x: -0.6, y: 0.5 },
       { x: -0.3, y: 0.5 },
+    ],
+  ],
+  /** A broken wheel: a seven-sided rim left open at one side, then two spokes (IP-checked: no eight-fold device). */
+  wheel: [
+    [
+      { x: 0.0, y: -0.9 },
+      { x: 0.7, y: -0.56 },
+      { x: 0.88, y: 0.2 },
+      { x: 0.39, y: 0.81 },
+      { x: -0.39, y: 0.81 },
+      { x: -0.88, y: 0.2 },
+      { x: -0.7, y: -0.56 },
+    ],
+    [
+      { x: -0.6, y: 0.6 },
+      { x: 0.2, y: -0.2 },
+    ],
+    [
+      { x: 0.2, y: 0.6 },
+      { x: 0.6, y: 0.2 },
+    ],
+  ],
+  /** A cracked bell with its clapper: the Hours toll. */
+  bell: [
+    [
+      { x: -0.8, y: 0.7 },
+      { x: -0.5, y: 0.3 },
+      { x: -0.45, y: -0.5 },
+      { x: 0, y: -0.9 },
+      { x: 0.45, y: -0.5 },
+      { x: 0.5, y: 0.3 },
+      { x: 0.8, y: 0.7 },
+      { x: -0.8, y: 0.7 },
+    ],
+    [
+      { x: 0.1, y: -0.55 },
+      { x: -0.1, y: -0.2 },
+      { x: 0.12, y: 0.15 },
+    ],
+    [
+      { x: 0, y: 0.7 },
+      { x: 0, y: 0.95 },
     ],
   ],
 } satisfies Record<string, Vec[][]>;
