@@ -7,6 +7,7 @@ import { Input } from './core/input';
 import type { Game, Scene } from './core/scene';
 import { Gfx } from './render/gfx';
 import { allOperations } from './content/campaign';
+import { SHOWCASE } from './content/dev';
 import { playOperation } from './scenes/flow';
 import { TitleScene } from './scenes/title';
 import { VIEW_H, VIEW_W } from './ui/layout';
@@ -100,7 +101,7 @@ async function boot(): Promise<void> {
   // Dev/QA hooks: ?op=<id> jumps straight into an operation; window.__game exposes the game for automation.
   (window as unknown as { __game: Main }).__game = game;
   const opId = new URLSearchParams(location.search).get('op');
-  const def = opId ? allOperations().find((o) => o.id === opId) : undefined;
+  const def = opId ? [...allOperations(), ...(import.meta.env.DEV || opId === 'showcase' ? [SHOWCASE] : [])].find((o) => o.id === opId) : undefined;
   if (def) {
     const back = () => game.go(new TitleScene());
     playOperation(game, def, back, back);

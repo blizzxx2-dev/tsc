@@ -2,11 +2,13 @@ import { dist, type Vec } from '../core/math';
 import { Entity } from './entity';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
-import { Grub, Laceration } from './entities';
+import { Grub, Laceration, surfDisc } from './entities';
 import { FIELD, onBody, type Operation } from './operation';
 import type { Pointer, ToolId } from './types';
 
 const TAU = Math.PI * 2;
+/** Cosmetic randomness only — never the simulation RNG, so effects can't change outcomes. */
+const fxRange = (lo: number, hi: number): number => lo + Math.random() * (hi - lo);
 
 /**
  * The Malison: a living curse woven by the Hollow Choir. It takes root in a
@@ -56,6 +58,7 @@ export class Malison extends Entity {
   override update(op: Operation, dt: number): void {
     this.branded = false;
     this.hurtFlash = Math.max(0, this.hurtFlash - dt * 3);
+    if (Math.random() < dt * 12) op.emit('mote', { x: this.pos.x + fxRange(-30, 30), y: this.pos.y + fxRange(-30, 30) }, 1);
     // Shroud rhythm: 4s veiled, 2.5s open.
     this.cycleT += dt;
     const period = this.open ? 2.5 : 4;
@@ -94,6 +97,7 @@ export class Malison extends Entity {
     }
     this.hp -= 45 * dt;
     this.hurtFlash = 1;
+    if (Math.random() < dt * 25) op.emit('spark', ptr.pos, 3);
     if (op.rng.next() < dt * 6) op.cues.push('burn');
     // Wounding it shakes loose hexlings.
     const thresholds = [0.75, 0.5, 0.25];
@@ -111,9 +115,15 @@ export class Malison extends Entity {
       this.kill();
       op.rate('cool', this.pos, 'Malison unmade');
       op.shake = 14;
+      op.emit('mote', this.pos, 60, undefined, undefined, 140);
+      op.emit('blood', this.pos, 30, undefined, undefined, 200);
       op.spawn(...[0, 1, 2].map((i) => new MalisonShard({ x: this.pos.x + Math.cos((i * TAU) / 3) * 50, y: this.pos.y + Math.sin((i * TAU) / 3) * 40 }, op)));
       op.say('It’s splitting apart! Seize every shard with the tongs and cast it out — before they rejoin!');
     }
+  }
+
+  override drawSurface(g: Gfx): void {
+    surfDisc(g, this.pos, this.radius * 1.8, 0.1, 0.4, 0.15, 0.6);
   }
 
   draw(g: Gfx, op: Operation): void {

@@ -1,6 +1,7 @@
 import { clamp, Rng, type Vec } from '../core/math';
 import type { Cue } from '../core/audio';
 import type { Entity } from './entity';
+import type { FxEvent, FxKind } from '../render/particles';
 import type { Pointer, Rank, Rating, ToolId } from './types';
 
 export type OrganKind = 'flesh' | 'heart' | 'lung' | 'gut' | 'liver' | 'brain' | 'bone';
@@ -94,6 +95,11 @@ export class Operation {
   flags = new Set<string>();
   /** Screen shake intensity, decays over time. */
   shake = 0;
+  /** Visual effect requests; the scene drains them into its particle system. */
+  fx: FxEvent[] = [];
+  /** Lasting blood stains and scars left on the flesh. */
+  stains: { x: number; y: number; r: number; a: number }[] = [];
+  scars: Vec[][] = [];
   /** Final bonus breakdown, filled on victory. */
   bonus = { vitals: 0, time: 0 };
 
@@ -125,7 +131,17 @@ export class Operation {
     this.score += Math.round(RATING_POINTS[r] * (1 + Math.min(this.combo, 20) * 0.05));
     const text = label ? `${label} ${RATING_TEXT[r]}` : RATING_TEXT[r];
     this.popups.push({ text, pos: { ...pos }, t: 0, color: RATING_COLOR[r], rating: r, label, combo: this.combo });
+    if (r === 'cool') this.emit('gold', pos, 14);
     this.cues.push(r);
+  }
+
+  emit(kind: FxKind, pos: Vec, n = 10, dir?: number, spread?: number, speed?: number): void {
+    this.fx.push({ kind, pos: { ...pos }, n, dir, spread, speed });
+  }
+
+  stain(pos: Vec, r: number, a = 0.5): void {
+    this.stains.push({ x: pos.x, y: pos.y, r, a });
+    if (this.stains.length > 160) this.stains.shift();
   }
 
   popup(text: string, pos: Vec, color = '#e8dcc0'): void {

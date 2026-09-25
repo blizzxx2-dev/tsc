@@ -2,11 +2,13 @@ import { dist, type Vec } from '../core/math';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { Entity } from './entity';
-import { Embedded, Laceration, Rot } from './entities';
+import { Embedded, Laceration, Rot, surfDisc } from './entities';
 import { FIELD, onBody, type Operation } from './operation';
 import type { Pointer, ToolId } from './types';
 
 const TAU = Math.PI * 2;
+/** Cosmetic randomness only — never the simulation RNG, so effects can't change outcomes. */
+const fxRange = (lo: number, hi: number): number => lo + Math.random() * (hi - lo);
 const SILENCE_TIME = 0.6;
 const HYMN_EVERY = 6.5;
 
@@ -61,6 +63,7 @@ export class LaudsMalison extends Entity {
   override update(op: Operation, dt: number): void {
     this.branded = false;
     this.hurtFlash = Math.max(0, this.hurtFlash - dt * 3);
+    if (!this.submerged && Math.random() < dt * 10) op.emit('mote', { x: this.pos.x + fxRange(-30, 30), y: this.pos.y + fxRange(-30, 30) }, 1);
 
     if (this.submerged) {
       // Burrowing beneath the flesh, leaving a trail of rot.
@@ -177,6 +180,11 @@ export class LaudsMalison extends Entity {
     }
   }
 
+  override drawSurface(g: Gfx): void {
+    if (!this.submerged) surfDisc(g, this.pos, this.radius * 1.9, 0.05, 0.35, 0.1, 0.7);
+    else surfDisc(g, this.pos, 46, 0, 0.1, 0.05, 0.9);
+  }
+
   draw(g: Gfx, op: Operation): void {
     const { x, y } = this.pos;
     const t = op.elapsed;
@@ -236,8 +244,10 @@ export class ChoirVoice extends Entity {
     this.branded = true;
     this.silence += dt;
     if (op.rng.next() < dt * 8) op.cues.push('burn');
+    if (Math.random() < dt * 20) op.emit('spark', this.pos, 2);
     if (this.silence >= SILENCE_TIME) {
       this.kill();
+      op.emit('mote', this.pos, 16, undefined, undefined, 90);
       op.rate('cool', this.pos, 'Silenced');
     }
   }
@@ -283,6 +293,7 @@ export class EggSac extends Entity {
 
   private burst(op: Operation, n: number, hatched: boolean): void {
     this.kill();
+    op.emit('pus', this.pos, 14, undefined, undefined, 140);
     for (let i = 0; i < n; i++) {
       const a = (i / n) * TAU;
       op.spawn(new SpiderlingGrub({ x: this.pos.x + Math.cos(a) * 14, y: this.pos.y + Math.sin(a) * 14 }, op));
@@ -301,6 +312,10 @@ export class EggSac extends Entity {
     op.sayOnce('eggsac-lanced', 'Spiderlings! Brand them before they scatter!');
     this.burst(op, this.brood, false);
     return true;
+  }
+
+  override drawSurface(g: Gfx): void {
+    surfDisc(g, this.pos, 34, 0, 0.1, 0, 0.8);
   }
 
   draw(g: Gfx, op: Operation): void {
@@ -347,6 +362,8 @@ export class SpiderlingGrub extends Entity {
     if (this.heat > 0.25) {
       this.kill();
       op.cues.push('burn');
+      op.emit('spark', this.pos, 10);
+      op.emit('smoke', this.pos, 3);
       op.rate('cool', this.pos, 'Seared');
     }
   }

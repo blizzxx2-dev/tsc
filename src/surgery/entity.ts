@@ -53,6 +53,10 @@ export abstract class Entity {
   /** World time: slowed by the Litany. */
   update(_op: Operation, _dt: number): void {}
   abstract draw(g: Gfx, op: Operation): void;
+  /** Write into the surface layer (R cut depth, G stain, B scorch, A swelling), additively. */
+  drawSurface(_g: Gfx, _op: Operation): void {}
+  /** Write liquid density into the fluid layer (R blood, G pus, B bile). */
+  drawFluid(_g: Gfx, _op: Operation): void {}
 
   kill(): void {
     this.alive = false;

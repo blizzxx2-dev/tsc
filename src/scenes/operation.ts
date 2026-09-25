@@ -4,10 +4,11 @@ import type { Game, Scene } from '../core/scene';
 import { hex, withAlpha } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { organPalette } from '../render/organs';
-import { Sigil } from '../surgery/entities';
+import { Sigil, surfDisc, surfLine } from '../surgery/entities';
+import { Particles } from '../render/particles';
 import { isStar } from '../surgery/gesture';
 import { Malison, MalisonShard } from '../surgery/malison';
-import { FIELD, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOWN, TINCTURE_TIME, type OperationDef } from '../surgery/operation';
+import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOWN, TINCTURE_TIME, type OperationDef } from '../surgery/operation';
 import { TOOL_INFO, toolInfo, type Pointer, type ToolId } from '../surgery/types';
 import { PALETTE, VIEW_W } from '../ui/layout';
 import { button, inRect, reticle, star, toolIcon } from '../ui/widgets';
@@ -40,6 +41,7 @@ export class OperationScene implements Scene {
   private lastTool: ToolId | null = null;
   private entered = false;
   private hintT = 0;
+  private particles = new Particles();
   private comboT = 0;
   private lastCombo = 0;
 
@@ -64,6 +66,7 @@ export class OperationScene implements Scene {
 
   private restart(): void {
     this.op = OperationScene.create(this.def);
+    this.particles = new Particles();
     this.paused = false;
     this.endT = 0;
   }
@@ -146,6 +149,14 @@ export class OperationScene implements Scene {
     const cursed = op.entities.some((e) => e instanceof Malison || e instanceof MalisonShard) ? 0.7 : op.entities.some((e) => e instanceof Sigil) ? 0.25 : 0;
     this.corrupt += (cursed - this.corrupt) * Math.min(1, dt * 1.5);
 
+    // Visual effects requested by the simulation; landed droplets become stains.
+    for (const e of op.fx) this.particles.spawn(e);
+    op.fx.length = 0;
+    this.particles.update(dt, (p, kind, size) => {
+      if (kind === 'blood' && onBody(p)) op.stain(p, size * 2.6, 0.3);
+    });
+    if (op.litanyTime > 0 && Math.random() < dt * 30) this.particles.spawn({ kind: 'dust', pos: { x: FIELD.cx + (Math.random() - 0.5) * FIELD.rx * 2, y: FIELD.cy + (Math.random() - 0.5) * FIELD.ry * 2 }, n: 1 });
+
     const played = new Set<Cue>();
     for (const c of op.cues) if (!played.has(c)) {
       played.add(c);
@@ -170,6 +181,23 @@ export class OperationScene implements Scene {
     const sk = op.shake * settings.shake;
     const shake = sk > 0 ? { x: (Math.random() - 0.5) * sk, y: (Math.random() - 0.5) * sk } : { x: 0, y: 0 };
 
+    // ---------------------------------------------------------------- data layers
+    const ents = op.visibleEntities().sort((a, b) => a.layer - b.layer);
+    const light = { x: FIELD.cx - 220 + Math.sin(t * 0.7) * 30, y: 60 + Math.sin(t * 1.3) * 10 };
+    g.beginLayer('surface');
+    for (const sc of op.scars) {
+      surfLine(g, sc, 7, 0.18, 0.15, 0, 0.1);
+      surfLine(g, sc, 12, 0, 0, 0, 0.2);
+    }
+    for (const st of op.stains) surfDisc(g, st, st.r, 0, st.a);
+    for (const e of ents) e.drawSurface(g, op);
+    if (game.input.down && onBody(game.input.pos)) surfDisc(g, game.input.pos, 16, 0.28);
+    g.endLayer();
+    g.beginLayer('fluid');
+    for (const e of ents) e.drawFluid(g, op);
+    this.particles.drawFluid(g);
+    g.endLayer();
+
     // ---------------------------------------------------------------- world
     g.beginWorld();
     g.fleshField({
@@ -180,11 +208,12 @@ export class OperationScene implements Scene {
       deep: pal.deep,
       vein: pal.vein,
       pulse: this.pulse,
-      light: { x: FIELD.cx - 220 + Math.sin(t * 0.7) * 30, y: 60 + Math.sin(t * 1.3) * 10 },
+      light,
       corrupt: this.corrupt,
     });
-    const ents = op.visibleEntities().sort((a, b) => a.layer - b.layer);
+    g.fluidComposite(light);
     for (const e of ents) e.draw(g, op);
+    this.particles.draw(g);
 
     // Scrying lens: shimmer where something hides.
     if (op.tool === 'lens') {
@@ -205,7 +234,16 @@ export class OperationScene implements Scene {
     const soften = settings.reduceFlashing ? 0.35 : 1;
     const danger = (op.status === 'running' ? Math.max(0, (35 - op.vitals) / 35) : op.status === 'lost' ? 1 : 0) * soften;
     const litany = op.litanyTime > 0 ? Math.min(1, op.litanyTime, (LITANY_DURATION - op.litanyTime) * 3) * soften : 0;
-    g.endWorld({ litany, danger, shake, bloom: 0.7 });
+    const ch2 = op.def.id.startsWith('op2');
+    g.endWorld({
+      litany,
+      danger,
+      shake,
+      bloom: 0.7,
+      chroma: (this.corrupt * 1.2 + danger * 0.8 + Math.min(1, op.shake / 10) * 0.6) * soften,
+      tint: ch2 ? [0.95, 0.98, 1.05] : [1.03, 0.99, 0.94],
+      lift: ch2 ? [0.0, 0.004, 0.012] : [0.012, 0.004, 0.0],
+    });
 
     // ---------------------------------------------------------------- UI
     this.drawPopups(g);

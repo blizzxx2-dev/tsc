@@ -81,8 +81,18 @@ uniform vec3 u_vein;
 uniform float u_pulse;
 uniform vec2 u_light;
 uniform float u_corrupt;
+uniform sampler2D u_surface;
+uniform vec2 u_surfTexel;
 out vec4 o;
+// smoothstep with edge0 > edge1 is undefined in GLSL; this is the portable falling edge.
+float rsmooth(float hi, float lo, float x) { return 1.0 - smoothstep(lo, hi, x); }
+
 ${NOISE}
+// Height contributed by wounds (negative) and swelling (positive).
+float surfH(vec2 uv) {
+  vec4 s = texture(u_surface, uv);
+  return s.a * 1.3 - s.r * 1.4;
+}
 void main() {
   vec2 px = vec2(v_uv.x, 1.0 - v_uv.y) * u_view;
   vec2 q = (px - u_center) / u_radii;
@@ -95,7 +105,7 @@ void main() {
   vec2 w = px * 0.5;
   float weave = 0.5 + 0.25 * sin(w.x * 3.1) * sin(w.y * 3.1) + 0.25 * fbm(px * 0.02);
   vec3 drape = mix(vec3(0.10, 0.12, 0.11), vec3(0.2, 0.23, 0.2), weave);
-  drape *= 0.55 + 0.45 * smoothstep(900.0, 200.0, length(px - u_light));
+  drape *= 0.55 + 0.45 * rsmooth(900.0, 200.0, length(px - u_light));
   // Old bloodstains on the linen.
   drape = mix(drape, vec3(0.18, 0.04, 0.04), smoothstep(0.62, 0.72, fbm(px * 0.006 + 3.0)) * 0.6);
 
@@ -125,11 +135,36 @@ void main() {
   vec2 grad = vec2(fbm(hp + vec2(e, 0.0)) - h0, fbm(hp + vec2(0.0, e)) - h0) / e;
   // Dome the field so light wraps around the organ's bulk.
   grad += q * 0.9;
+  // Wounds and swellings from the surface layer shape the normal: cuts read as carved channels.
+  vec4 sf = texture(u_surface, v_uv);
+  vec2 st = u_surfTexel * 1.5;
+  vec2 sg = vec2(surfH(v_uv + vec2(st.x, 0.0)) - surfH(v_uv - vec2(st.x, 0.0)), surfH(v_uv - vec2(0.0, st.y)) - surfH(v_uv + vec2(0.0, st.y)));
+  grad += sg * 14.0;
   vec3 nrm = normalize(vec3(-grad * 0.35, 1.0));
   vec3 L = normalize(vec3((u_light - px) / 700.0, 0.9));
   float diff = max(dot(nrm, L), 0.0);
   float spec = pow(max(dot(reflect(-L, nrm), vec3(0, 0, 1)), 0.0), 18.0);
-  col = col * (0.38 + 0.52 * diff) + vec3(1.0, 0.9, 0.82) * spec * 0.22;
+  float cut = smoothstep(0.05, 0.7, sf.r);
+  // Subsurface scattering: light bleeds red through flesh on the shadowed side.
+  vec3 sss = u_base * vec3(1.25, 0.35, 0.28) * pow(1.0 - diff, 2.0) * 0.32;
+  float fres = pow(1.0 - clamp(nrm.z, 0.0, 1.0), 3.0);
+  col = col * (0.38 + 0.52 * diff) + sss + vec3(1.0, 0.9, 0.82) * spec * 0.22 + vec3(1.0, 0.75, 0.7) * fres * 0.12;
+
+  // Wound interior: deep, wet, glistening maroon with a dark rim.
+  vec3 woundCol = mix(vec3(0.42, 0.03, 0.05), vec3(0.16, 0.0, 0.02), smoothstep(0.3, 1.0, sf.r));
+  float wspec = pow(max(dot(reflect(-L, nrm), vec3(0, 0, 1)), 0.0), 50.0);
+  woundCol += vec3(1.0, 0.8, 0.8) * wspec * 0.8;
+  float rim = smoothstep(0.02, 0.15, sf.r) * (1.0 - smoothstep(0.15, 0.45, sf.r));
+  col = mix(col, woundCol, cut);
+  col *= 1.0 - rim * 0.35;
+  // Blood staining and bruising.
+  col = mix(col, vec3(0.26, 0.015, 0.04) * (0.7 + 0.5 * diff), clamp(sf.g * 1.3, 0.0, 1.0) * 0.85);
+  // Scorch: blackened, cracked eschar with ember-red fissures.
+  float crack = rsmooth(0.02, 0.0, cells(uv * 5.0));
+  vec3 charCol = mix(vec3(0.06, 0.04, 0.035), vec3(0.5, 0.12, 0.03), crack * 0.6) * (0.6 + 0.6 * diff);
+  col = mix(col, charCol, clamp(sf.b, 0.0, 1.0));
+  // Swelling: inflamed, taut and shiny.
+  col = mix(col, col * vec3(1.25, 0.88, 0.78) + spec * 0.25, clamp(sf.a * 1.2, 0.0, 1.0) * 0.75);
   // Fine wet glints, sparse and soft.
   col += vec3(1.0, 0.95, 0.9) * smoothstep(0.82, 0.95, noise(uv * 6.0 + 3.0)) * spec * 0.25;
 
@@ -138,9 +173,9 @@ void main() {
   col = mix(col, vec3(0.16, 0.05, 0.2), cor * 0.7);
 
   // Retractor rim darkening.
-  col *= smoothstep(1.02, 0.78, edge) * 0.6 + 0.4;
-  float inside = smoothstep(1.0, 0.985, edge);
-  vec3 outc = mix(drape, col * 0.3, smoothstep(1.06, 1.0, edge) * 0.6);
+  col *= rsmooth(1.02, 0.78, edge) * 0.6 + 0.4;
+  float inside = rsmooth(1.0, 0.985, edge);
+  vec3 outc = mix(drape, col * 0.3, rsmooth(1.06, 1.0, edge) * 0.6);
   o = vec4(mix(outc, col, inside), 1.0);
 }`;
 
@@ -183,7 +218,14 @@ uniform float u_danger;
 uniform float u_bloomAmt;
 uniform vec2 u_shake;
 uniform float u_flicker;
+uniform float u_chroma;
+uniform vec3 u_tint;
+uniform vec3 u_lift;
+uniform vec2 u_res;
 out vec4 o;
+// smoothstep with edge0 > edge1 is undefined in GLSL; this is the portable falling edge.
+float rsmooth(float hi, float lo, float x) { return 1.0 - smoothstep(lo, hi, x); }
+
 float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
 void main() {
   vec2 uv = v_uv + u_shake;
@@ -192,13 +234,21 @@ void main() {
     float d = length(uv - 0.5);
     uv += (uv - 0.5) * sin(d * 40.0 - u_time * 3.0) * 0.003 * u_litany;
   }
-  vec3 c = texture(u_scene, uv).rgb;
+  vec3 c;
+  // Chromatic aberration grows toward the frame edge (curses, trauma).
+  float ca = u_chroma * 0.006 + 0.0006;
+  vec2 dir = (uv - 0.5) * ca;
+  c.r = texture(u_scene, uv + dir).r;
+  c.g = texture(u_scene, uv).g;
+  c.b = texture(u_scene, uv - dir).b;
   c += texture(u_bloom, uv).rgb * u_bloomAmt;
+  // Per-chapter grade.
+  c = c * u_tint + u_lift;
 
   // Candlelit grade: warm highlights, cool-green shadows.
   float l = dot(c, vec3(0.299, 0.587, 0.114));
   c = mix(c, c * vec3(1.06, 0.98, 0.86), smoothstep(0.2, 0.9, l));
-  c = mix(c, c * vec3(0.9, 1.0, 0.96), smoothstep(0.4, 0.0, l));
+  c = mix(c, c * vec3(0.9, 1.0, 0.96), rsmooth(0.4, 0.0, l));
   c *= 1.0 - u_flicker * 0.05;
 
   if (u_litany > 0.0) {
@@ -207,11 +257,49 @@ void main() {
   }
 
   vec2 vq = v_uv - 0.5;
-  float vig = smoothstep(0.85, 0.25, length(vq * vec2(1.0, 0.8)));
+  float vig = rsmooth(0.85, 0.25, length(vq * vec2(1.0, 0.8)));
   c *= mix(0.35, 1.0, vig);
   // Failing vitals: the edges pulse red.
   c = mix(c, vec3(0.5, 0.0, 0.02), (1.0 - vig) * u_danger * (0.5 + 0.5 * sin(u_time * 6.0)));
 
   c += (hash(v_uv * 900.0 + u_time) - 0.5) * 0.035;
   o = vec4(c, 1.0);
+}`;
+
+/** Metaball liquid: thresholds the summed density layer and shades it as a glossy fluid. */
+export const FLUID_FS = /* glsl */ `#version 300 es
+precision highp float;
+in vec2 v_uv;
+uniform sampler2D u_fluid;
+uniform vec2 u_texel;
+uniform vec2 u_view;
+uniform vec2 u_light;
+uniform float u_time;
+out vec4 o;
+float dens(vec2 uv) { vec4 f = texture(u_fluid, uv); return f.r + f.g + f.b; }
+void main() {
+  vec4 f = texture(u_fluid, v_uv);
+  float d = f.r + f.g + f.b;
+  float a = smoothstep(0.42, 0.52, d);
+  if (a < 0.003) discard;
+  vec2 t = u_texel * 2.0;
+  float dx = dens(v_uv + vec2(t.x, 0.0)) - dens(v_uv - vec2(t.x, 0.0));
+  float dy = dens(v_uv - vec2(0.0, t.y)) - dens(v_uv + vec2(0.0, t.y));
+  // Surface bulges toward the centre of each pool; clamp so thick pools stay flat and glassy.
+  vec3 n = normalize(vec3(-dx * 2.2, -dy * 2.2, 1.0) * vec3(1.0, 1.0, 1.0 + smoothstep(0.5, 1.4, d) * 3.0));
+  vec2 px = vec2(v_uv.x, 1.0 - v_uv.y) * u_view;
+  vec3 L = normalize(vec3((u_light - px) / 700.0, 0.9));
+  float diff = max(dot(n, L), 0.0);
+  float spec = pow(max(dot(reflect(-L, n), vec3(0.0, 0.0, 1.0)), 0.0), 90.0);
+  float spec2 = pow(max(dot(reflect(-L, n), vec3(0.0, 0.0, 1.0)), 0.0), 12.0);
+  vec3 w = f.rgb / max(d, 1e-4);
+  vec3 blood = mix(vec3(0.55, 0.02, 0.05), vec3(0.2, 0.0, 0.015), smoothstep(0.5, 1.6, d));
+  vec3 pus = mix(vec3(0.78, 0.7, 0.3), vec3(0.5, 0.45, 0.16), smoothstep(0.5, 1.6, d));
+  vec3 bile = vec3(0.06, 0.04, 0.06);
+  vec3 base = blood * w.r + pus * w.g + bile * w.b;
+  // A darker meniscus at the edge, then glossy highlights.
+  float edge = 1.0 - smoothstep(0.45, 0.65, d);
+  vec3 col = base * (0.55 + 0.6 * diff) * (1.0 - edge * 0.45);
+  col += vec3(1.0, 0.92, 0.9) * spec * 1.3 + vec3(0.6, 0.2, 0.2) * spec2 * 0.15;
+  o = vec4(col, a * 0.97);
 }`;

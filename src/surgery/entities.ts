@@ -8,6 +8,23 @@ import type { Pointer, ToolId } from './types';
 
 const TAU = Math.PI * 2;
 
+// ============================================================ layer helpers
+
+/** Soft-edged channel stroke into the surface layer: stacked widths approximate a falloff. */
+export function surfLine(g: Gfx, pts: Vec[], w: number, r: number, gc = 0, b = 0, a = 0): void {
+  for (const [k, f] of [
+    [1.8, 0.25],
+    [1.2, 0.35],
+    [0.7, 0.4],
+  ] as const)
+    g.polyline(pts, w * k, rgba(Math.round(r * f * 255), Math.round(gc * f * 255), Math.round(b * f * 255), a * f));
+}
+
+/** Soft channel disc into the surface layer. */
+export function surfDisc(g: Gfx, p: Vec, rad: number, r: number, gc = 0, b = 0, a = 0): void {
+  g.circleGrad(p.x, p.y, rad, rgba(Math.round(r * 255), Math.round(gc * 255), Math.round(b * 255), a), rgba(0, 0, 0, 0));
+}
+
 // ============================================================ incision
 
 /**
@@ -87,6 +104,7 @@ export class Incision extends Entity {
       return;
     }
     if (pr.at > this.progress && pr.at - this.progress < 60) {
+      if (Math.floor(pr.at / 14) > Math.floor(this.progress / 14)) op.emit('blood', ptr.pos, 3, undefined, undefined, 90);
       this.progress = pr.at;
       this.devSum += pr.d;
       this.devN++;
@@ -109,22 +127,27 @@ export class Incision extends Entity {
     if (tool === 'thread' && this.stitch.sweep(op, ptr)) {
       this.state = 'closed';
       this.kill();
+      op.scars.push(this.points.map((p) => ({ ...p })));
       op.rate(this.stitch.strokes.size <= 1 ? 'cool' : 'good', ptr.pos, 'Closed');
     }
+  }
+
+  override drawSurface(g: Gfx): void {
+    if (this.state === 'mark') {
+      if (this.progress > 0) surfLine(g, this.tracedPoints(), 10, 0.9, 0.3);
+    } else surfLine(g, this.points, 16, 1, 0.45, 0, 0.15);
   }
 
   draw(g: Gfx, op: Operation): void {
     if (this.state === 'mark') {
       g.dashed(this.points, 3, hex('#ffebbe', 0.85), 10, 9, -op.elapsed * 20);
-      if (this.progress > 0) g.polyline(this.tracedPoints(), 5, hex('#5a0d0d'));
       const head = this.pointAt(this.progress);
       g.glow(head.x, head.y, 22, hex('#ffe0a0', 0.35));
       g.circle(head.x, head.y, 6 + Math.sin(op.elapsed * 6) * 2, hex('#ffebbe', 0.9));
     } else {
-      // An open wound: dark gash with a wet rim.
-      g.polyline(this.points, 18, hex('#2a0306'));
-      g.polyline(this.points, 10, hex('#6d1016'));
-      g.polyline(this.points, 3, hex('#c0404a', 0.6));
+      // The gash itself is carved by the flesh shader (surface layer); add only a wet glint.
+      g.polyline(this.points, 2, hex('#ff9090', 0.25));
+      if (this.state === 'closing') g.dashed(this.points, 2, hex('#ffebbe', 0.35 + 0.2 * Math.sin(op.elapsed * 4)), 6, 10, op.elapsed * 10);
       if (this.stitch) this.stitch.draw(g);
     }
   }
@@ -169,6 +192,7 @@ export class StitchLine {
         this.strokes.add(op.pressId);
         this.marks.push({ ...ptr.pos });
         op.cues.push('stitch');
+        op.emit('blood', ptr.pos, 2, undefined, undefined, 60);
         return this.count >= this.needed;
       }
     }
@@ -213,20 +237,24 @@ export class BloodPool extends Entity {
       this.kill();
       op.cues.push('squelch');
       if (this.startR >= 20) op.rate('good', this.pos, 'Drained');
+      if (this.ichor === 'blood') op.stain(this.pos, this.startR * 0.9, 0.35);
     }
   }
 
-  draw(g: Gfx, op: Operation): void {
-    const col =
-      this.ichor === 'blood' ? ['#8a0810', '#3d0006'] : this.ichor === 'pus' ? ['#c8b850', '#6a6a18'] : ['#241824', '#080408'];
-    const pts: Vec[] = [];
-    for (let i = 0; i < 24; i++) {
-      const a = (i / 24) * TAU;
-      const wob = 1 + 0.08 * Math.sin(a * 3 + this.id + op.elapsed * 1.5);
-      pts.push({ x: this.pos.x + Math.cos(a) * this.r * wob, y: this.pos.y + Math.sin(a) * this.r * wob * 0.85 });
+  override drawFluid(g: Gfx, op: Operation): void {
+    const c = this.ichor === 'blood' ? rgba(255, 0, 0, 1) : this.ichor === 'pus' ? rgba(0, 255, 0, 1) : rgba(0, 0, 255, 1);
+    const z = rgba(0, 0, 0, 0);
+    g.circleGrad(this.pos.x, this.pos.y, this.r * 1.9, c, z);
+    // Satellite lobes keep the edge organic.
+    for (let i = 0; i < 3; i++) {
+      const a = this.id * 1.7 + i * 2.1 + Math.sin(op.elapsed * 0.7 + i) * 0.3;
+      const rr = this.r * 0.55;
+      g.circleGrad(this.pos.x + Math.cos(a) * rr, this.pos.y + Math.sin(a) * rr * 0.8, this.r * 1.1, c, z);
     }
-    g.poly(pts, hex(col[1], 0.92), hex(col[0], 0.96));
-    g.ellipse(this.pos.x - this.r * 0.35, this.pos.y - this.r * 0.35, this.r * 0.25, this.r * 0.1, -0.5, hex('#ffffff', 0.35), hex('#ffffff', 0));
+  }
+
+  draw(): void {
+    // Rendered as liquid through the fluid layer (drawFluid).
   }
 }
 
@@ -291,6 +319,7 @@ export class Laceration extends Entity {
       }
       if (this.stitch.sweep(op, ptr)) {
         this.kill();
+        op.scars.push([{ ...this.a }, { ...this.b }]);
         op.rate(this.stitch.strokes.size <= 1 ? 'cool' : 'good', this.pos, 'Stitched');
       }
     } else if (tool === 'salve' && this.cov && this.cov.contains(ptr.pos, 20)) {
@@ -301,9 +330,13 @@ export class Laceration extends Entity {
     }
   }
 
+  override drawSurface(g: Gfx): void {
+    surfLine(g, [this.a, this.b], this.small ? 8 : 13, 1, 0.5, 0, 0.1);
+  }
+
   draw(g: Gfx): void {
-    g.line(this.a, this.b, this.small ? 7 : 12, hex('#3a0306'));
-    g.line(this.a, this.b, this.small ? 3 : 6, hex('#a3141c'));
+    // Carved by the flesh shader; a faint wet glint along the lip, then stitches and salve.
+    g.line(this.a, this.b, 1.5, hex('#ff9090', 0.3));
     this.stitch.draw(g);
     if (this.cov) drawCoverage(g, this.cov);
   }
@@ -413,6 +446,9 @@ export class Embedded extends Entity {
     this.grabbed = false;
     if (dist(this.pos, this.origin) > 70) {
       this.kill();
+      const pull = Math.atan2(this.pos.y - this.origin.y, this.pos.x - this.origin.x);
+      op.emit('blood', this.origin, 18, pull, 0.6, 220);
+      op.stain(this.origin, 26, 0.4);
       if (!this.tore) {
         op.rate(this.grabT < 0.9 ? 'cool' : 'good', ptr.pos, this.spec.label);
         op.spawn(new Laceration(this.origin, this.angle + Math.PI / 2, this.spec.wound, 0.8));
@@ -421,6 +457,12 @@ export class Embedded extends Entity {
       // Not pulled clear: it sinks back in.
       this.pos = { ...this.origin };
     }
+  }
+
+  override drawSurface(g: Gfx): void {
+    surfDisc(g, this.origin, 11, 1, 0.5);
+    surfDisc(g, this.origin, 38, 0, 0.25, 0, this.kind === 'warpshard' ? 0.2 : 0.35);
+    if (this.kind === 'warpshard') surfDisc(g, this.origin, 50, 0, 0, 0.35);
   }
 
   draw(g: Gfx, op: Operation): void {
@@ -513,6 +555,8 @@ export class Burn extends Entity {
     if (i < 0) return false;
     const [f] = this.flakes.splice(i, 1);
     op.cues.push('pluck');
+    op.emit('smoke', f, 2);
+    op.emit('blood', f, 2, undefined, undefined, 60);
     op.rate('good', f, 'Debrided');
     if (this.flakes.length === 0) op.sayOnce('burn-salve', 'The dead flesh is off. Now salve the raw burn.');
     return true;
@@ -530,12 +574,27 @@ export class Burn extends Entity {
     }
   }
 
+  override drawSurface(g: Gfx): void {
+    const left = this.flakes.length / this.total;
+    const healed = this.cov.fraction;
+    const char = (0.3 + 0.7 * left) * (1 - healed * 0.85);
+    // Inflamed halo, raw red bed, then a solid char core while eschar remains.
+    surfDisc(g, this.pos, this.radius * 1.7, 0, 0.3 * (1 - healed), 0, 0.45);
+    surfDisc(g, this.pos, this.radius * 1.25, 0, 0.35 * (1 - healed), char * 0.6, 0);
+    surfDisc(g, this.pos, this.radius * 0.9, 0, 0, char * 0.7, 0);
+  }
+
   draw(g: Gfx, op: Operation): void {
     const { x, y } = this.pos;
-    const base = this.source === 'acid' ? ['#b8a040', '#6a5a10'] : this.source === 'hexfire' ? ['#8a3cc8', '#2a0a40'] : ['#d0503a', '#5a1a10'];
-    g.circleGrad(x, y, this.radius * 1.15, hex(base[0], 0.95), hex(base[1], 0));
-    if (this.source === 'hexfire') g.glow(x, y, this.radius, hex('#c878ff', 0.25 + 0.15 * Math.sin(op.elapsed * 7)));
-    for (const f of this.flakes) g.ellipse(f.x, f.y, 11, 8, (f.x + f.y) % 3, hex('#140e0c'), hex('#3d2a20'));
+    // Char and rawness come from the surface layer; embers and eschar crusts are drawn here.
+    if (this.source === 'hexfire') g.glow(x, y, this.radius * 1.3, hex('#c060ff', 0.18 + 0.1 * Math.sin(op.elapsed * 7)));
+    else if (this.flakes.length) g.glow(x, y, this.radius * 0.9, hex('#ff5a1a', 0.1 + 0.05 * Math.sin(op.elapsed * 5 + this.id)));
+    for (const f of this.flakes) {
+      const rot = (f.x * 0.37 + f.y * 0.11) % 3;
+      g.ellipse(f.x + 1.5, f.y + 2, 12, 9, rot, hex('#000000', 0.5));
+      g.ellipse(f.x, f.y, 12, 9, rot, hex('#2a1c16'), hex('#0e0806'));
+      g.ellipse(f.x - 3, f.y - 3, 4, 2, rot, hex('#6a5040', 0.6));
+    }
     drawCoverage(g, this.cov);
   }
 }
@@ -577,6 +636,7 @@ export class Bubo extends Entity {
     if (this.lanced || tool !== 'lancet' || dist(ptr.pos, this.pos) > this.r + 6) return false;
     this.lanced = true;
     op.cues.push('squelch');
+    op.emit('pus', this.pos, 20, undefined, undefined, 160);
     op.rate(this.r < this.maxR * 0.75 ? 'cool' : 'good', this.pos, 'Lanced');
     op.spawn(new BloodPool({ x: this.pos.x, y: this.pos.y + 6 }, this.r * 1.1, 'pus'));
     return true;
@@ -594,17 +654,25 @@ export class Bubo extends Entity {
     }
   }
 
+  override drawSurface(g: Gfx): void {
+    if (!this.lanced) {
+      surfDisc(g, this.pos, this.r * 2.1, 0, 0.25, 0, 1);
+      surfDisc(g, this.pos, this.r * 1.2, 0, 0.1, 0, 0.8);
+    } else {
+      surfDisc(g, this.pos, 14, 0.95, 0.4);
+      surfDisc(g, this.pos, this.maxR * 1.3, 0, 0.4 * (1 - this.cov.fraction), 0, 0.35);
+    }
+  }
+
   draw(g: Gfx, op: Operation): void {
     const { x, y } = this.pos;
     if (!this.lanced) {
-      const r = this.r * (1 + Math.sin(op.elapsed * 4 + this.id) * 0.04);
-      g.circleGrad(x, y, r, hex('#e8d890'), hex('#5a1a20'));
-      g.circle(x - r * 0.3, y - r * 0.3, r * 0.2, hex('#fff8d0', 0.4));
-      if (this.r > this.maxR * 0.75) g.arc(x, y, r + 3, 2, hex('#ff503c', 0.5 + 0.5 * Math.sin(op.elapsed * 12)));
-    } else {
-      g.circleGrad(x, y, this.maxR * 0.5, hex('#4a1a18'), hex('#8a3a30'));
-      drawCoverage(g, this.cov);
-    }
+      // Swelling comes from the surface layer; show the ripe head and a tight shine.
+      const ripe = this.r / this.maxR;
+      g.circleGrad(x, y, this.r * 0.55, hex('#f0e090', 0.55 + 0.35 * ripe), hex('#c89050', 0));
+      g.ellipse(x - this.r * 0.3, y - this.r * 0.35, this.r * 0.22, this.r * 0.1, -0.6, hex('#ffffff', 0.45), hex('#ffffff', 0));
+      if (ripe > 0.75) g.arc(x, y, this.r + 4, 2, hex('#ff503c', 0.4 + 0.4 * Math.sin(op.elapsed * 12)));
+    } else drawCoverage(g, this.cov);
   }
 }
 
@@ -637,6 +705,10 @@ export class Rot extends Entity {
       this.kill();
       op.rate('good', this.pos, 'Rot purged');
     }
+  }
+
+  override drawSurface(g: Gfx): void {
+    for (const c of this.cov.cells) if (!c.done) surfDisc(g, { x: this.pos.x + c.x, y: this.pos.y + c.y }, 16, 0, 0.12, 0.12, 0.05);
   }
 
   draw(g: Gfx, op: Operation): void {
@@ -690,6 +762,10 @@ export class Venom extends Entity {
       op.cues.push('inject');
       op.rate(this.spreadR < 50 ? 'cool' : 'good', this.pos, 'Antidote');
     }
+  }
+
+  override drawSurface(g: Gfx): void {
+    surfDisc(g, this.pos, this.spreadR * 1.5 + 26, 0, 0.55, 0.12, 0.35);
   }
 
   draw(g: Gfx, op: Operation): void {
@@ -749,9 +825,13 @@ export class Grub extends Entity {
     if (tool !== 'brand' || dist(ptr.pos, this.pos) > 20) return;
     this.branded = true;
     this.heat += dt;
+    if (Math.random() < dt * 20) op.emit('spark', this.pos, 2);
     if (this.heat > 0.35) {
       this.kill();
       op.cues.push('burn');
+      op.emit('spark', this.pos, 12);
+      op.emit('smoke', this.pos, 4);
+      op.stain(this.pos, 10, 0.3);
       op.rate('cool', this.pos, 'Seared');
     }
   }
@@ -856,12 +936,27 @@ export class Sigil extends Entity {
     }
     if (!hit) return;
     this.branded = true;
+    if (Math.random() < 0.3) op.emit('spark', ptr.pos, 2);
+    if (Math.random() < 0.1) op.emit('smoke', ptr.pos, 1);
     if (this.startT < 0) this.startT = op.elapsed;
     if (op.rng.next() < 0.15) op.cues.push('burn');
     if (this.progress >= 1) {
       this.kill();
       op.rate(op.elapsed - this.startT < 4 ? 'cool' : 'good', this.pos, 'Curse broken');
     }
+  }
+
+  override drawSurface(g: Gfx): void {
+    for (const sg of this.segs) {
+      const n = sg.burned.length;
+      for (let i = 0; i < n; i++) {
+        if (!sg.burned[i]) continue;
+        const p0 = { x: sg.a.x + ((sg.b.x - sg.a.x) * i) / n, y: sg.a.y + ((sg.b.y - sg.a.y) * i) / n };
+        const p1 = { x: sg.a.x + ((sg.b.x - sg.a.x) * (i + 1)) / n, y: sg.a.y + ((sg.b.y - sg.a.y) * (i + 1)) / n };
+        surfLine(g, [p0, p1], 10, 0.15, 0, 1);
+      }
+    }
+    surfDisc(g, this.pos, this.size * 1.3, 0, 0.2, 0, 0.2);
   }
 
   draw(g: Gfx, op: Operation): void {

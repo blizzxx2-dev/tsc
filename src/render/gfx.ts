@@ -1,13 +1,13 @@
 import type { Vec } from '../core/math';
 import { alphaOf, type RGBA } from './color';
 import { GlyphAtlas, type FontId } from './text';
-import { BLUR_FS, BRIGHT_FS, FLESH_FS, FULL_VS, POST_FS, PRIM_FS, PRIM_VS } from './shaders';
+import { BLUR_FS, BRIGHT_FS, FLESH_FS, FLUID_FS, FULL_VS, POST_FS, PRIM_FS, PRIM_VS } from './shaders';
 
 const TAU = Math.PI * 2;
 const MAX_VERTS = 60000;
 const STRIDE = 5; // x, y, u, v (f32) + rgba (u32)
 
-export type Blend = 'alpha' | 'add';
+export type Blend = 'alpha' | 'add' | 'sum';
 export type Align = 'left' | 'center' | 'right';
 
 export interface TextOpts {
@@ -38,6 +38,11 @@ export interface PostParams {
   danger: number;
   shake: Vec;
   bloom: number;
+  /** Chromatic aberration strength (curses, damage). */
+  chroma?: number;
+  /** Colour grade: multiplicative tint and lift, per chapter/location. */
+  tint?: [number, number, number];
+  lift?: [number, number, number];
 }
 
 interface Target {
@@ -87,6 +92,15 @@ export class Gfx {
   private scene!: Target;
   private bloomA!: Target;
   private bloomB!: Target;
+  /** Wound/decal layer: R cut depth, G blood stain, B scorch, A swelling. */
+  private surface!: Target;
+  /** Liquid layer: R blood, G pus, B black bile densities (half-float when available). */
+  private fluid!: Target;
+  private msaaFb: WebGLFramebuffer | null = null;
+  private msaaRb: WebGLRenderbuffer | null = null;
+  private samples = 0;
+  private floatTargets = false;
+  private fluidProg: WebGLProgram;
   private pw = 0;
   private ph = 0;
   readonly atlas: GlyphAtlas;
@@ -109,6 +123,9 @@ export class Gfx {
     this.bright = compile(gl, FULL_VS, BRIGHT_FS);
     this.blur = compile(gl, FULL_VS, BLUR_FS);
     this.post = compile(gl, FULL_VS, POST_FS);
+    this.fluidProg = compile(gl, FULL_VS, FLUID_FS);
+    this.floatTargets = !!gl.getExtension('EXT_color_buffer_float');
+    this.samples = Math.min(4, gl.getParameter(gl.MAX_SAMPLES) as number);
 
     this.vao = gl.createVertexArray()!;
     this.emptyVao = gl.createVertexArray()!;
@@ -136,11 +153,12 @@ export class Gfx {
     return m.get(name)!;
   }
 
-  private makeTarget(w: number, h: number): Target {
+  private makeTarget(w: number, h: number, float = false): Target {
     const gl = this.gl;
     const tex = gl.createTexture()!;
     gl.bindTexture(gl.TEXTURE_2D, tex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    if (float) gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, w, h, 0, gl.RGBA, gl.HALF_FLOAT, null);
+    else gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -164,11 +182,31 @@ export class Gfx {
     this.freeTarget(this.scene);
     this.freeTarget(this.bloomA);
     this.freeTarget(this.bloomB);
+    this.freeTarget(this.surface);
+    this.freeTarget(this.fluid);
     this.scene = this.makeTarget(w, h);
     const bw = Math.max(1, w >> 2);
     const bh = Math.max(1, h >> 2);
     this.bloomA = this.makeTarget(bw, bh);
     this.bloomB = this.makeTarget(bw, bh);
+    const hw = Math.max(1, Math.round(w * 0.6));
+    const hh = Math.max(1, Math.round(h * 0.6));
+    this.surface = this.makeTarget(hw, hh);
+    this.fluid = this.makeTarget(hw, hh, this.floatTargets);
+    // Multisampled world target, resolved into `scene` before post-processing.
+    const gl = this.gl;
+    if (this.msaaRb) gl.deleteRenderbuffer(this.msaaRb);
+    if (this.msaaFb) gl.deleteFramebuffer(this.msaaFb);
+    this.msaaFb = this.msaaRb = null;
+    if (this.samples > 1) {
+      this.msaaRb = gl.createRenderbuffer()!;
+      gl.bindRenderbuffer(gl.RENDERBUFFER, this.msaaRb);
+      gl.renderbufferStorageMultisample(gl.RENDERBUFFER, this.samples, gl.RGBA8, w, h);
+      this.msaaFb = gl.createFramebuffer()!;
+      gl.bindFramebuffer(gl.FRAMEBUFFER, this.msaaFb);
+      gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, this.msaaRb);
+      if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) this.msaaFb = null;
+    }
     this.pw = w;
     this.ph = h;
   }
@@ -186,7 +224,12 @@ export class Gfx {
   /** Start the world layer (post-processed). */
   beginWorld(clear: [number, number, number] = [0.02, 0.015, 0.015]): void {
     this.ensureTargets();
-    this.bindTarget(this.scene);
+    if (this.msaaFb) {
+      this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.msaaFb);
+      this.outW = this.scene.w;
+      this.outH = this.scene.h;
+      this.gl.viewport(0, 0, this.outW, this.outH);
+    } else this.bindTarget(this.scene);
     this.gl.clearColor(clear[0], clear[1], clear[2], 1);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
     this.tf = [1, 0, 0, 1, 0, 0];
@@ -196,6 +239,13 @@ export class Gfx {
   endWorld(p: PostParams): void {
     this.flush();
     const gl = this.gl;
+    if (this.msaaFb) {
+      gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.msaaFb);
+      gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.scene.fb);
+      gl.blitFramebuffer(0, 0, this.scene.w, this.scene.h, 0, 0, this.scene.w, this.scene.h, gl.COLOR_BUFFER_BIT, gl.NEAREST);
+      gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
+      gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+    }
     gl.disable(gl.BLEND);
     gl.bindVertexArray(this.emptyVao);
 
@@ -232,6 +282,10 @@ export class Gfx {
     gl.uniform1f(this.u(this.post, 'u_bloomAmt'), p.bloom);
     gl.uniform2f(this.u(this.post, 'u_shake'), p.shake.x / this.vw, -p.shake.y / this.vh);
     gl.uniform1f(this.u(this.post, 'u_flicker'), Math.sin(this.time * 9.1) * Math.sin(this.time * 3.7));
+    gl.uniform1f(this.u(this.post, 'u_chroma'), p.chroma ?? 0);
+    gl.uniform3fv(this.u(this.post, 'u_tint'), p.tint ?? [1, 1, 1]);
+    gl.uniform3fv(this.u(this.post, 'u_lift'), p.lift ?? [0, 0, 0]);
+    gl.uniform2f(this.u(this.post, 'u_res'), this.canvas.width, this.canvas.height);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     gl.activeTexture(gl.TEXTURE0);
 
@@ -257,9 +311,56 @@ export class Gfx {
     this.gl.bindTexture(this.gl.TEXTURE_2D, t);
   }
 
+  // ------------------------------------------------------------ layers
+
+  private worldFb(): void {
+    const gl = this.gl;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.msaaFb ?? this.scene.fb);
+    this.outW = this.scene.w;
+    this.outH = this.scene.h;
+    gl.viewport(0, 0, this.outW, this.outH);
+  }
+
+  /** Begin drawing into an additive data layer (surface or fluid). Colours are data, summed. */
+  beginLayer(which: 'surface' | 'fluid'): void {
+    this.ensureTargets();
+    this.flush();
+    this.bindTarget(which === 'surface' ? this.surface : this.fluid);
+    this.gl.clearColor(0, 0, 0, 0);
+    this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+    this.blend = 'sum';
+    this.applyBlend();
+    this.tf = [1, 0, 0, 1, 0, 0];
+  }
+
+  endLayer(): void {
+    this.flush();
+    this.blend = 'alpha';
+    this.applyBlend();
+  }
+
+  /** Composite the liquid layer into the world as glossy, merging fluid. Call after beginWorld. */
+  fluidComposite(light: Vec): void {
+    this.flush();
+    this.worldFb();
+    const gl = this.gl;
+    const pr = this.fluidProg;
+    gl.useProgram(pr);
+    gl.bindVertexArray(this.emptyVao);
+    this.bindTex(this.fluid.tex, 0);
+    gl.uniform1i(this.u(pr, 'u_fluid'), 0);
+    gl.uniform2f(this.u(pr, 'u_texel'), 1 / this.fluid.w, 1 / this.fluid.h);
+    gl.uniform2f(this.u(pr, 'u_view'), this.vw, this.vh);
+    gl.uniform2f(this.u(pr, 'u_light'), light.x, light.y);
+    gl.uniform1f(this.u(pr, 'u_time'), this.time);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    this.applyBlend();
+  }
+
   /** Draw the procedural body field over the whole world target. */
   fleshField(f: FleshParams): void {
     this.flush();
+    this.worldFb();
     const gl = this.gl;
     const pr = this.flesh;
     gl.useProgram(pr);
@@ -276,7 +377,11 @@ export class Gfx {
     gl.uniform1f(this.u(pr, 'u_pulse'), f.pulse);
     gl.uniform2f(this.u(pr, 'u_light'), f.light.x, f.light.y);
     gl.uniform1f(this.u(pr, 'u_corrupt'), f.corrupt);
+    this.bindTex(this.surface.tex, 1);
+    gl.uniform1i(this.u(pr, 'u_surface'), 1);
+    gl.uniform2f(this.u(pr, 'u_surfTexel'), 1 / this.surface.w, 1 / this.surface.h);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.activeTexture(gl.TEXTURE0);
     gl.enable(gl.BLEND);
   }
 
@@ -285,6 +390,7 @@ export class Gfx {
   private applyBlend(): void {
     const gl = this.gl;
     if (this.blend === 'add') gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+    else if (this.blend === 'sum') gl.blendFunc(gl.ONE, gl.ONE);
     else gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
   }
 
