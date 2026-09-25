@@ -33,6 +33,7 @@
  * 22 Malison thread knot           (a.x radius px, a.y shape 0 trefoil 1 figure-of-eight 2 tangle, a.z burst 0..1 (8 f), a.w crawler)
  * 23 boss thread spool (HUD)       (a.x thread left 0..1, a.y hurt flash, a.z unwinding spin)
  * 24 extraction dish               (a.x radius px, a.w 0 pewter kidney dish, 1 round lead dish)
+ * 25 Malison silhouette            (a.x Hour 0 Matins … 7 Compline; col = the Hour's secondary colour)
  *
  * Colour filters and gore levels are applied by the callers through `u_col` / `u_alpha`.
  */
@@ -861,6 +862,103 @@ vec4 dish(vec2 q) {
   return over(acc, vec4(0.0, 0.0, 0.0, sh));
 }
 
+// ---------------------------------------------------------------- Malison design language
+
+float sdEll(vec2 p, vec2 r) { return (length(p / r) - 1.0) * min(r.x, r.y); }
+
+/** The eight Hours' silhouettes (ART-0226), in a ±100 px cell, y down. Returns a signed distance. */
+float hourShape(vec2 q, float h, out vec2 eye) {
+  float d = 1e9;
+  eye = vec2(0.0, -10.0);
+  if (h < 0.5) {
+    // Matins: a hooded shroud with one great eye.
+    d = sdEll(q - vec2(0.0, -28.0), vec2(38.0, 36.0));
+    float bell = max(abs(q.x) - (38.0 + (q.y + 30.0) * 0.3), max(-q.y - 30.0, q.y - 62.0 - 5.0 * sin(q.x * 0.3)));
+    d = min(d, bell);
+    eye = vec2(0.0, -18.0);
+  } else if (h < 1.5) {
+    // Lauds: two antiphonal bodies joined by a light-thread.
+    d = min(sdEll(q - vec2(-46.0, 5.0), vec2(30.0, 40.0)), sdEll(q - vec2(46.0, 5.0), vec2(30.0, 40.0)));
+    d = max(d, -sdEll(q - vec2(-46.0, 0.0), vec2(9.0, 13.0)));
+    d = max(d, -sdEll(q - vec2(46.0, 0.0), vec2(9.0, 13.0)));
+    d = min(d, sdSeg(q, vec2(-20.0, -5.0), vec2(20.0, -5.0)) - 2.0);
+    eye = vec2(-46.0, -22.0);
+  } else if (h < 2.5) {
+    // Prime: a hunched scribe with a fan of quill fingers.
+    d = min(sdEll(q - vec2(-8.0, 22.0), vec2(38.0, 48.0)), sdEll(q - vec2(-18.0, -40.0), vec2(18.0, 20.0)));
+    for (int i = 0; i < 5; i++) {
+      float a = -1.25 + float(i) * 0.22;
+      vec2 tip = vec2(24.0, -8.0) + vec2(cos(a), sin(a)) * (58.0 + 6.0 * float(i % 2));
+      d = min(d, sdSeg(q, vec2(24.0, -8.0), tip) - 2.6 + 2.0 * clamp(dot(q - vec2(24.0, -8.0), normalize(tip - vec2(24.0, -8.0))) / 60.0, 0.0, 1.0));
+    }
+    eye = vec2(-14.0, -44.0);
+  } else if (h < 3.5) {
+    // Terce: a crown of flame tongues.
+    d = sdBox(q - vec2(0.0, 42.0), vec2(48.0, 12.0));
+    for (int i = 0; i < 5; i++) {
+      float x = -40.0 + float(i) * 20.0;
+      float top = -52.0 + 26.0 * abs(float(i) - 2.0) + 6.0 * sin(float(i) * 2.7);
+      d = min(d, sdTri(q, vec2(x - 11.0, 32.0), vec2(x + 11.0, 32.0), vec2(x + 5.0 * sin(float(i) * 1.9), top)));
+    }
+    eye = vec2(0.0, 40.0);
+  } else if (h < 4.5) {
+    // Sext: a slumped stone torpor under a false-calm halo and a gnomon.
+    d = sdEll(q - vec2(0.0, 36.0), vec2(72.0, 34.0));
+    d = min(d, abs(length(q - vec2(0.0, -30.0)) - 42.0) - 3.0);
+    d = min(d, sdTri(q, vec2(-6.0, 6.0), vec2(6.0, 6.0), vec2(0.0, -60.0)));
+    eye = vec2(-20.0, 26.0);
+  } else if (h < 5.5) {
+    // None: an hourglass-segmented burrower.
+    for (int i = 0; i < 6; i++) {
+      float t = float(i) / 5.0;
+      vec2 c = vec2(-70.0 + t * 140.0, 18.0 * sin(t * 5.0));
+      float seg = min(sdEll(q - c - vec2(-6.0, 0.0), vec2(10.0, 18.0 - 4.0 * t)), sdEll(q - c - vec2(6.0, 0.0), vec2(10.0, 18.0 - 4.0 * t)));
+      d = min(d, seg);
+    }
+    eye = vec2(-72.0, 0.0);
+  } else if (h < 6.5) {
+    // Vespers: a tall lamp-lighter trailing wick filaments.
+    d = min(sdBox(q - vec2(-10.0, 22.0), vec2(14.0, 58.0)), sdEll(q - vec2(-10.0, -46.0), vec2(14.0, 16.0)));
+    d = min(d, sdSeg(q, vec2(0.0, -10.0), vec2(56.0, -70.0)) - 2.5);
+    d = min(d, sdEll(q - vec2(58.0, -62.0), vec2(9.0, 12.0)));
+    for (int i = 0; i < 4; i++) d = min(d, sdSeg(q, vec2(-16.0 + float(i) * 4.0, -60.0), vec2(-40.0 + float(i) * 14.0, -92.0 + 4.0 * sin(float(i)))) - 1.2);
+    eye = vec2(-10.0, -48.0);
+  } else {
+    // Compline: a veiled sleeper laid out long, the Great Silence.
+    d = sdEll(q - vec2(0.0, 30.0), vec2(84.0, 24.0));
+    d = min(d, sdEll(q - vec2(-70.0, 14.0), vec2(20.0, 20.0)));
+    d = min(d, sdTri(q, vec2(-60.0, 10.0), vec2(80.0, 24.0), vec2(-10.0, -14.0)));
+    eye = vec2(-72.0, 10.0);
+  }
+  return d;
+}
+
+vec4 hourSilhouette(vec2 q) {
+  float h = floor(u_a.x + 0.5);
+  vec2 eye;
+  float d = hourShape(q, h, eye);
+  // Common anatomy: a woven-thread body (fine cross-weave), trailing threads, one eye, curse-violet rim.
+  float weave = 0.5 + 0.25 * sin((q.x + q.y) * 0.9) * sin((q.x - q.y) * 0.9);
+  vec3 ink = vec3(0.06, 0.03, 0.08) * (0.8 + 0.4 * weave);
+  vec3 violet = vec3(0.62, 0.3, 0.95);
+  float rim = rsmooth(4.0, 0.0, -d) * step(d, 0.0);
+  vec3 c = mix(ink, mix(violet, u_col, 0.55), rim * 0.9);
+  // A liturgical fragment: a scrap of rubricated text crossing the body.
+  float scrap = step(abs(q.y - 8.0 - 6.0 * sin(q.x * 0.05)), 1.2) * step(0.45, fract(q.x * 0.14)) * step(d, -5.0);
+  c = mix(c, vec3(0.7, 0.15, 0.1), scrap * 0.8);
+  vec4 acc = paint(c, fill(d));
+  float threads = 0.0;
+  for (int i = 0; i < 3; i++) {
+    float x0 = -14.0 + float(i) * 14.0 + 4.0 * sin(u_time + float(i));
+    threads = max(threads, rsmooth(1.2, 0.0, abs(q.x - x0 - 5.0 * sin(q.y * 0.08 + float(i)))) * step(62.0, q.y) * step(q.y, 92.0));
+  }
+  acc = over(acc, paint(violet * 0.8, threads * 0.9));
+  float e = length(q - eye);
+  acc = over(paint(u_col * 1.2 + 0.2, rsmooth(4.5, 3.0, e)), acc);
+  acc = over(paint(vec3(0.02), rsmooth(1.8, 1.0, e)), acc);
+  return acc;
+}
+
 vec4 pool(vec2 q) {
   float R = u_a.x;
   float r = length(q) + (fbm(q * 0.08 + u_seed) - 0.5) * R * 0.3;
@@ -901,7 +999,8 @@ void main() {
   else if (u_mode == 21) r = pool(q);
   else if (u_mode == 22) r = threadKnot(q);
   else if (u_mode == 23) r = spool(q);
-  else r = dish(q);
+  else if (u_mode == 24) r = dish(q);
+  else r = hourSilhouette(q);
   // Nothing may touch the quad's border, so no rectangle edge ever shows.
   vec2 e = abs(v_uv - 0.5);
   r *= rsmooth(0.5, 0.47, max(e.x, e.y));

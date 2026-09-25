@@ -100,7 +100,7 @@ Cross-refs: ENG (texture loading, atlases, shader inputs), UX (layouts and widge
 - [x] ART-0056 · Demo · P1 · M · Briefing screen art: a patient chart on vellum with a Wound-Man diagram and pin markers for ailment locations, plus stamped prognosis boxes
 - [x] ART-0057 · Demo · P1 · M · Title-menu frame: an illuminated manuscript page with a rubricated initial and marginalia beasts
 - [x] ART-0058 · Demo · P1 · M · Options menu art: tabbed ledger pages (Video, Audio, Controls, Accessibility, Language), with sliders drawn as a brass rule plus a wax bead
-- [ ] ART-0059 · Demo · P1 · S · Save/load slot cards: ledger entries with chapter vignette thumbnails (1 per chapter scene) and a date-stamp style
+- [x] ART-0059 · Demo · P1 · S · Save/load slot cards: ledger entries with chapter vignette thumbnails (1 per chapter scene) and a date-stamp style
 - [x] ART-0060 · Demo · P1 · M · End-of-demo wishlist screen: a woodcut plate of the Chapter 3 teaser with a "Wishlist on Steam" button in UI-kit style
 - [x] ART-0061 · Demo · P2 · S · Loading-screen art: 4 woodcut vignettes (Wound Man, leech jar, Pyre, Choir mask) with an hourglass spinner
 - [ ] ART-0062 · Alpha · P2 · M · Challenge-mode board: a guild notice board with pinned bills per challenge, parchment variants and a rank-wax stamp
@@ -359,7 +359,7 @@ Ailment standard: painted sprite(s) in the woodcut-over-paint style at 2× virtu
 Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase sprite/flipbook set → shader VFX spec handed to ENG → in-engine review in a boss sandbox, plus a **Book-of-Hours title card** (an illuminated miniature of the Hour, used on the intro and on the results screen). Bosch hybrid-grotesque language; curse-violet is the shared thread, and each Hour gets its own secondary colour.
 
 ### Shared Malison language
-- [ ] ART-0226 · Demo · P0 · M · Malison design language sheet: common anatomy (woven-thread body, liturgical fragments, an eye motif), shared violet and per-Hour secondary colours, with 8 silhouettes side by side for distinctness
+- [x] ART-0226 · Demo · P0 · M · Malison design language sheet: common anatomy (woven-thread body, liturgical fragments, an eye motif), shared violet and per-Hour secondary colours, with 8 silhouettes side by side for distinctness
 - [x] ART-0227 · Demo · P0 · S · Book-of-Hours card template: an illuminated miniature frame with the Hour's name in blackletter and a clock-face marginal border
 - [x] ART-0228 · Demo · P1 · M · Malison shard (`MalisonShard`) art: 3 thread-knot shapes, a drift loop and a burst-on-kill flipbook
 - [x] ART-0229 · Demo · P1 · S · Boss health "thread spool" HUD art that unwinds as the Malison is damaged

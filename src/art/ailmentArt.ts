@@ -37,6 +37,7 @@ export const AIL = {
   knot: 22,
   spool: 23,
   dish: 24,
+  hour: 25,
 } as const;
 
 export type MissileKind = 'arrow' | 'barbed' | 'bolt' | 'bolt-leather';
@@ -230,4 +231,9 @@ export function spoolArt(g: Gfx, x: number, y: number, size: number, left: numbe
 export function dishArt(g: Gfx, pos: Vec, radius: number, lead: boolean, seed = 0): void {
   const s = radius * 2 + 30;
   g.ailment(AIL.dish, pos.x, pos.y, s, s, { seed, a: [radius, 0, 0, lead ? 1 : 0] });
+}
+
+/** One Hour's Malison silhouette (ART-0226) in a 200 px cell, rimmed in its secondary colour. */
+export function hourSilhouetteArt(g: Gfx, pos: Vec, hour: number, secondary: readonly [number, number, number], size = 200): void {
+  g.ailment(AIL.hour, pos.x, pos.y, size, size, { a: [hour, 0, 0, 0], col: secondary });
 }

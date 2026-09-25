@@ -1,7 +1,7 @@
 /**
  * Wound and ailment look-dev board (`?scene=woundlab`): every AILMENT_FS piece and state painted on
  * live flesh, four pages (1 lodged objects, 2 burns and disease, 3 vermin, wounds and closure, 4 the Matins
- * callout sheet, 5 the Book-of-Hours card template, 6 premultiplied sprite edges).
+ * callout sheet, 5 the Book-of-Hours card template, 6 premultiplied sprite edges, 7 the Malison design language).
  * `?page=2&t=1.5` opens a page with time frozen, for screenshots; ←/→ step one frame at 12 fps,
  * Space toggles playback. A QA tool: each ailment should be checked here before it ships.
  */
@@ -13,7 +13,7 @@ import { organPalette } from '../render/organs';
 import type { OperationDef } from '../surgery/operation';
 import { VIEW_H, VIEW_W } from '../ui/layout';
 import { giltText, UI } from '../ui/ornaments';
-import type { Hour } from './curse';
+import { HOUR_SECONDARY, HOURS, type Hour } from './curse';
 import { bookOfHoursCard } from './hoursCard';
 import {
   acidBurnArt,
@@ -23,6 +23,7 @@ import {
   fireBurnArt,
   glassArt,
   grubArt,
+  hourSilhouetteArt,
   hexfireEdgeArt,
   hexstoneArt,
   missileArt,
@@ -177,6 +178,20 @@ const PAGES: { title: string; cells: Cell[]; custom?: (g: Gfx, t: number) => voi
           const cy = 150 + Math.floor(i / 5) * 270;
           [1, 0.5, 0.25].forEach((sc, k) => g.sprite(id, cx, cy + k * 80, { scale: sc * 1.4, tint: hex(gi ? '#f4e8d0' : '#b02020') }));
         });
+      });
+    },
+  },
+  {
+    // Malison design language (ART-0226): the eight Hours side by side in silhouette.
+    title: 'Malison design language',
+    cells: [],
+    custom: (g) => {
+      g.rect(0, 52, VIEW_W, VIEW_H - 52, hex('#d8c8a0'));
+      HOURS.forEach((hour, i) => {
+        const cx = 160 + (i % 4) * 320;
+        const cy = 190 + Math.floor(i / 4) * 300;
+        hourSilhouetteArt(g, { x: cx, y: cy }, i, HOUR_SECONDARY[hour], 220);
+        g.text(hour[0].toUpperCase() + hour.slice(1), cx, cy + 128, { size: 20, font: 'display', color: hex('#3a1a10'), align: 'center', shadow: false });
       });
     },
   },

@@ -43,6 +43,24 @@ export const HOUR_CURSE: Record<Hour, CurseLook> = {
   compline: { vein: [0.45, 0.35, 1.0], accent: [0.03, 0.04, 0.12] },
 };
 
+/**
+ * Each Hour's secondary colour (ART-0226): curse-violet is shared, this is the Hour's own — its rim
+ * light, its eye and its effects. Distinct in hue and value so the eight read apart in silhouette.
+ */
+export const HOUR_SECONDARY: Record<Hour, readonly [number, number, number]> = {
+  matins: [0.9, 0.84, 0.66], // candle-wax ivory
+  lauds: [1.0, 0.74, 0.42], // dawn gold
+  prime: [0.86, 0.28, 0.22], // rubric vermilion
+  terce: [1.0, 0.52, 0.1], // furnace orange
+  sext: [0.96, 0.96, 0.9], // bleached noon white
+  none: [0.6, 0.5, 0.3], // loam ochre
+  vespers: [0.92, 0.78, 0.32], // tallow gold
+  compline: [0.34, 0.42, 0.95], // night blue
+};
+
+/** The Hours in canonical order. */
+export const HOURS: readonly Hour[] = ['matins', 'lauds', 'prime', 'terce', 'sext', 'none', 'vespers', 'compline'];
+
 /** The Hour a curse-bearing entity belongs to, or null. */
 export function hourOf(e: Entity): Hour | null {
   if (e instanceof Malison || e instanceof MalisonShard) return 'matins';
