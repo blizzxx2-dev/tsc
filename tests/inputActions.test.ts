@@ -32,7 +32,11 @@ describe('action map (INP-0004)', () => {
     };
     walk(join(__dirname, '..', 'src'));
     // src/debug (F1 cheat menu, backquote console) and the art look-dev pages are dev/QA-only tooling.
-    const devOnly = (f: string) => f.includes(join('src', 'debug')) || f.endsWith(join('art', 'artview.ts')) || f.endsWith(join('art', 'fleshlab.ts'));
+    const devOnly = (f: string) =>
+      f.includes(join('src', 'debug')) ||
+      f.endsWith(join('art', 'artview.ts')) ||
+      f.endsWith(join('art', 'fleshlab.ts')) ||
+      f.endsWith(join('art', 'shaderlab.ts'));
     const offenders = files.filter(
       (f) =>
         !devOnly(f) &&
