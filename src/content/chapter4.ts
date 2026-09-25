@@ -1,3 +1,4 @@
+import { teach } from './teach';
 import { BloodPool, Embedded, Grub, Incision, Laceration, Rot } from '../surgery/entities';
 import { TinctureSite } from '../surgery/ailments/kilnrows';
 import { Artery, BiteChannel, Contamination, Lockbox, NoCutZone, Nodule, PetrifyFront, RainDrip, Retractor, StilledHeart, Tick } from '../surgery/ailments/vennmark';
@@ -455,10 +456,11 @@ export const OP_4_8: OperationDef = {
   litany: true,
   seed: 48,
   phases: [
-    {
-      callout: ['The hand. Crack the plates in order — the numbers — then salve the margin.'],
+    // The first petrification teaches the stone (GAM-0212): the hand is safe to learn on.
+    teach({
+      callout: ['The hand. Crack the plates in order — the numbers — then salve the margin. Learn it here; the hand can wait.'],
       spawn: () => [new PetrifyFront([at(-380, 30), at(-280, 20), at(-160, 0), at(-60, -30), at(-40, -60)], 3, 4)],
-    },
+    }),
     {
       callout: ['It’s jumped to the arm! Again — in order.'],
       spawn: () => [new PetrifyFront([at(-300, -100), at(-200, -80), at(-100, -70), at(-40, -60)], 4, 4.5)],

@@ -1,3 +1,4 @@
+import { teach } from './teach';
 import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot } from '../surgery/entities';
 import { Agitation, Amputation, ClothFragment, HornBud, Jaw, leadDeposit, Molar, TinctureSite, Worm, woundFeverPhase } from '../surgery/ailments/kilnrows';
 import { Artery } from '../surgery/ailments/vennmark';
@@ -349,10 +350,11 @@ export const OP_3_5: OperationDef = {
   litany: true,
   seed: 35,
   phases: [
-    {
-      callout: ['Give him the tincture first — he will need it.', 'Then saw along the line with the lancet, stroke by stroke.'],
+    // The first amputation teaches the saw (GAM-0212): he cannot slip away during it.
+    teach({
+      callout: ['Give him the tincture first — he will need it.', 'Then saw along the line with the lancet, stroke by stroke. Take your time with this one; I have him.'],
       spawn: () => [new TinctureSite(at(-200, 60), 'Poppy draught', 0.8, 0.2, '#c0a0d0'), new Amputation(at(-40, -110), at(-40, 110), 3, 6)],
-    },
+    }),
     {
       callout: ['Bone splinters in the stump. Out with them.'],
       spawn: () => [new Embedded(at(10, -40), 'shard', 0.2, false), new Embedded(at(20, 50), 'shard', -0.4, false)],

@@ -327,7 +327,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0209 · Demo · P1 · S · Surgeon's Manual — in-game codex page per tool and ailment unlocked on first encounter, with 3-frame animated diagram
 - [x] GAM-0210 · Demo · P1 · S · Practice Theatre — sandbox scene with dummy patient to try each tool without scoring; accessible from pause menu
 - [x] GAM-0211 · Demo · P2 · S · Tutorial input glyphs — prompts switch between mouse/keyboard and controller glyphs within 1 frame of last-used device changing
-- [ ] GAM-0212 · Alpha · P1 · S · Chapter 3–5 new-mechanic intro ops each have a no-fail first phase that teaches the mechanic — (fracture, stone, frost, amputation)
+- [x] GAM-0212 · Alpha · P1 · S · Chapter 3–5 new-mechanic intro ops each have a no-fail first phase that teaches the mechanic — (fracture, stone, frost, amputation)
 
 ## GAM-L · Challenge mode ("X-Operations")
 
