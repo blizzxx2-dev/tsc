@@ -10,6 +10,7 @@ import { ControlsScene } from './input/controlsScene';
 import { GameplayOptionsScene } from './scenes/gameplayOptions';
 import { OperationsScene } from './scenes/operations';
 import { DemoEndScene } from './scenes/demoend';
+import { NoticeScene, noticesDue } from './scenes/notice';
 import { Audio } from './core/audio';
 import { ErrorBoundary, type CrashRecord } from './core/boundary';
 import { Clock } from './core/clock';
@@ -375,7 +376,7 @@ async function boot(): Promise<void> {
     });
   splashProgress(1, 'Ready');
   void loadLayoutLabels();
-  game.start(new TitleScene());
+  game.start(noticesDue() ? new NoticeScene(() => game.go(new TitleScene())) : new TitleScene());
   splashDone();
   console.info(`boot to title: ${Math.round(performance.now() - t0)} ms`);
 
@@ -424,6 +425,7 @@ async function boot(): Promise<void> {
     const back = () => game.go(new TitleScene());
     const screens: Record<string, () => Scene> = {
       demoend: () => new DemoEndScene(),
+      notice: () => new NoticeScene(back),
       theatre: () => new OperationsScene(),
       gameplay: () => new GameplayOptionsScene(back),
       controls: () => new ControlsScene(back),

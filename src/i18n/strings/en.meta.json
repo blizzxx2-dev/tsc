@@ -6152,5 +6152,71 @@
     "maxPx": 300,
     "context": "Tooltip body under a control-strip button; {key} is the bound key.",
     "screenshot": "docs/loc/screens/story.png"
+  },
+  "ui.notice.heading": {
+    "scene": "notice",
+    "font": "display",
+    "size": 30,
+    "maxPx": 520,
+    "context": "Heading of the first-launch notices screen.",
+    "screenshot": "docs/loc/screens/notice.png"
+  },
+  "ui.notice.photo.title": {
+    "scene": "notice",
+    "font": "display",
+    "size": 14,
+    "maxPx": 440,
+    "context": "Title of the photosensitivity notice column.",
+    "screenshot": "docs/loc/screens/notice.png"
+  },
+  "ui.notice.photo.body": {
+    "scene": "notice",
+    "font": "body",
+    "size": 20,
+    "maxPx": 460,
+    "context": "First-launch photosensitivity warning.",
+    "screenshot": "docs/loc/screens/notice.png",
+    "maxLines": 12
+  },
+  "ui.notice.content.title": {
+    "scene": "notice",
+    "font": "display",
+    "size": 14,
+    "maxPx": 440,
+    "context": "Title of the content warning column.",
+    "screenshot": "docs/loc/screens/notice.png"
+  },
+  "ui.notice.content.body": {
+    "scene": "notice",
+    "font": "body",
+    "size": 20,
+    "maxPx": 460,
+    "context": "First-launch content warning listing themes.",
+    "screenshot": "docs/loc/screens/notice.png",
+    "maxLines": 10
+  },
+  "ui.notice.footer": {
+    "scene": "notice",
+    "font": "italic",
+    "size": 17,
+    "maxPx": 900,
+    "context": "Footer on the first-launch notices screen.",
+    "screenshot": "docs/loc/screens/notice.png"
+  },
+  "ui.notice.continue": {
+    "scene": "notice",
+    "font": "display",
+    "size": 24,
+    "maxPx": 300,
+    "context": "Button: dismiss the first-launch notices.",
+    "screenshot": "docs/loc/screens/notice.png"
+  },
+  "ui.notice.comfort": {
+    "scene": "notice",
+    "font": "display",
+    "size": 24,
+    "maxPx": 300,
+    "context": "Button: open the accessibility options from the first-launch notices.",
+    "screenshot": "docs/loc/screens/notice.png"
   }
 }

@@ -53,7 +53,7 @@ let achievements: Achievements | null = null;
 let gamepad: GamepadController | null = null;
 let lastActivityKey = '';
 let lastPresence = '';
-let refreshSamples: number[] = [];
+const refreshSamples: number[] = [];
 
 const numeral = (chapter: number) => CAMPAIGN[chapter]?.numeral ?? String(chapter + 1);
 
@@ -266,7 +266,21 @@ export function installPlatform(g: Game): void {
 
   attachPresenter((m, k) => showNotice(m, k));
   const quill = new SaveIndicator();
-  setBusyHandler((b) => quill.set(b));
+  const AUTOSAVE_TIP_KEY = 'suture-and-steel.tip.autosave';
+  // The first save ever written also explains the quill, once (UIX-0093).
+  let tipShown = false;
+  setBusyHandler((b) => {
+    quill.set(b);
+    if (!b || tipShown) return;
+    tipShown = true;
+    try {
+      if (localStorage.getItem(AUTOSAVE_TIP_KEY)) return;
+      localStorage.setItem(AUTOSAVE_TIP_KEY, '1');
+      notify('The quill in the corner writes while your journal is saved. Do not quit while it writes.', 'info');
+    } catch {
+      // storage unavailable: skip the tip
+    }
+  });
   if (flag('watermark')) showWatermark(`${buildLabel()} · ${BUILD.date} · not for distribution`);
 
   setSlotDescriber((pos) => {

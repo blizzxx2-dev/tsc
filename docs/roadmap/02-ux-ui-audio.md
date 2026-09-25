@@ -255,7 +255,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 ### Title screen
 - [x] UIX-0078 · M0 · P0 · S · Title — Continue / Take the Oath (new game, with forswear-progress confirm) / Operating Theatre / Sound toggle; fullscreen hint and version string
 - [ ] UIX-0079 · Demo · P0 · M · Title v2 — key-art backdrop (Kessendorf woodcut skyline, animated rain and candlelight), "Suture & Steel — The Malison Hours" logo lockup, menu: Continue, New Game, Chapter Select, Operating Theatre, Options, Credits, Quit; "DEMO" ribbon and Wishlist seal in demo builds
-- [ ] UIX-0080 · Demo · P0 · S · Stale end-of-content text — replace "Chapter I complete. Chapter II is being written…" with build-appropriate messaging (demo: routes to the demo-complete flow; full: nothing)
+- [x] UIX-0080 · Demo · P0 · S · Stale end-of-content text — replace "Chapter I complete. Chapter II is being written…" with build-appropriate messaging (demo: routes to the demo-complete flow; full: nothing)
 - [x] UIX-0081 · M0 · P0 · S · Rename to Suture & Steel — title logo, `index.html` title, WebGL2 failure message and save key `suture-and-steel.save`
 - [ ] UIX-0082 · Demo · P1 · S · Continue preview — tooltip/card shows chapter, next step title, total play time and last-played date
 - [ ] UIX-0083 · Demo · P1 · S · Quit to desktop — confirm dialog, calls Electron `app.quit()`; hidden in browser builds
@@ -272,7 +272,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 ### Save & load
 - [x] UIX-0091 · M0 · P0 · S · Progress autosave — localStorage save after each step plus best rank/score per operation (`save.ts`: `advance`, `recordBest`, `store`)
 - [ ] UIX-0092 · Demo · P0 · M · Save slots — three slots with cards (chapter, next step, play time, seal count, last played); New Game asks for a slot; overwrite needs confirm
-- [ ] UIX-0093 · Demo · P0 · S · Autosave indicator — quill/seal icon in a corner for ≥ 1 s whenever a save is written; tip on first boot "Do not quit while the seal turns"
+- [x] UIX-0093 · Demo · P0 · S · Autosave indicator — quill/seal icon in a corner for ≥ 1 s whenever a save is written; tip on first boot "Do not quit while the seal turns"
 - [ ] UIX-0094 · Demo · P0 · S · Corrupt save handling — today `load()` silently returns `fresh()` on parse failure; instead show "Your records are damaged" with Restore backup / Start fresh, and keep the bad file aside (test with a truncated JSON fixture)
 - [x] UIX-0095 · M0 · P0 · S · Settings file — volume, mute, screen shake, reduce flashing and assists persist under `suture-and-steel.settings`, separate from campaign progress (`src/core/settings.ts`)
 - [ ] UIX-0096 · Demo · P1 · S · Dead save field — remove the unused `SaveData.volume` (settings own volume now) through a v1 → v2 save migration with a fixture test
@@ -377,7 +377,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ### Demo build gating
 - [ ] UIX-0165 · Demo · P0 · S · Demo build flag — `__DEMO__` (Vite `define`) gates demo-only UI (DEMO ribbon, wishlist seals, locked Ch3–5 cards, demo-complete scene); CI builds and smoke-tests both flavours
-- [ ] UIX-0166 · Demo · P0 · S · Demo campaign end — `playStep` past the last Chapter II step routes to `DemoCompleteScene` in demo builds (today it falls back to `TitleScene`); unit test with a two-chapter campaign stub
+- [x] UIX-0166 · Demo · P0 · S · Demo campaign end — `playStep` past the last Chapter II step routes to `DemoCompleteScene` in demo builds (today it falls back to `TitleScene`); unit test with a two-chapter campaign stub
 
 ### Demo-complete scene
 - [ ] UIX-0167 · Demo · P0 · M · "Here the demo ends" sequence — illuminated card, teaser of the next Malison hour (Prime) as a silhouette with "The Hours are not yet done…", music sting, then the summary; skippable after first view
