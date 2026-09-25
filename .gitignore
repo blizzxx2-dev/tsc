@@ -3,3 +3,7 @@ dist/
 *.log
 .DS_Store
 scripts/.*.mjs
+dist-qa/
+reports/
+test-results/
+.stryker-tmp/

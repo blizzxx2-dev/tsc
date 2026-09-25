@@ -9,17 +9,56 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "build:qa": "tsc --noEmit && vite build --mode qa --outDir dist-qa",
+    "test:unit": "vitest run --project unit",
+    "test:sim": "vitest run --project sim",
+    "test:e2e": "vitest run --project e2e",
+    "test:visual": "vitest run --project e2e tests/e2e/visual",
+    "visual:update": "node scripts/qa/visual-update.mjs",
+    "bench": "vitest bench --project sim --run",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "smoke": "node scripts/smoke.mjs",
+    "shot": "node scripts/shot.mjs",
+    "hooks:install": "simple-git-hooks"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.3",
+    "@commitlint/config-conventional": "^21.2.3",
+    "@eslint/js": "^10.0.1",
     "@types/node": "^22.20.4",
+    "@types/pngjs": "^6.0.5",
+    "@vitest/eslint-plugin": "^1.6.27",
+    "@vitest/ui": "^3.2.7",
+    "ajv": "^8.20.0",
+    "eslint": "^10.11.0",
+    "fast-check": "^4.10.2",
+    "lint-staged": "^17.5.1",
+    "pixelmatch": "^7.2.0",
     "playwright": "1.55",
+    "pngjs": "^7.0.0",
+    "prettier": "^3.9.9",
+    "simple-git-hooks": "^2.14.0",
     "typescript": "~5.9.3",
+    "typescript-eslint": "^8.70.1",
     "vite": "^6.4.3",
     "vitest": "^3.2.7"
   },
   "dependencies": {
     "@fontsource/im-fell-english": "^5.3.0",
     "@fontsource/unifrakturmaguntia": "^5.3.0"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged",
+    "commit-msg": "npx --no -- commitlint --edit \"$1\"",
+    "pre-push": "node scripts/qa/pre-push.mjs"
+  },
+  "lint-staged": {
+    "*.{ts,js,mjs}": [
+      "prettier --write --ignore-unknown",
+      "eslint --fix"
+    ]
   }
 }
