@@ -1,7 +1,7 @@
 import type { Vec } from '../core/math';
 import { alphaOf, type RGBA } from './color';
 import { GlyphAtlas, type FontId } from './text';
-import { BLUR_FS, BRIGHT_FS, FLESH_FS, FLUID_FS, FULL_VS, IMAGE_FS, IMAGE_VS, POST_FS, PRIM_FS, PRIM_VS } from './shaders';
+import { BLUR_FS, BRIGHT_FS, FLESH_FS, FLUID_FS, FULL_VS, IMAGE_FS, IMAGE_VS, POST_FS, PRIM_FS, PRIM_VS, SCENE_FS } from './shaders';
 
 const TAU = Math.PI * 2;
 const MAX_VERTS = 60000;
@@ -124,6 +124,7 @@ export class Gfx {
   private floatTargets = false;
   private fluidProg: WebGLProgram;
   private imageProg: WebGLProgram;
+  private sceneProg: WebGLProgram;
   private images = new Map<string, ImageHandle>();
   private pw = 0;
   private ph = 0;
@@ -149,6 +150,7 @@ export class Gfx {
     this.post = compile(gl, FULL_VS, POST_FS);
     this.fluidProg = compile(gl, FULL_VS, FLUID_FS);
     this.imageProg = compile(gl, IMAGE_VS, IMAGE_FS);
+    this.sceneProg = compile(gl, FULL_VS, SCENE_FS);
     this.floatTargets = !!gl.getExtension('EXT_color_buffer_float');
     this.samples = Math.min(4, gl.getParameter(gl.MAX_SAMPLES) as number);
 
@@ -456,6 +458,22 @@ export class Gfx {
     gl.uniform1f(this.u(pr, 'u_time'), this.time);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     this.applyBlend();
+  }
+
+  /** Shader-rendered story environment (0 hospice … 5 camp) over the whole world target. */
+  sceneField(kind: number): void {
+    this.flush();
+    this.worldFb();
+    const gl = this.gl;
+    const pr = this.sceneProg;
+    gl.useProgram(pr);
+    gl.bindVertexArray(this.emptyVao);
+    gl.disable(gl.BLEND);
+    gl.uniform2f(this.u(pr, 'u_view'), this.vw, this.vh);
+    gl.uniform1f(this.u(pr, 'u_time'), this.time);
+    gl.uniform1i(this.u(pr, 'u_kind'), kind);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.enable(gl.BLEND);
   }
 
   /** Draw the procedural body field over the whole world target. */

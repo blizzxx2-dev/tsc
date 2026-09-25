@@ -26,7 +26,7 @@ export class TitleScene implements Scene {
     const a = Math.min(1, this.t);
     g.rect(0, 0, VIEW_W, VIEW_H, hex('#000000', 0.35));
     g.glow(VIEW_W / 2, 180, 420, hex('#8a1016', 0.3 * a));
-    g.text('Suture & Steel', VIEW_W / 2, 200, { size: 116, font: 'display', color: hex('#fff0c0', a), color2: hex(UI.giltLo, a), align: 'center', shadow: hex('#0a0402', 0.9 * a) });
+    g.text('Suture & Steel', VIEW_W / 2, 200, { size: 116, font: 'display', color: hex('#fff0c0', a), color2: hex('#d8a040', a), align: 'center', shadow: hex('#0a0402', 0.95 * a) });
     divider(g, VIEW_W / 2, 236, 520, hex(UI.brass, a));
     g.text('The Malison Hours', VIEW_W / 2, 280, { size: 30, font: 'italic', color: hex(UI.parch, a), align: 'center' });
     leatherPanel(g, { x: VIEW_W / 2 - 220, y: 330, w: 440, h: 270 }, { alpha: 0.9 * a });

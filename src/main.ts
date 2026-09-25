@@ -10,6 +10,8 @@ import { allOperations } from './content/campaign';
 import { SHOWCASE } from './content/dev';
 import { playOperation } from './scenes/flow';
 import { TitleScene } from './scenes/title';
+import { StoryScene } from './scenes/story';
+import type { Backdrop } from './content/story';
 import { VIEW_H, VIEW_W } from './ui/layout';
 
 class Main implements Game {
@@ -106,6 +108,9 @@ async function boot(): Promise<void> {
     const back = () => game.go(new TitleScene());
     playOperation(game, def, back, back);
   }
+  // ?story=<backdrop> previews a story environment.
+  const storyBg = new URLSearchParams(location.search).get('story');
+  if (storyBg) game.go(new StoryScene({ id: 'preview', place: 'Preview', backdrop: storyBg as Backdrop, lines: [{ who: 'narrator', text: 'Environment preview.' }] }, () => game.go(new TitleScene())));
 }
 
 void boot();
