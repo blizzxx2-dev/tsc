@@ -246,7 +246,7 @@ describe('Matins — the Night Vigil', () => {
       const h = new Hand(op);
       const aim = { x: m.pos.x + 150, y: m.pos.y };
       // Rest the hand on the flesh beside the eye until the gaze locks.
-      while (!m.gaze) h.hover(aim);
+      for (let i = 0; !m.gaze && i < 60 * 30; i++) h.hover(aim);
       const lacs = all(op, Laceration).length;
       const off = { x: aim.x, y: aim.y + 90 };
       for (let t = 0; t < 1.2; t += DT) h.hover(dodge ? off : { x: m.pos.x + m.gaze!.dir.x * 150, y: m.pos.y + m.gaze!.dir.y * 150 });
@@ -325,7 +325,7 @@ describe('Lauds — the Antiphon', () => {
     const op = start((o) => [(l = new LaudsMalison(at(0, 0), o))], boss({ skipCinematics: true }));
     l.damage(op, 36);
     const th = all(op, LightThread)[0];
-    while (!th.dimmed) wait(op, DT);
+    for (let i = 0; !th.dimmed && i < 60 * 30; i++) wait(op, DT);
     const mid = th.pos;
     new Hand(op).drag('lancet', [{ x: mid.x, y: mid.y - 30 }, { x: mid.x, y: mid.y + 30 }], 600);
     expect(l.unlinked).toBe(true);
@@ -444,7 +444,7 @@ describe('Demo elites', () => {
     const seg = k.sigil.segs[0];
     new Hand(op).drag('brand', [seg.a, seg.b], 200);
     expect(seg.burned.some(Boolean)).toBe(true);
-    while (!k.humming) wait(op, DT);
+    for (let i = 0; !k.humming && i < 60 * 30; i++) wait(op, DT);
     wait(op, 1.05);
     expect(k.redrawn).toBe(1);
     expect(k.sigil.segs.every((s) => !s.burned.some(Boolean))).toBe(true);
