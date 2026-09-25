@@ -1,119 +1,1330 @@
-From 981c5caa6a3f3989ce881f4670a109450af9d92b Mon Sep 17 00:00:00 2001
-From: Claude <noreply@anthropic.com>
-Date: Fri, 25 Sep 2026 05:35:18 +0000
-Subject: [PATCH 1/2] wip: salvage uncommitted agent-aac3313fe01927449 work
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01NN8csWWB6zAHS5UJRFUWL8
----
- src/content/chapter1.ts        |   3 +-
- src/content/chapter2.ts        |  18 +-
- src/core/settings/schema.ts    |  16 +
- src/i18n/strings/en.json       |  80 +++-
- src/i18n/strings/en.meta.json  | 624 +++++++++++++++++++++++++++
- src/scenes/bossAudio.ts        | 265 ++++++++++++
- src/scenes/operation.ts        |  17 +-
- src/surgery/bosses/base.ts     | 314 ++++++++++++++
- src/surgery/bosses/codex.ts    |  58 +++
- src/surgery/bosses/compline.ts |  41 +-
- src/surgery/bosses/elites.ts   | 367 ++++++++++++++++
- src/surgery/bosses/hud.ts      | 123 ++++++
- src/surgery/bosses/none.ts     |  48 ++-
- src/surgery/bosses/office.ts   |  93 +++-
- src/surgery/bosses/sext.ts     |  24 +-
- src/surgery/bosses/signals.ts  | 204 +++++++++
- src/surgery/bosses/terce.ts    |  32 +-
- src/surgery/bosses/vespers.ts  |  32 +-
- src/surgery/events.ts          |   3 +
- src/surgery/lauds.ts           | 756 +++++++++++++++++++++++++++------
- src/surgery/malison.ts         | 494 +++++++++++++++++----
- src/surgery/operation.ts       |  13 +
- tests/bot-hours.ts             | 231 ++++++++++
- tests/bot-later.ts             |  10 +
- tests/bot.ts                   |  46 +-
- tests/harness.ts               |  28 ++
- tests/hours-later.test.ts      | 171 ++++++++
- tests/hours.test.ts            | 488 +++++++++++++++++++++
- 28 files changed, 4345 insertions(+), 254 deletions(-)
- create mode 100644 src/scenes/bossAudio.ts
- create mode 100644 src/surgery/bosses/base.ts
- create mode 100644 src/surgery/bosses/codex.ts
- create mode 100644 src/surgery/bosses/elites.ts
- create mode 100644 src/surgery/bosses/hud.ts
- create mode 100644 src/surgery/bosses/signals.ts
- create mode 100644 tests/bot-hours.ts
- create mode 100644 tests/hours-later.test.ts
- create mode 100644 tests/hours.test.ts
-
-diff --git a/src/content/chapter1.ts b/src/content/chapter1.ts
-index fe8a168..9546806 100644
---- a/src/content/chapter1.ts
-+++ b/src/content/chapter1.ts
-@@ -1,5 +1,6 @@
- import { Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, Sigil, SIGILS } from '../surgery/entities';
- import { Malison } from '../surgery/malison';
-+import { MatinsHerald } from '../surgery/bosses/elites';
- import { FIELD, type Operation, type OperationDef } from '../surgery/operation';
- import type { Vec } from '../core/math';
- import { n, say, type StoryDef } from './story';
-@@ -222,7 +223,7 @@ export const OP_1_4: OperationDef = {
-     },
-     {
-       callout: ['The rot’s spreading. Salve every patch — quickly, it creeps back.'],
--      spawn: () => [new Rot(at(-180, 70), 50, 0.6), new Rot(at(180, -60), 55, 0.6)],
-+      spawn: (op) => [new Rot(at(-180, 70), 50, 0.6), new Rot(at(180, -60), 55, 0.6), new MatinsHerald(at(0, 60), op)],
+diff --git a/docs/balance/report.csv b/docs/balance/report.csv
+index 1495b52..3cc5388 100644
+--- a/docs/balance/report.csv
++++ b/docs/balance/report.csv
+@@ -299,306 +299,306 @@ op1-3,sloppy,17,won,5698,S,43,37,0
+ op1-3,sloppy,18,won,5605,S,40,38,0
+ op1-3,sloppy,19,won,5480,S,36,41,0
+ op1-3,sloppy,20,won,5605,S,40,38,0
+-op1-4,novice,1,won,5213,S,50,64,0
+-op1-4,novice,2,won,5213,S,50,64,0
+-op1-4,novice,3,won,5213,S,50,64,0
+-op1-4,novice,4,won,5213,S,50,64,0
+-op1-4,novice,5,won,5213,S,50,64,0
+-op1-4,novice,6,won,5213,S,50,64,0
+-op1-4,novice,7,won,5213,S,50,64,0
+-op1-4,novice,8,won,5213,S,50,64,0
+-op1-4,novice,9,won,5213,S,50,64,0
+-op1-4,novice,10,won,5213,S,50,64,0
+-op1-4,novice,11,won,5213,S,50,64,0
+-op1-4,novice,12,won,5213,S,50,64,0
+-op1-4,novice,13,won,5213,S,50,64,0
+-op1-4,novice,14,won,5213,S,50,64,0
+-op1-4,novice,15,won,5213,S,50,64,0
+-op1-4,novice,16,won,5213,S,50,64,0
+-op1-4,novice,17,won,5273,S,48,67,0
+-op1-4,novice,18,won,5213,S,50,64,0
+-op1-4,novice,19,won,5213,S,50,64,0
+-op1-4,novice,20,won,5213,S,50,64,0
+-op1-4,steady,1,won,5393,S,40,72,0
+-op1-4,steady,2,won,5393,S,40,72,0
+-op1-4,steady,3,won,5393,S,40,72,0
+-op1-4,steady,4,won,5393,S,40,72,0
+-op1-4,steady,5,won,5393,S,40,72,0
+-op1-4,steady,6,won,5393,S,40,72,0
+-op1-4,steady,7,won,5393,S,40,72,0
+-op1-4,steady,8,won,5393,S,40,72,0
+-op1-4,steady,9,won,5393,S,40,72,0
+-op1-4,steady,10,won,5393,S,40,72,0
+-op1-4,steady,11,won,5393,S,40,72,0
+-op1-4,steady,12,won,5393,S,40,72,0
+-op1-4,steady,13,won,5393,S,40,72,0
+-op1-4,steady,14,won,5393,S,40,72,0
+-op1-4,steady,15,won,5393,S,40,72,0
+-op1-4,steady,16,won,5393,S,40,72,0
+-op1-4,steady,17,won,5393,S,40,72,0
+-op1-4,steady,18,won,5393,S,40,72,0
+-op1-4,steady,19,won,5393,S,40,72,0
+-op1-4,steady,20,won,5393,S,40,72,0
+-op1-4,expert,1,won,5543,XS,33,78,0
+-op1-4,expert,2,won,5543,XS,33,78,0
+-op1-4,expert,3,won,5543,XS,33,78,0
+-op1-4,expert,4,won,5543,XS,33,78,0
+-op1-4,expert,5,won,5543,XS,33,78,0
+-op1-4,expert,6,won,5543,XS,33,78,0
+-op1-4,expert,7,won,5543,XS,33,78,0
+-op1-4,expert,8,won,5543,XS,33,78,0
+-op1-4,expert,9,won,5543,XS,33,78,0
+-op1-4,expert,10,won,5543,XS,33,78,0
+-op1-4,expert,11,won,5543,XS,33,78,0
+-op1-4,expert,12,won,5543,XS,33,78,0
+-op1-4,expert,13,won,5543,XS,33,78,0
+-op1-4,expert,14,won,5543,XS,33,78,0
+-op1-4,expert,15,won,5543,XS,33,78,0
+-op1-4,expert,16,won,5543,XS,33,78,0
+-op1-4,expert,17,won,5543,XS,33,78,0
+-op1-4,expert,18,won,5543,XS,33,78,0
+-op1-4,expert,19,won,5543,XS,33,78,0
+-op1-4,expert,20,won,5543,XS,33,78,0
+-op1-4,farm,1,won,5393,S,40,72,0
+-op1-4,farm,2,won,5393,S,40,72,0
+-op1-4,farm,3,won,5393,S,40,72,0
+-op1-4,farm,4,won,5393,S,40,72,0
+-op1-4,farm,5,won,5393,S,40,72,0
+-op1-4,farm,6,won,5393,S,40,72,0
+-op1-4,farm,7,won,5393,S,40,72,0
+-op1-4,farm,8,won,5393,S,40,72,0
+-op1-4,farm,9,won,5393,S,40,72,0
+-op1-4,farm,10,won,5393,S,40,72,0
+-op1-4,farm,11,won,5393,S,40,72,0
+-op1-4,farm,12,won,5393,S,40,72,0
+-op1-4,farm,13,won,5393,S,40,72,0
+-op1-4,farm,14,won,5393,S,40,72,0
+-op1-4,farm,15,won,5393,S,40,72,0
+-op1-4,farm,16,won,5393,S,40,72,0
+-op1-4,farm,17,won,5393,S,40,72,0
+-op1-4,farm,18,won,5393,S,40,72,0
+-op1-4,farm,19,won,5393,S,40,72,0
+-op1-4,farm,20,won,5393,S,40,72,0
+-op1-4,sloppy,1,won,5180,S,42,71,0
+-op1-4,sloppy,2,won,5120,A,43,69,0
+-op1-4,sloppy,3,won,5343,S,43,70,0
+-op1-4,sloppy,4,won,5229,S,42,71,0
+-op1-4,sloppy,5,won,5353,S,42,70,0
+-op1-4,sloppy,6,won,5180,S,42,71,0
+-op1-4,sloppy,7,won,5393,S,40,72,0
+-op1-4,sloppy,8,won,5393,S,40,72,0
+-op1-4,sloppy,9,won,5199,S,43,69,0
+-op1-4,sloppy,10,won,5140,A,43,70,0
+-op1-4,sloppy,11,won,5393,S,40,72,0
+-op1-4,sloppy,12,won,5180,S,42,71,0
+-op1-4,sloppy,13,won,5179,A,43,69,0
+-op1-4,sloppy,14,won,5393,S,40,72,0
+-op1-4,sloppy,15,won,5170,A,42,71,0
+-op1-4,sloppy,16,won,5005,A,45,68,0
+-op1-4,sloppy,17,won,5383,S,41,71,0
+-op1-4,sloppy,18,won,5383,S,41,71,0
+-op1-4,sloppy,19,won,5393,S,40,72,0
+-op1-4,sloppy,20,won,5140,A,43,69,0
+-op1-5,novice,1,won,5236,A,57,40,1
+-op1-5,novice,2,won,5327,S,48,49,1
+-op1-5,novice,3,won,5219,A,54,41,1
+-op1-5,novice,4,won,5345,S,50,50,1
+-op1-5,novice,5,won,5227,A,55,40,1
+-op1-5,novice,6,won,5265,A,51,43,1
+-op1-5,novice,7,won,5247,A,53,43,1
+-op1-5,novice,8,won,5318,S,51,47,1
+-op1-5,novice,9,won,5299,A,51,45,1
+-op1-5,novice,10,won,5283,A,53,44,1
+-op1-5,novice,11,won,5227,A,55,41,1
+-op1-5,novice,12,won,5196,A,59,36,1
+-op1-5,novice,13,won,5345,S,50,50,1
+-op1-5,novice,14,won,5219,A,54,42,1
+-op1-5,novice,15,won,5282,A,53,44,1
+-op1-5,novice,16,won,5168,A,60,36,1
+-op1-5,novice,17,won,5282,A,53,44,1
+-op1-5,novice,18,won,5345,S,50,50,1
+-op1-5,novice,19,won,5227,A,53,40,1
+-op1-5,novice,20,won,5206,A,61,39,1
+-op1-5,steady,1,won,5531,S,42,58,1
+-op1-5,steady,2,won,5531,S,40,62,1
+-op1-5,steady,3,won,5459,S,44,55,1
+-op1-5,steady,4,won,5585,XS,40,63,1
+-op1-5,steady,5,won,5495,S,44,57,1
+-op1-5,steady,6,won,5441,S,44,55,1
+-op1-5,steady,7,won,5531,S,40,61,1
+-op1-5,steady,8,won,5594,XS,39,62,1
+-op1-5,steady,9,won,5523,S,43,59,1
+-op1-5,steady,10,won,5551,S,42,60,1
+-op1-5,steady,11,won,5551,S,42,60,1
+-op1-5,steady,12,won,5413,S,45,51,1
+-op1-5,steady,13,won,5601,XS,38,64,1
+-op1-5,steady,14,won,5459,S,44,56,1
+-op1-5,steady,15,won,5530,S,42,59,1
+-op1-5,steady,16,won,5441,S,44,55,1
+-op1-5,steady,17,won,5558,S,41,60,1
+-op1-5,steady,18,won,5585,XS,40,64,1
+-op1-5,steady,19,won,5459,S,44,56,1
+-op1-5,steady,20,won,5405,S,46,52,1
+-op1-5,expert,1,won,5663,XS,35,65,1
+-op1-5,expert,2,won,5737,XS,31,69,1
+-op1-5,expert,3,won,5665,XS,35,65,1
+-op1-5,expert,4,won,5733,XS,31,69,1
+-op1-5,expert,5,won,5663,XS,35,66,1
+-op1-5,expert,6,won,5666,XS,35,63,1
+-op1-5,expert,7,won,5701,XS,33,68,1
+-op1-5,expert,8,won,5742,XS,30,69,1
+-op1-5,expert,9,won,5699,XS,33,67,1
+-op1-5,expert,10,won,5691,XS,34,66,1
+-op1-5,expert,11,won,5707,XS,32,68,1
+-op1-5,expert,12,won,5646,XS,35,62,1
+-op1-5,expert,13,won,5741,XS,30,70,1
+-op1-5,expert,14,won,5665,XS,35,65,1
+-op1-5,expert,15,won,5690,XS,34,67,1
+-op1-5,expert,16,won,5658,XS,36,64,1
+-op1-5,expert,17,won,5690,XS,34,67,1
+-op1-5,expert,18,won,5733,XS,31,70,1
+-op1-5,expert,19,won,5693,XS,34,66,1
+-op1-5,expert,20,won,5666,XS,35,65,1
+-op1-5,farm,1,won,4648,A,160,39,1
+-op1-5,farm,2,won,4646,A,160,39,1
+-op1-5,farm,3,won,4658,A,158,39,1
+-op1-5,farm,4,won,4673,A,160,38,1
+-op1-5,farm,5,won,4669,A,160,38,1
+-op1-5,farm,6,won,4688,A,157,38,1
+-op1-5,farm,7,won,4676,A,163,38,1
+-op1-5,farm,8,won,4652,A,164,37,1
+-op1-5,farm,9,won,4667,A,159,38,1
+-op1-5,farm,10,won,4651,A,160,38,1
+-op1-5,farm,11,won,4639,A,158,39,1
+-op1-5,farm,12,won,4657,A,160,38,1
+-op1-5,farm,13,won,4689,A,156,39,1
+-op1-5,farm,14,won,4635,A,162,39,1
+-op1-5,farm,15,won,4700,A,158,38,1
+-op1-5,farm,16,won,4655,A,162,38,1
+-op1-5,farm,17,won,4676,A,163,37,1
+-op1-5,farm,18,won,4662,A,158,39,1
+-op1-5,farm,19,won,4650,A,160,38,1
+-op1-5,farm,20,won,4685,A,159,38,1
+-op1-5,sloppy,1,won,5531,S,42,58,1
+-op1-5,sloppy,2,won,5531,S,40,62,1
+-op1-5,sloppy,3,won,5459,S,44,55,1
+-op1-5,sloppy,4,won,5585,XS,40,63,1
+-op1-5,sloppy,5,won,5495,S,44,57,1
+-op1-5,sloppy,6,won,5441,S,44,55,1
+-op1-5,sloppy,7,won,5531,S,40,61,1
+-op1-5,sloppy,8,won,5594,XS,39,62,1
+-op1-5,sloppy,9,won,5523,S,43,59,1
+-op1-5,sloppy,10,won,5551,S,42,60,1
+-op1-5,sloppy,11,won,5551,S,42,60,1
+-op1-5,sloppy,12,won,5413,S,45,51,1
+-op1-5,sloppy,13,won,5601,XS,38,64,1
+-op1-5,sloppy,14,won,5459,S,44,56,1
+-op1-5,sloppy,15,won,5530,S,42,59,1
+-op1-5,sloppy,16,won,5441,S,44,55,1
+-op1-5,sloppy,17,won,5558,S,41,60,1
+-op1-5,sloppy,18,won,5585,XS,40,64,1
+-op1-5,sloppy,19,won,5459,S,44,56,1
+-op1-5,sloppy,20,won,5405,S,46,52,1
+-op2-1,novice,1,won,4921,S,28,72,0
+-op2-1,novice,2,won,4921,S,28,72,0
+-op2-1,novice,3,won,4921,S,28,72,0
+-op2-1,novice,4,won,4921,S,28,72,0
+-op2-1,novice,5,won,4921,S,28,72,0
+-op2-1,novice,6,won,4921,S,28,72,0
+-op2-1,novice,7,won,4921,S,28,72,0
+-op2-1,novice,8,won,4921,S,28,72,0
+-op2-1,novice,9,won,4921,S,28,72,0
+-op2-1,novice,10,won,4921,S,28,72,0
+-op2-1,novice,11,won,4921,S,28,72,0
+-op2-1,novice,12,won,4921,S,28,72,0
+-op2-1,novice,13,won,4921,S,28,72,0
+-op2-1,novice,14,won,4921,S,28,72,0
+-op2-1,novice,15,won,4921,S,28,72,0
+-op2-1,novice,16,won,4921,S,28,72,0
+-op2-1,novice,17,won,4921,S,28,72,0
+-op2-1,novice,18,won,4921,S,28,72,0
+-op2-1,novice,19,won,4921,S,28,72,0
+-op2-1,novice,20,won,4921,S,28,72,0
+-op2-1,steady,1,won,5031,S,23,78,0
+-op2-1,steady,2,won,5031,S,23,78,0
+-op2-1,steady,3,won,5031,S,23,78,0
+-op2-1,steady,4,won,5031,S,23,78,0
+-op2-1,steady,5,won,5031,S,23,78,0
+-op2-1,steady,6,won,5031,S,23,78,0
+-op2-1,steady,7,won,5031,S,23,78,0
+-op2-1,steady,8,won,5031,S,23,78,0
+-op2-1,steady,9,won,5031,S,23,78,0
+-op2-1,steady,10,won,5031,S,23,78,0
+-op2-1,steady,11,won,5031,S,23,78,0
+-op2-1,steady,12,won,5031,S,23,78,0
+-op2-1,steady,13,won,5031,S,23,78,0
+-op2-1,steady,14,won,5031,S,23,78,0
+-op2-1,steady,15,won,5031,S,23,78,0
+-op2-1,steady,16,won,5031,S,23,78,0
+-op2-1,steady,17,won,5031,S,23,78,0
+-op2-1,steady,18,won,5031,S,23,78,0
+-op2-1,steady,19,won,5031,S,23,78,0
+-op2-1,steady,20,won,5031,S,23,78,0
+-op2-1,expert,1,won,5111,XS,19,83,0
+-op2-1,expert,2,won,5111,XS,19,83,0
+-op2-1,expert,3,won,5111,XS,19,83,0
+-op2-1,expert,4,won,5111,XS,19,83,0
+-op2-1,expert,5,won,5111,XS,19,83,0
+-op2-1,expert,6,won,5111,XS,19,83,0
+-op2-1,expert,7,won,5111,XS,19,83,0
+-op2-1,expert,8,won,5111,XS,19,83,0
+-op2-1,expert,9,won,5111,XS,19,83,0
+-op2-1,expert,10,won,5111,XS,19,83,0
+-op2-1,expert,11,won,5111,XS,19,83,0
+-op2-1,expert,12,won,5111,XS,19,83,0
+-op2-1,expert,13,won,5111,XS,19,83,0
+-op2-1,expert,14,won,5111,XS,19,83,0
+-op2-1,expert,15,won,5111,XS,19,83,0
+-op2-1,expert,16,won,5111,XS,19,83,0
+-op2-1,expert,17,won,5111,XS,19,83,0
+-op2-1,expert,18,won,5111,XS,19,83,0
+-op2-1,expert,19,won,5111,XS,19,83,0
+-op2-1,expert,20,won,5111,XS,19,83,0
+-op2-1,farm,1,won,5031,S,23,78,0
+-op2-1,farm,2,won,5031,S,23,78,0
+-op2-1,farm,3,won,5031,S,23,78,0
+-op2-1,farm,4,won,5031,S,23,78,0
+-op2-1,farm,5,won,5031,S,23,78,0
+-op2-1,farm,6,won,5031,S,23,78,0
+-op2-1,farm,7,won,5031,S,23,78,0
+-op2-1,farm,8,won,5031,S,23,78,0
+-op2-1,farm,9,won,5031,S,23,78,0
+-op2-1,farm,10,won,5031,S,23,78,0
+-op2-1,farm,11,won,5031,S,23,78,0
+-op2-1,farm,12,won,5031,S,23,78,0
+-op2-1,farm,13,won,5031,S,23,78,0
+-op2-1,farm,14,won,5031,S,23,78,0
+-op2-1,farm,15,won,5031,S,23,78,0
+-op2-1,farm,16,won,5031,S,23,78,0
+-op2-1,farm,17,won,5031,S,23,78,0
+-op2-1,farm,18,won,5031,S,23,78,0
+-op2-1,farm,19,won,5031,S,23,78,0
+-op2-1,farm,20,won,5031,S,23,78,0
+-op2-1,sloppy,1,won,5031,S,23,78,0
+-op2-1,sloppy,2,won,5031,S,23,78,0
+-op2-1,sloppy,3,won,5031,S,23,78,0
+-op2-1,sloppy,4,won,5031,S,23,78,0
+-op2-1,sloppy,5,won,5031,S,23,78,0
+-op2-1,sloppy,6,won,5031,S,23,78,0
+-op2-1,sloppy,7,won,5031,S,23,78,0
+-op2-1,sloppy,8,won,5031,S,23,78,0
+-op2-1,sloppy,9,won,5031,S,23,78,0
+-op2-1,sloppy,10,won,5031,S,23,78,0
+-op2-1,sloppy,11,won,5031,S,23,78,0
+-op2-1,sloppy,12,won,5031,S,23,78,0
+-op2-1,sloppy,13,won,5031,S,23,78,0
+-op2-1,sloppy,14,won,5031,S,23,78,0
+-op2-1,sloppy,15,won,5031,S,23,78,0
+-op2-1,sloppy,16,won,5031,S,23,78,0
+-op2-1,sloppy,17,won,5031,S,23,78,0
+-op2-1,sloppy,18,won,5031,S,23,78,0
+-op2-1,sloppy,19,won,5031,S,23,78,0
+-op2-1,sloppy,20,won,5031,S,23,78,0
++op1-4,novice,1,won,5885,XS,45,69,0
++op1-4,novice,2,won,5885,XS,45,69,0
++op1-4,novice,3,won,5885,XS,45,69,0
++op1-4,novice,4,won,5885,XS,45,69,0
++op1-4,novice,5,won,5885,XS,45,69,0
++op1-4,novice,6,won,5885,XS,45,69,0
++op1-4,novice,7,won,5885,XS,45,69,0
++op1-4,novice,8,won,5885,XS,45,69,0
++op1-4,novice,9,won,5885,XS,45,69,0
++op1-4,novice,10,won,5885,XS,45,69,0
++op1-4,novice,11,won,5885,XS,45,69,0
++op1-4,novice,12,won,5885,XS,45,69,0
++op1-4,novice,13,won,5885,XS,45,69,0
++op1-4,novice,14,won,5885,XS,45,69,0
++op1-4,novice,15,won,5885,XS,45,69,0
++op1-4,novice,16,won,5885,XS,45,69,0
++op1-4,novice,17,won,5945,XS,43,72,0
++op1-4,novice,18,won,5885,XS,45,69,0
++op1-4,novice,19,won,5885,XS,45,69,0
++op1-4,novice,20,won,5885,XS,45,69,0
++op1-4,steady,1,won,6055,XS,36,76,0
++op1-4,steady,2,won,6055,XS,36,76,0
++op1-4,steady,3,won,6055,XS,36,76,0
++op1-4,steady,4,won,6055,XS,36,76,0
++op1-4,steady,5,won,6055,XS,36,76,0
++op1-4,steady,6,won,6055,XS,36,76,0
++op1-4,steady,7,won,6055,XS,36,76,0
++op1-4,steady,8,won,6055,XS,36,76,0
++op1-4,steady,9,won,6055,XS,36,76,0
++op1-4,steady,10,won,6055,XS,36,76,0
++op1-4,steady,11,won,6055,XS,36,76,0
++op1-4,steady,12,won,6055,XS,36,76,0
++op1-4,steady,13,won,6055,XS,36,76,0
++op1-4,steady,14,won,6055,XS,36,76,0
++op1-4,steady,15,won,6055,XS,36,76,0
++op1-4,steady,16,won,6055,XS,36,76,0
++op1-4,steady,17,won,6055,XS,36,76,0
++op1-4,steady,18,won,6055,XS,36,76,0
++op1-4,steady,19,won,6055,XS,36,76,0
++op1-4,steady,20,won,6055,XS,36,76,0
++op1-4,expert,1,won,6195,XS,28,81,0
++op1-4,expert,2,won,6195,XS,28,81,0
++op1-4,expert,3,won,6195,XS,28,81,0
++op1-4,expert,4,won,6195,XS,28,81,0
++op1-4,expert,5,won,6195,XS,28,81,0
++op1-4,expert,6,won,6195,XS,28,81,0
++op1-4,expert,7,won,6195,XS,28,81,0
++op1-4,expert,8,won,6195,XS,28,81,0
++op1-4,expert,9,won,6195,XS,28,81,0
++op1-4,expert,10,won,6195,XS,28,81,0
++op1-4,expert,11,won,6195,XS,28,81,0
++op1-4,expert,12,won,6195,XS,28,81,0
++op1-4,expert,13,won,6195,XS,28,81,0
++op1-4,expert,14,won,6195,XS,28,81,0
++op1-4,expert,15,won,6195,XS,28,81,0
++op1-4,expert,16,won,6195,XS,28,81,0
++op1-4,expert,17,won,6195,XS,28,81,0
++op1-4,expert,18,won,6195,XS,28,81,0
++op1-4,expert,19,won,6195,XS,28,81,0
++op1-4,expert,20,won,6195,XS,28,81,0
++op1-4,farm,1,won,6055,XS,36,76,0
++op1-4,farm,2,won,6055,XS,36,76,0
++op1-4,farm,3,won,6055,XS,36,76,0
++op1-4,farm,4,won,6055,XS,36,76,0
++op1-4,farm,5,won,6055,XS,36,76,0
++op1-4,farm,6,won,6055,XS,36,76,0
++op1-4,farm,7,won,6055,XS,36,76,0
++op1-4,farm,8,won,6055,XS,36,76,0
++op1-4,farm,9,won,6055,XS,36,76,0
++op1-4,farm,10,won,6055,XS,36,76,0
++op1-4,farm,11,won,6055,XS,36,76,0
++op1-4,farm,12,won,6055,XS,36,76,0
++op1-4,farm,13,won,6055,XS,36,76,0
++op1-4,farm,14,won,6055,XS,36,76,0
++op1-4,farm,15,won,6055,XS,36,76,0
++op1-4,farm,16,won,6055,XS,36,76,0
++op1-4,farm,17,won,6055,XS,36,76,0
++op1-4,farm,18,won,6055,XS,36,76,0
++op1-4,farm,19,won,6055,XS,36,76,0
++op1-4,farm,20,won,6055,XS,36,76,0
++op1-4,sloppy,1,won,5832,S,37,75,0
++op1-4,sloppy,2,won,5762,S,39,73,0
++op1-4,sloppy,3,won,6015,XS,38,74,0
++op1-4,sloppy,4,won,5891,S,37,75,0
++op1-4,sloppy,5,won,6025,XS,37,74,0
++op1-4,sloppy,6,won,5832,S,37,75,0
++op1-4,sloppy,7,won,6055,XS,36,76,0
++op1-4,sloppy,8,won,6055,XS,36,76,0
++op1-4,sloppy,9,won,5861,S,38,73,0
++op1-4,sloppy,10,won,5792,S,38,74,0
++op1-4,sloppy,11,won,6055,XS,36,76,0
++op1-4,sloppy,12,won,5832,S,37,75,0
++op1-4,sloppy,13,won,5841,S,38,73,0
++op1-4,sloppy,14,won,6055,XS,36,76,0
++op1-4,sloppy,15,won,5822,S,37,75,0
++op1-4,sloppy,16,won,5657,S,40,72,0
++op1-4,sloppy,17,won,6045,XS,37,75,0
++op1-4,sloppy,18,won,6045,XS,37,75,0
++op1-4,sloppy,19,won,6055,XS,36,76,0
++op1-4,sloppy,20,won,5792,S,38,73,0
++op1-5,novice,1,won,3938,B,180,30,1
++op1-5,novice,2,won,3993,B,182,36,1
++op1-5,novice,3,won,3934,B,184,28,1
++op1-5,novice,4,won,3979,B,183,32,1
++op1-5,novice,5,won,3942,B,183,31,1
++op1-5,novice,6,won,3982,B,182,35,1
++op1-5,novice,7,won,3895,B,189,32,1
++op1-5,novice,8,won,3826,B,196,32,1
++op1-5,novice,9,won,4007,B,179,32,1
++op1-5,novice,10,won,4035,B,180,33,1
++op1-5,novice,11,won,3909,B,183,31,1
++op1-5,novice,12,won,3903,B,186,30,1
++op1-5,novice,13,won,3892,B,188,33,1
++op1-5,novice,14,won,3906,B,187,28,1
++op1-5,novice,15,won,3941,B,183,32,1
++op1-5,novice,16,won,3909,B,183,31,1
++op1-5,novice,17,won,3952,B,182,29,1
++op1-5,novice,18,won,3952,B,182,33,1
++op1-5,novice,19,won,3951,B,183,32,1
++op1-5,novice,20,won,3970,B,183,31,1
++op1-5,steady,1,won,4240,B,151,34,1
++op1-5,steady,2,won,4259,A,154,31,1
++op1-5,steady,3,won,4296,A,153,34,1
++op1-5,steady,4,won,4309,A,151,35,1
++op1-5,steady,5,won,4257,A,152,35,1
++op1-5,steady,6,won,4267,A,153,31,1
++op1-5,steady,7,won,4279,A,151,35,1
++op1-5,steady,8,won,4254,A,151,35,1
++op1-5,steady,9,won,4277,A,150,34,1
++op1-5,steady,10,won,4234,B,152,34,1
++op1-5,steady,11,won,4296,A,153,34,1
++op1-5,steady,12,won,4257,A,151,34,1
++op1-5,steady,13,won,4327,A,146,36,1
++op1-5,steady,14,won,4285,A,153,32,1
++op1-5,steady,15,won,4294,A,152,34,1
++op1-5,steady,16,won,4229,B,160,34,1
++op1-5,steady,17,won,4317,A,150,34,1
++op1-5,steady,18,won,4267,A,152,35,1
++op1-5,steady,19,won,4267,A,153,32,1
++op1-5,steady,20,won,4266,A,153,34,1
++op1-5,expert,1,won,4647,A,136,47,1
++op1-5,expert,2,won,4651,A,136,51,1
++op1-5,expert,3,won,4649,A,136,47,1
++op1-5,expert,4,won,4638,A,136,50,1
++op1-5,expert,5,won,4617,A,135,48,1
++op1-5,expert,6,won,4649,A,136,51,1
++op1-5,expert,7,won,4597,A,135,48,1
++op1-5,expert,8,won,4639,A,136,48,1
++op1-5,expert,9,won,4648,A,136,51,1
++op1-5,expert,10,won,4648,A,135,49,1
++op1-5,expert,11,won,4638,A,136,48,1
++op1-5,expert,12,won,4644,A,135,47,1
++op1-5,expert,13,won,4644,A,135,48,1
++op1-5,expert,14,won,4653,A,135,49,1
++op1-5,expert,15,won,4659,A,136,51,1
++op1-5,expert,16,won,4643,A,135,49,1
++op1-5,expert,17,won,4634,A,136,49,1
++op1-5,expert,18,won,4586,A,136,48,1
++op1-5,expert,19,won,4650,A,135,50,1
++op1-5,expert,20,won,4656,A,135,51,1
++op1-5,farm,1,won,4268,A,151,37,1
++op1-5,farm,2,won,4278,A,151,37,1
++op1-5,farm,3,won,4268,A,152,36,1
++op1-5,farm,4,won,4280,A,152,36,1
++op1-5,farm,5,won,4260,A,152,36,1
++op1-5,farm,6,won,4266,A,151,36,1
++op1-5,farm,7,won,4268,A,151,37,1
++op1-5,farm,8,won,4177,B,160,38,1
++op1-5,farm,9,won,4286,A,150,37,1
++op1-5,farm,10,won,4268,A,151,36,1
++op1-5,farm,11,won,4260,A,152,36,1
++op1-5,farm,12,won,4192,B,159,39,1
++op1-5,farm,13,won,4215,B,164,38,1
++op1-5,farm,14,won,4221,B,160,37,1
++op1-5,farm,15,won,4268,A,151,36,1
++op1-5,farm,16,won,4190,B,166,38,1
++op1-5,farm,17,won,4244,B,160,39,1
++op1-5,farm,18,won,4257,A,160,39,1
++op1-5,farm,19,won,4219,B,160,37,1
++op1-5,farm,20,won,4213,B,161,36,1
++op1-5,sloppy,1,won,4240,B,151,34,1
++op1-5,sloppy,2,won,4259,A,154,31,1
++op1-5,sloppy,3,won,4296,A,153,34,1
++op1-5,sloppy,4,won,4309,A,151,35,1
++op1-5,sloppy,5,won,4257,A,152,35,1
++op1-5,sloppy,6,won,4267,A,153,31,1
++op1-5,sloppy,7,won,4279,A,151,35,1
++op1-5,sloppy,8,won,4254,A,151,35,1
++op1-5,sloppy,9,won,4277,A,150,34,1
++op1-5,sloppy,10,won,4234,B,152,34,1
++op1-5,sloppy,11,won,4296,A,153,34,1
++op1-5,sloppy,12,won,4257,A,151,34,1
++op1-5,sloppy,13,won,4327,A,146,36,1
++op1-5,sloppy,14,won,4285,A,153,32,1
++op1-5,sloppy,15,won,4294,A,152,34,1
++op1-5,sloppy,16,won,4229,B,160,34,1
++op1-5,sloppy,17,won,4317,A,150,34,1
++op1-5,sloppy,18,won,4267,A,152,35,1
++op1-5,sloppy,19,won,4267,A,153,32,1
++op1-5,sloppy,20,won,4266,A,153,34,1
++op2-1,novice,1,lost,105,C,240,37,0
++op2-1,novice,2,lost,105,C,240,37,0
++op2-1,novice,3,lost,105,C,240,37,0
++op2-1,novice,4,lost,105,C,240,37,0
++op2-1,novice,5,lost,105,C,240,37,0
++op2-1,novice,6,lost,105,C,240,37,0
++op2-1,novice,7,lost,105,C,240,37,0
++op2-1,novice,8,lost,105,C,240,37,0
++op2-1,novice,9,lost,105,C,240,37,0
++op2-1,novice,10,lost,105,C,240,37,0
++op2-1,novice,11,lost,105,C,240,37,0
++op2-1,novice,12,lost,105,C,240,37,0
++op2-1,novice,13,lost,105,C,240,37,0
++op2-1,novice,14,lost,105,C,240,37,0
++op2-1,novice,15,lost,105,C,240,37,0
++op2-1,novice,16,lost,105,C,240,37,0
++op2-1,novice,17,lost,105,C,240,37,0
++op2-1,novice,18,lost,105,C,240,37,0
++op2-1,novice,19,lost,105,C,240,37,0
++op2-1,novice,20,lost,105,C,240,37,0
++op2-1,steady,1,lost,105,C,240,38,0
++op2-1,steady,2,lost,105,C,240,38,0
++op2-1,steady,3,lost,105,C,240,38,0
++op2-1,steady,4,lost,105,C,240,38,0
++op2-1,steady,5,lost,105,C,240,38,0
++op2-1,steady,6,lost,105,C,240,38,0
++op2-1,steady,7,lost,105,C,240,38,0
++op2-1,steady,8,lost,105,C,240,38,0
++op2-1,steady,9,lost,105,C,240,38,0
++op2-1,steady,10,lost,105,C,240,38,0
++op2-1,steady,11,lost,105,C,240,38,0
++op2-1,steady,12,lost,105,C,240,38,0
++op2-1,steady,13,lost,105,C,240,38,0
++op2-1,steady,14,lost,105,C,240,38,0
++op2-1,steady,15,lost,105,C,240,38,0
++op2-1,steady,16,lost,105,C,240,38,0
++op2-1,steady,17,lost,105,C,240,38,0
++op2-1,steady,18,lost,105,C,240,38,0
++op2-1,steady,19,lost,105,C,240,38,0
++op2-1,steady,20,lost,105,C,240,38,0
++op2-1,expert,1,lost,105,C,240,53,0
++op2-1,expert,2,lost,105,C,240,53,0
++op2-1,expert,3,lost,105,C,240,53,0
++op2-1,expert,4,lost,105,C,240,53,0
++op2-1,expert,5,lost,105,C,240,53,0
++op2-1,expert,6,lost,105,C,240,53,0
++op2-1,expert,7,lost,105,C,240,53,0
++op2-1,expert,8,lost,105,C,240,53,0
++op2-1,expert,9,lost,105,C,240,53,0
++op2-1,expert,10,lost,105,C,240,53,0
++op2-1,expert,11,lost,105,C,240,53,0
++op2-1,expert,12,lost,105,C,240,53,0
++op2-1,expert,13,lost,105,C,240,53,0
++op2-1,expert,14,lost,105,C,240,53,0
++op2-1,expert,15,lost,105,C,240,53,0
++op2-1,expert,16,lost,105,C,240,53,0
++op2-1,expert,17,lost,105,C,240,53,0
++op2-1,expert,18,lost,105,C,240,53,0
++op2-1,expert,19,lost,105,C,240,53,0
++op2-1,expert,20,lost,105,C,240,53,0
++op2-1,farm,1,lost,105,C,240,38,0
++op2-1,farm,2,lost,105,C,240,38,0
++op2-1,farm,3,lost,105,C,240,38,0
++op2-1,farm,4,lost,105,C,240,38,0
++op2-1,farm,5,lost,105,C,240,38,0
++op2-1,farm,6,lost,105,C,240,38,0
++op2-1,farm,7,lost,105,C,240,38,0
++op2-1,farm,8,lost,105,C,240,38,0
++op2-1,farm,9,lost,105,C,240,38,0
++op2-1,farm,10,lost,105,C,240,38,0
++op2-1,farm,11,lost,105,C,240,38,0
++op2-1,farm,12,lost,105,C,240,38,0
++op2-1,farm,13,lost,105,C,240,38,0
++op2-1,farm,14,lost,105,C,240,38,0
++op2-1,farm,15,lost,105,C,240,38,0
++op2-1,farm,16,lost,105,C,240,38,0
++op2-1,farm,17,lost,105,C,240,38,0
++op2-1,farm,18,lost,105,C,240,38,0
++op2-1,farm,19,lost,105,C,240,38,0
++op2-1,farm,20,lost,105,C,240,38,0
++op2-1,sloppy,1,lost,105,C,240,38,0
++op2-1,sloppy,2,lost,105,C,240,38,0
++op2-1,sloppy,3,lost,105,C,240,38,0
++op2-1,sloppy,4,lost,105,C,240,38,0
++op2-1,sloppy,5,lost,105,C,240,38,0
++op2-1,sloppy,6,lost,105,C,240,38,0
++op2-1,sloppy,7,lost,105,C,240,38,0
++op2-1,sloppy,8,lost,105,C,240,38,0
++op2-1,sloppy,9,lost,105,C,240,38,0
++op2-1,sloppy,10,lost,105,C,240,38,0
++op2-1,sloppy,11,lost,105,C,240,38,0
++op2-1,sloppy,12,lost,105,C,240,38,0
++op2-1,sloppy,13,lost,105,C,240,38,0
++op2-1,sloppy,14,lost,105,C,240,38,0
++op2-1,sloppy,15,lost,105,C,240,38,0
++op2-1,sloppy,16,lost,105,C,240,38,0
++op2-1,sloppy,17,lost,105,C,240,38,0
++op2-1,sloppy,18,lost,105,C,240,38,0
++op2-1,sloppy,19,lost,105,C,240,38,0
++op2-1,sloppy,20,lost,105,C,240,38,0
+ op2-2,novice,1,won,5516,A,63,37,0
+ op2-2,novice,2,won,5506,A,64,37,0
+ op2-2,novice,3,won,5506,A,64,37,0
+@@ -699,303 +699,303 @@ op2-2,sloppy,17,won,5891,S,45,56,0
+ op2-2,sloppy,18,won,5891,S,45,56,0
+ op2-2,sloppy,19,won,5891,S,45,56,0
+ op2-2,sloppy,20,won,5891,S,45,56,0
+-op2-3,novice,1,won,6884,S,61,34,0
+-op2-3,novice,2,won,6884,S,61,34,0
+-op2-3,novice,3,won,6884,S,61,34,0
+-op2-3,novice,4,won,6884,S,61,34,0
+-op2-3,novice,5,won,6973,S,59,38,0
+-op2-3,novice,6,won,6904,S,59,34,0
+-op2-3,novice,7,won,6884,S,61,34,0
+-op2-3,novice,8,won,6884,S,61,34,0
+-op2-3,novice,9,won,6884,S,61,34,0
+-op2-3,novice,10,won,6884,S,61,34,0
+-op2-3,novice,11,won,6904,S,59,34,0
+-op2-3,novice,12,won,6884,S,61,34,0
+-op2-3,novice,13,won,6884,S,61,34,0
+-op2-3,novice,14,won,6884,S,61,34,0
+-op2-3,novice,15,won,6904,S,59,34,0
+-op2-3,novice,16,won,6973,S,57,36,0
+-op2-3,novice,17,won,6884,S,61,34,0
+-op2-3,novice,18,won,6884,S,61,34,0
+-op2-3,novice,19,won,6884,S,61,34,0
+-op2-3,novice,20,won,6884,S,61,34,0
+-op2-3,steady,1,won,7070,S,44,38,0
+-op2-3,steady,2,won,7070,S,44,38,0
+-op2-3,steady,3,won,7070,S,44,38,0
+-op2-3,steady,4,won,7070,S,44,38,0
+-op2-3,steady,5,won,7070,S,44,38,0
+-op2-3,steady,6,won,7100,S,41,41,0
+-op2-3,steady,7,won,7070,S,44,38,0
+-op2-3,steady,8,won,7070,S,44,38,0
+-op2-3,steady,9,won,7070,S,44,38,0
+-op2-3,steady,10,won,7070,S,44,38,0
+-op2-3,steady,11,won,7070,S,44,38,0
+-op2-3,steady,12,won,7070,S,44,38,0
+-op2-3,steady,13,won,7070,S,44,38,0
+-op2-3,steady,14,won,7070,S,44,38,0
+-op2-3,steady,15,won,7120,S,41,42,0
+-op2-3,steady,16,won,7100,S,41,40,0
+-op2-3,steady,17,won,7070,S,44,38,0
+-op2-3,steady,18,won,7100,S,41,41,0
+-op2-3,steady,19,won,7070,S,44,38,0
+-op2-3,steady,20,won,7070,S,44,38,0
+-op2-3,expert,1,won,7544,XS,27,59,0
+-op2-3,expert,2,won,7514,XS,28,57,0
+-op2-3,expert,3,won,7514,XS,28,57,0
+-op2-3,expert,4,won,7514,XS,28,57,0
+-op2-3,expert,5,won,7514,XS,28,57,0
+-op2-3,expert,6,won,7524,XS,27,59,0
+-op2-3,expert,7,won,7514,XS,28,57,0
+-op2-3,expert,8,won,7514,XS,28,57,0
+-op2-3,expert,9,won,7524,XS,27,59,0
+-op2-3,expert,10,won,7514,XS,28,57,0
+-op2-3,expert,11,won,7514,XS,28,57,0
+-op2-3,expert,12,won,7514,XS,28,57,0
+-op2-3,expert,13,won,7564,XS,27,61,0
+-op2-3,expert,14,won,7514,XS,28,57,0
+-op2-3,expert,15,won,7514,XS,28,57,0
+-op2-3,expert,16,won,7514,XS,28,57,0
+-op2-3,expert,17,won,7514,XS,28,57,0
+-op2-3,expert,18,won,7514,XS,28,57,0
+-op2-3,expert,19,won,7544,XS,27,60,0
+-op2-3,expert,20,won,7514,XS,28,57,0
+-op2-3,farm,1,won,7070,S,44,38,0
+-op2-3,farm,2,won,7070,S,44,38,0
+-op2-3,farm,3,won,7070,S,44,38,0
+-op2-3,farm,4,won,7070,S,44,38,0
+-op2-3,farm,5,won,7070,S,44,38,0
+-op2-3,farm,6,won,7100,S,41,41,0
+-op2-3,farm,7,won,7070,S,44,38,0
+-op2-3,farm,8,won,7070,S,44,38,0
+-op2-3,farm,9,won,7070,S,44,38,0
+-op2-3,farm,10,won,7070,S,44,38,0
+-op2-3,farm,11,won,7070,S,44,38,0
+-op2-3,farm,12,won,7070,S,44,38,0
+-op2-3,farm,13,won,7070,S,44,38,0
+-op2-3,farm,14,won,7070,S,44,38,0
+-op2-3,farm,15,won,7120,S,41,42,0
+-op2-3,farm,16,won,7100,S,41,40,0
+-op2-3,farm,17,won,7070,S,44,38,0
+-op2-3,farm,18,won,7100,S,41,41,0
+-op2-3,farm,19,won,7070,S,44,38,0
+-op2-3,farm,20,won,7070,S,44,38,0
+-op2-3,sloppy,1,won,7070,S,44,38,0
+-op2-3,sloppy,2,won,7070,S,44,38,0
+-op2-3,sloppy,3,won,7070,S,44,38,0
+-op2-3,sloppy,4,won,6338,A,45,38,0
+-op2-3,sloppy,5,won,7060,S,45,38,0
+-op2-3,sloppy,6,won,7070,S,42,39,0
+-op2-3,sloppy,7,won,7070,S,44,38,0
+-op2-3,sloppy,8,won,7070,S,44,38,0
+-op2-3,sloppy,9,won,7060,S,45,38,0
+-op2-3,sloppy,10,won,7070,S,44,38,0
+-op2-3,sloppy,11,won,7070,S,44,38,0
+-op2-3,sloppy,12,won,7070,S,44,38,0
+-op2-3,sloppy,13,won,7070,S,44,38,0
+-op2-3,sloppy,14,won,6338,A,45,38,0
+-op2-3,sloppy,15,won,7120,S,41,42,0
+-op2-3,sloppy,16,won,7100,S,41,40,0
+-op2-3,sloppy,17,won,7050,S,46,38,0
+-op2-3,sloppy,18,won,7100,S,41,41,0
+-op2-3,sloppy,19,won,7070,S,44,38,0
+-op2-3,sloppy,20,won,7050,S,46,38,0
+-op2-4,novice,1,won,6012,S,73,36,0
+-op2-4,novice,2,won,6012,S,73,36,0
+-op2-4,novice,3,won,6012,S,73,36,0
+-op2-4,novice,4,won,6012,S,73,36,0
+-op2-4,novice,5,won,6012,S,73,36,0
+-op2-4,novice,6,won,6012,S,73,36,0
+-op2-4,novice,7,won,6012,S,73,36,0
+-op2-4,novice,8,won,6012,S,73,36,0
+-op2-4,novice,9,won,6012,S,73,36,0
+-op2-4,novice,10,won,6012,S,73,36,0
+-op2-4,novice,11,won,6012,S,73,36,0
+-op2-4,novice,12,won,6012,S,73,36,0
+-op2-4,novice,13,won,6012,S,73,36,0
+-op2-4,novice,14,won,6012,S,73,36,0
+-op2-4,novice,15,won,6012,S,73,36,0
+-op2-4,novice,16,won,6012,S,73,36,0
+-op2-4,novice,17,won,6012,S,73,36,0
+-op2-4,novice,18,won,6012,S,73,36,0
+-op2-4,novice,19,won,6012,S,73,36,0
+-op2-4,novice,20,won,6012,S,73,36,0
+-op2-4,steady,1,won,6237,S,52,35,0
+-op2-4,steady,2,won,6237,S,52,35,0
+-op2-4,steady,3,won,6237,S,52,35,0
+-op2-4,steady,4,won,6237,S,52,35,0
+-op2-4,steady,5,won,6237,S,52,35,0
+-op2-4,steady,6,won,6237,S,52,35,0
+-op2-4,steady,7,won,6237,S,52,35,0
+-op2-4,steady,8,won,6237,S,52,35,0
+-op2-4,steady,9,won,6237,S,52,35,0
+-op2-4,steady,10,won,6237,S,52,35,0
+-op2-4,steady,11,won,6237,S,52,35,0
+-op2-4,steady,12,won,6237,S,52,35,0
+-op2-4,steady,13,won,6237,S,52,35,0
+-op2-4,steady,14,won,6237,S,52,35,0
+-op2-4,steady,15,won,6237,S,52,35,0
+-op2-4,steady,16,won,6237,S,52,35,0
+-op2-4,steady,17,won,6237,S,52,35,0
+-op2-4,steady,18,won,6237,S,52,35,0
+-op2-4,steady,19,won,6237,S,52,35,0
+-op2-4,steady,20,won,6237,S,52,35,0
+-op2-4,expert,1,won,6783,XS,38,51,0
+-op2-4,expert,2,won,6783,XS,38,51,0
+-op2-4,expert,3,won,6783,XS,38,51,0
+-op2-4,expert,4,won,6783,XS,38,51,0
+-op2-4,expert,5,won,6783,XS,38,51,0
+-op2-4,expert,6,won,6783,XS,38,51,0
+-op2-4,expert,7,won,6783,XS,38,51,0
+-op2-4,expert,8,won,6783,XS,38,51,0
+-op2-4,expert,9,won,6783,XS,38,51,0
+-op2-4,expert,10,won,6783,XS,38,51,0
+-op2-4,expert,11,won,6783,XS,38,51,0
+-op2-4,expert,12,won,6783,XS,38,51,0
+-op2-4,expert,13,won,6783,XS,38,51,0
+-op2-4,expert,14,won,6783,XS,38,51,0
+-op2-4,expert,15,won,6783,XS,38,51,0
+-op2-4,expert,16,won,6783,XS,38,51,0
+-op2-4,expert,17,won,6783,XS,38,51,0
+-op2-4,expert,18,won,6783,XS,38,51,0
+-op2-4,expert,19,won,6783,XS,38,51,0
+-op2-4,expert,20,won,6783,XS,38,51,0
+-op2-4,farm,1,won,6237,S,52,35,0
+-op2-4,farm,2,won,6237,S,52,35,0
+-op2-4,farm,3,won,6237,S,52,35,0
+-op2-4,farm,4,won,6237,S,52,35,0
+-op2-4,farm,5,won,6237,S,52,35,0
+-op2-4,farm,6,won,6237,S,52,35,0
+-op2-4,farm,7,won,6237,S,52,35,0
+-op2-4,farm,8,won,6237,S,52,35,0
+-op2-4,farm,9,won,6237,S,52,35,0
+-op2-4,farm,10,won,6237,S,52,35,0
+-op2-4,farm,11,won,6237,S,52,35,0
+-op2-4,farm,12,won,6237,S,52,35,0
+-op2-4,farm,13,won,6237,S,52,35,0
+-op2-4,farm,14,won,6237,S,52,35,0
+-op2-4,farm,15,won,6237,S,52,35,0
+-op2-4,farm,16,won,6237,S,52,35,0
+-op2-4,farm,17,won,6237,S,52,35,0
+-op2-4,farm,18,won,6237,S,52,35,0
+-op2-4,farm,19,won,6237,S,52,35,0
+-op2-4,farm,20,won,6237,S,52,35,0
+-op2-4,sloppy,1,won,6237,S,52,35,0
+-op2-4,sloppy,2,won,6237,S,52,35,0
+-op2-4,sloppy,3,won,6237,S,52,35,0
+-op2-4,sloppy,4,won,6237,S,52,35,0
+-op2-4,sloppy,5,won,6237,S,52,35,0
+-op2-4,sloppy,6,won,6237,S,52,35,0
+-op2-4,sloppy,7,won,6237,S,52,35,0
+-op2-4,sloppy,8,won,6237,S,52,35,0
+-op2-4,sloppy,9,won,6237,S,52,35,0
+-op2-4,sloppy,10,won,6237,S,52,35,0
+-op2-4,sloppy,11,won,6237,S,52,35,0
+-op2-4,sloppy,12,won,6237,S,52,35,0
+-op2-4,sloppy,13,won,6237,S,52,35,0
+-op2-4,sloppy,14,won,6237,S,52,35,0
+-op2-4,sloppy,15,won,6237,S,52,35,0
+-op2-4,sloppy,16,won,6237,S,52,35,0
+-op2-4,sloppy,17,won,6237,S,52,35,0
+-op2-4,sloppy,18,won,6237,S,52,35,0
+-op2-4,sloppy,19,won,6237,S,52,35,0
+-op2-4,sloppy,20,won,6237,S,52,35,0
+-op2-5,novice,1,won,6047,A,64,36,1
+-op2-5,novice,2,won,5903,A,74,29,1
+-op2-5,novice,3,won,5983,A,67,38,1
+-op2-5,novice,4,won,6007,A,64,34,1
+-op2-5,novice,5,won,5940,A,74,37,1
+-op2-5,novice,6,won,6011,A,66,34,1
+-op2-5,novice,7,won,6055,A,63,35,1
+-op2-5,novice,8,won,6065,A,63,37,1
+-op2-5,novice,9,won,5956,A,72,33,1
+-op2-5,novice,10,won,5942,A,71,30,1
+-op2-5,novice,11,won,5798,A,85,35,1
+-op2-5,novice,12,won,6172,A,61,35,1
+-op2-5,novice,13,won,6019,A,65,34,1
+-op2-5,novice,14,won,6039,A,65,38,1
+-op2-5,novice,15,won,6022,A,68,36,1
+-op2-5,novice,16,won,6073,A,62,38,1
+-op2-5,novice,17,won,6240,A,60,36,1
+-op2-5,novice,18,won,6072,A,63,36,1
+-op2-5,novice,19,won,5903,A,76,35,1
+-op2-5,novice,20,won,6019,A,65,38,1
+-op2-5,steady,1,won,6648,S,39,63,1
+-op2-5,steady,2,won,6648,S,39,62,1
+-op2-5,steady,3,won,6676,S,38,64,1
+-op2-5,steady,4,won,6676,S,38,64,1
+-op2-5,steady,5,won,6656,S,38,64,1
+-op2-5,steady,6,won,6676,S,38,64,1
+-op2-5,steady,7,won,6365,A,46,50,1
+-op2-5,steady,8,won,6648,S,39,64,1
+-op2-5,steady,9,won,6656,S,38,64,1
+-op2-5,steady,10,won,6648,S,39,62,1
+-op2-5,steady,11,won,6648,S,39,62,1
+-op2-5,steady,12,won,6648,S,39,62,1
+-op2-5,steady,13,won,6393,S,45,51,1
+-op2-5,steady,14,won,6676,S,38,64,1
+-op2-5,steady,15,won,6648,S,39,62,1
+-op2-5,steady,16,won,6385,S,46,50,1
+-op2-5,steady,17,won,6648,S,39,63,1
+-op2-5,steady,18,won,6676,S,38,64,1
+-op2-5,steady,19,won,6676,S,38,64,1
+-op2-5,steady,20,won,6500,S,45,51,1
+-op2-5,expert,1,won,6768,XS,34,70,1
+-op2-5,expert,2,won,6848,XS,29,75,1
+-op2-5,expert,3,won,6876,XS,28,76,1
+-op2-5,expert,4,won,6856,XS,28,76,1
+-op2-5,expert,5,won,6776,XS,33,71,1
+-op2-5,expert,6,won,6856,XS,28,76,1
+-op2-5,expert,7,won,6856,XS,28,76,1
+-op2-5,expert,8,won,6856,XS,28,76,1
+-op2-5,expert,9,won,6848,XS,29,75,1
+-op2-5,expert,10,won,6848,XS,29,75,1
+-op2-5,expert,11,won,6848,XS,29,76,1
+-op2-5,expert,12,won,6848,XS,29,75,1
+-op2-5,expert,13,won,6856,XS,28,76,1
+-op2-5,expert,14,won,6856,XS,28,76,1
+-op2-5,expert,15,won,6848,XS,29,75,1
+-op2-5,expert,16,won,6876,XS,28,77,1
+-op2-5,expert,17,won,6856,XS,28,76,1
+-op2-5,expert,18,won,6856,XS,28,76,1
+-op2-5,expert,19,won,6876,XS,28,77,1
+-op2-5,expert,20,won,6856,XS,28,76,1
+-op2-5,farm,1,won,5769,A,162,35,1
+-op2-5,farm,2,won,5739,A,161,35,1
+-op2-5,farm,3,won,5732,A,161,36,1
+-op2-5,farm,4,won,5728,A,160,35,1
+-op2-5,farm,5,won,5757,A,161,34,1
+-op2-5,farm,6,won,5718,A,160,36,1
+-op2-5,farm,7,won,5760,A,160,36,1
+-op2-5,farm,8,won,5768,A,160,36,1
+-op2-5,farm,9,won,5392,A,175,36,1
+-op2-5,farm,10,won,5450,A,176,36,1
+-op2-5,farm,11,won,5418,A,174,33,1
+-op2-5,farm,12,won,5735,A,160,36,1
+-op2-5,farm,13,won,5752,A,160,36,1
+-op2-5,farm,14,won,5752,A,160,36,1
+-op2-5,farm,15,won,5403,A,175,36,1
+-op2-5,farm,16,won,5749,A,160,36,1
+-op2-5,farm,17,won,5441,A,174,35,1
+-op2-5,farm,18,won,5386,A,175,36,1
+-op2-5,farm,19,won,5750,A,161,36,1
+-op2-5,farm,20,won,5769,A,160,36,1
+-op2-5,sloppy,1,won,6648,S,39,63,1
+-op2-5,sloppy,2,won,6648,S,39,62,1
+-op2-5,sloppy,3,won,6676,S,38,64,1
+-op2-5,sloppy,4,won,6676,S,38,64,1
+-op2-5,sloppy,5,won,6656,S,38,64,1
+-op2-5,sloppy,6,won,6676,S,38,64,1
+-op2-5,sloppy,7,won,6365,A,46,50,1
+-op2-5,sloppy,8,won,6648,S,39,64,1
+-op2-5,sloppy,9,won,6656,S,38,64,1
+-op2-5,sloppy,10,won,6648,S,39,62,1
+-op2-5,sloppy,11,won,6648,S,39,62,1
+-op2-5,sloppy,12,won,6648,S,39,62,1
+-op2-5,sloppy,13,won,6393,S,45,51,1
+-op2-5,sloppy,14,won,6676,S,38,64,1
+-op2-5,sloppy,15,won,6648,S,39,62,1
+-op2-5,sloppy,16,won,6385,S,46,50,1
+-op2-5,sloppy,17,won,6648,S,39,63,1
+-op2-5,sloppy,18,won,6676,S,38,64,1
+-op2-5,sloppy,19,won,6676,S,38,64,1
+-op2-5,sloppy,20,won,6500,S,45,51,1
++op2-3,novice,1,won,7989,S,82,29,0
++op2-3,novice,2,won,8061,S,74,33,0
++op2-3,novice,3,won,8021,S,78,33,0
++op2-3,novice,4,won,8348,S,84,29,0
++op2-3,novice,5,won,7989,S,82,29,0
++op2-3,novice,6,won,8021,S,78,33,0
++op2-3,novice,7,won,7997,S,82,33,0
++op2-3,novice,8,won,8001,S,78,30,0
++op2-3,novice,9,won,8021,S,78,33,0
++op2-3,novice,10,won,8021,S,78,33,0
++op2-3,novice,11,won,7989,S,82,29,0
++op2-3,novice,12,won,8348,S,84,29,0
++op2-3,novice,13,won,7989,S,82,29,0
++op2-3,novice,14,won,8001,S,78,30,0
++op2-3,novice,15,won,7989,S,82,29,0
++op2-3,novice,16,won,7989,S,82,29,0
++op2-3,novice,17,won,8001,S,78,33,0
++op2-3,novice,18,won,7997,S,82,33,0
++op2-3,novice,19,won,8021,S,78,33,0
++op2-3,novice,20,won,8021,S,78,33,0
++op2-3,steady,1,won,8918,S,49,39,0
++op2-3,steady,2,won,8878,S,49,38,0
++op2-3,steady,3,won,8878,S,49,38,0
++op2-3,steady,4,won,8838,S,53,37,0
++op2-3,steady,5,won,8868,S,52,37,0
++op2-3,steady,6,won,8898,S,49,39,0
++op2-3,steady,7,won,8878,S,51,38,0
++op2-3,steady,8,won,8878,S,49,38,0
++op2-3,steady,9,won,8918,S,49,39,0
++op2-3,steady,10,won,8868,S,52,37,0
++op2-3,steady,11,won,8878,S,49,38,0
++op2-3,steady,12,won,8768,S,56,36,0
++op2-3,steady,13,won,8918,S,49,39,0
++op2-3,steady,14,won,8888,S,48,36,0
++op2-3,steady,15,won,8898,S,49,39,0
++op2-3,steady,16,won,8868,S,52,37,0
++op2-3,steady,17,won,8898,S,49,39,0
++op2-3,steady,18,won,8838,S,53,36,0
++op2-3,steady,19,won,8868,S,52,37,0
++op2-3,steady,20,won,8918,S,49,39,0
++op2-3,expert,1,won,9232,XS,36,53,0
++op2-3,expert,2,won,9202,XS,37,52,0
++op2-3,expert,3,won,9202,XS,37,52,0
++op2-3,expert,4,won,9212,XS,38,53,0
++op2-3,expert,5,won,9202,XS,37,52,0
++op2-3,expert,6,won,9202,XS,37,52,0
++op2-3,expert,7,won,9212,XS,38,53,0
++op2-3,expert,8,won,9232,XS,36,53,0
++op2-3,expert,9,won,9202,XS,37,52,0
++op2-3,expert,10,won,9202,XS,37,52,0
++op2-3,expert,11,won,9202,XS,37,52,0
++op2-3,expert,12,won,9212,XS,38,53,0
++op2-3,expert,13,won,9202,XS,37,52,0
++op2-3,expert,14,won,9202,XS,37,52,0
++op2-3,expert,15,won,9202,XS,37,52,0
++op2-3,expert,16,won,9202,XS,37,52,0
++op2-3,expert,17,won,9232,XS,36,53,0
++op2-3,expert,18,won,9212,XS,38,53,0
++op2-3,expert,19,won,9232,XS,36,53,0
++op2-3,expert,20,won,9202,XS,37,52,0
++op2-3,farm,1,won,8918,S,49,39,0
++op2-3,farm,2,won,8878,S,49,38,0
++op2-3,farm,3,won,8878,S,49,38,0
++op2-3,farm,4,won,8838,S,53,37,0
++op2-3,farm,5,won,8868,S,52,37,0
++op2-3,farm,6,won,8898,S,49,39,0
++op2-3,farm,7,won,8878,S,51,38,0
++op2-3,farm,8,won,8878,S,49,38,0
++op2-3,farm,9,won,8918,S,49,39,0
++op2-3,farm,10,won,8868,S,52,37,0
++op2-3,farm,11,won,8878,S,49,38,0
++op2-3,farm,12,won,8768,S,56,36,0
++op2-3,farm,13,won,8918,S,49,39,0
++op2-3,farm,14,won,8888,S,48,36,0
++op2-3,farm,15,won,8898,S,49,39,0
++op2-3,farm,16,won,8868,S,52,37,0
++op2-3,farm,17,won,8898,S,49,39,0
++op2-3,farm,18,won,8838,S,53,36,0
++op2-3,farm,19,won,8868,S,52,37,0
++op2-3,farm,20,won,8918,S,49,39,0
++op2-3,sloppy,1,won,8918,S,49,39,0
++op2-3,sloppy,2,won,8878,S,49,38,0
++op2-3,sloppy,3,won,8888,S,50,38,0
++op2-3,sloppy,4,won,8838,S,53,37,0
++op2-3,sloppy,5,won,8868,S,52,37,0
++op2-3,sloppy,6,won,8898,S,49,39,0
++op2-3,sloppy,7,won,8878,S,51,38,0
++op2-3,sloppy,8,won,8144,S,51,38,0
++op2-3,sloppy,9,won,8918,S,49,39,0
++op2-3,sloppy,10,won,8868,S,52,37,0
++op2-3,sloppy,11,won,8144,S,51,38,0
++op2-3,sloppy,12,won,8758,S,57,36,0
++op2-3,sloppy,13,won,8888,S,50,39,0
++op2-3,sloppy,14,won,8888,S,48,36,0
++op2-3,sloppy,15,won,8133,S,51,39,0
++op2-3,sloppy,16,won,8868,S,52,37,0
++op2-3,sloppy,17,won,8898,S,49,39,0
++op2-3,sloppy,18,won,8838,S,53,36,0
++op2-3,sloppy,19,won,8868,S,52,37,0
++op2-3,sloppy,20,won,8918,S,49,39,0
++op2-4,novice,1,won,6011,S,80,35,0
++op2-4,novice,2,won,6011,S,80,35,0
++op2-4,novice,3,won,6011,S,80,35,0
++op2-4,novice,4,won,6011,S,80,35,0
++op2-4,novice,5,won,6011,S,80,35,0
++op2-4,novice,6,won,6011,S,80,35,0
++op2-4,novice,7,won,6011,S,80,35,0
++op2-4,novice,8,won,6011,S,80,35,0
++op2-4,novice,9,won,6011,S,80,35,0
++op2-4,novice,10,won,6011,S,80,35,0
++op2-4,novice,11,won,6011,S,80,35,0
++op2-4,novice,12,won,6011,S,80,35,0
++op2-4,novice,13,won,6011,S,80,35,0
++op2-4,novice,14,won,6011,S,80,35,0
++op2-4,novice,15,won,6011,S,80,35,0
++op2-4,novice,16,won,6011,S,80,35,0
++op2-4,novice,17,won,6011,S,80,35,0
++op2-4,novice,18,won,6011,S,80,35,0
++op2-4,novice,19,won,6011,S,80,35,0
++op2-4,novice,20,won,6011,S,80,35,0
++op2-4,steady,1,won,6359,S,57,36,0
++op2-4,steady,2,won,6359,S,57,36,0
++op2-4,steady,3,won,6359,S,57,36,0
++op2-4,steady,4,won,6359,S,57,36,0
++op2-4,steady,5,won,6359,S,57,36,0
++op2-4,steady,6,won,6359,S,57,36,0
++op2-4,steady,7,won,6359,S,57,36,0
++op2-4,steady,8,won,6359,S,57,36,0
++op2-4,steady,9,won,6359,S,57,36,0
++op2-4,steady,10,won,6359,S,57,36,0
++op2-4,steady,11,won,6359,S,57,36,0
++op2-4,steady,12,won,6359,S,57,36,0
++op2-4,steady,13,won,6359,S,57,36,0
++op2-4,steady,14,won,6359,S,57,36,0
++op2-4,steady,15,won,6359,S,57,36,0
++op2-4,steady,16,won,6359,S,57,36,0
++op2-4,steady,17,won,6359,S,57,36,0
++op2-4,steady,18,won,6359,S,57,36,0
++op2-4,steady,19,won,6359,S,57,36,0
++op2-4,steady,20,won,6359,S,57,36,0
++op2-4,expert,1,won,6930,XS,41,55,0
++op2-4,expert,2,won,6930,XS,41,55,0
++op2-4,expert,3,won,6930,XS,41,55,0
++op2-4,expert,4,won,6930,XS,41,55,0
++op2-4,expert,5,won,6930,XS,41,55,0
++op2-4,expert,6,won,6930,XS,41,55,0
++op2-4,expert,7,won,6930,XS,41,55,0
++op2-4,expert,8,won,6930,XS,41,55,0
++op2-4,expert,9,won,6930,XS,41,55,0
++op2-4,expert,10,won,6930,XS,41,55,0
++op2-4,expert,11,won,6930,XS,41,55,0
++op2-4,expert,12,won,6930,XS,41,55,0
++op2-4,expert,13,won,6930,XS,41,55,0
++op2-4,expert,14,won,6930,XS,41,55,0
++op2-4,expert,15,won,6930,XS,41,55,0
++op2-4,expert,16,won,6930,XS,41,55,0
++op2-4,expert,17,won,6930,XS,41,55,0
++op2-4,expert,18,won,6930,XS,41,55,0
++op2-4,expert,19,won,6930,XS,41,55,0
++op2-4,expert,20,won,6930,XS,41,55,0
++op2-4,farm,1,won,6359,S,57,36,0
++op2-4,farm,2,won,6359,S,57,36,0
++op2-4,farm,3,won,6359,S,57,36,0
++op2-4,farm,4,won,6359,S,57,36,0
++op2-4,farm,5,won,6359,S,57,36,0
++op2-4,farm,6,won,6359,S,57,36,0
++op2-4,farm,7,won,6359,S,57,36,0
++op2-4,farm,8,won,6359,S,57,36,0
++op2-4,farm,9,won,6359,S,57,36,0
++op2-4,farm,10,won,6359,S,57,36,0
++op2-4,farm,11,won,6359,S,57,36,0
++op2-4,farm,12,won,6359,S,57,36,0
++op2-4,farm,13,won,6359,S,57,36,0
++op2-4,farm,14,won,6359,S,57,36,0
++op2-4,farm,15,won,6359,S,57,36,0
++op2-4,farm,16,won,6359,S,57,36,0
++op2-4,farm,17,won,6359,S,57,36,0
++op2-4,farm,18,won,6359,S,57,36,0
++op2-4,farm,19,won,6359,S,57,36,0
++op2-4,farm,20,won,6359,S,57,36,0
++op2-4,sloppy,1,won,6359,S,57,36,0
++op2-4,sloppy,2,won,6359,S,57,36,0
++op2-4,sloppy,3,won,6359,S,57,36,0
++op2-4,sloppy,4,won,6359,S,57,36,0
++op2-4,sloppy,5,won,6359,S,57,36,0
++op2-4,sloppy,6,won,6359,S,57,36,0
++op2-4,sloppy,7,won,6359,S,57,36,0
++op2-4,sloppy,8,won,6359,S,57,36,0
++op2-4,sloppy,9,won,6359,S,57,36,0
++op2-4,sloppy,10,won,6359,S,57,36,0
++op2-4,sloppy,11,won,6359,S,57,36,0
++op2-4,sloppy,12,won,6359,S,57,36,0
++op2-4,sloppy,13,won,6359,S,57,36,0
++op2-4,sloppy,14,won,6359,S,57,36,0
++op2-4,sloppy,15,won,6359,S,57,36,0
++op2-4,sloppy,16,won,6359,S,57,36,0
++op2-4,sloppy,17,won,6359,S,57,36,0
++op2-4,sloppy,18,won,6359,S,57,36,0
++op2-4,sloppy,19,won,6359,S,57,36,0
++op2-4,sloppy,20,won,6359,S,57,36,0
++op2-5,novice,1,won,3936,B,372,0,0
++op2-5,novice,2,lost,1119,C,162,0,0
++op2-5,novice,3,lost,1150,C,344,0,0
++op2-5,novice,4,won,3406,C,447,5,0
++op2-5,novice,5,lost,1080,C,214,0,0
++op2-5,novice,6,lost,1091,C,247,0,0
++op2-5,novice,7,lost,1068,C,148,0,0
++op2-5,novice,8,lost,1026,C,137,0,0
++op2-5,novice,9,lost,1144,C,194,0,0
++op2-5,novice,10,won,4360,B,329,13,0
++op2-5,novice,11,lost,1055,C,149,0,0
++op2-5,novice,12,lost,1079,C,168,0,0
++op2-5,novice,13,lost,1065,C,173,0,0
++op2-5,novice,14,won,4319,B,334,1,0
++op2-5,novice,15,lost,1088,C,206,0,0
++op2-5,novice,16,lost,1139,C,233,0,0
++op2-5,novice,17,lost,1026,C,395,0,0
++op2-5,novice,18,lost,1408,C,296,0,0
++op2-5,novice,19,lost,1068,C,271,0,0
++op2-5,novice,20,lost,1075,C,137,0,0
++op2-5,steady,1,lost,880,C,480,30,0
++op2-5,steady,2,won,5516,A,199,10,0
++op2-5,steady,3,won,5400,A,219,5,0
++op2-5,steady,4,lost,1059,C,480,9,0
++op2-5,steady,5,won,5379,A,233,11,0
++op2-5,steady,6,won,5178,A,243,11,0
++op2-5,steady,7,won,5392,A,210,9,0
++op2-5,steady,8,won,5530,A,211,12,0
++op2-5,steady,9,won,5271,A,219,10,0
++op2-5,steady,10,won,5492,A,216,5,0
++op2-5,steady,11,won,5259,A,234,7,0
++op2-5,steady,12,won,5392,A,210,10,0
++op2-5,steady,13,won,5098,B,248,1,0
++op2-5,steady,14,won,5231,A,239,6,0
++op2-5,steady,15,won,5552,A,208,10,0
++op2-5,steady,16,won,5139,A,234,7,0
++op2-5,steady,17,won,5536,A,203,6,0
++op2-5,steady,18,won,5451,A,210,8,0
++op2-5,steady,19,won,5131,A,266,7,0
++op2-5,steady,20,won,5215,A,235,23,0
++op2-5,expert,1,won,6245,A,172,10,0
++op2-5,expert,2,won,6231,A,177,29,0
++op2-5,expert,3,won,6320,A,172,23,0
++op2-5,expert,4,won,6239,A,178,23,0
++op2-5,expert,5,won,5994,A,193,15,0
++op2-5,expert,6,won,5994,A,199,21,0
++op2-5,expert,7,won,6193,A,173,24,0
++op2-5,expert,8,won,6217,A,175,26,0
++op2-5,expert,9,won,6100,A,188,22,0
++op2-5,expert,10,won,6277,A,178,24,0
++op2-5,expert,11,won,6258,A,175,26,0
++op2-5,expert,12,won,6046,A,191,21,0
++op2-5,expert,13,won,6249,A,176,25,0
++op2-5,expert,14,won,6088,A,189,23,0
++op2-5,expert,15,won,6204,A,180,21,0
++op2-5,expert,16,won,6168,A,180,9,0
++op2-5,expert,17,lost,1256,C,480,29,0
++op2-5,expert,18,won,6363,A,171,29,0
++op2-5,expert,19,won,6211,A,175,21,0
++op2-5,expert,20,won,6364,A,169,26,0
++op2-5,farm,1,won,4431,B,349,13,0
++op2-5,farm,2,won,4408,B,357,28,0
++op2-5,farm,3,won,4497,B,332,13,0
++op2-5,farm,4,won,4470,B,337,12,0
++op2-5,farm,5,won,4205,B,357,15,0
++op2-5,farm,6,lost,975,C,226,0,0
++op2-5,farm,7,won,4239,B,347,4,0
++op2-5,farm,8,won,4391,B,353,9,0
++op2-5,farm,9,lost,1061,C,226,0,0
++op2-5,farm,10,lost,1062,C,227,0,0
++op2-5,farm,11,won,4352,B,339,1,0
++op2-5,farm,12,won,4194,B,355,1,0
++op2-5,farm,13,won,4105,B,377,2,0
++op2-5,farm,14,won,4344,B,348,2,0
++op2-5,farm,15,won,3967,B,396,0,0
++op2-5,farm,16,lost,986,C,226,0,0
++op2-5,farm,17,lost,973,C,258,0,0
++op2-5,farm,18,won,4403,B,344,26,0
++op2-5,farm,19,won,4024,B,379,4,0
++op2-5,farm,20,won,4139,B,360,7,0
++op2-5,sloppy,1,lost,880,C,480,30,0
++op2-5,sloppy,2,won,5516,A,199,10,0
++op2-5,sloppy,3,won,5400,A,219,5,0
++op2-5,sloppy,4,lost,1059,C,480,9,0
++op2-5,sloppy,5,won,5379,A,233,11,0
++op2-5,sloppy,6,won,5178,A,243,11,0
++op2-5,sloppy,7,won,5392,A,210,9,0
++op2-5,sloppy,8,won,5530,A,211,12,0
++op2-5,sloppy,9,won,5271,A,219,10,0
++op2-5,sloppy,10,won,5492,A,216,5,0
++op2-5,sloppy,11,won,5259,A,234,7,0
++op2-5,sloppy,12,won,5392,A,210,10,0
++op2-5,sloppy,13,won,5098,B,248,1,0
++op2-5,sloppy,14,won,5231,A,239,6,0
++op2-5,sloppy,15,won,5552,A,208,10,0
++op2-5,sloppy,16,won,5139,A,234,7,0
++op2-5,sloppy,17,won,5536,A,203,6,0
++op2-5,sloppy,18,won,5451,A,210,8,0
++op2-5,sloppy,19,won,5131,A,266,7,0
++op2-5,sloppy,20,won,5215,A,235,23,0
+diff --git a/docs/qa/tool-entity-matrix.md b/docs/qa/tool-entity-matrix.md
+index 103ada9..ae649c3 100644
+--- a/docs/qa/tool-entity-matrix.md
++++ b/docs/qa/tool-entity-matrix.md
+@@ -24,8 +24,8 @@ the same op left alone: **acts** (rating or state change), **hint(flag)** (a cal
+ | SpiderlingGrub | · | · | · | · | · | hint(inject-waste) penalty(BAD) | acts hint(brand-flesh) penalty(BAD) | · |
+ | Sigil | hint(wrong-lancet-Sigil) penalty(MISS) | hint(wrong-tongs-Sigil) penalty(MISS) | hint(wrong-leech-Sigil) | hint(wrong-thread-Sigil) | hint(wrong-salve-Sigil) | hint(wrong-tincture-Sigil,inject-waste) penalty(BAD) | acts hint(brand-flesh) penalty(BAD) | hint(wrong-lens-Sigil) |
+ | EggSac | acts hint(eggsac-lanced) | penalty(MISS) | · | · | · | hint(inject-waste) penalty(BAD) | hint(brand-flesh) penalty(BAD) | · |
+-| Malison (veiled) | · | · | · | · | · | hint(inject-waste) penalty(BAD) | hint(malison-veiled) | · |
++| Malison (veiled) | · | · | · | · | · | hint(inject-waste) penalty(BAD) | acts penalty(MISS) | · |
+ | Malison (open) | · | · | · | · | · | hint(inject-waste) penalty(BAD) | acts | · |
+ | MalisonShard | · | acts | · | · | · | hint(inject-waste) penalty(BAD) | hint(brand-flesh) penalty(BAD) | · |
+ | LaudsMalison (shielded) | · | · | · | · | · | hint(inject-waste) penalty(BAD) | hint(lauds-shielded) | · |
+-| ChoirVoice | · | · | · | · | · | hint(inject-waste) penalty(BAD) | acts hint(brand-flesh) | · |
++| ChoirVoice | · | · | · | · | · | hint(inject-waste) penalty(BAD) | acts hint(lauds-voice-trace) | · |
+diff --git a/node_modules b/node_modules
+new file mode 120000
+index 0000000..6ac5c67
+--- /dev/null
++++ b/node_modules
+@@ -0,0 +1 @@
++/home/user/tsc/node_modules
+\ No newline at end of file
+diff --git a/src/audio/director.ts b/src/audio/director.ts
+index 8fc96d4..bd56bb4 100644
+--- a/src/audio/director.ts
++++ b/src/audio/director.ts
+@@ -672,7 +672,7 @@ export class OperationAudio {
+       this.laudsState.set(lauds, st);
+       this.sys.music.setSection(lauds.submerged ? 'submerged' : lauds.livingVoices.length ? 'choir' : 'exposed');
+       for (const v of lauds.livingVoices) {
+-        this.loop(v, 'loop.lauds.voice', !lauds.submerged, { note: [0, 4, 7, 11, 14, 16][v.id % 6], silence: Math.min(1, v.silence / 1.2) }, panOf(v.pos.x), 60);
++        this.loop(v, 'loop.lauds.voice', !lauds.submerged, { note: [0, 4, 7, 11, 14, 16][v.id % 6], silence: Math.min(1, v.traced) }, panOf(v.pos.x), 60);
+       }
+     } else if (this.boss === 'lauds' && op.entities.some((e) => e instanceof Embedded && e.kind === 'hexstone')) this.sys.music.setSection('shattered');
+   }
+diff --git a/src/content/challenge.ts b/src/content/challenge.ts
+index 13e6b24..ca5f9e1 100644
+--- a/src/content/challenge.ts
++++ b/src/content/challenge.ts
+@@ -69,7 +69,7 @@ export const X_OPS: readonly XOp[] = [
+     hour: 'lauds',
+     title: 'X2 — Lauds, Rekindled',
+     blurb: 'The choir returns hoarse and hungry: tougher, quicker to sing, quicker to rekindle.',
+-    mods: { drain: 1, time: 1, hp: 1.3, tellSpeed: 1.2, addCadence: 1.25 },
++    mods: { drain: 0.85, time: 1, hp: 1.15, tellSpeed: 1.2, addCadence: 1.25 },
+     unlock: { chapter: 2, bossOp: 'op2-5', rank: 'A' },
+     base: OP_2_5,
+   },
+diff --git a/src/content/ops/ch1.ts b/src/content/ops/ch1.ts
+index 247f62a..431943e 100644
+--- a/src/content/ops/ch1.ts
++++ b/src/content/ops/ch1.ts
+@@ -164,6 +164,7 @@ export const OP_1_4 = defineOp({
+       spawn: [
+         { e: 'rot', at: [-180, 70], r: 50, spread: 0.6 },
+         { e: 'rot', at: [180, -60], r: 55, spread: 0.6 },
++        { e: 'herald', at: [0, 60] },
+       ],
      },
    ],
- };
-diff --git a/src/content/chapter2.ts b/src/content/chapter2.ts
-index 8a468d5..ca60fa6 100644
---- a/src/content/chapter2.ts
-+++ b/src/content/chapter2.ts
-@@ -1,5 +1,6 @@
- import { Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, Sigil, SIGILS, Venom } from '../surgery/entities';
- import { EggSac, LaudsMalison } from '../surgery/lauds';
-+import { CantorKnot, EggCluster, gravehoundNest } from '../surgery/bosses/elites';
- import type { Operation, OperationDef } from '../surgery/operation';
- import { at, closeIncision } from './chapter1';
- import type { Chapter } from './campaign';
-@@ -128,7 +129,12 @@ export const OP_2_1: OperationDef = {
-     },
-     {
+diff --git a/src/content/ops/ch2.ts b/src/content/ops/ch2.ts
+index 286021a..cb80268 100644
+--- a/src/content/ops/ch2.ts
++++ b/src/content/ops/ch2.ts
+@@ -36,9 +36,15 @@ export const OP_2_1 = defineOp({
+ 
        callout: ['Now the fangs. Tongs — pull each one clear.'],
--      spawn: () => [new Embedded(at(-150, -50), 'tooth', 0.9, false), new Embedded(at(-100, -10), 'tooth', 1.2, false), new Embedded(at(-80, -60), 'tooth', 0.6, false)],
-+      spawn: (op: Operation) =>
-+        gravehoundNest(op, [
-+          [at(-150, -50), 0.9],
-+          [at(-100, -10), 1.2],
-+          [at(-80, -60), 0.6],
-+        ]),
+       spawn: [
+-        { e: 'embedded', at: [-150, -50], kind: 'tooth', angle: 0.9, barbed: false },
+-        { e: 'embedded', at: [-100, -10], kind: 'tooth', angle: 1.2, barbed: false },
+-        { e: 'embedded', at: [-80, -60], kind: 'tooth', angle: 0.6, barbed: false },
++        {
++          e: 'elite-fangnest',
++          path: [
++            [-150, -50],
++            [-100, -10],
++            [-80, -60],
++          ],
++          angles: [0.9, 1.2, 0.6],
++        },
+       ],
      },
      {
-       callout: ['Claw rakes. Three deep lines — drain and stitch each.'],
-@@ -187,6 +193,10 @@ export const OP_2_3: OperationDef = {
-       callout: ['The sacs — lance each one with a single touch, then sear the hatchlings with the brand.', 'Mind the ones that are close to hatching.'],
-       spawn: () => [new EggSac(at(-170, 30), 3, 16), new EggSac(at(0, 70), 3, 22), new EggSac(at(170, 10), 3, 28)],
+@@ -127,6 +133,12 @@ export const OP_2_3 = defineOp({
+         { e: 'eggsac', at: [170, 10], brood: 3, hatchIn: 28 },
+       ],
      },
 +    {
++      objective: 'Cut the brood-cluster free',
++
 +      callout: ['Her brood-cluster — three sacs under one skin.', 'Cut the membrane right around them with the lancet first, or they’ll wake as one.'],
-+      spawn: (op: Operation) => new EggCluster(at(-20, 20), op, 26).all,
++      spawn: [{ e: 'elite-broodcluster', at: [-20, 20], hatchIn: 26 }],
 +    },
      {
-       callout: ['One more sac, deeper. Use the lens to find it, then open it.', 'And he’s taken a fever-bubo from the bite — lance and cleanse it.'],
-       spawn: () => {
-@@ -220,6 +230,10 @@ export const OP_2_4: OperationDef = {
-       callout: ['Those sigils are burning him from within. Sear each one out — every stroke.'],
-       spawn: () => [new Sigil(at(-160, -20), SIGILS.crown, 55, 4.5), new Sigil(at(160, -10), SIGILS.hourglass, 55, 4.5), new Sigil(at(0, -90), SIGILS.eye, 50, 4.5)],
+       objective: 'Find the last sac',
+ 
+@@ -170,6 +182,12 @@ export const OP_2_4 = defineOp({
+         { e: 'sigil', at: [0, -90], shape: 'eye', size: 50, lashEvery: 4.5 },
+       ],
      },
 +    {
++      objective: 'Burn out the cantor’s knot',
++
 +      callout: ['There — a knot of it round his throat. Every time he hums, it ties itself again.', 'Burn it out between the verses.'],
-+      spawn: (op: Operation) => new CantorKnot(at(0, -150), op).all,
++      spawn: [{ e: 'elite-cantor', at: [0, -150] }],
 +    },
      {
-       callout: ['The hexfire burns. Pluck the eschar, then salve them.'],
-       spawn: (op: Operation) => [new Burn(at(-150, 60), 44, op, 'hexfire'), new Burn(at(150, 70), 40, op, 'hexfire'), new Burn(at(10, 100), 36, op, 'hexfire')],
-@@ -237,7 +251,7 @@ export const OP_2_5: OperationDef = {
-   patient: 'Jorg, standard-bearer',
+       objective: 'Dress the hexfire burns',
+ 
+@@ -200,7 +218,7 @@ export const OP_2_5 = defineOp({
+   patientGender: 'm',
    diagnosis: 'Collapsed during the dawn hymn. Something beneath the sternum is singing.',
    organ: 'flesh',
 -  timeLimit: 420,
@@ -121,8 +1332,127 @@ index 8a468d5..ca60fa6 100644
    baseDrain: 0.1,
    tools: ALL,
    ranks: { S: 7600, A: 6100, B: 4550 },
+diff --git a/src/content/schema.ts b/src/content/schema.ts
+index a50cdb2..15173e1 100644
+--- a/src/content/schema.ts
++++ b/src/content/schema.ts
+@@ -14,6 +14,7 @@ import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, SALVE
+ import type { Entity } from '../surgery/entity';
+ import { EggSac, LaudsMalison } from '../surgery/lauds';
+ import { Malison } from '../surgery/malison';
++import { CantorKnot, EggCluster, FangNest, MatinsHerald } from '../surgery/bosses/elites';
+ import { FIELD, onBody, type Operation, type OperationDef, type PhaseDef } from '../surgery/operation';
+ import type { ToolId } from '../surgery/types';
+ 
+@@ -40,7 +41,11 @@ export type EntitySpec =
+   | ({ e: 'pool'; at: Pt; r: number; ichor?: 'blood' | 'pus' | 'blackbile' } & Common)
+   | ({ e: 'eggsac'; at: Pt; brood?: number; hatchIn?: number } & Common)
+   | ({ e: 'malison-matins'; at: Pt; hp?: number } & Common)
+-  | ({ e: 'malison-lauds'; at: Pt } & Common);
++  | ({ e: 'malison-lauds'; at: Pt } & Common)
++  | ({ e: 'elite-broodcluster'; at: Pt; hatchIn?: number } & Common)
++  | ({ e: 'elite-cantor'; at: Pt; every?: number } & Common)
++  | ({ e: 'elite-fangnest'; path: readonly Pt[]; angles: readonly number[] } & Common)
++  | ({ e: 'herald'; at: Pt } & Common);
+ 
+ export type EntityId = EntitySpec['e'];
+ 
+@@ -76,7 +81,7 @@ export interface DataPhaseDef extends PhaseDef {
+ 
+ // ------------------------------------------------------------------ registry
+ 
+-type ParamType = 'number' | 'boolean' | 'pt' | 'path' | 'string';
++type ParamType = 'number' | 'numbers' | 'boolean' | 'pt' | 'path' | 'string';
+ 
+ interface Param {
+   type: ParamType;
+@@ -90,7 +95,8 @@ export interface RegistryEntry<S extends EntitySpec = EntitySpec> {
+   params: Record<string, Param>;
+   /** Instruments needed to resolve it: every inner list must share at least one tool with the op. */
+   needs(spec: S): ToolId[][];
+-  make(spec: S, op: Operation): Entity;
++  /** The entity, or a group led by its core (an elite and the wounds it binds). */
++  make(spec: S, op: Operation): Entity | Entity[];
+ }
+ 
+ const P = (x: Pt): Vec => ({ x: FIELD.cx + x[0], y: FIELD.cy + x[1] });
+@@ -167,16 +173,44 @@ export const ENTITY_REGISTRY: { [K in EntityId]: Entry<K> } = {
+     needs: () => [['brand'], ['lens'], ['tongs']],
+     make: (s, op) => new LaudsMalison(P(s.at), op),
+   },
++  // Demo elites (BOS-0147..0150): each spawns its core with the wounds it binds.
++  'elite-broodcluster': {
++    params: { at: { type: 'pt' }, hatchIn: num(true, [4, 9999]) },
++    needs: () => [['lancet'], ['brand']],
++    make: (s, op) => new EggCluster(P(s.at), op, s.hatchIn).all,
++  },
++  'elite-cantor': {
++    params: { at: { type: 'pt' }, every: num(true, [2, 30]) },
++    needs: () => [['brand']],
++    make: (s, op) => new CantorKnot(P(s.at), op, s.every).all,
++  },
++  'elite-fangnest': {
++    params: { path: { type: 'path' }, angles: { type: 'numbers' } },
++    needs: () => [['tongs']],
++    make: (s, op) => new FangNest(op, s.path.map((p, i) => [P(p), s.angles[i] ?? 0] as [Vec, number])).all,
++  },
++  herald: {
++    params: { at: { type: 'pt' } },
++    needs: () => [['brand']],
++    make: (s, op) => new MatinsHerald(P(s.at), op),
++  },
+ };
+ 
+-/** Build one entity from its spec. */
+-export function makeEntity(spec: EntitySpec, op: Operation): Entity {
++/** Build the entities for one spec: usually one, or an elite's core followed by what it binds. */
++export function makeEntities(spec: EntitySpec, op: Operation): Entity[] {
+   const entry = ENTITY_REGISTRY[spec.e] as RegistryEntry | undefined;
+   if (!entry) throw new Error(`Unknown entity id "${(spec as { e: string }).e}"`);
+-  const e = entry.make(spec, op);
+-  if (spec.hidden) e.hidden = true;
+-  if (spec.required !== undefined) e.required = spec.required;
+-  return e;
++  const made = entry.make(spec, op);
++  const list = Array.isArray(made) ? made : [made];
++  const core = list[0];
++  if (spec.hidden) core.hidden = true;
++  if (spec.required !== undefined) core.required = spec.required;
++  return list;
++}
++
++/** Build one entity from its spec (an elite's core; its bound wounds are dropped — use `makeEntities`). */
++export function makeEntity(spec: EntitySpec, op: Operation): Entity {
++  return makeEntities(spec, op)[0];
+ }
+ 
+ /** Resolve a phase's spawn list (picks consume the op's seeded rng, in order). */
+@@ -184,12 +218,12 @@ export function spawnAll(list: readonly SpawnSpec[], op: Operation): Entity[] {
+   const out: Entity[] = [];
+   for (const s of list) {
+     if (s.e !== 'pick') {
+-      out.push(makeEntity(s, op));
++      out.push(...makeEntities(s, op));
+       continue;
+     }
+     const n = typeof s.n === 'number' ? s.n : op.rng.int(s.n[0], s.n[1]);
+     const pool = [...s.of];
+-    for (let i = 0; i < n && pool.length; i++) out.push(makeEntity(pool.splice(Math.floor(op.rng.next() * pool.length), 1)[0], op));
++    for (let i = 0; i < n && pool.length; i++) out.push(...makeEntities(pool.splice(Math.floor(op.rng.next() * pool.length), 1)[0], op));
+   }
+   return out;
+ }
+@@ -264,6 +298,8 @@ function checkParam(name: string, v: unknown, p: Param): string | null {
+       if (typeof v !== 'number' || !Number.isFinite(v)) return `"${name}" must be a number`;
+       if (p.range && (v < p.range[0] || v > p.range[1])) return `"${name}" ${v} outside ${p.range[0]}…${p.range[1]}`;
+       return null;
++    case 'numbers':
++      return Array.isArray(v) && v.every((n) => typeof n === 'number' && Number.isFinite(n)) ? null : `"${name}" must be a list of numbers`;
+     case 'boolean':
+       return typeof v === 'boolean' ? null : `"${name}" must be true/false`;
+     case 'string':
 diff --git a/src/core/settings/schema.ts b/src/core/settings/schema.ts
-index ea1e430..6c1d8e9 100644
+index 964d2e2..4fc94a8 100644
 --- a/src/core/settings/schema.ts
 +++ b/src/core/settings/schema.ts
 @@ -85,6 +85,14 @@ export interface Settings {
@@ -140,7 +1470,7 @@ index ea1e430..6c1d8e9 100644
    // gameplay
    /** Assist: multiply every operation's time limit. */
    timerAssist: 1 | 1.5 | 2;
-@@ -157,6 +165,10 @@ export const SETTINGS_SCHEMA: readonly SettingDef[] = [
+@@ -188,6 +196,10 @@ export const SETTINGS_SCHEMA: readonly SettingDef[] = [
    d('colorFilter', 'accessibility', 'choice', { type: 'enum', options: ['none', 'protanopia', 'deuteranopia', 'tritanopia', 'highContrast'] }),
    d('cursorSize', 'accessibility', 'slider', { type: 'number', min: 0.75, max: 2, step: 0.25 }),
    d('holdToToggle', 'accessibility', 'toggle', { type: 'bool' }),
@@ -151,7 +1481,7 @@ index ea1e430..6c1d8e9 100644
    d('timerAssist', 'gameplay', 'choice', { type: 'enum', options: [1, 1.5, 2] }),
    d('litanyKey', 'gameplay', 'toggle', { type: 'bool' }),
    d('pauseOnFocusLoss', 'gameplay', 'toggle', { type: 'bool' }),
-@@ -200,6 +212,10 @@ export const DEFAULT_SETTINGS: Readonly<Settings> = Object.freeze({
+@@ -246,6 +258,10 @@ export const DEFAULT_SETTINGS: Readonly<Settings> = Object.freeze({
    colorFilter: 'none',
    cursorSize: 1,
    holdToToggle: false,
@@ -162,16 +1492,29 @@ index ea1e430..6c1d8e9 100644
    timerAssist: 1,
    litanyKey: false,
    pauseOnFocusLoss: true,
+diff --git a/src/debug/state.ts b/src/debug/state.ts
+index 4693856..9d42ab8 100644
+--- a/src/debug/state.ts
++++ b/src/debug/state.ts
+@@ -65,7 +65,7 @@ function extras(e: Entity): Record<string, unknown> {
+   if (e instanceof Malison) return { hp: e.hp, open: e.open, radius: e.radius };
+   if (e instanceof MalisonShard) return {};
+   if (e instanceof LaudsMalison) return { hp: e.hp, submerged: e.submerged, voices: e.livingVoices.length, radius: e.radius };
+-  if (e instanceof ChoirVoice) return { silence: e.silence };
++  if (e instanceof ChoirVoice) return { traced: e.traced };
+   if (e instanceof EggSac) return { brood: e.brood };
+   return {};
+ }
 diff --git a/src/i18n/strings/en.json b/src/i18n/strings/en.json
-index 56d3074..3f6493e 100644
+index c223e2c..c0748ca 100644
 --- a/src/i18n/strings/en.json
 +++ b/src/i18n/strings/en.json
-@@ -264,5 +264,83 @@
-   "ui.options.litany_input_note": "Speak the Litany with a key instead of drawing the five-pointed star.",
-   "ui.options.controls": "Controls",
-   "ui.story.click_prefix": "Click / ",
--  "ui.story.controls_fmt": "{click}{advance}: advance    {fast}: fast    {skip}: skip scene"
-+  "ui.story.controls_fmt": "{click}{advance}: advance    {fast}: fast    {skip}: skip scene",
+@@ -712,5 +712,83 @@
+   "action.tool.quickSwap": "Swap to last instrument",
+   "action.op.leechReverse": "Reverse the leech",
+   "action.ui.tabPrev": "Previous tab",
+-  "action.ui.tabNext": "Next tab"
++  "action.ui.tabNext": "Next tab",
 +  "label.matins.veiled": "Veiled",
 +  "label.matins.off_beat": "Off the beat",
 +  "label.matins.fed": "It fed",
@@ -252,13 +1595,13 @@ index 56d3074..3f6493e 100644
 +  "boss.gravehound.phase.main": "Nest"
  }
 diff --git a/src/i18n/strings/en.meta.json b/src/i18n/strings/en.meta.json
-index 41c698b..80c5cd1 100644
+index fbdc5e0..792dd77 100644
 --- a/src/i18n/strings/en.meta.json
 +++ b/src/i18n/strings/en.meta.json
-@@ -2290,5 +2290,629 @@
-     "maxPx": 700,
-     "context": "Story footer; placeholders are key labels.",
-     "screenshot": "docs/loc/screens/story.png"
+@@ -6022,5 +6022,629 @@
+     "maxPx": 360,
+     "context": "Options row label, left-aligned.",
+     "screenshot": "docs/loc/screens/options.png"
 +  },
 +  "label.matins.veiled": {
 +    "scene": "operation",
@@ -1157,32 +2500,41 @@ index 0000000..9466365
 +  }
 +}
 diff --git a/src/scenes/operation.ts b/src/scenes/operation.ts
-index 3302c1c..7c59900 100644
+index 55d4d9d..3fe8df5 100644
 --- a/src/scenes/operation.ts
 +++ b/src/scenes/operation.ts
-@@ -23,6 +23,8 @@ import { settings } from '../core/settings';
+@@ -33,6 +33,8 @@ import { settings } from '../core/settings';
  import { OptionsScene } from './options';
  import { litanyMode, OperationInput } from '../input/opinput';
  import { dragGlyphFor, glyphFor, toolKeyLabel } from '../input/glyphs';
 +import { calmWave, drawBossHud, drawLitanyTheft, drawTorpor, ecgCalm, toolBlinded } from '../surgery/bosses/hud';
 +import { BossAudio, withBossAssists } from './bossAudio';
- 
- export interface OperationOutcome {
-   op: Operation;
-@@ -73,14 +75,19 @@ export class OperationScene implements Scene {
-     op.events.on('popup', (p) => this.popups.push({ ...p, t: 0 }));
-     op.events.on('fx', (e) => this.particles.spawn(e));
-     op.events.on('cue', (c) => this.pendingCues.add(c));
+ import { operationOptions } from '../surgery/session';
+ import type { OperationOptions } from '../surgery/operation';
+ import { drawDebug, drawDialogue, drawDrainArrow, drawFieldOverlays, drawLitanyPractice, drawSecondaryVitals, drawTrayState, drawTutorial } from './gameplayHud';
+@@ -115,6 +117,7 @@ export class OperationScene implements Scene {
+       this.calloutLog.push(...lines);
+       if (this.calloutLog.length > 20) this.calloutLog.splice(0, this.calloutLog.length - 20);
+     });
 +    this.bossAudio.listen(op);
+   }
+ 
+   /** Open the "Respite" overlay (UIX-0100). The operation stops updating until it closes. */
+@@ -124,6 +127,8 @@ export class OperationScene implements Scene {
+     if (game.clock) game.clock.paused = true;
+     game.push!(new PauseScene(this.op, this.calloutLog, (r) => this.closePause(r)));
    }
 +  /** Boss sounds, ambience and adaptive-music hooks (BOS-0008/0017/0020). */
 +  private bossAudio = new BossAudio();
  
-   /** Apply player assists to the operation definition. */
-   private static create(def: OperationDef): Operation {
--    return new Operation(settings.timerAssist === 1 ? def : { ...def, timeLimit: Math.round(def.timeLimit * settings.timerAssist) });
-+    const withTime = settings.timerAssist === 1 ? def : { ...def, timeLimit: Math.round(def.timeLimit * settings.timerAssist) };
-+    return new Operation(withBossAssists(withTime));
+   private closePause(r: PauseResult): void {
+     if (r === 'restart') return this.restart();
+@@ -135,10 +140,11 @@ export class OperationScene implements Scene {
+   /** Apply player assists, difficulty and kit to the operation definition. */
+   private static create(def: OperationDef, runOpts: OperationOptions = {}): Operation {
+     const d = settings.timerAssist === 1 || runOpts.challenge ? def : { ...def, timeLimit: Math.round(def.timeLimit * settings.timerAssist) };
+-    return new Operation(d, operationOptions(def, runOpts));
++    return new Operation(withBossAssists(d), operationOptions(def, runOpts));
    }
  
    dispose(): void {
@@ -1190,16 +2542,16 @@ index 3302c1c..7c59900 100644
      this.op.events.clear();
    }
  
-@@ -100,6 +107,8 @@ export class OperationScene implements Scene {
+@@ -158,6 +164,8 @@ export class OperationScene implements Scene {
  
    private restart(): void {
      this.op.events.clear();
-+    // A repeat attempt skips the bosses' phase-transition beats (BOS-0004).
++    // A repeat attempt skips the bosses’ phase-transition beats (BOS-0004).
 +    this.def = { ...this.def, skipCinematics: true } as OperationDef;
-     this.op = OperationScene.create(this.def);
+     this.op = OperationScene.create(this.def, this.runOpts);
      this.presRng = new Rng(this.def.seed ?? 1);
      this.popups.length = 0;
-@@ -159,7 +168,7 @@ export class OperationScene implements Scene {
+@@ -257,7 +265,7 @@ export class OperationScene implements Scene {
      const samples = Math.max(1, Math.round(dt * 120));
      for (let i = 0; i < samples; i++) {
        this.ecg.shift();
@@ -1208,44 +2560,44 @@ index 3302c1c..7c59900 100644
      }
  
      const cursed = op.entities.some((e) => e instanceof Malison || e instanceof MalisonShard) ? 0.7 : op.entities.some((e) => e instanceof Sigil) ? 0.25 : 0;
-@@ -318,6 +327,7 @@ export class OperationScene implements Scene {
+@@ -432,6 +440,7 @@ export class OperationScene implements Scene {
      // Cursor: reticle at the tip with the instrument beside it.
      const p = game.input.pos;
      if (op.tool === 'tincture' && op.injectT > 0) g.arc(p.x, p.y, 18, 3, hex(PALETTE.good), op.injectT / TINCTURE_TIME);
 +    drawTorpor(g, op, p, viewRect());
      toolIcon(g, op.tool, p.x + 20, p.y - 20, 0.8 + this.toolFlash * 0.3, t);
-     reticle(g, p);
-     g.endFrame();
-@@ -371,6 +381,7 @@ export class OperationScene implements Scene {
-       g.circle(bx, 92, cur ? 5.5 : 4.5, hex('#000000', 0.5));
-       g.circleGrad(bx, 91, cur ? 5 : 4, hex(done ? UI.gilt : cur ? '#e8c8a0' : '#4a3a28'), hex(done ? UI.giltLo : cur ? '#8a6a48' : '#241a10'));
+     const tint = cursorTint(op, p);
+     const cpal = palette();
+@@ -493,6 +502,7 @@ export class OperationScene implements Scene {
+       diamond(g, bx, T.y + T.h + 12, cur ? 5 : 4, hex(done ? INK.gold : cur ? INK.goldHi : '#3a3024'), hex('#000000', 0.7));
+       if (cur) g.glow(bx, T.y + T.h + 12, 12, hex(INK.gold, 0.25));
      }
 +    drawBossHud(g, op);
  
-     // ---- Score and chain.
-     leatherPanel(g, { x: VIEW_W - 280, y: 10, w: 266, h: 72 }, { corners: false });
-@@ -403,6 +414,7 @@ export class OperationScene implements Scene {
-       // Engraved key tag.
-       g.circleGrad(r.x + 13, r.y + 14, 10, hex(sel ? UI.brassHi : '#c8a050'), hex(UI.brassLo));
-       g.text(toolKeyLabel(TOOL_INFO.findIndex((ti) => ti.id === id) + 1), r.x + 13, r.y + 20, { size: 17, color: hex('#140a02'), align: 'center', shadow: false });
+     // ---- Score, patient and chain: right.
+     const S = { x: VIEW_W - 16 - 250, y: 14, w: 250, h: 70 };
+@@ -554,6 +564,7 @@ export class OperationScene implements Scene {
+       toolIcon(g, id, r.x + r.w / 2 + 2, r.y + r.h / 2 + 2, sel ? 1.12 : 1.02, g.time, sel ? 'selected' : 'idle');
+       // Key number: small engraved numeral in the corner.
+       g.text(toolKeyLabel(TOOL_INFO.findIndex((ti) => ti.id === id) + 1), r.x + 8, r.y + 16, { size: 12, font: 'display', tracking: 0.05, color: hex(sel ? INK.goldHi : INK.dim), shadow: hex('#000000', 0.8) });
 +      if (toolBlinded(op, id)) g.rect(r.x + 2, r.y + 2, r.w - 4, r.h - 4, hex('#8a8a8a', 0.6));
        if (id === 'tincture' && op.injectCooldown > 0) {
          const f = op.injectCooldown / TINCTURE_COOLDOWN;
-         g.rect(r.x + 2, r.y + 2 + (r.h - 4) * (1 - f), r.w - 4, (r.h - 4) * f, hex('#000000', 0.65));
-@@ -430,6 +442,7 @@ export class OperationScene implements Scene {
-     medallion(g, lx, ly, 30, hex(ready ? '#2a1a06' : '#120a08'));
-     if (ready) g.glow(lx, ly, 48, hex(UI.gilt, 0.2 + 0.1 * Math.sin(g.time * 3)));
-     star(g, lx, ly + 1, 19, ready ? hex(UI.gilt) : hex('#3a3024'));
+         g.rect(r.x + 2, r.y + 2 + (r.h - 4) * (1 - f), r.w - 4, (r.h - 4) * f, hex('#000000', 0.5));
+@@ -586,6 +597,7 @@ export class OperationScene implements Scene {
+     const ready = op.canInvokeLitany();
+     g.plate(lx - 40, ly - 40, 80, 80, { radius: 40, top: hex('#1a1411', 0.88), bottom: hex('#0a0807', 0.92), border: hex(ready ? INK.gold : '#5a4a34', 0.9), borderW: 1.4, bevel: 0.7, shadow: [0.6, 14, 4], glow: ready ? hex(INK.gold, 0.22) : undefined, glowR: 16 });
+     starReliquary(g, lx, ly, 28, { fill: op.litanyTime > 0 ? op.litanyTime / LITANY_DURATION : ready ? 1 : 0, spent: !ready && op.litanyTime <= 0, glint: ready, active: op.litanyTime > 0 });
 +    drawLitanyTheft(g, op, lx, ly);
-     if (op.litanyTime > 0) {
-       g.glow(lx, ly, 60, hex(UI.gilt, 0.35));
-       g.arc(lx, ly, 34, 4, hex(UI.gilt), op.litanyTime / LITANY_DURATION);
+     const label = ready ? { draw: `${dragGlyphFor('litany.draw')} ★`, key: glyphFor('litany.key'), both: `${dragGlyphFor('litany.draw')} ★ / ${glyphFor('litany.key')}` }[litanyMode()] : op.litanyTime > 0 ? tr('hud.litany.active') : tr('hud.litany.spent');
+     caps(g, tr('hud.litany'), lx - 52, ly - 8, 11, hex(ready ? INK.gold : INK.faint), 'right');
+     g.text(label, lx - 52, ly + 14, { size: 16, font: 'italic', color: hex(ready ? INK.text : INK.faint, 0.9), align: 'right', shadow: hex('#000000', 0.8), soft: true });
 diff --git a/src/surgery/bosses/base.ts b/src/surgery/bosses/base.ts
 new file mode 100644
-index 0000000..2881539
+index 0000000..927bc40
 --- /dev/null
 +++ b/src/surgery/bosses/base.ts
-@@ -0,0 +1,314 @@
+@@ -0,0 +1,320 @@
 +import type { Vec } from '../../core/math';
 +import { hex } from '../../render/color';
 +import type { Gfx } from '../../render/gfx';
@@ -1359,7 +2711,7 @@ index 0000000..2881539
 +  elite = false;
 +  private met = false;
 +
-+  abstract readonly boss: string;
++  abstract readonly bossId: string;
 +  abstract readonly phases: readonly BossPhase[];
 +
 +  constructor(pos: Vec, op: Operation, hp: number) {
@@ -1401,11 +2753,16 @@ index 0000000..2881539
 +  }
 +
 +  /** Current vitals drain of the boss and all its living adds. */
++  /**
++   * The drain this fight puts on the table: the boss plus each live add at no more than it drained
++   * when spawned. A neglected wound that worsens later is the surgeon's to tend, not the boss's budget.
++   */
 +  drainTotal(op: Operation): number {
 +    let d = this.hidden ? 0 : this.drain(op);
-+    for (const e of this.adds) if (e.alive && !e.hidden) d += e.drain(op);
++    for (const e of this.adds) if (e.alive && !e.hidden) d += Math.min(e.drain(op), this.spawnDrain.get(e) ?? Infinity);
 +    return d;
 +  }
++  private spawnDrain = new WeakMap<Entity, number>();
 +
 +  /**
 +   * Spawn an add (or a wound) on the boss's behalf. Refused — nothing spawns —
@@ -1414,6 +2771,7 @@ index 0000000..2881539
 +  spawnAdd(op: Operation, e: Entity): boolean {
 +    if (this.drainTotal(op) + e.drain(op) > DRAIN_BUDGET[difficultyOf(op)] + 1e-9) return false;
 +    adds.add(e);
++    this.spawnDrain.set(e, e.drain(op));
 +    for (let i = this.adds.length - 1; i >= 0; i--) if (!this.adds[i].alive) this.adds.splice(i, 1);
 +    this.adds.push(e);
 +    op.spawn(e);
@@ -1429,8 +2787,8 @@ index 0000000..2881539
 +    this.opDifficulty = difficultyOf(op);
 +    if (!this.met) {
 +      this.met = true;
-+      op.events.emit('boss', { kind: 'encounter', boss: this.boss });
-+      op.events.emit('boss', { kind: 'music', boss: this.boss, intensity: this.phase.music });
++      op.events.emit('boss', { kind: 'encounter', boss: this.bossId });
++      op.events.emit('boss', { kind: 'music', boss: this.bossId, intensity: this.phase.music });
 +    }
 +    this.branded = false;
 +    this.hurtFlash = Math.max(0, this.hurtFlash - dt * 3);
@@ -1440,7 +2798,7 @@ index 0000000..2881539
 +      drainAudit.worst = Math.max(drainAudit.worst, d);
 +      if (d > DRAIN_BUDGET[difficultyOf(op)] + 1e-6) {
 +        drainAudit.violations++;
-+        console.error(`[boss] ${this.boss} drain ${d.toFixed(2)}/s exceeds budget`);
++        console.error(`[boss] ${this.bossId} drain ${d.toFixed(2)}/s exceeds budget`);
 +      }
 +    }
 +  }
@@ -1464,7 +2822,7 @@ index 0000000..2881539
 +    if (next !== this.phaseIx) {
 +      // One phase at a time: a huge hit stops at the threshold of the next.
 +      next = this.phaseIx + 1;
-+      this.hp = Math.min(this.hp, this.maxHp * this.phases[next].from);
++      this.hp = Math.max(this.hp, this.maxHp * this.phases[next].from);
 +      this.enterPhase(op, next);
 +    }
 +    return before - this.hp;
@@ -1475,12 +2833,12 @@ index 0000000..2881539
 +    this.phaseIx = ix;
 +    this.exposedT = 0;
 +    const p = this.phases[ix];
-+    op.events.emit('boss', { kind: 'phase', boss: this.boss, index: ix, count: this.phases.length, name: p.key });
-+    op.events.emit('boss', { kind: 'music', boss: this.boss, intensity: p.music });
++    op.events.emit('boss', { kind: 'phase', boss: this.bossId, index: ix, count: this.phases.length, name: p.key });
++    op.events.emit('boss', { kind: 'music', boss: this.bossId, intensity: p.music });
 +    if (!this.elite && !(op.def as BossOpDef).skipCinematics) {
 +      op.freezeT = Math.max(op.freezeT, CINEMATIC_SECONDS);
 +      op.shake = Math.max(op.shake, 10);
-+      op.events.emit('boss', { kind: 'cinematic', boss: this.boss, seconds: CINEMATIC_SECONDS });
++      op.events.emit('boss', { kind: 'cinematic', boss: this.bossId, seconds: CINEMATIC_SECONDS });
 +      bossSound(op, 'sting', this.pos);
 +    }
 +    this.onPhase(op, ix, from);
@@ -1506,8 +2864,8 @@ index 0000000..2881539
 +    op.spawn(new BossDeath({ ...this.pos }, this.deathLook(), withering.map((e) => ({ ...e.pos }))));
 +    op.shake = Math.max(op.shake, 14);
 +    op.emit('mote', this.pos, 60, undefined, undefined, 140);
-+    op.events.emit('boss', { kind: 'death', boss: this.boss });
-+    op.events.emit('boss', { kind: 'music', boss: this.boss, intensity: 0 });
++    op.events.emit('boss', { kind: 'death', boss: this.bossId });
++    op.events.emit('boss', { kind: 'music', boss: this.bossId, intensity: 0 });
 +    bossSound(op, 'withering', this.pos);
 +    this.onDeath(op);
 +  }
@@ -1562,7 +2920,7 @@ index 0000000..2881539
 +}
 diff --git a/src/surgery/bosses/codex.ts b/src/surgery/bosses/codex.ts
 new file mode 100644
-index 0000000..0b24df6
+index 0000000..79578a5
 --- /dev/null
 +++ b/src/surgery/bosses/codex.ts
 @@ -0,0 +1,58 @@
@@ -1579,7 +2937,7 @@ index 0000000..0b24df6
 +export const CODEX_BOSSES = ['matins', 'lauds', 'prime', 'terce', 'sext', 'none', 'vespers', 'compline', 'office'] as const;
 +export type CodexBoss = (typeof CODEX_BOSSES)[number];
 +
-+/** Elites with a codex entry of their own (ids match `MalisonBase.boss`). */
++/** Elites with a codex entry of their own (ids match `MalisonBase.bossId`). */
 +export const CODEX_ELITES = ['broodmother', 'cantor', 'gravehound', 'herald'] as const;
 +
 +export type DebriefBand = 'high' | 'mid' | 'low';
@@ -1625,7 +2983,7 @@ index 0000000..0b24df6
 +  'op5-9': 'office',
 +};
 diff --git a/src/surgery/bosses/compline.ts b/src/surgery/bosses/compline.ts
-index 9d8515e..8462dc7 100644
+index ce9c075..5a19af0 100644
 --- a/src/surgery/bosses/compline.ts
 +++ b/src/surgery/bosses/compline.ts
 @@ -9,6 +9,7 @@ import { FIELD, type Operation } from '../operation';
@@ -1676,15 +3034,15 @@ index 9d8515e..8462dc7 100644
      op.cues.push('bell');
      op.shake = 10;
      if (this.tune.noNodes) return;
-@@ -258,6 +265,7 @@ export class ComplineMalison extends Entity {
-     this.litanyStolen = false;
-     this.stolenT = 0;
-     op.litanyUsed = false;
+@@ -260,6 +267,7 @@ export class ComplineMalison extends Entity {
+     op.litanyLocked = false;
+     // Usable once more even if it was already spent.
+     if (!op.canInvokeLitany()) op.grantLitany();
 +    op.events.emit('boss', { kind: 'hud', flag: 'litany-stolen', on: false });
      op.popup('THE LITANY RETURNS', { x: FIELD.cx, y: FIELD.cy - 150 }, '#f5d76e');
      op.cues.push('litany');
    }
-@@ -292,16 +300,35 @@ export class ComplineMalison extends Entity {
+@@ -294,16 +302,35 @@ export class ComplineMalison extends Entity {
      if (dist(this.pos, this.target) < 6) this.target = randomOnBody(op, 0.35, 0.3);
      this.pos = stepToward(this.pos, this.target, this.stage === 3 ? 14 : 20, dt);
  
@@ -1721,8 +3079,8 @@ index 9d8515e..8462dc7 100644
  
      if (this.comboOpen && op.elapsed - this.comboOpenAt > this.tune.comboWindow) this.comboOpenAt = -Infinity;
  
-@@ -318,7 +345,13 @@ export class ComplineMalison extends Entity {
-       if (this.litanyStolen) op.litanyUsed = true;
+@@ -320,7 +347,13 @@ export class ComplineMalison extends Entity {
+       if (this.litanyStolen) op.litanyLocked = true;
        this.stealT -= dt;
        if (this.stolenT > 0) this.stolenT -= dt;
 +      const sl = leadFor(op, 'compline', 'steal');
@@ -1737,10 +3095,10 @@ index 9d8515e..8462dc7 100644
          op.popup('Stillness — against you', this.pos, '#8090c0');
 diff --git a/src/surgery/bosses/elites.ts b/src/surgery/bosses/elites.ts
 new file mode 100644
-index 0000000..9179666
+index 0000000..36ae781
 --- /dev/null
 +++ b/src/surgery/bosses/elites.ts
-@@ -0,0 +1,367 @@
+@@ -0,0 +1,370 @@
 +import { dist, type Vec } from '../../core/math';
 +import { hex } from '../../render/color';
 +import type { Gfx } from '../../render/gfx';
@@ -1768,7 +3126,7 @@ index 0000000..9179666
 + * each ripening on its own time (BOS-0147).
 + */
 +export class EggCluster extends MalisonBase {
-+  readonly boss = 'broodmother';
++  readonly bossId = 'broodmother';
 +  readonly phases = ONE;
 +  readonly sacs: EggSac[] = [];
 +  /** Angular bins the current lancet stroke has swept around the cluster. */
@@ -1900,7 +3258,7 @@ index 0000000..9179666
 + * be traced out with the brand between the hums (BOS-0148).
 + */
 +export class CantorKnot extends MalisonBase {
-+  readonly boss = 'cantor';
++  readonly bossId = 'cantor';
 +  readonly phases = ONE;
 +  readonly sigil: Sigil;
 +  private song: Cadence;
@@ -1939,9 +3297,12 @@ index 0000000..9179666
 +      op.sayOnce('cantor-hum', 'Hear that hum? Each time he sings, the knot re-ties a stroke. Burn it between the verses!');
 +    }
 +    if (ev === 'attack') {
-+      const seg = this.sigil.segs.find((s) => s.burned.some(Boolean));
-+      if (seg) {
-+        seg.burned.fill(false);
++      // Re-tie the latest stroke touched: every segment of it, and it must be caught at its node again.
++      const touched = this.sigil.segs.filter((s) => s.burned.some(Boolean)).map((s) => s.stroke);
++      if (touched.length) {
++        const stroke = Math.max(...touched);
++        for (const s of this.sigil.segs) if (s.stroke === stroke) s.burned.fill(false);
++        this.sigil.ignited[stroke] = false;
 +        this.redrawn++;
 +        attack(op, 'cantor', 'hum', this.pos);
 +        op.popup('The knot re-ties', { x: this.pos.x, y: this.pos.y - 60 }, '#d0a0ff');
@@ -1967,7 +3328,7 @@ index 0000000..9179666
 + * shows which — or tearing one out early spreads the rot 30 px (BOS-0149).
 + */
 +export class FangNest extends MalisonBase {
-+  readonly boss = 'gravehound';
++  readonly bossId = 'gravehound';
 +  readonly phases = ONE;
 +  readonly fangs: Embedded[];
 +  next = 0;
@@ -2110,7 +3471,7 @@ index 0000000..9179666
 +}
 diff --git a/src/surgery/bosses/hud.ts b/src/surgery/bosses/hud.ts
 new file mode 100644
-index 0000000..46fd679
+index 0000000..f368489
 --- /dev/null
 +++ b/src/surgery/bosses/hud.ts
 @@ -0,0 +1,123 @@
@@ -2152,11 +3513,11 @@ index 0000000..46fd679
 +  if (!b) return;
 +  const r = bossBarRect(b);
 +  const f = b.frac;
-+  const name = t(`boss.${b.boss}.name`);
++  const name = t(`boss.${b.bossId}.name`);
 +  if (b.elite) g.text(name, r.x + r.w / 2, r.y - 4, { size: 15, font: 'italic', color: hex('#e8d8c0', 0.9), align: 'center' });
 +  else {
 +    g.text(name, r.x + r.w / 2, r.y - 6, { size: 24, font: 'display', color: hex('#e8d0ff'), color2: hex('#7a4aa8'), align: 'center', shadow: hex('#000000', 0.8) });
-+    const phase = t(`boss.${b.boss}.phase.${b.phase.key}`);
++    const phase = t(`boss.${b.bossId}.phase.${b.phase.key}`);
 +    g.text(phase, r.x + r.w, r.y - 6, { size: 13, font: 'italic', color: hex('#c8b8a0', 0.85), align: 'right', shadow: false });
 +  }
 +  g.rect(r.x - 2, r.y - 2, r.w + 4, r.h + 4, hex('#000000', 0.65));
@@ -2335,7 +3696,7 @@ index 8560f4e..99f4e42 100644
      super.kill();
      for (const s of this.segments) s.kill();
 diff --git a/src/surgery/bosses/office.ts b/src/surgery/bosses/office.ts
-index 4b85125..92a0b50 100644
+index 4b85125..98eb5b5 100644
 --- a/src/surgery/bosses/office.ts
 +++ b/src/surgery/bosses/office.ts
 @@ -12,6 +12,22 @@ import { NameSigil, PRIME_NAMES } from './prime';
@@ -2426,18 +3787,19 @@ index 4b85125..92a0b50 100644
 +    if (this.finalLitany) return;
 +    // Ilse takes up the prayer: a second star within 3 s joins hers.
 +    this.prayerT = 3;
-+    op.litanyUsed = false;
++    op.grantLitany();
 +    op.sayOnce('office-prayer', 'Again, Doctor — draw it again, and I’ll pray it with you!');
    }
  
    /** Where Hour `h` stands on the clock-face. */
-@@ -194,12 +271,26 @@ export class OfficeMalison extends Entity {
+@@ -194,12 +271,27 @@ export class OfficeMalison extends Entity {
        op.cues.push('inject');
        op.popup(`Ilse holds him: +${amt}`, { x: FIELD.cx + 300, y: FIELD.cy + 120 }, '#9fd3a8');
      }
 +    if (this.prayerT > 0) {
 +      this.prayerT = Math.max(0, this.prayerT - dt / Math.max(op.timeScale, 1e-6));
-+      if (this.prayerT === 0 && !this.finalLitany) op.litanyUsed = true;
++      // The prayer lapses: the extra star goes unanswered.
++      if (this.prayerT === 0 && !this.finalLitany && op.litanyUses < op.litanyAllowed) op.litanyAllowed--;
 +    }
      if (this.stage === 3) {
        if (this.heartSigil && !this.heartSigil.alive) this.die(op);
@@ -2459,7 +3821,7 @@ index 4b85125..92a0b50 100644
        return;
      }
 diff --git a/src/surgery/bosses/sext.ts b/src/surgery/bosses/sext.ts
-index cb1245a..dd2ef7f 100644
+index 6c2e8d5..f23dae2 100644
 --- a/src/surgery/bosses/sext.ts
 +++ b/src/surgery/bosses/sext.ts
 @@ -7,6 +7,7 @@ import { FIELD, MAX_VITALS, type Operation } from '../operation';
@@ -2916,7 +4278,7 @@ index b4a637b..f01dc78 100644
    }
  }
 diff --git a/src/surgery/events.ts b/src/surgery/events.ts
-index c3f2690..e76db28 100644
+index 61d47c1..faf66d1 100644
 --- a/src/surgery/events.ts
 +++ b/src/surgery/events.ts
 @@ -3,6 +3,7 @@ import { EventBus } from '../core/events';
@@ -2937,12 +4299,13 @@ index c3f2690..e76db28 100644
    lose: { reason: string };
  }
 diff --git a/src/surgery/lauds.ts b/src/surgery/lauds.ts
-index cdb0cbf..2ceeee5 100644
+index b0610f2..27e2fba 100644
 --- a/src/surgery/lauds.ts
 +++ b/src/surgery/lauds.ts
-@@ -1,51 +1,143 @@
+@@ -1,53 +1,145 @@
 -import { dist, type Vec } from '../core/math';
 +import { dist, pointSegment, segmentsIntersect, type Vec } from '../core/math';
+ import { drawBlotch, presentation } from '../render/presentation';
  import { hex } from '../render/color';
  import type { Gfx } from '../render/gfx';
 +import { settings } from '../core/settings';
@@ -3046,7 +4409,8 @@ index cdb0cbf..2ceeee5 100644
 -  hp = 100;
 -  readonly maxHp = 100;
 +export class LaudsMalison extends MalisonBase {
-+  readonly boss = 'lauds';
++  readonly bossId = 'lauds';
++  override boss = true;
 +  readonly phases: readonly BossPhase[];
 +  readonly tune: LaudsTuning;
    voices: ChoirVoice[] = [];
@@ -3062,6 +4426,7 @@ index cdb0cbf..2ceeee5 100644
    private drift: Vec;
    private lensT = 0;
    private rekindleT = 0;
+-  override boss = true;
 -
 -  constructor(pos: Vec, op: Operation) {
 -    super(pos);
@@ -3108,7 +4473,7 @@ index cdb0cbf..2ceeee5 100644
      }
    }
  
-@@ -54,78 +146,197 @@ export class LaudsMalison extends Entity {
+@@ -56,78 +148,197 @@ export class LaudsMalison extends Entity {
    }
  
    get radius(): number {
@@ -3221,7 +4586,7 @@ index cdb0cbf..2ceeee5 100644
 -      this.hymnT = 0;
 -      this.hymnR = 0;
 -      op.sayOnce('lauds-hymn', 'It’s singing — every verse tears him open! Stitch the cuts as they come!');
--      op.cues.push('bell');
+-      op.cues.push('sfx.lauds.hymn');
 +  private response(op: Operation, dt: number): void {
 +    if (this.pending) {
 +      this.pending.t -= dt;
@@ -3277,14 +4642,14 @@ index cdb0cbf..2ceeee5 100644
 +      if (ev === 'tell') {
 +        tell(op, 'lauds', 'hymn', this.pos);
 +        bossSound(op, 'inhale', this.pos);
-+      }
+       }
+-      if (this.hymnR > 320) this.hymnR = -1;
 +      if (ev === 'attack') {
 +        this.hymnR = 0;
 +        attack(op, 'lauds', 'hymn', this.pos);
 +        op.sayOnce('lauds-hymn', 'It’s singing — every verse tears him open! Stitch the cuts as they come!');
-+        op.cues.push('bell');
-       }
--      if (this.hymnR > 320) this.hymnR = -1;
++        op.cues.push('sfx.lauds.hymn');
++      }
 +      return;
 +    }
 +    const prev = this.hymnR;
@@ -3316,7 +4681,7 @@ index cdb0cbf..2ceeee5 100644
 +    if (ev === 'tell') {
 +      tell(op, 'lauds', 'flare', { x: FIELD.cx, y: FIELD.cy - FIELD.ry });
 +      op.events.emit('boss', { kind: 'hud', flag: 'dawn-glow', on: true });
-+    }
+     }
 +    if (ev === 'attack') {
 +      this.flareT = this.tune.flareFor;
 +      this.lensT = 0;
@@ -3338,7 +4703,7 @@ index cdb0cbf..2ceeee5 100644
 +    if (dist(this.pos, this.drift) < 8) {
 +      this.drift = clampToField({ x: FIELD.cx + op.rng.range(-0.6, 0.6) * FIELD.rx, y: FIELD.cy + op.rng.range(-0.5, 0.5) * FIELD.ry }, 40 + this.radius);
 +      if (op.entities.filter((e) => e instanceof Rot && e.alive).length < 3) this.spawnAdd(op, new BossRot({ ...this.pos }, 26, 0.5));
-     }
++    }
 +    this.moveToward(this.drift, 60, dt);
 +  }
 +
@@ -3351,7 +4716,7 @@ index cdb0cbf..2ceeee5 100644
    }
  
    private moveToward(t: Vec, speed: number, dt: number): void {
-@@ -136,53 +347,84 @@ export class LaudsMalison extends Entity {
+@@ -138,53 +349,84 @@ export class LaudsMalison extends Entity {
  
    override onReveal(op: Operation, p: Vec, dt: number): void {
      if (!this.submerged || dist(p, this.pos) > 70) return;
@@ -3462,7 +4827,7 @@ index cdb0cbf..2ceeee5 100644
    override drawSurface(g: Gfx): void {
      if (!this.submerged) surfDisc(g, this.pos, this.radius * 1.9, 0.05, 0.35, 0.1, 0.7);
      else surfDisc(g, this.pos, 46, 0, 0.1, 0.05, 0.9);
-@@ -190,107 +432,325 @@ export class LaudsMalison extends Entity {
+@@ -192,107 +434,331 @@ export class LaudsMalison extends Entity {
  
    draw(g: Gfx, op: Operation): void {
      const { x, y } = this.pos;
@@ -3723,9 +5088,11 @@ index cdb0cbf..2ceeee5 100644
      this.place();
    }
  
--  override onSweep(op: Operation, ptr: Pointer, tool: ToolId, dt: number): void {
++  /** Seconds the brand has rested on the Voice without tracing anything new. */
++  private idleBrandT = 0;
++
+   override onSweep(op: Operation, ptr: Pointer, tool: ToolId, dt: number): void {
 -    if (tool !== 'brand' || dist(ptr.pos, this.pos) > 22) return;
-+  override onSweep(op: Operation, ptr: Pointer, tool: ToolId): void {
 +    if (tool !== 'brand' || dist(ptr.pos, this.pos) > 34) return;
      this.branded = true;
 -    this.silence += dt;
@@ -3742,6 +5109,9 @@ index cdb0cbf..2ceeee5 100644
 +        fresh = true;
 +      }
 +    }
++    // A brand simply held on a Voice does nothing: teach the trace.
++    this.idleBrandT = fresh ? 0 : this.idleBrandT + dt;
++    if (this.idleBrandT > 0.5) op.sayOnce('lauds-voice-trace', 'Holding it there won’t quiet it — trace the Voice’s sigil with the brand, line by line.');
 +    if (fresh && op.rng.next() < 0.3) op.cues.push('burn');
 +    if (fresh && Math.random() < 0.5) op.emit('spark', ptr.pos, 2);
 +    if (this.traced >= 0.8) {
@@ -3821,7 +5191,7 @@ index cdb0cbf..2ceeee5 100644
        const a = (i / n) * TAU;
        op.spawn(new SpiderlingGrub({ x: this.pos.x + Math.cos(a) * 14, y: this.pos.y + Math.sin(a) * 14 }, op));
      }
-@@ -304,30 +764,31 @@ export class EggSac extends Entity {
+@@ -306,31 +772,32 @@ export class EggSac extends Entity {
    override onPress(op: Operation, ptr: Pointer, tool: ToolId): boolean {
      if (tool !== 'lancet' || dist(ptr.pos, this.pos) > 24) return false;
      op.cues.push('squelch');
@@ -3840,9 +5210,10 @@ index cdb0cbf..2ceeee5 100644
    draw(g: Gfx, op: Operation): void {
      const { x, y } = this.pos;
 -    const urgency = Math.max(0, 1 - this.hatchT / 18);
++    const urgency = Math.max(0, 1 - this.hatchT / this.hatchIn);
+     if (presentation.creatureFilter) return drawBlotch(g, x, y, 22);
 -    const wob = 1 + Math.sin(op.elapsed * (4 + urgency * 14)) * 0.05 * (1 + urgency * 2);
 -    g.ellipse(x, y, 24 * wob, 20 / wob, 0.3, hex('#d8d0b8', 0.95), hex('#8a8068', 0.9));
-+    const urgency = Math.max(0, 1 - this.hatchT / this.hatchIn);
 +    const s = 1 + 0.25 * this.swell;
 +    const wob = 1 + Math.sin(op.elapsed * (4 + urgency * 14)) * 0.05 * (1 + urgency * 2 + this.swell * 2);
 +    g.ellipse(x, y, 24 * wob * s, (20 / wob) * s, 0.3, hex('#d8d0b8', 0.95), hex('#8a8068', 0.9));
@@ -3862,7 +5233,7 @@ index cdb0cbf..2ceeee5 100644
  export class SpiderlingGrub extends Entity {
    heat = 0;
    private heading: number;
-@@ -344,8 +805,24 @@ export class SpiderlingGrub extends Entity {
+@@ -347,8 +814,24 @@ export class SpiderlingGrub extends Entity {
    override update(op: Operation, dt: number): void {
      if (!this.branded) this.heat = Math.max(0, this.heat - dt * 0.6);
      this.branded = false;
@@ -3889,13 +5260,23 @@ index cdb0cbf..2ceeee5 100644
      const next = { x: this.pos.x + Math.cos(this.heading) * sp * dt, y: this.pos.y + Math.sin(this.heading) * sp * dt };
      if (onBody(next)) this.pos = next;
      else this.heading += Math.PI * 0.8;
-@@ -375,3 +852,4 @@ export class SpiderlingGrub extends Entity {
+@@ -369,8 +852,8 @@ export class SpiderlingGrub extends Entity {
+ 
+   draw(g: Gfx, op: Operation): void {
+     const { x, y } = this.pos;
+-    for (let i = 0; i < 8; i++) {
+     if (presentation.creatureFilter) return drawBlotch(g, x, y, 9);
++    for (let i = 0; i < 8; i++) {
+       const a = (i / 8) * TAU + Math.sin(op.elapsed * 20 + i) * 0.2;
+       g.line({ x, y }, { x: x + Math.cos(a) * 11, y: y + Math.sin(a) * 11 }, 1.5, hex('#1a1410'));
+     }
+@@ -379,3 +862,4 @@ export class SpiderlingGrub extends Entity {
      if (this.heat > 0) g.arc(x, y, 15, 3, hex('#ff9040'), this.heat / 0.25);
    }
  }
 +
 diff --git a/src/surgery/malison.ts b/src/surgery/malison.ts
-index 99d3a05..4fa44f9 100644
+index 662ebe2..382290e 100644
 --- a/src/surgery/malison.ts
 +++ b/src/surgery/malison.ts
 @@ -1,10 +1,12 @@
@@ -3913,7 +5294,7 @@ index 99d3a05..4fa44f9 100644
  
  const TAU = Math.PI * 2;
  /** Cosmetic randomness only — never the simulation RNG, so effects can't change outcomes. */
-@@ -18,133 +20,420 @@ const fxRange = (lo: number, hi: number): number => lo + Math.random() * (hi - l
+@@ -18,137 +20,437 @@ const fxRange = (lo: number, hi: number): number => lo + Math.random() * (hi - l
   */
  export type Hour = 'matins';
  
@@ -3971,7 +5352,8 @@ index 99d3a05..4fa44f9 100644
 +export type EyeBeat = 1 | 2 | 3 | 0;
 +
 +export class Malison extends MalisonBase {
-+  readonly boss = 'matins';
++  readonly bossId = 'matins';
++  override boss = true;
 +  readonly phases: readonly BossPhase[];
 +  readonly tune: MatinsTuning;
    open = false;
@@ -3982,6 +5364,10 @@ index 99d3a05..4fa44f9 100644
    private target: Vec;
 -  private hurtFlash = 0;
 -  private spawnedMotes = 0;
+-  override boss = true;
+-  /** Shroud rhythm (s veiled / s open); X-op remixes shorten it. */
+-  veilTime = 4;
+-  openTime = 2.5;
 +  /** Veiled-branding feedback: one MISS, then none for 5 s. */
 +  private veiledMissT = 0;
 +  /** Phase 3: time within the eye's cycle and the count of cycles. */
@@ -4042,8 +5428,24 @@ index 99d3a05..4fa44f9 100644
 +    return this.open || (!!this.tune.eyeFromStart && this.beat === 3);
 +  }
 +
-+  private get openTime(): number {
++  private get openSpan(): number {
 +    return this.phase.key === 'watchfire' ? this.tune.open2 : this.tune.open1;
++  }
++
++  /** Shroud rhythm knobs for remixes (X1): seconds veiled, and seconds open in the Vigil (Watchfire scales with it). */
++  get veilTime(): number {
++    return this.tune.veil;
++  }
++  set veilTime(s: number) {
++    this.tune.veil = s;
++    this.opening.period = s;
++  }
++  get openTime(): number {
++    return this.tune.open1;
++  }
++  set openTime(s: number) {
++    this.tune.open2 *= s / this.tune.open1;
++    this.tune.open1 = s;
    }
  
    private pickTarget(op: Operation): Vec {
@@ -4069,7 +5471,7 @@ index 99d3a05..4fa44f9 100644
      if (Math.random() < dt * 12) op.emit('mote', { x: this.pos.x + fxRange(-30, 30), y: this.pos.y + fxRange(-30, 30) }, 1);
 -    // Shroud rhythm: 4s veiled, 2.5s open.
 -    this.cycleT += dt;
--    const period = this.open ? 2.5 : 4;
+-    const period = this.open ? this.openTime : this.veilTime;
 -    if (this.cycleT >= period) {
 -      this.cycleT = 0;
 -      this.open = !this.open;
@@ -4130,7 +5532,7 @@ index 99d3a05..4fa44f9 100644
 +        this.rend(op, { ...this.pos }, op.rng.range(0, TAU), op.rng.range(40, 60));
          op.sayOnce('malison-rend', 'It’s tearing the flesh as it moves! Stitch those wounds!');
        }
-+    } else if (this.cycleT >= this.openTime) {
++    } else if (this.cycleT >= this.openSpan) {
 +      this.open = false;
 +      this.cycleT = 0;
 +      this.opening.reset();
@@ -4204,9 +5606,9 @@ index 99d3a05..4fa44f9 100644
 +      this.gaze.from = { ...this.pos };
 +      this.gaze.t -= dt;
 +      if (this.gaze.t <= 0) this.lash(op);
-+    }
-+  }
-+
+     }
+   }
+ 
 +  /** The end of the gaze line (it reaches across the field). */
 +  gazeEnd(): Vec | null {
 +    if (!this.gaze) return null;
@@ -4227,13 +5629,13 @@ index 99d3a05..4fa44f9 100644
 +    if (!hit) {
 +      op.popup('Dodged', { ...p }, '#b9d7ff');
 +      return;
-     }
++    }
 +    const at = onBody(p) ? { ...p } : { x: this.pos.x + g.dir.x * 90, y: this.pos.y + g.dir.y * 90 };
 +    this.rend(op, at, Math.atan2(g.dir.y, g.dir.x), 64);
 +    op.hurt(4, at);
 +    attack(op, 'matins', 'gaze', at);
-   }
- 
++  }
++
    override onSweep(op: Operation, ptr: Pointer, tool: ToolId, dt: number): void {
      if (tool !== 'brand' || dist(ptr.pos, this.pos) > this.radius) return;
      this.branded = true;
@@ -4399,7 +5801,7 @@ index 99d3a05..4fa44f9 100644
      super(pos);
      this.layer = 7;
      const a = op.rng.range(0, TAU);
-@@ -152,25 +441,81 @@ export class MalisonShard extends Entity {
+@@ -156,25 +458,81 @@ export class MalisonShard extends Entity {
    }
  
    override drain(): number {
@@ -4484,7 +5886,7 @@ index 99d3a05..4fa44f9 100644
    override onPress(op: Operation, ptr: Pointer, tool: ToolId): boolean {
      if (tool !== 'tongs' || dist(ptr.pos, this.pos) > 22) return false;
      this.grabbed = true;
-@@ -187,22 +532,23 @@ export class MalisonShard extends Entity {
+@@ -191,22 +549,23 @@ export class MalisonShard extends Entity {
      if (!onBody(ptr.pos)) {
        this.kill();
        op.cues.push('burn');
@@ -4513,11 +5915,11 @@ index 99d3a05..4fa44f9 100644
  }
  
 diff --git a/src/surgery/operation.ts b/src/surgery/operation.ts
-index 82281bf..f5d2d24 100644
+index 2f4d7fc..5a8eaf1 100644
 --- a/src/surgery/operation.ts
 +++ b/src/surgery/operation.ts
-@@ -240,11 +240,20 @@ export class Operation {
- 
+@@ -893,6 +893,10 @@ export class Operation {
+   /** Player input: uses real time so the Litany does not slow the surgeon. */
    /** Optional distortion of the surgeon's input (a boss's torpor or heat-haze); null = none. */
    inputFilter: ((ptr: Pointer, dt: number) => Pointer) | null = null;
 +  /** Seconds the whole simulation stands still (a boss's phase-transition beat, BOS-0004). */
@@ -4525,19 +5927,21 @@ index 82281bf..f5d2d24 100644
 +  /** Where the surgeon's instrument last was (after any input distortion), for gaze attacks. */
 +  pointer: Vec = { x: FIELD.cx, y: FIELD.cy };
  
-   /** Player input: uses real time so the Litany does not slow the surgeon. */
    handlePointer(ptr: Pointer, dt: number): void {
-     if (this.status !== 'running') return;
-     if (this.inputFilter) ptr = this.inputFilter(ptr, dt);
+     this.log?.push(['p', ptr.pos.x, ptr.pos.y, ptr.prev.x, ptr.prev.y, ptr.down ? 1 : 0, ptr.pressed ? 1 : 0, ptr.released ? 1 : 0, dt]);
+@@ -918,6 +922,11 @@ export class Operation {
+         ptr = { ...ptr, pressed: this.toggleLatch, released: !this.toggleLatch, down: this.toggleLatch };
+       } else ptr = { ...ptr, pressed: false, released: false, down: this.toggleLatch };
+     }
 +    this.pointer = ptr.pos;
 +    if (this.freezeT > 0) {
 +      if (ptr.released) this.releaseCapture();
 +      return;
 +    }
      const tool = this.tool;
-     // Top layer first; a stable insertion sort into a reused buffer (no allocation per pointer event).
-     const live = this.liveBuf;
-@@ -336,6 +345,10 @@ export class Operation {
+     if (!this.toolUsable(tool)) {
+       if (ptr.pressed) this.popup(tool === 'brand' && this.brandLock > 0 ? 'The brand is too hot!' : `${toolInfo(tool).name} is useless for now!`, ptr.pos, '#d98a5f');
+@@ -1171,6 +1180,10 @@ export class Operation {
        }
      }
      if (this.status === 'won' || this.status === 'lost') return;
@@ -4545,15 +5949,15 @@ index 82281bf..f5d2d24 100644
 +      this.freezeT = Math.max(0, this.freezeT - dt);
 +      return;
 +    }
+     if (this.dialogue.length || this.litanyPractice) return;
  
      this.injectCooldown = Math.max(0, this.injectCooldown - dt);
-     if (this.litanyTime > 0) this.litanyTime = Math.max(0, this.litanyTime - dt);
 diff --git a/tests/bot-hours.ts b/tests/bot-hours.ts
 new file mode 100644
-index 0000000..c701959
+index 0000000..26dddde
 --- /dev/null
 +++ b/tests/bot-hours.ts
-@@ -0,0 +1,231 @@
+@@ -0,0 +1,233 @@
 +/**
 + * Bot strategies for the Hours built on MalisonBase (BOS-0007): each boss id
 + * maps to a strategy that `plan()` in bot.ts consults first. A strategy
@@ -4561,7 +5965,7 @@ index 0000000..c701959
 + */
 +import { dist, type Vec } from '../src/core/math';
 +import { activeBoss, bossesOf, type MalisonBase } from '../src/surgery/bosses/base';
-+import { FIELD, onBody, type Operation } from '../src/surgery/operation';
++import { FIELD, onBody, TRAY_DISH, type Operation } from '../src/surgery/operation';
 +import type { ToolId } from '../src/surgery/types';
 +import { Malison, MalisonShard } from '../src/surgery/malison';
 +import { ChoirVoice, LaudsMalison, VOICE_SIGIL } from '../src/surgery/lauds';
@@ -4725,7 +6129,8 @@ index 0000000..c701959
 +  if (key === 'response') return antiphon(l, 20);
 +  // Dawn: hunt its ripples between flares, brand it while surfaced.
 +  if (l.submerged) {
-+    if (l.blinded || l.flareTelling) return k.pause(op.pointer, 'lens', 0.3);
++    // Blinded by the flare: tend the rot and the bleeding instead of waiting.
++    if (l.blinded || l.flareTelling) return null;
 +    return k.hold('lens', () => (l.alive && l.submerged && !l.blinded ? l.pos : null), 1.5);
 +  }
 +  return k.hold('brand', () => (l.alive && !l.submerged ? l.pos : null), 5);
@@ -4751,7 +6156,8 @@ index 0000000..c701959
 +  const grip = { x: f.origin.x + (f.handle.x - f.origin.x) * 0.7, y: f.origin.y + (f.handle.y - f.origin.y) * 0.7 };
 +  const dir = { x: f.handle.x - f.origin.x, y: f.handle.y - f.origin.y };
 +  const l = Math.hypot(dir.x, dir.y) || 1;
-+  return k.drag('tongs', [grip, { x: grip.x + (dir.x / l) * 110, y: grip.y + (dir.y / l) * 110 }], 500);
++  // Out along the axis, then carried off the body into the instrument dish.
++  return k.drag('tongs', [grip, { x: grip.x + (dir.x / l) * 40, y: grip.y + (dir.y / l) * 40 }, TRAY_DISH], 480);
 +};
 +
 +/** Cantor's Knot: the generic sigil-tracing between hums is enough. */
@@ -4781,12 +6187,12 @@ index 0000000..c701959
 +  if (herald && op.def.tools.includes('brand')) return k.hold('brand', () => (herald.alive ? herald.pos : null), 1.2);
 +  const b =activeBoss(op) ?? bossesOf(op).find((x) => x.alive) ?? null;
 +  if (!b) return null;
-+  return BOT_STRATEGIES[b.boss]?.(op, k, b) ?? null;
++  return BOT_STRATEGIES[b.bossId]?.(op, k, b) ?? null;
 +}
 +
 +export const SIDE_REST: Vec = { x: FIELD.cx + 330, y: FIELD.cy + 20 };
 diff --git a/tests/bot-later.ts b/tests/bot-later.ts
-index 79cb9d9..21a35af 100644
+index 6007de2..71277be 100644
 --- a/tests/bot-later.ts
 +++ b/tests/bot-later.ts
 @@ -15,6 +15,7 @@ import { currentLag } from '../src/surgery/bosses/common';
@@ -4811,7 +6217,7 @@ index 79cb9d9..21a35af 100644
    // ------------------------------------------------------------ Sext
    const sext = ents.find((e): e is SextMalison => e instanceof SextMalison);
    if (sext) {
-@@ -134,6 +142,8 @@ function planBosses(op: Operation, k: BotKit, ents: Entity[], vis: Entity[], lag
+@@ -141,6 +149,8 @@ function planBosses(op: Operation, k: BotKit, ents: Entity[], vis: Entity[], lag
      return lazy(() => (none.alive && !none.hidden ? k.tap('lancet', none.pos) : null));
    }
    if (none?.stage === 3) {
@@ -4821,103 +6227,994 @@ index 79cb9d9..21a35af 100644
      return k.grabTo('tongs', () => (none.alive ? none.pos : null), k.OFF_BODY);
    }
 diff --git a/tests/bot.ts b/tests/bot.ts
-index 2fa1e6d..8a5a1e4 100644
+index f7976b8..2faf764 100644
 --- a/tests/bot.ts
 +++ b/tests/bot.ts
-@@ -6,11 +6,13 @@
- import { dist, type Vec } from '../src/core/math';
- import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, SALVE_MAX, Sigil, Venom } from '../src/surgery/entities';
+@@ -13,15 +13,18 @@
+ import { dist, Rng, type Vec } from '../src/core/math';
+ import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, SALVE_MAX, Sigil, Venom, Wadding } from '../src/surgery/entities';
  import type { Entity } from '../src/surgery/entity';
 -import { ChoirVoice, EggSac, LaudsMalison, SpiderlingGrub } from '../src/surgery/lauds';
-+import { EggSac, LaudsMalison, SpiderlingGrub } from '../src/surgery/lauds';
- import { Malison, MalisonShard } from '../src/surgery/malison';
- import { FIELD, Operation, type OperationDef } from '../src/surgery/operation';
++import { ChoirVoice, DawnOverlay, EggSac, LaudsBody, LaudsMalison, LightThread, SpiderlingGrub } from '../src/surgery/lauds';
+ import { Malison, MalisonAsh, MalisonShard } from '../src/surgery/malison';
+ import { FIELD, LEAD_DISH, Operation, Reopened, SimpleBurn, TRAY_DISH, type OperationDef, type OperationOptions } from '../src/surgery/operation';
  import type { Pointer, ToolId } from '../src/surgery/types';
- import { planLater } from './bot-later';
++import { planLater } from './bot-later';
 +import { hoursUrgent, planHours } from './bot-hours';
-+import { MalisonBase } from '../src/surgery/bosses/base';
++import { BossDeath, MalisonBase } from '../src/surgery/bosses/base';
++import { MatinsHerald } from '../src/surgery/bosses/elites';
+ import type { JournalEvent } from '../src/surgery/events';
  import type { Input } from '../src/core/input';
  import type { Game } from '../src/core/scene';
  import { OperationScene } from '../src/scenes/operation';
-@@ -116,9 +118,25 @@ function plan(op: Operation): Action | null {
-   if (op.vitals < 40 && op.injectCooldown === 0 && has('tincture')) return hold('tincture', () => ({ x: FIELD.cx + 330, y: FIELD.cy + 20 }), 0.8);
+-import { planLater } from './bot-later';
+ import type { TinctureColor } from '../src/surgery/progress';
+ import { botPlanAlpha, isAlphaEntity } from './botAlpha';
  
-   // Chapters III–V: bosses and ailments with their own counterplay.
--  const later = planLater(op, { hold, tap, drag, grabTo, chain, pause, zigzag, raster, OFF_BODY });
-+  const kit = { hold, tap, drag, grabTo, chain, pause, zigzag, raster, OFF_BODY };
+@@ -202,7 +205,8 @@ function plan(ctx: BotContext): Action | null {
+     vis.find((e): e is T => e instanceof cls && pred(e as T));
+ 
+   // Chapters III–V: bosses and ailments with their own counterplay (tests/bot-later.ts).
+-  const later = planLater(op, { hold, tap, drag: (t, pts, sp) => drag(t, pts, sp), grabTo, chain, pause, zigzag, raster, OFF_BODY });
++  const kit = { hold, tap, drag: (t: ToolId, pts: Vec[], sp: number) => drag(t, pts, sp), grabTo, chain, pause, zigzag, raster, OFF_BODY };
 +  const later = planLater(op, kit);
    if (later) return later;
  
-+  // A player invokes the Litany when a Malison shows itself (the phased Hours pick their own moment).
-+  if (op.canInvokeLitany() && vis.some((e) => (e instanceof Malison || e instanceof LaudsMalison) && !e.tune.phased)) op.invokeLitany();
+   // Chapters III–V have their own entity kinds, planned by tests/bot-later.ts.
+@@ -225,6 +229,22 @@ function plan(ctx: BotContext): Action | null {
+     return hold(catcher, () => (mv.alive && m.alive ? mv.motePos(m) : null), 1.2);
+   }
+ 
++  const bosses = vis.filter((e) => e.boss);
++  if (bosses.length && ctx.bossSeen < 0) ctx.bossSeen = op.elapsed;
++  const stalling = ctx.farm > 0 && ctx.bossSeen >= 0 && op.elapsed - ctx.bossSeen < ctx.farm;
 +
-+  // The Hours on MalisonBase (Matins, Lauds): their own strategies, unless wounds are piling up.
++  // The Hours on MalisonBase (Matins, Lauds): their own strategies, unless wounds are piling up
++  // (a farming bot only dodges while it stalls).
 +  const lacs = vis.filter((e): e is Laceration => e instanceof Laceration);
-+  if (hoursUrgent(op) || !(lacs.length >= 3 || (lacs.length && op.vitals < 45) || find(BloodPool, (p) => p.r > 34))) {
++  if (hoursUrgent(op) || (!stalling && !(lacs.length >= 3 || (lacs.length && op.vitals < 45) || find(BloodPool, (p) => p.r > 34)))) {
 +    const hours = planHours(op, kit);
 +    if (hours) return hours;
 +  } else if (lacs.length && ents.some((e) => e instanceof MalisonBase)) {
 +    // In a boss fight, close the bleeding wound before mopping up what it bleeds.
 +    const big = find(BloodPool, (p) => p.r > 40);
 +    if (big) return hold('leech', alive(big), 3);
-+    return tendLaceration(lacs.sort((a, b) => b.drain() - a.drain())[0], has('salve'));
++    return tendLaceration(lacs.sort((a, b) => b.drain(op) - a.drain(op))[0], has('salve'));
 +  }
-+
    const venom = find(Venom);
-   if (venom) return hold('tincture', alive(venom), 1.0);
+   if (venom) return hold('tincture', alive(venom), 1.1);
  
-@@ -128,9 +146,6 @@ function plan(op: Operation): Action | null {
-   const bubo = find(Bubo, (b) => !b.lanced);
-   if (bubo) return tap('lancet', bubo.pos);
+@@ -238,13 +258,9 @@ function plan(ctx: BotContext): Action | null {
+     return drag('lancet', [{ x: c.x - half, y: c.y }, { x: c.x + half, y: c.y }], 300);
+   }
  
--  // A player invokes the Litany when a Malison shows itself.
--  if (op.canInvokeLitany() && vis.some((e) => e instanceof Malison || e instanceof LaudsMalison)) op.invokeLitany();
+-  const bosses = vis.filter((e) => e.boss);
+-  if (bosses.length && ctx.bossSeen < 0) ctx.bossSeen = op.elapsed;
+-  const stalling = ctx.farm > 0 && ctx.bossSeen >= 0 && op.elapsed - ctx.bossSeen < ctx.farm;
+-
+-  // A player invokes the Litany when the Malison lays itself open.
++  // A player invokes the Litany when the Malison lays itself open (the phased Hours pick their own moment).
+   if (op.canInvokeLitany() && bosses.length && !stalling) {
+-    const opening = bosses.some((b) => (b instanceof Malison && b.open) || (b instanceof LaudsMalison && b.livingVoices.length <= 2));
++    const opening = bosses.some((b) => (b instanceof Malison && !b.tune.phased && b.open) || (b instanceof LaudsMalison && !b.tune.phased && b.livingVoices.length <= 2));
+     if (opening) ctx.litany();
+   }
+ 
+@@ -253,7 +269,6 @@ function plan(ctx: BotContext): Action | null {
+     const m = find(Malison, (mm) => mm.open);
+     if (m) return hold('brand', () => (m.alive && m.open ? m.pos : null), 3);
+   }
 -
    const shard = find(MalisonShard);
    if (shard) return grabTo('tongs', alive(shard), OFF_BODY);
  
-@@ -139,14 +154,9 @@ function plan(op: Operation): Action | null {
-     if (g) return hold('brand', alive(g), 2);
+@@ -263,16 +278,9 @@ function plan(ctx: BotContext): Action | null {
+     if (g) return grabTo('tongs', alive(g), OFF_BODY);
    }
  
--  const voice = find(ChoirVoice);
--  if (voice) return hold('brand', alive(voice), 2);
+-  if (!stalling) {
+-    const voice = find(ChoirVoice);
+-    if (voice) return hold('brand', alive(voice), 2);
+-  }
 -  const lauds = ents.find((e): e is LaudsMalison => e instanceof LaudsMalison);
 -  if (lauds?.submerged) return hold('lens', () => (lauds.alive && lauds.submerged ? lauds.pos : null), 1.5);
--  if (lauds && lauds.livingVoices.length === 0) return hold('brand', () => (lauds.alive && !lauds.submerged && lauds.livingVoices.length === 0 ? lauds.pos : null), 5);
+-  if (lauds && lauds.livingVoices.length === 0 && !stalling) return hold('brand', () => (lauds.alive && !lauds.submerged && lauds.livingVoices.length === 0 ? lauds.pos : null), 4);
 -
 -  const matins = find(Malison, (m) => m.open);
--  if (matins) return hold('brand', () => (matins.alive && matins.open ? matins.pos : null), 3);
+-  if (matins && !stalling) return hold('brand', () => (matins.alive && matins.open ? matins.pos : null), 3);
 +  // With wounds tended, press the Hour again.
-+  const hours = planHours(op, kit);
++  const hours = stalling ? null : planHours(op, kit);
 +  if (hours && !find(Laceration) && !find(BloodPool, (p) => p.ichor !== 'blood' || p.r > 28)) return hours;
  
    // Drain big pools before anything they cover.
    const pool = find(BloodPool, (p) => p.ichor !== 'blood' || p.r > 28);
-@@ -168,10 +178,7 @@ function plan(op: Operation): Action | null {
-   }
- 
-   const lac = find(Laceration);
--  if (lac) {
--    if (lac.length <= SALVE_MAX && has('salve')) return drag('salve', raster(lac.pos, lac.length / 2 + 6), 900);
--    return drag('thread', zigzag([lac.a, lac.b], lac.stitch.needed - lac.stitch.count + 1), 380);
--  }
-+  if (lac) return tendLaceration(lac, has('salve'));
- 
-   const lanced = find(Bubo, (b) => b.lanced);
-   if (lanced) return drag('salve', raster(lanced.cov.center, lanced.cov.radius), 900);
-@@ -196,6 +203,11 @@ function plan(op: Operation): Action | null {
+@@ -350,13 +358,18 @@ function plan(ctx: BotContext): Action | null {
    return null;
  }
  
+-const KNOWN = [BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, Sigil, Venom, Wadding, ChoirVoice, EggSac, LaudsMalison, SpiderlingGrub, Malison, MalisonShard, MalisonAsh, Reopened, SimpleBurn];
 +function tendLaceration(lac: Laceration, salve: boolean): Action {
 +  if (lac.length <= SALVE_MAX && salve) return drag('salve', raster(lac.pos, lac.length / 2 + 6), 900);
-+  return drag('thread', zigzag([lac.a, lac.b], lac.stitch.needed - lac.stitch.count + 1), 380);
++  return drag('thread', zigzag([lac.a, lac.b], Math.max(1, lac.stitch.needed - lac.stitch.count) + 1), 380);
 +}
 +
++// Boss-framework kinds (MalisonBase cores and elites, their wounds and overlays) are planned by tests/bot-hours.ts.
++const KNOWN = [BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, Sigil, Venom, Wadding, ChoirVoice, EggSac, LaudsMalison, SpiderlingGrub, Malison, MalisonShard, MalisonAsh, Reopened, SimpleBurn, MalisonBase, BossDeath, DawnOverlay, LaudsBody, LightThread, MatinsHerald];
+ const WOUND_FEVER = 'WoundFever';
+ 
+ function isKnown(e: Entity): boolean {
+   return KNOWN.some((k) => e instanceof k) || e.constructor.name === WOUND_FEVER || isAlphaEntity(e);
+ }
+-
  export interface BotResult {
    op: Operation;
    frames: number;
+diff --git a/tests/characterisation/__snapshots__/lauds.test.ts.snap b/tests/characterisation/__snapshots__/lauds.test.ts.snap
+index 9840673..01a92b0 100644
+--- a/tests/characterisation/__snapshots__/lauds.test.ts.snap
++++ b/tests/characterisation/__snapshots__/lauds.test.ts.snap
+@@ -1,137 +1,209 @@
+ // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+ 
+-exports[`Malison of Lauds > each Voice is silenced by a 0.6 s brand hold (COOL "Silenced"); released, silence decays at 0.35/s 1`] = `
++exports[`Malison of Lauds > Call → Response: the bare heart "Wounded" past 65 % splits into two bodies joined by a light-thread 1`] = `
+ "2.02 initial LaudsMalison radius=42 hp=100 @(660,440)
+-2.83 -- partial silence: status=running vitals=98.3 score=0 combo=0 counts=0/0/0/0 live=[ChoirVoice,ChoirVoice,ChoirVoice,ChoirVoice,LaudsMalison] held=0.29 after=0.12
+-2.90 cue burn
+-3.05 cue burn
+-3.12 cue burn
+-3.13 cue burn
+-3.30 rate COOL "Silenced" +105 combo=1
+-3.30 flag brand-flesh
+-3.30 say "Careful! The brand is searing healthy flesh!"
+-3.30 say "instruction"
++2.05 cue burn
++2.18 cue burn
++2.23 cue burn
++2.43 cue burn
++2.52 cue burn
++2.53 rate COOL "Silenced" +105 combo=1
++2.53 flag brand-flesh
++2.53 say "Careful! The brand is searing healthy flesh!"
++2.53 say "instruction"
++3.03 rate BAD "Scorched" +15 combo=0
++3.03 spawn SimpleBurn @(758,443)
++3.55 rate BAD "Scorched" +15 combo=0
++3.55 spawn SimpleBurn @(737,448)
++4.07 rate BAD "Scorched" +15 combo=0
++4.07 spawn SimpleBurn @(762,458)
++4.25 cue burn
++4.33 cue burn
++4.38 cue burn
++4.42 cue burn
++4.47 cue burn
++4.67 cue burn
++4.77 rate COOL "Silenced" +105 combo=1
++5.27 rate BAD "Scorched" +15 combo=0
++5.27 spawn SimpleBurn @(560,449)
++5.78 rate BAD "Scorched" +15 combo=0
++5.78 spawn SimpleBurn @(539,454)
++6.30 rate BAD "Scorched" +15 combo=0
++6.30 spawn SimpleBurn @(565,464)
++6.70 cue burn
++6.80 cue burn
++6.95 cue burn
++6.98 cue burn
++7.00 rate COOL "Silenced" +105 combo=1
++7.50 rate BAD "Scorched" +15 combo=0
++7.50 spawn SimpleBurn @(722,436)
++8.02 rate BAD "Scorched" +15 combo=0
++8.02 spawn SimpleBurn @(701,441)
++8.10 popup "White-hot! Let it cool."
++8.10 flag overheat
++8.10 say "The brand’s overheated. Give it a moment between searings."
++8.10 say "instruction"
++8.72 popup "The brand is too hot!"
++10.38 cue burn
++10.48 cue burn
++10.62 cue burn
++10.67 cue burn
++10.67 rate COOL "Silenced" +105 combo=1
++10.68 say "The choir is silenced — its heart is bare! Brand it, now!"
++11.02 flag lauds-hymn
++11.02 say "It’s singing — every verse tears him open! Stitch the cuts as they come!"
++11.02 say "instruction"
++11.02 cue sfx.lauds.hymn
++11.23 cue burn
++11.45 spawn LaudsBody radius=32.1 optional @(854,398)
++11.45 spawn LightThread optional @(654,398)
++11.45 say "It has split in two — and the halves sing to each other! Strike one, then the other, before it answers!"
++11.45 rate GOOD "Wounded" +66 combo=2
++11.45 -- split: status=running vitals=69.4 score=606 combo=2 counts=4/1/8/0 live=[LaudsMalison,SimpleBurn,SimpleBurn,SimpleBurn,SimpleBurn,SimpleBurn,SimpleBurn,SimpleBurn,SimpleBurn,LaudsBody,LightThread] phase="response" hp=65
+ "
+ `;
+ 
+-exports[`Malison of Lauds > full fight: silence the choir, wound it to half ("Wounded" → submerges), hunt it with the Lens, unmake it into three hexstone shards 1`] = `
++exports[`Malison of Lauds > Call: four Voices; branding the core while they live says lauds-shielded and does no damage 1`] = `
+ "2.02 initial LaudsMalison radius=42 hp=100 @(660,440)
+-2.38 cue burn
+-2.53 cue burn
+-2.60 cue burn
+-2.60 rate COOL "Silenced" +105 combo=1
+-2.60 flag brand-flesh
+-2.60 say "Careful! The brand is searing healthy flesh!"
+-2.60 say "instruction"
+-2.63 cue burn
+-2.82 cue burn
+-2.92 cue burn
+-3.03 cue burn
+-3.22 cue burn
+-3.22 rate COOL "Silenced" +110 combo=2
++2.02 flag lauds-shielded
++2.02 say "The Voices shield it. Silence them first — trace each one’s sigil with the brand."
++2.02 say "instruction"
++3.03 -- branded the shielded core: status=running vitals=98.6 score=0 combo=0 counts=0/0/0/0 live=[ChoirVoice,ChoirVoice,ChoirVoice,ChoirVoice,LaudsMalison] hp=100
++"
++`;
++
++exports[`Malison of Lauds > Dawn: submerged, found with the Lens, unmade into three hexstone shards 1`] = `
++"2.02 initial LaudsMalison radius=33.6 hp=30 hidden @(660,440)
++2.03 spawn BossRot r=26 @(660,440)
++2.03 flag first-rot
++2.03 say "Rot must be salved almost entirely — any island left creeps back."
++2.03 say "instruction"
++2.52 popup "Found it!"
++2.52 flag lauds-surface
++2.52 say "There! It’s surfacing — brand it before it dives!"
++2.52 say "instruction"
++2.83 -- found: status=running vitals=98.4 score=0 combo=0 counts=0/0/0/0 live=[DawnOverlay,LaudsMalison,BossRot] submerged=false
++3.27 cue burn
++3.42 cue burn
+ 3.48 cue burn
+ 3.50 cue burn
+-3.57 cue burn
+-3.83 rate COOL "Silenced" +115 combo=3
+-4.22 cue burn
+-4.25 cue burn
+-4.27 cue burn
+-4.32 cue burn
+-4.45 rate COOL "Silenced" +120 combo=4
+-4.47 say "The choir is silenced — its heart is bare! Brand it, now!"
+-4.48 -- choir silenced: status=running vitals=96.9 score=450 combo=4 counts=4/0/0/0 live=[LaudsMalison] voices=0
+-4.62 cue burn
+-5.22 cue burn
+-5.32 cue burn
+-5.48 rate GOOD "Wounded" +75 combo=5
+-5.48 say "It’s gone under the skin! The Scrying Lens — hunt it down!"
+-5.52 -- wounded: status=running vitals=96.4 score=525 combo=5 counts=4/1/0/0 live=[LaudsMalison] hp=49.17 submerged=true
+-7.28 spawn Rot r=26 @(790,408)
+-7.28 flag first-rot
+-7.28 say "Rot must be salved almost entirely — any island left creeps back."
+-7.28 say "instruction"
+-8.02 popup "Found it!"
+-8.02 say "There! It’s surfacing — finish it!"
+-8.03 -- found: status=running vitals=94.2 score=525 combo=5 counts=4/1/0/0 live=[LaudsMalison,Rot] submerged=false
+-8.60 cue burn
+-8.72 cue burn
+-8.77 cue burn
+-8.78 cue burn
+-9.02 rate COOL "Malison unmade" +130 combo=6
+-9.02 spawn MalisonAsh r=29.9 optional @(764,466)
+-9.02 say "It shattered — hexstone, everywhere! Get every shard out before it spoils him!"
+-9.02 spawn Embedded kind=hexstone @(828,487)
+-9.02 flag first-hexstone
+-9.02 say "Hexstone: brand it still, then into the lead dish — never the tray."
+-9.02 say "instruction"
+-9.02 spawn Embedded kind=hexstone @(708,499)
+-9.02 spawn Embedded kind=hexstone @(755,411)
+-9.05 -- unmade: status=running vitals=93.3 score=655 combo=6 counts=5/1/0/0 live=[Rot,MalisonAsh,Embedded,Embedded,Embedded]
++3.60 spawn BossDeath optional @(622,419)
++3.60 rate COOL "Malison unmade" +105 combo=1
++3.60 say "It shattered — hexstone, everywhere! Get every shard out before it spoils him!"
++3.60 spawn Embedded kind=hexstone @(687,441)
++3.60 flag first-hexstone
++3.60 say "Hexstone: brand it still, then into the lead dish — never the tray."
++3.60 say "instruction"
++3.60 spawn Embedded kind=hexstone @(567,452)
++3.60 spawn Embedded kind=hexstone @(614,365)
++3.60 flag brand-flesh
++3.60 say "Careful! The brand is searing healthy flesh!"
++3.60 say "instruction"
++3.63 -- unmade: status=running vitals=97.8 score=105 combo=1 counts=1/0/0/0 live=[BossDeath,Embedded,Embedded,Embedded] alive=false
+ "
+ `;
+ 
+-exports[`Malison of Lauds > left exposed for more than 5 s, it calls two Voices back 1`] = `
++exports[`Malison of Lauds > a Voice is silenced by tracing its sigil with the brand (COOL "Silenced"); a plain hold does nothing 1`] = `
+ "2.02 initial LaudsMalison radius=42 hp=100 @(660,440)
+-2.38 cue burn
+-2.53 cue burn
+-2.60 cue burn
+-2.60 rate COOL "Silenced" +105 combo=1
+-2.60 flag brand-flesh
+-2.60 say "Careful! The brand is searing healthy flesh!"
+-2.60 say "instruction"
+-2.63 cue burn
+-2.82 cue burn
+-2.92 cue burn
+-3.03 cue burn
+-3.22 cue burn
+-3.22 rate COOL "Silenced" +110 combo=2
+-3.48 cue burn
+-3.50 cue burn
+-3.57 cue burn
+-3.83 rate COOL "Silenced" +115 combo=3
+-4.22 cue burn
+-4.25 cue burn
+-4.27 cue burn
+-4.32 cue burn
+-4.45 rate COOL "Silenced" +120 combo=4
+-4.47 say "The choir is silenced — its heart is bare! Brand it, now!"
+-8.53 flag lauds-hymn
+-8.53 say "It’s singing — every verse tears him open! Stitch the cuts as they come!"
+-8.53 say "instruction"
+-8.53 cue sfx.lauds.hymn
+-9.20 spawn Laceration source=blade length=55.9 bleed=0.9 @(786,295)
+-9.20 hurt 2
+-9.20 popup "-2"
+-9.47 spawn ChoirVoice @(835,431)
+-9.47 spawn ChoirVoice @(651,397)
+-9.47 say "It’s calling its Voices back!"
+-9.47 -- rekindled: status=running vitals=92.2 score=450 combo=4 counts=4/0/0/0 live=[LaudsMalison,Laceration,ChoirVoice,ChoirVoice] voices=2
++2.52 flag lauds-voice-trace
++2.52 say "Holding it there won’t quiet it — trace the Voice’s sigil with the brand, line by line."
++2.52 say "instruction"
++3.03 -- held: status=running vitals=98.6 score=0 combo=0 counts=0/0/0/0 live=[ChoirVoice,ChoirVoice,ChoirVoice,ChoirVoice,LaudsMalison] traced=0
++3.07 cue burn
++3.20 cue burn
++3.25 cue burn
++3.45 cue burn
++3.53 cue burn
++3.55 rate COOL "Silenced" +105 combo=1
++3.55 flag brand-flesh
++3.55 say "Careful! The brand is searing healthy flesh!"
++3.55 say "instruction"
++4.05 rate BAD "Scorched" +15 combo=0
++4.05 spawn SimpleBurn @(744,451)
++4.57 rate BAD "Scorched" +15 combo=0
++4.57 spawn SimpleBurn @(723,456)
++5.27 -- traced: status=running vitals=92 score=135 combo=0 counts=1/0/2/0 live=[ChoirVoice,ChoirVoice,ChoirVoice,LaudsMalison,SimpleBurn,SimpleBurn] alive=false
+ "
+ `;
+ 
+-exports[`Malison of Lauds > sings a Hymn every 6.5 s that opens a laceration and costs 2 vitals 1`] = `
++exports[`Malison of Lauds > left bare for more than 5 s, it calls two Voices back, half-traced 1`] = `
+ "2.02 initial LaudsMalison radius=42 hp=100 @(660,440)
+-8.53 flag lauds-hymn
+-8.53 say "It’s singing — every verse tears him open! Stitch the cuts as they come!"
+-8.53 say "instruction"
+-8.53 cue sfx.lauds.hymn
+-9.20 spawn Laceration source=blade length=55.6 bleed=0.9 @(680,313)
+-9.20 hurt 2
+-9.20 popup "-2"
+-13.20 spawn BloodPool ichor=blood r=8 optional @(677,311)
+-15.05 cue sfx.lauds.hymn
+-15.72 spawn Laceration source=blade length=69.3 bleed=0.9 @(552,505)
+-15.72 hurt 2
+-15.72 popup "-2"
+-16.02 -- two hymns: status=running vitals=78.3 score=0 combo=0 counts=0/0/0/0 live=[ChoirVoice,ChoirVoice,ChoirVoice,ChoirVoice,LaudsMalison,Laceration,BloodPool,Laceration]
++2.05 cue burn
++2.18 cue burn
++2.23 cue burn
++2.43 cue burn
++2.52 cue burn
++2.53 rate COOL "Silenced" +105 combo=1
++2.53 flag brand-flesh
++2.53 say "Careful! The brand is searing healthy flesh!"
++2.53 say "instruction"
++3.03 rate BAD "Scorched" +15 combo=0
++3.03 spawn SimpleBurn @(758,443)
++3.55 rate BAD "Scorched" +15 combo=0
++3.55 spawn SimpleBurn @(737,448)
++4.07 rate BAD "Scorched" +15 combo=0
++4.07 spawn SimpleBurn @(762,458)
++4.25 cue burn
++4.33 cue burn
++4.38 cue burn
++4.42 cue burn
++4.47 cue burn
++4.67 cue burn
++4.77 rate COOL "Silenced" +105 combo=1
++5.27 rate BAD "Scorched" +15 combo=0
++5.27 spawn SimpleBurn @(560,449)
++5.78 rate BAD "Scorched" +15 combo=0
++5.78 spawn SimpleBurn @(539,454)
++6.30 rate BAD "Scorched" +15 combo=0
++6.30 spawn SimpleBurn @(565,464)
++6.70 cue burn
++6.80 cue burn
++6.95 cue burn
++6.98 cue burn
++7.00 rate COOL "Silenced" +105 combo=1
++7.50 rate BAD "Scorched" +15 combo=0
++7.50 spawn SimpleBurn @(722,436)
++8.02 rate BAD "Scorched" +15 combo=0
++8.02 spawn SimpleBurn @(701,441)
++8.10 popup "White-hot! Let it cool."
++8.10 flag overheat
++8.10 say "The brand’s overheated. Give it a moment between searings."
++8.10 say "instruction"
++8.72 popup "The brand is too hot!"
++10.38 cue burn
++10.48 cue burn
++10.62 cue burn
++10.67 cue burn
++10.67 rate COOL "Silenced" +105 combo=1
++10.68 say "The choir is silenced — its heart is bare! Brand it, now!"
++11.02 flag lauds-hymn
++11.02 say "It’s singing — every verse tears him open! Stitch the cuts as they come!"
++11.02 say "instruction"
++11.02 cue sfx.lauds.hymn
++11.70 spawn BossWound source=blade length=58.4 bleed=0.5 @(598,286)
++11.70 hurt 1
++11.70 popup "-1"
++15.68 spawn ChoirVoice @(760,467)
++15.68 spawn ChoirVoice @(580,423)
++15.68 say "It’s calling its Voices back!"
++15.68 -- rekindled: status=running vitals=60.5 score=540 combo=1 counts=4/0/8/0 live=[LaudsMalison,SimpleBurn,SimpleBurn,SimpleBurn,SimpleBurn,SimpleBurn,SimpleBurn,SimpleBurn,SimpleBurn,BossWound,ChoirVoice,ChoirVoice] voices=2
+ "
+ `;
+ 
+-exports[`Malison of Lauds > spawns four Voices; branding the core while they live says lauds-shielded and does no damage 1`] = `
++exports[`Malison of Lauds > sings a Hymn 9 s after the last one passes, after an inhaled tell: each verse opens a boss wound and costs 1 vital 1`] = `
+ "2.02 initial LaudsMalison radius=42 hp=100 @(660,440)
+-2.02 flag lauds-shielded
+-2.02 say "The Voices shield it. Silence them first — hold the brand on each as it circles."
+-2.02 say "instruction"
+-3.03 -- branded the shielded core: status=running vitals=98.1 score=0 combo=0 counts=0/0/0/0 live=[ChoirVoice,ChoirVoice,ChoirVoice,ChoirVoice,LaudsMalison] hp=100
++11.02 flag lauds-hymn
++11.02 say "It’s singing — every verse tears him open! Stitch the cuts as they come!"
++11.02 say "instruction"
++11.02 cue sfx.lauds.hymn
++11.70 spawn BossWound source=blade length=50.4 bleed=0.5 @(648,261)
++11.70 hurt 1
++11.70 popup "-1"
++15.70 spawn BloodPool ichor=blood r=8 optional @(645,266)
++21.45 cue sfx.lauds.hymn
++22.13 spawn BossWound source=blade length=45.8 bleed=0.5 @(703,504)
++22.13 hurt 1
++22.13 popup "-1"
++23.02 -- two verses: status=running vitals=85.9 score=0 combo=0 counts=0/0/0/0 live=[ChoirVoice,ChoirVoice,ChoirVoice,ChoirVoice,LaudsMalison,BossWound,BloodPool,BossWound] verses=[1,1]
+ "
+ `;
+diff --git a/tests/characterisation/__snapshots__/matins.test.ts.snap b/tests/characterisation/__snapshots__/matins.test.ts.snap
+index 20c388a..72973b0 100644
+--- a/tests/characterisation/__snapshots__/matins.test.ts.snap
++++ b/tests/characterisation/__snapshots__/matins.test.ts.snap
+@@ -1,127 +1,75 @@
+ // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+ 
+-exports[`Malison of Matins > a shard dragged off the body is cast out (COOL); the rest rejoin after 9 s: MISS "It rejoined", 10 vitals, a weakened Malison 1`] = `
++exports[`Malison of Matins > Vigil rhythm: 4 s veiled, 2.5 s open; rends a boss wound every 4.5 s of veiled time 1`] = `
+ "2.02 initial Malison hour=matins radius=50 hp=100 @(660,450)
+ 6.03 flag malison-open
+ 6.03 say "Its shroud has parted — sear it with the brand, now!"
+ 6.03 say "instruction"
+-6.47 cue burn
+-6.58 spawn Grub speed=70 @(517,327)
+-6.58 spawn Grub speed=70 @(489,351)
+-6.58 rate GOOD "Wounded" +63 combo=1
+-6.58 say "It’s shedding hexlings! Burn them before they feed!"
+-6.68 cue burn
+-6.78 cue burn
+-6.87 cue burn
+-7.12 cue burn
+-7.13 spawn Grub speed=70 @(513,380)
+-7.13 spawn Grub speed=70 @(471,345)
+-7.13 rate GOOD "Wounded" +66 combo=2
+-7.13 say "It’s shedding hexlings! Burn them before they feed!"
+-7.30 cue burn
+-7.48 cue burn
+-7.52 cue burn
+-7.62 cue burn
+-7.65 cue burn
+-7.70 spawn Grub speed=70 @(456,372)
+-7.70 spawn Grub speed=70 @(462,334)
+-7.70 rate GOOD "Wounded" +69 combo=3
+-7.70 say "It’s shedding hexlings! Burn them before they feed!"
+-7.83 cue burn
+-7.97 cue burn
+-8.07 cue burn
+-8.13 cue burn
+-8.25 rate COOL "Malison unmade" +120 combo=4
+-8.25 spawn MalisonAsh r=33.9 optional @(476,342)
+-8.25 spawn MalisonShard @(526,342)
+-8.25 spawn MalisonShard @(451,377)
+-8.25 spawn MalisonShard @(451,308)
+-8.25 say "It’s splitting apart! Seize every shard with the tongs and cast it out — before they rejoin!"
+-8.25 flag brand-flesh
+-8.25 say "Careful! The brand is searing healthy flesh!"
+-8.25 say "instruction"
+-8.28 cue pluck
+-8.77 cue burn
+-8.77 rate COOL "Cast out" +31 combo=5
+-8.78 -- one cast out: status=running vitals=90.9 score=349 combo=5 counts=2/3/0/0 live=[Grub,Grub,Grub,Grub,Grub,Grub,MalisonAsh,MalisonShard,MalisonShard]
+-12.60 flag grub-burrow
+-12.60 say "One’s burrowed in! Find it with the lens."
+-12.60 say "instruction"
+-17.25 spawn Malison hour=matins radius=50 hp=50 @(522,331)
+-17.25 rate MISS "It rejoined" +0 combo=0
+-17.25 hurt 10
+-17.25 popup "-10"
+-17.25 -- rejoined: status=running vitals=58.4 score=349 combo=0 counts=2/3/0/1 live=[Grub,Grub,Grub,Grub,Grub,Grub,Malison]
++9.05 spawn BossWound source=blade length=54 bleed=0.5 @(455,325)
++9.05 cue cut
++9.05 flag malison-rend
++9.05 say "It’s tearing the flesh as it moves! Stitch those wounds!"
++9.05 say "instruction"
++13.05 spawn BloodPool ichor=blood r=8 optional @(454,322)
++16.08 spawn BossWound source=blade length=54.6 bleed=0.5 @(614,364)
++16.08 cue cut
++20.08 spawn BloodPool ichor=blood r=8 optional @(617,364)
++22.02 -- 20 s of rhythm: status=running vitals=83.7 score=0 combo=0 counts=0/0/0/0 live=[Malison,BossWound,BloodPool,BossWound,BloodPool] toggles=["open@4.03","veiled@6.55","open@10.57","veiled@13.08","open@17.10","veiled@19.62"]
+ "
+ `;
+ 
+-exports[`Malison of Matins > branding it open: "Wounded" at 75/50/25 % sheds two hexlings each; at 0 "Malison unmade" splits into three shards 1`] = `
+-"2.02 initial Malison hour=matins radius=50 hp=100 @(660,450)
+-6.03 flag malison-open
+-6.03 say "Its shroud has parted — sear it with the brand, now!"
+-6.03 say "instruction"
+-6.47 cue burn
+-6.58 spawn Grub speed=70 @(517,327)
+-6.58 spawn Grub speed=70 @(489,351)
+-6.58 rate GOOD "Wounded" +63 combo=1
+-6.58 say "It’s shedding hexlings! Burn them before they feed!"
+-6.68 cue burn
+-6.78 cue burn
+-6.87 cue burn
+-7.12 cue burn
+-7.13 spawn Grub speed=70 @(513,380)
+-7.13 spawn Grub speed=70 @(471,345)
+-7.13 rate GOOD "Wounded" +66 combo=2
+-7.13 say "It’s shedding hexlings! Burn them before they feed!"
+-7.30 cue burn
+-7.48 cue burn
+-7.52 cue burn
+-7.62 cue burn
+-7.65 cue burn
+-7.70 spawn Grub speed=70 @(456,372)
+-7.70 spawn Grub speed=70 @(462,334)
+-7.70 rate GOOD "Wounded" +69 combo=3
+-7.70 say "It’s shedding hexlings! Burn them before they feed!"
+-7.83 cue burn
+-7.97 cue burn
+-8.07 cue burn
+-8.13 cue burn
+-8.25 rate COOL "Malison unmade" +120 combo=4
+-8.25 spawn MalisonAsh r=33.9 optional @(476,342)
+-8.25 spawn MalisonShard @(526,342)
+-8.25 spawn MalisonShard @(451,377)
+-8.25 spawn MalisonShard @(451,308)
+-8.25 say "It’s splitting apart! Seize every shard with the tongs and cast it out — before they rejoin!"
+-8.25 flag brand-flesh
+-8.25 say "Careful! The brand is searing healthy flesh!"
+-8.25 say "instruction"
+-8.28 -- after one open window: status=running vitals=92.7 score=318 combo=4 counts=1/3/0/0 live=[Grub,Grub,Grub,Grub,Grub,Grub,MalisonAsh,MalisonShard,MalisonShard,MalisonShard] hp=-0.5
++exports[`Malison of Matins > a shard dragged off the body is cast out (COOL); the rest rejoin after 9 s: MISS "It rejoined", 10 vitals, a weakened single-phase Malison 1`] = `
++"2.02 initial MalisonShard @(600,450)
++2.02 initial MalisonShard @(660,470)
++2.02 initial MalisonShard @(720,450)
++2.02 initial Laceration source=blade length=40 bleed=0 @(810,330)
++2.02 cue pluck
++2.63 cue burn
++2.63 rate COOL "Cast out" +105 combo=1
++2.65 -- one cast out: status=running vitals=98.1 score=105 combo=1 counts=1/0/0/0 live=[MalisonShard,MalisonShard,Laceration]
++11.02 spawn Malison hour=matins radius=50 hp=50 @(752,508)
++11.02 rate MISS "It rejoined" +0 combo=0
++11.02 hurt 10
++11.02 popup "-10"
++11.02 -- rejoined: status=running vitals=79.7 score=105 combo=0 counts=1/0/0/1 live=[Laceration,Malison]
+ "
+ `;
+ 
+-exports[`Malison of Matins > branding it while veiled says malison-veiled and does no damage (and no brand-flesh penalty) 1`] = `
++exports[`Malison of Matins > branding it while veiled: one MISS "Veiled", no damage, no brand-flesh penalty 1`] = `
+ "2.02 initial Malison hour=matins radius=50 hp=100 @(660,450)
+-2.02 flag malison-veiled
+-2.02 say "The brand can’t touch it while it’s veiled. Wait for the shroud to part!"
+-2.02 say "instruction"
+-3.03 -- branded while veiled: status=running vitals=98.4 score=0 combo=0 counts=0/0/0/0 live=[Malison] hp=100
++2.02 rate MISS "Veiled" +0 combo=0
++2.02 say "Wait for it to open."
++3.03 -- branded while veiled: status=running vitals=98.5 score=0 combo=0 counts=0/0/0/1 live=[Malison] hp=100
+ "
+ `;
+ 
+-exports[`Malison of Matins > shroud rhythm: 4 s veiled, 2.5 s open; rends lacerations every 4.5 s of veiled time 1`] = `
++exports[`Malison of Matins > three phases: "Wounded" into the Watchfire (Litany taught) and The Eye; unmade on the third beat into three shards 1`] = `
+ "2.02 initial Malison hour=matins radius=50 hp=100 @(660,450)
+ 6.03 flag malison-open
+ 6.03 say "Its shroud has parted — sear it with the brand, now!"
+ 6.03 say "instruction"
+-9.05 spawn Laceration source=blade length=61 bleed=0.8 @(452,329)
+-9.05 cue cut
+-9.05 flag malison-rend
+-9.05 say "It’s tearing the flesh as it moves! Stitch those wounds!"
+-9.05 say "instruction"
+-13.05 spawn BloodPool ichor=blood r=8 optional @(451,325)
+-16.08 spawn Laceration source=blade length=61.9 bleed=0.8 @(517,330)
+-16.08 cue cut
+-20.08 spawn BloodPool ichor=blood r=8 optional @(514,326)
+-22.02 -- 20 s of rhythm: status=running vitals=76.3 score=0 combo=0 counts=0/0/0/0 live=[Malison,Laceration,BloodPool,Laceration,BloodPool] toggles=["open@4.03","veiled@6.55","open@10.57","veiled@13.08","open@17.10","veiled@19.62"]
++6.42 say "It’s quickening! Doctor — the Litany. Draw the star with the right hand and still the hour."
++6.42 rate GOOD "Wounded" +63 combo=1
++6.42 -- into the Watchfire: status=running vitals=97 score=63 combo=1 counts=0/1/0/0 live=[Malison] hp=60 phase="watchfire"
++10.43 cue burn
++10.58 cue burn
++10.65 cue burn
++10.67 cue burn
++10.82 say "The shroud has burned away — an eye! Brand it on the third beat, and only then!"
++10.82 rate GOOD "Wounded" +66 combo=2
++10.82 -- the Eye opens: status=running vitals=95 score=129 combo=2 counts=0/2/0/0 live=[Malison] hp=25 phase="eye"
++11.82 cue heartbeat
++12.83 cue heartbeat
++12.95 cue burn
++13.02 spawn BossDeath optional @(541,387)
++13.02 rate COOL "Malison unmade" +115 combo=3
++13.02 spawn MalisonShard @(591,387)
++13.02 spawn MalisonShard @(516,422)
++13.02 spawn MalisonShard @(516,353)
++13.02 say "It’s splitting apart! Seize every shard with the tongs and cast it out — before they rejoin!"
++13.02 flag brand-flesh
++13.02 say "Careful! The brand is searing healthy flesh!"
++13.02 say "instruction"
++13.05 -- unmade: status=running vitals=93.9 score=244 combo=3 counts=1/2/0/0 live=[BossDeath,MalisonShard,MalisonShard,MalisonShard] alive=false
+ "
+ `;
+diff --git a/tests/characterisation/__snapshots__/vermin-curses.test.ts.snap b/tests/characterisation/__snapshots__/vermin-curses.test.ts.snap
+index 42e2187..f84bef5 100644
+--- a/tests/characterisation/__snapshots__/vermin-curses.test.ts.snap
++++ b/tests/characterisation/__snapshots__/vermin-curses.test.ts.snap
+@@ -1,14 +1,14 @@
+ // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+ 
+-exports[`EggSac > hatching rates MISS "Hatched", costs 6 vitals, releases brood + 2 spiderlings; the 5 s warning is said once per sac 1`] = `
++exports[`EggSac > hatching rates MISS "Hatched", costs 6 vitals, releases brood + 2 spiderlings up to the cap of 6; the 3 s swell warning is said once per sac 1`] = `
+ "2.02 initial EggSac brood=3 @(560,410)
+ 2.02 initial EggSac brood=2 @(760,410)
+-9.02 flag eggsac-1
+-9.02 say "That sac is moving… it’s about to hatch!"
+-9.02 say "instruction"
+-11.02 flag eggsac-2
+-11.02 say "That sac is moving… it’s about to hatch!"
++11.02 flag eggsac-1
++11.02 say "That sac is swelling… it’s about to hatch!"
+ 11.02 say "instruction"
++13.02 flag eggsac-2
++13.02 say "That sac is swelling… it’s about to hatch!"
++13.02 say "instruction"
+ 14.02 spawn SpiderlingGrub @(574,410)
+ 14.02 spawn SpiderlingGrub @(564,423)
+ 14.02 spawn SpiderlingGrub @(549,418)
+@@ -19,14 +19,11 @@ exports[`EggSac > hatching rates MISS "Hatched", costs 6 vitals, releases brood
+ 14.02 hurt 6
+ 14.02 popup "-6"
+ 16.02 spawn SpiderlingGrub @(774,410)
+-16.02 spawn SpiderlingGrub @(760,424)
+-16.02 spawn SpiderlingGrub @(746,410)
+-16.02 spawn SpiderlingGrub @(760,396)
+ 16.02 spawn Laceration source=blade length=38 bleed=0.6 @(760,410)
+ 16.02 rate MISS "Hatched" +0 combo=0
+ 16.02 hurt 6
+ 16.02 popup "-6"
+-17.02 -- hatched: status=running vitals=75 score=0 combo=0 counts=0/0/0/2 live=[SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,Laceration,SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,Laceration]
++17.02 -- hatched: status=running vitals=75.9 score=0 combo=0 counts=0/0/0/2 live=[SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,Laceration,SpiderlingGrub,Laceration]
+ "
+ `;
+ 
+diff --git a/tests/characterisation/lauds.test.ts b/tests/characterisation/lauds.test.ts
+index ec8ffdc..e4498a9 100644
+--- a/tests/characterisation/lauds.test.ts
++++ b/tests/characterisation/lauds.test.ts
+@@ -1,23 +1,25 @@
+-/** QAT-0047: the Malison of Lauds. */
++/** QAT-0047: the Malison of Lauds — the Antiphon (BOS-0028..0031, reworked onto MalisonBase). */
+ import { describe, expect, it } from 'vitest';
+ import { at } from '../../src/content/chapter1';
+-import { Embedded, Laceration } from '../../src/surgery/entities';
+-import { ChoirVoice, LaudsMalison } from '../../src/surgery/lauds';
+-import type { Operation } from '../../src/surgery/operation';
+-import { DT, holdOn, hoverOn, live, step } from '../helpers/sim';
++import { Embedded } from '../../src/surgery/entities';
++import { ChoirVoice, LaudsBody, LaudsMalison, LAUDS_DEFAULT, LightThread, VOICE_SIGIL } from '../../src/surgery/lauds';
++import type { Operation, OperationDef } from '../../src/surgery/operation';
++import { DT, holdOn, live, step } from '../helpers/sim';
+ import { scenario } from '../helpers/trace';
++import { Hand } from '../harness';
+ 
+-const lauds = () => scenario((o) => [new LaudsMalison(at(0, 30), o)]);
++const lauds = (def: Partial<OperationDef> = {}) => scenario((o) => [new LaudsMalison(at(0, 30), o)], def);
+ 
+ function silenceAll(op: Operation, core: LaudsMalison) {
++  const h = new Hand(op);
+   for (let guard = 0; guard < 12 && core.livingVoices.length; guard++) {
+     const v = core.livingVoices[0];
+-    holdOn(op, 'brand', () => (v.alive ? v.pos : null), 1);
++    h.traceMoving('brand', () => v.pos, VOICE_SIGIL, 2.2);
+   }
+ }
+ 
+ describe('Malison of Lauds', () => {
+-  it('spawns four Voices; branding the core while they live says lauds-shielded and does no damage', () => {
++  it('Call: four Voices; branding the core while they live says lauds-shielded and does no damage', () => {
+     const { op, ents, trace } = lauds();
+     const core = ents[0];
+     expect(live(op, ChoirVoice)).toHaveLength(4);
+@@ -28,49 +30,71 @@ describe('Malison of Lauds', () => {
+     expect(trace.text()).toMatchSnapshot();
+   });
+ 
+-  it('each Voice is silenced by a 0.6 s brand hold (COOL "Silenced"); released, silence decays at 0.35/s', () => {
++  it('a Voice is silenced by tracing its sigil with the brand (COOL "Silenced"); a plain hold does nothing', () => {
+     const { op, ents, trace } = lauds();
+     const core = ents[0];
+     const v = core.livingVoices[0];
+-    holdOn(op, 'brand', () => v.pos, 0.3);
+-    const held = v.silence;
+-    step(op, 0.5);
+-    trace.note('partial silence', { held, after: v.silence });
+-    expect(held).toBeGreaterThan(0.25);
+-    expect(held - v.silence).toBeCloseTo(0.35 * 0.5, 1);
+-    holdOn(op, 'brand', () => (v.alive ? v.pos : null), 1);
++    holdOn(op, 'brand', () => v.pos, 1);
++    trace.note('held', { traced: v.traced });
++    expect(v.alive).toBe(true);
++    new Hand(op).traceMoving('brand', () => v.pos, VOICE_SIGIL, 2.2);
++    trace.note('traced', { alive: v.alive });
+     expect(v.alive).toBe(false);
+     expect(op.counts.cool).toBe(1);
+     expect(trace.text()).toMatchSnapshot();
+   });
+ 
+-  it('sings a Hymn every 6.5 s that opens a laceration and costs 2 vitals', () => {
+-    const { op, trace } = lauds();
+-    step(op, 14);
+-    trace.note('two hymns');
++  it('sings a Hymn 9 s after the last one passes, after an inhaled tell: each verse opens a boss wound and costs 1 vital', () => {
++    const { op, ents, trace } = lauds();
++    const core = ents[0];
++    // The next verse's count starts once the ring has passed (~1.4 s).
++    step(op, LAUDS_DEFAULT.hymnEvery * 2 + 3);
++    trace.note('two verses', { verses: core.verseLog });
+     expect(op.flags.has('lauds-hymn')).toBe(true);
+-    expect(trace.lines.filter((l) => l.includes('hurt 2'))).toHaveLength(2);
+-    expect(live(op, Laceration).length).toBeGreaterThanOrEqual(1);
++    expect(core.verseLog).toHaveLength(2);
++    expect(trace.lines.filter((l) => l.includes('hurt 1'))).toHaveLength(2);
+     expect(trace.text()).toMatchSnapshot();
+   });
+ 
+-  it('full fight: silence the choir, wound it to half ("Wounded" → submerges), hunt it with the Lens, unmake it into three hexstone shards', () => {
++  it('left bare for more than 5 s, it calls two Voices back, half-traced', () => {
+     const { op, ents, trace } = lauds();
+     const core = ents[0];
+     silenceAll(op, core);
+-    trace.note('choir silenced', { voices: core.livingVoices.length });
+     expect(core.livingVoices).toHaveLength(0);
+-    holdOn(op, 'brand', () => (core.alive && !core.submerged ? core.pos : null), 2);
+-    trace.note('wounded', { hp: core.hp, submerged: core.submerged });
++    let frames = 0;
++    while (core.livingVoices.length === 0 && frames++ < 60 * 8) op.update(DT);
++    trace.note('rekindled', { voices: core.livingVoices.length });
++    expect(core.livingVoices).toHaveLength(2);
++    expect(core.livingVoices.every((v) => v.traced >= 0.45)).toBe(true);
++    expect(trace.text()).toMatchSnapshot();
++  });
++
++  it('Call → Response: the bare heart "Wounded" past 65 % splits into two bodies joined by a light-thread', () => {
++    const { op, ents, trace } = lauds();
++    const core = ents[0];
++    silenceAll(op, core);
++    core.hp = 66;
++    holdOn(op, 'brand', () => (core.alive ? core.pos : null), 1);
++    trace.note('split', { phase: core.phase.key, hp: core.hp });
++    expect(core.phase.key).toBe('response');
++    expect(live(op, LaudsBody)).toHaveLength(1);
++    expect(live(op, LightThread)).toHaveLength(1);
++    expect(op.counts.good).toBe(1);
++    expect(trace.text()).toMatchSnapshot();
++  });
++
++  it('Dawn: submerged, found with the Lens, unmade into three hexstone shards', () => {
++    const { op, ents, trace } = lauds({ bossCheckpoint: 2, skipCinematics: true } as Partial<OperationDef>);
++    const core = ents[0];
++    expect(core.phase.key).toBe('dawn');
+     expect(core.submerged).toBe(true);
+-    expect(core.hidden).toBe(true);
+-    expect(core.hp).toBeLessThanOrEqual(50);
+-    step(op, 2);
+-    hoverOn(op, 'lens', () => (core.submerged ? core.pos : null), 2);
++    const h = new Hand(op);
++    h.hold('lens', core.pos, 0.8);
+     trace.note('found', { submerged: core.submerged });
+     expect(core.submerged).toBe(false);
+-    holdOn(op, 'brand', () => (core.alive ? core.pos : null), 2);
+-    trace.note('unmade');
++    core.hp = 1;
++    holdOn(op, 'brand', () => (core.alive && !core.submerged ? core.pos : null), 1.5);
++    trace.note('unmade', { alive: core.alive });
+     expect(core.alive).toBe(false);
+     const stones = live(op, Embedded);
+     expect(stones).toHaveLength(3);
+@@ -78,15 +102,4 @@ describe('Malison of Lauds', () => {
+     expect(trace.lines.some((l) => l.includes('rate COOL "Malison unmade"'))).toBe(true);
+     expect(trace.text()).toMatchSnapshot();
+   });
+-
+-  it('left exposed for more than 5 s, it calls two Voices back', () => {
+-    const { op, ents, trace } = lauds();
+-    const core = ents[0];
+-    silenceAll(op, core);
+-    let frames = 0;
+-    while (core.livingVoices.length === 0 && frames++ < 60 * 8) op.update(DT);
+-    trace.note('rekindled', { voices: core.livingVoices.length });
+-    expect(core.livingVoices).toHaveLength(2);
+-    expect(trace.text()).toMatchSnapshot();
+-  });
+ });
+diff --git a/tests/characterisation/matins.test.ts b/tests/characterisation/matins.test.ts
+index 49b7561..0e0f82b 100644
+--- a/tests/characterisation/matins.test.ts
++++ b/tests/characterisation/matins.test.ts
+@@ -1,22 +1,21 @@
+-import { DEFAULT_TUNING } from '../../src/surgery/tuning';
+-/** QAT-0046: the Malison of Matins. */
++/** QAT-0046: the Malison of Matins — the Night Vigil (BOS-0011..0013, reworked onto MalisonBase). */
+ import { describe, expect, it } from 'vitest';
+ import { at } from '../../src/content/chapter1';
+-import { Grub, Laceration } from '../../src/surgery/entities';
+-import { Malison, MalisonShard } from '../../src/surgery/malison';
+-import { DT, FIELD_OFF, holdOn, live, strokePath } from '../helpers/sim';
++import { Laceration } from '../../src/surgery/entities';
++import { Malison, MalisonShard, MATINS_DEFAULT } from '../../src/surgery/malison';
++import { DEFAULT_TUNING } from '../../src/surgery/tuning';
+ import type { Operation } from '../../src/surgery/operation';
++import { DT, FIELD_OFF, holdOn, live, step, strokePath } from '../helpers/sim';
+ import { scenario } from '../helpers/trace';
+ 
+ const matins = () => scenario((o) => [new Malison(at(0, 40), o, 'matins', 100)]);
+ 
+-function untilOpen(op: Operation, m: Malison) {
+-  let frames = 0;
+-  while (!m.open && frames++ < 60 * 10) op.update(DT);
++function until(op: Operation, cond: () => boolean, seconds = 20): void {
++  for (let f = 0; !cond() && f < seconds * 60; f++) op.update(DT);
+ }
+ 
+ describe('Malison of Matins', () => {
+-  it('shroud rhythm: 4 s veiled, 2.5 s open; rends lacerations every 4.5 s of veiled time', () => {
++  it('Vigil rhythm: 4 s veiled, 2.5 s open; rends a boss wound every 4.5 s of veiled time', () => {
+     const { op, ents, trace } = matins();
+     const m = ents[0];
+     const toggles: string[] = [];
+@@ -31,55 +30,73 @@ describe('Malison of Matins', () => {
+     trace.note('20 s of rhythm', { toggles });
+     expect(toggles.slice(0, 4).map((s) => s.split('@')[0])).toEqual(['open', 'veiled', 'open', 'veiled']);
+     const times = toggles.map((s) => Number(s.split('@')[1]));
+-    expect(times[0]).toBeCloseTo(4, 1);
+-    expect(times[1] - times[0]).toBeCloseTo(2.5, 1);
+-    expect(times[2] - times[1]).toBeCloseTo(4, 1);
++    expect(times[0]).toBeCloseTo(MATINS_DEFAULT.veil, 1);
++    expect(times[1] - times[0]).toBeCloseTo(MATINS_DEFAULT.open1, 1);
++    expect(times[2] - times[1]).toBeCloseTo(MATINS_DEFAULT.veil, 1);
+     expect(live(op, Laceration).length).toBeGreaterThanOrEqual(2);
+     expect(op.flags.has('malison-rend')).toBe(true);
+     expect(trace.text()).toMatchSnapshot();
+   });
+ 
+-  it('branding it while veiled says malison-veiled and does no damage (and no brand-flesh penalty)', () => {
++  it('branding it while veiled: one MISS "Veiled", no damage, no brand-flesh penalty', () => {
+     const { op, ents, trace } = matins();
+     const m = ents[0];
+     holdOn(op, 'brand', () => m.pos, 1);
+     trace.note('branded while veiled', { hp: m.hp });
+     expect(m.hp).toBe(100);
+-    expect(op.flags.has('malison-veiled')).toBe(true);
++    expect(op.counts.miss).toBe(1);
+     expect(op.flags.has('brand-flesh')).toBe(false);
+     expect(trace.text()).toMatchSnapshot();
+   });
+ 
+-  it('branding it open: "Wounded" at 75/50/25 % sheds two hexlings each; at 0 "Malison unmade" splits into three shards', () => {
++  it('three phases: "Wounded" into the Watchfire (Litany taught) and The Eye; unmade on the third beat into three shards', () => {
+     const { op, ents, trace } = matins();
+     const m = ents[0];
+-    untilOpen(op, m);
+-    holdOn(op, 'brand', () => (m.alive ? m.pos : null), 2.5);
+-    trace.note('after one open window', { hp: m.hp });
++    // Vigil → Watchfire.
++    m.hp = 61;
++    until(op, () => m.open);
++    holdOn(op, 'brand', () => (m.alive && m.open ? m.pos : null), 1);
++    trace.note('into the Watchfire', { hp: m.hp, phase: m.phase.key });
++    expect(m.phase.key).toBe('watchfire');
++    expect(op.flags.has('tutorial-litany')).toBe(true);
++    // Watchfire → The Eye.
++    m.hp = 26;
++    step(op, 1.5);
++    until(op, () => m.open);
++    holdOn(op, 'brand', () => (m.alive && m.open ? m.pos : null), 1);
++    trace.note('the Eye opens', { hp: m.hp, phase: m.phase.key });
++    expect(m.phase.key).toBe('eye');
++    expect(op.counts.good).toBe(2);
++    // The Eye: only the third beat bites.
++    m.hp = 1;
++    step(op, 1.5);
++    until(op, () => m.beat === 3);
++    holdOn(op, 'brand', () => (m.alive ? m.pos : null), 0.6);
++    trace.note('unmade', { alive: m.alive });
+     expect(m.alive).toBe(false);
+-    expect(op.counts.good).toBe(3);
+-    expect(op.counts.cool).toBe(1);
+-    expect(live(op, Grub).filter((g) => g.required)).toHaveLength(6);
+-    expect(live(op, MalisonShard)).toHaveLength(3);
++    expect(op.counts.cool).toBeGreaterThanOrEqual(1);
++    expect(live(op, MalisonShard).filter((s) => s.mode === 'fragment')).toHaveLength(3);
+     expect(trace.text()).toMatchSnapshot();
+   });
+ 
+-  it('a shard dragged off the body is cast out (COOL); the rest rejoin after 9 s: MISS "It rejoined", 10 vitals, a weakened Malison', () => {
+-    const { op, ents, trace } = matins();
+-    const m = ents[0];
+-    untilOpen(op, m);
+-    holdOn(op, 'brand', () => (m.alive ? m.pos : null), 2.5);
++  it('a shard dragged off the body is cast out (COOL); the rest rejoin after 9 s: MISS "It rejoined", 10 vitals, a weakened single-phase Malison', () => {
++    const { op, trace } = scenario((o) => [
++      new MalisonShard(at(-60, 40), o),
++      new MalisonShard(at(0, 60), o),
++      new MalisonShard(at(60, 40), o),
++      new Laceration(at(150, -80), 0, 40, 0), // keeps the operation running
++    ]);
+     const shards = live(op, MalisonShard);
+     strokePath(op, 'tongs', [{ ...shards[0].pos }, FIELD_OFF], { speed: 600 });
+     trace.note('one cast out');
+     expect(shards[0].alive).toBe(false);
+-    expect(op.counts.cool).toBe(2);
+-    let frames = 0;
+-    while (live(op, MalisonShard).length && frames++ < 60 * 12) op.update(DT);
++    expect(op.counts.cool).toBe(1);
++    until(op, () => live(op, MalisonShard).length === 0, 12);
+     trace.note('rejoined');
+     const reborn = live(op, Malison);
+     expect(reborn).toHaveLength(1);
+     expect(reborn[0].hp).toBe(20 + 15 * 2);
++    expect(reborn[0].tune.phased).toBe(false);
+     expect(op.counts.miss).toBe(1);
+     expect(trace.lines.some((l) => l.includes('hurt 10'))).toBe(true);
+     expect(trace.text()).toMatchSnapshot();
+diff --git a/tests/characterisation/vermin-curses.test.ts b/tests/characterisation/vermin-curses.test.ts
+index e19ea84..6a49167 100644
+--- a/tests/characterisation/vermin-curses.test.ts
++++ b/tests/characterisation/vermin-curses.test.ts
+@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
+ import { at } from '../../src/content/chapter1';
+ import { OP_2_4 } from '../../src/content/chapter2';
+ import { Grub, Laceration, Sigil, SIGILS } from '../../src/surgery/entities';
+-import { EggSac, SpiderlingGrub } from '../../src/surgery/lauds';
++import { EggSac, SpiderlingGrub, SPIDERLING_CAP } from '../../src/surgery/lauds';
+ import { DT, FIELD_OFF, holdAt, holdOn, live, step, strokePath, tap } from '../helpers/sim';
+ import { onBody, type Operation } from '../../src/surgery/operation';
+ import { scenario } from '../helpers/trace';
+@@ -114,14 +114,15 @@ describe('EggSac', () => {
+     expect(trace.text()).toMatchSnapshot();
+   });
+ 
+-  it('hatching rates MISS "Hatched", costs 6 vitals, releases brood + 2 spiderlings; the 5 s warning is said once per sac', () => {
++  it('hatching rates MISS "Hatched", costs 6 vitals, releases brood + 2 spiderlings up to the cap of 6; the 3 s swell warning is said once per sac', () => {
+     const { op, trace } = scenario(() => [new EggSac(at(-100, 0), 3, 12), new EggSac(at(100, 0), 2, 14)]);
+     step(op, 15);
+     trace.note('hatched');
+     expect(op.counts.miss).toBe(2);
+-    expect(live(op, SpiderlingGrub)).toHaveLength(5 + 4);
++    // 5 + 4 would hatch, but never more than SPIDERLING_CAP live at once (BOS-0147).
++    expect(live(op, SpiderlingGrub)).toHaveLength(SPIDERLING_CAP);
+     expect(trace.lines.filter((l) => l.includes('hurt 6'))).toHaveLength(2);
+-    expect(trace.lines.filter((l) => l.includes('say "That sac is moving'))).toHaveLength(2);
++    expect(trace.lines.filter((l) => l.includes('say "That sac is swelling'))).toHaveLength(2);
+     expect(trace.text()).toMatchSnapshot();
+   });
+ });
 diff --git a/tests/harness.ts b/tests/harness.ts
 index ba445f7..ec7ac04 100644
 --- a/tests/harness.ts
@@ -4959,10 +7256,10 @@ index ba445f7..ec7ac04 100644
  /** Every live entity of a class. */
 diff --git a/tests/hours-later.test.ts b/tests/hours-later.test.ts
 new file mode 100644
-index 0000000..aaff789
+index 0000000..2f2137c
 --- /dev/null
 +++ b/tests/hours-later.test.ts
-@@ -0,0 +1,171 @@
+@@ -0,0 +1,175 @@
 +import { describe, expect, it } from 'vitest';
 +import type { BossEvent, BossOpDef } from '../src/surgery/bosses/signals';
 +import { TELL_MIN_LEAD } from '../src/surgery/bosses/signals';
@@ -5044,10 +7341,14 @@ index 0000000..aaff789
 +  it('Compline: a one-second hush tell and a [silence] flag precede every mute', () => {
 +    const op = start((o) => [new ComplineMalison(at(0, 0), o)]);
 +    const ev = record(op);
++    hudFlag(op, 'silence'); // the HUD subscribes on its first frame
 +    wait(op, 21.5);
 +    expect(hudFlag(op, 'silence')).toBe(true);
 +    expect(ev.some(({ e }) => e.kind === 'sound' && e.sound === 'hush')).toBe(true);
-+    for (const g of tellGaps(ev)) expect(g).toBeGreaterThanOrEqual(1 - 2 * DT);
++    // Only the hush: the echoes it wears keep their own Hours' leads.
++    const hush = tellGaps(ev.filter(({ e }) => (e.kind === 'tell' || e.kind === 'attack') && e.boss === 'compline' && e.attack === 'silence'));
++    expect(hush.length).toBeGreaterThan(0);
++    for (const g of hush) expect(g).toBeGreaterThanOrEqual(1 - 2 * DT);
 +  });
 +
 +  it('Sext: False Noon flattens the ECG; the reduced-lag assist caps torpor at 120 ms', () => {
@@ -5136,10 +7437,10 @@ index 0000000..aaff789
 +});
 diff --git a/tests/hours.test.ts b/tests/hours.test.ts
 new file mode 100644
-index 0000000..5ef129f
+index 0000000..47c0d38
 --- /dev/null
 +++ b/tests/hours.test.ts
-@@ -0,0 +1,488 @@
+@@ -0,0 +1,502 @@
 +import { describe, expect, it } from 'vitest';
 +import { dist } from '../src/core/math';
 +import { Laceration } from '../src/surgery/entities';
@@ -5150,7 +7451,7 @@ index 0000000..5ef129f
 +import { Malison, MalisonShard, MATINS_DEFAULT, MATINS_PHASES } from '../src/surgery/malison';
 +import { ChoirVoice, EggSac, LaudsBody, LaudsMalison, LAUDS_DEFAULT, LightThread, SPIDERLING_CAP, SpiderlingGrub, VOICE_SIGIL } from '../src/surgery/lauds';
 +import { CantorKnot, EggCluster, FangNest, HERALD_BONUS, MatinsHerald } from '../src/surgery/bosses/elites';
-+import { FIELD, onBody, type Operation, type OperationDef } from '../src/surgery/operation';
++import { FIELD, onBody, TRAY_DISH, type Operation, type OperationDef } from '../src/surgery/operation';
 +import { all, at, DT, Hand, start, wait } from './harness';
 +
 +const events = (op: Operation): BossEvent[] => {
@@ -5192,6 +7493,8 @@ index 0000000..5ef129f
 +    const op = start((o) => [(m = new Malison(at(0, 0), o))], boss({ skipCinematics: true }));
 +    const ev = events(op);
 +    wait(op, 0.1);
++    expect(ev.find((e) => e.kind === 'music')).toMatchObject({ intensity: 1 }); // the encounter opens on phase 1
++    ev.length = 0;
 +    m.damage(op, 45);
 +    m.damage(op, 40);
 +    m.damage(op, 100);
@@ -5355,17 +7658,19 @@ index 0000000..5ef129f
 +  it('crawling shards make for the nearest wound and feed on it', () => {
 +    let s!: MalisonShard;
 +    const op = start((o) => [new Laceration(at(120, 0), 0, 40, 0), (s = new MalisonShard(at(0, 0), o, 'crawler'))]);
-+    const v = op.vitals;
++    let harm = 0;
++    op.events.on('hurt', ({ amount }) => (harm += amount));
 +    wait(op, 12);
 +    expect(s.alive).toBe(false);
 +    expect(op.counts.miss).toBe(1);
-+    expect(v - op.vitals).toBeGreaterThanOrEqual(4);
++    expect(harm).toBeGreaterThanOrEqual(4); // net vitals also include passive recovery
 +  });
 +
 +  it('The Eye: only the third beat bites, for double damage; off-beat brands rend', () => {
 +    let m!: Malison;
 +    const op = start((o) => [(m = new Malison(at(0, 0), o))], boss({ skipCinematics: true }));
-+    m.damage(op, 80);
++    m.damage(op, 45); // Vigil → Watchfire (one phase per blow)
++    m.damage(op, 40); // → The Eye
 +    expect(m.phase.key).toBe('eye');
 +    // Beat 1: off the beat.
 +    const lacs = all(op, Laceration).length;
@@ -5384,14 +7689,16 @@ index 0000000..5ef129f
 +    for (const dodge of [true, false]) {
 +      let m!: Malison;
 +      const op = start((o) => [(m = new Malison(at(0, 0), o, 'matins', 100, { gazeEvery: 1 }))], boss({ skipCinematics: true }));
-+      m.damage(op, 80);
++      m.damage(op, 45); // Vigil → Watchfire (one phase per blow)
++    m.damage(op, 40); // → The Eye
 +      const h = new Hand(op);
 +      const aim = { x: m.pos.x + 150, y: m.pos.y };
 +      // Rest the hand on the flesh beside the eye until the gaze locks.
-+      while (!m.gaze) h.hover(aim);
++      for (let i = 0; !m.gaze && i < 60 * 30; i++) h.hover(aim);
 +      const lacs = all(op, Laceration).length;
 +      const off = { x: aim.x, y: aim.y + 90 };
-+      for (let t = 0; t < 1.2; t += DT) h.hover(dodge ? off : { x: m.pos.x + m.gaze!.dir.x * 150, y: m.pos.y + m.gaze!.dir.y * 150 });
++      const dir = m.gaze!.dir; // the line is locked; the gaze clears once it lashes
++      for (let t = 0; t < 1.2; t += DT) h.hover(dodge ? off : { x: m.pos.x + dir.x * 150, y: m.pos.y + dir.y * 150 });
 +      expect(all(op, Laceration).length, `dodge=${dodge}`).toBe(dodge ? lacs : lacs + 1);
 +    }
 +  });
@@ -5467,7 +7774,7 @@ index 0000000..5ef129f
 +    const op = start((o) => [(l = new LaudsMalison(at(0, 0), o))], boss({ skipCinematics: true }));
 +    l.damage(op, 36);
 +    const th = all(op, LightThread)[0];
-+    while (!th.dimmed) wait(op, DT);
++    for (let i = 0; !th.dimmed && i < 60 * 30; i++) wait(op, DT);
 +    const mid = th.pos;
 +    new Hand(op).drag('lancet', [{ x: mid.x, y: mid.y - 30 }, { x: mid.x, y: mid.y + 30 }], 600);
 +    expect(l.unlinked).toBe(true);
@@ -5480,7 +7787,8 @@ index 0000000..5ef129f
 +  it('Dawn: the flare blinds the Lens for 2 s after a 1 s horizon-glow tell', () => {
 +    let l!: LaudsMalison;
 +    const op = start((o) => [(l = new LaudsMalison(at(0, 0), o))], boss({ skipCinematics: true }));
-+    l.damage(op, 71);
++    l.damage(op, 36); // Call → Response (one phase per blow)
++    l.damage(op, 35); // → Dawn
 +    expect(l.phase.key).toBe('dawn');
 +    expect(l.submerged).toBe(true);
 +    wait(op, LAUDS_DEFAULT.flareEvery - 1 + 0.05);
@@ -5511,7 +7819,8 @@ index 0000000..5ef129f
 +  it('submerged rot trail stays at 3 patches and scores as a boss add', () => {
 +    let l!: LaudsMalison;
 +    const op = start((o) => [(l = new LaudsMalison(at(0, 0), o))], boss({ skipCinematics: true }));
-+    l.damage(op, 71);
++    l.damage(op, 36); // Call → Response (one phase per blow)
++    l.damage(op, 35); // → Dawn
 +    let most = 0;
 +    for (let i = 0; i < 60; i++) {
 +      wait(op, 1);
@@ -5544,9 +7853,11 @@ index 0000000..5ef129f
 +    const op = start((o) => [new EggSac(at(-100, 0), 5), new EggSac(at(100, 0), 5), new Laceration(at(0, 120), 0, 40, 0), o && new SpiderlingGrub(at(0, 0), o)].filter(Boolean) as Entity[]);
 +    const sac = all(op, EggSac)[0];
 +    wait(op, 7.5);
++    expect(sac.swell).toBeGreaterThan(0.1); // the swell starts 3 s out
++    wait(op, 1.7);
 +    expect(sac.swell).toBeGreaterThan(0.7);
 +    expect(sac.alive).toBe(true);
-+    wait(op, 2.6);
++    wait(op, 0.9);
 +    expect(sac.alive).toBe(false);
 +    expect(all(op, SpiderlingGrub).length).toBeLessThanOrEqual(SPIDERLING_CAP);
 +  });
@@ -5584,9 +7895,11 @@ index 0000000..5ef129f
 +    let k!: CantorKnot;
 +    const op = start((o) => (k = new CantorKnot(at(0, -100), o, 5)).all);
 +    const seg = k.sigil.segs[0];
++    // Catch the first stroke at its node, then burn along it.
++    new Hand(op).hold('brand', k.sigil.nodes[0], op.tuning.brand.sigilNode + 0.1);
 +    new Hand(op).drag('brand', [seg.a, seg.b], 200);
 +    expect(seg.burned.some(Boolean)).toBe(true);
-+    while (!k.humming) wait(op, DT);
++    for (let i = 0; !k.humming && i < 60 * 30; i++) wait(op, DT);
 +    wait(op, 1.05);
 +    expect(k.redrawn).toBe(1);
 +    expect(k.sigil.segs.every((s) => !s.burned.some(Boolean))).toBe(true);
@@ -5599,7 +7912,8 @@ index 0000000..5ef129f
 +    const grip = { x: f.origin.x + (f.handle.x - f.origin.x) * 0.7, y: f.origin.y + (f.handle.y - f.origin.y) * 0.7 };
 +    const d = { x: f.handle.x - f.origin.x, y: f.handle.y - f.origin.y };
 +    const l = Math.hypot(d.x, d.y);
-+    new Hand(op).drag('tongs', [grip, { x: grip.x + (d.x / l) * 110, y: grip.y + (d.y / l) * 110 }], 500);
++    // Pull out along the axis, then carry it off the body into the dish.
++    new Hand(op).drag('tongs', [grip, { x: grip.x + (d.x / l) * 40, y: grip.y + (d.y / l) * 40 }, TRAY_DISH], 400);
 +    wait(op, 0.1);
 +    expect(f.alive).toBe(false);
 +    expect(n.spreads).toBe(1);
@@ -5608,7 +7922,8 @@ index 0000000..5ef129f
 +
 +  it('the Matins herald flees the lens and pays 300 when seared', () => {
 +    let h!: MatinsHerald;
-+    const op = start((o) => [(h = new MatinsHerald(at(0, 0), o))]);
++    // A wound keeps the operation running: the herald alone is optional.
++    const op = start((o) => [(h = new MatinsHerald(at(0, 0), o)), new Laceration(at(180, 90), 0, 40, 0)]);
 +    const hand = new Hand(op);
 +    op.setTool('lens');
 +    const p0 = { ...h.pos };
@@ -5628,52 +7943,41 @@ index 0000000..5ef129f
 +    expect(drainAudit.violations).toBe(0);
 +  });
 +});
--- 
-2.43.0
-
-
-From de25357755ec63c7c670fe7c8d21a9621eb57e69 Mon Sep 17 00:00:00 2001
-From: Claude <noreply@anthropic.com>
-Date: Fri, 25 Sep 2026 05:57:42 +0000
-Subject: [PATCH 2/2] wip: bound open-ended waits in hours tests
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01NN8csWWB6zAHS5UJRFUWL8
----
- tests/hours.test.ts | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/tests/hours.test.ts b/tests/hours.test.ts
-index 5ef129f..84258a1 100644
---- a/tests/hours.test.ts
-+++ b/tests/hours.test.ts
-@@ -246,7 +246,7 @@ describe('Matins — the Night Vigil', () => {
-       const h = new Hand(op);
-       const aim = { x: m.pos.x + 150, y: m.pos.y };
-       // Rest the hand on the flesh beside the eye until the gaze locks.
--      while (!m.gaze) h.hover(aim);
-+      for (let i = 0; !m.gaze && i < 60 * 30; i++) h.hover(aim);
-       const lacs = all(op, Laceration).length;
-       const off = { x: aim.x, y: aim.y + 90 };
-       for (let t = 0; t < 1.2; t += DT) h.hover(dodge ? off : { x: m.pos.x + m.gaze!.dir.x * 150, y: m.pos.y + m.gaze!.dir.y * 150 });
-@@ -325,7 +325,7 @@ describe('Lauds — the Antiphon', () => {
-     const op = start((o) => [(l = new LaudsMalison(at(0, 0), o))], boss({ skipCinematics: true }));
-     l.damage(op, 36);
-     const th = all(op, LightThread)[0];
--    while (!th.dimmed) wait(op, DT);
-+    for (let i = 0; !th.dimmed && i < 60 * 30; i++) wait(op, DT);
-     const mid = th.pos;
-     new Hand(op).drag('lancet', [{ x: mid.x, y: mid.y - 30 }, { x: mid.x, y: mid.y + 30 }], 600);
-     expect(l.unlinked).toBe(true);
-@@ -444,7 +444,7 @@ describe('Demo elites', () => {
-     const seg = k.sigil.segs[0];
-     new Hand(op).drag('brand', [seg.a, seg.b], 200);
-     expect(seg.burned.some(Boolean)).toBe(true);
--    while (!k.humming) wait(op, DT);
-+    for (let i = 0; !k.humming && i < 60 * 30; i++) wait(op, DT);
-     wait(op, 1.05);
-     expect(k.redrawn).toBe(1);
-     expect(k.sigil.segs.every((s) => !s.burned.some(Boolean))).toBe(true);
--- 
-2.43.0
-
+diff --git a/tests/schema.test.ts b/tests/schema.test.ts
+index 85c5868..8f00838 100644
+--- a/tests/schema.test.ts
++++ b/tests/schema.test.ts
+@@ -1,6 +1,7 @@
+ import { SPECIES } from '../src/surgery/species';
+ import { describe, expect, it } from 'vitest';
+ import { allCampaignOperations, FULL_CAMPAIGN } from '../src/content/campaign';
++import { CantorKnot, EggCluster, FangNest, MatinsHerald } from '../src/surgery/bosses/elites';
+ import { ENTITY_REGISTRY, makeEntity, opData, spawnAll, validateOp, validateSpec, type EntitySpec, type OperationData } from '../src/content/schema';
+ import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, Sigil, Venom } from '../src/surgery/entities';
+ import { ChoirVoice, EggSac, LaudsMalison, SpiderlingGrub } from '../src/surgery/lauds';
+@@ -41,6 +42,10 @@ describe('entity registry (CON-0002)', () => {
+     [{ e: 'eggsac', at: [0, 0] }, EggSac],
+     [{ e: 'malison-matins', at: [0, 0] }, Malison],
+     [{ e: 'malison-lauds', at: [0, 0] }, LaudsMalison],
++    [{ e: 'elite-broodcluster', at: [0, 0] }, EggCluster],
++    [{ e: 'elite-cantor', at: [0, -60] }, CantorKnot],
++    [{ e: 'elite-fangnest', path: [[-40, 0], [0, 0], [40, 0]], angles: [0.9, 1.2, 0.6] }, FangNest],
++    [{ e: 'herald', at: [0, 0] }, MatinsHerald],
+   ];
+ 
+   it('maps every string id to its constructor', () => {
+@@ -49,6 +54,14 @@ describe('entity registry (CON-0002)', () => {
+     for (const [spec, cls] of samples) expect(makeEntity(spec, op), spec.e).toBeInstanceOf(cls);
+   });
+ 
++  it('an elite spec spawns its core followed by the wounds it binds', () => {
++    const op = start();
++    const nest = spawnAll([{ e: 'elite-fangnest', path: [[-40, 0], [0, 0], [40, 0]], angles: [0.9, 1.2, 0.6] }], op);
++    expect(nest[0]).toBeInstanceOf(FangNest);
++    expect(nest.slice(1).map((e) => e.constructor.name)).toEqual(['Embedded', 'Embedded', 'Embedded']);
++    expect(validateSpec({ e: 'elite-fangnest', path: [[0, 0], [10, 0]], angles: 'x' }, ['tongs'], 'p')).toEqual(['p (elite-fangnest): "angles" must be a list of numbers']);
++  });
++
+   it('applies the common hidden/required parameters', () => {
+     const e = makeEntity({ e: 'embedded', at: [10, 10], kind: 'hexstone', hidden: true, required: false }, start());
+     expect([e.hidden, e.required]).toEqual([true, false]);
