@@ -173,6 +173,11 @@ export const STORY_4_10: StoryDef = {
     say('ilse', 'She paid for the candles. She paid for the beds. She knew every patient we took in, and when.'),
     say('stroh', 'Every patient the Choir chose went through a hospice she paid for. The Precentor did not need spies. He had a benefactor.'),
     say('kreuzer', 'Then the Choir knows exactly where the Office ends. At Saint Ildra’s. With us.'),
+    // The Litany's origin (NAR-0092): Haller's postscript.
+    say('haller', 'P.S. I went to the Guild library for the old offices. Our Litany is in them. It is not a prayer, boy. It is a verse.'),
+    say('haller', 'The stillness before Compline. The pause the Choir sings before the last office. We have been borrowing his silence.'),
+    say('kreuzer', 'Every time I drew the star, I was singing one line of his hymn.'),
+    say('ilse', 'Then it is a line he cannot finish without you. Remember that, Doctor, when he asks for it back.'),
   ],
 };
 

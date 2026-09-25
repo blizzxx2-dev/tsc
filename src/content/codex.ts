@@ -213,6 +213,16 @@ const INSTRUMENTS: CodexEntry[] = [
     image: 'wc-litany',
     body: 'Not an instrument, though it lives on the tray. A rite from the old offices: a five-pointed star drawn in the air, and the world waits — for eight heartbeats, once in an operation. Haller taught it to Kreuzer and told him never to use it where the Tribunal could see. The Order says a sister must never halt a soul; the Litany halts the room. Usage: draw the star with the right hand; work quickly; say nothing afterwards.',
   },
+  {
+    id: 'litany-reconsidered',
+    title: 'The Litany, Reconsidered',
+    category: 'Instruments',
+    unlock: { kind: 'story', story: 's4-10' },
+    image: 'wc-litany-verse',
+    // Chapter IV (NAR-0092): its title shows in the demo, its page stays shut.
+    silhouette: true,
+    body: 'Haller found it in the Guild library, in an office book nobody had opened in forty years: the Litany is not a prayer but a verse — the stillness sung before Compline, the breath the Choir holds before the last office. Every surgeon who has drawn the star has sung one line of the Precentor’s hymn. It explains why the candles stop, and why the Choir hears it. It does not explain why the line, in Kreuzer’s hands, has only ever held people together.',
+  },
 ];
 
 // ------------------------------------------------------------------ Afflictions (NAR-0082, NAR-0085)

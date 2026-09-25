@@ -173,3 +173,13 @@ describe('codex unlock audit (NAR-0086)', () => {
     expect(codexUnlocked({ won: {}, stories: [], chapters: [], flags: [] }).map((e) => e.id)).toContain('kreuzer');
   });
 });
+
+describe('The Litany, Reconsidered (NAR-0092)', () => {
+  it('Haller reveals in Chapter IV that the Litany is a verse of the Choir’s office; the codex page opens with that scene', async () => {
+    const { STORY_4_10 } = await import('../src/content/chapter4');
+    expect(STORY_4_10.lines.some((l) => l.who === 'haller' && /verse/.test(l.text))).toBe(true);
+    const e = CODEX.find((x) => x.id === 'litany-reconsidered')!;
+    expect(e.unlock).toEqual({ kind: 'story', story: 's4-10' });
+    expect(e.body.split(/\s+/).length).toBeLessThanOrEqual(180);
+  });
+});

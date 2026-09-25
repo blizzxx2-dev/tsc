@@ -146,7 +146,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ### Dr. Kreuzer
 - [ ] NAR-0090 · Alpha · P0 · M · Kreuzer arc doc — from sworn craftsman hiding the Litany to open defiance at trial; 5 chapter-by-chapter turning points with the scene id carrying each
 - [x] NAR-0091 · Alpha · P1 · S · Backstory reveal — why he left Weissburg (a patient he lost to a guild rule); revealed in Ch3 to Haller during licence vote
-- [ ] NAR-0092 · Alpha · P1 · S · Litany origin — Kreuzer learns in Ch4 that the Litany is itself a sung office fragment, linking his gift to the Choir; codex "The Litany, Reconsidered"
+- [x] NAR-0092 · Alpha · P1 · S · Litany origin — Kreuzer learns in Ch4 that the Litany is itself a sung office fragment, linking his gift to the Choir; codex "The Litany, Reconsidered"
 - [x] NAR-0093 · Alpha · P1 · S · Whisper-meter narrative states — 4 bands (Unremarked, Noted, Suspected, Accused) each with 3 unique Kreuzer interior lines
 - [x] NAR-0094 · Beta · P2 · S · Kreuzer journal epilogue — one page per ending written in his voice
 
