@@ -8,7 +8,7 @@ import { AUTO_LENS_AFTER, combineMods, DIFFICULTIES, NO_ASSISTS, NO_MODS, SLOW_T
 import type { LitanyVariant } from './litany';
 import type { SimEvent } from './events';
 import { rankThresholds } from './ranks';
-import { upgradeTuning } from './progress';
+import { upgradeTuning, type TinctureColor } from './progress';
 import { OP_TUNING } from './optuning';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
@@ -74,10 +74,14 @@ export interface OperationDef {
   events?: readonly ScriptedEvent[];
   /** Sext: the HUD shows a smoothed false vitals value unless the lens is on the heart. */
   fakeVitals?: boolean;
+  /** Flagellants and penitents thrash on the table: the field sways until a tincture calms them. */
+  thrashing?: boolean;
   /** Story flags decided by how the operation ended (evaluated on victory). */
   outcomes?: (op: Operation) => string[];
   /** Short strategy tips per failure cause, offered after repeated losses. */
   tips?: Partial<Record<string, string>>;
+  /** Tincture colours this operation supplies besides red. */
+  tinctures?: readonly TinctureColor[];
 }
 
 export interface OperationOptions {
@@ -94,6 +98,10 @@ export interface OperationOptions {
   seed?: number;
   /** Challenge op: no assists allowed, results flagged. */
   challenge?: string;
+  /** Kit loadout: extra tincture colours brought along. */
+  tinctures?: readonly TinctureColor[];
+  /** First-time hints already seen on this save (not repeated). */
+  hintsSeen?: readonly string[];
 }
 
 export interface Popup {
@@ -153,6 +161,8 @@ export function strokeCrosses(p1: Vec, p2: Vec, a: Vec, b: Vec): boolean {
   return d3 * d4 <= 0;
 }
 
+export const TINCTURE_HEX: Record<TinctureColor, string> = { red: '#e05060', green: '#80d070', blue: '#70a0f0', amber: '#f0b040' };
+
 /** Tools that are held down to work, for the hold-to-toggle assist. */
 const HELD_TOOLS: readonly ToolId[] = ['leech', 'brand', 'tincture', 'lens'];
 
@@ -164,7 +174,10 @@ export type LogOp =
   | ['c', number]
   | ['q']
   | ['l']
-  | ['h'];
+  | ['h']
+  | ['w', number]
+  | ['k']
+  | ['r'];
 
 export interface Telemetry {
   opId: string;
@@ -301,6 +314,24 @@ export class Operation {
   private emptyHoldT = 0;
   private emptyMissed = false;
   private toggleLatch = false;
+  private blockedPress = -1;
+  /** Tincture colours in the kit and the one loaded. */
+  tinctures: TinctureColor[];
+  tinctureColor: TinctureColor = 'red';
+  /** Anti-fever (amber) and antivenom (green) effects, seconds remaining. */
+  feverCalmT = 0;
+  venomSlowT = 0;
+  /** Torpor (Sext): the hand drags until a blue stimulant is given. */
+  torporT = 0;
+  /** Thrashing patient: the field sways until calmed. */
+  thrashT = 0;
+  /** Haze from a lanced gas pocket (the scene blurs the field). */
+  hazeT = 0;
+  /** Leech-pipe reversed (irrigation / transfusion). */
+  leechReverse = false;
+  /** End-bonus multiplier adjustments (antiparasitic finish, pinned misalignment). */
+  endBonusMult = 1;
+  endPenalty = 0;
   private wheelT = -1;
   /** Radial tool wheel open (slows world time). */
   wheelOpen = false;
@@ -358,6 +389,7 @@ export class Operation {
     this.timeLeft = this.timeLimit;
     this.tool = def.tools[0];
     this.litanyAllowed = def.litany === false ? 0 : (def.litanyUses ?? 1);
+    this.tinctures = [...new Set<TinctureColor>(['red', ...(def.tinctures ?? []), ...(opts.tinctures ?? [])])];
     this.phaseDelay = this.tuning.flow.intro;
     this.tick = Math.floor(this.tuning.flow.timerWarn) + 1;
     this.salve = this.tuning.salve.capacity;
@@ -686,6 +718,36 @@ export class Operation {
     this.setTool(tools[(i + Math.sign(dir) + tools.length) % tools.length]);
   }
 
+  /** Mouse wheel: turns whatever the tongs hold (bone fragments, tumblers); otherwise steps the tool. */
+  wheel(dir: number): void {
+    const c = this.captured;
+    if (c?.alive) {
+      this.log?.push(['w', dir]);
+      if (this.as(c, () => c.onWheel(this, dir))) return;
+    }
+    this.cycleTool(dir);
+  }
+
+  /** Pressing the tincture key again cycles the loaded colour. */
+  cycleTincture(): void {
+    this.log?.push(['k']);
+    if (this.tinctures.length < 2) return;
+    this.tinctureColor = this.tinctures[(this.tinctures.indexOf(this.tinctureColor) + 1) % this.tinctures.length];
+    this.cues.push('select');
+    this.popup(`${this.tinctureColor} tincture`, this.cursor, TINCTURE_HEX[this.tinctureColor]);
+  }
+
+  toggleLeechReverse(): void {
+    this.log?.push(['r']);
+    this.leechReverse = !this.leechReverse;
+    this.popup(this.leechReverse ? 'Leech-pipe reversed' : 'Leech-pipe drawing', this.cursor, '#e8dcc0');
+  }
+
+  /** Overdose risk (the vial darkens before a tremor). */
+  get overdoseRisk(): boolean {
+    return this.doses.length >= this.tuning.tincture.overdoseDoses;
+  }
+
   /** Temporarily disable an instrument (acid, corrosion). */
   disableTool(t: ToolId, seconds: number): void {
     this.disabled.set(t, Math.max(this.disabled.get(t) ?? 0, seconds));
@@ -722,6 +784,12 @@ export class Operation {
       const j = this.tuning.tincture.tremorPx;
       ptr = { ...ptr, pos: { x: ptr.pos.x + Math.sin(this.elapsed * 53) * j, y: ptr.pos.y + Math.cos(this.elapsed * 47) * j } };
     }
+    // A thrashing patient sways under the hand until a tincture calms him.
+    if (this.def.thrashing && this.thrashT <= 0) {
+      ptr = { ...ptr, pos: { x: ptr.pos.x + Math.sin(this.elapsed * 7.3) * 6, y: ptr.pos.y + Math.cos(this.elapsed * 5.9) * 6 } };
+    }
+    // Torpor: everything the hand does takes twice as long.
+    if (this.torporT > 0) dt *= 0.5;
     // Hold-to-toggle assist: a click latches a held tool on; the next click lets go.
     if (this.assists.holdToggle && HELD_TOOLS.includes(this.tool)) {
       if (ptr.pressed) {
@@ -737,6 +805,19 @@ export class Operation {
     }
     if (ptr.down || ptr.pressed) this.telemetryData.tools.add(tool);
     const live = this.visibleEntities().sort((a, b) => b.layer - a.layer);
+    // Frozen flesh and the like make some instruments skid: no effect, no rating.
+    if ((ptr.down || ptr.pressed) && !this.captured) {
+      let why: string | null = null;
+      for (const e of live) if ((why = e.blocksTool(this, ptr.pos, tool))) break;
+      if (why) {
+        if (ptr.pressed) this.pressId++;
+        if (this.blockedPress !== this.pressId) {
+          this.blockedPress = this.pressId;
+          this.popup(why, ptr.pos, '#b9d7ff');
+        }
+        return;
+      }
+    }
     // Wrath: the brand works twice as fast on everything it touches.
     const edt = tool === 'brand' && this.wrath ? dt * this.tuning.litany.wrathBrandMult : dt;
 
@@ -880,9 +961,15 @@ export class Operation {
       this.sayOnce('inject-wound', 'Not into the wound, Doctor — clean flesh, away from the cuts.');
       return;
     }
+    this.cues.push('inject');
+    if (this.def.thrashing) this.thrashT = 10;
+    if (this.tinctureColor !== 'red') {
+      this.injectColour(p);
+      this.recordDose();
+      return;
+    }
     const before = this.vitals;
     this.heal(T.heal);
-    this.cues.push('inject');
     this.popup(`+${T.heal}`, p, '#9fd3a8');
     // Only the first few doses pay: letting him fade to earn a COOL is no strategy.
     const pay = this.paidDoses < T.paidDoses;
@@ -894,6 +981,11 @@ export class Operation {
       this.rate('bad', p, 'Wasteful');
       this.sayOnce('inject-waste', 'He didn’t need that, Doctor. Save the tincture.');
     }
+    this.recordDose();
+  }
+
+  private recordDose(): void {
+    const T = this.tuning.tincture;
     this.doses.push(this.elapsed);
     this.doses = this.doses.filter((t) => this.elapsed - t <= T.overdoseWindow);
     if (this.doses.length > T.overdoseDoses) {
@@ -901,6 +993,26 @@ export class Operation {
       this.doses = [];
       this.sayOnce('overdose', 'Too much tincture — your hands are shaking!', 'danger');
     }
+  }
+
+  /** Green slows every venom, blue lifts torpor, amber cools fever. */
+  private injectColour(p: Vec): void {
+    const c = this.tinctureColor;
+    if (c === 'green') {
+      this.venomSlowT = 10;
+      this.heal(8);
+      this.popup('Antivenom', p, TINCTURE_HEX.green);
+    } else if (c === 'blue') {
+      if (this.torporT > 0) this.rate('good', p, 'Roused');
+      this.torporT = 0;
+      this.heal(5);
+      this.popup('Stimulant', p, TINCTURE_HEX.blue);
+    } else if (c === 'amber') {
+      this.feverCalmT = 10;
+      this.temperature = Math.max(37, this.temperature - 1.5);
+      this.popup('Fever eased', p, TINCTURE_HEX.amber);
+    }
+    for (const e of this.entities) if (e.alive) (e as unknown as { onTincture?: (op: Operation, c: TinctureColor, p: Vec) => void }).onTincture?.(this, c, p);
   }
 
   visibleEntities(): Entity[] {
@@ -954,6 +1066,11 @@ export class Operation {
     if (this.litanyTime > 0) this.litanyTime = Math.max(0, this.litanyTime - dt);
     if (this.riteTime > 0) this.riteTime = Math.max(0, this.riteTime - dt);
     this.graceT = Math.max(0, this.graceT - dt);
+    this.feverCalmT = Math.max(0, this.feverCalmT - dt);
+    this.venomSlowT = Math.max(0, this.venomSlowT - dt);
+    this.thrashT = Math.max(0, this.thrashT - dt);
+    this.hazeT = Math.max(0, this.hazeT - dt);
+    if (this.torporT > 0) this.torporT = Math.max(0, this.torporT - dt);
 
     const wdt = dt * this.timeScale;
     this.elapsed += dt;
@@ -998,6 +1115,17 @@ export class Operation {
         this.hiddenT.set(e, t);
         if (t > AUTO_LENS_AFTER) this.as(e, () => e.reveal(this));
       }
+    }
+    // Ceilings on vitals: bites, collapsed lungs, lost blood.
+    let cap = this.maxVitals;
+    for (const e of this.entities) if (e.alive) cap = Math.min(cap, e.vitalsCeiling(this));
+    if (this.def.secondary?.bloodVolume) cap = Math.min(cap, Math.round(30 + this.bloodVolume * 0.7));
+    this.vitalsCap = cap;
+    if (this.vitals > cap) this.vitals = cap;
+    if (this.def.secondary?.temperature) {
+      // The body warms back toward 37 °C; fever and frost push it away.
+      this.temperature += (37 - this.temperature) * Math.min(1, wdt * 0.05);
+      drain += Math.abs(this.temperature - 37) * 0.1;
     }
     const frozen = this.inBreather || this.mercy || this.graceT > 0;
     if (!frozen) {
@@ -1138,9 +1266,10 @@ export class Operation {
     const left = this.entities.filter((e) => e.alive && e.feverOnClose);
     if (left.length && !this.feverDone) {
       this.feverDone = true;
+      const feverDrain = Math.max(...left.filter((e) => e.feverDrain >= 0.4).map((e) => e.feverDrain), 0) + left.filter((e) => e.feverDrain < 0.4).reduce((a, e) => a + e.feverDrain, 0);
       for (const e of left) e.kill();
       this.say('He’s burning up — something was left in the wound! Keep him alive through the fever.', 'danger');
-      this.spawn(new WoundFever({ x: FIELD.cx, y: FIELD.cy }));
+      this.spawn(new WoundFever({ x: FIELD.cx, y: FIELD.cy }, feverDrain));
       this.phase = this.phaseCount - 1;
       return true;
     }
@@ -1167,9 +1296,11 @@ export class Operation {
   private win(): void {
     const T = this.tuning.scoring;
     this.status = 'won';
+    for (const e of this.entities) if (e.alive) this.as(e, () => e.onOperationEnd(this));
     const perSec = this.bossOp ? T.bossTimeBonus : T.timeBonus;
     const time = this.timeLeft < T.timeBonusFloor ? 0 : Math.round(this.timeLeft) * perSec;
-    this.bonus = { ...this.bonus, vitals: Math.round(this.averageVitals) * T.vitalsBonus, time };
+    const m = this.endBonusMult;
+    this.bonus = { ...this.bonus, vitals: Math.round(Math.round(this.averageVitals) * T.vitalsBonus * m), time: Math.round(time * m) - this.endPenalty };
     this.score += this.bonus.vitals + this.bonus.time;
     for (const f of this.def.outcomes?.(this) ?? []) this.setStoryFlag(f);
     this.cues.push('bell');
@@ -1391,13 +1522,16 @@ export class Reopened extends Entity {
 export class WoundFever extends Entity {
   private left: number;
   noun = 'the fever';
-  constructor(pos: Vec) {
+  constructor(
+    pos: Vec,
+    public rate: number = DEFAULT_TUNING.fever.drain,
+  ) {
     super(pos);
     this.left = DEFAULT_TUNING.fever.duration;
     this.layer = -3;
   }
   override drain(op: Operation): number {
-    return op.tuning.fever.drain;
+    return this.rate * (op.feverCalmT > 0 ? 0.5 : 1);
   }
   override hitTest(): boolean {
     return false;

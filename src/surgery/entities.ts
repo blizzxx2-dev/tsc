@@ -167,6 +167,8 @@ export class Incision extends Entity {
       return;
     }
     if (this.state !== 'mark' || this.slipped) return;
+    // A racing heart only lets the blade bite between beats.
+    if (op.entities.some((e) => e.alive && e !== this && e.blocksTool(op, ptr.pos, 'lancet'))) return;
     this.strokeTime += dt;
     const pr = this.project(ptr.pos);
     if (pr.d > T.slipDist + op.hitPad) {
@@ -380,14 +382,14 @@ export class BloodPool extends Entity {
   constructor(
     pos: Vec,
     public r: number,
-    public ichor: 'blood' | 'pus' | 'blackbile' = 'blood',
+    public ichor: 'blood' | 'pus' | 'blackbile' | 'bonedust' = 'blood',
   ) {
     super(pos);
     this.layer = 5;
     this.startR = r;
     // Blood only has to be drawn off when it's in the way; it never holds up a phase.
     this.required = false;
-    if (ichor !== 'blood') this.noun = ichor === 'pus' ? 'the pus' : 'the black bile';
+    if (ichor !== 'blood') this.noun = ichor === 'pus' ? 'the pus' : ichor === 'bonedust' ? 'the bone dust' : 'the black bile';
   }
 
   override drain(op: Operation): number {
@@ -417,7 +419,7 @@ export class BloodPool extends Entity {
   override onSweep(op: Operation, ptr: Pointer, tool: ToolId, dt: number): void {
     const B = op.tuning.blood;
     const d = dist(ptr.pos, this.pos);
-    if (tool !== 'leech' || d > this.r + B.reach + op.hitPad) return;
+    if (tool !== 'leech' || op.leechReverse || d > this.r + B.reach + op.hitPad) return;
     if (this.contactT < 0) this.contactT = op.elapsed;
     this.touched = true;
     const rate = B.unitPx / B.unitTime;
@@ -436,6 +438,7 @@ export class BloodPool extends Entity {
   }
 
   override drawFluid(g: Gfx, op: Operation): void {
+    if (this.ichor === 'bonedust') return;
     const c = this.ichor === 'blood' ? rgba(255, 0, 0, 1) : this.ichor === 'pus' ? rgba(0, 255, 0, 1) : rgba(0, 0, 255, 1);
     const z = rgba(0, 0, 0, 0);
     g.circleGrad(this.pos.x, this.pos.y, this.r * 1.9, c, z);
@@ -447,8 +450,9 @@ export class BloodPool extends Entity {
     }
   }
 
-  draw(): void {
-    // Rendered as liquid through the fluid layer (drawFluid).
+  draw(g: Gfx): void {
+    // Liquids render through the fluid layer (drawFluid); bone dust is a pale powder.
+    if (this.ichor === 'bonedust') g.circleGrad(this.pos.x, this.pos.y, this.r * 1.3, hex('#e8e0d0', 0.7), hex('#e8e0d0', 0));
   }
 }
 
@@ -553,6 +557,10 @@ export class Laceration extends Entity {
       if (pointSegment(ptr.pos, this.a, this.b).d > op.tuning.stitch.reach + op.hitPad) return;
       if (this.flooded(op)) {
         op.sayOnce('flooded', 'Too much blood — draw it off with the leech-pipe before you stitch!');
+        return;
+      }
+      if (op.entities.some((e) => e.alive && e.stitchBlockRadius > 0 && dist(e.pos, this.pos) < e.stitchBlockRadius)) {
+        op.sayOnce('compound', 'The bone’s through the skin — set it before you stitch over it.');
         return;
       }
       if (this.stitch.sweep(op, ptr)) {
@@ -1503,6 +1511,8 @@ export class Venom extends Entity {
 
   override update(op: Operation, dt: number): void {
     const V = op.tuning.venom;
+    // Green antivenom slows every venom for a while.
+    if (op.venomSlowT > 0) dt *= V.antivenomSlow;
     this.spreadR = Math.min(V.maxSpread, this.spreadR + this.rate * dt);
     if (this.rate <= 0) return;
     this.moteT += dt;

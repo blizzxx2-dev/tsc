@@ -44,6 +44,15 @@ export function replay(def: OperationDef, log: InputLog): Operation {
       case 'h':
         op.ilseAssist();
         break;
+      case 'w':
+        op.wheel(o[1]);
+        break;
+      case 'k':
+        op.cycleTincture();
+        break;
+      case 'r':
+        op.toggleLeechReverse();
+        break;
     }
   }
   return op;

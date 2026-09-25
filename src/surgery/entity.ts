@@ -39,8 +39,30 @@ export abstract class Entity {
   spawnedBy: Origin = 'content';
   /** Left inside when the patient is closed, it causes wound-fever (lead-shot wadding, bone splinters…). */
   feverOnClose = false;
+  /** Wound-fever drain this contributes if left inside at closing. */
+  feverDrain = 0.4;
+  /** While > 0, lacerations within this radius cannot be stitched (compound fractures). */
+  stitchBlockRadius = 0;
   /** Seconds this entity has existed (world time). */
   age = 0;
+
+  /** Mouse wheel while this entity holds the pointer (e.g. rotating a bone fragment). Return true if used. */
+  onWheel(_op: Operation, _dir: number): boolean {
+    return false;
+  }
+
+  /** Does this entity stop a tool working at a point (frozen flesh rejects the lancet)? */
+  blocksTool(_op: Operation, _p: Vec, _tool: ToolId): string | null {
+    return null;
+  }
+
+  /** Called once when the operation is won (story flags, end-bonus adjustments). */
+  onOperationEnd(_op: Operation): void {}
+
+  /** Vitals ceiling this entity imposes while alive (bites, collapsed lungs). */
+  vitalsCeiling(_op: Operation): number {
+    return Infinity;
+  }
 
   constructor(public pos: Vec) {}
 

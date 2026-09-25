@@ -72,6 +72,7 @@ export const SCORING: readonly ScoringRule[] = [
   { label: 'Stabilised', action: 'Inject the red tincture', tools: ['tincture'], criteria: { cool: `vitals < ${S.tincture.coolBelow} (counts for the combo; rescue pays no points)`, good: `vitals < ${S.tincture.goodBelow}` } },
   { label: 'Wasteful', action: 'Inject when not needed', tools: ['tincture'], criteria: { bad: `vitals > ${S.tincture.badAbove}` } },
   { label: 'Into the wound', action: 'Inject into or beside an open wound', tools: ['tincture'], criteria: { miss: `< ${S.tincture.woundClearance} px from a wound` } },
+  { label: 'Roused', action: 'Blue stimulant given to a patient in torpor', tools: ['tincture'], criteria: { good: 'torpor lifted' } },
   { label: 'Antidote', action: 'Hold the tincture on a bite', tools: ['tincture'], criteria: { cool: 'before the venom spreads 50 px', good: 'later' } },
   // Brand
   { label: 'Seared', action: 'Sear a grub or spiderling', tools: ['brand'], criteria: { cool: `${S.brand.grubHold} s held` } },

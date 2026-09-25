@@ -18,6 +18,7 @@ import { Malison, MalisonShard } from '../src/surgery/malison';
 import { FIELD, LEAD_DISH, Operation, Reopened, SimpleBurn, TRAY_DISH, type OperationDef, type OperationOptions } from '../src/surgery/operation';
 import type { Pointer, ToolId } from '../src/surgery/types';
 import type { SimEvent } from '../src/surgery/events';
+import type { TinctureColor } from '../src/surgery/progress';
 import { botPlanAlpha, isAlphaEntity } from './botAlpha';
 
 export const DT = 1 / 60;
@@ -26,6 +27,10 @@ export interface Frame {
   tool: ToolId;
   pos: Vec;
   down: boolean;
+  /** Mouse-wheel notches this frame (rotating what the tongs hold). */
+  wheel?: number;
+  /** Tincture colour to load before this frame. */
+  tincture?: TinctureColor;
 }
 
 export type Action = Generator<Frame, void, void>;
@@ -432,8 +437,10 @@ export class BotDriver {
     if (f && !f.done) {
       const fr = f.value;
       op.setTool(fr.tool);
+      if (fr.tincture) for (let i = 0; i < 4 && op.tinctureColor !== fr.tincture; i++) op.cycleTincture();
       const ptr: Pointer = { pos: fr.pos, prev: this.prev, down: fr.down, pressed: fr.down && !this.wasDown, released: !fr.down && this.wasDown };
       op.handlePointer(ptr, DT);
+      if (fr.wheel) op.wheel(fr.wheel);
       this.wasDown = fr.down;
       this.prev = fr.pos;
     }

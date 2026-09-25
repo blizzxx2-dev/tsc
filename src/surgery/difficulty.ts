@@ -46,6 +46,8 @@ export interface Assists {
   simpleGestures: boolean;
   /** Game speed 0.7–1 (1 = off). */
   gameSpeed: number;
+  /** Rhythm mechanics (amputation saw, heartbeat windows) get windows twice as wide. */
+  noRhythm: boolean;
 }
 
 export const NO_ASSISTS: Assists = {
@@ -58,6 +60,7 @@ export const NO_ASSISTS: Assists = {
   holdToggle: false,
   simpleGestures: false,
   gameSpeed: 1,
+  noRhythm: false,
 };
 
 export const AUTO_LENS_AFTER = 4;
@@ -73,6 +76,7 @@ export function assistFlags(a: Assists): string[] {
   if (a.noFail) out.push('no-fail');
   if (a.gameSpeed < 1) out.push(`speed ${Math.round(a.gameSpeed * 100)}%`);
   if (a.simpleGestures) out.push('simple gestures');
+  if (a.noRhythm) out.push('no rhythm');
   return out;
 }
 

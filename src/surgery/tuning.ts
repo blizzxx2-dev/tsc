@@ -243,6 +243,7 @@ export const DEFAULT_TUNING = {
     moteSpeed: 38,
     moteHurt: 10,
     moteHit: 16,
+    antivenomSlow: 0.5,
   },
   grub: {
     drain: 0.35,
