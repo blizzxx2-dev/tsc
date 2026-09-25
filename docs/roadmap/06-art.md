@@ -529,9 +529,9 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [ ] ART-0327 · Release · P1 · S · Seasonal/sale capsule overlays (template) for the Steam sale calendar
 
 ### Marketing & social
-- [ ] ART-0328 · Demo · P1 · M · Social media kit: avatar, X/Bluesky banner (1500×500), YouTube banner, a Discord server icon and banner
+- [x] ART-0328 · Demo · P1 · M · Social media kit: avatar, X/Bluesky banner (1500×500), YouTube banner, a Discord server icon and banner
 - [ ] ART-0329 · Demo · P1 · S · Press kit art folder: logo pack, key art, 10 screenshots and character renders on transparent backgrounds
-- [ ] ART-0330 · Demo · P2 · M · 6 "Wound Man" woodcut promo illustrations (one per demo ailment family) for social posts
+- [x] ART-0330 · Demo · P2 · M · 6 "Wound Man" woodcut promo illustrations (one per demo ailment family) for social posts
 - [ ] ART-0331 · Beta · P2 · M · Physical/merch-ready art: a print-resolution (300 dpi, CMYK proof) key art and an A2 poster layout
 
 ---
@@ -544,7 +544,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [x] ART-0334 · Demo · P1 · S · Trailer capture scene list: debug seeds and states needed to reproduce each shot deterministically (with ENG's replay tool)
 - [x] ART-0335 · Demo · P1 · S · Trailer title cards and end slate (logo, "Free Demo on Steam", platforms, rating placeholder) in the woodcut style
 - [x] ART-0336 · Demo · P1 · S · Steam store autoplay cut (30 s) storyboard, readable with sound off (burned-in woodcut captions)
-- [ ] ART-0337 · Demo · P2 · S · Next Fest livestream overlay art: a frame, lower-thirds and a "Wishlist" bug
+- [x] ART-0337 · Demo · P2 · S · Next Fest livestream overlay art: a frame, lower-thirds and a "Wishlist" bug
 
 ### Launch & post-launch trailers
 - [x] ART-0338 · Beta · P1 · M · Launch trailer (90 s) storyboard including Chapters 3–5 Hours (Prime through Compline, with no final-form spoilers)
