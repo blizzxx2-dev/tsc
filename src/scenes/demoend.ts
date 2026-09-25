@@ -13,7 +13,7 @@ import { settings } from '../core/settings';
 import { kilnRowsPlate } from '../art/plates';
 import { reticle } from '../ui/widgets';
 import { MOTION, tween } from '../ui/motion';
-import { fitText } from '../ui/text';
+import { fitBlock } from '../ui/text';
 import { uiEvents } from '../ui/events';
 import { drawBackdrop } from './backdrop';
 import { save } from './flow';
@@ -95,7 +95,7 @@ export class DemoEndScene implements Scene {
       const col = i % cols;
       const row = Math.floor(i / cols);
       const x = x0 + col * pitch;
-      const y = pr.y + 116 + row * 104;
+      const y = pr.y + 112 + row * 108;
       const best = save.best[op.id];
       const reveal = Math.min(1, Math.max(0, (this.t - 0.5 - i * 0.08) * 3)) * k;
       caps(g, t('ui.theatre.entry', { chapter, index: (i % cols) + 1 }), x, y - 36, 12, hex(INK.dim, reveal), 'center');
@@ -104,7 +104,7 @@ export class DemoEndScene implements Scene {
         well(g, { x: x - 26, y: y - 26, w: 52, h: 52 }, 0.7 * reveal);
         g.arc(x, y, 22, 1, hex(INK.gilt, 0.35 * reveal));
       }
-      fitText(g, `demoend.${op.id}`, op.title, x, y + 48, pitch - 14, { size: 16, color: hex(INK.text, 0.9 * reveal), align: 'center', shadow: false });
+      fitBlock(g, `demoend.${op.id}`, op.title, x, y + 46, pitch - 10, 2, { size: 16, color: hex(INK.text, 0.9 * reveal), align: 'center', shadow: false }, 1.15);
     });
     // Totals as a ledger row along the bottom of the plate.
     const s = statsOf();
