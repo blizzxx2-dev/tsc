@@ -41,8 +41,8 @@ Cross-refs: ENG (texture loading, atlases, shader inputs), UX (layouts and widge
 - [ ] ART-0015 · M0 · P1 · M · Costume guide: Landsknecht slashed doublets, mercy-order habits, Pyre inquisitors, Watch halberdiers, guild surgeons, the Hollow Choir — 1 turnaround sheet per faction
 - [ ] ART-0016 · M0 · P1 · M · Material library sheet: brass, pewter, tallow, waxed linen, gut thread, leech skin, vellum, stained glass — painted swatch + lighting notes each
 - [x] ART-0017 · M0 · P1 · S · Gore-tone rule sheet: what is shown (open tissue, pus, grubs) versus implied (faces in agony, children's wounds), aligned with the PEGI 16 / ESRB M target
-- [ ] ART-0018 · Demo · P1 · S · Kessendorf heraldry and signage set (city arms, 6 guild marks, hospice of Saint Ildra seal) designed from scratch, IP-checked
-- [ ] ART-0019 · Demo · P2 · S · Faith iconography for Saint Ildra and the Merciful Order (sun-in-palm, dove-and-lancet), with glyph variants for UI use
+- [x] ART-0018 · Demo · P1 · S · Kessendorf heraldry and signage set (city arms, 6 guild marks, hospice of Saint Ildra seal) designed from scratch, IP-checked
+- [x] ART-0019 · Demo · P2 · S · Faith iconography for Saint Ildra and the Merciful Order (sun-in-palm, dove-and-lancet), with glyph variants for UI use
 - [x] ART-0020 · Alpha · P2 · M · Art bible v2 covering Chapters 3–5 regions, factions and the six remaining Malison Hours
 
 ### Style frames

@@ -7,6 +7,7 @@ import { PortraitLabScene } from './portraitLab';
 import { WoundLabScene } from './woundLab';
 import { VfxLabScene } from './vfxlab';
 import { CardsScene } from './marketingCards';
+import { HeraldryScene } from './heraldryLab';
 
 export function artDevScene(name: string | null): Scene | null {
   if (name === 'artview') return new ArtViewScene();
@@ -16,5 +17,6 @@ export function artDevScene(name: string | null): Scene | null {
   if (name === 'woundlab') return new WoundLabScene();
   if (name === 'vfxlab') return new VfxLabScene();
   if (name === 'cards') return new CardsScene();
+  if (name === 'heraldry') return new HeraldryScene();
   return null;
 }
