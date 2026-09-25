@@ -4,6 +4,8 @@
  * resumes where it stands); replays never move the save backwards because `advance` is monotonic.
  * The demo edition shows Chapters III–V as locked parchment "In the full game" cards.
  */
+import { recapStory } from '../content/recaps';
+import { StoryScene } from './story';
 import type { Game, Scene } from '../core/scene';
 import { t } from '../i18n';
 import { hex } from '../render/color';
@@ -68,8 +70,11 @@ export class ChapterSelectScene implements Scene {
   /** The current chapter resumes at its saved step; earlier chapters replay from their first step. */
   private open(game: Game, ci: number): void {
     const p = save.progress;
-    if (ci === p.chapter && !campaignComplete()) playStep(game, ci, p.step);
-    else playStep(game, ci, 0);
+    const step = ci === p.chapter && !campaignComplete() ? p.step : 0;
+    // A "previously" card first (NAR-0161), for any chapter with something before it.
+    const recap = recapStory(CAMPAIGN[ci].id, CAMPAIGN[ci].numeral);
+    if (recap) game.go(new StoryScene(recap, () => playStep(game, ci, step)));
+    else playStep(game, ci, step);
   }
 
   update(dt: number, game: Game): void {

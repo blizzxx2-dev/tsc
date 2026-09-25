@@ -249,7 +249,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] NAR-0158 · Alpha · P0 · M · Ending matrix — table mapping (strohTrust, Whisper band, hornchildCertificate, mauerFate, hallerFate) → ending; every combination reachable and covered by test
 - [ ] NAR-0159 · Beta · P1 · S · Epilogue cards — 12 characters × survives/dies/absent variants, woodcut caption style, ≤ 50 words each
 - [ ] NAR-0160 · Beta · P1 · S · Post-credits sting — the Unsung Hour hymn fragment unlocking challenge mode's secret op
-- [ ] NAR-0161 · Beta · P2 · S · Chapter-select recap text — 3-sentence "previously" for each chapter shown when starting from chapter select
+- [x] NAR-0161 · Beta · P2 · S · Chapter-select recap text — 3-sentence "previously" for each chapter shown when starting from chapter select
 
 ## NAR · Epic 9 — Full-game barks, codex and case notes
 
