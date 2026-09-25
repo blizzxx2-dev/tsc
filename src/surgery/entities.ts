@@ -484,7 +484,30 @@ export class BloodPool extends Entity {
   draw(g: Gfx): void {
     // Liquids render through the fluid layer (drawFluid); bone dust is a pale powder.
     if (this.ichor === 'bonedust') g.circleGrad(this.pos.x, this.pos.y, this.r * 1.3, hex('#e8e0d0', 0.7), hex('#e8e0d0', 0));
+    // Colour-blind safe (GAM-0236): pus is marked by bubbles, not only by its yellow.
+    if (this.ichor === 'pus') for (const b of pusBubbles(this.r)) g.arc(this.pos.x + b.x, this.pos.y + b.y, b.r, 1.5, hex('#fff8d8', 0.7));
   }
+}
+
+/**
+ * The shape marks that tell the look-alike ailments apart without colour (GAM-0236): venom is
+ * branching veins with twin punctures, hexstone a hexagon ring, rot speckled blotches, pus bubbles.
+ */
+export const AILMENT_MARKS = { venom: 'veins', hexstone: 'hexagon', rot: 'speckle', pus: 'bubbles' } as const;
+
+/** A closed hexagon around a point. */
+export function hexagon(c: Vec, r: number, turn = 0): Vec[] {
+  return Array.from({ length: 7 }, (_, i) => ({ x: c.x + Math.cos(turn + (i * Math.PI) / 3) * r, y: c.y + Math.sin(turn + (i * Math.PI) / 3) * r }));
+}
+
+/** Fixed bubble spots inside a pus pool of radius r (a pattern, not noise: the same every frame). */
+export function pusBubbles(r: number): { x: number; y: number; r: number }[] {
+  const n = Math.max(3, Math.min(9, Math.round(r / 5)));
+  return Array.from({ length: n }, (_, i) => {
+    const a = i * 2.39996;
+    const d = r * 0.62 * Math.sqrt((i + 0.5) / n);
+    return { x: Math.cos(a) * d, y: Math.sin(a) * d, r: 2.5 + (i % 3) };
+  });
 }
 
 /** Find (or open) the pool a wound bleeds into. */
@@ -971,6 +994,8 @@ export class Embedded extends Entity {
           c,
         );
         if (warp && !this.calmed && this.calmT > 0) g.arc(this.origin.x, this.origin.y, 24, 3, hex('#ff9040'), this.calmT / 0.5);
+        // Colour-blind safe (GAM-0236): hexstone wears a hexagon ring, so it never reads as a plain shard by hue alone.
+        if (warp) g.polyline(hexagon(this.origin, 17, op.elapsed * 0.6), 2, hex('#f8e0b0', 0.8));
         break;
       }
     }

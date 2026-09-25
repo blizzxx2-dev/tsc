@@ -363,7 +363,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 
 - [x] GAM-0234 · Demo · P0 · S · Hold-to-toggle option — tools needing a held button (Leech, Brand, Tincture, Lens) can be click-to-start/click-to-stop
 - [x] GAM-0235 · Demo · P0 · S · Every audio tell has a visual twin (e.g. Hymn ring, shroud opening) — checklist test lists cue ids with both channels
-- [ ] GAM-0236 · Demo · P1 · S · Colour-blind safe ailments — venom, hexstone, rot, pus distinguished by shape/pattern not hue alone; verified under deuteranopia/protanopia/tritanopia filters
+- [x] GAM-0236 · Demo · P1 · S · Colour-blind safe ailments — venom, hexstone, rot, pus distinguished by shape/pattern not hue alone; verified under deuteranopia/protanopia/tritanopia filters
 - [x] GAM-0237 · Demo · P1 · S · Game-speed slider 70–100 % — (flags results, disables leaderboard)
 - [x] GAM-0238 · Demo · P1 · S · Gesture simplification — zig-zag stitches can be replaced by click-per-stitch; encircle can be replaced by tap-and-hold 1 s; star can be a hold key
 - [x] GAM-0239 · Demo · P1 · S · Screen shake and flash intensity sliders honoured by all boss effects — (Matins open flash, Lauds dawn flare)
