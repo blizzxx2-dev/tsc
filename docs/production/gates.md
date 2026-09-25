@@ -67,6 +67,6 @@ scheduled ([release/launch-checklist.md](release/launch-checklist.md)); **RC bui
 ## Gold master
 
 **Date:** 8 October 2027 · **Criteria (OPS-0023):** build locked; day-one patch contents frozen
-([release/day-one-patch.md](release/day-one-patch.md)); rollback build identified (previous RC on the
+([release/launch-checklist.md#day-one-patch-plan-ops-0137](release/launch-checklist.md#day-one-patch-plan-ops-0137)); rollback build identified (previous RC on the
 `rollback` branch); launch rota staffed for launch day +7; **signed by the Owner and the QA lead** in
 this file.

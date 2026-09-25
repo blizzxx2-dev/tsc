@@ -8,7 +8,7 @@ Decision D-0021 · Owner: Producer.
 | **Demo feature lock** (OPS-0017) | 11 Dec 2026 | content, polish and bug fixes merge; no new systems or options |
 | **Demo content lock** (OPS-0018) | 11 Dec 2026 (same day as the NAR demo script lock and the loc string freeze) | triage-approved bug fixes to Ch1–2 operation data and English strings |
 | Full-game script lock / UI string freeze (LOC-0098) | 30 Jul 2027 | triage-approved fixes |
-| Gold master | 8 Oct 2027 | day-one patch items already listed in [release/day-one-patch.md](release/day-one-patch.md) |
+| Gold master | 8 Oct 2027 | day-one patch items already listed in [release/launch-checklist.md#day-one-patch-plan-ops-0137](release/launch-checklist.md#day-one-patch-plan-ops-0137) |
 
 ## Exception procedure (after a lock)
 1. The requester opens an issue labelled `change-request` naming the addition, its size (S/M/L) and why it

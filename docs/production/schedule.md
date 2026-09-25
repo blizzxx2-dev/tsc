@@ -42,10 +42,10 @@ and the go/no-go gate instead.
 | 2026-10-09 | **M0 gate** — Chapter 1 playable from title; bot tests and smoke green | [gates.md](gates.md#m0) |
 | 2026-11-17 | **Announce** — store page public, trailer, Discord, press release | [marketing/announce-checklist.md](marketing/announce-checklist.md) |
 | 2026-12-11 | **Demo feature lock** (OPS-0017) and **content lock / NAR script lock / string freeze** (OPS-0018, LOC-0049) | [change-control.md](change-control.md) |
-| 2027-01-11 | Demo RC1 (English, all features) to the Steam `qa` branch | [definition-of-done.md](definition-of-done.md#demo) |
-| 2027-01-18 | **Demo go/no-go** (3 weeks before press preview, OPS-0019) | [gates.md](gates.md#demo-go-no-go) |
+| 2027-01-11 | Demo RC1 (English, all features) to the Steam `qa` branch | [definition-of-done.md](definition-of-done.md#demo-ops-0016) |
+| 2027-01-18 | **Demo go/no-go** (3 weeks before press preview, OPS-0019) | [gates.md](gates.md#demo-gono-go) |
 | 2027-01-25 | Demo build submitted for Valve review (T-4) | PLT checklist |
-| 2027-02-01 | Per-language sign-offs (LOC-0054) | [docs/loc/process.md](../loc/process.md#sign-off) |
+| 2027-02-01 | Per-language sign-offs (LOC-0054) | [docs/loc/process.md](../loc/process.md#per-language-demo-sign-off-loc-0054) |
 | 2027-02-05 | **Final demo build** (Demo gate in `gates.json`) | |
 | 2027-02-08 | Press & creator preview (T-2) | [nextfest/plan.md](nextfest/plan.md) |
 | 2027-02-15 | Demo public | D-0009 |

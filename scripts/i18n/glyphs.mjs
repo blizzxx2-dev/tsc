@@ -92,9 +92,12 @@ for (const loc of LOCALES) {
   if (report.length && hard) failed++;
   console.log(`${loc.code.padEnd(9)} ${report.length ? (hard ? 'FAIL' : 'warn') : 'ok  '} ${[...new Set([...byRole.body, ...byRole.italic, ...byRole.display])].length} code points${loc.shipped ? '' : ' (not shipped)'}`);
   report.forEach((r) => console.log(r));
-  if (emitDir) {
+  if (emitDir && !loc.pseudo) {
     mkdirSync(emitDir, { recursive: true });
     const all = new Set([...byRole.body, ...byRole.italic, ...byRole.display]);
+    // Number-format spaces are baked for every locale (LOC-0009), even where Intl does not emit them today.
+    all.add(0x00a0);
+    all.add(0x202f);
     if (loc.script === 'hangul') for (const ch of ksx1001()) all.add(ch.codePointAt(0));
     writeFileSync(join(emitDir, `${loc.code}.txt`), String.fromCodePoint(...[...all].sort((a, b) => a - b)) + '\n');
   }

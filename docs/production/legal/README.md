@@ -54,7 +54,7 @@ count as modification under the OFL; keep the original names only if counsel con
 the subset families**) and npm licences (MIT/ISC/Apache notices). Gaps are filed to PLT before the demo RC.
 
 ## Website consent (OPS-0070)
-The website ([../marketing/website.md](../marketing/website.md)) uses no analytics or tracking cookies
+The website ([../marketing/channels.md#website-ops-0094](../marketing/channels.md#website-ops-0094)) uses no analytics or tracking cookies
 without consent: cookieless, first-party page-view counting only; the Steam wishlist widget is loaded
 only after a click (it sets Valve cookies); the newsletter form links the privacy notice and uses
 double opt-in.
