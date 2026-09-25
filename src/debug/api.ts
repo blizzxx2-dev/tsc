@@ -118,6 +118,8 @@ export class DebugApi {
   readonly version = DEBUG_API_VERSION;
   private frozen = false;
   private stepping = false;
+  /** God mode (ENG-0234): vitals held at maximum. */
+  god = false;
   /** Story/test flags outside an operation (the game has no persistent story flags yet). */
   readonly flags = new Map<string, string>();
   readonly presets = PRESET_NAMES;
@@ -172,7 +174,11 @@ export class DebugApi {
     const update = scene.update.bind(scene);
     scene.update = (dt, game) => {
       if (this.frozen && !this.stepping) return;
+      // God mode (ENG-0234): vitals are topped up around every tick so the patient cannot die.
+      const op = this.god && scene instanceof OperationScene ? scene.op : null;
+      if (op) op.vitals = MAX_VITALS;
       update(dt, game);
+      if (op) op.vitals = MAX_VITALS;
     };
     // Frozen means frozen: the canvas keeps its last frame, so a slow software renderer (CI) is not
     // kept busy drawing an unchanging scene while automation steps the game frame by frame.
@@ -408,6 +414,48 @@ export class DebugApi {
     if (op.status === 'intro') this.skipPhase();
     op.lose(reason);
     return this.state();
+  }
+
+  /** Advance to phase `n` (1-based) by clearing the phases before it (ENG-0234). */
+  phase(n: number): DebugState {
+    const op = this.requireOp();
+    const target = Math.max(0, Math.floor(n) - 1);
+    if (target < op.phase) throw new Error(`already past phase ${n} (at ${op.phase + 1}); restart with "seed" or "op"`);
+    for (let i = 0; i < 50 && (op.status === 'intro' || (op.status === 'running' && op.phase < target)); i++) this.skipPhase();
+    return this.state();
+  }
+
+  /** Toggle (or set) god mode; returns the new state. */
+  setGod(on = !this.god): boolean {
+    this.god = on;
+    return on;
+  }
+
+  /** Dev time scale (ENG-0234/0236), via the main loop's DevTime; returns the applied scale. */
+  timescale(x?: number): number {
+    const dt = (this.game as { devTime?: { scale: number; setScale(x: number): number } }).devTime;
+    if (!dt) throw new Error('time controls are not available in this build');
+    return x === undefined ? dt.scale : dt.setScale(x);
+  }
+
+  /** Restart the running operation with RNG seed `seed` (ENG-0234). */
+  reseed(seed: number): DebugState {
+    const op = this.requireOp();
+    const back = () => this.game.go(new TitleScene());
+    const run = () => this.game.go(new OperationScene(op.def, back, back, { seed: Math.floor(seed) }));
+    const g = this.game as DebugGame & { instant?: (fn: () => void) => void };
+    if (g.instant) g.instant(run);
+    else run();
+    return this.state();
+  }
+
+  /** Simulate a WebGL context loss, restoring after `ms` (ENG-0234, exercises ENG-0199/0200). */
+  loseContext(ms = 1000): boolean {
+    const ext = this.game.gfx.gl.getExtension('WEBGL_lose_context');
+    if (!ext) return false;
+    ext.loseContext();
+    setTimeout(() => ext.restoreContext(), ms);
+    return true;
   }
 
   setVitals(v: number): DebugState {

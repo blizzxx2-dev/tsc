@@ -25,6 +25,7 @@ import { SceneAudio } from './audio/scenes';
 import { bindUiAudio } from './audio/ui-hooks';
 import { Input } from './core/input';
 import { FIXED_DT, FixedStep, FrameLimiter, RefreshEstimator, stepEndTimes } from './core/loop';
+import { DevTime } from './core/devTime';
 import { SceneStack, sceneName, type Game, type Scene } from './core/scene';
 import { lampsVeil, splashDone, splashProgress } from './core/splash';
 import { Gfx } from './render/gfx';
@@ -61,6 +62,7 @@ import { bindUiSounds } from './ui/events';
 const DEV_TOOLS = import.meta.env.DEV || import.meta.env.MODE !== 'release';
 import { platform } from './platform';
 import { installPlatform, platformFrame, sceneChanged } from './platform/session';
+import { buildStamp } from './platform/build';
 import { installTelemetry } from './telemetry';
 import { installQaHooks } from './debug/hooks';
 import { artDevScene } from './art/devScenes';
@@ -76,6 +78,8 @@ class Main implements Game {
   readonly profiler = new Profiler();
   readonly boundary: ErrorBoundary;
   private fixed = new FixedStep();
+  /** Dev time controls (ENG-0236): F7 speed, F9 pause, F10 single tick; inert in release builds. */
+  readonly devTime = new DevTime();
   private refresh = new RefreshEstimator();
   private limiter = new FrameLimiter();
   private last = performance.now();
@@ -116,6 +120,7 @@ class Main implements Game {
       }
       if (DEV_TOOLS && e.code === 'F4') this.dumpFrameCsv();
       if (DEV_TOOLS && e.code === 'F6') this.sceneAudio.debug = !this.sceneAudio.debug;
+      if (DEV_TOOLS && this.devTime.onKey(e.code, { ctrl: e.ctrlKey, shift: e.shiftKey })) e.preventDefault();
     });
     // Hidden/minimised window: stop ticking and silence audio; resume with no dt spike (ENG-0059).
     document.addEventListener('visibilitychange', () => {
@@ -249,7 +254,7 @@ class Main implements Game {
   private tick(now: number, dt: number): void {
     const p = this.profiler;
     const t0 = performance.now();
-    const steps = this.fixed.advance(dt);
+    const steps = this.fixed.advance(this.devTime.frameTime(dt)) + this.devTime.takeSteps();
     const ends = stepEndTimes(now, steps, FIXED_DT, this.fixed.pending);
     this.clock.frame(Math.min(dt, 0.25));
     this.gfx.time = this.clock.real;
@@ -285,6 +290,7 @@ class Main implements Game {
     p.end('render');
     this.gfx.setCamera(null);
     this.transition.draw(this.gfx);
+    if (DEV_TOOLS) this.drawDevStamp();
     this.profiler.draw(this.gfx, this.gfx.stats, this.gfx.registry, this.gfx.plan.gpuProfiler ? this.gfx.gpuTimer : null);
     this.gfx.endFrame();
     this.gfx.gpuTimer.collect();
@@ -292,6 +298,18 @@ class Main implements Game {
     this.gfx.resetStats();
     p.frame(performance.now() - t0 + 0);
     if (clock.frames % 300 === 0) this.checkBudgets();
+  }
+
+  /** Dev/QA corner stamp (ENG-0240) and the dev time-control state (ENG-0236). */
+  private stampText = '';
+  private drawDevStamp(): void {
+    const g = this.gfx;
+    const tier = settings.gpuTier === 'auto' ? (loadDetectedTier()?.tier ?? 'auto') : settings.gpuTier;
+    if (!this.stampText || this.clock.frames % 120 === 0) this.stampText = buildStamp(tier, g.caps.renderer);
+    const vr = g.viewRect();
+    g.text(this.stampText, vr.x + 10, vr.y + vr.h - 10, { size: 16, color: 0x8cffffff, shadow: 0xb0000000 });
+    const dt = this.devTime.label();
+    if (dt) g.text(dt, vr.x + vr.w - 12, vr.y + 28, { size: 20, color: 0xff60d0ff, align: 'right', shadow: 0xc0000000 });
   }
 
   /** VRAM/heap budgets (ENG-0227): log once with the top consumers when exceeded. */

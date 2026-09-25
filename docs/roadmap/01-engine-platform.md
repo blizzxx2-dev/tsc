@@ -335,13 +335,13 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0231 · Demo · P1 · M · Shader hot reload — saving a `.glsl` file recompiles affected programs at runtime; a failed compile keeps the previous program and shows the error on an overlay
 - [ ] ENG-0232 · Demo · P1 · M · Debug overlays (dev builds) — entity hit shapes and ids, `FIELD`/opening outline, pointer path samples, camera bounds, layer draw counts
 - [ ] ENG-0233 · Demo · P1 · S · Render-target viewer — thumbnails of scene, bloom mips, cut mask, blood/corruption decal maps, LUT, with click-to-enlarge
-- [ ] ENG-0234 · Demo · P1 · M · Dev console (backtick) — `op <id>`, `phase <n>`, `vitals <n>`, `litany`, `win`, `lose`, `timescale <x>`, `seed <n>`, `god`, `tier <low|med|high>`, `lose-context`
+- [x] ENG-0234 · Demo · P1 · M · Dev console (backtick) — `op <id>`, `phase <n>`, `vitals <n>`, `litany`, `win`, `lose`, `timescale <x>`, `seed <n>`, `god`, `tier <low|med|high>`, `lose-context`
 - [ ] ENG-0235 · Demo · P2 · M · Tweakables panel — shader/post/particle uniforms editable live, save-to-JSON writes back into content/preset files in dev
-- [ ] ENG-0236 · Demo · P1 · S · Time controls in dev — pause, single-step one fixed tick, 0.25× slow-mo, 4× fast-forward
+- [x] ENG-0236 · Demo · P1 · S · Time controls in dev — pause, single-step one fixed tick, 0.25× slow-mo, 4× fast-forward
 - [x] ENG-0237 · Demo · P0 · S · Dev-only code behind `import.meta.env.DEV` and stripped from release bundles — CI greps the release bundle for dev console strings and `window.__game`
 - [ ] ENG-0238 · Demo · P0 · M · Visual regression harness — Playwright + SwiftShader renders fixed-seed scenes (title, story, each Ch1–2 operation at set ticks) and pixel-diffs against goldens with per-test tolerance; runs on every PR
 - [x] ENG-0239 · Demo · P1 · S · Screenshot capture (F12) of the backbuffer (`preserveDrawingBuffer`-free via readPixels after the final pass) saved as PNG — hook reused by Steam screenshots
-- [ ] ENG-0240 · Demo · P2 · S · Build stamp — version, git sha, tier and renderer shown in dev/QA builds and in the release pause menu
+- [x] ENG-0240 · Demo · P2 · S · Build stamp — version, git sha, tier and renderer shown in dev/QA builds and in the release pause menu
 
 ## ENG-N · Entity model evolution & sim/render separation (Demo)
 
