@@ -8,6 +8,7 @@ import type { Operation, OperationDef } from '../surgery/operation';
 import { at, closeIncision } from './chapter1';
 import type { Chapter } from './campaign';
 import { choose, n, onlyIf, say, type StoryDef } from './story';
+import { whisperThought } from './whisper';
 
 const ALL = ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture', 'brand', 'lens'] as const;
 
@@ -26,6 +27,8 @@ export const STORY_3_1: StoryDef = {
     ...onlyIf({ flag: 'cantorMercy' }, say('stroh', 'Your cantor, by the way. Three days asleep on your poppy, then dead of it, having told us a hymn. I keep a ledger of mercies.')),
     ...onlyIf({ flag: 'cantorMercy', is: false }, say('stroh', 'Your cantor talked, by the way. Four nights of it, awake the whole while, as you promised. I keep a ledger of such things.')),
     ...onlyIf((f) => Number(f.get('litanySeenCount') ?? 0) >= 2, say('stroh', 'And twice now I have stood in a room with you while every candle in it forgot to flicker. That is in the ledger too.')),
+    // What the city has seen of the star so far (NAR-0093).
+    ...whisperThought(0),
     say('kreuzer', 'I have patients, Inquisitor.'),
     say('stroh', 'You have one more. The council has renewed the Inspection Decree. Every child with a mark is to be examined.'),
     n('A woman in a founder’s apron pushes a small girl forward. Two nubs of horn rise through the child’s fair hair.'),

@@ -1,3 +1,4 @@
+import { whisperThought } from './whisper';
 import { Embedded, Incision, Laceration, Rot } from '../surgery/entities';
 import { TinctureSite, Vessel } from '../surgery/ailments/kilnrows';
 import { Bud, Cyst, HexBall, Infant, VocalFold } from '../surgery/ailments/hollownight';
@@ -32,6 +33,8 @@ export const STORY_5_1: StoryDef = {
     say('patient', 'The warrant says now.', 'A council bailiff'),
     say('ilse', 'Then the warrant can wait on the step. Doctor — go. I will close him.'),
     n('They take Kreuzer out through the ward. Behind him he hears Ilse counting stitches under her breath, steady as a bell.'),
+    // On the way to the cells, what the city will say it saw (NAR-0093).
+    ...whisperThought(2),
   ],
 };
 

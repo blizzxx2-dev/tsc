@@ -147,7 +147,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] NAR-0090 · Alpha · P0 · M · Kreuzer arc doc — from sworn craftsman hiding the Litany to open defiance at trial; 5 chapter-by-chapter turning points with the scene id carrying each
 - [x] NAR-0091 · Alpha · P1 · S · Backstory reveal — why he left Weissburg (a patient he lost to a guild rule); revealed in Ch3 to Haller during licence vote
 - [ ] NAR-0092 · Alpha · P1 · S · Litany origin — Kreuzer learns in Ch4 that the Litany is itself a sung office fragment, linking his gift to the Choir; codex "The Litany, Reconsidered"
-- [ ] NAR-0093 · Alpha · P1 · S · Whisper-meter narrative states — 4 bands (Unremarked, Noted, Suspected, Accused) each with 3 unique Kreuzer interior lines
+- [x] NAR-0093 · Alpha · P1 · S · Whisper-meter narrative states — 4 bands (Unremarked, Noted, Suspected, Accused) each with 3 unique Kreuzer interior lines
 - [ ] NAR-0094 · Beta · P2 · S · Kreuzer journal epilogue — one page per ending written in his voice
 
 ### Sister Ilse
@@ -181,7 +181,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] NAR-0112 · Alpha · P2 · S · Hollow Choir hierarchy — Precentor, cantors, lay-cantors, acolytes; the hospice patron (Widow Aldegund Reiss) as secret acolyte; bible entry
 
 ### Supporting cast
-- [ ] NAR-0113 · Alpha · P1 · S · Add cast entries to `characters.ts` — precentor, orsa, reiss, tallert, motherSuperior, burgomaster with colors and silhouettes
+- [x] NAR-0113 · Alpha · P1 · S · Add cast entries to `characters.ts` — precentor, orsa, reiss, tallert, motherSuperior, burgomaster with colors and silhouettes
 - [ ] NAR-0114 · Alpha · P2 · S · Returning-patient cameos — Jost, Pieter, Anno, Emmerich, Tomas each reappear once in Ch3–5 with a line reflecting their demo op rank
 
 ## NAR · Epic 6 — Chapter III "Prime and Terce" (Kilnrows and quarantine)

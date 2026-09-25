@@ -1,3 +1,4 @@
+import { whisperThought } from './whisper';
 import { teach } from './teach';
 import { BloodPool, Embedded, Grub, Incision, Laceration, Rot } from '../surgery/entities';
 import { TinctureSite } from '../surgery/ailments/kilnrows';
@@ -23,6 +24,8 @@ export const STORY_4_1: StoryDef = {
     n('Kessendorf hires its wars. Three companies march east to the Vennmark marches: pikes, crossbows, and men nobody asks about.'),
     say('mauer', 'Forty-one of mine. Forty-one. Sixty crossbowmen from Ostrau. Nine deserters we’ve caught and four we haven’t. Forty-one.'),
     say('ilse', 'He counts them every morning. He counted them twice while you were asleep.'),
+    // Four days out, Kreuzer takes stock of what the city saw before he left (NAR-0093).
+    ...whisperThought(1),
     say('mauer', 'Someone has to. Doctor, your field kit is in the second wagon. Rain gets in the tent. Mud gets in everything.'),
     n('The men nobody asks about sit apart. One is an orc, grey as slate, holding his own neck shut with two fingers.'),
     say('patient', 'Ushkar. Crossbow. Took one of our own quarrels at the butts. Pulled at it. It pulled back.', 'Ushkar'),
@@ -546,7 +549,7 @@ export const CHAPTER_4: Chapter = {
   title: 'Sext and None',
   // NAR-0131: reads Chapter III's outcomes; writes `thirstChoice` (s4-6). `mauerFate`, `charterRevealed`,
   // `deadManVerdict` and `strohTrust` are not authored yet — see docs/narrative/flags.md.
-  flags: { reads: ['hallerFate', 'hornchildCertificate'], writes: ['thirstChoice'] },
+  flags: { reads: ['hallerFate', 'hornchildCertificate', 'litanySeenCount'], writes: ['thirstChoice'] },
   steps: [
     { kind: 'story', story: STORY_4_1 },
     { kind: 'op', op: OP_4_1 },
