@@ -24,7 +24,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] INP-0007 · Demo · P0 · S · Focus-loss auto-pause — `blur`, `visibilitychange` and Steam overlay activation open the pause menu during an operation; `timeLeft` does not advance while unfocused (test: hidden 10 s, timer unchanged)
 - [x] INP-0008 · Demo · P1 · S · Wheel normalisation — replace `Math.sign(e.deltaY)` per event with delta accumulation (threshold 50 px or 1 line, 120 ms cooldown) so one mouse notch or one trackpad flick = one tool step (test: 30 trackpad events of 4 px → at most 2 steps)
 - [x] INP-0009 · Demo · P1 · S · Layout-aware key labels — bindings stay on `KeyboardEvent.code`, but on-screen labels come from `navigator.keyboard.getLayoutMap()` so AZERTY/QWERTZ players see their real key caps (fallback to US labels when the API is missing)
-- [ ] INP-0010 · Demo · P1 · S · Shipped-build key hygiene — in Electron release builds Ctrl+R, F5, Ctrl+W, Ctrl+Shift+I and Alt-menu focus are disabled; Alt+F4 / Cmd+Q quit via a confirm dialog when mid-operation
+- [x] INP-0010 · Demo · P1 · S · Shipped-build key hygiene — in Electron release builds Ctrl+R, F5, Ctrl+W, Ctrl+Shift+I and Alt-menu focus are disabled; Alt+F4 / Cmd+Q quit via a confirm dialog when mid-operation
 - [x] INP-0011 · Demo · P1 · S · Mouse button coverage — middle button and side buttons (X1/X2) are captured (`pointerdown` `button` 1/3/4) and exposed as bindable inputs; browser back/forward navigation on X1/X2 is suppressed
 - [ ] INP-0012 · Demo · P2 · S · Cursor confinement option — "Confine cursor to window" uses Pointer Lock with a virtual cursor so drags crossing the window edge in windowed mode never release (off by default; on by default in fullscreen on multi-monitor setups)
 
@@ -34,7 +34,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] INP-0015 · Demo · P1 · S · Frame-rate independence test — replay the same recorded stitch, incision and extraction strokes at 30/60/144/240 Hz through the headless harness; ratings, stitch counts and vitals match exactly
 - [x] INP-0016 · Demo · P1 · M · Input record/replay — `?record=1` serialises `InputFrame` streams to JSON with op id + seed; `?replay=<file>` re-drives the operation deterministically; used for regression tests and attached to bug reports
 - [x] INP-0017 · Demo · P1 · S · Teleport guard — pointer jumps > 200 px in one sample (focus regained, cursor warped, pen proximity re-entry) break the stroke instead of producing a giant segment, preventing accidental stitch crossings and incision jumps (unit test)
-- [ ] INP-0018 · Demo · P1 · S · Inter-phase grace — during the 0.8 s `phaseDelay` between phases and the 1.2 s intro, empty Lancet presses are ignored (no MISS, no 3-vital hurt) (unit test on `Operation.emptyPress`)
+- [x] INP-0018 · Demo · P1 · S · Inter-phase grace — during the 0.8 s `phaseDelay` between phases and the 1.2 s intro, empty Lancet presses are ignored (no MISS, no 3-vital hurt) (unit test on `Operation.emptyPress`)
 - [x] INP-0019 · Demo · P1 · S · Tool-key-before-click ordering — a tool hotkey pressed up to 100 ms before a click in the same or previous frame applies before the press is dispatched (test: `Digit2` then click on a shard grabs it with the Tongs)
 - [ ] INP-0020 · Demo · P1 · M · Latency overlay — dev overlay (F3) shows input-event→next-rAF and input-event→present latency p50/p95 over the last 300 events plus current frame time; target p95 ≤ 50 ms at 60 Hz in the Electron build
 - [ ] INP-0021 · Demo · P1 · M · Click-to-photon measurement — measure with a 240 fps camera on 3 reference PCs (low/mid/high) and a Steam Deck, windowed and fullscreen, VSync on/off; record results in `docs/qa/latency.md`; release gate ≤ 70 ms on mid PC, ≤ 90 ms on Deck
@@ -43,12 +43,12 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ### Gesture translation — trace (Lancet incisions)
 - [x] INP-0024 · M0 · P0 · M · Incision tracing — press at the head or last progress point (22 px / 30 px windows), follow the dashed guide; mean deviation < 6 px COOL, < 13 px GOOD, else BAD; > 34 px slip = BAD + 2 vitals (`Incision`)
-- [ ] INP-0025 · Demo · P1 · S · Trace tuning table — move incision constants (start radius 22, resume window 30, slip 34, COOL/GOOD 6/13) into `src/surgery/tuning.ts` with comments; entities read from it; no magic numbers left in `Incision`
+- [x] INP-0025 · Demo · P1 · S · Trace tuning table — move incision constants (start radius 22, resume window 30, slip 34, COOL/GOOD 6/13) into `src/surgery/tuning.ts` with comments; entities read from it; no magic numbers left in `Incision`
 - [ ] INP-0026 · Demo · P1 · M · Trace playtest calibration — log per-incision mean deviation from 10 mouse + 4 trackpad + 3 gamepad testers on op1-2 and Ch2 ops; set thresholds so ≥ 80 % of first attempts rate GOOD or better on mouse and ≥ 65 % on trackpad; record histogram in the tuning PR
 - [ ] INP-0027 · Demo · P1 · S · Backwards/late-start feedback — pressing on the guide but > 30 px from the progress point pulses the start node and shows the one-time hint "Begin at the glowing mark" instead of silently ignoring the press
 - [ ] INP-0028 · Demo · P2 · S · Trace smoothing — optional 1€ filter (tunable min-cutoff/beta) applied to pointer samples during Lancet traces only; default off for mouse, on for gamepad virtual cursor and touch (unit test: noisy line deviation reduced ≥ 40 %)
 - [ ] INP-0029 · Demo · P1 · S · Rating bands scale with Target Size — the COOL/GOOD mean-deviation bands (6/13 px) are multiplied by the assist factor (1.0/1.25/1.5×) so larger targets also forgive wobble (unit test at 1.5×)
-- [ ] INP-0030 · Demo · P1 · S · Lancet hint accuracy — `TOOL_INFO` promises "Encircle growths to excise them" but no Chapter 1–2 entity can be encircled; the demo hint describes tracing incisions, nicking barbs and lancing buboes/egg sacs until the encircle mechanic ships (test: each hint verb maps to an implemented interaction)
+- [x] INP-0030 · Demo · P1 · S · Lancet hint accuracy — `TOOL_INFO` promises "Encircle growths to excise them" but no Chapter 1–2 entity can be encircled; the demo hint describes tracing incisions, nicking barbs and lancing buboes/egg sacs until the encircle mechanic ships (test: each hint verb maps to an implemented interaction)
 
 ### Gesture translation — hold & brush (Leech-Pipe, Salve, Tincture, Brand, Lens)
 - [x] INP-0031 · M0 · P0 · S · Hold tools — Leech drains pools under the held cursor, Tincture hold 0.7 s injects (6 s cooldown), Brand sears while held, Lens reveals hidden entities on hover, Salve brushes `Coverage` cells
@@ -69,7 +69,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] INP-0042 · Demo · P1 · S · Grab snapping — Tongs snap to the nearest graspable within the grab radius (20 px × Target Size assist) and the hovered graspable gets an outline, so near-misses on thin arrow shafts don't fall through to flesh
 - [ ] INP-0043 · Demo · P1 · S · Pull-axis tolerance — while grabbed, a faint axis line shows the shaft direction; pulling within ±35° of the axis keeps COOL/GOOD timing rules, larger deviations cap the rating at GOOD (unit tests at 20° and 60°)
 - [ ] INP-0044 · Demo · P2 · S · Drag-lock option — "Grab: Hold / Click-to-toggle": click once to seize, move, click again to release; Tongs extraction thresholds unchanged (unit test for toggle extraction)
-- [ ] INP-0045 · Demo · P1 · S · Mid-grab interruptions — switching tool, drawing the Litany star, pausing or losing focus while an object is grabbed returns it to its origin without rating; covered by unit tests for each path
+- [x] INP-0045 · Demo · P1 · S · Mid-grab interruptions — switching tool, drawing the Litany star, pausing or losing focus while an object is grabbed returns it to its origin without rating; covered by unit tests for each path
 
 ### Tool switching
 - [x] INP-0046 · M0 · P0 · S · Tool selection — hotkeys 1–8 (`TOOL_INFO.code`), mouse wheel and Q/E cycle, clicking a tray slot; switching releases any capture (`Operation.setTool`)
@@ -98,7 +98,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 ### Precision, handedness & motor options
 - [x] INP-0066 · Demo · P1 · S · Global hit-scale — one `hitScale` from the Target Size assist multiplies every entity interaction radius (Incision 22/34, Tongs 20, Embedded nick 30, Leech r+10, Salve 24, lens 60/110); table-driven unit test per entity at 1.5×
 - [ ] INP-0067 · Demo · P2 · S · Precision modifier — while a bindable key (default `Ctrl`) is held in pointer-lock mode, cursor movement is scaled ×0.4 for fine tracing; indicator ring on the reticle while active
-- [ ] INP-0068 · Demo · P2 · S · Cursor speed — 0.5×–2.0× multiplier applies in pointer-lock and virtual-cursor modes (no effect in absolute OS-cursor mode, greyed with explanation)
+- [x] INP-0068 · Demo · P2 · S · Cursor speed — 0.5×–2.0× multiplier applies in pointer-lock and virtual-cursor modes (no effect in absolute OS-cursor mode, greyed with explanation)
 - [ ] INP-0069 · Demo · P1 · S · Left-handed mode (input) — swaps default primary/secondary mouse roles (tool on right button, star on left) independently of the OS setting; bindings screen reflects the swap; HUD mirroring handled in UIX
 - [ ] INP-0070 · Demo · P2 · S · One-handed mouse preset — operations fully playable without keyboard: wheel/radial for tools, right-drag star, pause via a clickable HUD button; verified by completing op1-1…op1-5 mouse-only
 
@@ -122,12 +122,12 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ### Virtual cursor & gamepad surgery
 - [x] INP-0083 · Demo · P0 · M · Virtual cursor — left stick moves the reticle with an acceleration curve (max 900 px/s, response exponent 2.0, 80 ms ramp), RT/R2 = primary press/hold, cursor clamped to the view; "Cursor speed" setting 0.5–2.0×
-- [ ] INP-0084 · Demo · P1 · S · Precision nudge — right stick moves the virtual cursor at 25 % speed for tracing and stitching fine work (bindable, off when the right stick is used for the radial)
+- [x] INP-0084 · Demo · P1 · S · Precision nudge — right stick moves the virtual cursor at 25 % speed for tracing and stitching fine work (bindable, off when the right stick is used for the radial)
 - [x] INP-0085 · Demo · P1 · M · Aim assist (gamepad only) — cursor speed ×0.5 within 30 px of an interactable valid for the current tool; with the Lancet the cursor gently snaps to the incision progress node on press; toggle "Aim assist" (default on for gamepad)
-- [ ] INP-0086 · Demo · P1 · S · Gamepad tool switching — LB/RB cycle tools (firing on release so the LB+RB Litany chord never cycles), hold Y/Triangle opens the radial menu selected with the right stick, D-pad left/right = quick-swap; all rebindable
+- [x] INP-0086 · Demo · P1 · S · Gamepad tool switching — LB/RB cycle tools (firing on release so the LB+RB Litany chord never cycles), hold Y/Triangle opens the radial menu selected with the right stick, D-pad left/right = quick-swap; all rebindable
 - [x] INP-0087 · Demo · P0 · M · Gamepad Litany — hold LT/L2 and trace the star with the virtual cursor (stick strokes use the gamepad threshold profile from the corpus), release LT to cast; chord fallback LB+RB held 0.6 s
 - [ ] INP-0088 · Demo · P1 · M · Gamepad gesture calibration — 5 testers complete every Ch1–2 operation on an Xbox pad; any mechanic with < 80 % first-try success gets a gamepad-specific tuning entry (radius, speed, assisted stitching default) in `tuning.ts`
-- [ ] INP-0089 · Demo · P1 · S · Virtual cursor in menus — in list/menus the stick drives focus navigation, not the cursor; in free-cursor screens (operation, codex art) the cursor appears; switching modes never strands focus
+- [x] INP-0089 · Demo · P1 · S · Virtual cursor in menus — in list/menus the stick drives focus navigation, not the cursor; in free-cursor screens (operation, codex art) the cursor appears; switching modes never strands focus
 
 ### Steam Input & Steam Deck
 - [ ] INP-0090 · Demo · P0 · M · Steam Input action manifest — `game_actions_X.vdf` with action sets Menu, Operation, Story; default configurations for Xbox, PlayStation, generic and Deck; uploaded via Steamworks and tested with the Steam Input configurator
@@ -163,11 +163,11 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] UIX-0011 · Demo · P1 · S · Text bounds — `textBlock` returns the laid-out height; single-line text ellipsises at its widget width; dev builds log widget id + string when text overflows (runs in the pseudo-loc and text-scale checks)
 
 ### Layout, resolution & scaling
-- [ ] UIX-0012 · Demo · P0 · M · 16:10 / Steam Deck layout — decide and implement 1280×800 handling (extend virtual height to 800 with anchored HUD vs themed letterbox bars); HUD anchors (top-left, top-centre, bottom-right…) respect the extra space; screenshots at 1280×800, 1920×1080, 2560×1440, 3440×1440 and 3840×2160 reviewed
+- [x] UIX-0012 · Demo · P0 · M · 16:10 / Steam Deck layout — decide and implement 1280×800 handling (extend virtual height to 800 with anchored HUD vs themed letterbox bars); HUD anchors (top-left, top-centre, bottom-right…) respect the extra space; screenshots at 1280×800, 1920×1080, 2560×1440, 3440×1440 and 3840×2160 reviewed
 - [ ] UIX-0013 · Demo · P1 · S · Ultrawide handling — 21:9 and 32:9 windows pillarbox the 16:9 play area with an illuminated-border backdrop instead of plain black; the reticle and HUD stay inside the play area
 - [ ] UIX-0014 · Demo · P1 · S · Safe-area margins — all HUD and menu elements sit inside a 4 % title-safe margin (debug overlay F3 draws the safe rect)
 - [ ] UIX-0015 · Demo · P1 · M · UI scale option — 80–150 % scales HUD, menus and VN text independently of the world; layout verified at both extremes on 1280×800 without overlap
-- [ ] UIX-0016 · Demo · P1 · S · Window modes — windowed/borderless/fullscreen and window size persisted; restore on next launch; DPR cap 2 retained with a "Render scale" option (50–100 %) for low-end GPUs
+- [x] UIX-0016 · Demo · P1 · S · Window modes — windowed/borderless/fullscreen and window size persisted; restore on next launch; DPR cap 2 retained with a "Render scale" option (50–100 %) for low-end GPUs
 
 ### Art direction & assets
 - [ ] UIX-0017 · Demo · P0 · M · UI style guide — one-page guide + reference board: parchment sheets for documents (chart, report, codex, options), dark oak + brass for in-operation HUD, woodcut hatching for icons, wax seals for primary actions, blackletter (UnifrakturMaguntia) only for titles ≥ 36 px, IM Fell English for body; semantic colour tokens (`ok`, `warn`, `danger`, `curse`, `litany`, `inkOnParchment`) added to `PALETTE`
@@ -176,7 +176,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] UIX-0020 · Demo · P1 · M · Tool cursor sprites — per-tool cursor art with the hotspot at the working tip (blade point, tong jaws, pipe mouth…) replacing the procedural `toolIcon` beside the reticle; reticle kept as optional overlay
 - [x] UIX-0021 · Demo · P1 · S · Wax-seal button — red wax seal with embossed glyph for primary actions ("Scrub In", "Continue", "Wishlist"); press squash 90 ms + crack sound hook; disabled state as cold grey wax
 - [ ] UIX-0022 · Demo · P1 · S · Illuminated chapter title cards — blackletter chapter numeral, drop-cap border, woodcut vignette for Chapter I and Chapter II
-- [ ] UIX-0023 · Demo · P1 · S · Glyph coverage audit — IM Fell English and UnifrakturMaguntia render every character used in Ch1–2 text and UI (`×`, `★`, `▼`, `—`, `’`, `…`, `é`, `ü`, `ß`); missing glyphs fall back to a matching serif; automated test scans content strings against atlas coverage
+- [x] UIX-0023 · Demo · P1 · S · Glyph coverage audit — IM Fell English and UnifrakturMaguntia render every character used in Ch1–2 text and UI (`×`, `★`, `▼`, `—`, `’`, `…`, `é`, `ü`, `ß`); missing glyphs fall back to a matching serif; automated test scans content strings against atlas coverage
 - [x] UIX-0024 · Demo · P0 · S · Minimum text size — raise every UI string to ≥ 16 px virtual (tray hint and story footer are 13 px, tray keys 14 px today); a test/grep over `g.text(` size literals fails below 16 in HUD/menu code
 - [x] UIX-0025 · Demo · P0 · S · Contrast audit — all text ≥ 4.5:1 against its background (WCAG AA); fix known weak pairs such as faded ink `#5a4228` on parchment `#c4ae80` and `inkDim` over flesh; results table in the PR
 - [x] UIX-0026 · Demo · P1 · S · Motion language — easing/duration table (hover 80 ms, panel open 220 ms easeOutQuad, stamp 180 ms easeOutBack, page turn 350 ms) implemented as shared tween helpers; all honour Reduced Motion
@@ -202,7 +202,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] UIX-0040 · Demo · P1 · S · Beating heart icon — scales on each beat beside vitals (synced to the ECG beat phase) and changes shape per state (steady/strained/failing) so state is readable without colour
 - [ ] UIX-0041 · Demo · P1 · M · ECG monitor v2 — sweep-style trace with an erase gap instead of array shifting; waveform variants per state (tachycardia under venom, irregular under curse/Malison, weak below 25) selected by the scene; flatline with ink bleed on loss
 - [ ] UIX-0042 · Demo · P1 · S · Critical vitals state (< 30) — top-bar vitals block pulses red, screen edges vignette (existing post-process `danger`) and Ilse's low-vitals bark; state ends with hysteresis at 35
-- [ ] UIX-0043 · Demo · P1 · S · Hourglass timer — sand level = timeLeft/timeLimit; sand frozen and gilded while the Litany holds; last 30 s the digits pulse and a tick event fires each second (AUD)
+- [x] UIX-0043 · Demo · P1 · S · Hourglass timer — sand level = timeLeft/timeLimit; sand frozen and gilded while the Litany holds; last 30 s the digits pulse and a tick event fires each second (AUD)
 - [ ] UIX-0044 · Demo · P1 · S · Score roll-up — score counts up over 300 ms per gain; combo readout gains flame tiers at 5/10/20 (ember/flame/holy fire) and cracks visibly on combo break
 - [ ] UIX-0045 · Demo · P2 · S · Phase progress v2 — pips become small seal icons with tooltip "Phase 2 of 4"; boss phases shown as notches on the Malison bar instead
 
@@ -250,7 +250,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] UIX-0074 · Demo · P0 · S · Boot sequence — studio logo (2 s, skippable), then photosensitivity notice and content warning (gore, plague, body horror, religious violence) on first launch only, with a link to comfort options
 - [ ] UIX-0075 · Demo · P0 · M · First-launch setup — language (English only in demo, list ready), brightness calibration, input device check ("Mouse detected" / "Controller detected"), subtitle size, and "Would you like gentler timings?" assist prompt; every step skippable; runs once per settings file
 - [x] UIX-0076 · Demo · P1 · S · Brightness calibration screen — woodcut symbol barely visible at correct gamma; slider adjusts the post-process gamma uniform; also in Display options
-- [ ] UIX-0077 · Demo · P1 · S · Loading indicator — spinning wax-seal indicator during font/atlas/audio bank loads over 150 ms; no blank frames between boot and title
+- [x] UIX-0077 · Demo · P1 · S · Loading indicator — spinning wax-seal indicator during font/atlas/audio bank loads over 150 ms; no blank frames between boot and title
 
 ### Title screen
 - [x] UIX-0078 · M0 · P0 · S · Title — Continue / Take the Oath (new game, with forswear-progress confirm) / Operating Theatre / Sound toggle; fullscreen hint and version string
@@ -258,8 +258,8 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] UIX-0080 · Demo · P0 · S · Stale end-of-content text — replace "Chapter I complete. Chapter II is being written…" with build-appropriate messaging (demo: routes to the demo-complete flow; full: nothing)
 - [x] UIX-0081 · M0 · P0 · S · Rename to Suture & Steel — title logo, `index.html` title, WebGL2 failure message and save key `suture-and-steel.save`
 - [ ] UIX-0082 · Demo · P1 · S · Continue preview — tooltip/card shows chapter, next step title, total play time and last-played date
-- [ ] UIX-0083 · Demo · P1 · S · Quit to desktop — confirm dialog, calls Electron `app.quit()`; hidden in browser builds
-- [ ] UIX-0084 · Demo · P1 · S · Build string — "Demo v0.x.y (build hash)" bottom-right replaces "v0.1 prototype", read from Vite `define`
+- [x] UIX-0083 · Demo · P1 · S · Quit to desktop — confirm dialog, calls Electron `app.quit()`; hidden in browser builds
+- [x] UIX-0084 · Demo · P1 · S · Build string — "Demo v0.x.y (build hash)" bottom-right replaces "v0.1 prototype", read from Vite `define`
 - [ ] UIX-0085 · Demo · P1 · M · Credits — scrolling credits (team, voice cast, music, OFL font attributions for IM Fell English and UnifrakturMaguntia, third-party licences), speed-up on hold, skippable
 
 ### Chapter select & operating theatre
@@ -275,9 +275,9 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] UIX-0093 · Demo · P0 · S · Autosave indicator — quill/seal icon in a corner for ≥ 1 s whenever a save is written; tip on first boot "Do not quit while the seal turns"
 - [ ] UIX-0094 · Demo · P0 · S · Corrupt save handling — today `load()` silently returns `fresh()` on parse failure; instead show "Your records are damaged" with Restore backup / Start fresh, and keep the bad file aside (test with a truncated JSON fixture)
 - [x] UIX-0095 · M0 · P0 · S · Settings file — volume, mute, screen shake, reduce flashing and assists persist under `suture-and-steel.settings`, separate from campaign progress (`src/core/settings.ts`)
-- [ ] UIX-0096 · Demo · P1 · S · Dead save field — remove the unused `SaveData.volume` (settings own volume now) through a v1 → v2 save migration with a fixture test
+- [x] UIX-0096 · Demo · P1 · S · Dead save field — remove the unused `SaveData.volume` (settings own volume now) through a v1 → v2 save migration with a fixture test
 - [ ] UIX-0097 · Demo · P1 · S · Delete slot — double confirm, plays a page-burn animation; cannot delete the slot currently loaded mid-session
-- [ ] UIX-0098 · Demo · P1 · S · Demo → full-game carry-over — demo save format is forward compatible; a fixture test imports a demo save into the full-game loader and keeps progress and best ranks
+- [x] UIX-0098 · Demo · P1 · S · Demo → full-game carry-over — demo save format is forward compatible; a fixture test imports a demo save into the full-game loader and keeps progress and best ranks
 
 ### Pause
 - [x] UIX-0099 · M0 · P0 · S · Pause menu "Respite" — Resume, Begin Again, Options, Abandon the Patient; Esc toggles
@@ -291,7 +291,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] UIX-0105 · Demo · P0 · M · Display tab — window mode, window size, VSync, frame cap (30/60/120/144/unlimited), render scale, UI scale, brightness, bloom intensity, film grain on/off, vignette on/off, screen shake (the v0 Off/Gentle/Full setting extended to 0–100 %)
 - [x] UIX-0106 · Demo · P1 · S · Gameplay tab — tool hints mode, damage numbers, confirm on abandon, wheel invert/wrap, Minimal HUD, skip-seen-tutorials
 - [x] UIX-0107 · Demo · P1 · S · Option descriptions — every option shows a one-line description and, where relevant, a live preview thumbnail (e.g. colour-blind palette on a sample operating field)
-- [ ] UIX-0108 · Demo · P1 · S · Options are validated on load — out-of-range or unknown values fall back to defaults (unit tests per option)
+- [x] UIX-0108 · Demo · P1 · S · Options are validated on load — out-of-range or unknown values fall back to defaults (unit tests per option)
 
 ### Patient chart (briefing)
 - [x] UIX-0109 · M0 · P0 · S · Briefing parchment — title, patient, findings, time allowed, previous best, instrument icons with hotkeys, Scrub In / Back
@@ -318,7 +318,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] UIX-0124 · Demo · P1 · M · Read-text tracking — seen line ids stored per save; Ctrl skip passes only seen lines unless "Skip unread text" is on; skip stops at unseen lines with a flash
 - [x] UIX-0125 · Demo · P1 · S · Text-box control strip — clickable Auto / Skip / Log / Hide / Menu icons at the box's bottom-right, with binding tooltips; replaces the 13 px footer hint
 - [x] UIX-0126 · Demo · P1 · S · Hide UI — `vn.hide` (H / right-click / Y) hides the text box to view art; any input restores
-- [ ] UIX-0127 · Demo · P1 · S · Text speed option — 24/48/72 cps/instant, shared by story text and operation callouts
+- [x] UIX-0127 · Demo · P1 · S · Text speed option — 24/48/72 cps/instant, shared by story text and operation callouts
 - [x] UIX-0128 · Demo · P1 · S · Text-box readability — optional box opacity 60–100 %, line spacing 1.3, max 3 lines at 125 % text scale without overflow on 1280×800
 
 ### Portraits & presentation
@@ -332,12 +332,12 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 ## Epic UIX-E · Tutorials & first-time user experience (Demo)
 
 ### Teaching ladder
-- [ ] UIX-0135 · Demo · P0 · M · FTUE ladder audit — table mapping each mechanic to the operation that teaches it (op1-1 stitch/leech/salve, op1-2 incision/tongs/barbs, op1-3 burns/tincture, op1-4 bubo/rot/brand, op1-5 Malison + Litany, Ch2 bites/venom/egg sacs & spiderlings/Scrying Lens/Lauds); every mechanic is taught before it is tested and none is taught twice
-- [ ] UIX-0136 · Demo · P0 · M · Tutorial overlay system — scripted steps anchored to an entity or HUD element (arrow + dimmed surround), optional world-time pause until the requested action fires (`op.flags` / rating events); content in data, not scene code
+- [x] UIX-0135 · Demo · P0 · M · FTUE ladder audit — table mapping each mechanic to the operation that teaches it (op1-1 stitch/leech/salve, op1-2 incision/tongs/barbs, op1-3 burns/tincture, op1-4 bubo/rot/brand, op1-5 Malison + Litany, Ch2 bites/venom/egg sacs & spiderlings/Scrying Lens/Lauds); every mechanic is taught before it is tested and none is taught twice
+- [x] UIX-0136 · Demo · P0 · M · Tutorial overlay system — scripted steps anchored to an entity or HUD element (arrow + dimmed surround), optional world-time pause until the requested action fires (`op.flags` / rating events); content in data, not scene code
 - [ ] UIX-0137 · Demo · P0 · L · Ghost-hand demonstrations — translucent gloved hand + tool replays a recorded stroke over the real target for: trace incision, zig-zag stitch, hold-drain, Tongs pull-out, barb nick then pull, salve brush, hold-inject, sear, lens hover, star; 10 demos, looping until the player acts
 - [ ] UIX-0138 · Demo · P1 · S · Device-aware demos — ghost demos and prompts switch to stick/trigger glyphs when a gamepad is the last-used device
 - [ ] UIX-0139 · Demo · P1 · M · Adaptive re-teaching — two consecutive BAD/MISS on the same mechanic, or 8 s idle with a required entity untouched, replays that ghost demo once; setting "Adaptive hints" on by default
-- [ ] UIX-0140 · Demo · P0 · M · Litany practice — before the op1-5 boss, a practice beat asks the player to draw the star (up to 3 tries with failure reasons, then offers the Litany key assist); success unlocks the Litany for the fight
+- [x] UIX-0140 · Demo · P0 · M · Litany practice — before the op1-5 boss, a practice beat asks the player to draw the star (up to 3 tries with failure reasons, then offers the Litany key assist); success unlocks the Litany for the fight
 - [x] UIX-0141 · Demo · P1 · S · Controls reference card — per-tool gesture illustrations with current bindings, reachable from briefing and pause
 - [ ] UIX-0142 · Demo · P1 · S · Tutorial skipping — "Skip tutorials" setting and per-prompt "Don't show again"; skipped tutorials remain viewable from the controls card
 
@@ -567,9 +567,9 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ### New gestures for Chapters 3–5 and disciplines
 - [ ] INP-0102 · Alpha · P1 · M · Stroke capture service — `OperationScene` records the full primary-button stroke polyline per press and dispatches `Entity.onStroke(op, stroke, tool)` on release (new optional hook), enabling shape gestures without entities reading input
-- [ ] INP-0103 · Alpha · P1 · M · `isEncircle(stroke, centre, radius)` in `gesture.ts` — returns quality 0..1: closed within 35 % of loop size, winding number ≥ 1 around the centre, loop encloses ≥ 85 % of the target disc, loop area ≤ 3× target; tests accept circle, ellipse, double loop; reject C-shape, figure-8 off-target, spiral into centre
-- [ ] INP-0104 · Alpha · P1 · S · Encircle rating — quality ≥ 0.85 COOL, ≥ 0.6 GOOD, else BAD; the Lancet hint "Encircle growths to excise them" in `TOOL_INFO` is honoured by the first growth/tumour entity in Chapters 3–5 (integration test)
-- [ ] INP-0105 · Alpha · P2 · S · Encircle guide — with the Lancet selected, excisable growths show a faint dotted ring at the ideal cut radius; the live stroke is drawn as a fine red line
+- [x] INP-0103 · Alpha · P1 · M · `isEncircle(stroke, centre, radius)` in `gesture.ts` — returns quality 0..1: closed within 35 % of loop size, winding number ≥ 1 around the centre, loop encloses ≥ 85 % of the target disc, loop area ≤ 3× target; tests accept circle, ellipse, double loop; reject C-shape, figure-8 off-target, spiral into centre
+- [x] INP-0104 · Alpha · P1 · S · Encircle rating — quality ≥ 0.85 COOL, ≥ 0.6 GOOD, else BAD; the Lancet hint "Encircle growths to excise them" in `TOOL_INFO` is honoured by the first growth/tumour entity in Chapters 3–5 (integration test)
+- [x] INP-0105 · Alpha · P2 · S · Encircle guide — with the Lancet selected, excisable growths show a faint dotted ring at the ideal cut radius; the live stroke is drawn as a fine red line
 - [ ] INP-0106 · Alpha · P1 · M · Rotate gesture — `rotationAround(stroke, pivot)` accumulates signed angle of a drag around a pivot (±5° accuracy, tests at 90°/180°/−270°) for bone-setting twists; wheel steps of 15° as keyboard/mouse alternative
 - [ ] INP-0107 · Alpha · P1 · M · Two-point actions without a second hand — "pin" action (default `F`/gamepad X) locks the current Tongs grip in place so the player can switch tool and work elsewhere (e.g. hold a fang while cauterising); pinned grip auto-releases after 10 s; unit tests
 - [ ] INP-0108 · Alpha · P1 · S · Tap-to-tag input for field triage — single press on a casualty cycles triage tags; long-press (0.5 s) opens the tag radial; gamepad face buttons map directly to tags
@@ -587,7 +587,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] INP-0118 · Beta · P2 · M · Touch play — full touch layout for touchscreen laptops and Deck handheld: on-screen tool strip, two-finger drag draws the Litany star, tap-and-hold as hold tools; toggled automatically on first touch input
 - [ ] INP-0119 · Beta · P2 · S · macOS input — Ctrl-click and two-finger click map to secondary, Force Touch ignored, Cmd+Q confirm; tested on a MacBook trackpad and Magic Mouse
 - [ ] INP-0120 · Beta · P2 · S · Key-name localisation — bindings screen shows localised key names for FR/DE/ES/IT/PL/RU keyboards
-- [ ] INP-0121 · Beta · P2 · S · Opt-in gesture telemetry — anonymous per-mechanic success/attempt counts (no raw strokes) sent only with consent, to guide post-demo tuning
+- [x] INP-0121 · Beta · P2 · S · Opt-in gesture telemetry — anonymous per-mechanic success/attempt counts (no raw strokes) sent only with consent, to guide post-demo tuning
 
 ## Epic UIX-H · Full-game UI: codex, dossier, challenge mode, disciplines (Alpha–Beta)
 
@@ -636,7 +636,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] AUD-0126 · Release · P1 · M · Credits song / finale piece — full choir arrangement of the Hollow Choir leitmotif resolved, used in ending credits
 
 ### SFX
-- [ ] AUD-0127 · Alpha · P1 · M · Placeholder SFX for all Ch3–5 events — every new event id has at least a library placeholder so Alpha is fully audible; fallback-synth report shows 0 unmapped events
+- [x] AUD-0127 · Alpha · P1 · M · Placeholder SFX for all Ch3–5 events — every new event id has at least a library placeholder so Alpha is fully audible; fallback-synth report shows 0 unmapped events
 - [x] AUD-0128 · Beta · P1 · M · Dragon-breath burn and gangrene sets — roaring ember bed, blistering pops, necrotic wet crackle, amputation-grade saw if required by design
 - [x] AUD-0129 · Beta · P2 · S · Growth excision set — encircle cut loop, severed release and Tongs removal of the excised mass, for the Chapters 3–5 growth mechanic
 - [x] AUD-0130 · Beta · P1 · M · Petrification set — stone creep, chip strikes with pitch by crust depth, crumble release, flesh-under-stone reveal
@@ -654,12 +654,12 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 ## Epic UIX-I · Localisation-ready UI & audio (Beta)
 
 ### Strings, fonts, captions & subtitles
-- [ ] UIX-0199 · Beta · P0 · M · String extraction — every hard-coded UI string in `src/scenes/*.ts` and `src/ui/*.ts` ("Respite", "Begin Again", "Scrub In", "The Patient Lives"…) and `TOOL_INFO` names/hints moves to `strings/en.json` with ids; a lint rule rejects new string literals passed to `g.text` outside the string table
+- [x] UIX-0199 · Beta · P0 · M · String extraction — every hard-coded UI string in `src/scenes/*.ts` and `src/ui/*.ts` ("Respite", "Begin Again", "Scrub In", "The Patient Lives"…) and `TOOL_INFO` names/hints moves to `strings/en.json` with ids; a lint rule rejects new string literals passed to `g.text` outside the string table
 - [ ] UIX-0200 · Beta · P0 · S · Pseudo-localisation build — `?lang=pseudo` expands strings +40 % with accented characters; every screen reviewed for overflow/clipping with the dev overflow log empty
 - [ ] UIX-0201 · Beta · P1 · M · CJK text support — dynamic glyph atlas pages for Simplified Chinese and Japanese (Noto Serif CJK subset per language), line breaking by character, blackletter titles fall back to a matching CJK display face
-- [ ] UIX-0202 · Beta · P1 · S · Blackletter fallback — languages with glyphs outside UnifrakturMaguntia (Polish, Russian) use a Cyrillic/Latin-Extended display face for titles, chosen in the style guide
-- [ ] UIX-0203 · Beta · P1 · S · Language switch at runtime — Options → Language reloads strings, fonts and captions without restarting; persisted in settings
-- [ ] UIX-0204 · Beta · P1 · S · Localised text in art — title cards, wax seals and rank stamps with words are rendered from text over art, not baked into textures
+- [x] UIX-0202 · Beta · P1 · S · Blackletter fallback — languages with glyphs outside UnifrakturMaguntia (Polish, Russian) use a Cyrillic/Latin-Extended display face for titles, chosen in the style guide
+- [x] UIX-0203 · Beta · P1 · S · Language switch at runtime — Options → Language reloads strings, fonts and captions without restarting; persisted in settings
+- [x] UIX-0204 · Beta · P1 · S · Localised text in art — title cards, wax seals and rank stamps with words are rendered from text over art, not baked into textures
 - [x] AUD-0139 · Beta · P1 · S · Localised subtitles and captions — subtitle/caption tables per language keyed by VO line id and event id; timing re-validated for languages ≥ 30 % longer (split into two subtitle cards)
 - [x] AUD-0140 · Beta · P2 · S · VO language independence — VO stays English with localised subtitles; the audio pipeline supports a per-language VO folder so localised VO can be added post-launch without code changes
 
@@ -676,7 +676,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] UIX-0206 · Release · P1 · S · UI performance budget — HUD + menus ≤ 1.0 ms CPU and ≤ 150 draw-batch flushes per frame on Steam Deck; measured in the heaviest boss fight
 - [ ] UIX-0207 · Release · P0 · S · Store-compliance text review — no placeholder text ("prototype", "being written", lorem), all legal/credit/licence screens complete, age-rating content descriptors matched by in-game warnings
 - [ ] UIX-0208 · Release · P1 · M · Final accessibility audit — full game re-checked against the demo accessibility table; any regressions fixed; accessibility feature list published on the store page
-- [ ] UIX-0209 · Release · P1 · S · Demo → full upgrade flow — launching the full game with a demo save present offers "Continue from the demo" and skips replaying Chapters 1–2 if chosen
+- [x] UIX-0209 · Release · P1 · S · Demo → full upgrade flow — launching the full game with a demo save present offers "Continue from the demo" and skips replaying Chapters 1–2 if chosen
 
 ### Audio
 - [ ] AUD-0141 · Release · P0 · M · Final mix — full-campaign mix pass on the four reference playback systems; loudness spec met for every chapter capture; sign-off note in `docs/audio/loudness.md`

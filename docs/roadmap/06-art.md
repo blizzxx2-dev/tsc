@@ -217,37 +217,37 @@ Portrait standard (applies to every task below): half-body at 2048 px master / 1
 Background standard: 3840×2160 master, 1920×1080 ship, split into far/mid/near/FX layers, each with a **day/dusk/night** lighting variant where the script needs it, replacing the matching `drawBackdrop()` key.
 
 ### Chapter 1 — Kessendorf (demo)
-- [ ] ART-0134 · Demo · P0 · L · Hospice of Saint Ildra, ward (`hospice`): vaulted arcade, cots, a leech-jar shelf and candle alcoves — day and night variants
-- [ ] ART-0135 · Demo · P0 · L · Operating theatre (`theatre`): tiered wooden gallery, a slab table, a brass lamp and a drain gutter — the background behind briefings and pre-op
-- [ ] ART-0136 · Demo · P0 · L · Kessendorf street (`street`): half-timbered Tanners' Rows, gutters, guild signs, a gibbet — dusk variant
-- [ ] ART-0137 · Demo · P0 · M · Kessendorf by night (`night`): rooftops, a bell tower, torchlit watch patrol — shared by Chapters 1 and 2
-- [ ] ART-0138 · Demo · P0 · M · Chapel of Saint Ildra (`chapel`): an original stained-glass window design (sun-in-palm), pews and a reliquary
-- [ ] ART-0139 · Demo · P1 · M · Hospice apothecary room: shelves of jars, an alembic and a drying-herb rafter (new `apothecary` backdrop key)
-- [ ] ART-0140 · Demo · P1 · M · Tanners' Rows plague alley for the op1-4 intro: a cart of bodies, a beak-masked physician in the far layer
-- [ ] ART-0141 · Demo · P2 · M · Guildhall of Surgeons interior for Haller scenes (portraits of guild masters, an anatomy chart)
+- [x] ART-0134 · Demo · P0 · L · Hospice of Saint Ildra, ward (`hospice`): vaulted arcade, cots, a leech-jar shelf and candle alcoves — day and night variants
+- [x] ART-0135 · Demo · P0 · L · Operating theatre (`theatre`): tiered wooden gallery, a slab table, a brass lamp and a drain gutter — the background behind briefings and pre-op
+- [x] ART-0136 · Demo · P0 · L · Kessendorf street (`street`): half-timbered Tanners' Rows, gutters, guild signs, a gibbet — dusk variant
+- [x] ART-0137 · Demo · P0 · M · Kessendorf by night (`night`): rooftops, a bell tower, torchlit watch patrol — shared by Chapters 1 and 2
+- [x] ART-0138 · Demo · P0 · M · Chapel of Saint Ildra (`chapel`): an original stained-glass window design (sun-in-palm), pews and a reliquary
+- [x] ART-0139 · Demo · P1 · M · Hospice apothecary room: shelves of jars, an alembic and a drying-herb rafter (new `apothecary` backdrop key)
+- [x] ART-0140 · Demo · P1 · M · Tanners' Rows plague alley for the op1-4 intro: a cart of bodies, a beak-masked physician in the far layer
+- [x] ART-0141 · Demo · P2 · M · Guildhall of Surgeons interior for Haller scenes (portraits of guild masters, an anatomy chart)
 
 ### Chapter 2 — the war camp (demo)
-- [ ] ART-0142 · Demo · P0 · L · War camp (`camp`): Bruegel-style panorama of tents, pike stands, cook fires and camp followers — day and dusk variants
-- [ ] ART-0143 · Demo · P0 · M · Field surgeon's tent interior: a trestle table, a lantern, bloody straw and a saw rack
-- [ ] ART-0144 · Demo · P1 · M · Graveyard on the camp edge (Gravehound intro): tilted stones, a lychgate and fog layer
-- [ ] ART-0145 · Demo · P1 · M · Dwarf ore-cart and prospectors' camp (op2-2 intro)
-- [ ] ART-0146 · Demo · P1 · M · Forest edge with brood webs and egg sacs (op2-3 intro)
-- [ ] ART-0147 · Demo · P1 · M · Ruined abbey choir loft where the Hollow Choir sang (op2-4 and op2-5 story beats)
-- [ ] ART-0148 · Demo · P1 · S · Dawn battlefield vista for the Lauds reveal, with a sun-flare FX layer
+- [x] ART-0142 · Demo · P0 · L · War camp (`camp`): Bruegel-style panorama of tents, pike stands, cook fires and camp followers — day and dusk variants
+- [x] ART-0143 · Demo · P0 · M · Field surgeon's tent interior: a trestle table, a lantern, bloody straw and a saw rack
+- [x] ART-0144 · Demo · P1 · M · Graveyard on the camp edge (Gravehound intro): tilted stones, a lychgate and fog layer
+- [x] ART-0145 · Demo · P1 · M · Dwarf ore-cart and prospectors' camp (op2-2 intro)
+- [x] ART-0146 · Demo · P1 · M · Forest edge with brood webs and egg sacs (op2-3 intro)
+- [x] ART-0147 · Demo · P1 · M · Ruined abbey choir loft where the Hollow Choir sang (op2-4 and op2-5 story beats)
+- [x] ART-0148 · Demo · P1 · S · Dawn battlefield vista for the Lauds reveal, with a sun-flare FX layer
 
 ### Chapters 3–5
 - [ ] ART-0149 · Alpha · P1 · L · Chapter 3 location set: 5 backgrounds (list from NAR), each with 2 lighting variants
 - [ ] ART-0150 · Alpha · P1 · L · Chapter 4 location set: 5 backgrounds with 2 lighting variants
 - [ ] ART-0151 · Beta · P1 · L · Chapter 5 location set: 5 backgrounds including the Choir's cathedral and the Compline finale space
-- [ ] ART-0152 · Beta · P2 · M · Hospice ward "burned" variant for the late-game story state
+- [x] ART-0152 · Beta · P2 · M · Hospice ward "burned" variant for the late-game story state
 - [ ] ART-0153 · Alpha · P2 · M · Discipline backgrounds: triage field, diagnosis study, inquisition cell and bone-setter's bench
 
 ### Background animation & FX layers
-- [ ] ART-0154 · Demo · P1 · M · Candle and torch flicker sprites (3 sizes, 12-frame loop) with light-pool masks for every Chapter 1–2 interior
-- [ ] ART-0155 · Demo · P1 · S · Drifting smoke and dust-mote loop overlay (tileable, additive) for interiors
-- [ ] ART-0156 · Demo · P1 · S · Rain and fog overlay layers for the `night` and graveyard scenes
-- [ ] ART-0157 · Demo · P2 · S · Ambient life loops: 2 pigeons, a hanging-sign sway and a camp flag ripple (6–8 frames each)
-- [ ] ART-0158 · Demo · P1 · S · Parallax depth values tuned per background so a 2% pointer offset shifts layers without revealing edges (all layers bleed 64 px)
+- [x] ART-0154 · Demo · P1 · M · Candle and torch flicker sprites (3 sizes, 12-frame loop) with light-pool masks for every Chapter 1–2 interior
+- [x] ART-0155 · Demo · P1 · S · Drifting smoke and dust-mote loop overlay (tileable, additive) for interiors
+- [x] ART-0156 · Demo · P1 · S · Rain and fog overlay layers for the `night` and graveyard scenes
+- [x] ART-0157 · Demo · P2 · S · Ambient life loops: 2 pigeons, a hanging-sign sway and a camp flag ripple (6–8 frames each)
+- [x] ART-0158 · Demo · P1 · S · Parallax depth values tuned per background so a 2% pointer offset shifts layers without revealing edges (all layers bleed 64 px)
 
 ---
 
@@ -256,7 +256,7 @@ Background standard: 3840×2160 master, 1920×1080 ship, split into far/mid/near
 Texture-set standard: each set = **albedo** (painted, sRGB, 1024² tileable) + **normal** + **wet/spec** + **vein mask** + **cavity/AO** + **height**, packed per the spec in ART-C, authored so the shader's fbm/voronoi breakup and `u_corrupt` layer sit on top. Each set is verified on the in-engine flesh test page under candlelight and the Litany sepia.
 
 ### Test harness & look-dev
-- [ ] ART-0159 · Demo · P0 · M · Flesh look-dev page (`?scene=fleshlab`): pick organ × species × texture set, sliders for `u_light`, `u_pulse` and `u_corrupt`, side-by-side with the procedural baseline
+- [x] ART-0159 · Demo · P0 · M · Flesh look-dev page (`?scene=fleshlab`): pick organ × species × texture set, sliders for `u_light`, `u_pulse` and `u_corrupt`, side-by-side with the procedural baseline
 - [ ] ART-0160 · Demo · P0 · S · Tileability check script: each albedo and normal is offset by half a tile and diffed for seams (fails above threshold)
 - [ ] ART-0161 · Demo · P0 · M · Painted-flesh style guide: how far from photoreal (no photo textures; woodcut hatching in the cavity channel), 6 approved swatches
 - [ ] ART-0162 · Demo · P1 · S · Wet-map authoring guide: specular response per organ (heart glossy, liver satin, bone dry) with target roughness values
@@ -276,10 +276,10 @@ Texture-set standard: each set = **albedo** (painted, sRGB, 1024² tileable) + *
 - [ ] ART-0174 · Beta · P2 · M · Tallow-blood overlay (waxy, opaque, low-spec) for the Vespers Malison
 
 ### Species variants
-- [ ] ART-0175 · Demo · P0 · M · Dwarf `flesh` variant: denser muscle fibre, ruddier albedo, thicker subcutaneous fat — needed for op2-2 Orsa
-- [ ] ART-0176 · Alpha · P1 · M · Elf `flesh` variant: fine-grained, pale, translucent (fake subsurface in the albedo)
+- [x] ART-0175 · Demo · P0 · M · Dwarf `flesh` variant: denser muscle fibre, ruddier albedo, thicker subcutaneous fat — needed for op2-2 Orsa
+- [x] ART-0176 · Alpha · P1 · M · Elf `flesh` variant: fine-grained, pale, translucent (fake subsurface in the albedo)
 - [ ] ART-0177 · Alpha · P1 · M · Halfling `flesh` variant: rosy, softer fat layer
-- [ ] ART-0178 · Alpha · P1 · M · Orc `flesh` variant: green-grey, coarse and scarred, with thick hide normals
+- [x] ART-0178 · Alpha · P1 · M · Orc `flesh` variant: green-grey, coarse and scarred, with thick hide normals
 - [ ] ART-0179 · Beta · P2 · L · Species × organ spot-check: every organ set reviewed under all 5 species tints in `fleshlab`, with a screenshot matrix archived
 - [ ] ART-0180 · Beta · P2 · M · Monster anatomy set for inquisition forensics (gravehound and brood-spider tissue)
 
@@ -420,8 +420,8 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 ## ART-J · Tool icons & cursors
 
 ### Tool icons
-- [ ] ART-0263 · Demo · P0 · M · 8 painted tool icons (Lancet, Tongs, Leech-Pipe, Gut Thread, Saint's Salve, Tincture, Cautery Brand, Scrying Lens) at 128² with a brass-engraved style, replacing vector `toolIcon()`
-- [ ] ART-0264 · Demo · P0 · S · Icon states for each tool: idle, selected (gilt rim), disabled (tarnished) and cooldown (tincture/salve refill)
+- [x] ART-0263 · Demo · P0 · M · 8 painted tool icons (Lancet, Tongs, Leech-Pipe, Gut Thread, Saint's Salve, Tincture, Cautery Brand, Scrying Lens) at 128² with a brass-engraved style, replacing vector `toolIcon()`
+- [x] ART-0264 · Demo · P0 · S · Icon states for each tool: idle, selected (gilt rim), disabled (tarnished) and cooldown (tincture/salve refill)
 - [ ] ART-0265 · Demo · P0 · S · Silhouette test: all 8 icons distinguishable in pure black at 48 px (5-tester hallway test, ≥ 95% correct)
 - [ ] ART-0266 · Demo · P1 · S · Small 32 px icon variants for the tutorial text inline glyphs and the keybind options page
 - [ ] ART-0267 · Demo · P1 · S · Leech-Pipe live-leech detail: a 4-frame squirm loop on the tray icon
@@ -431,7 +431,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [ ] ART-0269 · Demo · P0 · M · In-field tool sprites for all 8 tools, drawn at the pointer during use (lancet blade, tong jaws open/closed, pipe nozzle, needle + thread trail, salve spatula, syringe, glowing brand, lens rim)
 - [ ] ART-0270 · Demo · P0 · S · Tool hotspot definitions (tip pixel) for each tool sprite, verified with a debug crosshair so hits land where the tip is
 - [ ] ART-0271 · Demo · P0 · S · Menu cursor (quill) and a busy cursor (hourglass), plus the hardware-cursor fallback PNGs at 32² and 64²
-- [ ] ART-0272 · Demo · P1 · S · Replace `reticle()` with a brass crosshair and a context tint (green valid target, red invalid)
+- [x] ART-0272 · Demo · P1 · S · Replace `reticle()` with a brass crosshair and a context tint (green valid target, red invalid)
 - [ ] ART-0273 · Demo · P1 · S · Gamepad/Steam Deck virtual-cursor art (larger ring, 1.5× size) and the button-prompt glyph set (Xbox, PlayStation, Deck)
 - [ ] ART-0274 · Demo · P1 · S · Litany star-trace cursor trail: a gilt ink stroke that fades over 0.6 s
 
@@ -461,14 +461,14 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [ ] ART-0289 · Demo · P1 · S · Failed-gesture feedback: a smudged ink stroke that fizzles
 
 ### Feedback & HUD VFX
-- [ ] ART-0290 · Demo · P0 · S · COOL rating burst: gilt stamp with a halo of leaf flakes; GOOD, BAD and MISS each with their own lighter treatment
+- [x] ART-0290 · Demo · P0 · S · COOL rating burst: gilt stamp with a halo of leaf flakes; GOOD, BAD and MISS each with their own lighter treatment
 - [ ] ART-0291 · Demo · P1 · S · Low-vitals VFX art: a cracked-glass overlay on the vitals gauge and blood-vessel creep at the screen edges, in sync with the red pulse
 - [ ] ART-0292 · Demo · P1 · S · Operation success and failure transitions: a woodcut page-turn wipe (success) and an ink-flood to a Holbein skeleton (failure)
 - [ ] ART-0293 · Demo · P2 · S · Combo milestone VFX at ×5 and ×10 (a ribbon unfurl with gilt edges)
 
 ### VFX system standards
 - [ ] ART-0294 · Demo · P0 · S · VFX spec template (sprite, frames, fps, blend mode, lifetime, max concurrent) filled for every Demo effect in `docs/art/vfx/`
-- [ ] ART-0295 · Demo · P1 · S · Reduced-flashing variants for the Lauds dawn-flare, the Litany burst and low-vitals pulse (accessibility toggle) — peak luminance change under 3 flashes/s
+- [x] ART-0295 · Demo · P1 · S · Reduced-flashing variants for the Lauds dawn-flare, the Litany burst and low-vitals pulse (accessibility toggle) — peak luminance change under 3 flashes/s
 - [ ] ART-0296 · Alpha · P2 · M · VFX for Chapter 3–5 ailments (petrify crack, tallow melt, name-sigil write-on, dragon-breath embers) using the same template
 
 ---
@@ -479,11 +479,11 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [ ] ART-0297 · Demo · P0 · S · Animation timing sheet: standard fps (12 for woodcut flipbooks, 24 for VFX), ease curves and hit-pause frames, applied to every flipbook in the demo
 - [ ] ART-0298 · Demo · P1 · M · Tissue breathing and heartbeat deformation: a mesh-warp map per flesh set synced to `u_pulse` (no visible sliding of ailment sprites)
 - [ ] ART-0299 · Demo · P1 · S · Embedded-object reaction animation: the arrow shaft twitches with the heartbeat (3-frame), and the grub flinches on a Lancet near-miss
-- [ ] ART-0300 · Beta · P2 · M · Organ-specific motion: lung inflate/deflate and gut peristalsis flipbooks for Chapters 3–5 organ sets
+- [x] ART-0300 · Beta · P2 · M · Organ-specific motion: lung inflate/deflate and gut peristalsis flipbooks for Chapters 3–5 organ sets
 
 ### Portrait & VN animation
 - [ ] ART-0301 · Demo · P0 · S · Blink timing (random 2–6 s interval, 3 frames) and lip-flap timing tied to text reveal speed for all demo portraits
-- [ ] ART-0302 · Demo · P1 · M · Idle breathing (a 2-layer mesh warp) on Kreuzer, Ilse, Haller, Stroh and Mauer portraits
+- [x] ART-0302 · Demo · P1 · M · Idle breathing (a 2-layer mesh warp) on Kreuzer, Ilse, Haller, Stroh and Mauer portraits
 - [ ] ART-0303 · Demo · P2 · M · Hollow Choir mask animation: a slow tilt and a violet glow breathing from the mask's mouth
 - [ ] ART-0304 · Beta · P2 · M · Idle breathing on Chapter 3–5 principal portraits
 
@@ -500,7 +500,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [ ] ART-0308 · Demo · P0 · M · Game logo "Suture & Steel": a blackletter wordmark with a crossed lancet and suture-needle ampersand; subtitle "The Malison Hours" in IM Fell SC — vector master (SVG) plus a trademark-search note
 - [ ] ART-0309 · Demo · P0 · S · Logo variants: full-colour, one-colour (black and parchment), on-dark, a stacked version and an icon-only ampersand mark
 - [ ] ART-0310 · Demo · P1 · S · Studio/publisher boot splash layout using the logo kit
-- [ ] ART-0311 · Demo · P1 · S · Application icon set: Windows `.ico` (16–256), macOS `.icns` and Linux PNGs (512), from the ampersand mark
+- [x] ART-0311 · Demo · P1 · S · Application icon set: Windows `.ico` (16–256), macOS `.icns` and Linux PNGs (512), from the ampersand mark
 
 ### Key art
 - [ ] ART-0312 · Demo · P0 · L · Key art: Kreuzer over a Wound-Man patient, with Ilse at his side, Stroh in shadow and the Malison eye above — 6000×3375 master, layered so it can be recomposed
@@ -559,7 +559,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 ### Vendor setup
 - [ ] ART-0342 · Demo · P0 · M · Outsourcing brief pack: art bible, style frames, naming/export specs, a sample finished asset per class and the IP-avoidance checklist — one zip per asset class
 - [ ] ART-0343 · Demo · P0 · M · Paid test task for 3 candidate vendors/freelancers (1 portrait with 3 expressions + 1 ailment sprite set), scored on a rubric (style match, turnaround, revisions needed)
-- [ ] ART-0344 · Demo · P0 · S · Contract terms checklist: work-for-hire/full IP assignment, no AI-generated content without disclosure, source files delivered, credit line
+- [x] ART-0344 · Demo · P0 · S · Contract terms checklist: work-for-hire/full IP assignment, no AI-generated content without disclosure, source files delivered, credit line
 - [ ] ART-0345 · Demo · P1 · S · Asset tracker sheet (asset ID, vendor, stage, due, cost, approved-by) covering every Demo asset in this file
 - [ ] ART-0346 · Demo · P1 · S · Feedback protocol: paintover-based notes, max 2 revision rounds per stage, 48 h review SLA from our side
 - [ ] ART-0347 · Demo · P1 · S · Shared delivery folder with automated naming/format validation (the CI script from ART-C run on upload)
@@ -583,8 +583,8 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [ ] ART-0357 · Demo · P1 · S · Colour-blind pass (protanopia, deuteranopia, tritanopia simulation) on the ratings, vitals, sigils vs. veins and the curse-violet vs. blood contrast — fixes filed
 - [ ] ART-0358 · Demo · P1 · S · Readability pass of every ailment on every flesh set it can appear on in the demo (a matrix screenshot)
 - [ ] ART-0359 · Demo · P1 · S · Gore-level review against the rating target, with the flagged assets listed and resolved before the ratings submission
-- [ ] ART-0360 · Demo · P1 · S · Localisation art pass: no baked-in text in any image except the logo; stamps and seals with text use a runtime text layer
-- [ ] ART-0361 · Demo · P1 · S · Placeholder sweep: the build report shows 0 `placeholder` assets in Chapters 1–2 (from the manifest tags)
+- [x] ART-0360 · Demo · P1 · S · Localisation art pass: no baked-in text in any image except the logo; stamps and seals with text use a runtime text layer
+- [x] ART-0361 · Demo · P1 · S · Placeholder sweep: the build report shows 0 `placeholder` assets in Chapters 1–2 (from the manifest tags)
 - [ ] ART-0362 · Demo · P2 · S · Z-order and overlap audit: ailment sprites never draw under blood pools unless intended; HUD never overlaps a Malison weak point at 16:10
 - [ ] ART-0363 · Beta · P0 · M · Full-game art QA pass of Chapters 3–5 with the same checklist, suite and matrices
 - [ ] ART-0364 · Release · P1 · S · Final IP audit of every shipped asset (Games Workshop and other third-party look-alike check) signed off by the producer

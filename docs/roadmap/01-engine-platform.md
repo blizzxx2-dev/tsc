@@ -92,7 +92,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0054 · Demo · P1 · M · Render interpolation — entities keep `prevPos`/`prevAngle`, views lerp by `alpha`; helper for interpolated scalars (tool heat, Malison orbit)
 - [x] ENG-0055 · Demo · P1 · S · Sub-step input distribution — `Input.path` samples spread across a frame's fixed steps by timestamp, so lancet strokes sample identically at any frame rate (test at 30/60/144)
 - [x] ENG-0056 · Demo · P0 · M · Single `Clock` service — `real`, `sim` (stops on pause/hitstop) and `world` (Litany-scaled) times replace `gfx.time += dt` and scene-local timers
-- [ ] ENG-0057 · Demo · P1 · S · Pause semantics: sim and world clocks stop, UI animation and audio ducking continue — unit test that vitals/time do not change across a 10 s pause
+- [x] ENG-0057 · Demo · P1 · S · Pause semantics: sim and world clocks stop, UI animation and audio ducking continue — unit test that vitals/time do not change across a 10 s pause
 - [ ] ENG-0058 · Demo · P2 · S · Hitstop — `clock.hitstop(ms)` freezes world time on impacts (Malison hit, barb tear, chain milestone), capped at 120 ms, disabled by reduce-motion
 - [x] ENG-0059 · Demo · P1 · S · Hidden-window handling — on `visibilitychange` (minimised/occluded) the loop stops ticking and the audio context suspends; returning resumes with no dt spike (dt clamp test)
 - [x] ENG-0060 · Demo · P1 · M · Frame limiter (30/40/60/90/120/144/uncapped) in the loop using rAF skipping aligned to measured refresh — frame pacing jitter <1 ms at a 60 cap on a 144 Hz display
@@ -102,7 +102,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0062 · Demo · P0 · M · Scene lifecycle `enter/exit/pause/resume/dispose`; `go()` disposes the outgoing scene — 50 operation restarts leave GL object and listener counts unchanged (leak test)
 - [x] ENG-0063 · Demo · P0 · M · Scene stack — push/pop overlays (pause, options, confirm dialog, glossary) over a live scene that stops updating but keeps rendering underneath
 - [ ] ENG-0064 · Demo · P1 · M · Transition system — fade, iris and ink-bleed wipes rendered on the Overlay layer; `go(scene, {transition:'ink', ms:600})`; input blocked during transitions
-- [ ] ENG-0065 · Demo · P1 · M · Async scene loading — `LoadingScene` awaits the next scene's asset bundle with a progress quill; skipped when already resident, never flashes for <300 ms
+- [x] ENG-0065 · Demo · P1 · M · Async scene loading — `LoadingScene` awaits the next scene's asset bundle with a progress quill; skipped when already resident, never flashes for <300 ms
 - [ ] ENG-0066 · Demo · P1 · S · Global overlay host — toasts, autosave quill, achievement popups, FPS counter and Steam-overlay pause veil render independently of the active scene
 - [ ] ENG-0067 · Demo · P1 · M · Typed scene router — routes for title, story, briefing, operation, results, options, chapterSelect, credits, demoEnd with `?scene=` dev deep links, replacing ad-hoc constructors in `flow.ts`
 - [ ] ENG-0068 · Demo · P1 · M · Service container — replace the module-level `save` singleton in `scenes/flow.ts` with injected `game.services` (save, settings, audio, platform, assets) so scenes run in tests with fakes
@@ -131,7 +131,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 
 ### Organs, species & anatomy variants
 - [x] ENG-0085 · Demo · P0 · M · Heartbeat deformation — heart surface contracts 4–6% in systole with ease-in/ease-out driven by an ECG phase uniform from the sim (replaces uniform `u_pulse` swell); flesh around it pulses subtly
-- [ ] ENG-0086 · Demo · P1 · S · Heartbeat sync: shader phase, ECG trace and heartbeat audio cue share one sim-driven beat clock — measured offset ≤1 frame
+- [x] ENG-0086 · Demo · P1 · S · Heartbeat sync: shader phase, ECG trace and heartbeat audio cue share one sim-driven beat clock — measured offset ≤1 frame
 - [x] ENG-0087 · Demo · P1 · M · Heart surface — coronary vessel pattern following warped ridges, epicardial fat streaks, darker myocardium in diastole
 - [x] ENG-0088 · Demo · P1 · M · Lung surface — alveolar lobules with a breathing cycle (`u_breath`) at the patient's respiration rate, inflating lobule scale ±3%
 - [x] ENG-0089 · Demo · P1 · M · Gut surface — peristaltic wave travelling along warped loop coordinates, mesenteric fat and serosa sheen
@@ -139,7 +139,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0091 · Demo · P2 · S · Brain surface — gyri/sulci from warped ridged noise, translucent meningeal veil layer, faint pulse
 - [x] ENG-0092 · Demo · P2 · S · Bone surface — cortical/cancellous texture, periosteum film, dry low specular
 - [ ] ENG-0093 · Demo · P1 · M · New organ kinds for Ch1–2 briefs — `muscle` (striated fibres along a direction uniform) and `skin` (pores, fine hair, sweat sheen) wired through `OrganKind`/`organPalette`
-- [ ] ENG-0094 · Demo · P1 · M · Data-driven `SpeciesProfile` (human, dwarf, elf, halfling, orc): base/deep/vein tints, fat ratio, surface scale, spec gain — replaces `RACE_TINT`, which currently never tints veins
+- [x] ENG-0094 · Demo · P1 · M · Data-driven `SpeciesProfile` (human, dwarf, elf, halfling, orc): base/deep/vein tints, fat ratio, surface scale, spec gain — replaces `RACE_TINT`, which currently never tints veins
 - [ ] ENG-0095 · Demo · P2 · M · Species details: orc thick green-grey dermis and dark blood, dwarf dense fibrous tissue with higher gloss, elf pale translucent vessels — art sign-off in shader lab
 - [ ] ENG-0096 · Demo · P1 · S · Species blood colour source of truth — one table consumed by BloodPool, particles and decal maps (no hard-coded reds left; grep check)
 - [ ] ENG-0097 · Demo · P1 · M · Drape as its own pass — linen weave texture, fold normal map, blood soak from the decal map (moved out of `FLESH_FS`), species-independent
@@ -164,7 +164,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0110 · Demo · P1 · S · Brush textures in the effects atlas — soft round, splatter ×4, drag streak, scorch, stitch mark, erase
 
 ### Cut masks
-- [ ] ENG-0111 · Demo · P0 · M · Cut mask map (R8) — `Incision`/`Laceration` stamp open width along their path; flesh shader renders parted tissue with inner-wall shading and depth darkening
+- [x] ENG-0111 · Demo · P0 · M · Cut mask map (R8) — `Incision`/`Laceration` stamp open width along their path; flesh shader renders parted tissue with inner-wall shading and depth darkening
 - [ ] ENG-0112 · Demo · P1 · M · Suture closure — completing a `StitchLine` erodes the cut mask along the thread over 0.4 s and leaves stitch-mark decals
 - [ ] ENG-0113 · Demo · P1 · S · Cut edge bleed — mask edges feed the blood decal map so fresh cuts weep along their length until sutured
 
@@ -199,7 +199,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0135 · Demo · P0 · M · Cautery — white-hot sparks, rising smoke wisps and ember glow while the Brand touches tissue; smoke drifts toward the light rig
 - [ ] ENG-0136 · Demo · P1 · M · Hexfire flames — violet/green flame and spark emitters, with curse motes drifting toward live Sigils
 - [x] ENG-0137 · Demo · P0 · M · Malison motes and ash — dark motes orbit Matins/Lauds, bursts on hit, shard dissolve into ash on defeat
-- [ ] ENG-0138 · Demo · P1 · S · Bubo lancing splash — pus or black-bile burst coloured from the pool type
+- [x] ENG-0138 · Demo · P1 · S · Bubo lancing splash — pus or black-bile burst coloured from the pool type
 - [ ] ENG-0139 · Demo · P1 · S · Venom mist rising from `Venom` entities — stops when neutralised
 - [ ] ENG-0140 · Demo · P1 · S · Grub extraction gore — squish burst and twitching segment particles on extraction
 - [ ] ENG-0141 · Demo · P2 · S · Tincture and Salve VFX — injection shimmer at the needle, droplets along the salve stroke
@@ -289,7 +289,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0200 · Demo · P0 · M · `webglcontextrestored`: recreate programs, VAOs, buffers, textures (from retained `ImageBitmap`s/URLs), glyph/MSDF atlases, render targets and decal maps from the stamp log, then resume — Playwright test with `WEBGL_lose_context` mid-operation continues correctly
 - [x] ENG-0201 · Demo · P1 · S · Repeated context loss — 3 losses within 60 s drop to Low tier and log a GPU-instability event for crash reporting
 - [ ] ENG-0202 · Demo · P1 · M · Parallel shader compilation via `KHR_parallel_shader_compile` during the boot screen — readable compile errors with variant defines and source line numbers
-- [ ] ENG-0203 · Demo · P1 · S · Shader pre-warm — every program/variant drawn once off-screen during loading so first use in an operation causes no hitch (no frame >25 ms on first Malison appearance)
+- [x] ENG-0203 · Demo · P1 · S · Shader pre-warm — every program/variant drawn once off-screen during loading so first use in an operation causes no hitch (no frame >25 ms on first Malison appearance)
 
 ## ENG-K · Asset pipeline & preloading (Demo)
 
@@ -307,8 +307,8 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0212 · Demo · P0 · M · Bundles `boot`, `title`, `story-common`, `ops-common`, `chapter1`, `chapter2` — next bundle prefetched during story scenes; chapter bundles unloaded when leaving a chapter
 - [x] ENG-0213 · Demo · P0 · S · Boot sequence — fonts → boot bundle → shader compile/pre-warm → title, with progress on a DOM splash so the window never shows a blank canvas; cold start to title ≤5 s on SATA SSD
 - [x] ENG-0214 · Demo · P1 · S · Font loading in the boot bundle — replaces `document.fonts.load` in `boot()`, with timeout and logged fallback to system serif
-- [ ] ENG-0215 · Demo · P1 · M · Asset hot reload in dev — changed PNG/JSON/GLSL/LUT reloads live via Vite HMR without restarting the running operation
-- [ ] ENG-0216 · Demo · P1 · S · Desktop builds load all assets from the local package (no network) — web builds use content-hashed URLs for cache busting
+- [x] ENG-0215 · Demo · P1 · M · Asset hot reload in dev — changed PNG/JSON/GLSL/LUT reloads live via Vite HMR without restarting the running operation
+- [x] ENG-0216 · Demo · P1 · S · Desktop builds load all assets from the local package (no network) — web builds use content-hashed URLs for cache busting
 - [x] ENG-0217 · Demo · P1 · S · Demo install-size budget — game assets ≤150 MB (so the Windows depot stays ≤250 MB with the runtime), tracked per bundle in CI with a failing threshold
 
 ## ENG-L · Performance, memory budgets & profiling (Demo)
@@ -340,7 +340,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0236 · Demo · P1 · S · Time controls in dev — pause, single-step one fixed tick, 0.25× slow-mo, 4× fast-forward
 - [x] ENG-0237 · Demo · P0 · S · Dev-only code behind `import.meta.env.DEV` and stripped from release bundles — CI greps the release bundle for dev console strings and `window.__game`
 - [ ] ENG-0238 · Demo · P0 · M · Visual regression harness — Playwright + SwiftShader renders fixed-seed scenes (title, story, each Ch1–2 operation at set ticks) and pixel-diffs against goldens with per-test tolerance; runs on every PR
-- [ ] ENG-0239 · Demo · P1 · S · Screenshot capture (F12) of the backbuffer (`preserveDrawingBuffer`-free via readPixels after the final pass) saved as PNG — hook reused by Steam screenshots
+- [x] ENG-0239 · Demo · P1 · S · Screenshot capture (F12) of the backbuffer (`preserveDrawingBuffer`-free via readPixels after the final pass) saved as PNG — hook reused by Steam screenshots
 - [ ] ENG-0240 · Demo · P2 · S · Build stamp — version, git sha, tier and renderer shown in dev/QA builds and in the release pause menu
 
 ## ENG-N · Entity model evolution & sim/render separation (Demo)
@@ -362,7 +362,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0252 · Demo · P1 · S · Determinism lint rule — bans `Math.random`, `Date.now`, `performance.now` and DOM access inside `src/surgery` and `src/content`
 - [ ] ENG-0253 · Demo · P1 · M · Input recording — per-tick pointer/tool/key events delta+varint encoded; a 5-minute operation replay file ≤50 KB
 - [ ] ENG-0254 · Demo · P1 · M · State hashing every 60 ticks — replaying a recording reproduces identical hashes, and the dev desync detector reports the first divergent tick and entity
-- [ ] ENG-0255 · Demo · P1 · M · Golden-run regression suite — one recorded run per Ch1–2 operation re-simulated headlessly in CI; final score, rank, vitals and hash must match exactly
+- [x] ENG-0255 · Demo · P1 · M · Golden-run regression suite — one recorded run per Ch1–2 operation re-simulated headlessly in CI; final score, rank, vitals and hash must match exactly
 - [ ] ENG-0256 · Demo · P2 · S · Replay in bug reports — last operation's replay attached automatically to crash reports and in-game bug reports
 - [ ] ENG-0257 · Alpha · P1 · S · Replay file header with format version, build id and content hash — incompatible replays refuse to load with a clear message
 - [ ] ENG-0258 · Alpha · P2 · M · Replay player scene — play/pause, 0.25×–4× speed, scrub via keyframe snapshots every 5 s, HUD toggle
@@ -506,7 +506,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] PLT-0056 · Demo · P0 · S · Separate Steam demo app ID — Steamworks "Demo" app linked to the base game with its own depots, branches, Cloud settings and store association
 - [x] PLT-0057 · Demo · P0 · M · Build flavour `VITE_EDITION=demo|full` as a compile-time constant — demo bundles contain no Chapter 3–5 code modules; CI inspects `dist/` chunks and fails on any `chapter3+` module
 - [x] PLT-0058 · Demo · P0 · M · Content gating — campaign, chapter select, challenge mode and extras expose only Chapters 1–2 in the demo; unit test that no reachable route or save field references non-demo content ids
-- [ ] PLT-0059 · Demo · P0 · S · Asset manifest filter excludes non-demo bundles from demo packages — package size check in CI
+- [x] PLT-0059 · Demo · P0 · S · Asset manifest filter excludes non-demo bundles from demo packages — package size check in CI
 - [x] PLT-0060 · Demo · P0 · S · Per-edition identifiers — app id, executable name, window title ("Suture & Steel Demo"), rich presence and achievement sets selected by edition
 - [x] PLT-0061 · Demo · P1 · S · Demo watermark option — corner stamp with build id for press/festival builds, off in the public demo
 
@@ -525,7 +525,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ### Next Fest readiness
 - [ ] PLT-0070 · Demo · P0 · S · Next Fest checklist with dates — demo build live and reviewed ≥2 weeks before the festival, store page demo section, broadcast/press build, known-issues list
 - [ ] PLT-0071 · Demo · P0 · M · Festival hotfix pipeline rehearsed — fix → CI build → signed → `beta` branch → smoke on 3 OSes + Deck → `default` in ≤4 hours
-- [ ] PLT-0072 · Demo · P1 · M · Opt-in anonymous demo telemetry — operations started/finished/failed, fail phase, session length, quit point, settings tier; first-run consent, options toggle, published data policy
+- [x] PLT-0072 · Demo · P1 · M · Opt-in anonymous demo telemetry — operations started/finished/failed, fail phase, session length, quit point, settings tier; first-run consent, options toggle, published data policy
 - [ ] PLT-0073 · Demo · P1 · S · "Send feedback" link — form/Discord prefilled with build id, OS and GPU tier
 - [x] PLT-0074 · Demo · P2 · M · Kiosk/booth mode (`--kiosk`) — no saves, auto-return to title after 90 s idle, quit disabled, operation select for show floors
 - [ ] PLT-0075 · Demo · P0 · M · Clean-machine demo QA via the Steam client (no dev tools installed) on Windows 10, Windows 11, macOS arm64, Ubuntu and Steam Deck — install, play Ch1–2 end to end, Cloud sync, uninstall
@@ -636,14 +636,14 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ### Controller platform layer
 - [ ] PLT-0153 · Demo · P0 · M · Gamepad API backend (standard mapping) feeding the input abstraction, with hot-plug and per-frame polling in the fixed step — works in the desktop shell on all OSes
 - [ ] PLT-0154 · Demo · P0 · M · Steam Input integration — action manifest with action sets Menu, Operation, Litany; default configurations for Xbox, PlayStation, Switch Pro and Steam Deck; Gamepad API fallback when Steam Input is off
-- [ ] PLT-0155 · Demo · P0 · S · Glyph sets (Xbox, PlayStation, Switch, Deck, keyboard/mouse) switched by last-used device — Steam Input glyph lookup when available
+- [x] PLT-0155 · Demo · P0 · S · Glyph sets (Xbox, PlayStation, Switch, Deck, keyboard/mouse) switched by last-used device — Steam Input glyph lookup when available
 - [ ] PLT-0156 · Demo · P1 · S · Deck touchscreen input — tap = press, drag = stroke, usable for full operations
 - [x] PLT-0157 · Demo · P1 · S · Controller disconnect handling — operation auto-pauses with a "reconnect controller" prompt
 
 ### Steam Deck
 - [x] PLT-0158 · Demo · P0 · S · Deck preset — `IsSteamRunningOnSteamDeck` selects 1280×800, Medium, 60 fps cap, UI scale 115%
 - [ ] PLT-0159 · Demo · P0 · M · Deck default layout uses the right trackpad as the surgical cursor with triggers for press/hold — every Ch1–2 operation completable at A rank or better by a tester on Deck
-- [ ] PLT-0160 · Demo · P0 · S · Legibility: all text ≥9 px tall at 1280×800 (Deck Verified guideline) — automated check over layout dumps
+- [x] PLT-0160 · Demo · P0 · S · Legibility: all text ≥9 px tall at 1280×800 (Deck Verified guideline) — automated check over layout dumps
 - [ ] PLT-0161 · Demo · P0 · S · Suspend/resume on Deck mid-operation — game auto-pauses, audio resumes, no context-loss crash (10 cycles)
 - [ ] PLT-0162 · Demo · P0 · S · No keyboard required anywhere — text input fields use `ShowFloatingGamepadTextInput`
 - [ ] PLT-0163 · Demo · P0 · M · Native Linux build vs Windows build under Proton on Deck — performance, controller, Cloud and suspend compared; chosen default recorded and configured in Steamworks
@@ -653,13 +653,13 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ## PLT-O · Data-driven content loading (Alpha)
 
 - [ ] PLT-0166 · Alpha · P0 · L · Content formats — chapters, operations, phases, story scripts and dialogue as JSON/YAML with JSON Schema, compiled and validated at build (replacing TS modules with spawn closures such as `chapter1.ts`)
-- [ ] PLT-0167 · Alpha · P0 · M · Declarative phase spawn DSL — `{type: 'Laceration', at: [x, y], length, severity}` plus a registry of named scripted hooks for bespoke behaviour (bosses, tutorials)
+- [x] PLT-0167 · Alpha · P0 · M · Declarative phase spawn DSL — `{type: 'Laceration', at: [x, y], length, severity}` plus a registry of named scripted hooks for bespoke behaviour (bosses, tutorials)
 - [ ] PLT-0168 · Alpha · P0 · S · Stable namespaced content ids (`ch1.op3`, `ch2.lauds`) used by saves, achievements, telemetry and replays — CI fails on duplicate or renamed ids without a migration entry
 - [ ] PLT-0169 · Alpha · P1 · S · Validation errors point to file, line and field — the build prints all errors at once
 - [ ] PLT-0170 · Alpha · P1 · S · Content hot reload in dev — editing an operation file restarts that operation with new data in place
 - [ ] PLT-0171 · Alpha · P1 · M · Per-chapter content packs — data + asset bundle loaded lazily on chapter entry, keeping boot content minimal
-- [ ] PLT-0172 · Alpha · P1 · S · Localisation string tables — key → string per language loaded as content, missing-key detection and pseudo-localisation mode for the loc workstream
-- [ ] PLT-0173 · Alpha · P2 · S · Chapter 1–2 content migration — moved to the data format with golden-run replays proving identical outcomes
+- [x] PLT-0172 · Alpha · P1 · S · Localisation string tables — key → string per language loaded as content, missing-key detection and pseudo-localisation mode for the loc workstream
+- [x] PLT-0173 · Alpha · P2 · S · Chapter 1–2 content migration — moved to the data format with golden-run replays proving identical outcomes
 
 ## PLT-P · Full-game Steam & platform features (Beta)
 
