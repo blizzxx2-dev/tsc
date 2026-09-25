@@ -13,7 +13,12 @@ const { EDITIONS } = await importTs('src/platform/editions.ts');
 const { tokensVdf } = await importTs('src/platform/richpresence.ts');
 const { achievementsFor } = await importTs('src/platform/achievements.ts');
 
-const opt = Object.fromEntries(process.argv.slice(2).map((a) => a.replace(/^--/, '').split('=')).map(([k, ...v]) => [k, v.join('=') || '1']));
+const opt = Object.fromEntries(
+  process.argv
+    .slice(2)
+    .map((a) => a.replace(/^--/, '').split('='))
+    .map(([k, ...v]) => [k, v.join('=') || '1']),
+);
 const editions = !opt.edition || opt.edition === 'all' ? ['demo', 'full'] : [opt.edition];
 const branch = opt.branch ?? '';
 if (branch === 'default') {
@@ -24,7 +29,7 @@ const contentRoot = resolve(opt.content ?? 'release');
 const q = (s) => `"${String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
 
 /** Depot content folder per OS inside release/<edition>/ (electron-builder output). */
-const DEPOT_DIRS = { windows: 'win-unpacked', mac: 'mac-universal', linux: 'linux-unpacked' };
+const DEPOT_DIRS = { windows: 'win-unpacked' };
 
 let missing = false;
 for (const ed of editions) {
@@ -83,7 +88,14 @@ for (const ed of editions) {
   writeFileSync(
     join(out, 'achievements.json'),
     JSON.stringify(
-      achievementsFor(e.achievementSet).map((a) => ({ apiName: a.id, name: a.name, description: a.description, hidden: !!a.hidden, iconLocked: `steam/art/achievements/${a.id}_locked.jpg`, iconUnlocked: `steam/art/achievements/${a.id}.jpg` })),
+      achievementsFor(e.achievementSet).map((a) => ({
+        apiName: a.id,
+        name: a.name,
+        description: a.description,
+        hidden: !!a.hidden,
+        iconLocked: `steam/art/achievements/${a.id}_locked.jpg`,
+        iconUnlocked: `steam/art/achievements/${a.id}.jpg`,
+      })),
       null,
       2,
     ),
@@ -100,16 +112,13 @@ for (const ed of editions) {
       '|---|---|---|---|---|',
       `| 1 | Windows (64-bit) | \`${exe}.exe\` | | Play ${e.productName} |`,
       `| 2 | Windows (64-bit) | \`${exe}.exe\` | \`--safe-mode\` | Launch in safe mode (lowest graphics, windowed) |`,
-      `| 3 | macOS | \`${e.productName}.app\` | | Play ${e.productName} |`,
-      `| 4 | macOS | \`${e.productName}.app\` | \`--safe-mode\` | Launch in safe mode (lowest graphics, windowed) |`,
-      `| 5 | Linux + SteamOS | \`${exe}\` | | Play ${e.productName} |`,
-      `| 6 | Linux + SteamOS | \`${exe}\` | \`--safe-mode\` | Launch in safe mode (lowest graphics, windowed) |`,
       '',
-      'Set "Launch type" to *Launch (default)* for 1/3/5 and *Launch in safe mode* for 2/4/6.',
+      'Set "Launch type" to *Launch (default)* for 1 and *Launch in safe mode* for 2.',
       '',
     ].join('\n'),
   );
   console.log(`steam/output/${ed}: app ${appId}, depots ${Object.values(e.depots).join('/')}`);
 }
-if (missing) console.warn('warning: Steam app/depot ids are not assigned yet (src/platform/editions.ts) — placeholders written; upload is disabled until they are set.');
+if (missing)
+  console.warn('warning: Steam app/depot ids are not assigned yet (src/platform/editions.ts) — placeholders written; upload is disabled until they are set.');
 if (opt.strict && missing) process.exit(1);

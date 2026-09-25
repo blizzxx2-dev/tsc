@@ -6,7 +6,6 @@
 - INP-0021 — Click-to-photon measurement with a 240 fps camera on the reference PCs and Deck
 - INP-0023 — Profile an 8 kHz mouse on the low-spec PC
 - INP-0026 — Trace-calibration playtest with 17 testers
-- INP-0082 — Test pad mappings on SteamOS and Ubuntu hardware
 - INP-0088 — 5-tester gamepad calibration of every Ch1–2 op
 - INP-0093 — Deck Verified input checklist on LCD and OLED Decks
 - INP-0094 — Deck suspend/resume manual test ×10
@@ -15,4 +14,3 @@
 - INP-0122 — Submit for Steam Deck Verified
 - INP-0123 — Remote Play check host→Deck/phone
 - INP-0125 — Freeze the default bindings two weeks before launch (policy decision)
-- INP-0129 — Review community input requests after launch

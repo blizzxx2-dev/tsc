@@ -1,15 +1,15 @@
 // electron-builder configuration (PLT-0024/0026/0027/0019/0060). One config, parameterised by env:
 //   VITE_EDITION=demo|full     edition (identifiers, output folder)
 //   VITE_PLATFORM=desktop|none none = no Steam binaries in the package (GOG/itch, PLT-0183)
-// Output: release/<edition>[-nosteam]/{win-unpacked, mac-universal, linux-unpacked} — each one a Steam depot.
-// Signing: Windows via Azure Trusted Signing or CSC_LINK, macOS via CSC_LINK + APPLE_* notarisation env;
+// Windows only. Output: release/<edition>[-nosteam]/win-unpacked — the Steam depot.
+// Signing: Azure Trusted Signing or CSC_LINK;
 // see docs/handoff/PLT/signing.md. Unsigned local builds work without any of it.
 const { readFileSync } = require('node:fs');
 
 const edition = process.env.VITE_EDITION === 'full' ? 'full' : 'demo';
 const noSteam = process.env.VITE_PLATFORM === 'none';
-// DRM-free installers for GOG/itch (PLT-0033): SS_INSTALLERS=1 (or any no-Steam build) adds NSIS, a
-// signed .dmg and tar.gz + AppImage beside the unpacked folders. Steam depots stay 'dir'.
+// DRM-free installer for GOG/itch (PLT-0033): SS_INSTALLERS=1 (or any no-Steam build) adds NSIS beside
+// the unpacked folder. The Steam depot stays 'dir'.
 const installers = noSteam || process.env.SS_INSTALLERS === '1';
 const src = readFileSync(`${__dirname}/../src/platform/editions.ts`, 'utf8');
 // Pull the edition block's identifiers out of the TS source (single source of truth, no TS loader needed in CJS).
@@ -87,35 +87,6 @@ module.exports = {
         }
       : {}),
   },
-  mac: {
-    target: [{ target: 'dir', arch: ['universal'] }, ...(installers ? [{ target: 'dmg', arch: ['universal'] }] : [])],
-    icon: 'desktop/build/icons/icon.icns',
-    category: 'public.app-category.role-playing-games',
-    hardenedRuntime: true,
-    gatekeeperAssess: false,
-    entitlements: 'desktop/build/entitlements.mac.plist',
-    entitlementsInherit: 'desktop/build/entitlements.mac.plist',
-    // Native add-ons ship both slices already; tell the universal merger they may differ (PLT-0029).
-    x64ArchFiles: 'Contents/Resources/app.asar.unpacked/node_modules/steamworks.js/dist/osx/*',
-    notarize: !!process.env.APPLE_TEAM_ID,
-    minimumSystemVersion: '11.0',
-    extendInfo: { LSApplicationCategoryType: 'public.app-category.role-playing-games', NSHighResolutionCapable: true },
-  },
-  linux: {
-    target: [
-      { target: 'dir', arch: ['x64'] },
-      ...(installers
-        ? [
-            { target: 'tar.gz', arch: ['x64'] },
-            { target: 'AppImage', arch: ['x64'] },
-          ]
-        : []),
-    ],
-    icon: 'desktop/build/icons',
-    category: 'Game',
-    executableName,
-    synopsis: 'A grimdark surgery-action game.',
-  },
   // Installer behaviour: per-user install with a Start-menu and desktop shortcut; the uninstaller
   // never touches the save folder (saves live under the OS app-data root, PLT-0132).
   nsis: {
@@ -128,14 +99,5 @@ module.exports = {
     artifactName: '${productName}-${version}-setup.${ext}',
     shortcutName: productName,
   },
-  dmg: {
-    artifactName: '${productName}-${version}.${ext}',
-    sign: !!process.env.CSC_LINK,
-    contents: [
-      { x: 130, y: 220 },
-      { x: 410, y: 220, type: 'link', path: '/Applications' },
-    ],
-  },
-  appImage: { artifactName: '${productName}-${version}.${ext}' },
   publish: null,
 };

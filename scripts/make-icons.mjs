@@ -1,5 +1,5 @@
 // Generates the application icon set (PLT-0019) from one SVG: desktop/build/icons/<n>x<n>.png (Linux),
-// icon.ico (Windows, PNG-compressed entries up to 256 px) and icon.icns (macOS, PNG entries up to 1024 px).
+// icon.ico (Windows, PNG-compressed entries up to 256 px).
 // Rendered with Playwright's Chromium so the blackletter font matches the game. Usage: node scripts/make-icons.mjs
 import { chromium } from 'playwright';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -86,30 +86,4 @@ icoSizes.forEach((s, i) => {
   offset += png[s].length;
 });
 writeFileSync(`${OUT}/icon.ico`, Buffer.concat([header, ...icoSizes.map((s) => png[s])]));
-
-// ICNS with PNG entries.
-const icnsTypes = [
-  ['icp4', 16],
-  ['icp5', 32],
-  ['icp6', 64],
-  ['ic07', 128],
-  ['ic08', 256],
-  ['ic09', 512],
-  ['ic10', 1024],
-  ['ic11', 32],
-  ['ic12', 64],
-  ['ic13', 256],
-  ['ic14', 512],
-];
-const chunks = icnsTypes.map(([t, s]) => {
-  const h = Buffer.alloc(8);
-  h.write(t, 0, 'ascii');
-  h.writeUInt32BE(8 + png[s].length, 4);
-  return Buffer.concat([h, png[s]]);
-});
-const body = Buffer.concat(chunks);
-const ih = Buffer.alloc(8);
-ih.write('icns', 0, 'ascii');
-ih.writeUInt32BE(8 + body.length, 4);
-writeFileSync(`${OUT}/icon.icns`, Buffer.concat([ih, body]));
-console.log(`icons written to ${OUT}: ${sizes.join(', ')} px, icon.ico, icon.icns`);
+console.log(`icons written to ${OUT}: ${sizes.join(', ')} px, icon.ico`);

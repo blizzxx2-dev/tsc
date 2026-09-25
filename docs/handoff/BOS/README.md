@@ -15,4 +15,3 @@ former WIP patch is gone. Balance is validated by `tests/sweep.test.ts` (20 seed
 - BOS-0117 — Vespers playtest and final retune
 - BOS-0132 — Compline playtest and final tuning
 - BOS-0145 — Office ≥70 % clear-rate playtest
-- BOS-0180 — Tune from live Steam telemetry after launch

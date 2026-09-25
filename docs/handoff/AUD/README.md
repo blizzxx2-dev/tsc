@@ -29,6 +29,3 @@ sign, measure on hardware or playtest. Material referenced lives in this folder 
 - AUD-0138 — Portrait lip-flap needs mouth-frame art per voiced character; the VO pipeline can add a 50 Hz amplitude envelope to the manifest once frames exist (see `vo-plan.md`)
 - AUD-0141 — Final full-campaign mix and loudness sign-off in `docs/audio/loudness.md` (table at the end); procedure in `mix-passes.md`
 - AUD-0142 — Measure the audio thread on Steam Deck during a 30-minute soak of the busiest boss replay (target ≤ 3 % CPU, 0 underruns); procedure and desktop baseline in `hardware-measurements.md`
-- AUD-0145 — Master and release the soundtrack album as Steam DLC with liner notes; checklist in `composer.md`
-- AUD-0146 — If DACH sales exceed the plan threshold, record German VO into the per-language folder (`assets-src/audio/vo/de/…`; no code change needed); see `vo-plan.md`
-- AUD-0147 — Post-launch audio bug triage with before/after loudness captures (`npm run audio:capture`); process in `mix-passes.md`

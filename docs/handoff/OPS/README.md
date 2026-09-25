@@ -93,7 +93,6 @@ relative to the repository root. Index of prepared material: `docs/production/RE
 - OPS-0123 — Have LOC translate the outreach templates in `community/outreach-templates.md` into DE, FR, ES, PL, PT-BR.
 - OPS-0124 — Counsel reviews the first contest's rules/prize terms/IP licence drafted in `community/discord.md`.
 - OPS-0125 — Send full-game keys to press 2 weeks and creators 1 week before launch under embargo.
-- OPS-0127 — Publish the post-launch roadmap within 2 weeks of launch (content source `docs/production/release/post-launch.md`); update quarterly.
 - OPS-0130 — Run the two-week demo review on 1 Mar 2027 with the targets table in `docs/production/release/demo-release.md`.
 - OPS-0132 — At Beta, create the Steam Playtest app and configure the access waves in `release/demo-release.md` (D-0011).
 - OPS-0133 — Choose and set the release date in Steamworks after the checks in `docs/production/release/pricing.md`.
@@ -102,8 +101,3 @@ relative to the repository root. Index of prepared material: `docs/production/RE
 - OPS-0139 — Book creator co-streams and run the two dev streams in launch week.
 - OPS-0140 — Compare in-game credits with `docs/production/budget/credit-obligations.csv` and every contract before the RC gate.
 - OPS-0141 — Reconcile the first Steam payout against sales reports and the forecast.
-- OPS-0143 — Scope, schedule and announce free update 1 (`release/post-launch.md`).
-- OPS-0144 — Make the month-2 go/no-go on the boss rush using the criteria in `release/post-launch.md`.
-- OPS-0145 — Cost the "Ninth Office" DLC and make the 3-month go/no-go (`release/post-launch.md`).
-- OPS-0150 — Find a bundle/cross-promotion partner after 6 months and log terms.
-- OPS-0152 — Write the project post-mortem 3 months after launch (`release/post-launch.md`).

@@ -550,7 +550,6 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [x] ART-0338 · Beta · P1 · M · Launch trailer (90 s) storyboard including Chapters 3–5 Hours (Prime through Compline, with no final-form spoilers)
 - [x] ART-0339 · Beta · P2 · M · Gameplay deep-dive trailer (2–3 min) storyboard with tool-by-tool callouts
 - [x] ART-0340 · Release · P2 · S · Accolades trailer template (laurels layout) for post-launch reviews
-- [x] ART-0341 · Post · P3 · M · DLC or free-update trailer storyboard template
 
 ---
 
@@ -612,9 +611,3 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 ## ART-S · Post-launch
 
 ### Updates & DLC art
-- [ ] ART-0377 · Post · P2 · M · Unsung Hour challenge-mode card art and a leaderboard frame
-- [x] ART-0378 · Post · P2 · L · DLC chapter art package template (1 new location set, 4 portraits, 1 Malison variant, 6 ailments) with a cost estimate
-- [x] ART-0379 · Post · P3 · M · Alternate cosmetic tool skins (bone-handled, gilt, Pyre-blackened) for the instrument tray and in-field sprites
-- [ ] ART-0380 · Post · P3 · S · Steam trading cards (5 cards, 5 backgrounds, emoticons) from existing woodcut and portrait art
-- [ ] ART-0381 · Post · P3 · S · Anniversary key-art variant and a seasonal title-screen skin (Winter Vigil)
-- [ ] ART-0382 · Post · P3 · M · Digital artbook (PDF, 80 pages) from concept archives with artist commentary

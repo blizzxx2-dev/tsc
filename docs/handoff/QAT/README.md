@@ -22,7 +22,6 @@ players. Material is linked on each line.
 - QAT-0107 — Correlate `wishlist_click` with Steamworks wishlist exports and UTM visits daily (`docs/handoff/QAT/telemetry-backend.md`).
 - QAT-0108 — Monthly settings & assists report to UIX and LOC (`docs/handoff/QAT/telemetry-backend.md`).
 - QAT-0109 — Full-game funnel dashboard at Beta (`docs/handoff/QAT/telemetry-backend.md`).
-- QAT-0110 — Post-launch KPI dashboard from crash reporting and Steamworks exports (`docs/handoff/QAT/telemetry-backend.md`).
 - QAT-0112 — Book the compatibility lab sweep on ≥ 15 GPU configs and merge results into `docs/qa/compat-matrix.md` (`docs/handoff/QAT/release-checks.md`).
 - QAT-0114 — VirusTotal each RC, vendor false-positive submissions, clean re-scan (`docs/handoff/QAT/release-checks.md`).
 - QAT-0115 — Run Electronegativity and the hardening checklist on PLT's packaged demo (`docs/handoff/QAT/release-checks.md`).
@@ -43,4 +42,3 @@ players. Material is linked on each line.
 - QAT-0149 — Staff the Next Fest daily crash/forum rota (`docs/handoff/QAT/release-checks.md`).
 - QAT-0150 — Review every community-reported demo bug before the Alpha gate (`docs/handoff/QAT/release-checks.md`).
 - QAT-0166 — Run the full 1.0 RC regression on every matrix OS and sign `docs/qa/signoff/1.0-rc.md` (`node scripts/qa/signoff.mjs 1.0-rc`, `docs/qa/beta-test-plan.md`).
-- QAT-0170 — Bi-weekly top-10 crash-signature review for the first three months after launch (`docs/handoff/QAT/release-checks.md`).

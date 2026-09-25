@@ -20,7 +20,7 @@ export interface EditionInfo {
   /** Steam app id of this edition (0 = not yet assigned). */
   steamAppId: number;
   /** Steam depot ids per OS. */
-  depots: { windows: number; mac: number; linux: number };
+  depots: { windows: number };
   /** Sub-directory of the shared save root (PLT-0136): `…/suture-and-steel/<saveDir>/`. */
   saveDir: string;
   /** Chapters (0-based campaign indices) this edition may expose. */
@@ -41,7 +41,7 @@ export const EDITIONS: Record<Edition, EditionInfo> = {
     executableName: 'SutureAndSteelDemo',
     bundleId: 'games.sutureandsteel.demo',
     steamAppId: 0,
-    depots: { windows: 0, mac: 0, linux: 0 },
+    depots: { windows: 0 },
     saveDir: 'demo',
     chapters: [0, 1],
     achievementSet: 'demo',
@@ -53,7 +53,7 @@ export const EDITIONS: Record<Edition, EditionInfo> = {
     executableName: 'SutureAndSteel',
     bundleId: 'games.sutureandsteel.game',
     steamAppId: 0,
-    depots: { windows: 0, mac: 0, linux: 0 },
+    depots: { windows: 0 },
     saveDir: 'full',
     chapters: [0, 1, 2, 3, 4],
     achievementSet: 'full',

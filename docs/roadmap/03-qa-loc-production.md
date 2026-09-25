@@ -364,7 +364,6 @@ Tasks below add the QA, localisation and production/legal work around them.
 - [ ] QAT-0107 · Demo · P1 · S · Wishlist attribution — demo wishlist clicks correlated daily with Steamworks wishlist additions and UTM-tagged store visits
 - [ ] QAT-0108 · Demo · P2 · S · Settings & assists report — share of players using each assist, gore level, reduced flashing and language; sent to UIX and LOC monthly
 - [ ] QAT-0109 · Beta · P1 · S · Full-game funnel — chapter start/complete for Ch1–5, challenge-mode entry, discipline-mode usage and Ch3–5 fail points
-- [ ] QAT-0110 · Post · P1 · S · Post-launch KPI dashboard — crash-free sessions, completion per chapter, median playtime, challenge participation and refund-window playtime buckets (from Steamworks exports)
 
 ## QAT-J · Compatibility & platform QA (Demo)
 
@@ -477,7 +476,6 @@ Tasks below add the QA, localisation and production/legal work around them.
 - [ ] OPS-0124 · Demo · P2 · S · Community events — screenshot and fan-art contests with written rules, prize terms and IP licence for submissions
 - [ ] OPS-0125 · Release · P0 · M · Review-copy wave — full-game keys to press 2 weeks before launch and to creators 1 week before, under embargo
 - [x] OPS-0126 · Release · P1 · S · Launch-week community plan — Discord launch event, dev AMA, and a Steam review-response rule (reply to bug-related negative reviews within 48 h with the fix status)
-- [ ] OPS-0127 · Post · P1 · S · Public roadmap — post-launch roadmap (patches, free updates, DLC) published within 2 weeks of launch and updated quarterly
 
 ## QAT-L · Demo test plan, test suites & certification (Demo)
 
@@ -546,9 +544,6 @@ Tasks below add the QA, localisation and production/legal work around them.
 - [ ] QAT-0167 · Release · P0 · S · Day-one patch verification — patch build passes the RC regression subset and upgrades a 1.0 save and a demo carry-over save without loss
 
 ### Post-launch
-- [x] QAT-0168 · Post · P1 · S · Patch regression suite — automated suites plus a 2-hour manual checklist for every post-launch patch; results attached to the patch notes PR
-- [x] QAT-0169 · Post · P1 · M · Update and DLC test plans — per release: new content suites, saves with and without the DLC, DLC ownership checks online and offline, leaderboards unaffected
-- [ ] QAT-0170 · Post · P2 · S · Player-reported crash review — top 10 crash signatures reviewed every two weeks for the first three months; each fixed or explained in the known-issues list
 
 ## LOC-H · Full-game localisation (Beta → Post)
 
@@ -584,11 +579,6 @@ Tasks below add the QA, localisation and production/legal work around them.
 - [ ] LOC-0102 · Release · P0 · S · Full-game store page localisation — every shipped language, with ART screenshots showing localised UI for DE, FR, RU, ZH-Hans and JA
 - [ ] LOC-0103 · Release · P1 · S · Launch press text — launch press release and launch-trailer subtitles in every shipped language
 - [x] LOC-0104 · Release · P1 · S · Patch-notes template — day-one and hotfix notes published in every shipped language within 48 h of the English notes
-- [x] LOC-0105 · Post · P1 · S · Post-launch string pipeline — patch and update strings batched weekly; new content is localised before release, never after
-- [x] LOC-0106 · Post · P1 · S · LQA regression for updates — each patch touching text gets a spot-check per language on the changed keys before it goes live
-- [ ] LOC-0107 · Post · P2 · M · Community translations — public TMS project for fan languages (e.g. UK, TR, CS, HU) with a contributor licence agreement; shipped as "community" languages after moderator review
-- [ ] LOC-0108 · Post · P2 · S · Post-launch language review — sales and wishlist share by language after 3 months decide on new languages (e.g. Latin-American Spanish, Traditional Chinese)
-- [ ] LOC-0109 · Post · P2 · M · DLC and free-update localisation — every update ships in all 1.0 languages on day one; budget and schedule added per update
 
 ## OPS-L · Full-game release (Beta → Release)
 
@@ -604,14 +594,3 @@ Tasks below add the QA, localisation and production/legal work around them.
 
 ## OPS-M · Post-launch (Post)
 
-- [x] OPS-0142 · Post · P0 · S · Patch cadence — hotfixes within 72 h in week 1, patch 1.1 at about 4 weeks with QoL and balance, then monthly until stable; each patch's scope set in triage
-- [ ] OPS-0143 · Post · P1 · M · Free update 1 — challenge pack built around the NAR/ART "Unsung Hour" secret operation plus remixed Ch1–5 challenges with leaderboards; scoped, scheduled and announced
-- [ ] OPS-0144 · Post · P1 · M · Free update 2 — boss rush (working title "Office of Hours") of all eight Malison hours with its own leaderboard; go/no-go on month-2 engagement data
-- [ ] OPS-0145 · Post · P1 · M · Paid DLC business case — the NAR "Ninth Office" chapter outline costed (ART DLC template, loc, VO), with price, attach-rate assumption and a go/no-go after 3 months of sales
-- [x] OPS-0146 · Post · P1 · S · Mod policy — content rules (no third-party IP, no hateful content), takedown handling via the IP-claim procedure, EULA mod clause, moderation owner for Workshop items (tech per PLT)
-- [x] OPS-0147 · Post · P1 · S · Sales calendar — Steam seasonal sales and Daily Deal requests; discount ladder (e.g. 20 → 30 → 40 %) tied to months since launch; ART sale capsules scheduled
-- [x] OPS-0148 · Post · P1 · S · Monthly business review — revenue, wishlists, conversion, refunds, review trend, playtime and completion (Steamworks + telemetry); decisions logged
-- [x] OPS-0149 · Post · P1 · S · Refund & review watch — refund rate and review score checked weekly for 3 months; a refund rate above 10 % or score drop of 5 points triggers an investigation ticket
-- [ ] OPS-0150 · Post · P2 · S · Bundles & cross-promotion — a Steam bundle or cross-promo with a complementary indie after 6 months; partner and terms logged
-- [x] OPS-0151 · Post · P2 · S · End-of-support plan — when telemetry, Discord support and patches wind down; retention and shutdown notice drafted in line with the privacy policy
-- [ ] OPS-0152 · Post · P1 · S · Project post-mortem — after 3 months: schedule vs plan, budget vs actual, what to keep and change; published internally

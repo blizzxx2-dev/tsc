@@ -340,8 +340,6 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0218 · Beta · P1 · M · Symptom Loom — procedural challenge ops built from 3 adjacent "verses" out of 12 symptom modules; seed shown and shareable
 - [x] GAM-0219 · Beta · P1 · S · Loom validator — every generated combination tested by bot sweep (1000 seeds) for completability before shipping the module set
 - [x] GAM-0220 · Beta · P2 · M · Daily Loom — date-seeded op; Steam leaderboard per day
-- [ ] GAM-0221 · Post · P2 · L · The Unsung Hour — secret post-game challenge stitching remnants of every patient lost; unlocked by X1–X8 all cleared
-- [x] GAM-0222 · Post · P3 · M · Custom challenge editor — toggle modifiers on any cleared op and share code string
 
 ### Mutators
 - [x] GAM-0223 · Alpha · P2 · S · Mutator: "Candle-Only" — vignette radius 45 %, Lens reveal radius ×0.7
@@ -648,7 +646,4 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [ ] BOS-0175 · Release · P0 · S · Final bot sweep — all bosses/elites × 3 difficulties × 50 seeds pass on release candidate build
 - [x] BOS-0176 · Release · P1 · S · Replay-verified boss speedrun leaderboards — (fastest clear per Hour) enabled
 - [x] BOS-0177 · Release · P1 · S · Crash/soft-lock audit — each boss run with random-input fuzz bot for 10 min × 20 seeds; no exceptions, no stuck phases
-- [x] BOS-0178 · Post · P2 · M · Boss Rush mode — all 8 Hours back-to-back with carried vitals, one Litany total
-- [ ] BOS-0179 · Post · P3 · L · Free update boss "Lauds Reprised" — Ilse-as-patient variant with new antiphon mechanic
-- [ ] BOS-0180 · Post · P2 · S · Post-launch balance patch — tune from Steam telemetry fail rates per boss phase (any phase > 40 % fail on Surgeon adjusted)
 

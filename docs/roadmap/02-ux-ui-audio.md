@@ -118,7 +118,6 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] INP-0079 · Demo · P0 · M · Menu navigation actions — `ui.up/down/left/right/confirm/back/tabPrev/tabNext` from arrows/WASD, D-pad and left stick with 180 ms initial repeat delay and 80 ms repeat rate; A/Cross confirm, B/Circle back (Nintendo layout swap option)
 - [x] INP-0080 · Demo · P1 · S · Last-used device tracking — prompts switch between mouse/keyboard and gamepad glyphs within one frame of input from the other device, with hysteresis (mouse must move > 4 px) so resting hands don't cause flicker
 - [ ] INP-0081 · Demo · P1 · M · Glyph sets — Xbox, PlayStation, Steam Deck, Nintendo and generic glyph atlases in the woodcut UI style; auto-detected from `Gamepad.id` / Steam Input controller type; manual override in Options
-- [ ] INP-0082 · Demo · P1 · S · Linux/Electron gamepad sanity — Xbox, DualSense and Deck built-in controls report the standard mapping in the Electron build on SteamOS and Ubuntu; mapping fixes shipped as a table for known ids
 
 ### Virtual cursor & gamepad surgery
 - [x] INP-0083 · Demo · P0 · M · Virtual cursor — left stick moves the reticle with an acceleration curve (max 900 px/s, response exponent 2.0, 80 ms ramp), RT/R2 = primary press/hold, cursor clamped to the view; "Cursor speed" setting 0.5–2.0×
@@ -585,7 +584,6 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] INP-0116 · Beta · P2 · M · Gyro cursor — gyro-as-mouse for Deck, DualSense and Switch Pro via Steam Input, enabled while touching the right trackpad or holding R1 (ratchet); sensitivity setting; off by default
 - [ ] INP-0117 · Beta · P2 · M · Pen tablet support — `pointerType === 'pen'`: hover moves the cursor, tip = primary, barrel button = Litany draw; Windows Ink press-and-hold right-click suppressed; tested on Wacom and XP-Pen
 - [ ] INP-0118 · Beta · P2 · M · Touch play — full touch layout for touchscreen laptops and Deck handheld: on-screen tool strip, two-finger drag draws the Litany star, tap-and-hold as hold tools; toggled automatically on first touch input
-- [ ] INP-0119 · Beta · P2 · S · macOS input — Ctrl-click and two-finger click map to secondary, Force Touch ignored, Cmd+Q confirm; tested on a MacBook trackpad and Magic Mouse
 - [ ] INP-0120 · Beta · P2 · S · Key-name localisation — bindings screen shows localised key names for FR/DE/ES/IT/PL/RU keyboards
 - [x] INP-0121 · Beta · P2 · S · Opt-in gesture telemetry — anonymous per-mechanic success/attempt counts (no raw strokes) sent only with consent, to guide post-demo tuning
 
@@ -687,19 +685,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 ## Epic POST · Post-launch (Post)
 
 ### Input
-- [ ] INP-0126 · Post · P2 · M · Switch/scanning access — single-switch mode: tools and targets cycled by timed highlighting, one input performs the selected action with assisted gestures; tested with an accessibility consultant
-- [ ] INP-0127 · Post · P3 · M · DualSense adaptive triggers — trigger resistance while pulling with the Tongs and a pulse on each stitch via Steam Input / native HID bridge
-- [ ] INP-0128 · Post · P3 · S · Pen pressure option — optional pressure-scaled incision depth feedback (visual only, no scoring change) for pen users
-- [ ] INP-0129 · Post · P2 · S · Community-requested bindings — review the top 5 input requests from Steam forums/Discord after launch and ship fixes in the first two patches
 
 ### UI
-- [ ] UIX-0210 · Post · P2 · M · New Game+ UI — NG+ badge on save slots, remixed-operation markers in chapter select, NG+ rank seals
-- [ ] UIX-0211 · Post · P2 · M · DLC/free-update chapter integration — chapter select and codex support additional chapters and discipline packs discovered from content manifests without code changes
-- [ ] UIX-0212 · Post · P3 · M · Photo mode — pause-time photo mode for story CGs and operation aftermath with frames, filters (woodcut, sepia) and hidden HUD; excluded when gore level is Minimal
-- [ ] UIX-0213 · Post · P2 · S · Seasonal challenge UI — rotating weekly challenge card on the title with countdown and leaderboard link
-- [ ] UIX-0214 · Post · P2 · S · Player-feedback accessibility patch — review accessibility feedback 30 days after launch; ship the top-requested options (tracked list in `docs/qa/accessibility.md`)
 
 ### Audio
-- [ ] AUD-0145 · Post · P2 · M · Soundtrack release — mastered album (Title, operation themes, eight Malison hours, credits piece) as Steam soundtrack DLC with liner-note PDF of woodcut art
-- [ ] AUD-0146 · Post · P3 · L · Localised VO (German) — if sales in DACH exceed the plan threshold, record German VO for Ilse barks and the Choir using the per-language VO folder
-- [ ] AUD-0147 · Post · P2 · S · Audio bug triage — fix audio issues reported in the first month (missing sounds, level complaints) with before/after loudness captures attached to each fix

@@ -8,4 +8,3 @@
 - NAR-0025 — Per-language reviewers check translated names against the avoid-list
 - NAR-0176 — Record a table read of Ch1–2
 - NAR-0191 — LQA reviewers per language
-- NAR-0195 — Legal IP terms for player-submitted verses

@@ -366,7 +366,6 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0256 · Demo · P2 · S · Replay in bug reports — last operation's replay attached automatically to crash reports and in-game bug reports
 - [x] ENG-0257 · Alpha · P1 · S · Replay file header with format version, build id and content hash — incompatible replays refuse to load with a clear message
 - [ ] ENG-0258 · Alpha · P2 · M · Replay player scene — play/pause, 0.25×–4× speed, scrub via keyframe snapshots every 5 s, HUD toggle
-- [ ] ENG-0259 · Alpha · P1 · M · Cross-platform determinism test — recordings made on Windows re-simulate with identical hashes on macOS and Linux builds (same runtime version)
 - [ ] ENG-0260 · Alpha · P2 · S · Golden runs for Chapters 3–5 — suite extended to every new operation and challenge-mode variant as content lands
 
 ## ENG-P · Shader & VFX library for Chapters 3–5 (Alpha)
@@ -414,11 +413,6 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 
 ## ENG-S · Post-launch engine (Post)
 
-- [ ] ENG-0290 · Post · P2 · L · WebGPU backend spike behind the `GlDevice` interface — flesh pass + batcher ported, perf comparison on UHD 620 and Deck
-- [ ] ENG-0291 · Post · P2 · M · Photo mode — freeze an operation, free camera pan/zoom, hide HUD, LUT/filter picker, export PNG
-- [ ] ENG-0292 · Post · P3 · M · HDR10 output experiment — canvas extended-range `colorSpace` with tonemap-to-display once Chromium ships it
-- [ ] ENG-0293 · Post · P2 · M · Shareable replay ghosts — render a recorded run as a translucent ghost cursor/tool trail during challenge mode
-- [ ] ENG-0294 · Post · P3 · M · Standalone render viewport — scene renderer usable without the game loop for the mod operation editor preview
 
 ---
 
@@ -434,7 +428,6 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] PLT-0005 · Demo · P0 · M · Build the current game in Electron (latest stable) and Tauri 2 shells on Windows 11, macOS 14 (arm64) and Ubuntu 22.04 — record install size, cold start, idle RAM, frame pacing on op1-5
 - [ ] PLT-0006 · Demo · P0 · S · WebGL2 compatibility check per shell: WebView2 (Windows), WKWebView (macOS), WebKitGTK (Linux) — flesh shader compiles, MSAA/float RT availability, fps vs Chromium
 - [ ] PLT-0007 · Demo · P0 · M · Steam integration feasibility per shell — steamworks.js (napi) under Electron vs the Rust `steamworks` crate under Tauri; overlay renders and receives input on Windows fullscreen and windowed
-- [ ] PLT-0008 · Demo · P0 · S · Steam Linux Runtime / Steam Deck check for both shells — launches in gamescope, correct resolution, controller input reaches the page
 - [ ] PLT-0009 · Demo · P1 · S · Audio behaviour per shell — WebAudio latency, autoplay policy, device change and suspend/resume measured and recorded
 - [x] PLT-0010 · Demo · P0 · S · ADR-001 "Desktop runtime" — scored matrix (GPU compat, Steam overlay, size, startup, dev velocity, update story) and decision; Electron is the default unless Tauri wins on compat and overlay
 - [x] PLT-0011 · Demo · P1 · S · Runtime version policy — pinned major, security-patch bumps within 2 weeks, major upgrades only between milestones with full regression pass
@@ -461,8 +454,6 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] PLT-0026 · Demo · P0 · S · Electron fuses: disable `RunAsNode` and `NODE_OPTIONS`, enable `OnlyLoadAppFromAsar` and embedded ASAR integrity validation — verified with `@electron/fuses read`
 - [x] PLT-0027 · Demo · P1 · S · Strip unused Chromium locale paks and dev artefacts — size delta recorded; Windows demo depot ≤250 MB compressed
 - [x] PLT-0028 · Demo · P1 · M · Per-bundle resource archives — code, common, chapter1, chapter2 split so a code-only hotfix is a Steam patch ≤20 MB instead of re-downloading one big ASAR
-- [ ] PLT-0029 · Demo · P0 · S · macOS universal binary runs natively on Apple Silicon and Intel (no Rosetta prompt) — verified on both
-- [ ] PLT-0030 · Demo · P0 · M · Linux build runs inside the Steam Linux Runtime (sniper) container on Ubuntu, Fedora and SteamOS — X11 and Wayland (`ozone-platform-hint=auto`) tested
 - [ ] PLT-0031 · Demo · P1 · S · Windows — per-monitor-v2 DPI awareness, Windows 10 1809+ minimum, no external redistributables required (clean VM test)
 - [x] PLT-0032 · Demo · P1 · S · Reproducible builds: pinned Node (`.nvmrc`), lockfile installs, deterministic archive ordering — two CI builds of one commit produce identical app archive hashes
 - [x] PLT-0033 · Release · P1 · M · DRM-free installers for GOG/itch — Windows NSIS (Start-menu shortcut, uninstaller that keeps saves), macOS signed `.dmg`, Linux `.tar.gz` + AppImage
@@ -470,8 +461,6 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ## PLT-E · Code signing & notarisation (Demo)
 
 - [ ] PLT-0034 · Demo · P0 · M · Windows Authenticode signing — executables and native modules signed in CI (OV/EV certificate or Azure Trusted Signing) with RFC 3161 timestamps
-- [ ] PLT-0035 · Demo · P0 · M · macOS Developer ID signing — hardened runtime with minimal Electron entitlements (JIT, unsigned executable memory only if required), notarised via `notarytool`, stapled
-- [ ] PLT-0036 · Demo · P0 · S · Sign native add-ons and `libsteam_api.dylib` inside the bundle — Gatekeeper passes on a clean Mac downloaded via Steam
 - [ ] PLT-0037 · Demo · P0 · S · Signing credentials stored only in the CI secret store (or cloud HSM) — documented rotation and revocation procedure; no keys on developer machines
 - [ ] PLT-0038 · Demo · P0 · S · Post-build verification in CI — `signtool verify /pa /v`, `codesign --verify --deep --strict`, `spctl -a -t exec`; failure blocks upload
 - [x] PLT-0039 · Release · P2 · S · DRM-free checksums — SHA-256 with detached GPG signatures published for every download
@@ -582,8 +571,6 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] PLT-0114 · Demo · P1 · M · Hardware cursor option — OS cursor with custom image (menus and operation reticle) instead of the software-drawn reticle with `cursor: none`; input-to-photon latency compared and the lower-latency path is default
 - [ ] PLT-0115 · Demo · P2 · S · Cursor confinement option — keep the cursor inside the window in fullscreen/borderless on multi-monitor setups so fast strokes cannot leave it
 - [ ] PLT-0116 · Demo · P0 · S · Alt+Tab/minimise/restore in fullscreen on Windows returns to a correct frame (no black screen, context intact) — tested on NVIDIA, AMD and Intel
-- [ ] PLT-0117 · Demo · P1 · S · macOS — native full-screen Space vs "simple fullscreen" option; notch-aware safe area on MacBook Pro displays
-- [ ] PLT-0118 · Demo · P1 · S · Linux — Wayland fractional scaling and X11 multi-monitor tested; gamescope on Steam Deck reports the correct 1280×800 size
 - [ ] PLT-0119 · Demo · P2 · S · Windows HDR desktop mode — SDR output not washed out or over-bright (visual check on an HDR monitor)
 
 ## PLT-K · Logging & crash reporting (Demo)
@@ -646,7 +633,6 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] PLT-0160 · Demo · P0 · S · Legibility: all text ≥9 px tall at 1280×800 (Deck Verified guideline) — automated check over layout dumps
 - [ ] PLT-0161 · Demo · P0 · S · Suspend/resume on Deck mid-operation — game auto-pauses, audio resumes, no context-loss crash (10 cycles)
 - [ ] PLT-0162 · Demo · P0 · S · No keyboard required anywhere — text input fields use `ShowFloatingGamepadTextInput`
-- [ ] PLT-0163 · Demo · P0 · M · Native Linux build vs Windows build under Proton on Deck — performance, controller, Cloud and suspend compared; chosen default recorded and configured in Steamworks
 - [ ] PLT-0164 · Demo · P1 · S · Deck Verified self-review — Valve's checklist (input, display, seamlessness, system support) passed for the demo
 - [ ] PLT-0165 · Release · P0 · S · Deck Verified for the full game — review submitted and passed
 
@@ -684,21 +670,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 
 ## PLT-R · Launch readiness & compliance (Release)
 
-- [ ] PLT-0189 · Release · P0 · S · Steam release checklist complete — store page and build review approved, content survey matches in-game gore/violence, IARC rating obtained
-- [ ] PLT-0190 · Release · P0 · S · Privacy policy and EULA linked from the options screen and store page — consent flows verified in every shipped language
-- [ ] PLT-0191 · Release · P0 · S · Launch-day runbook — on-call rota, crash dashboard thresholds, rollback procedure (set previous build live in Steamworks) rehearsed
-- [ ] PLT-0192 · Release · P0 · S · 1.0 signing verification — packages pass SmartScreen and Gatekeeper on clean machines
-- [ ] PLT-0193 · Release · P1 · S · Store system requirements — min/recommended specs match the validated performance matrix
-- [ ] PLT-0194 · Release · P1 · S · Demo on the 1.0 engine — demo rebuilt on the final engine with carry-over into the released game verified end to end
 
 ## PLT-S · Post-launch platform (Post)
 
-- [ ] PLT-0195 · Post · P1 · S · Patch cadence tooling — hotfix branch template, patch-size check (code-only patch ≤20 MB) and automated Steam news post draft
-- [ ] PLT-0196 · Post · P2 · M · Mod groundwork — `mods/` folder scan, manifest (id, version, game version, load order), data-only overrides of content packs, disabled by default, no code execution
-- [ ] PLT-0197 · Post · P2 · M · Mods mode flag — achievements and leaderboards disabled while data mods are active; mod list recorded in crash reports
-- [ ] PLT-0198 · Post · P2 · L · Steam Workshop (UGC) for data-only custom operations — upload/subscribe/download, content validation before load
-- [ ] PLT-0199 · Post · P3 · L · In-game operation editor — writes content packs to the mods folder using the ENG render viewport
-- [ ] PLT-0200 · Post · P2 · M · Leaderboard replay verification — uploaded replays re-simulated server-side (headless Node) before scores are accepted
-- [ ] PLT-0201 · Post · P3 · M · Console port feasibility spike — runtime without a browser engine, WebGL→native backend, cost estimate
-- [ ] PLT-0202 · Post · P3 · S · Epic Games Store / EOS evaluation — decision recorded, no implementation
 

@@ -6,14 +6,9 @@ Prepared material lives next to this file: `steamworks-setup.md`, `signing.md`, 
 - PLT-0005 — Run the Electron build on Windows 11, macOS 14 arm64 and Ubuntu 22.04 and record install size, cold start, idle RAM and frame pacing (Tauri optional, ADR-001 already decided Electron); protocol + results table in `hardware-qa.md` §1
 - PLT-0006 — Record WebGL2 caps/shader compile per OS from the log header and op I-1; `hardware-qa.md` §1.5
 - PLT-0007 — Verify the Steam overlay (Shift+Tab) in windowed/borderless/fullscreen on Windows with the Steamworks app id set; `hardware-qa.md` §1.6
-- PLT-0008 — Launch under the Steam Linux Runtime and on Deck in gamescope; check resolution and controller input; `hardware-qa.md` §2, §4
 - PLT-0009 — Measure WebAudio latency, device change and suspend/resume on each OS; `hardware-qa.md` §1.7
-- PLT-0029 — Verify the macOS universal .app (built by the `build` workflow on macos-14) runs natively on Apple Silicon and Intel; `hardware-qa.md` §2
-- PLT-0030 — Test the Linux depot inside Steam Linux Runtime 3.0 (sniper) on Ubuntu (X11+Wayland), Fedora and SteamOS; `hardware-qa.md` §2
 - PLT-0031 — Clean Windows 10 1809 / 11 VM test (no redistributables, non-admin, per-monitor DPI); `hardware-qa.md` §2
 - PLT-0034 — Create the Azure Trusted Signing account/profile (or OV/EV cert on an HSM) and add the CI secrets; `signing.md` §Windows
-- PLT-0035 — Create the Developer ID certificate + App Store Connect API key and add the CI secrets (config, entitlements and notarisation are wired); `signing.md` §macOS
-- PLT-0036 — After PLT-0035, confirm Gatekeeper accepts the Steam-installed demo on a clean Mac (add-ons and libsteam_api.dylib are signed by the build); `signing.md` §macOS step 6
 - PLT-0037 — Put signing credentials only in GitHub secrets, restrict access to two people, calendar the rotations; procedure in `signing.md` §Custody
 - PLT-0038 — Once secrets exist, confirm the `build` workflow's verify steps (signtool/codesign/spctl/stapler) run green and block on failure; `.github/workflows/build.yml`
 - PLT-0042 — Verify overlay rendering/input per OS; `hardware-qa.md` §1.6. Auto-pause is wired end to end (`SteamService.onOverlay` → `ss:overlay` → `OverlayGate` pauses and silences input) but steamworks.js 0.4.0 exposes no `GameOverlayActivated` callback: `desktop/src/steam.ts` probes `callback.SteamCallback.GameOverlayActivated` at runtime and logs when it is absent. Until a steamworks.js release (or a fork) binds `GameOverlayActivated_t { uint8 m_bActive }` as `SteamCallback.GameOverlayActivated` with `register(id, ({ active }) => …)`, the overlay pauses the game only through the focus-loss path (Steam's overlay steals keyboard focus on Windows/Linux, so `ss:focus false` fires; verify on macOS)
@@ -35,8 +30,6 @@ Prepared material lives next to this file: `steamworks-setup.md`, `signing.md`, 
 - PLT-0111 — Tear-test VSync off/on (next-launch switch is implemented); `hardware-qa.md` §3
 - PLT-0112 — Verify rAF runs at 144/165 Hz on Windows and ProMotion; `hardware-qa.md` §3
 - PLT-0116 — Alt+Tab/minimise/restore in fullscreen on NVIDIA, AMD, Intel; `hardware-qa.md` §3
-- PLT-0117 — Check native Space vs simple fullscreen and the notch safe area on a MacBook Pro; `hardware-qa.md` §3
-- PLT-0118 — Wayland fractional scaling, X11 multi-monitor, Deck 1280×800 in gamescope; `hardware-qa.md` §3
 - PLT-0119 — Visual check on a Windows HDR monitor; `hardware-qa.md` §3
 - PLT-0123 — Choose the crash backend (Sentry recommended), create the project and add DSN/minidump URL/auth-token secrets; Crashpad + CI symbol upload are wired; `crash-backend.md`
 - PLT-0124 — Same account as PLT-0123 (JS reporter + source-map upload are implemented); `crash-backend.md`
@@ -52,5 +45,4 @@ Prepared material lives next to this file: `steamworks-setup.md`, `signing.md`, 
 - PLT-0159 — Deck trackpad playtest of every Ch1–2 operation at A rank or better; `hardware-qa.md` §4
 - PLT-0161 — Deck suspend/resume ×10 mid-operation (auto-pause on suspend is implemented); `hardware-qa.md` §4
 - PLT-0162 — Confirm no step needs a keyboard on Deck (floating keyboard bridge exists for future text fields); `hardware-qa.md` §4
-- PLT-0163 — Compare native Linux vs Proton on Deck and set the default in Steamworks; `hardware-qa.md` §1–§4
 - PLT-0164 — Run Valve's Deck Verified checklist for the demo; `hardware-qa.md` §4

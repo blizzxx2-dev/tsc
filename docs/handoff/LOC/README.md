@@ -69,6 +69,3 @@ workstream owners. Paths are relative to the repository root.
 - LOC-0101 — Translate rich-presence tokens for IT, RU, ZH-Hans, JA, KO and check in a friends list.
 - LOC-0102 — Localise the 1.0 store page in every shipped language; ART supplies localised screenshots for DE, FR, RU, ZH-Hans, JA.
 - LOC-0103 — Translate the launch press release and launch-trailer subtitles.
-- LOC-0107 — Open a public TMS project with a contributor licence agreement (counsel) for community languages.
-- LOC-0108 — Three months after launch, review sales/wishlists by language and decide new languages.
-- LOC-0109 — Budget and schedule localisation for each DLC/free update so it ships in all 1.0 languages on day one.

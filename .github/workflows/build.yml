@@ -40,7 +40,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-14, ubuntu-22.04]
+        os: [windows-latest]
         edition: ${{ fromJSON(inputs.editions) }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
@@ -49,7 +49,6 @@ jobs:
       VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
       SS_CRASH_SUBMIT_URL: ${{ secrets.SS_CRASH_SUBMIT_URL }}
       HAS_AZURE: ${{ secrets.AZURE_TRUSTED_SIGNING_ENDPOINT != '' }}
-      HAS_MAC_CERT: ${{ secrets.MAC_CERT_P12_BASE64 != '' }}
       HAS_SENTRY: ${{ secrets.SENTRY_AUTH_TOKEN != '' }}
     steps:
       - uses: actions/checkout@v4
@@ -64,20 +63,6 @@ jobs:
         shell: bash
         run: echo "SOURCE_DATE_EPOCH=$(git log -1 --format=%ct)" >> "$GITHUB_ENV"
       - run: npm ci
-
-      # ---- macOS signing identity + notarisation key (PLT-0035/0036/0037) ----
-      - name: Import Developer ID certificate
-        if: runner.os == 'macOS' && env.HAS_MAC_CERT == 'true'
-        shell: bash
-        run: |
-          echo "CSC_LINK=${{ secrets.MAC_CERT_P12_BASE64 }}" >> "$GITHUB_ENV"
-          echo "CSC_KEY_PASSWORD=${{ secrets.MAC_CERT_PASSWORD }}" >> "$GITHUB_ENV"
-          mkdir -p ~/private_keys
-          echo "${{ secrets.APPLE_API_KEY_P8_BASE64 }}" | base64 --decode > ~/private_keys/AuthKey.p8
-          echo "APPLE_API_KEY=$HOME/private_keys/AuthKey.p8" >> "$GITHUB_ENV"
-          echo "APPLE_API_KEY_ID=${{ secrets.APPLE_API_KEY_ID }}" >> "$GITHUB_ENV"
-          echo "APPLE_API_ISSUER=${{ secrets.APPLE_API_ISSUER }}" >> "$GITHUB_ENV"
-          echo "APPLE_TEAM_ID=${{ secrets.APPLE_TEAM_ID }}" >> "$GITHUB_ENV"
 
       # ---- Windows: Azure Trusted Signing (PLT-0034/0037) ----
       - name: Azure Trusted Signing environment
@@ -105,11 +90,7 @@ jobs:
         id: out
         shell: bash
         run: |
-          case "${{ runner.os }}" in
-            Windows) echo "dir=release/${{ matrix.edition }}/win-unpacked" >> "$GITHUB_OUTPUT" ;;
-            macOS)   echo "dir=release/${{ matrix.edition }}/mac-universal" >> "$GITHUB_OUTPUT" ;;
-            *)       echo "dir=release/${{ matrix.edition }}/linux-unpacked" >> "$GITHUB_OUTPUT" ;;
-          esac
+          echo "dir=release/${{ matrix.edition }}/win-unpacked" >> "$GITHUB_OUTPUT"
 
       - name: Inspect package (fuses, maps, size budget)
         shell: bash
@@ -125,19 +106,10 @@ jobs:
             & $signtool.FullName verify /pa /v $_.FullName
             if ($LASTEXITCODE -ne 0) { throw "unsigned: $($_.FullName)" }
           }
-      - name: Verify macOS signature, notarisation and Gatekeeper
-        if: runner.os == 'macOS' && env.HAS_MAC_CERT == 'true'
-        shell: bash
-        run: |
-          APP=$(ls -d "${{ steps.out.outputs.dir }}"/*.app)
-          codesign --verify --deep --strict --verbose=2 "$APP"
-          find "$APP" \( -name '*.node' -o -name '*.dylib' \) -exec codesign --verify --strict --verbose=1 {} \;
-          spctl -a -t exec -vv "$APP"
-          xcrun stapler validate "$APP"
 
       # ---- Symbols and source maps to the crash backend (PLT-0123/0124); maps never ship ----
       - name: Upload symbols and source maps
-        if: env.HAS_SENTRY == 'true' && runner.os == 'Linux'
+        if: env.HAS_SENTRY == 'true'
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
@@ -148,16 +120,8 @@ jobs:
           RELEASE="suture-and-steel-${{ matrix.edition }}@${VERSION}+$(git rev-parse --short=8 HEAD).$(date -u -d @$SOURCE_DATE_EPOCH +%Y%m%d)"
           npx --yes @sentry/cli@2 releases new "$RELEASE"
           npx --yes @sentry/cli@2 sourcemaps upload --release "$RELEASE" --url-prefix 'app://game/' dist
+          # Windows PDBs and the renderer's sources together.
           npx --yes @sentry/cli@2 debug-files upload --include-sources "${{ steps.out.outputs.dir }}"
-      - name: Upload native symbols (Windows PDB / macOS dSYM)
-        if: env.HAS_SENTRY == 'true' && runner.os != 'Linux'
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        shell: bash
-        run: npx --yes @sentry/cli@2 debug-files upload "${{ steps.out.outputs.dir }}"
-
       - name: Archive (preserves executable bits for SteamPipe, PLT-0025)
         shell: bash
         run: tar -czf "${{ matrix.edition }}-${{ runner.os }}.tar.gz" -C "$(dirname "${{ steps.out.outputs.dir }}")" "$(basename "${{ steps.out.outputs.dir }}")"

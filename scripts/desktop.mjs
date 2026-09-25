@@ -1,8 +1,8 @@
 // Desktop build orchestration (cross-platform — npm scripts cannot set env vars portably).
 //   node scripts/desktop.mjs build  [--edition=demo|full] [--platform=desktop|none] [--release]
-//   node scripts/desktop.mjs pack   [...same] [--os=win|mac|linux]   → release/<edition>/…-unpacked (Steam depot input)
+//   node scripts/desktop.mjs pack   [...same] → release/<edition>/win-unpacked (Steam depot input)
 //   node scripts/desktop.mjs dev    [...same]                        → build, then run Electron from the checkout (--dev)
-//   node scripts/desktop.mjs smoke  [...same]                        → run the packaged Linux build headless and verify boot
+//   node scripts/desktop.mjs smoke  [...same]                        → run the packaged Windows build and verify boot
 import { spawn, spawnSync } from 'node:child_process';
 import { copyFileSync, existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -40,7 +40,8 @@ function build() {
   if (!existsSync('THIRD_PARTY_NOTICES.txt')) run(process.execPath, ['scripts/third-party-notices.mjs']);
 }
 
-const osFlag = { win: '--win', mac: '--mac', linux: '--linux' }[opt.os ?? { win32: 'win', darwin: 'mac' }[process.platform] ?? 'linux'];
+// Windows is the only desktop target.
+const osFlag = '--win';
 
 switch (cmd) {
   case 'build':
@@ -58,37 +59,29 @@ switch (cmd) {
     run(npx, ['electron', '.', '--dev', ...rest.filter((a) => !a.startsWith('--edition') && !a.startsWith('--platform') && a !== '--release')]);
     break;
   case 'smoke': {
-    const dir = join('release', `${edition}${platform === 'none' ? '-nosteam' : ''}`, 'linux-unpacked');
+    const dir = join('release', `${edition}${platform === 'none' ? '-nosteam' : ''}`, 'win-unpacked');
     const { EDITIONS } = await import('../src/platform/editions.ts');
-    const exe = join(dir, EDITIONS[edition].executableName);
+    const exe = join(dir, `${EDITIONS[edition].executableName}.exe`);
     if (!existsSync(exe)) {
-      console.error(`${exe} not found — run \`node scripts/desktop.mjs pack --os=linux\` first`);
+      console.error(`${exe} not found — run \`node scripts/desktop.mjs pack\` first`);
       process.exit(1);
     }
     const home = mkdtempSync(join(tmpdir(), 'ss-smoke-'));
     const out = join(home, 'smoke.json');
-    const args = ['-a', '-s', '-screen 0 1280x800x24', exe, '--no-sandbox', '--windowed', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'];
-    const child = spawn('xvfb-run', args, {
+    const args = ['--windowed', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'];
+    const child = spawn(exe, args, {
       stdio: 'inherit',
-      detached: true,
       env: {
         ...process.env,
-        HOME: home,
-        XDG_DATA_HOME: join(home, 'data'),
-        XDG_CONFIG_HOME: join(home, 'config'),
-        XDG_STATE_HOME: join(home, 'state'),
-        XDG_CACHE_HOME: join(home, 'cache'),
+        APPDATA: join(home, 'roaming'),
+        LOCALAPPDATA: join(home, 'local'),
         SS_SMOKE_OUT: out,
       },
     });
     const code = await new Promise((resolve) => {
       const t = setTimeout(() => {
-        // Kill the whole process group (xvfb-run, Xvfb, Electron and its helpers).
-        try {
-          process.kill(-child.pid, 'SIGKILL');
-        } catch {
-          /* already gone */
-        }
+        // Kill Electron and its helper processes.
+        spawn('taskkill', ['/T', '/F', '/PID', String(child.pid)], { stdio: 'ignore' });
         resolve('timeout');
       }, 90_000);
       child.on('exit', (c) => {

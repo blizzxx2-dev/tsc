@@ -296,10 +296,6 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] NAR-0191 · Beta · P1 · S · LQA pass on narrative strings — reviewer per language checks tone and hymn verses in-game
 
 ## NAR · Epic 11 — Post-launch narrative
-- [ ] NAR-0192 · Post · P2 · M · "The Unsung Hour" epilogue scenes — 3 short scenes framing the secret challenge op
-- [ ] NAR-0193 · Post · P2 · L · DLC chapter outline "The Ninth Office" — 5 ops in the mountain-folk holds with Orsa as lead
-- [ ] NAR-0194 · Post · P3 · M · Haller prequel vignette — 4 scenes of Haller and young Aurel Vennholt at the guild, 2 ops
-- [ ] NAR-0195 · Post · P3 · S · Community hymn-verse contest — rules and IP terms for player-submitted verses used in a free update
 
 ---
 
@@ -642,9 +638,6 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### Unsung tier and procedural
 - [ ] CON-0222 · Beta · P2 · M · Secret X-op "The Unsung Hour" — remnants of every patient the player lost in the campaign stitched together; falls back to a curated set if none lost
-- [x] CON-0223 · Post · P2 · L · Symptom Loom — procedural ailment generator combining 3 of 12 symptom modules into seeded daily ops; validation via sim bots (winnable, 90–300 s)
-- [ ] CON-0224 · Post · P2 · S · Daily Loom seed shared across players — date-based, with results screen showing the three "verses" of the day
-- [ ] CON-0225 · Post · P3 · M · Weekly curated X-op pack — 3 X-ops per update authored in data only
 
 ## CON · Epic 10 — Other disciplines (modes)
 
@@ -690,6 +683,5 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] CON-0254 · Release · P0 · S · Content freeze — content folder tagged; only bug fixes after freeze
 - [ ] CON-0255 · Release · P1 · S · Demo-to-full save import verified — with 3 real demo saves (flags and ranks carried)
 - [ ] CON-0256 · Release · P1 · S · Achievement content list — 40 achievements mapped to content events (every boss, XS per chapter, all endings, all disciplines)
-- [ ] CON-0257 · Post · P2 · M · Free update content pack plan — 2 new ops + 3 X-ops using data pipeline only, no engine changes
 
 

@@ -45,8 +45,8 @@ jobs:
         if: always()
         with: { name: smoke-shots, path: shots, retention-days: 14 }
 
-  desktop-linux:
-    runs-on: ubuntu-22.04
+  desktop-windows:
+    runs-on: windows-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -57,17 +57,15 @@ jobs:
           path: .cache
           key: electron-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
       - run: npm ci
-      - name: Package Linux demo (unsigned)
+      - name: Package Windows demo (unsigned)
         # CI cannot run the Blender model pipeline: smoke-pack without the 3D models.
         env:
           SS_ALLOW_NO_MODELS: '1'
-        run: node scripts/desktop.mjs pack --os=linux --edition=demo
+        run: node scripts/desktop.mjs pack --edition=demo
       - name: Inspect package (fuses, no maps, size)
-        run: node scripts/check-package.mjs release/demo/linux-unpacked
+        run: node scripts/check-package.mjs release/demo/win-unpacked
       - name: Headless desktop smoke (app://, CSP, bridge, atomic save)
-        run: |
-          sudo apt-get update && sudo apt-get install -y xvfb
-          node scripts/desktop.mjs smoke --edition=demo --shot=desktop-smoke.png
+        run: node scripts/desktop.mjs smoke --edition=demo --shot=desktop-smoke.png
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: desktop-smoke, path: desktop-smoke.png, retention-days: 14 }

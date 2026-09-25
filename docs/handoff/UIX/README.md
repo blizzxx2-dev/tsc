@@ -18,4 +18,3 @@
 - UIX-0206 — Measure the HUD CPU budget on a Steam Deck
 - UIX-0207 — Store-compliance text and legal review
 - UIX-0208 — Final accessibility audit and the store feature list
-- UIX-0214 — Review player accessibility feedback after launch
