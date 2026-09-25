@@ -14,6 +14,7 @@ import { StoryScene } from './scenes/story';
 import type { Backdrop } from './content/story';
 import type { CharacterId } from './content/characters';
 import { VIEW_H, VIEW_W } from './ui/layout';
+import { artDevScene } from './art/devScenes';
 
 class Main implements Game {
   input: Input;
@@ -109,6 +110,9 @@ async function boot(): Promise<void> {
     const back = () => game.go(new TitleScene());
     playOperation(game, def, back, back);
   }
+  // ?scene=artview|fleshlab opens an art dev page.
+  const artScene = artDevScene(new URLSearchParams(location.search).get('scene'));
+  if (artScene) game.go(artScene);
   // ?story=<backdrop> previews a story environment.
   const storyBg = new URLSearchParams(location.search).get('story');
   if (storyBg) game.go(new StoryScene({ id: 'preview', place: 'Preview', backdrop: storyBg as Backdrop, lines: [{ who: (new URLSearchParams(location.search).get('who') ?? 'narrator') as CharacterId, text: 'The Free City of Kessendorf. Winter, in the ninth year of the Long Muster.' }] }, () => game.go(new TitleScene())));

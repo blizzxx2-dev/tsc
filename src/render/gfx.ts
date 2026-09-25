@@ -2,6 +2,7 @@ import type { Vec } from '../core/math';
 import { alphaOf, type RGBA } from './color';
 import { bakeLut, GRADES, LUT_SIZE } from './lut';
 import { GlyphAtlas, type FontId } from './text';
+import { UI_ART_FS } from '../art/uiShader';
 import { BLUR_FS, BRIGHT_FS, FLESH_FS, FLUID_FS, FULL_VS, IMAGE_FS, IMAGE_VS, PORTRAIT_FS, CREATURE_FS, POST_FS, PRIM_FS, PRIM_VS, RECT_VS, SCENE_FS } from './shaders';
 
 const TAU = Math.PI * 2;
@@ -537,6 +538,49 @@ export class Gfx {
     gl.uniform1i(this.u(pr, 'u_beard'), p.beard ?? 0);
     gl.uniform3fv(this.u(pr, 'u_hair'), p.hair ?? [0.12, 0.08, 0.06]);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
+  }
+
+  /** Restrict drawing to a rect in virtual units (null clears). Used for side-by-side look-dev views. */
+  clipRect(r: { x: number; y: number; w: number; h: number } | null): void {
+    this.flush();
+    const gl = this.gl;
+    if (!r) {
+      gl.disable(gl.SCISSOR_TEST);
+      return;
+    }
+    const sx = this.outW / this.vw;
+    const sy = this.outH / this.vh;
+    gl.enable(gl.SCISSOR_TEST);
+    gl.scissor(Math.floor(r.x * sx), Math.floor(this.outH - (r.y + r.h) * sy), Math.ceil(r.w * sx), Math.ceil(r.h * sy));
+  }
+
+  private uiArtProg: WebGLProgram | null = null;
+
+  /**
+   * Procedural UI art (src/art/uiShader.ts) drawn into a rect, premultiplied. `mode` picks the
+   * piece (parchment, oak, wax seal, gauge, sand-glass, reliquary, tool icon…); `a` carries its
+   * state. `rot` turns the art inside the rect (make the rect large enough to hold it).
+   */
+  ornament(mode: number, x: number, y: number, w: number, h: number, p: { col?: [number, number, number]; col2?: [number, number, number]; a?: [number, number, number, number]; seed?: number; rot?: number; alpha?: number } = {}): void {
+    if (w <= 0 || h <= 0) return;
+    this.flush();
+    const gl = this.gl;
+    const pr = (this.uiArtProg ??= compile(gl, RECT_VS, UI_ART_FS));
+    gl.useProgram(pr);
+    this.rectQuad(x, y, w, h);
+    gl.uniform2f(this.u(pr, 'u_view'), this.vw, this.vh);
+    gl.uniform1i(this.u(pr, 'u_mode'), mode);
+    gl.uniform2f(this.u(pr, 'u_size'), w, h);
+    gl.uniform1f(this.u(pr, 'u_time'), this.time);
+    gl.uniform1f(this.u(pr, 'u_seed'), p.seed ?? 0);
+    gl.uniform1f(this.u(pr, 'u_rot'), p.rot ?? 0);
+    gl.uniform1f(this.u(pr, 'u_alpha'), p.alpha ?? 1);
+    gl.uniform3fv(this.u(pr, 'u_col'), p.col ?? [0.55, 0.06, 0.08]);
+    gl.uniform3fv(this.u(pr, 'u_col2'), p.col2 ?? [0.9, 0.8, 0.5]);
+    gl.uniform4fv(this.u(pr, 'u_a'), p.a ?? [0, 0, 0, 0]);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    this.applyBlend();
   }
 
   /** Shader-drawn creature/effect in a square around (x, y). Modes: 0 Matins, 1 Lauds, 2 hexfire, 3 hexstone glow. */

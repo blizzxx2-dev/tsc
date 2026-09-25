@@ -1,6 +1,6 @@
 // Screenshot tool for visual review. Builds must exist (npm run build).
 // Usage: node scripts/shoot.mjs <outDir> [shot ...]
-//   shots: title | story:<backdrop>[:<characterId>] | op:<id>:<seconds> (default: title story:hospice op:showcase:3)
+//   shots: title | story:<backdrop>[:<characterId>] | op:<id>:<seconds> | scene:<artview|fleshlab>[:<query>] (default: title story:hospice op:showcase:3)
 import { chromium } from 'playwright';
 import { preview } from 'vite';
 import { mkdirSync } from 'node:fs';
@@ -26,6 +26,9 @@ try {
     } else if (kind === 'story') {
       await page.goto(`${url}?story=${a ?? 'hospice'}${b ? `&who=${b}` : ''}`);
       await page.waitForTimeout(2500);
+    } else if (kind === 'scene') {
+      await page.goto(`${url}?scene=${a}${b ? `&${b}` : ''}`);
+      await page.waitForTimeout(3000);
     } else if (kind === 'op') {
       await page.goto(`${url}?op=${a}`);
       await page.waitForFunction(() => window.__game?.scene && typeof window.__game.scene.onBegin === 'function', null, { timeout: 30000 });
