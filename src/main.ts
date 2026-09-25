@@ -418,7 +418,7 @@ async function boot(): Promise<void> {
   // ?lqa=1 (dev/QA builds) tints glyphs drawn from a fallback face magenta (LOC-0025).
   setFallbackHighlight(DEV_TOOLS && params.get('lqa') === '1');
   // ?scene=artview|fleshlab opens an art dev page.
-  const artScene = DEV_TOOLS ? artDevScene(params.get('scene')) : null;
+  const artScene = DEV_TOOLS ? artDevScene(params.has('shaderlab') ? 'shaderlab' : params.get('scene')) : null;
   if (artScene) game.go(artScene);
   // ?ui=<screen> opens a screen directly for art review (dev/QA builds).
   if (DEV_TOOLS) {

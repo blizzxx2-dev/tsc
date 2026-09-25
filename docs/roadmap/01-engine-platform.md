@@ -111,7 +111,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ## ENG-D · Flesh shader overhaul & Chapter 1–2 shader library (Demo)
 
 ### Known issue: sparkly specular and harsh voronoi edges
-- [ ] ENG-0070 · Demo · P0 · S · Shader lab dev route `?shaderlab` — all organ kinds × species side by side, light sweep, zoom 1×/2.5×, frozen time; baseline screenshots checked in for review
+- [x] ENG-0070 · Demo · P0 · S · Shader lab dev route `?shaderlab` — all organ kinds × species side by side, light sweep, zoom 1×/2.5×, frozen time; baseline screenshots checked in for review
 - [x] ENG-0071 · Demo · P0 · S · First-pass de-sparkle — finite-difference normal from a low-frequency height field replaces screen-space `dFdx/dFdy`×40; spec exponent 40→18 and intensity 0.55→0.22
 - [x] ENG-0072 · Demo · P0 · M · Energy-normalised Blinn-Phong/GGX specular with per-organ roughness (0.35–0.6) and intensity clamp — temporal flicker metric (mean |Δluma| between consecutive frames of a static scene) <1% and art sign-off in the shader lab
 - [x] ENG-0073 · Demo · P0 · M · Specular anti-aliasing — fade noise octaves by pixel footprint (`fwidth`) and widen roughness from normal variance (Toksvig) so sparkle does not return at 4K, 2.5× zoom or 0.5× render scale
