@@ -198,7 +198,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ### Top bar: vitals, ECG, timer, score
 - [ ] UIX-0038 · Demo · P0 · M · Top bar v2 layout — woodcut-framed bar with vitals block left, hourglass timer centre, score/combo right; no element overlaps the operating field ellipse (660, 410, 430×250); screenshot review at 1280×720 and 1280×800
-- [ ] UIX-0039 · Demo · P0 · S · Vitals damage feedback — a pale "lag" bar trails the real value by 0.5 s after damage; heal shows a green sweep; digits shake ±2 px on hits ≥ 5 (off with Reduced Motion)
+- [x] UIX-0039 · Demo · P0 · S · Vitals damage feedback — a pale "lag" bar trails the real value by 0.5 s after damage; heal shows a green sweep; digits shake ±2 px on hits ≥ 5 (off with Reduced Motion)
 - [ ] UIX-0040 · Demo · P1 · S · Beating heart icon — scales on each beat beside vitals (synced to the ECG beat phase) and changes shape per state (steady/strained/failing) so state is readable without colour
 - [ ] UIX-0041 · Demo · P1 · M · ECG monitor v2 — sweep-style trace with an erase gap instead of array shifting; waveform variants per state (tachycardia under venom, irregular under curse/Malison, weak below 25) selected by the scene; flatline with ink bleed on loss
 - [ ] UIX-0042 · Demo · P1 · S · Critical vitals state (< 30) — top-bar vitals block pulses red, screen edges vignette (existing post-process `danger`) and Ilse's low-vitals bark; state ends with hysteresis at 35
@@ -208,7 +208,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ### Ratings, popups & feedback
 - [ ] UIX-0046 · Demo · P0 · M · Rating stamps — replace text popups with woodcut stamps (COOL gold leaf, GOOD green ink, BAD rust, MISS blood splash), each a distinct shape so it reads without colour; label text ("Incision") beneath; 1.1 s lifetime; stamp-in 120 ms
-- [ ] UIX-0047 · Demo · P0 · S · Popup de-overlap — popups spawned within 40 px and 0.3 s of another stack upwards by one line; test: 5 simultaneous shard ratings stay legible (no bounding boxes overlap)
+- [x] UIX-0047 · Demo · P0 · S · Popup de-overlap — popups spawned within 40 px and 0.3 s of another stack upwards by one line; test: 5 simultaneous shard ratings stay legible (no bounding boxes overlap)
 - [ ] UIX-0048 · Demo · P1 · S · Combo milestone callouts — at chain 5/10/20 a larger banner ("Steady hands!", "A surgeon's grace!", "Saint Ildra guides you!") appears once per milestone per operation
 - [x] UIX-0049 · Demo · P1 · S · Damage-number toggle and vitals-loss aggregation — continuous drain damage is summed and shown at most every 0.5 s per source instead of per frame
 - [ ] UIX-0050 · Demo · P1 · S · Hurt direction cue — when vitals drop from an entity, a brief red pulse ring marks that entity so players learn what is draining the patient

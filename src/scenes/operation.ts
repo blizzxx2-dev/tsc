@@ -17,6 +17,7 @@ import { button, inRect, reticle, toolIcon } from '../ui/widgets';
 import { giltText, UI } from '../ui/ornaments';
 import type { ActionId } from '../input/actions';
 import { DamageAggregator, ToolHints } from '../ui/hudPrefs';
+import { stackPopup } from '../ui/popupStack';
 import { speciesBlood } from '../render/organs';
 import { band, caps, heading, ratingCallout, diamond, glass, INK, keycap, meter, numerals, titleRule, well } from '../ui/hudKit';
 import { localeInfo } from '../i18n/locales';
@@ -76,7 +77,14 @@ export class OperationScene implements Scene {
   /** Seeded presentation noise (ECG jitter) so screenshots are reproducible (ENG-0251). */
   private presRng = new Rng(1);
   /** Floating rating/damage text, built from the operation's `popup` events (ENG-0243). */
-  private popups: Popup[] = [];
+  private popups: (Popup & { lift?: number })[] = [];
+  /** Vitals damage feedback (UIX-0039): a pale bar trailing losses, a green sweep on heals, shaking digits on big hits. */
+  private lagV = 100;
+  private lagHold = 0;
+  private prevV = 100;
+  private healFrom = 0;
+  private healT = 0;
+  private digitShakeT = 0;
   /** Sounds requested since the last tick (deduplicated). */
   private debug = false;
   /** The last 20 callouts, for the pause menu's log (UIX-0060). */
@@ -99,7 +107,13 @@ export class OperationScene implements Scene {
   /** Subscribe the presentation (popups, particles, audio) to the operation's event bus. */
   private listen(op: Operation): void {
     op.events.on('popup', (p) => {
-      if (!this.dmg.absorb(p.text, p.pos, p.color)) this.popups.push({ ...p, t: 0 });
+      if (!this.dmg.absorb(p.text, p.pos, p.color)) this.addPopup({ ...p, t: 0 });
+    });
+    this.lagV = this.prevV = op.vitals;
+    this.lagHold = this.healT = this.digitShakeT = 0;
+    op.events.on('hurt', ({ amount }) => {
+      this.lagHold = 0.5;
+      if (amount >= 5) this.digitShakeT = 0.35;
     });
     op.events.on('phase', ({ index }) => (this.banner = { phase: index, t: 0, boss: null }));
     op.events.on('fx', (e) => {
@@ -220,7 +234,8 @@ export class OperationScene implements Scene {
     });
     this.dmg.enabled = settings.damageNumbers;
     this.hints.mode = settings.toolHints;
-    for (const p of this.dmg.tick(dt)) this.popups.push({ ...p, t: 0 });
+    for (const p of this.dmg.tick(dt)) this.addPopup({ ...p, t: 0 });
+    this.tickVitalsFeedback(dt);
     if (op.tool !== this.lastTool) {
       this.toolFlash = 1;
       this.hintT = this.hints.selected(op.tool) ? 2.5 : 0;
@@ -439,6 +454,27 @@ export class OperationScene implements Scene {
     g.endFrame();
   }
 
+  /** New popups stack above recent neighbours instead of printing over them (UIX-0047). */
+  private addPopup(p: Popup & { lift?: number }): void {
+    stackPopup(this.popups, p);
+    this.popups.push(p);
+  }
+
+  private tickVitalsFeedback(dt: number): void {
+    const v = this.op.vitals;
+    if (v > this.prevV + 0.5) {
+      // A heal: sweep green from where it was.
+      if (this.healT <= 0) this.healFrom = this.prevV;
+      this.healT = 0.8;
+    }
+    this.prevV = v;
+    this.healT = Math.max(0, this.healT - dt);
+    this.digitShakeT = Math.max(0, this.digitShakeT - dt);
+    if (v >= this.lagV) this.lagV = v;
+    else if (this.lagHold > 0) this.lagHold -= dt;
+    else this.lagV = Math.max(v, this.lagV - dt * 45);
+  }
+
   private drawHud(g: Gfx): void {
     const op = this.op;
     const t = g.time;
@@ -452,7 +488,8 @@ export class OperationScene implements Scene {
     caps(g, tr('hud.vitals'), V.x + 18, V.y + 22, 11);
     const low = op.vitals <= 30;
     const beat = settings.reduceMotion ? 0 : this.pulse;
-    g.text(formatVitals(op.displayVitals()), V.x + 16, V.y + 64, { size: 42, font: 'display', color: hex('#ffffff'), color2: hex(vcol), tracking: 0.04, shadow: hex('#000000', 0.85), soft: true });
+    const jig = this.digitShakeT > 0 && !settings.reduceMotion ? 2 * Math.sin(g.time * 90) : 0;
+    g.text(formatVitals(op.displayVitals()), V.x + 16 + jig, V.y + 64 + jig * 0.5, { size: 42, font: 'display', color: hex('#ffffff'), color2: hex(vcol), tracking: 0.04, shadow: hex('#000000', 0.85), soft: true });
     drawDrainArrow(g, op, V.x + 96, V.y + 38);
     // Pulse window: a phosphor trace in a dark well.
     const W = { x: V.x + 118, y: V.y + 14, w: V.w - 132, h: 46 };
@@ -468,7 +505,17 @@ export class OperationScene implements Scene {
     const head = pts[pts.length - 1];
     if (head) g.glow(head.x, head.y, 10, hex('#ff6a4a', 0.5));
     g.popClip();
-    meter(g, { x: V.x + 18, y: V.y + V.h - 16, w: V.w - 32, h: 6 }, op.vitals / op.maxVitals, low ? '#ff4a3a' : '#e0443c', low ? '#7a0c10' : '#8a1016', 10);
+    const M = { x: V.x + 18, y: V.y + V.h - 16, w: V.w - 32, h: 6 };
+    meter(g, M, op.vitals / op.maxVitals, low ? '#ff4a3a' : '#e0443c', low ? '#7a0c10' : '#8a1016', 10);
+    const px = (f: number) => M.x + 1 + (M.w - 2) * Math.max(0, Math.min(1, f / op.maxVitals));
+    // The pale lag bar: what was just lost, draining away after half a second.
+    if (this.lagV > op.vitals + 0.3) g.rect(px(op.vitals), M.y + 1, px(this.lagV) - px(op.vitals), M.h - 2, hex('#f4dcc8', 0.75));
+    // A heal sweeps green across what came back.
+    if (this.healT > 0 && op.vitals > this.healFrom) {
+      const a = Math.min(1, this.healT / 0.4);
+      g.rect(px(this.healFrom), M.y - 1, px(op.vitals) - px(this.healFrom), M.h + 2, hex('#8fe0a0', 0.55 * a));
+      g.glow(px(op.vitals), M.y + M.h / 2, 14, hex('#9ff0b0', 0.5 * a));
+    }
     if (low) g.plate(V.x, V.y, V.w, V.h, { radius: 3, top: hex('#000000', 0), border: hex('#ff3a2a', 0.35 + 0.35 * beat), borderW: 1.5, bevel: 0, shadow: [0, 0, 0], glow: hex('#ff2a1a', 0.25 + 0.3 * beat), glowR: 14 });
     drawSecondaryVitals(g, op, V.x + 18, V.y + V.h + 22);
 
@@ -632,7 +679,7 @@ export class OperationScene implements Scene {
       // Reduced Motion: popups neither rise nor pop (UIX-0152).
       const rise = still ? 0 : p.t * 40;
       const x = p.pos.x;
-      const y = p.pos.y - 26 - rise;
+      const y = p.pos.y - 26 - rise - (p.lift ?? 0);
       if (!p.rating) {
         if (/^[+\-×\d]/.test(p.text)) giltNumerals(g, p.text, x, y, 20, a);
         else g.text(tSource(p.text), x, y, { size: 20, color: withAlpha(hex(p.color), a), align: 'center' });
