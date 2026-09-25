@@ -25,7 +25,10 @@ export class DemoEndScene implements Scene {
     drawBackdrop(g, 'night', g.time);
     g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1.1 });
     const a = Math.min(1, this.t);
-    g.rect(0, 0, VIEW_W, 720, hex('#000000', 0.45));
+    {
+      const vr = g.viewRect();
+      g.rect(vr.x, vr.y, vr.w, vr.h, hex('#000000', 0.45));
+    }
     g.text('Suture & Steel', VIEW_W / 2, 100, { size: 72, font: 'display', color: hex('#fff0c0', a), color2: hex(UI.giltLo, a), align: 'center' });
     divider(g, VIEW_W / 2, 124, 420, hex(UI.brass, a));
     g.text('Thank you for playing the demo.', VIEW_W / 2, 166, { size: 28, font: 'italic', color: hex(UI.parch, a), align: 'center' });

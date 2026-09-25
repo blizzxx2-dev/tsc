@@ -35,12 +35,15 @@ export class Harness {
   readonly input = new Input(null, 1280, 720, this.b);
   readonly ctl = new OperationInput(this.b);
   readonly op: Operation;
+  /** Sound cues the operation requested (from its event bus). */
+  readonly cues: string[] = [];
   t = 1000;
   hud: HudHit | undefined;
   private pads: unknown[] = [];
 
   constructor(def: OperationDef) {
     this.op = new Operation(def);
+    this.op.events.on('cue', (c) => this.cues.push(c));
     this.op.update(1.25); // intro → running, first phase spawned
     this.input.setGamepadSource(() => this.pads as never);
     this.tick(); // establish frame timing

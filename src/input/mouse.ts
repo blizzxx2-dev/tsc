@@ -4,9 +4,6 @@ import { WheelNormaliser } from './wheel';
 
 type Sink = (e: InputEvent) => void;
 
-/** Coalesced samples per DOM event we keep (an 8 kHz mouse at 60 fps would otherwise send ~130). */
-export const MAX_SAMPLES_PER_FRAME = 64;
-
 /**
  * Mouse adapter: buttons 0–4 (left, middle, right, back, forward), pointer motion
  * with coalesced sub-frame samples, normalised wheel steps. `pointercancel`,
@@ -18,18 +15,12 @@ export class MouseAdapter {
   pos: Vec = { x: 0, y: 0 };
   invertWheel = false;
   private wheel = new WheelNormaliser();
-  private samplesThisFrame = 0;
 
   constructor(private sink: Sink) {}
-
-  beginFrame(): void {
-    this.samplesThisFrame = 0;
-  }
 
   move(x: number, y: number, t: number): void {
     if (x === this.pos.x && y === this.pos.y) return;
     this.pos = { x, y };
-    if (this.samplesThisFrame++ >= MAX_SAMPLES_PER_FRAME) return;
     this.sink({ t, type: 'move', x, y, src: 'kbm' });
   }
 

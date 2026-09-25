@@ -100,8 +100,13 @@ export class ControlsScene implements Scene {
 
   constructor(
     private onBack: () => void,
-    private overWorld = true,
-  ) {}
+    /** true: chapel backdrop; false: plain screen; 'overlay': drawn over the live scene beneath (scene stack). */
+    private overWorld: boolean | 'overlay' = true,
+  ) {
+    this.overlay = overWorld === 'overlay';
+  }
+
+  readonly overlay: boolean;
 
   private get tabId(): Tab {
     return TABS[this.tab].id;
@@ -278,7 +283,10 @@ export class ControlsScene implements Scene {
   }
 
   render(g: Gfx, game: Game): void {
-    if (this.overWorld) {
+    if (this.overlay) {
+      const vr = g.viewRect();
+      g.rect(vr.x, vr.y, vr.w, vr.h, hex('#000000', 0.55));
+    } else if (this.overWorld) {
       g.beginWorld();
       drawBackdrop(g, 'chapel', g.time);
       g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1 });
@@ -343,14 +351,14 @@ export class ControlsScene implements Scene {
       g.text(label, r.x + r.w / 2, r.y + 26, { size: 20, color: hex(focus ? PALETTE.gold : PALETTE.ink), align: 'center' });
     });
 
-    if (this.capture) this.overlay(g, `Press the new input for “${ACTIONS.find((a) => a.id === this.capture!.action)!.label}”`, `Esc cancels · ${Math.ceil(this.capture.t)} s`);
-    if (this.prompt) this.overlay(g, `${codeLabel(this.prompt.code, pad)} is used by ${this.prompt.others}.`, 'Swap the bindings?', ['Swap', 'Cancel']);
+    if (this.capture) this.drawOverlay(g, `Press the new input for “${ACTIONS.find((a) => a.id === this.capture!.action)!.label}”`, `Esc cancels · ${Math.ceil(this.capture.t)} s`);
+    if (this.prompt) this.drawOverlay(g, `${codeLabel(this.prompt.code, pad)} is used by ${this.prompt.others}.`, 'Swap the bindings?', ['Swap', 'Cancel']);
     if (this.messageT > 0) g.text(this.message, VIEW_W / 2, 700, { size: 17, color: hex(PALETTE.bad), align: 'center' });
     reticle(g, game.input.pos);
     g.endFrame();
   }
 
-  private overlay(g: Gfx, title: string, sub: string, buttons: string[] = []): void {
+  private drawOverlay(g: Gfx, title: string, sub: string, buttons: string[] = []): void {
     g.rect(0, 0, VIEW_W, 720, hex('#000000', 0.55));
     g.rect(340, 270, 600, 180, hex('#140a08', 0.96));
     g.rectLine(340, 270, 600, 180, 2, hex(PALETTE.gold, 0.7));

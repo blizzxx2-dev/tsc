@@ -1,5 +1,6 @@
 import type { Cue } from '../core/audio';
-import { dist, type Vec } from '../core/math';
+import { dist, Rng, type Vec } from '../core/math';
+import { Camera2D } from '../render/camera';
 import type { Game, Scene } from '../core/scene';
 import { hex, withAlpha } from '../render/color';
 import type { Gfx } from '../render/gfx';
@@ -8,9 +9,9 @@ import { Sigil, surfDisc, surfLine } from '../surgery/entities';
 import { Particles } from '../render/particles';
 import { FlashLimiter } from '../render/flashLimiter';
 import { Malison, MalisonShard } from '../surgery/malison';
-import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOWN, TINCTURE_TIME, type OperationDef } from '../surgery/operation';
+import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOWN, TINCTURE_TIME, type OperationDef, type Popup } from '../surgery/operation';
 import { TOOL_INFO, toolInfo, type ToolId } from '../surgery/types';
-import { PALETTE, VIEW_W } from '../ui/layout';
+import { anchorShift, PALETTE, viewRect, VIEW_W } from '../ui/layout';
 import { button, inRect, reticle, star, toolIcon } from '../ui/widgets';
 import { banner, brassBorder, divider, giltText, hourglass, leatherPanel, medallion, plaque, scroll, UI, waxSeal } from '../ui/ornaments';
 import { CAST } from '../content/characters';
@@ -46,6 +47,14 @@ export class OperationScene implements Scene {
   private flashLimit = new FlashLimiter();
   private comboT = 0;
   private lastCombo = 0;
+  /** World camera (ENG-0045/0046): pointer input is mapped through it before hit-testing. */
+  readonly camera = new Camera2D();
+  /** Seeded presentation noise (ECG jitter) so screenshots are reproducible (ENG-0251). */
+  private presRng = new Rng(1);
+  /** Floating rating/damage text, built from the operation's `popup` events (ENG-0243). */
+  private popups: Popup[] = [];
+  /** Sounds requested since the last tick (deduplicated). */
+  private pendingCues = new Set<Cue>();
 
   constructor(
     private def: OperationDef,
@@ -53,11 +62,32 @@ export class OperationScene implements Scene {
     private onQuit: () => void,
   ) {
     this.op = OperationScene.create(def);
+    this.presRng = new Rng(def.seed ?? 1);
+    this.listen(this.op);
+  }
+
+  /** Subscribe the presentation (popups, particles, audio) to the operation's event bus. */
+  private listen(op: Operation): void {
+    op.events.on('popup', (p) => this.popups.push({ ...p, t: 0 }));
+    op.events.on('fx', (e) => this.particles.spawn(e));
+    op.events.on('cue', (c) => this.pendingCues.add(c));
   }
 
   /** Apply player assists to the operation definition. */
   private static create(def: OperationDef): Operation {
     return new Operation(settings.timerAssist === 1 ? def : { ...def, timeLimit: Math.round(def.timeLimit * settings.timerAssist) });
+  }
+
+  dispose(): void {
+    this.op.events.clear();
+  }
+
+  exit(game: Game): void {
+    // Leaving the operation: never leave the shared clocks paused or slowed.
+    if (game.clock) {
+      game.clock.paused = false;
+      game.clock.worldScale = 1;
+    }
   }
 
   enter(): void {
@@ -67,7 +97,13 @@ export class OperationScene implements Scene {
   }
 
   private restart(): void {
+    this.op.events.clear();
     this.op = OperationScene.create(this.def);
+    this.presRng = new Rng(this.def.seed ?? 1);
+    this.popups.length = 0;
+    this.pendingCues.clear();
+    this.listen(this.op);
+    this.camera.reset();
     this.particles = new Particles();
     this.ctl = new OperationInput();
     this.paused = false;
@@ -80,9 +116,17 @@ export class OperationScene implements Scene {
 
     const pause = this.ctl.pauseRequest(input);
     if (pause && op.status !== 'won' && op.status !== 'lost') this.paused = pause === 'pause' ? true : !this.paused;
+    // Pause stops sim and world clocks; UI keeps animating (ENG-0057). The Litany scales world time.
+    if (game.clock) {
+      game.clock.paused = this.paused;
+      game.clock.worldScale = op.timeScale;
+    }
     if (this.paused) return this.ctl.suspend(op);
+    this.camera.update(dt);
 
     // Tool selection, the Litany and every pointer event since last frame, in the order they happened.
+    // Samples are mapped from view space into world space through the camera (ENG-0046).
+    this.ctl.toWorld = (p) => this.camera.toWorld(p, { x: 0, y: 0 });
     this.ctl.update(op, input, dt, (p) => {
       const i = op.def.tools.findIndex((_, k) => inRect(p, this.slot(k)));
       return i >= 0 ? op.def.tools[i] : p.x <= TRAY.x + TRAY.w + 10 ? 'consume' : null;
@@ -113,26 +157,27 @@ export class OperationScene implements Scene {
     const samples = Math.max(1, Math.round(dt * 120));
     for (let i = 0; i < samples; i++) {
       this.ecg.shift();
-      this.ecg.push(bpm === 0 ? 0 : ecgWave(this.beatPhase) * (op.vitals < 25 ? 0.6 + Math.random() * 0.4 : 1));
+      this.ecg.push(bpm === 0 ? 0 : ecgWave(this.beatPhase) * (op.vitals < 25 ? 0.6 + this.presRng.next() * 0.4 : 1));
     }
 
     const cursed = op.entities.some((e) => e instanceof Malison || e instanceof MalisonShard) ? 0.7 : op.entities.some((e) => e instanceof Sigil) ? 0.25 : 0;
     this.corrupt += (cursed - this.corrupt) * Math.min(1, dt * 1.5);
 
-    // Visual effects requested by the simulation; landed droplets become stains.
-    for (const e of op.fx) this.particles.spawn(e);
-    op.fx.length = 0;
+    // Visual effects arrive as `fx` events; landed droplets become stains. Particles run on world time.
     this.particles.update(dt * op.timeScale, (p, kind, size) => {
       if (kind === 'blood' && onBody(p)) op.stain(p, size * 2.6, 0.3);
     });
     if (op.litanyTime > 0 && Math.random() < dt * 30) this.particles.spawn({ kind: 'dust', pos: { x: FIELD.cx + (Math.random() - 0.5) * FIELD.rx * 2, y: FIELD.cy + (Math.random() - 0.5) * FIELD.ry * 2 }, n: 1 });
 
-    const played = new Set<Cue>();
-    for (const c of op.cues) if (!played.has(c)) {
-      played.add(c);
-      game.audio.play(c);
+    for (const c of this.pendingCues) game.audio.play(c);
+    this.pendingCues.clear();
+    // Popups are presentation: they age in real time here, not in the sim.
+    let k = 0;
+    for (const p of this.popups) {
+      p.t += dt;
+      if (p.t < 1.1) this.popups[k++] = p;
     }
-    op.cues.length = 0;
+    this.popups.length = k;
 
     if (op.status === 'won' || op.status === 'lost') {
       this.endT += dt;
@@ -238,9 +283,16 @@ export class OperationScene implements Scene {
 
     // ---------------------------------------------------------------- UI
     this.drawPopups(g);
+    // HUD bars anchor to the visible top/bottom edges on 16:10 and 4:3 (ENG-0184).
+    g.save();
+    g.translate(0, anchorShift('top'));
     this.drawHud(g);
+    g.restore();
     this.drawTray(g);
+    g.save();
+    g.translate(0, anchorShift('bottom'));
     this.drawCallout(g, t);
+    g.restore();
 
     if (op.status === 'intro') {
       const a = Math.min(1, op.elapsed * 3);
@@ -373,7 +425,7 @@ export class OperationScene implements Scene {
     // Litany medallion (only once the rite has been learned).
     if (op.def.litany === false) return;
     const lx = 54;
-    const ly = 674;
+    const ly = 674 + anchorShift('bottom');
     const ready = op.canInvokeLitany();
     medallion(g, lx, ly, 30, hex(ready ? '#2a1a06' : '#120a08'));
     if (ready) g.glow(lx, ly, 48, hex(UI.gilt, 0.2 + 0.1 * Math.sin(g.time * 3)));
@@ -410,7 +462,7 @@ export class OperationScene implements Scene {
   }
 
   private drawPopups(g: Gfx): void {
-    for (const p of this.op.popups) {
+    for (const p of this.popups) {
       const a = Math.min(1, (1.1 - p.t) * 3);
       const rise = p.t * 40;
       const x = p.pos.x;
@@ -441,13 +493,18 @@ export class OperationScene implements Scene {
   }
 
   private drawPause(g: Gfx, game: Game): void {
-    g.rect(0, 0, VIEW_W, 720, hex('#000000', 0.6));
+    const vr = viewRect();
+    g.rect(vr.x, vr.y, vr.w, vr.h, hex('#000000', 0.6));
     leatherPanel(g, { x: 430, y: 150, w: 420, h: 400 });
     giltText(g, 'Respite', VIEW_W / 2, 222, { size: 50, align: 'center' });
     divider(g, VIEW_W / 2, 248, 260);
     if (button(g, game.input, 'Resume', VIEW_W / 2, 310)) this.paused = false;
     if (button(g, game.input, 'Begin Again', VIEW_W / 2, 370)) this.restart();
-    if (button(g, game.input, 'Options', VIEW_W / 2, 430)) game.go(new OptionsScene(() => game.go(this)));
+    if (button(g, game.input, 'Options', VIEW_W / 2, 430)) {
+      // Options is an overlay over the live (paused) operation (ENG-0063).
+      if (game.push && game.pop) game.push(new OptionsScene(() => game.pop!(), 'overlay'));
+      else game.go(new OptionsScene(() => game.go(this)));
+    }
     if (button(g, game.input, 'Abandon the Patient', VIEW_W / 2, 490)) this.onQuit();
   }
 }

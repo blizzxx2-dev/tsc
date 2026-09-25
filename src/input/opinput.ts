@@ -44,6 +44,9 @@ export class OperationInput {
   disconnectNotice = false;
   /** Toggle-hold: a hold tool is running without the button held. */
   latched = false;
+  /** View → world mapping (the operation camera). Input, HUD and the radial live in view space; entities in world space. */
+  toWorld: (p: Vec) => Vec = (p) => p;
+  toView: (p: Vec) => Vec = (p) => p;
 
   private opDown = false;
   private sent: Vec = { x: 0, y: 0 };
@@ -87,7 +90,7 @@ export class OperationInput {
     const prefs = this.b.prefs;
     this.pad = f.device === 'pad';
     this.cursor = { ...f.start };
-    if (!this.opDown) this.sent = { ...f.start };
+    if (!this.opDown) this.sent = this.toWorld(f.start);
     this.lastT = f.t0;
     const span = f.t - f.t0;
     this.k = span > 0 ? dt / span : 0;
@@ -105,7 +108,7 @@ export class OperationInput {
     this.radial.update(this.cursor, f.sticks, dt);
     // Aim assist and the right-stick nudge for the next frame's virtual cursor.
     input.nudge = !this.radial.isOpen;
-    input.cursorSlow = this.pad && prefs.aimAssist ? (p) => aimSlow(p, zonesFor(op, op.tool)) : () => 1;
+    input.cursorSlow = this.pad && prefs.aimAssist ? (p) => aimSlow(this.toWorld(p), zonesFor(op, op.tool)) : () => 1;
   }
 
   // ------------------------------------------------------------------ events
@@ -119,7 +122,7 @@ export class OperationInput {
       this.suppressed = true;
       this.latched = false;
       this.cursor = p;
-      this.sent = p;
+      this.sent = this.toWorld(p);
       return;
     }
     const d = Math.max(0, t - this.lastT) * this.k;
@@ -241,16 +244,17 @@ export class OperationInput {
     let raw = this.cursor;
     const prefs = this.b.prefs;
     if (this.pad && prefs.aimAssist && op.tool === 'lancet') {
-      const snap = lancetSnap(op, raw);
+      const snap = lancetSnap(op, this.toWorld(raw));
       if (snap) {
-        raw = snap;
-        this.cursor = snap;
-        input.warp(snap);
+        raw = this.toView(snap);
+        this.cursor = raw;
+        input.warp(raw);
       }
     }
-    const m = magnet(raw, zonesFor(op, op.tool), prefs.hitScale, ['press', 'trace']);
+    const w = this.toWorld(raw);
+    const m = magnet(w, zonesFor(op, op.tool), prefs.hitScale, ['press', 'trace']);
     this.strokeZone = m.zone?.kind === 'trace' ? m.zone : null;
-    this.strokeOffset = this.strokeZone ? { x: 0, y: 0 } : { x: m.p.x - raw.x, y: m.p.y - raw.y };
+    this.strokeOffset = this.strokeZone ? { x: 0, y: 0 } : { x: m.p.x - w.x, y: m.p.y - w.y };
     this.strokeStart = raw;
     this.stitch.reset();
     this.opDown = true;
@@ -283,10 +287,11 @@ export class OperationInput {
   }
 
   /** Build the `Pointer` the Operation sees, with assists applied, and dispatch it. */
-  private send(op: Operation, kind: 'hold' | 'press' | 'release', raw: Vec, dt: number): void {
+  private send(op: Operation, kind: 'hold' | 'press' | 'release', view: Vec, dt: number): void {
     const prefs = this.b.prefs;
     const scale = prefs.hitScale;
     const down = kind === 'release' ? false : this.opDown;
+    const raw = this.toWorld(view);
     let p = { x: raw.x + this.strokeOffset.x, y: raw.y + this.strokeOffset.y };
     if (kind === 'press') p = magnet(raw, zonesFor(op, op.tool), scale, ['press', 'trace']).p;
     else if (down && this.strokeZone) p = magnet(p, [this.strokeZone], scale, ['trace'], true).p;

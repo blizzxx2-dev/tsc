@@ -151,7 +151,7 @@ describe('Target Size assist: hit-scale 1.5× on every interaction (INP-0066)', 
       tool: 'tongs',
       spawn: (op) => [new Grub(C, op, 0)],
       at: () => off(18 * 1.3),
-      ok: (h) => h.op.cues.includes('pluck'),
+      ok: (h) => h.cues.includes('pluck'),
     },
     {
       name: 'Lancet on a bubo (r + 6 px)',
@@ -176,7 +176,7 @@ describe('Target Size assist: hit-scale 1.5× on every interaction (INP-0066)', 
         const h = harness(c.spawn);
         h.b.prefs.hitScale = scale as 1 | 1.5;
         h.op.setTool(c.tool);
-        h.op.cues.length = 0;
+        h.cues.length = 0;
         h.move(c.at(h)).down().tick();
         if (c.hold) h.run(c.hold);
         return c.ok(h);
@@ -349,7 +349,7 @@ describe('gamepad cursor and aim assist (INP-0083, INP-0084, INP-0085)', () => {
     h.move(off(-80, 30)).tick();
     h.setPads([fakePad({ buttons: { 7: 1 } })]).tick();
     expect(h.input.pos).toEqual(off(-100));
-    expect(h.op.cues).toContain('cut');
+    expect(h.cues).toContain('cut');
   });
 });
 

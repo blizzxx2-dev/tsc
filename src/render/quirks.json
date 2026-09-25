@@ -1,0 +1,11 @@
+{
+  "$comment": "Driver quirks (ENG-0192): the first entries whose `match` regex (case-insensitive) matches the unmasked renderer string apply. `tier` caps the GPU tier; `workarounds` are flags read by the renderer (see src/render/caps.ts QuirkFlag). Add fixes here — no code change needed.",
+  "quirks": [
+    { "match": "swiftshader|llvmpipe|softpipe|software|microsoft basic render", "tier": "low", "workarounds": ["software"], "note": "Software rasteriser: hardware acceleration is off." },
+    { "match": "intel.*(hd graphics (4|5)\\d\\d|hd graphics$)", "tier": "low", "workarounds": [], "note": "Gen7–Gen9 Intel HD: flesh pass too slow for Medium at 1080p." },
+    { "match": "mali-(4|t6)", "tier": "low", "workarounds": ["noFloatTargets"], "note": "Old Mali: float render targets advertised but broken." },
+    { "match": "adreno \\(tm\\) (3|4)\\d\\d", "tier": "low", "workarounds": ["noMsaa"], "note": "Old Adreno: MSAA resolve corrupts." },
+    { "match": "powervr", "tier": "low", "workarounds": ["noMsaa"], "note": "PowerVR: slow multisample resolve." },
+    { "match": "apple (m1|m2|m3|m4)|apple gpu", "tier": "high", "workarounds": [], "note": "Apple silicon handles High comfortably." }
+  ]
+}

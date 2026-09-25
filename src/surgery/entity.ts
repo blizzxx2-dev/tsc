@@ -3,15 +3,14 @@ import type { Gfx } from '../render/gfx';
 import type { Operation } from './operation';
 import type { Pointer, ToolId } from './types';
 
-let nextId = 1;
-
 /**
  * Anything on the operating field the surgeon can act upon. Entities are pure
  * simulation plus a draw method; they never read the DOM or the input device
  * directly, so the whole operation can be driven headlessly in tests.
  */
 export abstract class Entity {
-  readonly id = nextId++;
+  /** Assigned by `Operation.spawn` from a per-operation counter (ENG-0242); 0 until spawned. */
+  id = 0;
   alive = true;
   /** The phase cannot end while a required entity lives. */
   required = true;

@@ -58,8 +58,9 @@ export class StoryScene implements Scene {
     if (who.silhouette !== 'none') drawPortrait(g, who, 330, 500, g.time, true, this.shown < line.text.length);
     g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1 });
 
-    if (this.fadeIn < 1) g.rect(0, 0, VIEW_W, VIEW_H, hex('#000000', 1 - this.fadeIn));
-    g.rectGrad(0, 0, VIEW_W, 70, hex('#000000', 0.7), hex('#000000', 0));
+    const vr = g.viewRect();
+    if (this.fadeIn < 1) g.rect(vr.x, vr.y, vr.w, vr.h, hex('#000000', 1 - this.fadeIn));
+    g.rectGrad(vr.x, vr.y, vr.w, 70 - vr.y, hex('#000000', 0.7), hex('#000000', 0));
     g.text(this.story.place, 30, 40, { size: 21, font: 'italic', color: hex(UI.parch) });
     divider(g, 30 + Math.min(600, g.measure(this.story.place, 21, 'italic')) / 2, 54, Math.min(600, g.measure(this.story.place, 21, 'italic')), hex(UI.brass, 0.6));
 

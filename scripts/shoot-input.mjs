@@ -19,8 +19,7 @@ try {
   await page.goto(`${url}?op=op1-1`);
   await page.waitForFunction(() => window.__game?.scene && typeof window.__game.scene.onBegin === 'function', null, { timeout: 30000 });
   await page.keyboard.press('Enter');
-  await page.waitForTimeout(2500);
-  console.log('scene', await page.evaluate(() => [window.__game.scene.constructor.name, window.__game.scene.op?.status, window.__game.scene.op?.elapsed]), errors);
+  await page.waitForFunction(() => window.__game?.scene?.op?.status === 'running', null, { timeout: 120000 });
   await page.mouse.move(700, 400);
   await page.mouse.down({ button: 'middle' });
   await page.mouse.move(700, 330, { steps: 4 });
@@ -33,7 +32,7 @@ try {
   await page.mouse.click(640, 420); // Options
   await page.waitForTimeout(400);
   await page.screenshot({ path: `${out}/options.png` });
-  await page.mouse.click(410, 636); // Controls
+  await page.mouse.click(410, 650); // Controls
   await page.waitForTimeout(400);
   await page.screenshot({ path: `${out}/controls.png` });
   await page.keyboard.press('PageDown');

@@ -96,6 +96,7 @@ export class Malison extends Entity {
       return;
     }
     this.hp -= 45 * dt;
+    op.events.emit('malisonHit', { pos: this.pos, damage: 45 * dt });
     this.hurtFlash = 1;
     if (Math.random() < dt * 25) op.emit('spark', ptr.pos, 3);
     if (op.rng.next() < dt * 6) op.cues.push('burn');

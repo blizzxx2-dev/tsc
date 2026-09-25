@@ -1,7 +1,8 @@
 import { clamp, Rng, type Vec } from '../core/math';
-import type { Cue } from '../core/audio';
+import { EventBus } from '../core/events';
 import type { Entity } from './entity';
-import type { FxEvent, FxKind } from '../render/particles';
+import type { FxKind } from '../render/particles';
+import { CueSink, type SimEvents } from './events';
 import type { Pointer, Rank, Rating, ToolId } from './types';
 
 export type OrganKind = 'flesh' | 'heart' | 'lung' | 'gut' | 'liver' | 'brain' | 'bone';
@@ -31,6 +32,7 @@ export interface OperationDef {
   litany?: boolean;
 }
 
+/** Floating text shown by the HUD; built by the scene from `popup` events (see SimEvents). */
 export interface Popup {
   text: string;
   pos: Vec;
@@ -79,7 +81,6 @@ export class Operation {
   lostReason = '';
   phase = -1;
   private phaseDelay = 1.2;
-  popups: Popup[] = [];
   callouts: string[] = [];
   calloutT = 0;
   litanyTime = 0;
@@ -89,14 +90,18 @@ export class Operation {
   private captured: Entity | null = null;
   /** Increments on every press, so entities can tell one stroke from the next. */
   pressId = 0;
-  /** Sounds requested by the simulation; the scene drains and plays them. */
-  cues: Cue[] = [];
+  /** Typed simulation events (ENG-0243): audio, particles, popups and achievements subscribe. */
+  readonly events = new EventBus<SimEvents>();
+  /** Sound requests — `op.cues.push('cut')` publishes `cue` (and `cut`) events on the bus. */
+  readonly cues = new CueSink(this.events);
+  /** Per-operation entity ids (ENG-0242): identical across runs of the same seed. */
+  private nextEntityId = 1;
+  /** Reused scratch list for pointer hit-testing (no per-event allocation, ENG-0225). */
+  private liveBuf: Entity[] = [];
   /** One-shot tutorial/story flags any entity may set. */
   flags = new Set<string>();
   /** Screen shake intensity, decays over time. */
   shake = 0;
-  /** Visual effect requests; the scene drains them into its particle system. */
-  fx: FxEvent[] = [];
   /** Lasting blood stains and scars left on the flesh. */
   stains: { x: number; y: number; r: number; a: number }[] = [];
   scars: Vec[][] = [];
@@ -128,15 +133,17 @@ export class Operation {
     } else {
       this.combo = 0;
     }
-    this.score += Math.round(RATING_POINTS[r] * (1 + Math.min(this.combo, 20) * 0.05));
+    const points = Math.round(RATING_POINTS[r] * (1 + Math.min(this.combo, 20) * 0.05));
+    this.score += points;
     const text = label ? `${label} ${RATING_TEXT[r]}` : RATING_TEXT[r];
-    this.popups.push({ text, pos: { ...pos }, t: 0, color: RATING_COLOR[r], rating: r, label, combo: this.combo });
+    this.events.emit('rate', { rating: r, pos: { x: pos.x, y: pos.y }, label, combo: this.combo, points });
+    this.events.emit('popup', { text, pos: { x: pos.x, y: pos.y }, color: RATING_COLOR[r], rating: r, label, combo: this.combo });
     if (r === 'cool') this.emit('gold', pos, 14);
     this.cues.push(r);
   }
 
   emit(kind: FxKind, pos: Vec, n = 10, dir?: number, spread?: number, speed?: number): void {
-    this.fx.push({ kind, pos: { ...pos }, n, dir, spread, speed });
+    this.events.emit('fx', { kind, pos: { x: pos.x, y: pos.y }, n, dir, spread, speed });
   }
 
   stain(pos: Vec, r: number, a = 0.5): void {
@@ -145,12 +152,13 @@ export class Operation {
   }
 
   popup(text: string, pos: Vec, color = '#e8dcc0'): void {
-    this.popups.push({ text, pos: { ...pos }, t: 0, color });
+    this.events.emit('popup', { text, pos: { x: pos.x, y: pos.y }, color });
   }
 
   say(...lines: string[]): void {
     if (this.callouts.length === 0) this.calloutT = 0;
     this.callouts.push(...lines);
+    this.events.emit('say', { lines });
   }
 
   /** Say something only once per operation. */
@@ -168,15 +176,21 @@ export class Operation {
     if (amount >= 1) this.lastHurt = { x: pos?.x ?? FIELD.cx, y: pos?.y ?? FIELD.cy, amount, at: this.elapsed };
     this.vitals = Math.max(0, this.vitals - amount);
     this.shake = Math.min(12, this.shake + amount * 1.5);
+    if (amount > 0) this.events.emit('hurt', { amount, pos, vitals: this.vitals });
     if (pos && amount >= 1) this.popup(`-${Math.round(amount)}`, pos, '#c0392b');
   }
 
   heal(amount: number): void {
     this.vitals = Math.min(MAX_VITALS, this.vitals + amount);
+    this.events.emit('heal', { amount, vitals: this.vitals });
   }
 
   spawn(...es: Entity[]): void {
-    this.entities.push(...es);
+    for (const e of es) {
+      if (!e.id) e.id = this.nextEntityId++;
+      this.entities.push(e);
+      this.events.emit('spawn', { entity: e });
+    }
   }
 
   // ------------------------------------------------------------------ powers
@@ -190,6 +204,7 @@ export class Operation {
     this.litanyUsed = true;
     this.litanyTime = LITANY_DURATION;
     this.cues.push('litany');
+    this.events.emit('litany', { duration: LITANY_DURATION });
     this.popup('THE LITANY OF STILLNESS', { x: FIELD.cx, y: FIELD.cy - 120 }, '#f5d76e');
     return true;
   }
@@ -201,6 +216,7 @@ export class Operation {
     if (!this.def.tools.includes(t) || this.tool === t) return;
     this.lastTool = this.tool;
     this.tool = t;
+    this.events.emit('tool', { tool: t, previous: this.lastTool });
     this.cues.push('select');
     this.releaseCapture();
   }
@@ -226,7 +242,19 @@ export class Operation {
   handlePointer(ptr: Pointer, dt: number): void {
     if (this.status !== 'running') return;
     const tool = this.tool;
-    const live = this.visibleEntities().sort((a, b) => b.layer - a.layer);
+    // Top layer first; a stable insertion sort into a reused buffer (no allocation per pointer event).
+    const live = this.liveBuf;
+    live.length = 0;
+    for (const e of this.entities) {
+      if (!e.alive || e.hidden) continue;
+      let i = live.length;
+      live.push(e);
+      while (i > 0 && live[i - 1].layer < e.layer) {
+        live[i] = live[i - 1];
+        i--;
+      }
+      live[i] = e;
+    }
 
     if (ptr.pressed) {
       this.pressId++;
@@ -294,8 +322,6 @@ export class Operation {
 
   update(dt: number): void {
     // Presentation timers run in real time.
-    for (const p of this.popups) p.t += dt;
-    this.popups = this.popups.filter((p) => p.t < 1.1);
     this.shake = Math.max(0, this.shake - dt * 30);
     if (this.callouts.length) {
       this.calloutT += dt;
@@ -331,7 +357,14 @@ export class Operation {
       if (e.alive && !e.hidden) drain += e.drain(this);
     }
     this.hurt(drain * wdt);
-    this.entities = this.entities.filter((e) => e.alive);
+    // Compact dead entities in place (stable order, no per-tick allocation).
+    let k = 0;
+    for (let i = 0; i < this.entities.length; i++) {
+      const e = this.entities[i];
+      if (e.alive) this.entities[k++] = e;
+      else this.events.emit('death', { entity: e });
+    }
+    this.entities.length = k;
 
     if (this.vitals <= 0) return this.lose('The patient has died.');
     if (this.timeLeft <= 0) {
@@ -351,6 +384,7 @@ export class Operation {
     this.phaseDelay = 0.8;
     const def = this.def.phases[this.phase];
     if (!def) return this.win();
+    this.events.emit('phase', { index: this.phase, count: this.def.phases.length });
     if (def.callout) this.say(...def.callout);
     this.spawn(...def.spawn(this));
   }
@@ -361,12 +395,14 @@ export class Operation {
     this.score += this.bonus.vitals + this.bonus.time;
     this.cues.push('bell');
     this.say('The operation is complete.');
+    this.events.emit('win', { score: this.score, vitals: this.vitals, timeLeft: this.timeLeft });
   }
 
   lose(reason: string): void {
     this.status = 'lost';
     this.lostReason = reason;
     this.cues.push('flatline');
+    this.events.emit('lose', { reason });
   }
 
   rank(): Rank {
