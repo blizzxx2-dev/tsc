@@ -11,6 +11,8 @@ import { UI_ART_FS } from '../art/uiShader';
 import { PLATE_FS } from './shaders/plate';
 import { UPSAMPLE_FS } from './gfx';
 import { PBR_FS, PBR_VS, SHADOW_FS, SHADOW_VS } from './renderer3d';
+import { fleshShaderSource } from './shaders/flesh';
+import { QUALITIES, SHADER_TIERS } from './quality';
 
 export interface ShaderVariant {
   name: string;
@@ -41,6 +43,12 @@ export function shaderCatalog(): ShaderVariant[] {
     { name: 'pbr', vs: PBR_VS, fs: PBR_FS },
     { name: 'pbr-shadow', vs: SHADOW_VS, fs: SHADOW_FS },
   ];
+  // Quality tiers (ENG-0082): each tier's flesh variant, with its mediump fallback, plus the live-noise A/B variant.
+  for (const q of QUALITIES) {
+    const fs = fleshShaderSource(SHADER_TIERS[q].flesh);
+    list.push({ name: `flesh (${q})`, vs: FULL_VS, fs }, { name: `flesh (${q}, mediump)`, vs: FULL_VS, fs: toMediump(fs) });
+    list.push({ name: `flesh (${q}, live noise)`, vs: FULL_VS, fs: fleshShaderSource({ ...SHADER_TIERS[q].flesh, noise: 'live' }) });
+  }
   for (let k = 0; k < SCENE_KINDS; k++) list.push({ name: `scene KIND ${k}`, vs: FULL_VS, fs: k === 0 ? SCENE_FS : SCENE_FS.replace('#version 300 es', `#version 300 es\n#define KIND ${k}`) });
   return list;
 }

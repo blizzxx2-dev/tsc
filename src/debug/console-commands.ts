@@ -106,6 +106,17 @@ export function buildCommands(api: DebugApi, hooks: ConsoleHooks = {}): CommandR
         return `post ${id} ${on ? 'on' : 'off'}`;
       },
     },
+    // Shader quality tiers (ENG-0082): "quality low", "quality high live" (per-pixel noise for A/B against the bake).
+    {
+      name: 'quality',
+      usage: '[low|medium|high] [baked|live]',
+      help: 'show or set the shader quality tier; a second word overrides the flesh noise source',
+      run: (a, [q, n]) => {
+        const noise = n === 'baked' || n === 'live' ? n : n === undefined ? undefined : null;
+        const r = a.shaderQuality(q, noise);
+        return `quality ${r.quality} (noise ${r.noise})`;
+      },
+    },
   );
   if (hooks.telemetry) {
     const t = hooks.telemetry;

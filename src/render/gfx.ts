@@ -2,11 +2,14 @@ import type { Vec } from '../core/math';
 import { alphaOf, hex, withAlpha, type RGBA } from './color';
 import { bakeLut, GRADES, LUT_SIZE } from './lut';
 import { fallbackHighlight, GlyphAtlas, type FontId } from './text';
-import { BRIGHT_FS, CREATURE_FS, DOWN_FS, FLESH_FS, FLUID_FS, FULL_VS, IMAGE_FS, IMAGE_VS, PORTRAIT_FS, POST_FS, RECT_VS, SCENE_FS, UP_FS } from './shaders';
+import { BRIGHT_FS, CREATURE_FS, DOWN_FS, FLUID_FS, FULL_VS, IMAGE_FS, IMAGE_VS, PORTRAIT_FS, POST_FS, RECT_VS, SCENE_FS, UP_FS } from './shaders';
 import { BATCH_FS, BATCH_UNITS, BATCH_VS, FALLBACK_VS, FXAA_FS } from './batch-shaders';
 import { fallbackPlan, FULL_CAPS, probeCaps, toMediump, type FallbackPlan, type GpuCaps } from './caps';
 import { emptyStats, GpuTimer, type FlushReason, type FrameStats } from './profiler';
 import { PostPipeline } from './postPasses';
+import { bakedNoise } from './noiseBake';
+import { fleshVariantKey, isQuality, SHADER_TIERS, type Quality } from './quality';
+import { fleshShaderSource } from './shaders/flesh';
 import { GlRegistry } from './registry';
 import { SpriteBank, type SpriteOpts } from './sprites';
 import { RenderTargetPool, type Target } from './targets';
@@ -197,6 +200,14 @@ export class Gfx {
   stats: FrameStats = emptyStats();
   /** World render scale 0.5–1 of the backbuffer (ENG-0181); UI and text always render at native resolution. */
   renderScale = 1;
+  /** Shader quality tier in effect (ENG-0082); `setShaderQuality` changes it, `displayPrefs.quality` applies it lazily. */
+  shaderQuality: Quality = 'high';
+  /** Debug override of the tier's noise source (`live` re-evaluates the noise per pixel for A/B checks). */
+  noiseOverride: 'baked' | 'live' | null = null;
+  private fleshKey = '';
+  /** Baked tiling noise (ENG-0081): fbm + gradient, and voronoi feature distances. */
+  private noiseTex: WebGLTexture | null = null;
+  private cellsTex: WebGLTexture | null = null;
   private prim!: WebGLProgram;
   private flesh!: WebGLProgram;
   private bright!: WebGLProgram;
@@ -286,7 +297,10 @@ export class Gfx {
     // Extensions are per context: re-enable them after a restore or float targets come back incomplete.
     for (const e of ['EXT_color_buffer_float', 'EXT_color_buffer_half_float', 'EXT_texture_filter_anisotropic', 'OES_texture_float_linear']) gl.getExtension(e);
     this.prim = reg.createProgram('batch', BATCH_VS, BATCH_FS);
-    this.flesh = reg.createProgram('flesh', FULL_VS, this.plan.fleshVariant === 'mediump' ? toMediump(FLESH_FS) : FLESH_FS);
+    // The flesh program follows the quality tier (ENG-0082) and samples the baked noise (ENG-0081).
+    this.fleshKey = '';
+    this.compileFlesh();
+    this.uploadNoise();
     this.bright = reg.createProgram('bright', FULL_VS, BRIGHT_FS);
         this.post = reg.createProgram('post', FULL_VS, POST_FS);
     this.fxaa = reg.createProgram('fxaa', FALLBACK_VS, FXAA_FS);
@@ -526,6 +540,9 @@ export class Gfx {
 
   /** Start the world layer (post-processed). */
   beginWorld(clear: [number, number, number] = [0.02, 0.015, 0.015]): void {
+    // The shell mirrors the shaderQuality setting into displayPrefs every frame; apply changes here (ENG-0082).
+    const q = this.displayPrefs.quality;
+    if (q && q !== this.shaderQuality) this.setShaderQuality(q);
     this.ensureTargets();
     this.gpuTimer.mark('world');
     if (this.msaaFb) {
@@ -1033,7 +1050,8 @@ export class Gfx {
       pr = this.registry.createProgram(`scene-${kind}`, FULL_VS, SCENE_FS.replace('#version 300 es', `#version 300 es\n#define KIND ${kind}`));
       this.sceneProgs.set(kind, pr);
     }
-    const scale = Math.max(0.25, Math.min(1, opts.scale ?? 1));
+    // The quality tier caps the backdrop scale (ENG-0082): Low renders story sets at half resolution.
+    const scale = Math.max(0.25, Math.min(1, opts.scale ?? 1, SHADER_TIERS[this.shaderQuality].sceneScale));
     const low = scale < 0.99 ? this.targets.acquire('scene-low', this.outW * scale, this.outH * scale) : null;
     if (low) this.bindTarget(low);
     gl.useProgram(pr);
@@ -1057,13 +1075,84 @@ export class Gfx {
     gl.enable(gl.BLEND);
   }
 
-  /** Draw the procedural body field over the whole world target. */
+  /**
+   * Draw the procedural body field over the whole world target. On the Low tier the field renders
+   * at `fieldScale` (0.75×) of the world target and is upsampled bilinearly (ENG-0082).
+   */
   fleshField(f: FleshParams): void {
     this.flush('program');
     this.worldFb();
     this.stats.drawCalls++;
+    const scale = SHADER_TIERS[this.shaderQuality].fieldScale;
+    const low = scale < 0.99 ? this.targets.acquire('flesh-low', Math.max(1, Math.round(this.scene.w * scale)), Math.max(1, Math.round(this.scene.h * scale))) : null;
+    if (low) this.bindTarget(low);
     // Field coordinates are safe-area space; shaders see the full view, so shift by the margin.
     this.fleshPass({ ...f, center: { x: f.center.x + this.ox, y: f.center.y + this.oy }, light: { x: f.light.x + this.ox, y: f.light.y + this.oy } });
+    if (low) {
+      const gl = this.gl;
+      this.worldFb();
+      const up = (this.upsampleProg ??= this.registry.createProgram('scene-upsample', FULL_VS, UPSAMPLE_FS));
+      gl.useProgram(up);
+      gl.disable(gl.BLEND);
+      this.bindTex(low.tex, 0);
+      gl.uniform1i(this.u(up, 'u_tex'), 0);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      gl.enable(gl.BLEND);
+      this.stats.drawCalls++;
+    }
+  }
+
+  /** (Re)compile the flesh program for the current tier; a no-op when the variant is unchanged. */
+  private compileFlesh(): void {
+    const tier = SHADER_TIERS[this.shaderQuality];
+    const opts = this.noiseOverride ? { ...tier.flesh, noise: this.noiseOverride } : tier.flesh;
+    const key = `${fleshVariantKey(opts)}/${this.plan.fleshVariant}`;
+    if (key === this.fleshKey) return;
+    const src = fleshShaderSource(opts);
+    const prog = this.registry.createProgram('flesh', FULL_VS, this.plan.fleshVariant === 'mediump' ? toMediump(src) : src);
+    if (this.fleshKey) {
+      this.uniforms.delete(this.flesh);
+      this.registry.release(this.flesh);
+    }
+    this.flesh = prog;
+    this.fleshKey = key;
+  }
+
+  /** Upload the baked tiling noise textures (ENG-0081); runs at init and after a context restore. */
+  private uploadNoise(): void {
+    const gl = this.gl;
+    const b = bakedNoise();
+    const make = (label: string, data: Float32Array, mips: boolean): WebGLTexture => {
+      const t = this.registry.createTexture(label);
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, t);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, b.size, b.size, 0, gl.RGBA, gl.FLOAT, data);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, mips ? gl.LINEAR_MIPMAP_LINEAR : gl.LINEAR);
+      if (mips) gl.generateMipmap(gl.TEXTURE_2D);
+      gl.bindTexture(gl.TEXTURE_2D, null);
+      this.registry.setBytes(t, Math.round(b.size * b.size * 8 * (mips ? 4 / 3 : 1)), label);
+      return t;
+    };
+    // No mip chains: the fbm is only ever magnified (≤1.5 texels/px), and the voronoi distances
+    // are sampled up to 4.6 texels/px for the bone pits, which the live shader point-sampled per
+    // pixel too — mip filtering would average those pits away rather than match it.
+    this.noiseTex = make('noise-fbm', b.fbm, false);
+    this.cellsTex = make('noise-cells', b.cells, false);
+  }
+
+  /**
+   * Switch the shader quality tier (ENG-0082): recompiles the flesh variant when it differs and
+   * changes the field/scene render scales from the next draw. `noise` overrides the tier's noise
+   * source for A/B comparison in the shader lab.
+   */
+  setShaderQuality(q: Quality, noise: 'baked' | 'live' | null = this.noiseOverride): void {
+    if (!isQuality(q)) return;
+    this.shaderQuality = q;
+    this.noiseOverride = noise;
+    this.compileFlesh();
   }
 
   private fleshPass(f: FleshParams): void {
@@ -1107,6 +1196,13 @@ export class Gfx {
     this.bindTex(this.surface.tex, 1);
     gl.uniform1i(this.u(pr, 'u_surface'), 1);
     gl.uniform2f(this.u(pr, 'u_surfTexel'), 1 / this.surface.w, 1 / this.surface.h);
+    // Baked tiling noise (ENG-0081); the live variant ignores the samplers.
+    if (this.noiseTex && this.cellsTex) {
+      this.bindTex(this.noiseTex, 2);
+      this.bindTex(this.cellsTex, 3);
+      gl.uniform1i(this.u(pr, 'u_noise'), 2);
+      gl.uniform1i(this.u(pr, 'u_cells'), 3);
+    }
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     gl.activeTexture(gl.TEXTURE0);
     gl.enable(gl.BLEND);

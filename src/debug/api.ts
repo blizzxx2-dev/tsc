@@ -6,6 +6,7 @@
  */
 import { OPTION_TABS, optionRows } from '../scenes/options';
 import { compileCatalog, shaderCatalog, type ShaderFailure } from '../render/shaderCatalog';
+import { isQuality, QUALITIES, SHADER_TIERS } from '../render/quality';
 import { LoadingScene } from '../scenes/loading';
 import type { Transition } from '../ui/transition';
 import { CAMPAIGN, allOperations } from '../content/campaign';
@@ -201,6 +202,22 @@ export class DebugApi {
     const ok = on === undefined ? chain.toggle(id) : chain.setEnabled(id, on);
     if (!ok) throw new Error(`unknown post pass "${id}" (${chain.passes.map((p) => p.id).join(', ')})`);
     return chain.enabled(id);
+  }
+
+  /**
+   * Shader quality tier in the renderer (ENG-0082): read, or switch to `q` with an optional noise
+   * override (`live` re-evaluates the flesh noise per pixel for A/B checks against the baked textures).
+   * The tier reverts to the settings value on the next frame unless the setting is changed too.
+   */
+  shaderQuality(q?: string, noise?: 'baked' | 'live' | null): { quality: string; noise: string } {
+    const g = this.game.gfx;
+    if (q !== undefined) {
+      if (!isQuality(q)) throw new Error(`quality must be one of ${QUALITIES.join('/')}`);
+      settings.shaderQuality = q;
+      g.displayPrefs.quality = q;
+      g.setShaderQuality(q, noise === undefined ? g.noiseOverride : noise);
+    }
+    return { quality: g.shaderQuality, noise: g.noiseOverride ?? SHADER_TIERS[g.shaderQuality].flesh.noise };
   }
 
   /** Which options tab and row index own a settings key (for UI automation that clicks the real screen). */
