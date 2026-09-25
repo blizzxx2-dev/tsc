@@ -320,7 +320,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 ## GAM-K · Tutorialisation (Demo)
 
 - [x] GAM-0204 · Demo · P0 · M · Guided op1-1 — step-gated tutorial: each tool introduced with Ilse line + highlight + input prompt; sim pauses drain until first correct action of each step
-- [ ] GAM-0205 · Demo · P0 · S · Tool introduction schedule: op1-1 Lancet/Leech/Thread/Tincture, op1-2 Tongs, op1-3 Salve/Lens, op1-4 Brand, op1-5 Litany — unit test asserts no op requires an un-introduced tool
+- [x] GAM-0205 · Demo · P0 · S · Tool introduction schedule: op1-1 Lancet/Leech/Thread/Tincture, op1-2 Tongs, op1-3 Salve/Lens, op1-4 Brand, op1-5 Litany — unit test asserts no op requires an un-introduced tool
 - [x] GAM-0206 · Demo · P0 · S · Litany tutorial — prompted star practice in a paused frame before Matins phase 2 with 3 attempts and a "skip" fallback that auto-triggers the Litany
 - [x] GAM-0207 · Demo · P1 · S · Contextual first-time hints (one per mechanic, save-tracked) — barb nick, bolt pull, wadding, rot coverage, sigil order, hexstone dish, venom ligature
 - [ ] GAM-0208 · Demo · P1 · S · Tutorial skip for returning players — (option + "I've operated before" prompt on new save)

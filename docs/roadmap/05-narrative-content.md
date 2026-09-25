@@ -328,9 +328,9 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] CON-0018 · Alpha · P2 · M · Story scene previewer — dev scene renders any StoryDef with a flag override panel
 
 ## CON · Epic 2 — Operation-authoring QA and balance (applies to every op)
-- [ ] CON-0019 · Demo · P0 · S · Op acceptance checklist `docs/content/op-checklist.md` — winnable with perfect bot, loseable with poor bot, all callouts ≤ 28 chars/line, briefing present, case note present, rank thresholds from sim, no softlock
-- [ ] CON-0020 · Demo · P0 · M · Softlock test — for every op, sim with a "do nothing" bot must end in `lost` before timeLimit + 5 s; with perfect bot must reach `won`
-- [ ] CON-0021 · Demo · P0 · S · Determinism test — each op run twice with same seed and inputs yields identical score and final vitals
+- [x] CON-0019 · Demo · P0 · S · Op acceptance checklist `docs/content/op-checklist.md` — winnable with perfect bot, loseable with poor bot, all callouts ≤ 28 chars/line, briefing present, case note present, rank thresholds from sim, no softlock
+- [x] CON-0020 · Demo · P0 · M · Softlock test — for every op, sim with a "do nothing" bot must end in `lost` before timeLimit + 5 s; with perfect bot must reach `won`
+- [x] CON-0021 · Demo · P0 · S · Determinism test — each op run twice with same seed and inputs yields identical score and final vitals
 - [ ] CON-0022 · Demo · P1 · S · Difficulty curve targets — Ch1 op average-bot win rate 95→80%, Ch2 85→65% (op2-5 boss lowest); sim report checked in CI
 - [ ] CON-0023 · Demo · P1 · S · Time budget rule — perfect-bot clear time ≤ 55% of timeLimit, average-bot ≤ 85%; violations fail report
 - [ ] CON-0024 · Demo · P1 · S · Tool-introduction ledger — table of which op first requires each tool and the Litany; demo introduces each at most once per op, lens last (op2-2)
