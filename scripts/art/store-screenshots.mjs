@@ -50,7 +50,15 @@ const settle = (n) =>
 
 for (const s of SHOTS) {
   if (s.op) {
-    await page.evaluate((id) => window.__game.debug.operation(id, true), s.op);
+    await page.evaluate((id) => window.__game.debug.operation(id), s.op);
+    // The briefing arrives through the scene transition; then Scrub In.
+    await page.waitForFunction(() => typeof window.__game.scene?.onBegin === 'function' && !window.__game.transition?.busy, null, { timeout: 240000 });
+    await page.evaluate(() => window.__game.scene.onBegin());
+    // A case that introduces an instrument shows its card first: press on until the operation exists.
+    for (let i = 0; i < 6 && !(await page.evaluate(() => !!window.__game.debug.op())); i++) {
+      await page.keyboard.press('Enter');
+      await page.waitForTimeout(2000);
+    }
     await page.waitForFunction(() => !!window.__game.debug.op() && !window.__game.transition?.busy, null, { timeout: 240000 });
     await page.evaluate(({ phases, boss, sim, tool }) => {
       const d = window.__game.debug;

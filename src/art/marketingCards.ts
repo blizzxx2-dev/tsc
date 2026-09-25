@@ -11,20 +11,141 @@ import { SWATCHES } from '../render/palette';
 import { diamond, rule } from '../ui/hudKit';
 import { VIEW_H, VIEW_W } from '../ui/layout';
 import { fleuron, woodcutCorner, woodcutEdge } from '../ui/ornaments';
-import { sealArt } from './kit';
-import { drawWoundMan, ENGRAVED_INKS } from './woundMan';
+import { parchmentArt, sealArt } from './kit';
+import { drawWoundMan, ENGRAVED_INKS, VELLUM_INKS, type Pin } from './woundMan';
 
-export type CardId = 'title' | 'slate-demo' | 'slate' | 'banner-operate' | 'banner-malison' | 'banner-kessendorf';
+export type CardId =
+  | 'title'
+  | 'slate-demo'
+  | 'slate'
+  | 'banner-operate'
+  | 'banner-malison'
+  | 'banner-kessendorf'
+  | 'social-avatar'
+  | 'x-banner'
+  | 'youtube-banner'
+  | 'discord-icon'
+  | 'discord-banner'
+  | 'stream-frame'
+  | 'stream-lower-third'
+  | 'stream-wishlist'
+  | 'promo-cuts'
+  | 'promo-shafts'
+  | 'promo-burns'
+  | 'promo-plague'
+  | 'promo-venom'
+  | 'promo-curses';
 
-/** Each card's delivery size (px) and the virtual rect it is drawn in (the export sets DPR so they match). */
-export const CARDS: Record<CardId, { out: [number, number]; rect: { x: number; y: number; w: number; h: number } }> = {
+/**
+ * Each card's delivery size (px), the virtual rect it is drawn in (the export's device scale is
+ * out / rect), and whether it is a transparent overlay (exported by difference matting over black
+ * and white grounds).
+ */
+export const CARDS: Record<CardId, { out: [number, number]; rect: { x: number; y: number; w: number; h: number }; matte?: boolean }> = {
   title: { out: [1920, 1080], rect: { x: 0, y: 0, w: VIEW_W, h: VIEW_H } },
   'slate-demo': { out: [1920, 1080], rect: { x: 0, y: 0, w: VIEW_W, h: VIEW_H } },
   slate: { out: [1920, 1080], rect: { x: 0, y: 0, w: VIEW_W, h: VIEW_H } },
   'banner-operate': { out: [616, 120], rect: { x: 0, y: 0, w: 616, h: 120 } },
   'banner-malison': { out: [616, 120], rect: { x: 0, y: 0, w: 616, h: 120 } },
   'banner-kessendorf': { out: [616, 120], rect: { x: 0, y: 0, w: 616, h: 120 } },
+  // Social kit (ART-0328).
+  'social-avatar': { out: [400, 400], rect: { x: 0, y: 0, w: 400, h: 400 } },
+  'x-banner': { out: [1500, 500], rect: { x: 0, y: 0, w: 1200, h: 400 } },
+  'youtube-banner': { out: [2560, 1440], rect: { x: 0, y: 0, w: 1280, h: 720 } },
+  'discord-icon': { out: [512, 512], rect: { x: 0, y: 0, w: 512, h: 512 } },
+  'discord-banner': { out: [960, 540], rect: { x: 0, y: 0, w: 960, h: 540 } },
+  // Livestream overlays (ART-0337), transparent.
+  'stream-frame': { out: [1920, 1080], rect: { x: 0, y: 0, w: VIEW_W, h: VIEW_H }, matte: true },
+  'stream-lower-third': { out: [1920, 1080], rect: { x: 0, y: 0, w: VIEW_W, h: VIEW_H }, matte: true },
+  'stream-wishlist': { out: [400, 120], rect: { x: 0, y: 0, w: 400, h: 120 }, matte: true },
+  // "Wound Man" promo plates, one per demo ailment family (ART-0330), square for social posts.
+  'promo-cuts': { out: [1080, 1080], rect: { x: 0, y: 0, w: 720, h: 720 } },
+  'promo-shafts': { out: [1080, 1080], rect: { x: 0, y: 0, w: 720, h: 720 } },
+  'promo-burns': { out: [1080, 1080], rect: { x: 0, y: 0, w: 720, h: 720 } },
+  'promo-plague': { out: [1080, 1080], rect: { x: 0, y: 0, w: 720, h: 720 } },
+  'promo-venom': { out: [1080, 1080], rect: { x: 0, y: 0, w: 720, h: 720 } },
+  'promo-curses': { out: [1080, 1080], rect: { x: 0, y: 0, w: 720, h: 720 } },
 };
+
+/** The six promo plates: title, the Wound Man's pinned sites and the family's motif. */
+const PROMO: Record<string, { title: string; line: string; sites: Pin[]; motif: 'cuts' | 'shafts' | 'burns' | 'plague' | 'venom' | 'curses' }> = {
+  'promo-cuts': { title: 'OF CUTS', line: 'Trace the line. Close every wound.', sites: [pin(0.05, 0.27), pin(-0.25, 0.36), pin(0.0, 0.42)], motif: 'cuts' },
+  'promo-shafts': { title: 'OF SHAFTS & SHOT', line: 'Nick the barb. Draw it true.', sites: [pin(-0.17, 0.2), pin(-0.08, 0.6)], motif: 'shafts' },
+  'promo-burns': { title: 'OF BURNS', line: 'Pluck the eschar. Salve the raw.', sites: [pin(-0.3, 0.52), pin(-0.25, 0.36), pin(0.05, 0.27)], motif: 'burns' },
+  'promo-plague': { title: 'OF PESTILENCE', line: 'Lance the bubo. Drain the humour.', sites: [pin(0.02, 0.155), pin(-0.12, 0.39), pin(0.09, 0.6)], motif: 'plague' },
+  'promo-venom': { title: 'OF VENOM & GRUBS', line: 'Stay the poison. Sear the brood.', sites: [pin(-0.09, 0.78), pin(0.0, 0.42)], motif: 'venom' },
+  'promo-curses': { title: 'OF CURSES', line: 'Sear the sigil, stroke by stroke.', sites: [pin(0.06, 0.29)], motif: 'curses' },
+};
+
+function pin(x: number, y: number): Pin {
+  return { site: 'chest', at: { x, y } };
+}
+
+/** A Wound Man promo plate (ART-0330): the figure on foxed vellum with its family's wounds drawn in. */
+function promoPlate(g: Gfx, id: CardId, r: { x: number; y: number; w: number; h: number }, t: number): void {
+  const pr = PROMO[id];
+  parchmentArt(g, r, 'foxed', 1, 3);
+  const cx = r.x + r.w / 2;
+  const top = r.y + 110;
+  const h = 470;
+  drawWoundMan(g, cx, top, h, pr.sites, t, 1, VELLUM_INKS);
+  const ink = hex(SWATCHES.inkDark, 0.9);
+  const P = (x: number, y: number) => ({ x: cx + x * h, y: top + y * h });
+  for (const [i, s] of pr.sites.entries()) {
+    const p = P(s.at.x, s.at.y);
+    switch (pr.motif) {
+      case 'cuts':
+        g.line({ x: p.x - 18, y: p.y - 6 }, { x: p.x + 18, y: p.y + 6 }, 2, hex(SWATCHES.oxblood));
+        for (let k = -2; k <= 2; k++) g.line({ x: p.x + k * 7 - 3, y: p.y + k * 2.3 - 6 }, { x: p.x + k * 7 + 3, y: p.y + k * 2.3 + 6 }, 1, ink);
+        break;
+      case 'shafts': {
+        const a = i ? 0.4 : -0.5;
+        g.line(p, { x: p.x - Math.cos(a) * 80, y: p.y - Math.sin(a) * 80 - 20 }, 3, hex('#7a5a36'));
+        const e = { x: p.x - Math.cos(a) * 80, y: p.y - Math.sin(a) * 80 - 20 };
+        g.tri(e.x, e.y, e.x - 10, e.y - 12, e.x + 4, e.y - 14, hex(SWATCHES.linen));
+        break;
+      }
+      case 'burns':
+        g.circleGrad(p.x, p.y, 16, hex(SWATCHES.soot, 0.8), hex(SWATCHES.ember, 0));
+        break;
+      case 'plague':
+        g.circleGrad(p.x, p.y, 11, hex(SWATCHES.pus), hex('#6a5010'));
+        g.arc(p.x, p.y, 12, 1, ink);
+        break;
+      case 'venom':
+        for (let k = 0; k < 4; k++) g.circle(p.x - k * 5, p.y + Math.sin(k) * 2, 4 - k * 0.6, hex('#d8d0a8'));
+        g.circle(p.x, p.y, 1.5, ink);
+        break;
+      case 'curses':
+        // The Choir's mark: an eye with a stroke through it, seared into the breast.
+        g.ellipse(p.x, p.y, 20, 9, 0, hex(SWATCHES.curseViolet, 0.25));
+        g.arc(p.x, p.y, 5, 1.5, hex(SWATCHES.curseDeep));
+        g.quadCurve({ x: p.x - 20, y: p.y }, { x: p.x, y: p.y - 14 }, { x: p.x + 20, y: p.y }, 1.5, hex(SWATCHES.curseDeep), 10);
+        g.quadCurve({ x: p.x - 20, y: p.y }, { x: p.x, y: p.y + 14 }, { x: p.x + 20, y: p.y }, 1.5, hex(SWATCHES.curseDeep), 10);
+        g.line({ x: p.x - 24, y: p.y + 14 }, { x: p.x + 24, y: p.y - 14 }, 2, hex(SWATCHES.curseDeep));
+        break;
+    }
+  }
+  g.text(pr.title, cx, r.y + 72, { size: 40, font: 'display', color: hex(SWATCHES.inkDark), align: 'center', tracking: 0.14, shadow: false });
+  rule(g, cx, r.y + 88, 300, hex(SWATCHES.giltLo, 0.9));
+  g.text(pr.line, cx, r.y + r.h - 70, { size: 24, font: 'italic', color: hex('#5a3a18'), align: 'center', shadow: false });
+  g.text('SUTURE & STEEL', cx, r.y + r.h - 34, { size: 16, font: 'display', color: hex(SWATCHES.oxblood), align: 'center', tracking: 0.3, shadow: false });
+}
+
+/** The ampersand seal: the game's mark (app icon, avatar, Discord icon). */
+function markSeal(g: Gfx, cx: number, cy: number, r: number): void {
+  sealArt(g, cx, cy, r, '#8a1016', { press: 1, gilt: false, seed: 11 });
+  g.text('S&S', cx, cy + r * 0.3, { size: r * 0.78, font: 'display', color: hex('#fff1c4'), color2: hex('#c9a55c'), align: 'center', tracking: 0.02, shadow: hex('#2a0204', 0.9) });
+}
+
+/** A black woodcut band with the lockup: the social banners. */
+function bannerBand(g: Gfx, r: { x: number; y: number; w: number; h: number }, scale: number, t: number, safe?: { w: number; h: number }): void {
+  frame(g, r, 10 * scale);
+  const s = safe ?? r;
+  candle(g, r.x + r.w / 2 - s.w * 0.42, r.y + r.h / 2 - 20 * scale, t);
+  candle(g, r.x + r.w / 2 + s.w * 0.42, r.y + r.h / 2 - 20 * scale, t + 1.7);
+  lockup(g, r.x + r.w / 2, r.y + r.h / 2 + 4 * scale, scale);
+}
 
 const GILT = hex(SWATCHES.gilt);
 const INK = SWATCHES.soot;
@@ -65,10 +186,22 @@ function candle(g: Gfx, x: number, y: number, t: number): void {
   g.ellipse(x, y - 16, 6, 15 * f, 0, hex('#fff4d0', 0.95), hex('#ff9030', 0.5));
 }
 
-/** Draw card `id` into its rect at time t. */
-export function drawCard(g: Gfx, id: CardId, t = 1.5): void {
+/** Draw card `id` into its rect at time t; `ground` is the matte ground for transparent overlays. */
+export function drawCard(g: Gfx, id: CardId, t = 1.5, ground = '#000000'): void {
   const r = CARDS[id].rect;
+  if (CARDS[id].matte) return drawOverlay(g, id, r, ground);
+  if (id in PROMO) return promoPlate(g, id, r, t);
   g.rect(r.x, r.y, r.w, r.h, hex('#070404'));
+  if (id === 'social-avatar' || id === 'discord-icon') {
+    // A circle-safe mark: the seal fills the middle 80 %.
+    g.circleGrad(r.x + r.w / 2, r.y + r.h / 2, r.w * 0.5, hex('#3a2216'), hex('#070404'));
+    markSeal(g, r.x + r.w / 2, r.y + r.h / 2, r.w * 0.3);
+    return;
+  }
+  if (id === 'x-banner') return bannerBand(g, r, 0.85, t);
+  if (id === 'discord-banner') return bannerBand(g, r, 0.7, t);
+  // YouTube: only the centre 1546×423 (773×211.5 here) is safe on every device.
+  if (id === 'youtube-banner') return bannerBand(g, r, 0.9, t, { w: 773, h: 211 });
   if (id === 'title') {
     frame(g, r, 28);
     candle(g, r.x + 170, r.y + 420, t);
@@ -137,22 +270,57 @@ export function drawCard(g: Gfx, id: CardId, t = 1.5): void {
   }
 }
 
+/** Stream overlays (ART-0337): drawn on `ground` so the export can recover their alpha. */
+function drawOverlay(g: Gfx, id: CardId, r: { x: number; y: number; w: number; h: number }, ground: string): void {
+  g.rect(r.x, r.y, r.w, r.h, hex(ground));
+  if (id === 'stream-frame') {
+    // A gilt woodcut border round a 16:9 game window, with the mark in the top-left corner.
+    const b = 18;
+    g.rect(r.x, r.y, r.w, b, hex('#0c0806'));
+    g.rect(r.x, r.y + r.h - b, r.w, b, hex('#0c0806'));
+    g.rect(r.x, r.y, b, r.h, hex('#0c0806'));
+    g.rect(r.x + r.w - b, r.y, b, r.h, hex('#0c0806'));
+    frame(g, { x: r.x + 4, y: r.y + 4, w: r.w - 8, h: r.h - 8 }, 6);
+    markSeal(g, r.x + 46, r.y + 46, 30);
+    return;
+  }
+  if (id === 'stream-lower-third') {
+    // Name plate on a torn ribbon, bottom left; the text is added live by the streaming tool.
+    const y = r.y + r.h - 150;
+    g.rectGrad(r.x + 40, y, 560, 84, hex('#1a0c08', 0.95), hex('#0c0604', 0.95));
+    g.rect(r.x + 40, y, 560, 3, hex(SWATCHES.gilt));
+    g.rect(r.x + 40, y + 81, 560, 3, hex(SWATCHES.gilt));
+    g.poly([{ x: r.x + 600, y }, { x: r.x + 640, y: y + 42 }, { x: r.x + 600, y: y + 84 }], hex('#0c0604', 0.95));
+    markSeal(g, r.x + 84, y + 42, 26);
+    g.rect(r.x + 124, y + 44, 420, 1.5, hex(SWATCHES.gilt, 0.5));
+    return;
+  }
+  // Wishlist bug: a small seal and "WISHLIST ON STEAM" for a corner of the stream.
+  g.rectGrad(r.x + 8, r.y + 20, r.w - 16, r.h - 40, hex('#1a0c08', 0.92), hex('#0c0604', 0.92));
+  g.rectLine(r.x + 8, r.y + 20, r.w - 16, r.h - 40, 2, hex(SWATCHES.gilt, 0.9));
+  sealArt(g, r.x + 52, r.y + r.h / 2, 26, '#8a1016', { press: 1, gilt: true, seed: 5 });
+  g.text('WISHLIST', r.x + 230, r.y + r.h / 2 - 2, { size: 24, font: 'display', color: hex('#fff1c4'), color2: hex('#c9a55c'), align: 'center', tracking: 0.14 });
+  g.text('ON STEAM', r.x + 230, r.y + r.h / 2 + 22, { size: 16, font: 'display', color: hex(SWATCHES.ash), align: 'center', tracking: 0.3 });
+}
+
 /** `?scene=cards&card=<id>`: one card on its own for review and export. */
 export class CardsScene implements Scene {
   private t = 0;
   private card: CardId;
+  private ground = '#000000';
   constructor() {
     const q = new URLSearchParams(location.search);
     const c = q.get('card') as CardId | null;
     this.card = c && c in CARDS ? c : 'title';
     if (q.get('t')) this.t = Number(q.get('t'));
+    if (q.get('ground') === 'white') this.ground = '#ffffff';
   }
   update(dt: number): void {
     this.t += dt;
   }
   render(g: Gfx, _game: Game): void {
     g.beginScreen([0.02, 0.01, 0.01]);
-    drawCard(g, this.card, this.t);
+    drawCard(g, this.card, this.t, this.ground);
     g.endFrame();
   }
 }

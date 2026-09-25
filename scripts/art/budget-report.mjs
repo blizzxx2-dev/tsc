@@ -62,7 +62,15 @@ for (const sc of SCENES.filter((x) => x.name.includes(only))) {
   if (sc.op) {
     // Start the operation through the automation API, then advance past the title card (and to the boss).
     await page.waitForFunction(() => !!window.__game?.debug, null, { timeout: 240000 });
-    await page.evaluate((id) => window.__game.debug.operation(id, true), sc.op);
+    await page.evaluate((id) => window.__game.debug.operation(id), sc.op);
+    // The briefing arrives through the scene transition; then Scrub In.
+    await page.waitForFunction(() => typeof window.__game.scene?.onBegin === 'function' && !window.__game.transition?.busy, null, { timeout: 240000 });
+    await page.evaluate(() => window.__game.scene.onBegin());
+    // A case that introduces an instrument shows its card first: press on until the operation exists.
+    for (let i = 0; i < 6 && !(await page.evaluate(() => !!window.__game.debug.op())); i++) {
+      await page.keyboard.press('Enter');
+      await page.waitForTimeout(2000);
+    }
     await page.waitForFunction(() => !!window.__game.debug.op() && !window.__game.transition?.busy, null, { timeout: 240000 });
     await page.evaluate((boss) => {
       const d = window.__game.debug;
