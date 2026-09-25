@@ -56,6 +56,10 @@ export interface FleshParams {
   corrupt: number;
   /** Voronoi edge softness per organ (smaller = crisper membranes). */
   cellSoft?: number;
+  /** Base roughness per organ (0.35–0.6). */
+  rough?: number;
+  /** Up to 3 lights: position (virtual px), height, intensity, colour. */
+  lights?: { x: number; y: number; h: number; i: number; col: [number, number, number] }[];
 }
 
 export interface PostParams {
@@ -599,6 +603,16 @@ export class Gfx {
     gl.uniform2f(this.u(pr, 'u_light'), f.light.x, f.light.y);
     gl.uniform1f(this.u(pr, 'u_corrupt'), f.corrupt);
     gl.uniform1f(this.u(pr, 'u_cellSoft'), f.cellSoft ?? 0.08);
+    gl.uniform1f(this.u(pr, 'u_rough'), f.rough ?? 0.45);
+    const lights = f.lights ?? [{ x: f.light.x, y: f.light.y, h: 0.9, i: 1.4, col: [1, 0.9, 0.78] }];
+    const lp = new Float32Array(12);
+    const lc = new Float32Array(9);
+    lights.slice(0, 3).forEach((l, i) => {
+      lp.set([l.x, l.y, l.h, l.i], i * 4);
+      lc.set(l.col, i * 3);
+    });
+    gl.uniform4fv(this.u(pr, 'u_lights[0]'), lp);
+    gl.uniform3fv(this.u(pr, 'u_lightCol[0]'), lc);
     this.bindTex(this.surface.tex, 1);
     gl.uniform1i(this.u(pr, 'u_surface'), 1);
     gl.uniform2f(this.u(pr, 'u_surfTexel'), 1 / this.surface.w, 1 / this.surface.h);

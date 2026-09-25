@@ -113,7 +113,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ### Known issue: sparkly specular and harsh voronoi edges
 - [ ] ENG-0070 · Demo · P0 · S · Shader lab dev route `?shaderlab` — all organ kinds × species side by side, light sweep, zoom 1×/2.5×, frozen time; baseline screenshots checked in for review
 - [x] ENG-0071 · Demo · P0 · S · First-pass de-sparkle — finite-difference normal from a low-frequency height field replaces screen-space `dFdx/dFdy`×40; spec exponent 40→18 and intensity 0.55→0.22
-- [ ] ENG-0072 · Demo · P0 · M · Energy-normalised Blinn-Phong/GGX specular with per-organ roughness (0.35–0.6) and intensity clamp — temporal flicker metric (mean |Δluma| between consecutive frames of a static scene) <1% and art sign-off in the shader lab
+- [x] ENG-0072 · Demo · P0 · M · Energy-normalised Blinn-Phong/GGX specular with per-organ roughness (0.35–0.6) and intensity clamp — temporal flicker metric (mean |Δluma| between consecutive frames of a static scene) <1% and art sign-off in the shader lab
 - [x] ENG-0073 · Demo · P0 · M · Specular anti-aliasing — fade noise octaves by pixel footprint (`fwidth`) and widen roughness from normal variance (Toksvig) so sparkle does not return at 4K, 2.5× zoom or 0.5× render scale
 - [x] ENG-0074 · Demo · P0 · M · Smooth voronoi — replace `cells()` hard `d2 - d1` edges with a smooth-minimum voronoi (k uniform) plus per-kind edge-softness uniform; lung, liver and flesh edges signed off as membranes, not cracks
 - [ ] ENG-0075 · Demo · P1 · S · Irregular voronoi cells — domain-warp input with low-frequency fbm and randomised jitter so the grid regularity disappears (shader lab A/B)
@@ -121,16 +121,16 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 
 ### Surface model & performance tiers
 - [ ] ENG-0077 · Demo · P1 · M · Split `FLESH_FS` into composable GLSL chunks (noise, lighting, per-organ surface, corruption, drape) assembled with defines per variant — variants compiled and cached at load
-- [ ] ENG-0078 · Demo · P1 · M · Wetness field — specular and gloss modulated by a low-frequency wetness map plus the blood/salve decal maps so dry tissue reads matte and fresh blood glistens
+- [x] ENG-0078 · Demo · P1 · M · Wetness field — specular and gloss modulated by a low-frequency wetness map plus the blood/salve decal maps so dry tissue reads matte and fresh blood glistens
 - [ ] ENG-0079 · Demo · P1 · M · Subsurface-scattering approximation (wrap diffuse + red-shifted translucency) for flesh, lung and gut so tissue reads as meat, not plastic — art sign-off
 - [ ] ENG-0080 · Demo · P2 · S · Cavity depth cues — Fresnel rim toward the opening edge plus ambient-occlusion falloff under the retractor rim
 - [ ] ENG-0081 · Demo · P0 · M · Bake static fbm/voronoi into 512² tiling noise textures at load; `FLESH_FS` samples textures instead of evaluating 5-octave fbm up to 6× per pixel — flesh pass ≤1.5 ms at 1080p on Intel UHD 620 (GPU timer)
 - [ ] ENG-0082 · Demo · P1 · M · Shader quality tiers High/Medium/Low (octaves, SSS, spec AA, baked vs live noise) chosen by GPU tier and overridable in settings — Low renders the field at 0.75× internal resolution
 - [ ] ENG-0083 · Demo · P0 · S · CI shader compile check — every shader variant × tier compiled and linked in headless Chromium (SwiftShader) during `npm test`; any error fails the build with the variant name
-- [ ] ENG-0084 · Demo · P1 · M · Light rig — up to 3 lights (surgeon's lamp, 2 candles) with colour, radius and flicker uniforms shared by flesh, lit sprites, particles and backdrops
+- [x] ENG-0084 · Demo · P1 · M · Light rig — up to 3 lights (surgeon's lamp, 2 candles) with colour, radius and flicker uniforms shared by flesh, lit sprites, particles and backdrops
 
 ### Organs, species & anatomy variants
-- [ ] ENG-0085 · Demo · P0 · M · Heartbeat deformation — heart surface contracts 4–6% in systole with ease-in/ease-out driven by an ECG phase uniform from the sim (replaces uniform `u_pulse` swell); flesh around it pulses subtly
+- [x] ENG-0085 · Demo · P0 · M · Heartbeat deformation — heart surface contracts 4–6% in systole with ease-in/ease-out driven by an ECG phase uniform from the sim (replaces uniform `u_pulse` swell); flesh around it pulses subtly
 - [ ] ENG-0086 · Demo · P1 · S · Heartbeat sync: shader phase, ECG trace and heartbeat audio cue share one sim-driven beat clock — measured offset ≤1 frame
 - [ ] ENG-0087 · Demo · P1 · M · Heart surface — coronary vessel pattern following warped ridges, epicardial fat streaks, darker myocardium in diastole
 - [ ] ENG-0088 · Demo · P1 · M · Lung surface — alveolar lobules with a breathing cycle (`u_breath`) at the patient's respiration rate, inflating lobule scale ±3%

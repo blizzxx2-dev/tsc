@@ -26,10 +26,12 @@ const RACE_TINT: Record<NonNullable<OperationDef['race']>, RGB> = {
 
 /** Membrane edge softness per organ: crisp alveoli, softer fat lobules. */
 const CELL_SOFT: Record<OrganKind, number> = { flesh: 0.1, heart: 0.08, lung: 0.05, gut: 0.09, liver: 0.07, brain: 0.08, bone: 0.12 };
+/** Base roughness per organ: glossy serosa and heart, matte skin and bone. */
+const ROUGH: Record<OrganKind, number> = { flesh: 0.55, heart: 0.38, lung: 0.45, gut: 0.35, liver: 0.4, brain: 0.5, bone: 0.6 };
 
-export function organPalette(def: OperationDef): { kind: number; base: RGB; deep: RGB; vein: RGB; cellSoft: number } {
+export function organPalette(def: OperationDef): { kind: number; base: RGB; deep: RGB; vein: RGB; cellSoft: number; rough: number } {
   const o = ORGAN[def.organ];
   const t = RACE_TINT[def.race ?? 'human'];
   const tint = (c: RGB): RGB => [Math.min(1, c[0] * t[0]), Math.min(1, c[1] * t[1]), Math.min(1, c[2] * t[2])];
-  return { kind: KIND_INDEX[def.organ], base: tint(vec3(o.base)), deep: tint(vec3(o.deep)), vein: vec3(o.vein), cellSoft: CELL_SOFT[def.organ] };
+  return { kind: KIND_INDEX[def.organ], base: tint(vec3(o.base)), deep: tint(vec3(o.deep)), vein: vec3(o.vein), cellSoft: CELL_SOFT[def.organ], rough: ROUGH[def.organ] };
 }

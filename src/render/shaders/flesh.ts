@@ -54,6 +54,10 @@ uniform vec2 u_light;
 uniform float u_corrupt;
 uniform sampler2D u_surface;
 uniform vec2 u_surfTexel;
+// Light rig: [0] surgeon's lamp, [1..2] candles. xy = position (virtual px), z = height, w = intensity.
+uniform vec4 u_lights[3];
+uniform vec3 u_lightCol[3];
+uniform float u_rough;
 out vec4 o;
 // smoothstep with edge0 > edge1 is undefined in GLSL; this is the portable falling edge.
 float rsmooth(float hi, float lo, float x) { return 1.0 - smoothstep(lo, hi, x); }
@@ -68,7 +72,9 @@ void main() {
   vec2 px = vec2(v_uv.x, 1.0 - v_uv.y) * u_view;
   vec2 q = (px - u_center) / u_radii;
   // Organs swell faintly with the heartbeat.
-  float swell = 1.0 + u_pulse * 0.012;
+  // Heartbeat: the heart contracts ~5% in systole; other tissue barely stirs.
+  float beat = u_pulse * u_pulse * (3.0 - 2.0 * u_pulse);
+  float swell = 1.0 + beat * (u_kind == 1 ? 0.05 : 0.012);
   float r = length(q) / swell;
   float edge = r + (fbm(q * 3.0 + 4.0) - 0.5) * 0.08;
 
@@ -133,16 +139,37 @@ void main() {
   grad += sg * 14.0;
   vec3 nrm = normalize(vec3(-grad * 0.35, 1.0));
   vec3 L = normalize(vec3((u_light - px) / 700.0, 0.9));
-  float diff = max(dot(nrm, L), 0.0);
+  // Wetness: glistening near wounds and blood, matte where the skin has dried.
+  float wet = clamp(0.35 + 0.35 * fbm(q * 1.3 + 7.0) + sf.r * 0.8 + sf.g * 0.6 + sf.a * 0.3, 0.0, 1.0);
   // Specular anti-aliasing (Toksvig-style): widen the lobe where the normal varies within a pixel.
   float nVar = clamp(length(fwidth(nrm)) * 6.0, 0.0, 1.0);
-  float specPow = mix(18.0, 6.0, nVar);
-  float spec = pow(max(dot(reflect(-L, nrm), vec3(0, 0, 1)), 0.0), specPow) * mix(1.0, 0.45, nVar);
+  float rough = clamp(mix(u_rough + 0.25, u_rough - 0.15, wet) + nVar * 0.3, 0.12, 0.9);
+  float specPow = 2.0 / (rough * rough) - 2.0;
+  float norm = (specPow + 8.0) / 25.13; // energy-normalised Blinn-Phong
+  float diff = 0.0;
+  float spec = 0.0;
+  vec3 lit = vec3(0.0);
+  vec3 specCol = vec3(0.0);
+  for (int li = 0; li < 3; li++) {
+    vec4 lt = u_lights[li];
+    if (lt.w <= 0.0) continue;
+    vec3 lv = vec3((lt.xy - px) / 700.0, lt.z);
+    float att = lt.w / (1.0 + dot(lv.xy, lv.xy) * 1.6);
+    vec3 ld = normalize(lv);
+    float d = max(dot(nrm, ld), 0.0);
+    vec3 hv = normalize(ld + vec3(0.0, 0.0, 1.0));
+    float sp = min(pow(max(dot(nrm, hv), 0.0), specPow) * norm, 4.0);
+    lit += u_lightCol[li] * d * att;
+    specCol += u_lightCol[li] * sp * att;
+    diff += d * att;
+    spec += sp * att;
+  }
+  diff = clamp(diff, 0.0, 1.5);
   float cut = smoothstep(0.05, 0.7, sf.r);
   // Subsurface scattering: light bleeds red through flesh on the shadowed side.
   vec3 sss = u_base * vec3(1.25, 0.35, 0.28) * pow(1.0 - diff, 2.0) * 0.32;
   float fres = pow(1.0 - clamp(nrm.z, 0.0, 1.0), 3.0);
-  col = col * (0.38 + 0.52 * diff) + sss + vec3(1.0, 0.9, 0.82) * spec * 0.22 + vec3(1.0, 0.75, 0.7) * fres * 0.12;
+  col = col * (vec3(0.28, 0.27, 0.3) + 0.52 * lit) + sss + specCol * (0.08 + 0.22 * wet) + vec3(1.0, 0.75, 0.7) * fres * 0.12;
 
   // Wound interior: deep, wet, glistening maroon with a dark rim.
   vec3 woundCol = mix(vec3(0.42, 0.03, 0.05), vec3(0.16, 0.0, 0.02), smoothstep(0.3, 1.0, sf.r));

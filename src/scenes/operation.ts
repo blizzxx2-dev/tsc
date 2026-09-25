@@ -215,6 +215,12 @@ export class OperationScene implements Scene {
       light,
       corrupt: this.corrupt,
       cellSoft: pal.cellSoft,
+      rough: pal.rough,
+      lights: [
+        { x: light.x, y: light.y, h: 1.1, i: 1.1, col: [0.95, 0.9, 0.82] },
+        { x: FIELD.cx - FIELD.rx - 60, y: FIELD.cy + 120, h: 0.35, i: 0.45 * (0.85 + 0.15 * Math.sin(t * 9.3) * Math.sin(t * 4.1)), col: [1.0, 0.6, 0.3] },
+        { x: FIELD.cx + FIELD.rx + 60, y: FIELD.cy - 60, h: 0.35, i: 0.4 * (0.85 + 0.15 * Math.sin(t * 8.1 + 2.0) * Math.sin(t * 3.3)), col: [1.0, 0.62, 0.32] },
+      ],
     });
     g.fluidComposite(light);
     for (const e of ents) e.draw(g, op);
