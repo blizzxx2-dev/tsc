@@ -16,6 +16,7 @@ import { CreditsScene, NoticesScene } from './scenes/credits';
 import { ExtrasScene } from './scenes/extras';
 import { DamagedRecordsScene } from './scenes/title';
 import { NoticeScene, noticesDue } from './scenes/notice';
+import { SetupScene, setupDue } from './scenes/setup';
 import { Audio } from './core/audio';
 import { ErrorBoundary, type CrashRecord } from './core/boundary';
 import { Clock } from './core/clock';
@@ -383,7 +384,10 @@ async function boot(): Promise<void> {
     });
   splashProgress(1, 'Ready');
   void loadLayoutLabels();
-  game.start(noticesDue() ? new NoticeScene(() => game.go(new TitleScene())) : new TitleScene());
+  // First launch: the notices, then the setup chain (UIX-0075), then the title.
+  const title = () => game.go(new TitleScene());
+  const afterNotices = () => (setupDue() ? game.go(new SetupScene(title)) : title());
+  game.start(noticesDue() ? new NoticeScene(afterNotices) : setupDue() ? new SetupScene(title) : new TitleScene());
   splashDone();
   console.info(`boot to title: ${Math.round(performance.now() - t0)} ms`);
 
@@ -433,6 +437,7 @@ async function boot(): Promise<void> {
     const screens: Record<string, () => Scene> = {
       demoend: () => new DemoEndScene(),
       notice: () => new NoticeScene(back),
+      setup: () => new SetupScene(back),
       theatre: () => new OperationsScene(),
       gameplay: () => new GameplayOptionsScene(back),
       controls: () => new ControlsScene(back),

@@ -14,7 +14,7 @@ import { Particles } from '../render/particles';
 import { FlashLimiter } from '../render/flashLimiter';
 import { Malison, MalisonShard } from '../surgery/malison';
 import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOWN, TINCTURE_TIME, type OperationDef, type Popup } from '../surgery/operation';
-import { TOOL_INFO, toolInfo, type ToolId } from '../surgery/types';
+import { TOOL_INFO, type ToolId } from '../surgery/types';
 import { anchorShift, PALETTE, viewRect, VIEW_W } from '../ui/layout';
 import { button, reticle, toolIcon } from '../ui/widgets';
 import { giltText, UI, waxSeal } from '../ui/ornaments';
@@ -37,7 +37,7 @@ import { vec3 } from '../render/color';
 import { settings } from '../core/settings';
 import { OptionsScene } from './options';
 import { litanyMode, OperationInput } from '../input/opinput';
-import { addTray, HudLayer, trayFrame, traySide, traySlot } from '../input/hud';
+import { addTray, HudLayer, inRect, trayFrame, traySide, traySlot } from '../input/hud';
 import { drawGraspOutline } from '../input/hover';
 import { HoldToRetry } from '../input/retry';
 import { bindings } from '../input/bindings';
@@ -134,6 +134,9 @@ export class OperationScene implements Scene {
   private hud = new HudLayer();
   /** Litany reliquary rect for the hit-test layer (mirrored in left-handed mode). */
   private litanyRect: { x: number; y: number; w: number; h: number } | null = null;
+  /** The Respite button in the HUD (UIX-0102): registered each frame, drawn beside the score plate. */
+  private pauseRect = { x: VIEW_W - 16 - 250 - 8 - 44, y: 14, w: 44, h: 44 };
+  private pauseHover = 0;
   /** Hold `op.retry` for a second to restart a challenge run on the spot (INP-0113). */
   private retry = new HoldToRetry();
 
@@ -301,6 +304,11 @@ export class OperationScene implements Scene {
     addTray(this.hud, op.def.tools);
     if (this.litanyRect) this.hud.add({ kind: 'litany', rect: this.litanyRect });
     if (this.calloutRect) this.hud.add({ kind: 'callout', rect: this.calloutRect, clickThrough: true });
+    // The Respite button (UIX-0102): a press on it pauses instead of reaching the field.
+    const overPause = op.status === 'running' && !this.paused && this.resumeT <= 0 && inRect(input.pos, this.pauseRect, 4);
+    this.pauseHover = Math.max(0, Math.min(1, this.pauseHover + (overPause ? dt * 8 : -dt * 6)));
+    if (overPause) this.hud.add({ kind: 'pause', rect: this.pauseRect, pad: 4 });
+    if (overPause && input.pressed && game.push && game.pop) return this.openPause(game);
     this.ctl.update(op, input, dt, this.hud.hit);
     this.dmg.enabled = settings.damageNumbers;
     this.hints.mode = settings.toolHints;
@@ -505,6 +513,7 @@ export class OperationScene implements Scene {
     this.drawHud(g);
     g.restore();
     this.drawTray(g);
+    this.drawPauseButton(g);
     g.save();
     g.translate(0, anchorShift('bottom'));
     this.drawCallout(g, t);
@@ -824,28 +833,88 @@ export class OperationScene implements Scene {
     return Math.min(5, corners);
   }
 
+  /** The tool slot under the pointer, or -1 (UIX-0051 hover tip). */
+  private hoverSlot(): number {
+    const n = this.op.def.tools.length;
+    for (let i = 0; i < n; i++) if (inRect(this.hoverPos, this.slot(i))) return i;
+    return -1;
+  }
+
+  /** The Respite button (UIX-0102): a small glass cap with a pause glyph beside the score plate. */
+  private drawPauseButton(g: Gfx): void {
+    const op = this.op;
+    if (op.status !== 'running') return;
+    const r = this.pauseRect;
+    const h = settings.reduceMotion ? (this.pauseHover > 0.5 ? 1 : 0) : this.pauseHover;
+    g.plate(r.x, r.y, r.w, r.h, {
+      radius: 4,
+      top: hex(h > 0 ? '#2a2016' : '#16110d', 0.92),
+      bottom: hex('#0a0806', 0.92),
+      border: hex(INK.gilt, 0.55 + 0.4 * h),
+      borderW: 1 + 0.4 * h,
+      bevel: 0.5,
+      shadow: [0.5, 6, 2],
+      glow: h > 0 ? hex(INK.gold, 0.25 * h) : undefined,
+      glowR: 12,
+    });
+    const c = hex(h > 0 ? INK.goldHi : INK.gold, 0.9);
+    g.rect(r.x + 15, r.y + 13, 5, 18, c);
+    g.rect(r.x + 24, r.y + 13, 5, 18, c);
+    if (h > 0.3) {
+      const label = tr('hud.pause.title');
+      const kc = glyphFor('pause');
+      const w = Math.round(g.measure(label, 12, 'display') * 1.1) + 24 + 46;
+      const tip = { x: r.x + r.w / 2 - w / 2, y: r.y + r.h + 8, w, h: 30 };
+      glass(g, tip, { alpha: h });
+      caps(g, label, tip.x + 12, tip.y + 20, 12, hex(INK.gold, h));
+      keycap(g, kc, tip.x + tip.w - 40, tip.y + 8, 11, h);
+    }
+  }
+
+  /** A tool tip beside a tray slot: name, hint and the binding (UIX-0051). */
+  private drawToolTip(g: Gfx, id: ToolId, r: { x: number; y: number; w: number; h: number }, a: number): void {
+    const mirrored = traySide() === 'right';
+    const ts = settings.textScale;
+    const hint = tr(`tool.${id}.hint`);
+    const hs = Math.round(16 * ts);
+    const w = Math.round(290 * ts);
+    const lines = g.wrap(hint, w - 32, hs);
+    // The tip sits beside the tray, on the field side (left of a mirrored tray).
+    const tip = { x: mirrored ? r.x - 20 - w : r.x + r.w + 20, y: r.y - 4, w, h: Math.round(40 * ts + lines.length * hs * 1.25 + 12) };
+    glass(g, tip, { alpha: a });
+    if (mirrored) g.tri(tip.x + tip.w, r.y + r.h / 2 - 7, tip.x + tip.w, r.y + r.h / 2 + 7, tip.x + tip.w + 8, r.y + r.h / 2, hex(INK.gilt, 0.75 * a));
+    else g.tri(tip.x, r.y + r.h / 2 - 7, tip.x, r.y + r.h / 2 + 7, tip.x - 8, r.y + r.h / 2, hex(INK.gilt, 0.75 * a));
+    caps(g, tr(`tool.${id}.name`), tip.x + 16, tip.y + 24 * ts, Math.round(13 * ts), hex(INK.gold, a));
+    if (a > 0.3) keycap(g, glyphFor(`tool.select.${TOOL_INFO.findIndex((ti) => ti.id === id) + 1}` as ActionId), tip.x + tip.w - 40, tip.y + 20 * ts, 11, a);
+    g.textBlock(hint, tip.x + 16, tip.y + 34 * ts + hs * 0.75, tip.w - 32, { size: hs, color: hex(INK.text, a), shadow: false }, 1.25);
+  }
+
   private drawTray(g: Gfx): void {
     const op = this.op;
     const mirrored = traySide() === 'right';
     const frame = trayFrame(op.def.tools.length);
     // The tray shudders when a hotkey names an instrument the kit lacks (INP-0048).
     const shake = this.ctl.trayShake > 0 && !settings.reduceMotion ? Math.sin(this.ctl.trayShake * 40) * 5 * this.ctl.trayShake : 0;
+    const hover = this.hoverSlot();
     g.save();
     g.translate(shake, 0);
     glass(g, frame, { strength: palette().plate > 0 ? 1.15 : 1 });
     op.def.tools.forEach((id, i) => {
-      const r = this.slot(i);
+      const s = this.slot(i);
       const sel = op.tool === id;
+      // The selected slot slides 8 px out of the frame towards the field (UIX-0051); hover lifts a slot 3 px.
+      const out = sel ? 8 : hover === i ? 3 : 0;
+      const r = { x: s.x + (mirrored ? -out : out), y: s.y, w: s.w, h: s.h };
       g.plate(r.x, r.y, r.w, r.h, {
         radius: 3,
-        top: hex(sel ? '#3a2c1c' : '#16110d', 0.95),
+        top: hex(sel ? '#3a2c1c' : hover === i ? '#221a12' : '#16110d', 0.95),
         bottom: hex(sel ? '#1e150d' : '#0a0806', 0.95),
-        border: hex(sel ? INK.gold : '#5a4a34', sel ? 1 : 0.7),
+        border: hex(sel ? INK.gold : hover === i ? INK.gilt : '#5a4a34', sel ? 1 : 0.7),
         borderW: sel ? 1.6 : 1,
         inset: sel ? hex('#fff1c4', 0.18) : undefined,
         insetD: 3,
         bevel: sel ? 0.9 : 0.5,
-        shadow: [0.5, 6, 2],
+        shadow: [0.5, 6 + out * 0.5, 2],
         glow: sel ? hex(INK.gold, 0.3) : undefined,
         glowR: 12,
       });
@@ -853,32 +922,28 @@ export class OperationScene implements Scene {
       // Key number: small engraved numeral in the corner.
       g.text(toolKeyLabel(TOOL_INFO.findIndex((ti) => ti.id === id) + 1), r.x + 8, r.y + 16, { size: 12, font: 'display', tracking: 0.05, color: hex(sel ? INK.goldHi : INK.dim), shadow: hex('#000000', 0.8) });
       if (toolBlinded(op, id)) g.rect(r.x + 2, r.y + 2, r.w - 4, r.h - 4, hex('#8a8a8a', 0.6));
+      // Brand heat (UIX-0051): the slot glows from ember to white as the iron nears overheating.
+      if (id === 'brand' && op.brandHeat > 0) {
+        const h = Math.min(1, op.brandHeat / op.tuning.brand.overheatAfter);
+        g.glow(r.x + r.w / 2, r.y + r.h / 2, 26 + 10 * h, hex(h > 0.75 ? '#ffe0b0' : '#ff7a2a', 0.25 + 0.45 * h));
+      }
       if (id === 'tincture' && op.injectCooldown > 0) {
+        // Cooldown as a radial wipe (UIX-0051): a dark disc that unwinds clockwise as the vial refills.
         const f = op.injectCooldown / TINCTURE_COOLDOWN;
-        g.rect(r.x + 2, r.y + 2 + (r.h - 4) * (1 - f), r.w - 4, (r.h - 4) * f, hex('#000000', 0.5));
+        g.arc(r.x + r.w / 2, r.y + r.h / 2, 15, 30, hex('#000000', 0.55), f);
+        g.arc(r.x + r.w / 2, r.y + r.h / 2, 29, 2, hex(INK.gold, 0.6), 1 - f);
         vialArt(g, r.x + r.w - 12, r.y + r.h / 2 + 2, 26, vialLevel(f), f > 0.97);
       }
     });
     g.restore();
 
-    // Tool name + hint: a plate beside the selected slot that fades after a switch.
-    if (this.hintT > 0) {
-      const info = toolInfo(op.tool);
-      const r = this.slot(op.def.tools.indexOf(op.tool));
-      const a = Math.min(1, this.hintT);
-      const ts = settings.textScale;
-      const hint = tr(`tool.${info.id}.hint`);
-      const hs = Math.round(16 * ts);
-      const w = Math.round(290 * ts);
-      const lines = g.wrap(hint, w - 32, hs).length;
-      // The tip sits beside the tray, on the field side (left of a mirrored tray).
-      const tip = { x: mirrored ? r.x - 20 - w : r.x + r.w + 20, y: r.y - 4, w, h: Math.round(40 * ts + lines * hs * 1.25 + 12) };
-      glass(g, tip, { alpha: a });
-      if (mirrored) g.tri(tip.x + tip.w, r.y + r.h / 2 - 7, tip.x + tip.w, r.y + r.h / 2 + 7, tip.x + tip.w + 8, r.y + r.h / 2, hex(INK.gilt, 0.75 * a));
-      else g.tri(tip.x, r.y + r.h / 2 - 7, tip.x, r.y + r.h / 2 + 7, tip.x - 8, r.y + r.h / 2, hex(INK.gilt, 0.75 * a));
-      caps(g, tr(`tool.${info.id}.name`), tip.x + 16, tip.y + 24 * ts, Math.round(13 * ts), hex(INK.gold, a));
-      if (a > 0.3) keycap(g, glyphFor(`tool.select.${TOOL_INFO.findIndex((ti) => ti.id === info.id) + 1}` as ActionId), tip.x + tip.w - 40, tip.y + 20 * ts, 11, a);
-      g.textBlock(hint, tip.x + 16, tip.y + 34 * ts + hs * 0.75, tip.w - 32, { size: hs, color: hex(INK.text, a), shadow: false }, 1.25);
+    // Tool name + hint: a plate beside the selected slot that fades after a switch, or beside a hovered slot.
+    if (hover >= 0 && op.def.tools[hover] !== op.tool && op.status === 'running' && !this.paused) {
+      const s = this.slot(hover);
+      this.drawToolTip(g, op.def.tools[hover]!, { x: s.x + (mirrored ? -3 : 3), y: s.y, w: s.w, h: s.h }, 1);
+    } else if (this.hintT > 0) {
+      const s = this.slot(op.def.tools.indexOf(op.tool));
+      this.drawToolTip(g, op.tool, { x: s.x + (mirrored ? -8 : 8), y: s.y, w: s.w, h: s.h }, Math.min(1, this.hintT));
     }
 
     // Litany reliquary (only once the rite has been learned), bottom right — bottom left when the tray is mirrored.

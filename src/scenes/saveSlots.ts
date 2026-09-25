@@ -22,6 +22,7 @@ import { confirm } from './confirm';
 import { playStep, save } from './flow';
 import { chapterLabel, formatDate, formatPlaytime, sealCount, stepLabel } from './campaignState';
 import { TitleScene } from './title';
+import { progress, saveProgress } from '../surgery/session';
 
 export type ManualSlot = 1 | 2 | 3;
 export const MANUAL_SLOTS: readonly ManualSlot[] = [1, 2, 3];
@@ -48,7 +49,11 @@ export class SaveSlotsScene implements Scene {
   /** Slot being burnt → seconds into the animation. */
   private burning = new Map<ManualSlot, number>();
 
-  constructor(private mode: 'new' | 'load' = 'new') {}
+  constructor(
+    private mode: 'new' | 'load' = 'new',
+    /** Choices made before the slot picker that the fresh profile must keep (GAM-0208). */
+    private opts: { tutorialSkip?: boolean } = {},
+  ) {}
 
   private data(slot: ManualSlot): SlotData | null {
     return this.slots.find((s) => s.slot === slot)?.data ?? null;
@@ -84,6 +89,10 @@ export class SaveSlotsScene implements Scene {
   private begin(game: Game, slot: ManualSlot, existing: SlotData | null): void {
     const start = () => {
       Object.assign(save, { ...fresh(), best: save.best, stats: save.stats });
+      if (this.opts.tutorialSkip) {
+        progress.tutorialSkip = true;
+        saveProgress();
+      }
       store(save);
       void saveToSlot(save, slot);
       activeSlot = slot;

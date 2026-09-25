@@ -44,8 +44,13 @@ try {
     } else if (kind === 'op' || kind === 'pause') {
       const [opId, query] = a.split('?');
       await page.goto(`${url}?op=${opId}${query ? '&' + query : ''}`);
-      await page.waitForFunction(() => window.__game?.scene && typeof window.__game.scene.onBegin === 'function' && !window.__game.transition?.busy, null, { timeout: 30000 });
-      await page.keyboard.press('Enter');
+      await page.waitForFunction(() => window.__game?.scene && typeof window.__game.scene.onBegin === 'function' && !window.__game.transition?.busy, null, { timeout: 120000 });
+      // Scrub In; a case that introduces an instrument shows its card first, so press again until the op exists.
+      for (let tries = 0; tries < 3; tries++) {
+        await page.keyboard.press('Enter');
+        const started = await page.waitForFunction(() => !!window.__game?.scene?.op, null, { timeout: 4000 }).then(() => true, () => false);
+        if (started) break;
+      }
       await page.waitForFunction(() => !!window.__game?.scene?.op, null, { timeout: 30000 });
       await page.evaluate((s) => {
         const op = window.__game.scene.op;

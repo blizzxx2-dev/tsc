@@ -214,7 +214,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] UIX-0050 · Demo · P1 · S · Hurt direction cue — when vitals drop from an entity, a brief red pulse ring marks that entity so players learn what is draining the patient
 
 ### Tool tray & cursor
-- [ ] UIX-0051 · Demo · P0 · M · Tray v2 — slot art per tool, selected slot slides out 8 px, binding glyph from current bindings, hover/focus tooltip (name, gesture, binding), Tincture cooldown as radial wipe, Brand heat glow; tray mirrors to the right edge in left-handed mode
+- [x] UIX-0051 · Demo · P0 · M · Tray v2 — slot art per tool, selected slot slides out 8 px, binding glyph from current bindings, hover/focus tooltip (name, gesture, binding), Tincture cooldown as radial wipe, Brand heat glow; tray mirrors to the right edge in left-handed mode
 - [x] UIX-0052 · M0 · P1 · S · Tool hint tooltip — name + hint panel beside the selected tray slot, fading 2.5 s after each switch (replaced the static text under the tray)
 - [x] UIX-0053 · Demo · P1 · S · Tool hint modes — "Tool hints: Always / First uses / Off"; in First-uses mode the tooltip also re-appears after 5 s idle during a tool's first 3 uses; hint text raised from 13 px to ≥ 16 px
 - [x] UIX-0054 · Demo · P0 · M · Target-validity cursor — cursor tints green over a valid target for the current tool; over a target needing another tool it shows that tool's ghost icon ("Needs: Leech-Pipe"); shape changes (ring vs cross) so it is colour-independent
@@ -283,7 +283,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] UIX-0099 · M0 · P0 · S · Pause menu "Respite" — Resume, Begin Again, Options, Abandon the Patient; Esc toggles
 - [x] UIX-0100 · Demo · P0 · M · Pause v2 — Resume, Restart (confirm), Options, Controls card, Callout log, Abandon (confirm), Quit to Desktop (confirm); operation info panel (patient, ailment, time left, current rank pace)
 - [x] UIX-0101 · Demo · P1 · S · Pause presentation — world blurred and dimmed, parchment menu slides in 220 ms; resume optionally with a 3-2-1 countdown (Accessibility setting, default off)
-- [ ] UIX-0102 · Demo · P1 · S · Pause button on HUD — clickable/touchable pause glyph in the top bar for mouse-only and Deck touch players
+- [x] UIX-0102 · Demo · P1 · S · Pause button on HUD — clickable/touchable pause glyph in the top bar for mouse-only and Deck touch players
 
 ### Options
 - [x] UIX-0103 · M0 · P0 · M · Options v0 — `OptionsScene` with ‹ value › rows for Volume, Sound, Screen shake (Off/Gentle/Full), Reduce flashing, Assist: time allowed, Assist: Litany on Space and Fullscreen, reachable from the pause menu

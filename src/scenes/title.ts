@@ -28,6 +28,8 @@ import { buildLabel, IS_DEMO } from '../platform/build';
 import { EDITIONS } from '../platform/editions';
 import { flag } from '../platform/flags';
 import { pickEpigraph } from '../content/epigraphs';
+import { hasOperated } from '../surgery/progress';
+import { progress } from '../surgery/session';
 
 /** One epigraph per boot (NAR-0069); cosmetic, so Math.random. */
 const EPIGRAPH = pickEpigraph();
@@ -71,7 +73,7 @@ export class TitleScene implements Scene {
       y += MENU.h + MENU.gap;
     };
     if (started && !done) add('continue', t('ui.title.continue'), () => playStep(game, p.chapter, p.step));
-    add('new', started ? t('ui.title.new_game_again') : t('ui.title.new_game'), () => game.go(new SaveSlotsScene('new')));
+    add('new', started ? t('ui.title.new_game_again') : t('ui.title.new_game'), () => this.newGame(game));
     add('chapters', t('ui.title.chapters'), () => game.go(new ChapterSelectScene()), { enabled: started || done });
     add('theatre', t('ui.title.theatre'), () => game.go(new OperationsScene()), { enabled: started });
     add('extras', t('ui.title.extras'), () => game.go(new ExtrasScene()));
@@ -82,6 +84,22 @@ export class TitleScene implements Scene {
       ui.button('wishlist', { x: VIEW_W - 250, y: 470, w: 200, h: 120 }, t('ui.title.wishlist'), () => platform.steam.openStore(EDITIONS.full.steamAppId), { style: 'wax', tip: t('ui.title.wishlist_note') });
     }
     if (!ui.focus) ui.focusFirst(started && !done ? 'continue' : done ? 'chapters' : 'new');
+  }
+
+  /**
+   * New Game asks first-timers whether they have operated before (GAM-0208): "yes" starts the
+   * campaign with the guided tutorials off. A profile that has already operated is not asked.
+   */
+  private newGame(game: Game): void {
+    if (hasOperated(progress)) return game.go(new SaveSlotsScene('new'));
+    confirm(game, {
+      title: t('ui.title.operated_title'),
+      message: t('ui.title.operated'),
+      yes: t('ui.title.operated_yes'),
+      no: t('ui.title.operated_no'),
+      onYes: () => game.go(new SaveSlotsScene('new', { tutorialSkip: true })),
+      onNo: () => game.go(new SaveSlotsScene('new')),
+    });
   }
 
   render(g: Gfx, game: Game): void {

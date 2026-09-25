@@ -4,7 +4,7 @@ import { formatClock } from '../i18n/format';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import type { OperationDef } from '../surgery/operation';
-import { TOOL_INFO } from '../surgery/types';
+import { TOOL_INFO, type ToolId } from '../surgery/types';
 import { glyphFor } from '../input/glyphs';
 import type { ActionId } from '../input/actions';
 import { TOOL_INTRODUCED } from '../surgery/tutorial';
@@ -23,6 +23,8 @@ export class BriefingScene implements Scene {
   private pins: Pin[] | null = null;
   /** Ink-writing of the findings (UIX-0112): characters revealed over time; a click or Reduced Motion completes it. */
   private ink = 0;
+  /** New-instrument card (UIX-0111): shown once before Scrub In when the case introduces a tool. */
+  private card: { tools: ToolId[]; t: number } | null = null;
   constructor(
     private def: OperationDef,
     private best: { rank: string; score: number } | undefined,
@@ -34,8 +36,44 @@ export class BriefingScene implements Scene {
     const len = this.def.diagnosis.length;
     if (settings.reduceMotion || (game.input.pressed && this.ink < len)) this.ink = len;
     else this.ink = Math.min(len, this.ink + dt * 70 * settings.textSpeed);
-    if (game.input.actPressed('ui.confirm')) this.onBegin();
-    if (game.input.actPressed('ui.back')) this.onBack();
+    if (this.card) this.card.t += dt;
+    if (game.input.actPressed('ui.confirm')) this.begin();
+    if (game.input.actPressed('ui.back')) {
+      if (this.card) this.card = null;
+      else this.onBack();
+    }
+  }
+
+  /** Scrub In: the first press shows the new-instrument card when the case has one; the next begins. */
+  private begin(): void {
+    if (this.card) return this.card.t > 0.4 ? this.onBegin() : undefined;
+    const fresh = this.def.tools.filter((tool) => TOOL_INTRODUCED[tool] === this.def.id);
+    if (fresh.length && !this.cardShown) {
+      this.cardShown = true;
+      this.card = { tools: fresh, t: 0 };
+    } else this.onBegin();
+  }
+  private cardShown = false;
+
+  private drawCard(g: Gfx, game: Game): void {
+    const c = this.card!;
+    const k = Math.min(1, c.t * 4);
+    const vr = g.viewRect();
+    g.rect(vr.x, vr.y, vr.w, vr.h, hex('#050303', 0.55 * k));
+    const n = c.tools.length;
+    const r = { x: VIEW_W / 2 - 270, y: 150 + (1 - k) * 12, w: 540, h: 250 + n * 110 };
+    glass(g, r, { strength: 1.2, alpha: k });
+    heading(g, t(n > 1 ? 'ui.briefing.new_instruments' : 'ui.briefing.new_instrument'), VIEW_W / 2, r.y + 54, 420, k, 24);
+    c.tools.forEach((tool, i) => {
+      const y = r.y + 110 + i * 110;
+      g.plate(r.x + 40, y - 34, 68, 68, { radius: 3, top: hex('#16110d', 0.95), bottom: hex('#0a0806', 0.95), border: hex(INK.gold, 0.9 * k), borderW: 1.4, bevel: 0.6, shadow: [0.5, 6, 2], glow: hex(INK.gold, 0.25 * k), glowR: 12 });
+      toolIcon(g, tool, r.x + 74, y, 1.1, g.time, 'selected');
+      caps(g, t(`tool.${tool}.name`), r.x + 130, y - 14, 14, hex(INK.gold, k));
+      keycap(g, glyphFor(`tool.select.${TOOL_INFO.findIndex((ti) => ti.id === tool) + 1}` as ActionId), r.x + r.w - 76, y - 26, 11, k);
+      g.textBlock(t(`tool.${tool}.hint`), r.x + 130, y + 12, r.w - 220, { size: 17, color: hex(INK.text, 0.92 * k), shadow: false }, 1.3);
+    });
+    g.text(t('ui.briefing.new_instrument_note'), VIEW_W / 2, r.y + r.h - 70, { size: 16, font: 'italic', color: hex(INK.dim, k), align: 'center', shadow: false });
+    if (button(g, game.input, t('ui.briefing.begin'), VIEW_W / 2, r.y + r.h - 30, 28, c.t > 0.4, false)) this.onBegin();
   }
 
   render(g: Gfx, game: Game): void {
@@ -105,8 +143,9 @@ export class BriefingScene implements Scene {
     }
     this.notes ??= briefingNotes(d);
     this.notes.forEach((n, i) => g.text(n, lx, r.y + 548 + i * 18, { size: 16, font: 'italic', color: hex(INK.dim), shadow: false }));
-    if (button(g, game.input, t('ui.briefing.begin'), r.x + r.w - 140, r.y + 568, 30, true, false)) this.onBegin();
-    if (button(g, game.input, t('ui.common.back'), r.x + r.w - 330, r.y + 568, 24, true, false)) this.onBack();
+    if (button(g, game.input, t('ui.briefing.begin'), r.x + r.w - 140, r.y + 568, 30, !this.card, false)) this.begin();
+    if (button(g, game.input, t('ui.common.back'), r.x + r.w - 330, r.y + 568, 24, !this.card, false)) this.onBack();
+    if (this.card) this.drawCard(g, game);
     reticle(g, game.input.pos);
     g.endFrame();
   }

@@ -3850,18 +3850,16 @@
   "ui.options.bloom_amount": {
     "scene": "options",
     "font": "body",
-    "size": 23,
-    "maxPx": 400,
-    "context": "Options row label.",
-    "screenshot": "docs/loc/screens/options.png"
+    "size": 20,
+    "maxPx": 380,
+    "context": "Options row label (Display)."
   },
   "ui.options.bloom_amount_note": {
     "scene": "options",
     "font": "italic",
     "size": 18,
     "maxPx": 820,
-    "context": "Options row description.",
-    "screenshot": "docs/loc/screens/options.png"
+    "context": "Options row description."
   },
   "ui.options.grain_amount": {
     "scene": "options",
@@ -6962,20 +6960,6 @@
     "maxPx": 820,
     "context": "Options row description."
   },
-  "ui.options.bloom_amount": {
-    "scene": "options",
-    "font": "body",
-    "size": 20,
-    "maxPx": 380,
-    "context": "Options row label (Display)."
-  },
-  "ui.options.bloom_amount_note": {
-    "scene": "options",
-    "font": "italic",
-    "size": 18,
-    "maxPx": 820,
-    "context": "Options row description."
-  },
   "popup.not_in_kit": {
     "scene": "operation",
     "font": "body",
@@ -7966,5 +7950,221 @@
     "maxPx": 260,
     "context": "Hint under the operation title card: any press skips the card.",
     "screenshot": "docs/loc/screens/operation.png"
+  },
+  "ui.title.operated_title": {
+    "scene": "title",
+    "font": "display",
+    "size": 24,
+    "maxPx": 300,
+    "context": "Confirm dialog title on New Game asking whether the player knows the theatre already."
+  },
+  "ui.title.operated": {
+    "scene": "title",
+    "font": "body",
+    "size": 22,
+    "maxPx": 520,
+    "context": "Body of the operated-before dialog.",
+    "maxLines": 4
+  },
+  "ui.title.operated_yes": {
+    "scene": "title",
+    "font": "body",
+    "size": 24,
+    "maxPx": 260,
+    "context": "Dialog button: skip the guided tutorials."
+  },
+  "ui.title.operated_no": {
+    "scene": "title",
+    "font": "body",
+    "size": 24,
+    "maxPx": 260,
+    "context": "Dialog button: keep the guided tutorials."
+  },
+  "ui.briefing.new_instrument": {
+    "scene": "briefing",
+    "font": "display",
+    "size": 24,
+    "maxPx": 420,
+    "context": "Heading of the card shown before Scrub In when a case introduces one tool."
+  },
+  "ui.briefing.new_instruments": {
+    "scene": "briefing",
+    "font": "display",
+    "size": 24,
+    "maxPx": 420,
+    "context": "Heading of the card shown before Scrub In when a case introduces several tools."
+  },
+  "ui.briefing.new_instrument_note": {
+    "scene": "briefing",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 520,
+    "context": "Footnote on the new-instrument card."
+  },
+  "ui.setup.heading": {
+    "scene": "setup",
+    "font": "display",
+    "size": 36,
+    "maxPx": 640,
+    "context": "Heading of the first-launch setup pages."
+  },
+  "ui.setup.step": {
+    "scene": "setup",
+    "font": "display",
+    "size": 12,
+    "maxPx": 120,
+    "context": "Page counter under the setup heading."
+  },
+  "ui.setup.note": {
+    "scene": "setup",
+    "font": "italic",
+    "size": 17,
+    "maxPx": 760,
+    "context": "Footnote on every setup page."
+  },
+  "ui.setup.skip": {
+    "scene": "setup",
+    "font": "display",
+    "size": 20,
+    "maxPx": 220,
+    "context": "Button: leave the setup chain."
+  },
+  "ui.setup.brightness.title": {
+    "scene": "setup",
+    "font": "display",
+    "size": 16,
+    "maxPx": 360,
+    "context": "Setup page title."
+  },
+  "ui.setup.brightness.body": {
+    "scene": "setup",
+    "font": "body",
+    "size": 20,
+    "maxPx": 640,
+    "context": "Setup page body.",
+    "maxLines": 4
+  },
+  "ui.setup.brightness.go": {
+    "scene": "setup",
+    "font": "display",
+    "size": 24,
+    "maxPx": 420,
+    "context": "Setup button: open the brightness calibration."
+  },
+  "ui.setup.brightness.keep": {
+    "scene": "setup",
+    "font": "display",
+    "size": 24,
+    "maxPx": 420,
+    "context": "Setup button: skip calibration."
+  },
+  "ui.setup.device.title": {
+    "scene": "setup",
+    "font": "display",
+    "size": 16,
+    "maxPx": 360,
+    "context": "Setup page title."
+  },
+  "ui.setup.device.body_kbm": {
+    "scene": "setup",
+    "font": "body",
+    "size": 20,
+    "maxPx": 640,
+    "context": "Setup page body when no gamepad is connected.",
+    "maxLines": 4
+  },
+  "ui.setup.device.body_pad": {
+    "scene": "setup",
+    "font": "body",
+    "size": 20,
+    "maxPx": 640,
+    "context": "Setup page body when a gamepad is connected.",
+    "maxLines": 4
+  },
+  "ui.setup.device.ok": {
+    "scene": "setup",
+    "font": "display",
+    "size": 24,
+    "maxPx": 420,
+    "context": "Setup button: confirm the detected input device."
+  },
+  "ui.setup.device.controls": {
+    "scene": "setup",
+    "font": "display",
+    "size": 24,
+    "maxPx": 420,
+    "context": "Setup button: open the controls screen."
+  },
+  "ui.setup.text.title": {
+    "scene": "setup",
+    "font": "display",
+    "size": 16,
+    "maxPx": 360,
+    "context": "Setup page title."
+  },
+  "ui.setup.text.body": {
+    "scene": "setup",
+    "font": "body",
+    "size": 20,
+    "maxPx": 640,
+    "context": "Setup page body.",
+    "maxLines": 4
+  },
+  "ui.setup.text.0": {
+    "scene": "setup",
+    "font": "display",
+    "size": 24,
+    "maxPx": 420,
+    "context": "Setup choice: text size 100%."
+  },
+  "ui.setup.text.1": {
+    "scene": "setup",
+    "font": "display",
+    "size": 24,
+    "maxPx": 420,
+    "context": "Setup choice: text size 125%."
+  },
+  "ui.setup.text.2": {
+    "scene": "setup",
+    "font": "display",
+    "size": 24,
+    "maxPx": 420,
+    "context": "Setup choice: text size 150%."
+  },
+  "ui.setup.timing.title": {
+    "scene": "setup",
+    "font": "display",
+    "size": 16,
+    "maxPx": 360,
+    "context": "Setup page title."
+  },
+  "ui.setup.timing.body": {
+    "scene": "setup",
+    "font": "body",
+    "size": 20,
+    "maxPx": 640,
+    "context": "Setup page body.",
+    "maxLines": 4
+  },
+  "ui.setup.timing.0": {
+    "scene": "setup",
+    "font": "display",
+    "size": 24,
+    "maxPx": 420,
+    "context": "Setup choice: standard timers."
+  },
+  "ui.setup.timing.1": {
+    "scene": "setup",
+    "font": "display",
+    "size": 24,
+    "maxPx": 420,
+    "context": "Setup choice: timers ×1.5."
+  },
+  "ui.setup.timing.2": {
+    "scene": "setup",
+    "font": "display",
+    "size": 24,
+    "maxPx": 420,
+    "context": "Setup choice: timers ×2."
   }
 }
