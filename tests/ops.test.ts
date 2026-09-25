@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { parseTasks, readRoadmap } from '../scripts/ops/roadmap.mjs';
 import { plan } from '../scripts/ops/roadmap-sync.mjs';
 import { forecast, points } from '../scripts/ops/burnup.mjs';
+import { blocklist, scan as ipScan } from '../scripts/ops/ip-scan.mjs';
 
 const SAMPLE = `## Epic
 - [ ] OPS-0001 · Demo · P0 · S · Two-week sprint cadence — planning, review
@@ -102,4 +103,18 @@ describe('burn-up', () => {
     expect(f.date!.toISOString().slice(0, 10)).toBe('2026-12-07');
     expect(forecast([{ date: '2026-10-26', done: 0, total: 5 }], today).date).toBeNull();
   });
+});
+
+describe('IP name scan', () => {
+  it('builds the blocklist from the research table, expanding shared suffixes', () => {
+    const b = blocklist();
+    expect(b).toEqual(expect.arrayContaining(['Shallya', 'Warpstone', 'Skaven', 'Wood Elves', 'Pink Horrors', 'Order of the Pyre', 'GUILT', 'Healing Touch']));
+    expect(b).not.toContain('High');
+  });
+
+  it('finds no blocklisted Games Workshop or Atlus term in player-facing text', async () => {
+    const r = await ipScan();
+    expect(r.hits.filter((h) => h.player && !h.allowed)).toEqual([]);
+    expect(r.names.map(([n]) => n)).toEqual(expect.arrayContaining(['Kessendorf', 'Ash Tribunal', 'Hollow Choir']));
+  }, 30_000);
 });
