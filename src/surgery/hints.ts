@@ -1,8 +1,8 @@
 import type { Operation } from './operation';
 
 /**
- * Dynamic hints: after repeated losses on the same operation, Sister Ilse
- * offers one line of strategy specific to what went wrong. The cause is read
+ * Dynamic hints: after every loss Sister Ilse offers one line of strategy
+ * specific to what went wrong (UIX-0116). The cause is read
  * from the failed run (loss reason, one-shot warning flags, ratings).
  */
 interface TipRule {
@@ -45,5 +45,3 @@ export function tipFor(op: Operation): { id: string; text: string } | null {
   return null;
 }
 
-/** Tips are offered once the same operation has been failed this many times. */
-export const TIP_AFTER_FAILURES = 2;
