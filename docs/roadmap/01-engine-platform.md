@@ -234,7 +234,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0162 · Demo · P1 · S · Outcome transitions: flatline desaturates and fades to black with film burn; victory swells warm bloom — both driven by one timeline helper
 
 ### Safety & settings plumbing
-- [ ] ENG-0163 · Demo · P0 · M · Photosensitivity flash limiter: full-screen luminance changes limited to <3 flashes/s (Harding-style check) — unit test feeds worst-case post-param timelines (Malison + damage + Litany)
+- [x] ENG-0163 · Demo · P0 · M · Photosensitivity flash limiter: full-screen luminance changes limited to <3 flashes/s (Harding-style check) — unit test feeds worst-case post-param timelines (Malison + damage + Litany)
 - [ ] ENG-0164 · Demo · P0 · S · Post settings plumbed to uniforms — screen shake, chromatic aberration, grain, flicker, bloom (0–100%) and reduce-flashing
 - [ ] ENG-0165 · Demo · P1 · S · Post budget — all passes ≤2.0 ms at 1080p on Intel UHD 620 measured with GPU timer queries in the perf replay
 

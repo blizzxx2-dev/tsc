@@ -6,6 +6,7 @@ import type { Gfx } from '../render/gfx';
 import { organPalette } from '../render/organs';
 import { Sigil, surfDisc, surfLine } from '../surgery/entities';
 import { Particles } from '../render/particles';
+import { FlashLimiter } from '../render/flashLimiter';
 import { isStar } from '../surgery/gesture';
 import { Malison, MalisonShard } from '../surgery/malison';
 import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOWN, TINCTURE_TIME, type OperationDef } from '../surgery/operation';
@@ -42,6 +43,7 @@ export class OperationScene implements Scene {
   private hintT = 0;
   private particles = new Particles();
   private litanyCenter: [number, number] = [0.5, 0.5];
+  private flashLimit = new FlashLimiter();
   private comboT = 0;
   private lastCombo = 0;
 
@@ -260,7 +262,7 @@ export class OperationScene implements Scene {
       litanyAge: op.litanyTime > 0 ? LITANY_DURATION - op.litanyTime : 10,
       hurt: (() => {
         const age = op.elapsed - op.lastHurt.at;
-        const k = Math.max(0, 1 - age / 0.45) * Math.min(1, op.lastHurt.amount / 6) * soften;
+        const k = this.flashLimit.filter(Math.max(0, 1 - age / 0.45) * Math.min(1, op.lastHurt.amount / 6) * soften, 1 / 60);
         return [op.lastHurt.x - VIEW_W / 2, -(op.lastHurt.y - 360), k] as [number, number, number];
       })(),
       tint: ch2 ? [0.95, 0.98, 1.05] : [1.03, 0.99, 0.94],
