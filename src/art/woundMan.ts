@@ -78,11 +78,21 @@ export function prognosis(def: Pick<OperationDef, 'phases' | 'baseDrain' | 'cons
 }
 
 /** Draw the figure centred on `cx`, crown at `top`, `h` tall, with its pins. */
-export function drawWoundMan(g: Gfx, cx: number, top: number, h: number, pins: Pin[], t: number, alpha = 1): void {
-  const ink = hex('#2a1a0c', 0.9 * alpha);
-  const skin = hex('#e8d4ae', 0.95 * alpha);
-  const shade = hex('#c9ab80', 0.95 * alpha);
-  const hatch = hex('#2a1a0c', 0.3 * alpha);
+export interface PlateInks {
+  ink: string;
+  skin: string;
+  shade: string;
+  hatch: string;
+}
+/** Ink on vellum (woodcut plates) and gold engraving on dark glass (the UI). */
+export const VELLUM_INKS: PlateInks = { ink: '#2a1a0c', skin: '#e8d4ae', shade: '#c9ab80', hatch: '#2a1a0c' };
+export const ENGRAVED_INKS: PlateInks = { ink: '#d9b870', skin: '#1c1511', shade: '#140f0c', hatch: '#c9a55c' };
+
+export function drawWoundMan(g: Gfx, cx: number, top: number, h: number, pins: Pin[], t: number, alpha = 1, inks: PlateInks = VELLUM_INKS): void {
+  const ink = hex(inks.ink, 0.9 * alpha);
+  const skin = hex(inks.skin, 0.95 * alpha);
+  const shade = hex(inks.shade, 0.95 * alpha);
+  const hatch = hex(inks.hatch, 0.3 * alpha);
   const u = h / 100;
   const P = (x: number, y: number): Vec => ({ x: cx + x * h, y: top + y * h });
   // Each part is drawn as an ink silhouette, then the fill inset by the stroke width: a cut line.

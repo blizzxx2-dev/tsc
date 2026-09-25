@@ -47,7 +47,7 @@ export function buttonSurface(on: 'dark' | 'parchment'): void {
  */
 export function button(g: Gfx, input: Input, label: string, x: number, y: number, size = 30, enabled = true, onLight = surface === 'parchment'): boolean {
   const fs = Math.round(size * 0.74);
-  const w = g.measure(label.toUpperCase(), fs, 'display', 0.14) + 90;
+  const w = g.measure(label.toUpperCase(), fs, 'display', 0.14) + 64;
   const r = { x: x - w / 2, y: y - size * 0.95, w, h: size * 1.35 };
   const hover = enabled && inRect(input.pos, r);
   const pressed = hover && input.down;

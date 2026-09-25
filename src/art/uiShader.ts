@@ -609,28 +609,28 @@ float toolD(vec2 p, int tool, out float mat) {
     vec2 q = rot(-0.8) * p;
     float blade = max(length(q * vec2(2.3, 1.0) - vec2(0.0, -0.35)) - 0.5, q.y - 0.02);
     blade = max(blade, -q.y - 0.85);
-    float handle = sdRBox(q - vec2(0.0, 0.45), vec2(0.085, 0.42), 0.08);
-    float ferrule = sdBox(q - vec2(0.0, 0.06), vec2(0.11, 0.05));
+    float handle = sdRBox(q - vec2(0.0, 0.45), vec2(0.115, 0.42), 0.1);
+    float ferrule = sdBox(q - vec2(0.0, 0.06), vec2(0.14, 0.055));
     d = blade; mat = 0.0;
     if (handle < d) { d = handle; mat = 1.0; }
     if (ferrule < d) { d = ferrule; mat = 2.0; }
   } else if (tool == 1) { // tongs: two jaws hinged at a ring
     vec2 q = rot(-0.5) * p;
-    float j1 = sdSeg(q, vec2(-0.08, 0.75), vec2(-0.2, -0.8)) - 0.07;
-    float j2 = sdSeg(q, vec2(0.08, 0.75), vec2(0.2, -0.8)) - 0.07;
-    float ring = abs(length(q - vec2(0.0, 0.78)) - 0.13) - 0.05;
+    float j1 = sdSeg(q, vec2(-0.09, 0.75), vec2(-0.22, -0.8)) - 0.095;
+    float j2 = sdSeg(q, vec2(0.09, 0.75), vec2(0.22, -0.8)) - 0.095;
+    float ring = abs(length(q - vec2(0.0, 0.78)) - 0.15) - 0.07;
     d = min(min(j1, j2), ring); mat = 0.0;
   } else if (tool == 2) { // leech-pipe: a brass pipe with a leech at the mouth
-    float pipe = sdSeg(p, vec2(-0.75, 0.75), vec2(0.15, -0.15)) - 0.1;
+    float pipe = sdSeg(p, vec2(-0.75, 0.75), vec2(0.15, -0.15)) - 0.125;
     float bowl = length(p - vec2(-0.72, 0.72)) - 0.17;
     float leech = length((p - vec2(0.42, -0.42)) * vec2(1.0, 1.0) + vec2(sin(u_time * 5.0) * 0.03, 0.0)) - 0.3;
     leech = min(leech, length(p - vec2(0.2, -0.2)) - 0.18);
     d = min(pipe, bowl); mat = 2.0;
     if (leech < d) { d = leech; mat = 3.0; }
   } else if (tool == 3) { // gut thread: curved needle trailing thread
-    float needle = abs(length(p - vec2(0.0, 0.2)) - 0.55) - 0.06;
+    float needle = abs(length(p - vec2(0.0, 0.2)) - 0.55) - 0.085;
     needle = max(needle, p.y - 0.25);
-    float thread = abs(p.y + 0.55 * sin(p.x * 3.0 + 1.0) - 0.45) - 0.035;
+    float thread = abs(p.y + 0.55 * sin(p.x * 3.0 + 1.0) - 0.45) - 0.05;
     thread = max(thread, max(-p.x - 0.1, p.x - 0.85));
     d = needle; mat = 0.0;
     if (thread < d) { d = thread; mat = 5.0; }
@@ -646,13 +646,13 @@ float toolD(vec2 p, int tool, out float mat) {
     float barrel = sdRBox(q - vec2(0.0, -0.05), vec2(0.17, 0.5), 0.05);
     float plunger = sdBox(q - vec2(0.0, -0.72), vec2(0.28, 0.06));
     plunger = min(plunger, sdBox(q - vec2(0.0, -0.6), vec2(0.04, 0.15)));
-    float nd = sdSeg(q, vec2(0.0, 0.45), vec2(0.0, 0.95)) - 0.025;
+    float nd = sdSeg(q, vec2(0.0, 0.45), vec2(0.0, 0.95)) - 0.04;
     d = barrel; mat = 4.0;
     if (plunger < d) { d = plunger; mat = 2.0; }
     if (nd < d) { d = nd; mat = 0.0; }
   } else if (tool == 6) { // cautery brand: iron rod with a glowing head
     vec2 q = rot(-0.8) * p;
-    float rod = sdSeg(q, vec2(0.0, -0.45), vec2(0.0, 0.2)) - 0.06;
+    float rod = sdSeg(q, vec2(0.0, -0.45), vec2(0.0, 0.2)) - 0.085;
     float grip = sdRBox(q - vec2(0.0, 0.55), vec2(0.1, 0.34), 0.08);
     float head = sdRBox(q - vec2(0.0, -0.6), vec2(0.16, 0.14), 0.05);
     d = rod; mat = 0.0;
@@ -661,7 +661,7 @@ float toolD(vec2 p, int tool, out float mat) {
   } else { // scrying lens: brass-rimmed lens on a handle
     float rim = abs(length(p - vec2(-0.15, -0.15)) - 0.5) - 0.08;
     float lens = length(p - vec2(-0.15, -0.15)) - 0.44;
-    float handle = sdSeg(p, vec2(0.25, 0.25), vec2(0.8, 0.8)) - 0.09;
+    float handle = sdSeg(p, vec2(0.25, 0.25), vec2(0.8, 0.8)) - 0.115;
     d = rim; mat = 2.0;
     if (lens < d) { d = lens; mat = 4.0; }
     if (handle < d) { d = handle; mat = 1.0; }
@@ -697,17 +697,24 @@ vec4 toolIcon(vec2 px, vec2 sz, float aa) {
     float heat = 0.75 + 0.25 * sin(u_time * 7.0);
     col = mix(vec3(0.3, 0.05, 0.0), vec3(1.0, 0.65, 0.2), heat * (0.6 + 0.4 * noise(p * 12.0 + u_time)));
   }
-  // Engraved outline: the woodcut edge of the inlay.
-  col *= mix(0.25, 1.0, smoothstep(0.0, 0.05, -d));
+  // A fine dark edge and a cool rim light along the upper-left: crisp against any plate.
+  col *= mix(0.55, 1.0, smoothstep(0.0, 0.04, -d));
+  float rimL = smoothstep(0.06, 0.0, -d) * clamp(dot(normalize(vec2(dx, dy) + 1e-5), normalize(vec2(-1.0, -1.0))), 0.0, 1.0);
+  col += vec3(1.0, 0.95, 0.85) * rimL * 0.35;
+  // Selected instruments catch more light.
+  if (state > 0.5 && state < 1.5) col *= 1.18;
   float a = cover(d, pa);
-  // Outer halo (the gilt rim when selected; ember glow for the brand).
+  // Contact shadow: the instrument sits on the plate.
+  float sd = toolD(p - vec2(0.05, 0.07), tool, m2);
+  float shadowA = (1.0 - smoothstep(-0.02, 0.12, sd)) * 0.55 * (1.0 - a);
+  // Ember glow for the brand.
   float glow = 0.0;
   vec3 gcol = GILT;
-  if (state > 0.5 && state < 1.5) glow = rsmooth(0.22, 0.0, d) * (1.0 - a) * 0.9;
   if (tool == 6) { glow = max(glow, rsmooth(0.4, 0.0, length(rot(-0.8) * p - vec2(0.0, -0.6)) - 0.1) * 0.5 * (1.0 - a)); gcol = vec3(1.0, 0.5, 0.15); }
   if (state > 1.5 && state < 2.5) { col = vec3(dot(col, vec3(0.3, 0.5, 0.2))) * vec3(0.55, 0.55, 0.48); } // tarnished
   if (state > 2.5) { float cd = clamp(u_a.z, 0.0, 1.0); col = mix(col, col * 0.3, step((px.y / sz.y), cd)); }
   vec4 res = vec4(col * a, a);
+  res += vec4(vec3(0.0), shadowA) * (1.0 - res.a);
   res += vec4(gcol * glow, glow * 0.8) * (1.0 - res.a);
   return res;
 }

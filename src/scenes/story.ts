@@ -4,14 +4,14 @@ import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { CAST } from '../content/characters';
 import type { StoryDef } from '../content/story';
-import { PALETTE, VIEW_H, VIEW_W } from '../ui/layout';
+import { VIEW_H, VIEW_W } from '../ui/layout';
 import { reticle } from '../ui/widgets';
-import { divider, dropCap, flowMark, nameCartouche, quillGlyph, scroll, UI } from '../ui/ornaments';
+import { flowMark } from '../ui/ornaments';
+import { caps, diamond, INK, rule } from '../ui/hudKit';
 import { inkStamp } from '../art/kit';
 import { glyphContext, glyphFor } from '../input/glyphs';
 import { settings } from '../core/settings';
 import { canSkip, readLog, ReadLog } from '../ui/readLog';
-import { parchmentArt } from '../art/kit';
 import { drawBackdrop, drawPortrait } from './backdrop';
 
 const CPS = 48; // characters per second
@@ -72,41 +72,53 @@ export class StoryScene implements Scene {
 
     const vr = g.viewRect();
     if (this.fadeIn < 1) g.rect(vr.x, vr.y, vr.w, vr.h, hex('#000000', 1 - this.fadeIn));
-    g.rectGrad(vr.x, vr.y, vr.w, 70 - vr.y, hex('#000000', 0.7), hex('#000000', 0));
-    g.text(this.story.place, 30, 40, { size: 21, font: 'italic', color: hex(UI.parch) });
-    divider(g, 30 + Math.min(600, g.measure(this.story.place, 21, 'italic')) / 2, 54, Math.min(600, g.measure(this.story.place, 21, 'italic')), hex(UI.brass, 0.6));
+    // Location: a small engraved caption over a top shade.
+    g.rectGrad(vr.x, vr.y, vr.w, 110 - vr.y, hex('#000000', 0.7), hex('#000000', 0));
+    caps(g, this.story.place, 40, 44, 14, hex(INK.gold));
+    rule(g, 40 + Math.min(560, g.measure(this.story.place.toUpperCase(), 14, 'display', 0.16)) / 2, 56, Math.min(560, g.measure(this.story.place.toUpperCase(), 14, 'display', 0.16)) + 40, hex(INK.gilt, 0.6));
 
-    // Text scale grows the box upward so three lines fit at 125 % and beyond (UIX-0148); opacity
-    // lets the scene show through (UIX-0128).
+    // Lower third: a deep shade rising from the bottom edge (its strength follows the text-box
+    // opacity option, UIX-0128); text scale grows it upward (UIX-0148).
     const ts = settings.textScale;
-    const bh = Math.round(190 + (ts - 1) * 170);
-    const box = { x: 90, y: 690 - bh, w: VIEW_W - 180, h: bh };
-    if (settings.textBoxOpacity >= 0.99) scroll(g, box);
-    else parchmentArt(g, box, 'fresh', 1, box.x + box.y, settings.textBoxOpacity);
+    const op = settings.textBoxOpacity;
+    const bh = Math.round(230 + (ts - 1) * 170);
+    const top = vr.y + vr.h - bh;
+    g.rectGrad(vr.x, top - 120, vr.w, 120, hex('#000000', 0), hex('#050303', 0.72 * op));
+    g.rect(vr.x, top, vr.w, vr.y + vr.h - top, hex('#050303', 0.72 * op));
+    g.rectGrad(vr.x, top, vr.w, vr.y + vr.h - top, hex('#000000', 0.1 * op), hex('#000000', 0.5 * op));
+    rule(g, VIEW_W / 2, top + 6, VIEW_W * 0.8, hex(INK.gilt, 0.55));
+    const tx = 200;
+    const tw = VIEW_W - 400;
     const name = line.as ?? who.name;
     if (name) {
-      const w = g.measure(name, 26) + 70;
-      nameCartouche(g, box.x + 30 + w / 2, box.y - 4, w, 38, who.color);
-      g.text(name, box.x + 30 + w / 2, box.y + 5, { size: 26, color: hex('#fff0d0'), color2: hex(who.color), align: 'center' });
+      caps(g, name, tx, top + 46, 16, hex(INK.goldHi));
+      g.rect(tx, top + 56, Math.min(260, g.measure(name.toUpperCase(), 16, 'display', 0.16)), 1.5, hex(who.color, 0.8));
     }
     const narr = line.who === 'narrator';
-    // A rubricated drop cap opens each scene's first narration (ART-0082).
+    const size = Math.round(24 * ts);
+    // A gold initial opens each scene's first narration (ART-0082).
     const cap = this.i === 0 && narr && /^\p{Lu}/u.test(line.text);
-    const capSize = Math.round(64 * ts);
-    if (cap) dropCap(g, line.text[0], box.x + 36, box.y + 34, capSize);
+    const capSize = Math.round(size * 2.6);
+    const ty = top + (name ? 94 : 70);
+    if (cap) g.text(line.text[0], tx, ty + capSize * 0.62, { size: capSize, font: 'display', color: hex(INK.goldHi), color2: hex(INK.gold), shadow: hex('#000000', 0.9), soft: true });
     const body = cap ? line.text.slice(1) : line.text;
     const shownBody = cap ? Math.max(0, Math.floor(this.shown) - 1) : Math.floor(this.shown);
-    g.textBlock(body.slice(0, shownBody), box.x + 40 + (cap ? capSize + 10 : 0), box.y + 60, box.w - 80 - (cap ? capSize + 10 : 0), {
-      size: Math.round(25 * ts),
+    const indent = cap ? g.measure(line.text[0], capSize, 'display') + 10 : 0;
+    g.textBlock(body.slice(0, shownBody), tx + indent, ty, tw - indent, {
+      size,
       font: narr ? 'italic' : 'body',
-      color: hex(narr ? '#5a4228' : UI.inkDark),
-      shadow: false,
-    });
-    if (line.stamp && this.shown >= line.text.length) inkStamp(g, t(`ui.stamp.${line.stamp}`), box.x + box.w - 170, box.y + box.h - 60, 26, line.stamp === 'suspect' ? '#7a0a10' : '#2a4a20', Math.min(1, this.t * 3), false, line.stamp === 'suspect' ? -0.12 : 0.08);
-    if (this.shown >= line.text.length) quillGlyph(g, box.x + box.w - 40, box.y + box.h - 30, 16, g.time, hex('#6a0a10'));
-    if (game.input.act('vn.fast')) flowMark(g, box.x + box.w - 62, box.y + 24, 'skip', g.time);
+      color: hex(narr ? '#d8c8a8' : INK.text),
+      shadow: hex('#000000', 0.9),
+      soft: true,
+    }, 1.42);
+    if (line.stamp && this.shown >= line.text.length) inkStamp(g, t(`ui.stamp.${line.stamp}`), tx + tw - 90, top + 60, 24, line.stamp === 'suspect' ? '#e04040' : '#7fc4a4', Math.min(1, this.t * 3), false, line.stamp === 'suspect' ? -0.12 : 0.08);
+    if (this.shown >= line.text.length) {
+      const pulse = settings.reduceMotion ? 1 : 0.6 + 0.4 * Math.sin(g.time * 4);
+      diamond(g, tx + tw + 24, vr.y + vr.h - 46 + (settings.reduceMotion ? 0 : Math.sin(g.time * 4) * 2), 5, hex(INK.gold, pulse), hex('#000000', 0.6));
+    }
+    if (game.input.act('vn.fast')) flowMark(g, tx + tw + 10, top + 40, 'skip', g.time);
     const click = glyphContext().device === 'pad' ? '' : t('ui.story.click_prefix');
-    g.text(t('ui.story.controls_fmt', { click, advance: glyphFor('vn.advance'), fast: glyphFor('vn.fast'), skip: glyphFor('ui.back') }), VIEW_W - 30, VIEW_H - 8, { size: 16, color: hex(PALETTE.inkDim, 0.6), align: 'right', shadow: false });
+    g.text(t('ui.story.controls_fmt', { click, advance: glyphFor('vn.advance'), fast: glyphFor('vn.fast'), skip: glyphFor('ui.back') }), VIEW_W - 30, VIEW_H - 12, { size: 16, color: hex(INK.faint), align: 'right', shadow: false });
     reticle(g, game.input.pos);
     g.endFrame();
   }

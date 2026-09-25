@@ -549,7 +549,7 @@ export class OperationScene implements Scene {
         glow: sel ? hex(INK.gold, 0.3) : undefined,
         glowR: 12,
       });
-      toolIcon(g, id, r.x + r.w / 2, r.y + r.h / 2 + 2, sel ? 0.98 : 0.84, g.time, sel ? 'selected' : 'idle');
+      toolIcon(g, id, r.x + r.w / 2 + 2, r.y + r.h / 2 + 2, sel ? 1.12 : 1.02, g.time, sel ? 'selected' : 'idle');
       // Key number: small engraved numeral in the corner.
       g.text(toolKeyLabel(TOOL_INFO.findIndex((ti) => ti.id === id) + 1), r.x + 8, r.y + 16, { size: 12, font: 'display', tracking: 0.05, color: hex(sel ? INK.goldHi : INK.dim), shadow: hex('#000000', 0.8) });
       if (id === 'tincture' && op.injectCooldown > 0) {

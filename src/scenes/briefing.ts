@@ -7,10 +7,11 @@ import type { OperationDef } from '../surgery/operation';
 import { TOOL_INFO } from '../surgery/types';
 import { toolKeyLabel } from '../input/glyphs';
 import { VIEW_W } from '../ui/layout';
-import { button, parchment, reticle, toolIcon } from '../ui/widgets';
+import { button, reticle, toolIcon } from '../ui/widgets';
 import { drawBackdrop } from './backdrop';
 import { briefingNotes } from '../surgery/session';
-import { drawWoundMan, prognosis, woundSites, type Pin } from '../art/woundMan';
+import { drawWoundMan, ENGRAVED_INKS, prognosis, woundSites, type Pin } from '../art/woundMan';
+import { caps, glass, heading, INK, numerals } from '../ui/hudKit';
 
 /** The patient chart shown before an operation. */
 export class BriefingScene implements Scene {
@@ -35,51 +36,48 @@ export class BriefingScene implements Scene {
     g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1, defocus: 8 });
 
     const r = { x: 240, y: 60, w: 800, h: 600 };
-    parchment(g, r);
-    const ink = hex('#2a1a10');
-    const faded = hex('#5a4228');
-    g.text(t('ui.briefing.title'), VIEW_W / 2, r.y + 70, { size: 46, font: 'display', color: hex('#5a0a10'), align: 'center', shadow: false });
-    g.text(d.title, VIEW_W / 2, r.y + 120, { size: 32, color: ink, align: 'center', shadow: false });
-    g.line({ x: r.x + 60, y: r.y + 140 }, { x: r.x + r.w - 60, y: r.y + 140 }, 1.5, faded);
-    g.text(t('ui.briefing.patient'), r.x + 60, r.y + 180, { size: 22, color: faded, shadow: false });
-    g.text(d.patient, r.x + 200, r.y + 180, { size: 22, color: ink, shadow: false });
-    g.text(t('ui.briefing.findings'), r.x + 60, r.y + 214, { size: 22, color: faded, shadow: false });
-    g.textBlock(d.diagnosis, r.x + 200, r.y + 214, r.w - 440, { size: 20, color: ink, shadow: false }, 1.3);
-    g.text(t('ui.briefing.time_allowed'), r.x + 60, r.y + 326, { size: 22, color: faded, shadow: false });
-    g.text(formatClock(d.timeLimit), r.x + 220, r.y + 326, { size: 22, color: ink, shadow: false });
+    glass(g, r, { strength: 1.12 });
+    heading(g, t('ui.briefing.title'), VIEW_W / 2, r.y + 58, 380, 1, 28);
+    g.text(d.title, VIEW_W / 2, r.y + 112, { size: 30, color: hex(INK.text), align: 'center', shadow: hex('#000000', 0.8), soft: true });
+    const lx = r.x + 56;
+    const vx = r.x + 200;
+    caps(g, t('ui.briefing.patient'), lx, r.y + 172, 12);
+    g.text(d.patient, vx, r.y + 174, { size: 20, color: hex(INK.text), shadow: false });
+    caps(g, t('ui.briefing.findings'), lx, r.y + 208, 12);
+    g.textBlock(d.diagnosis, vx, r.y + 210, r.w - 440, { size: 19, font: 'italic', color: hex('#d8ccb4'), shadow: false }, 1.35);
+    caps(g, t('ui.briefing.time_allowed'), lx, r.y + 326, 12);
+    numerals(g, formatClock(d.timeLimit), vx, r.y + 330, 22, '#ffffff', '#d8ccb4');
     if (this.best) {
-      g.text(t('ui.briefing.best'), r.x + 420, r.y + 326, { size: 22, color: faded, shadow: false });
-      g.text(t('ui.briefing.best_value', { rank: this.best.rank, score: this.best.score }), r.x + 490, r.y + 326, { size: 22, color: ink, shadow: false });
+      caps(g, t('ui.briefing.best'), vx + 110, r.y + 326, 12);
+      g.text(t('ui.briefing.best_value', { rank: this.best.rank, score: this.best.score }), vx + 170, r.y + 330, { size: 20, color: hex(INK.gold), shadow: false });
     }
-    // The Wound Man with pins at the injuries, and a stamped prognosis (ART-0056).
+    // The Wound Man, engraved in gold, with pins at the injuries, and a stamped prognosis (ART-0056).
     this.pins ??= woundSites(d);
-    drawWoundMan(g, r.x + r.w - 120, r.y + 156, 226, this.pins, g.time);
+    g.plate(r.x + r.w - 236, r.y + 146, 200, 250, { radius: 2, top: hex('#0a0807', 0.6), bottom: hex('#0e0b09', 0.6), border: hex(INK.gilt, 0.25), borderW: 1, bevel: -0.4, shadow: [0, 0, 0], grain: 0.4 });
+    drawWoundMan(g, r.x + r.w - 136, r.y + 160, 222, this.pins, g.time, 1, ENGRAVED_INKS);
     const prog = prognosis(d);
-    const px = r.x + 60;
-    const py = r.y + 362;
-    g.text(t('ui.briefing.prognosis'), px, py, { size: 20, color: faded, shadow: false });
+    caps(g, t('ui.briefing.prognosis'), lx, r.y + 370, 12);
     (['fair', 'guarded', 'grave'] as const).forEach((k, i) => {
-      const bx = px + 140 + i * 120;
-      g.rectLine(bx, py - 16, 18, 18, 1.5, faded);
-      g.text(t(`ui.briefing.prognosis.${k}`), bx + 26, py, { size: 18, color: ink, shadow: false });
-      if (k === prog) {
-        // A red ink stamp: a ring pressed slightly askew over the box.
-        g.arc(bx + 9, py - 7, 15, 2.5, hex('#8a1016', 0.75));
-        g.line({ x: bx + 3, y: py - 12 }, { x: bx + 15, y: py - 1 }, 2.5, hex('#8a1016', 0.85));
-        g.line({ x: bx + 15, y: py - 12 }, { x: bx + 3, y: py - 1 }, 2.5, hex('#8a1016', 0.85));
+      const bx = vx + i * 110;
+      const on = k === prog;
+      g.plate(bx, r.y + 356, 16, 16, { radius: 2, top: hex(on ? '#5a1418' : '#0a0807'), bottom: hex(on ? '#2a0608' : '#140f0c'), border: hex(on ? '#e04040' : INK.gilt, on ? 0.95 : 0.5), borderW: 1.2, bevel: 0.4, shadow: [0.4, 3, 1], glow: on ? hex('#e04040', 0.25) : undefined, glowR: 10 });
+      if (on) {
+        g.line({ x: bx + 4, y: r.y + 360 }, { x: bx + 12, y: r.y + 368 }, 1.8, hex('#ffd0c8'));
+        g.line({ x: bx + 12, y: r.y + 360 }, { x: bx + 4, y: r.y + 368 }, 1.8, hex('#ffd0c8'));
       }
+      g.text(t(`ui.briefing.prognosis.${k}`), bx + 24, r.y + 370, { size: 18, color: hex(on ? '#ffb0a8' : INK.dim), shadow: false });
     });
-    g.text(t('ui.briefing.instruments'), r.x + 60, r.y + 398, { size: 22, color: faded, shadow: false });
-    d.tools.forEach((t, i) => {
-      const x = r.x + 110 + i * 88;
-      g.circle(x, r.y + 440, 30, hex('#1a120c', 0.85));
-      toolIcon(g, t, x, r.y + 440, 0.9, g.time);
-      g.text(toolKeyLabel(TOOL_INFO.findIndex((ti) => ti.id === t) + 1), x, r.y + 486, { size: 16, color: faded, align: 'center', shadow: false });
+    caps(g, t('ui.briefing.instruments'), lx, r.y + 420, 12);
+    d.tools.forEach((tool, i) => {
+      const x = lx + 34 + i * 84;
+      g.plate(x - 32, r.y + 436, 64, 64, { radius: 3, top: hex('#16110d', 0.95), bottom: hex('#0a0806', 0.95), border: hex('#5a4a34', 0.8), borderW: 1, bevel: 0.5, shadow: [0.5, 6, 2] });
+      toolIcon(g, tool, x, r.y + 470, 0.8, g.time);
+      g.text(toolKeyLabel(TOOL_INFO.findIndex((ti) => ti.id === tool) + 1), x, r.y + 520, { size: 13, font: 'display', color: hex(INK.dim), align: 'center', tracking: 0.1, shadow: false });
     });
     this.notes ??= briefingNotes(d);
-    this.notes.forEach((n, i) => g.text(n, r.x + 60, r.y + 508 + i * 18, { size: 16, font: 'italic', color: faded, shadow: false }));
-    if (button(g, game.input, t('ui.briefing.begin'), VIEW_W / 2 + 120, r.y + 560, 34, true, true)) this.onBegin();
-    if (button(g, game.input, t('ui.common.back'), VIEW_W / 2 - 160, r.y + 560, 26, true, true)) this.onBack();
+    this.notes.forEach((n, i) => g.text(n, lx, r.y + 548 + i * 18, { size: 16, font: 'italic', color: hex(INK.dim), shadow: false }));
+    if (button(g, game.input, t('ui.briefing.begin'), r.x + r.w - 140, r.y + 568, 30, true, false)) this.onBegin();
+    if (button(g, game.input, t('ui.common.back'), r.x + r.w - 330, r.y + 568, 24, true, false)) this.onBack();
     reticle(g, game.input.pos);
     g.endFrame();
   }
