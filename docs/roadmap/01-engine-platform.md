@@ -45,7 +45,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ### Render state & batching
 - [ ] ENG-0018 · Demo · P1 · M · Split `Gfx` into `GlDevice` (programs, targets, state), `Batcher` (vertex building) and `Painter` (shape/text API) modules with no behaviour change — smoke screenshots differ by <0.5% of pixels
 - [ ] ENG-0019 · Demo · P1 · M · Batch key = (program, texture set, blend, layer); `flush()` fires only when the key changes — unit test with a mock `WebGL2RenderingContext` asserts ≤6 draw calls for the op1-5 HUD frame
-- [ ] ENG-0020 · Demo · P2 · M · Add a static quad index buffer so rects/glyphs/sprites cost 4 vertices instead of 6 — vertex count on the results screen drops ≥30% (`gfx.stats`)
+- [x] ENG-0020 · Demo · P2 · M · Add a static quad index buffer so rects/glyphs/sprites cost 4 vertices instead of 6 — vertex count on the results screen drops ≥30% (`gfx.stats`)
 - [ ] ENG-0021 · Demo · P2 · M · Replace full-range `bufferSubData` each flush with a 3-segment orphaned ring buffer — Chrome GPU trace shows no implicit sync stalls during an operation
 - [x] ENG-0022 · Demo · P1 · S · Guard against `MAX_VERTS` overflow for single primitives larger than the buffer (split or grow) — drawing a 200k-vertex polyline renders correctly in a test
 - [x] ENG-0023 · Demo · P2 · S · Precomputed unit-circle cos/sin tables per segment count for `ellipse`/`arc`/`circleGrad` — micro-benchmark shows ≥2× faster tessellation

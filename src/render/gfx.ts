@@ -42,6 +42,8 @@ const MAGENTA: RGBA = hex('#ff00ff');
 /** '#rrggbb' → [r, g, b] in 0..1. */
 const rgb01 = (h: string): [number, number, number] => [parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255];
 const MAX_VERTS = 60000;
+/** Index budget: quads use 6 indices over 4 vertices (ENG-0020). */
+const MAX_INDICES = 90000;
 const STRIDE = 6; // x, y, u, v (f32) + rgba (u32) + texture unit (f32)
 const UNITS = Array.from({ length: BATCH_UNITS }, (_, i) => i);
 /** Scratch vectors for shape helpers (no per-call allocation, ENG-0225/0226). */
@@ -260,6 +262,10 @@ export class Gfx {
   private f32 = new Float32Array(MAX_VERTS * STRIDE);
   private u32 = new Uint32Array(this.f32.buffer);
   private n = 0;
+  /** Indexed batch (ENG-0020): rects, glyphs and sprites are 4 vertices + 6 indices. */
+  private idx = new Uint16Array(MAX_INDICES);
+  private ni = 0;
+  private ibo!: WebGLBuffer;
   private blend: Blend = 'alpha';
   private tf = [1, 0, 0, 1, 0, 0];
   private stack: number[][] = [];
@@ -386,6 +392,11 @@ export class Gfx {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
     gl.bufferData(gl.ARRAY_BUFFER, this.f32.byteLength, gl.DYNAMIC_DRAW);
     reg.setBytes(this.vbo, this.f32.byteLength);
+    // The element buffer belongs to the batch VAO.
+    this.ibo = reg.createBuffer('batch indices');
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ibo);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.idx.byteLength, gl.DYNAMIC_DRAW);
+    reg.setBytes(this.ibo, this.idx.byteLength);
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, STRIDE * 4, 0);
     gl.enableVertexAttribArray(1);
@@ -397,6 +408,7 @@ export class Gfx {
     gl.bindVertexArray(null);
 
     this.n = 0;
+    this.ni = 0;
     this.pw = this.ph = 0;
     this.msaaFb = this.msaaRb = this.msaaDepth = null;
     gl.enable(gl.BLEND);
@@ -1480,6 +1492,7 @@ export class Gfx {
     const st = this.stats;
     st.drawCalls++;
     st.vertices += this.n;
+    st.indices += this.ni;
     st.flushes[reason]++;
     if (this.atlas.upload()) st.textureUploads++;
     const pr = this.prim;
@@ -1492,8 +1505,11 @@ export class Gfx {
     gl.uniform1iv(this.u(pr, 'u_tex'), UNITS);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.f32, 0, this.n * STRIDE);
-    gl.drawArrays(gl.TRIANGLES, 0, this.n);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ibo);
+    gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, 0, this.idx, 0, this.ni);
+    gl.drawElements(gl.TRIANGLES, this.ni, gl.UNSIGNED_SHORT, 0);
     this.n = 0;
+    this.ni = 0;
     for (let i = 1; i < BATCH_UNITS; i++) this.slots[i] = null;
     this.slotCount = 1;
   }
@@ -1518,8 +1534,33 @@ export class Gfx {
     this.n++;
   }
 
-  private room(verts: number): void {
-    if (this.n + verts > MAX_VERTS) this.flush('overflow');
+  private room(verts: number, indices = verts): void {
+    if (this.n + verts > MAX_VERTS || this.ni + indices > MAX_INDICES) this.flush('overflow');
+  }
+
+  /** Index the three vertices just written as one triangle. */
+  private triIdx(): void {
+    const b = this.n - 3;
+    const ix = this.idx;
+    const i = this.ni;
+    ix[i] = b;
+    ix[i + 1] = b + 1;
+    ix[i + 2] = b + 2;
+    this.ni = i + 3;
+  }
+
+  /** Index the four vertices just written (corners in order) as two triangles: 4 vertices, not 6. */
+  private quadIdx(): void {
+    const b = this.n - 4;
+    const ix = this.idx;
+    const i = this.ni;
+    ix[i] = b;
+    ix[i + 1] = b + 1;
+    ix[i + 2] = b + 2;
+    ix[i + 3] = b;
+    ix[i + 4] = b + 2;
+    ix[i + 5] = b + 3;
+    this.ni = i + 6;
   }
 
   tri(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, c1: RGBA, c2 = c1, c3 = c1): void {
@@ -1529,6 +1570,19 @@ export class Gfx {
     this.vert(x1, y1, w.u, w.v, c1);
     this.vert(x2, y2, w.u, w.v, c2);
     this.vert(x3, y3, w.u, w.v, c3);
+    this.triIdx();
+  }
+
+  /** Untextured quad with per-corner colours (top-left, top-right, bottom-right, bottom-left). */
+  private colorQuad(x0: number, y0: number, x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, c0: RGBA, c1: RGBA, c2: RGBA, c3: RGBA): void {
+    if (alphaOf(c0) === 0 && alphaOf(c1) === 0 && alphaOf(c2) === 0 && alphaOf(c3) === 0) return;
+    this.room(4, 6);
+    const w = this.atlas.white;
+    this.vert(x0, y0, w.u, w.v, c0);
+    this.vert(x1, y1, w.u, w.v, c1);
+    this.vert(x2, y2, w.u, w.v, c2);
+    this.vert(x3, y3, w.u, w.v, c3);
+    this.quadIdx();
   }
 
   // ------------------------------------------------------------ transforms
@@ -1577,13 +1631,11 @@ export class Gfx {
   // ------------------------------------------------------------ shapes
 
   rect(x: number, y: number, w: number, h: number, c: RGBA): void {
-    this.tri(x, y, x + w, y, x + w, y + h, c);
-    this.tri(x, y, x + w, y + h, x, y + h, c);
+    this.colorQuad(x, y, x + w, y, x + w, y + h, x, y + h, c, c, c, c);
   }
 
   rectGrad(x: number, y: number, w: number, h: number, top: RGBA, bottom: RGBA): void {
-    this.tri(x, y, x + w, y, x + w, y + h, top, top, bottom);
-    this.tri(x, y, x + w, y + h, x, y + h, top, bottom, bottom);
+    this.colorQuad(x, y, x + w, y, x + w, y + h, x, y + h, top, top, bottom, bottom);
   }
 
   rectLine(x: number, y: number, w: number, h: number, lw: number, c: RGBA): void {
@@ -1602,21 +1654,29 @@ export class Gfx {
   }
 
   ellipse(x: number, y: number, rx: number, ry: number, rot: number, c: RGBA, cEdge = c): void {
+    if (alphaOf(c) === 0 && alphaOf(cEdge) === 0) return;
     const n = this.segs(Math.max(rx, ry));
     const cr = Math.cos(rot);
     const sr = Math.sin(rot);
-    let px = x + cr * rx;
-    let py = y + sr * rx;
     const tb = trig(n);
-    for (let i = 1; i <= n; i++) {
+    // An indexed fan (ENG-0020): the centre and each rim vertex are shared, n + 2 vertices for n triangles.
+    this.room(n + 2, n * 3);
+    const w = this.atlas.white;
+    const base = this.n;
+    this.vert(x, y, w.u, w.v, c);
+    for (let i = 0; i <= n; i++) {
       const ex = tb[i * 2] * rx;
       const ey = tb[i * 2 + 1] * ry;
-      const nx = x + ex * cr - ey * sr;
-      const ny = y + ex * sr + ey * cr;
-      this.tri(x, y, px, py, nx, ny, c, cEdge, cEdge);
-      px = nx;
-      py = ny;
+      this.vert(x + ex * cr - ey * sr, y + ex * sr + ey * cr, w.u, w.v, cEdge);
     }
+    const ix = this.idx;
+    let k = this.ni;
+    for (let i = 1; i <= n; i++) {
+      ix[k++] = base;
+      ix[k++] = base + i;
+      ix[k++] = base + i + 1;
+    }
+    this.ni = k;
   }
 
   /** Radial gradient disc. */
@@ -1660,8 +1720,7 @@ export class Gfx {
     }
     const nx = (-dy / l) * (w / 2);
     const ny = (dx / l) * (w / 2);
-    this.tri(a.x + nx, a.y + ny, b.x + nx, b.y + ny, b.x - nx, b.y - ny, c);
-    this.tri(a.x + nx, a.y + ny, b.x - nx, b.y - ny, a.x - nx, a.y - ny, c);
+    this.colorQuad(a.x + nx, a.y + ny, b.x + nx, b.y + ny, b.x - nx, b.y - ny, a.x - nx, a.y - ny, c, c, c, c);
     if (round && w > 3) {
       this.circle(a.x, a.y, w / 2, c);
       this.circle(b.x, b.y, w / 2, c);
@@ -1709,8 +1768,7 @@ export class Gfx {
       const t0 = a0 + (i / n) * TAU * f;
       const t1 = a0 + ((i + 1) / n) * TAU * f;
       const c0 = Math.cos(t0), s0 = Math.sin(t0), c1 = Math.cos(t1), s1 = Math.sin(t1);
-      this.tri(x + c0 * ri, y + s0 * ri, x + c0 * ro, y + s0 * ro, x + c1 * ro, y + s1 * ro, c);
-      this.tri(x + c0 * ri, y + s0 * ri, x + c1 * ro, y + s1 * ro, x + c1 * ri, y + s1 * ri, c);
+      this.colorQuad(x + c0 * ri, y + s0 * ri, x + c0 * ro, y + s0 * ro, x + c1 * ro, y + s1 * ro, x + c1 * ri, y + s1 * ri, c, c, c, c);
     }
   }
 
@@ -1759,7 +1817,7 @@ export class Gfx {
     const sy = (typeof o.scale === 'object' ? o.scale.y : o.scale ?? 1) * (o.flipY ? -1 : 1);
     let tint = (o.tint ?? 0xffffffff) >>> 0;
     if (o.alpha !== undefined) tint = ((Math.round(((tint >>> 24) & 255) * Math.max(0, Math.min(1, o.alpha))) << 24) | (tint & 0xffffff)) >>> 0;
-    this.room(6);
+    this.room(4, 6);
     const unit = this.unitFor(tex);
     this.save();
     this.translate(x, y);
@@ -1773,16 +1831,15 @@ export class Gfx {
     this.vert(x0, y0, u0, v0, tint);
     this.vert(x1, y0, u1, v0, tint);
     this.vert(x1, y1, u1, v1, tint);
-    this.vert(x0, y0, u0, v0, tint);
-    this.vert(x1, y1, u1, v1, tint);
     this.vert(x0, y1, u0, v1, tint);
+    this.quadIdx();
     this.texUnit = 0;
     this.restore();
   }
 
   /** Draw a whole texture into a rect through the batch; `flipV` for render-target textures (GL origin bottom-left). */
   texQuad(tex: WebGLTexture, x: number, y: number, w: number, h: number, tint: RGBA = 0xffffffff, flipV = false): void {
-    this.room(6);
+    this.room(4, 6);
     const unit = this.unitFor(tex);
     const v0 = flipV ? 1 : 0;
     const v1 = flipV ? 0 : 1;
@@ -1790,9 +1847,8 @@ export class Gfx {
     this.vert(x, y, 0, v0, tint);
     this.vert(x + w, y, 1, v0, tint);
     this.vert(x + w, y + h, 1, v1, tint);
-    this.vert(x, y, 0, v0, tint);
-    this.vert(x + w, y + h, 1, v1, tint);
     this.vert(x, y + h, 0, v1, tint);
+    this.quadIdx();
     this.texUnit = 0;
   }
 
@@ -1812,7 +1868,7 @@ export class Gfx {
     const ys = [r.y, r.y + insets.t * k, r.y + r.h - insets.b * k, r.y + r.h];
     const us = [f.u0, f.u0 + insets.l * du, f.u1 - insets.r * du, f.u1];
     const vs = [f.v0, f.v0 + insets.t * dv, f.v1 - insets.b * dv, f.v1];
-    this.room(54);
+    this.room(36, 54);
     this.texUnit = this.unitFor(f.tex);
     for (let j = 0; j < 3; j++)
       for (let i = 0; i < 3; i++) {
@@ -1820,9 +1876,8 @@ export class Gfx {
         this.vert(xs[i], ys[j], us[i], vs[j], tint);
         this.vert(xs[i + 1], ys[j], us[i + 1], vs[j], tint);
         this.vert(xs[i + 1], ys[j + 1], us[i + 1], vs[j + 1], tint);
-        this.vert(xs[i], ys[j], us[i], vs[j], tint);
-        this.vert(xs[i + 1], ys[j + 1], us[i + 1], vs[j + 1], tint);
         this.vert(xs[i], ys[j + 1], us[i], vs[j + 1], tint);
+        this.quadIdx();
       }
     this.texUnit = 0;
   }
@@ -1855,6 +1910,7 @@ export class Gfx {
         const v = t && uvs ? v0 + uvs[j * 2 + 1] * sv : w.v;
         this.vert(verts[j * 2], verts[j * 2 + 1], u, v, color);
       }
+      this.triIdx();
     }
     this.texUnit = 0;
   }
@@ -1979,7 +2035,7 @@ export class Gfx {
   }
 
   private glyphQuad(g: Glyph, px: number, top: number, ts: number, c: RGBA, c2: RGBA): void {
-    this.room(6);
+    this.room(4, 6);
     const x0 = px + g.ox * ts;
     const y0 = top + g.oy * ts;
     const x1 = x0 + g.w * ts;
@@ -1987,9 +2043,8 @@ export class Gfx {
     this.vert(x0, y0, g.u0, g.v0, c);
     this.vert(x1, y0, g.u1, g.v0, c);
     this.vert(x1, y1, g.u1, g.v1, c2);
-    this.vert(x0, y0, g.u0, g.v0, c);
-    this.vert(x1, y1, g.u1, g.v1, c2);
     this.vert(x0, y1, g.u0, g.v1, c2);
+    this.quadIdx();
   }
 
   text(str: string, x: number, y: number, o: TextOpts = {}): void {
