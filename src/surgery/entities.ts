@@ -193,6 +193,8 @@ export class BloodPool extends Entity {
     super(pos);
     this.layer = 5;
     this.startR = r;
+    // Blood only has to be drawn off when it's in the way; it never holds up a phase.
+    this.required = false;
   }
 
   override drain(): number {
@@ -273,11 +275,11 @@ export class Laceration extends Entity {
 
   override update(op: Operation, dt: number): void {
     if (this.bleed <= 0) return;
-    if (op.rng.next() < dt * 0.9 * this.bleed) feedPool(op, this.pos, 4 + this.length * 0.08);
+    if (op.rng.next() < dt * 0.6 * this.bleed) feedPool(op, this.pos, 4 + this.length * 0.06);
   }
 
   private flooded(op: Operation): boolean {
-    return op.entities.some((e) => e instanceof BloodPool && e.alive && e.r > 22 && dist(e.pos, this.pos) < e.r);
+    return op.entities.some((e) => e instanceof BloodPool && e.alive && e.r > 30 && dist(e.pos, this.pos) < e.r * 0.8);
   }
 
   override onSweep(op: Operation, ptr: Pointer, tool: ToolId): void {
@@ -318,7 +320,7 @@ const EMBED_SPEC: Record<EmbeddedKind, { len: number; wound: number; drain: numb
   tooth: { len: 26, wound: 36, drain: 0.35, label: 'Fang' },
   shard: { len: 30, wound: 34, drain: 0.3, label: 'Shard' },
   glass: { len: 24, wound: 28, drain: 0.25, label: 'Glass' },
-  warpshard: { len: 30, wound: 40, drain: 0.6, label: 'Hexstone' },
+  warpshard: { len: 30, wound: 40, drain: 0.45, label: 'Hexstone' },
 };
 
 /**
@@ -333,7 +335,6 @@ export class Embedded extends Entity {
   nicks = 0;
   private corruptT = 0;
   private tore = false;
-  private revealT = 0;
 
   constructor(
     pos: Vec,
@@ -364,7 +365,8 @@ export class Embedded extends Entity {
     if (this.kind !== 'warpshard' || this.grabbed) return;
     // Hexstone corrupts the flesh around it while it stays lodged.
     this.corruptT += dt;
-    if (this.corruptT > 7) {
+    // Corruption spreads, but never faster than a steady hand can salve it.
+    if (this.corruptT > 10 && op.entities.filter((e) => e instanceof Rot && e.alive).length < 4) {
       this.corruptT = 0;
       const a = op.rng.range(0, TAU);
       const p = { x: this.origin.x + Math.cos(a) * 60, y: this.origin.y + Math.sin(a) * 45 };
@@ -418,17 +420,6 @@ export class Embedded extends Entity {
     } else {
       // Not pulled clear: it sinks back in.
       this.pos = { ...this.origin };
-    }
-  }
-
-  override onReveal(op: Operation, p: Vec, dt: number): void {
-    if (dist(p, this.origin) < 60) {
-      this.revealT += dt;
-      if (this.revealT > 0.4) {
-        this.hidden = false;
-        op.popup('Found!', this.origin, '#b9d7ff');
-        op.cues.push('good');
-      }
     }
   }
 
@@ -744,13 +735,14 @@ export class Grub extends Entity {
   }
 
   override update(op: Operation, dt: number): void {
+    // Heat only bleeds away when the brand is off it.
+    if (!this.branded) this.heat = Math.max(0, this.heat - dt * 0.5);
     this.branded = false;
     if (this.grabbed) return;
     this.heading += op.rng.range(-2, 2) * dt;
     const next = { x: this.pos.x + Math.cos(this.heading) * this.speed * dt, y: this.pos.y + Math.sin(this.heading) * this.speed * dt };
     if (onBody(next)) this.pos = next;
     else this.heading += Math.PI * 0.75;
-    this.heat = Math.max(0, this.heat - dt * 0.5);
   }
 
   override onSweep(op: Operation, ptr: Pointer, tool: ToolId, dt: number): void {

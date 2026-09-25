@@ -338,7 +338,8 @@ export class Operation {
 
   rank(): Rank {
     const r = this.def.ranks;
-    if (this.score >= r.S && this.counts.bad + this.counts.miss === 0) return 'XS';
+    // XS: beyond S, without a single Bad or Miss.
+    if (this.score >= r.S * 1.05 && this.counts.bad + this.counts.miss === 0) return 'XS';
     if (this.score >= r.S) return 'S';
     if (this.score >= r.A) return 'A';
     if (this.score >= r.B) return 'B';

@@ -1,5 +1,5 @@
 {
-  "name": "grim-surgeon",
+  "name": "suture-and-steel",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -12,6 +12,8 @@
     "test": "vitest run"
   },
   "devDependencies": {
+    "@types/node": "^22.20.4",
+    "playwright": "1.55",
     "typescript": "~5.9.3",
     "vite": "^6.4.3",
     "vitest": "^3.2.7"

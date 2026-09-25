@@ -83,14 +83,21 @@ export class OperationScene implements Scene {
       this.starTrail = [];
     }
 
-    const ptr: Pointer = {
-      pos: input.pos,
-      prev: input.prev,
-      down: input.down && !trayClick && !input.rightDown,
-      pressed: input.pressed && !trayClick,
-      released: input.released,
-    };
-    if (ptr.pos.x > TRAY.x + TRAY.w + 10 || !ptr.pressed) op.handlePointer(ptr, dt);
+    // Replay every pointer sample since last frame so fast zig-zags aren't lost at low frame rates.
+    const path = input.path;
+    const down = input.down && !trayClick && !input.rightDown;
+    let prev = input.prev;
+    path.forEach((pos, i) => {
+      const ptr: Pointer = {
+        pos,
+        prev,
+        down: down || (input.released && i < path.length - 1),
+        pressed: input.pressed && !trayClick && i === 0,
+        released: input.released && i === path.length - 1,
+      };
+      if (pos.x > TRAY.x + TRAY.w + 10 || !ptr.pressed) op.handlePointer(ptr, dt / path.length);
+      prev = pos;
+    });
     op.update(dt);
 
     // Heartbeat drives the ECG trace, the organ swell and (when failing) an audible thump.
@@ -166,7 +173,7 @@ export class OperationScene implements Scene {
     }
 
     const danger = op.status === 'running' ? Math.max(0, (35 - op.vitals) / 35) : op.status === 'lost' ? 1 : 0;
-    g.endWorld({ litany: op.litanyTime > 0 ? Math.min(1, op.litanyTime, (LITANY_DURATION - op.litanyTime) * 3) : 0, danger, shake, bloom: 0.9 });
+    g.endWorld({ litany: op.litanyTime > 0 ? Math.min(1, op.litanyTime, (LITANY_DURATION - op.litanyTime) * 3) : 0, danger, shake, bloom: 0.7 });
 
     // ---------------------------------------------------------------- UI
     this.drawPopups(g);
@@ -245,7 +252,8 @@ export class OperationScene implements Scene {
     g.text(info.name, TRAY.x, ty, { size: 16, color: hex(PALETTE.gold) });
     g.textBlock(info.hint, TRAY.x, ty + 20, 110, { size: 13, color: hex(PALETTE.inkDim) }, 1.25);
 
-    // Litany indicator.
+    // Litany indicator (only once the rite has been learned).
+    if (op.def.litany === false) return;
     const lx = 56;
     const ly = 676;
     const ready = op.canInvokeLitany();

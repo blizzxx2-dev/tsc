@@ -1,4 +1,4 @@
-import type { Vec } from '../core/math';
+import { dist, type Vec } from '../core/math';
 import type { Gfx } from '../render/gfx';
 import type { Operation } from './operation';
 import type { Pointer, ToolId } from './types';
@@ -37,8 +37,18 @@ export abstract class Entity {
   onRelease(_op: Operation, _ptr: Pointer, _tool: ToolId): void {}
   /** Called every frame the button is held and nothing is captured (continuous tools). */
   onSweep(_op: Operation, _ptr: Pointer, _tool: ToolId, _dt: number): void {}
-  /** Lens hovering nearby. */
-  onReveal(_op: Operation, _p: Vec, _dt: number): void {}
+  private revealT = 0;
+
+  /** Lens hovering nearby: by default a hidden entity surfaces once the lens lingers over it. */
+  onReveal(op: Operation, p: Vec, dt: number): void {
+    if (dist(p, this.pos) > 60) return;
+    this.revealT += dt;
+    if (this.revealT > 0.4) {
+      this.hidden = false;
+      op.popup('Found!', this.pos, '#b9d7ff');
+      op.cues.push('good');
+    }
+  }
 
   /** World time: slowed by the Litany. */
   update(_op: Operation, _dt: number): void {}

@@ -53,8 +53,8 @@ export class BriefingScene implements Scene {
       toolIcon(g, t, x, r.y + 445, 0.9, g.time);
       g.text(toolInfo(t).key, x, r.y + 492, { size: 16, color: faded, align: 'center', shadow: false });
     });
-    if (button(g, game.input, 'Scrub In', VIEW_W / 2 + 120, r.y + 560, 30)) this.onBegin();
-    if (button(g, game.input, 'Back', VIEW_W / 2 - 160, r.y + 560, 26)) this.onBack();
+    if (button(g, game.input, 'Scrub In', VIEW_W / 2 + 120, r.y + 560, 34, true, true)) this.onBegin();
+    if (button(g, game.input, 'Back', VIEW_W / 2 - 160, r.y + 560, 26, true, true)) this.onBack();
     reticle(g, game.input.pos);
     g.endFrame();
   }

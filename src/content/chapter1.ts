@@ -127,7 +127,7 @@ export const OP_1_1: OperationDef = {
   organ: 'flesh',
   timeLimit: 180,
   tools: ['thread', 'leech', 'salve'],
-  ranks: { S: 1500, A: 1100, B: 700 },
+  ranks: { S: 3950, A: 3150, B: 2350 },
   litany: false,
   seed: 11,
   phases: [
@@ -137,7 +137,7 @@ export const OP_1_1: OperationDef = {
     },
     {
       callout: ['Blood’s pooling. Hold the leech-pipe over it to draw it off.', 'You can’t stitch through a pool of blood — drain first.'],
-      spawn: () => [new Laceration(at(0, 20), 1.2, 110, 1.4)],
+      spawn: () => [new Laceration(at(0, 20), 1.2, 110, 0.9)],
     },
     {
       callout: ['Just nicks left. Brush Saint’s Salve over the small ones — no need for thread.'],
@@ -154,7 +154,7 @@ export const OP_1_2: OperationDef = {
   organ: 'flesh',
   timeLimit: 200,
   tools: ['lancet', 'tongs', 'leech', 'thread', 'salve'],
-  ranks: { S: 2200, A: 1600, B: 1000 },
+  ranks: { S: 4450, A: 3550, B: 2650 },
   litany: false,
   seed: 12,
   phases: [
@@ -179,7 +179,7 @@ export const OP_1_3: OperationDef = {
   baseDrain: 0.25,
   vitals: 70,
   tools: ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture'],
-  ranks: { S: 3200, A: 2400, B: 1500 },
+  ranks: { S: 4750, A: 3800, B: 2850 },
   litany: false,
   seed: 13,
   phases: [
@@ -208,7 +208,7 @@ export const OP_1_4: OperationDef = {
   timeLimit: 240,
   baseDrain: 0.15,
   tools: ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture', 'brand'],
-  ranks: { S: 3600, A: 2700, B: 1700 },
+  ranks: { S: 5250, A: 4200, B: 3150 },
   litany: false,
   seed: 14,
   phases: [
@@ -236,7 +236,7 @@ export const OP_1_5: OperationDef = {
   timeLimit: 330,
   baseDrain: 0.1,
   tools: ALL_BUT_LENS,
-  ranks: { S: 5200, A: 3900, B: 2500 },
+  ranks: { S: 6950, A: 5550, B: 4150 },
   litany: true,
   seed: 15,
   phases: [

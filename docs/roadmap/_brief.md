@@ -1,7 +1,7 @@
 # Roadmap Brief (shared context for every workstream)
 
 ## The game
-**Grim Apothecary** (working title) — a PC surgery-action game that reimagines Atlus's *Trauma Center* series in an
+**Suture & Steel** (final title; subtitle "The Malison Hours") — a PC surgery-action game that reimagines Atlus's *Trauma Center* series in an
 original grimdark early-modern fantasy world inspired by the *tone* of Warhammer Fantasy (dirt, plague, pike-and-shot,
 witch hunters, black humour, Dürer/Bruegel/Bosch art). **No Games Workshop IP** — all names, factions, gods and places are original.
 
@@ -39,8 +39,15 @@ Burn (fire/acid/hexfire), Bubo, Rot, Venom, Grub, Sigil (curse), Malison (Matins
 recogniser with tests; WebGL2 renderer/shaders/text atlas. In progress: scenes (title, story VN, briefing,
 operation HUD, results), first chapter content.
 
+## Scope decision (from the project owner)
+The full game is **5 chapters**. The immediate build target is a **release-quality Steam demo containing
+Chapters 1 and 2** (≈10 operations, 2 Malison bosses: Matins and Lauds) — polished to shipping standard, with
+options, tutorials, save, controller/Steam Deck basics, Steam build, and an end-of-demo wishlist screen.
+Chapters 3–5 come after the demo ships.
+
 ## Milestones
 - **M0 Prototype** — vertical slice: engine + ~5 operations + first Malison.
+- **Demo** — Chapters 1–2 at release quality, shipped on Steam as a free demo (Next Fest-ready).
 - **Alpha** — every core system feature-complete; whole campaign playable end-to-end with placeholder art/audio.
 - **Beta** — content complete; final art/audio/VO integrated; balancing; localisation; platform integration; broad testing.
 - **Release (1.0)** — polish, performance, certification/store compliance, launch.
@@ -54,7 +61,8 @@ One task per line, as a markdown checkbox:
 ```
 
 - ID: the workstream prefix given to you + zero-padded 4-digit sequence, unique within your file.
-- Phase: `M0`, `Alpha`, `Beta`, `Release`, or `Post`.
+- Phase: `M0`, `Demo`, `Alpha`, `Beta`, `Release`, or `Post`. Use `Demo` for everything the Ch1–2 Steam demo needs
+  to ship at release quality; Alpha/Beta/Release then cover Chapters 3–5 and the full game.
 - Priority: `P0` (blocker) … `P3` (nice to have).
 - Size: `S` (≤ ½ day), `M` (1–3 days), `L` (≤ 2 weeks). Split anything bigger than L.
 - Group tasks under `##` epic headings and `###` feature headings. Epics should run roughly in phase order.

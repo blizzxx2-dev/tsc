@@ -5,6 +5,8 @@ import { Audio } from './core/audio';
 import { Input } from './core/input';
 import type { Game, Scene } from './core/scene';
 import { Gfx } from './render/gfx';
+import { allOperations } from './content/campaign';
+import { playOperation } from './scenes/flow';
 import { TitleScene } from './scenes/title';
 import { VIEW_H, VIEW_W } from './ui/layout';
 
@@ -12,7 +14,7 @@ class Main implements Game {
   input: Input;
   audio = new Audio();
   gfx: Gfx;
-  private scene: Scene | null = null;
+  scene: Scene | null = null;
   private last = performance.now();
 
   constructor(private canvas: HTMLCanvasElement) {
@@ -86,12 +88,20 @@ async function boot(): Promise<void> {
     canvas.remove();
     const div = document.createElement('div');
     div.id = 'fatal';
-    div.textContent = `Grim Apothecary needs WebGL2 and could not start: ${(err as Error).message}`;
+    div.textContent = `Suture & Steel needs WebGL2 and could not start: ${(err as Error).message}`;
     document.body.appendChild(div);
     return;
   }
   game.gfx.atlas.warm();
   game.start(new TitleScene());
+  // Dev/QA hooks: ?op=<id> jumps straight into an operation; window.__game exposes the game for automation.
+  (window as unknown as { __game: Main }).__game = game;
+  const opId = new URLSearchParams(location.search).get('op');
+  const def = opId ? allOperations().find((o) => o.id === opId) : undefined;
+  if (def) {
+    const back = () => game.go(new TitleScene());
+    playOperation(game, def, back, back);
+  }
 }
 
 void boot();

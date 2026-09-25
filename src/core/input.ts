@@ -7,6 +7,9 @@ import type { Vec } from './math';
 export class Input {
   pos: Vec = { x: 0, y: 0 };
   prev: Vec = { x: 0, y: 0 };
+  /** Every pointer sample since the previous frame (oldest first), so fast gestures survive low frame rates. */
+  path: Vec[] = [];
+  private pendingPath: Vec[] = [];
   down = false;
   pressed = false;
   released = false;
@@ -66,14 +69,21 @@ export class Input {
 
   private move(e: PointerEvent): void {
     const r = this.el.getBoundingClientRect();
-    this.pos = {
-      x: ((e.clientX - r.left) / r.width) * this.viewW,
-      y: ((e.clientY - r.top) / r.height) * this.viewH,
-    };
+    // Coalesced events carry the high-rate samples the browser merged into this one.
+    const samples = e.getCoalescedEvents?.().length ? e.getCoalescedEvents() : [e];
+    for (const s of samples) {
+      this.pos = {
+        x: ((s.clientX - r.left) / r.width) * this.viewW,
+        y: ((s.clientY - r.top) / r.height) * this.viewH,
+      };
+      if (this.pendingPath.length < 64) this.pendingPath.push(this.pos);
+    }
   }
 
   /** Latch events that happened since the last frame. Call at the start of each update. */
   beginFrame(): void {
+    this.path = this.pendingPath.length ? this.pendingPath : [this.pos];
+    this.pendingPath = [];
     this.pressed = this.pending.pressed;
     this.released = this.pending.released;
     this.rightPressed = this.pending.rightPressed;

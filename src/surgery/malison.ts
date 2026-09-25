@@ -74,9 +74,9 @@ export class Malison extends Entity {
     // While veiled it rends the flesh it passes over.
     if (!this.open) {
       this.rendT += dt;
-      if (this.rendT > 3.2) {
+      if (this.rendT > 4.5) {
         this.rendT = 0;
-        const lac = new Laceration({ ...this.pos }, op.rng.range(0, TAU), op.rng.range(40, 80), 1);
+        const lac = new Laceration({ ...this.pos }, op.rng.range(0, TAU), op.rng.range(40, 70), 0.8);
         op.spawn(lac);
         op.cues.push('cut');
         op.shake = Math.max(op.shake, 6);

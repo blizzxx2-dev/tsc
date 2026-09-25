@@ -1,9 +1,9 @@
 export type FontId = 'body' | 'display' | 'italic';
 
-export const FONT_FAMILIES: Record<FontId, string> = {
-  body: '"IM Fell English", "Palatino Linotype", "Book Antiqua", Georgia, serif',
-  italic: 'italic "IM Fell English", "Palatino Linotype", Georgia, serif',
-  display: '"UnifrakturMaguntia", "IM Fell English", Georgia, serif',
+export const FONT_FAMILIES: Record<FontId, { style: string; family: string }> = {
+  body: { style: 'normal', family: '"IM Fell English", "Palatino Linotype", "Book Antiqua", Georgia, serif' },
+  italic: { style: 'italic', family: '"IM Fell English", "Palatino Linotype", Georgia, serif' },
+  display: { style: 'normal', family: '"UnifrakturMaguntia", "IM Fell English", Georgia, serif' },
 };
 
 export interface Glyph {
@@ -50,7 +50,8 @@ export class GlyphAtlas {
   }
 
   private font(f: FontId): string {
-    return `${this.baseSize}px ${FONT_FAMILIES[f]}`;
+    const { style, family } = FONT_FAMILIES[f];
+    return `${style} ${this.baseSize}px ${family}`;
   }
 
   ascent(f: FontId): number {

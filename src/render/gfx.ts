@@ -202,7 +202,7 @@ export class Gfx {
     gl.useProgram(this.bright);
     this.bindTex(this.scene.tex, 0);
     gl.uniform1i(this.u(this.bright, 'u_tex'), 0);
-    gl.uniform1f(this.u(this.bright, 'u_threshold'), 0.62);
+    gl.uniform1f(this.u(this.bright, 'u_threshold'), 0.78);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     gl.useProgram(this.blur);
     gl.uniform1i(this.u(this.blur, 'u_tex'), 0);

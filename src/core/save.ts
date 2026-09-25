@@ -8,7 +8,7 @@ export interface SaveData {
   volume: number;
 }
 
-const KEY = 'grim-apothecary.save';
+const KEY = 'suture-and-steel.save';
 const RANK_ORDER: Rank[] = ['C', 'B', 'A', 'S', 'XS'];
 
 export const fresh = (): SaveData => ({ version: 1, progress: { chapter: 0, step: 0 }, best: {}, volume: 0.5 });

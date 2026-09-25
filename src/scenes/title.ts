@@ -24,7 +24,7 @@ export class TitleScene implements Scene {
     const a = Math.min(1, this.t);
     g.rect(0, 0, VIEW_W, VIEW_H, hex('#000000', 0.35));
     g.glow(VIEW_W / 2, 190, 360, hex('#8a1016', 0.25 * a));
-    g.text('Grim Apothecary', VIEW_W / 2, 210, { size: 110, font: 'display', color: hex(PALETTE.ink, a), align: 'center' });
+    g.text('Suture & Steel', VIEW_W / 2, 210, { size: 110, font: 'display', color: hex(PALETTE.ink, a), align: 'center' });
     g.text('— The Malison Hours —', VIEW_W / 2, 270, { size: 30, font: 'italic', color: hex(PALETTE.gold, a), align: 'center' });
 
     const p = save.progress;

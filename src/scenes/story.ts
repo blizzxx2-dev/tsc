@@ -60,7 +60,7 @@ export class StoryScene implements Scene {
     g.text(this.story.place, 30, 42, { size: 20, font: 'italic', color: hex(PALETTE.inkDim) });
 
     const box = { x: 90, y: 500, w: VIEW_W - 180, h: 190 };
-    panel(g, box, 0.9);
+    panel(g, box, 0.97);
     const name = line.as ?? who.name;
     if (name) {
       const w = g.measure(name, 26) + 40;

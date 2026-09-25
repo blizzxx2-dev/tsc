@@ -99,7 +99,7 @@ void main() {
   // ---- flesh
   vec2 uv = q * 4.0;
   float n = fbm(uv + vec2(0.0, u_time * 0.02));
-  vec3 col = mix(u_deep, u_base, smoothstep(0.25, 0.8, n));
+  vec3 col = mix(u_deep, u_base, smoothstep(0.2, 0.85, n));
   float c = 0.0;
   if (u_kind == 2) { c = cells(uv * 2.5); col *= 0.75 + 0.35 * smoothstep(0.0, 0.25, c); }
   else if (u_kind == 3) { c = sin((q.x + fbm(uv) * 0.5) * 22.0); col *= 0.8 + 0.2 * c; }
@@ -107,21 +107,28 @@ void main() {
   else if (u_kind == 5) { c = abs(sin(fbm(uv * 0.8) * 18.0)); col *= 0.75 + 0.3 * c; }
   else if (u_kind == 6) { c = fbm(uv * 3.0); col = mix(col, vec3(0.86, 0.82, 0.7), 0.5) * (0.8 + 0.3 * c); }
   else if (u_kind == 1) { c = fbm(uv * 1.5 + u_pulse * 0.3); col *= 0.85 + 0.25 * c; }
-  else { c = cells(uv * 3.0); col = mix(col, u_base * 1.15, smoothstep(0.05, 0.0, c) * 0.25); }
+  else { c = cells(uv * 2.2); col *= 0.92 + 0.08 * smoothstep(0.0, 0.18, c); }
 
   // Veins: ridged noise.
-  float v = 1.0 - abs(fbm(uv * 0.9 + 10.0) * 2.0 - 1.0);
-  v = pow(v, 12.0);
-  col = mix(col, u_vein, v * 0.55);
+  float v = 1.0 - abs(fbm(uv * 0.7 + 10.0) * 2.0 - 1.0);
+  v = pow(v, 14.0);
+  col = mix(col, u_vein, v * 0.45);
 
-  // Wet specular from a height field.
-  float h = n * 0.6 + v * 0.2 + c * 0.1;
-  vec2 grad = vec2(dFdx(h), dFdy(h));
-  vec3 nrm = normalize(vec3(-grad * 40.0, 1.0));
-  vec3 L = normalize(vec3((u_light - px) / 600.0, 0.8));
+  // Wet specular from a smooth, low-frequency height field (finite differences, not dFdx,
+  // so the highlight rolls over broad swells instead of sparkling on every noise texel).
+  vec2 hp = q * 2.2 + vec2(0.0, u_time * 0.02);
+  float e = 0.02;
+  float h0 = fbm(hp);
+  vec2 grad = vec2(fbm(hp + vec2(e, 0.0)) - h0, fbm(hp + vec2(0.0, e)) - h0) / e;
+  // Dome the field so light wraps around the organ's bulk.
+  grad += q * 0.9;
+  vec3 nrm = normalize(vec3(-grad * 0.35, 1.0));
+  vec3 L = normalize(vec3((u_light - px) / 700.0, 0.9));
   float diff = max(dot(nrm, L), 0.0);
-  float spec = pow(max(dot(reflect(-L, nrm), vec3(0, 0, 1)), 0.0), 40.0);
-  col = col * (0.45 + 0.7 * diff) + vec3(1.0, 0.92, 0.8) * spec * 0.55;
+  float spec = pow(max(dot(reflect(-L, nrm), vec3(0, 0, 1)), 0.0), 18.0);
+  col = col * (0.38 + 0.52 * diff) + vec3(1.0, 0.9, 0.82) * spec * 0.22;
+  // Fine wet glints, sparse and soft.
+  col += vec3(1.0, 0.95, 0.9) * smoothstep(0.82, 0.95, noise(uv * 6.0 + 3.0)) * spec * 0.25;
 
   // Curse corruption: purple-black bruising that creeps in from the rim.
   float cor = u_corrupt * smoothstep(0.3, 1.0, r + fbm(uv * 1.7 + u_time * 0.1) * 0.4);

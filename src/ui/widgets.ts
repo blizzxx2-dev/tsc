@@ -36,8 +36,8 @@ export function parchment(g: Gfx, r: Rect): void {
   g.rectLine(r.x, r.y, r.w, r.h, 3, hex('#6a4e2a', 0.8));
 }
 
-/** Menu-style text button. Returns true when clicked this frame. */
-export function button(g: Gfx, input: Input, label: string, x: number, y: number, size = 30, enabled = true): boolean {
+/** Menu-style text button. Returns true when clicked this frame. `onLight` switches to dark ink for parchment. */
+export function button(g: Gfx, input: Input, label: string, x: number, y: number, size = 30, enabled = true, onLight = false): boolean {
   const w = g.measure(label, size, 'body') + 40;
   const r = { x: x - w / 2, y: y - size * 0.9, w, h: size * 1.3 };
   const hover = enabled && inRect(input.pos, r);
@@ -45,7 +45,8 @@ export function button(g: Gfx, input: Input, label: string, x: number, y: number
     g.rect(r.x, r.y, r.w, r.h, hex(PALETTE.blood, 0.35));
     g.text('•', r.x + 8, y, { size, color: hex(PALETTE.gold), align: 'left' });
   }
-  g.text(label, x, y, { size, color: hex(enabled ? (hover ? PALETTE.gold : PALETTE.ink) : '#5a5040'), align: 'center' });
+  const color = onLight ? (hover ? '#8a1016' : '#2a1a10') : enabled ? (hover ? PALETTE.gold : PALETTE.ink) : '#5a5040';
+  g.text(label, x, y, { size, color: hex(color), align: 'center', shadow: onLight ? false : undefined });
   return hover && input.pressed;
 }
 
