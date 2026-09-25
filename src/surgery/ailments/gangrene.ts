@@ -264,7 +264,7 @@ export class Amputation extends Entity {
 
   draw(g: Gfx, op: Operation): void {
     // Tone guard (GAM-0126): the limb stays under the drapes; only the strip being sawn shows.
-    drawDrape(g, this.sawA, this.sawB, { window: 40, overhang: 40 });
+    drawDrape(g, this.sawA, this.sawB, { window: 40, overhang: 40, material: op.def.drape });
     if (!this.sawn) {
       g.dashed([this.sawA, this.sawB], 3, hex('#ffebbe', 0.7), 8, 6, -op.elapsed * 10);
       g.arc(this.pos.x, this.pos.y, 18, 3, hex('#ffebbe'), this.strokes / GANGRENE.strokes);

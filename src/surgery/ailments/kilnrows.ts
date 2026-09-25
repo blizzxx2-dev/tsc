@@ -398,9 +398,9 @@ export class Amputation extends Entity {
   override drawSurface(g: Gfx): void {
     surfLine(g, [this.a, this.b], 12, (this.strokes / this.need) * 0.8, 0.3);
   }
-  draw(g: Gfx): void {
+  draw(g: Gfx, op: Operation): void {
     // Tone guard (GAM-0126): the limb stays under the drapes; only the strip being sawn shows.
-    drawDrape(g, this.a, this.b);
+    drawDrape(g, this.a, this.b, { material: op.def.drape });
     g.dashed([this.a, this.b], 3, hex('#f0e0c0', 0.7), 10, 6);
     g.text(`${this.strokes}/${this.need}`, this.pos.x, this.pos.y - 26, { size: 18, color: hex('#f0e0c0', 0.8), align: 'center' });
   }

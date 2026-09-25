@@ -16,3 +16,27 @@ describe('amputation drape (GAM-0126)', () => {
     expect(Math.max(...panels[0].map((p) => Math.abs(p.x)))).toBeCloseTo(120);
   });
 });
+
+describe('drape material presets (ENG-0276)', () => {
+  it('each preset draws its own cloth, and coarse cloth shows a weave', async () => {
+    const { drawDrape, DRAPES } = await import('../../../src/art/drape');
+    expect(Object.keys(DRAPES).sort()).toEqual(['canvas', 'linen', 'sackcloth', 'silk']);
+    const record = (material: keyof typeof DRAPES) => {
+      const calls: { k: string; args: unknown[] }[] = [];
+      const g = new Proxy(
+        {},
+        {
+          get:
+            (_t, k) =>
+            (...args: unknown[]) =>
+              void calls.push({ k: String(k), args }),
+        },
+      ) as never;
+      drawDrape(g, { x: 0, y: -100 }, { x: 0, y: 100 }, { material });
+      return calls;
+    };
+    const cloth = (m: keyof typeof DRAPES) => JSON.stringify(record(m).filter((c) => c.k === 'poly')[1].args[1]);
+    expect(cloth('silk')).not.toBe(cloth('linen'));
+    expect(record('sackcloth').filter((c) => c.k === 'line').length).toBeGreaterThan(record('linen').filter((c) => c.k === 'line').length);
+  });
+});

@@ -390,7 +390,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0273 · Alpha · P1 · M · Bone-setting view — translucent "vellum anatomy" skeletal overlay shader with fracture highlights and alignment guides
 - [ ] ENG-0274 · Alpha · P1 · M · Forensic/inquisition view — corpse-pallor flesh profile (no pulse, livor mortis pooling), evidence highlight shader for the Scrying Lens
 - [ ] ENG-0275 · Alpha · P2 · M · Diagnosis view — full-body chart renderer (patient silhouette with region hover, symptom overlays) reusing sprite/mesh APIs
-- [ ] ENG-0276 · Alpha · P2 · S · Drape material presets — hospice linen, noble silk, prison sackcloth, army canvas, selected in the operation def
+- [x] ENG-0276 · Alpha · P2 · S · Drape material presets — hospice linen, noble silk, prison sackcloth, army canvas, selected in the operation def
 
 ## ENG-Q · Final art integration & rendering polish (Beta)
 

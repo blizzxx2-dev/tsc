@@ -84,6 +84,8 @@ export interface OperationDef {
    * their own. Wounds in that region drain them, not the first; the op is lost if either dies.
    */
   second?: { patient: string; vitals?: number };
+  /** Drape cloth around amputations and draped fields (ENG-0276): hospice linen by default. */
+  drape?: 'linen' | 'silk' | 'sackcloth' | 'canvas';
   /** Multi-organ fields: regions with their own sensitivity; with two or more, the camera frames one at a time (GAM-0247). */
   regions?: readonly OrganRegion[];
   events?: readonly ScriptedEvent[];

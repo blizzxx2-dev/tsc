@@ -342,6 +342,7 @@ export const OP_3_5: OperationDef = {
   patient: 'Berthold, carter',
   diagnosis: 'Leg crushed beneath the Iron Bridge as it was raised. The shin is past saving: amputation below the knee.',
   organ: 'bone',
+  drape: 'linen',
   timeLimit: 300,
   baseDrain: 0.2,
   vitals: 85,
