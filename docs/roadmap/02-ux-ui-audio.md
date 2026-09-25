@@ -222,7 +222,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] UIX-0056 · Demo · P1 · S · Cursor visibility — reticle has a dark outline and optional size (1×–2×) and colour (brass/white/cyan/magenta) settings; remains visible over dark blood, black bile and bright hexfire
 
 ### Callouts & guidance
-- [ ] UIX-0057 · Demo · P0 · S · Callout panel placement — the panel (y 650–708) currently overlaps the bottom of the operating field; move it into a reserved bottom strip or make it click-through and auto-shift away from the active entity; hit-test confirms clicks pass to the field
+- [x] UIX-0057 · Demo · P0 · S · Callout panel placement — the panel (y 650–708) currently overlaps the bottom of the operating field; move it into a reserved bottom strip or make it click-through and auto-shift away from the active entity; hit-test confirms clicks pass to the field
 - [ ] UIX-0058 · Demo · P1 · M · Callout priorities — `op.say(line, { priority })`: urgent lines (low vitals, shard rejoining, Brand on healthy flesh) interrupt the queue; tips queue; duplicate lines within 10 s are dropped (unit tests on the queue)
 - [ ] UIX-0059 · Demo · P1 · M · Ilse callout bust — portrait in the callout panel with calm/urgent/relieved/worried expressions keyed by line priority or tag; subtle blink and mouth flap while text types
 - [x] UIX-0060 · Demo · P1 · S · Callout log — last 20 callouts of the current operation viewable from the pause menu

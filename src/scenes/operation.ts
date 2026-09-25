@@ -85,6 +85,9 @@ export class OperationScene implements Scene {
   private healFrom = 0;
   private healT = 0;
   private digitShakeT = 0;
+  /** Callout panel ghosting (UIX-0057): it fades aside when the hand or a live wound is beneath it. */
+  private calloutRect: { x: number; y: number; w: number; h: number } | null = null;
+  private calloutGhost = 0;
   /** Sounds requested since the last tick (deduplicated). */
   private debug = false;
   /** The last 20 callouts, for the pause menu's log (UIX-0060). */
@@ -236,6 +239,7 @@ export class OperationScene implements Scene {
     this.hints.mode = settings.toolHints;
     for (const p of this.dmg.tick(dt)) this.addPopup({ ...p, t: 0 });
     this.tickVitalsFeedback(dt);
+    this.tickCalloutGhost(dt, input.pos);
     if (op.tool !== this.lastTool) {
       this.toolFlash = 1;
       this.hintT = this.hints.selected(op.tool) ? 2.5 : 0;
@@ -460,6 +464,13 @@ export class OperationScene implements Scene {
     this.popups.push(p);
   }
 
+  private tickCalloutGhost(dt: number, hand: { x: number; y: number }): void {
+    const r = this.calloutRect;
+    const under = (p: { x: number; y: number }, pad: number) => !!r && p.x > r.x - pad && p.x < r.x + r.w + pad && p.y > r.y - pad && p.y < r.y + r.h + pad;
+    const covered = !!r && (under(hand, 24) || this.op.entities.some((e) => e.alive && !e.hidden && e.required && under(e.pos, 20)));
+    this.calloutGhost = Math.max(0, Math.min(1, this.calloutGhost + (covered ? dt * 6 : -dt * 3)));
+  }
+
   private tickVitalsFeedback(dt: number): void {
     const v = this.op.vitals;
     if (v > this.prevV + 0.5) {
@@ -640,7 +651,10 @@ export class OperationScene implements Scene {
 
   private drawCallout(g: Gfx, t: number): void {
     const line = this.op.callouts[0];
-    if (!line) return;
+    if (!line) {
+      this.calloutRect = null;
+      return;
+    }
     // Text scale (UIX-0148): the plate grows upward and wraps rather than overflowing.
     const ts = settings.textScale;
     const size = Math.round(19 * ts);
@@ -649,7 +663,14 @@ export class OperationScene implements Scene {
     const lines = g.wrap(text, textW, size).length;
     const h = Math.max(78, 44 + lines * size * 1.3);
     const r = { x: VIEW_W / 2 - 400, y: 704 - h, w: 800, h };
-    glass(g, r);
+    this.calloutRect = r;
+    // The panel never takes clicks (they fall through to the field); over the hand or a wound it ghosts aside.
+    const vis = 1 - 0.72 * this.calloutGhost;
+    glass(g, r, { strength: vis });
+    if (vis < 0.5) {
+      g.textBlock(text.slice(0, Math.floor(this.op.calloutT * 60 * settings.textSpeed)), r.x + 94, r.y + 34 + size * 0.8, textW, { size, color: hex(INK.text, 0.55), shadow: false }, 1.3);
+      return;
+    }
     // Portrait in a gilt ring on the plate's left.
     const mx = r.x + 46;
     const my = r.y + r.h / 2;
