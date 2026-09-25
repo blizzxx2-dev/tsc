@@ -376,7 +376,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0263 · Alpha · P0 · M · Dragon-breath burns — deep char with glowing ember fissures (HDR emissive), heat-shimmer distortion pass masked to the wound, cooling over world time
 - [ ] ENG-0264 · Alpha · P1 · M · Plague/gangrene spread — necrotic colour ramp and wetness loss driven by a spreading map updated in the 10 Hz decal pass, reversing where treated
 - [ ] ENG-0265 · Alpha · P1 · M · Under-skin movement — larvae/parasite bulges travelling beneath tissue via a displacement term in the normal field, synced to sim positions
-- [ ] ENG-0266 · Alpha · P1 · S · Hostile-spell residue — rune-scar emissive decals that pulse with world time and fade when dispelled
+- [x] ENG-0266 · Alpha · P1 · S · Hostile-spell residue — rune-scar emissive decals that pulse with world time and fade when dispelled
 - [ ] ENG-0267 · Alpha · P2 · S · Poison variants — venom vein-spread shader tinted by a per-poison colour ramp from content data
 
 ### Remaining Malison variants
