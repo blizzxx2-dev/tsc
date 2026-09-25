@@ -1,5 +1,5 @@
 /**
- * Save schema v2 (PLT-0078). Three kinds of file live in the user's save folder:
+ * Save schema v3 (PLT-0078, CON-0008). Three kinds of file live in the user's save folder:
  *   profile.json   — progress, best ranks, unlocks, playtime (one per user and edition)
  *   settings.json  — player preferences (src/core/settings.ts; volume moved there from the v1 save)
  *   slot<N>.json   — campaign position for manual slots 1–3 and `slotauto.json` for the autosave
@@ -9,7 +9,13 @@
 import type { Rank } from '../../surgery/types';
 import type { Edition } from '../../platform/editions';
 
-export const SAVE_VERSION = 2;
+export const SAVE_VERSION = 3;
+
+/** A campaign flag: choices and outcomes the story reads later (CON-0008). */
+export type FlagValue = boolean | number | string;
+export type FlagRecord = Record<string, FlagValue>;
+/** Limits enforced by sanitizeFlags: keys ≤ 64 chars, strings ≤ 200 chars, ≤ 500 flags. */
+export const FLAG_LIMITS = { key: 64, string: 200, count: 500 } as const;
 
 export const RANKS: readonly Rank[] = ['C', 'B', 'A', 'S', 'XS'];
 
@@ -38,6 +44,8 @@ export interface Profile {
   best: Record<string, BestResult>;
   /** Unlock ids (extras, chapters, New Game+). */
   unlocks: string[];
+  /** Campaign flags — story choices and outcomes (v3, CON-0008). Cleared by New Game; carried by demo import. */
+  flags: FlagRecord;
   /** Seconds played, excluding pauses and idle periods over 5 minutes (PLT-0090). */
   playtime: number;
   createdAt: string;

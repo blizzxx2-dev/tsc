@@ -7,6 +7,10 @@
  * append-only: once a demo build ships, its table is frozen (tests/carryover.test.ts guards v1 against
  * the live campaign and against fixture demo saves in tests/fixtures/saves/).
  *
+ * Campaign flags (CON-0093) carry verbatim: flag names are stable content ids in their own right
+ * (docs/narrative/flags.md), so `cantorMercy`, `litanySeenCount` and the recorded choices travel as
+ * they are; malformed entries were already dropped by the save sanitiser.
+ *
  * Steam Cloud cannot sync across app ids, so the full game reads the demo's local save folder
  * (`…/suture-and-steel/demo/`) — progress only imports on the machine where the demo was played.
  */
@@ -69,6 +73,8 @@ export function indexCampaign(chapters: readonly (readonly string[])[], table: C
 export interface ImportReport {
   imported: string[];
   dropped: string[];
+  /** Campaign flags carried over (CON-0093). */
+  flags: string[];
   position: CampaignPosition;
   demoCompleted: boolean;
 }
@@ -98,9 +104,10 @@ export function importDemoProfile(demo: Profile, full: FullGameIndex, build: str
   }
   p.progress = { ...position };
   p.unlocks = [...demo.unlocks];
+  p.flags = { ...demo.flags };
   p.playtime = demo.playtime;
   p.importedFrom = { edition: demo.edition, build: demo.build, at: now };
-  return { profile: p, report: { imported, dropped, position, demoCompleted } };
+  return { profile: p, report: { imported, dropped, flags: Object.keys(p.flags), position, demoCompleted } };
 }
 
 /** Read the demo's profile from its save folder snapshot; null when absent or unreadable. */

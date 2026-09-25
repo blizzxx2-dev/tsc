@@ -46,13 +46,14 @@ describe('save codec', () => {
     expect(decode('', 'profile')).toEqual({ ok: false, error: 'empty' });
   });
 
-  it('migrates v1 → v2: volume leaves the save, metadata is added', () => {
+  it('migrates v1 → v2 → current: volume leaves the save, metadata is added, flags start empty', () => {
     const v1 = JSON.parse(fixture('v1-grim-apothecary.json'));
     const { data, from } = migrate(v1);
     expect(from).toBe(1);
-    expect(data.version).toBe(2);
+    expect(data.version).toBe(SAVE_VERSION);
     expect('volume' in data).toBe(false);
     expect(data.contentIds).toBe(1);
+    expect(data.flags).toEqual({});
   });
 
   it('loads every historic fixture save into a valid profile (save-compatibility suite)', () => {

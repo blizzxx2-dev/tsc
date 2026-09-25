@@ -3,7 +3,7 @@
  * (PLT-0080, PLT-0083, PLT-0084, PLT-0085). Pure functions: no storage, no DOM.
  */
 import type { Edition } from '../../platform/editions';
-import { RANKS, SAVE_VERSION, type BestResult, type CampaignPosition, type Envelope, type Profile, type SlotData, type SlotId, SLOT_IDS } from './schema';
+import { FLAG_LIMITS, RANKS, SAVE_VERSION, type BestResult, type CampaignPosition, type Envelope, type FlagRecord, type FlagValue, type Profile, type SlotData, type SlotId, SLOT_IDS } from './schema';
 
 /** FNV-1a 32-bit over UTF-16 code units, as 8 hex digits. */
 export function checksum(s: string): string {
@@ -64,6 +64,8 @@ export const MIGRATIONS: Record<number, Migration> = {
     void _volume;
     return { ...rest, version: 2, edition: 'demo', build: 'v1-legacy', contentIds: 1, unlocks: [], playtime: 0 };
   },
+  // v2 → v3: campaign flag store (CON-0008). Older saves have made no choices yet.
+  2: (d) => ({ ...d, version: 3, flags: isObj(d.flags) ? d.flags : {} }),
 };
 
 export function migrate(d: Record<string, unknown>): { data: Record<string, unknown>; from: number } {
@@ -91,6 +93,7 @@ export function freshProfile(edition: Edition, build: string, now = nowIso()): P
     progress: { chapter: 0, step: 0 },
     best: {},
     unlocks: [],
+    flags: {},
     playtime: 0,
     createdAt: now,
     updatedAt: now,
@@ -112,6 +115,23 @@ function sanitizeBest(v: unknown): Record<string, BestResult> {
   return out;
 }
 
+/** A flag value that may be stored: boolean, finite number or bounded string. */
+export const isFlagValue = (v: unknown): v is FlagValue => typeof v === 'boolean' || (typeof v === 'number' && Number.isFinite(v)) || (typeof v === 'string' && v.length <= FLAG_LIMITS.string);
+
+/** Keep only well-formed flags: valid keys and values, at most FLAG_LIMITS.count of them. */
+export function sanitizeFlags(v: unknown): FlagRecord {
+  const out: FlagRecord = {};
+  if (!isObj(v)) return out;
+  let n = 0;
+  for (const [k, val] of Object.entries(v)) {
+    if (n >= FLAG_LIMITS.count) break;
+    if (k.length === 0 || k.length > FLAG_LIMITS.key || !isFlagValue(val)) continue;
+    out[k] = val;
+    n++;
+  }
+  return out;
+}
+
 /**
  * Coerce anything into a valid Profile: known fields are type-checked and clamped, unknown fields
  * are kept verbatim (forward compatibility), and the version never goes down.
@@ -129,6 +149,7 @@ export function sanitizeProfile(v: unknown, edition: Edition, build: string): Pr
     progress: sanitizePosition(o.progress),
     best: sanitizeBest(o.best),
     unlocks,
+    flags: sanitizeFlags(o.flags),
     playtime: num(o.playtime, 0, 1e9, 0),
     createdAt: str(o.createdAt, base.createdAt, 40),
     updatedAt: str(o.updatedAt, base.updatedAt, 40),
