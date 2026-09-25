@@ -441,6 +441,68 @@ export class Gfx {
     x[8] = 1;
   }
 
+  /** The last field snapshot (ENG-0122): the finished world target at 480×270, until the next one. */
+  fieldSnapshot: Target | null = null;
+  private snapshotGen = 0;
+  private snapshotUrl: { gen: number; url: string | null } = { gen: -1, url: null };
+
+  /**
+   * Copy the world target (call after `endWorld`) into a small RGBA8 texture — the results screen
+   * shows it and the save slot keeps it as a thumbnail. Returns the snapshot target.
+   */
+  snapshotWorld(w = 480, h = 270): Target {
+    this.flush('program');
+    const gl = this.gl;
+    const t = this.targets.acquire('field-snapshot', w, h);
+    this.bindTarget(t);
+    const up = (this.upsampleProg ??= this.registry.createProgram('scene-upsample', FULL_VS, UPSAMPLE_FS));
+    gl.useProgram(up);
+    gl.disable(gl.BLEND);
+    gl.bindVertexArray(this.emptyVao);
+    this.bindTex(this.scene.tex, 0);
+    gl.uniform1i(this.u(up, 'u_tex'), 0);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    this.stats.drawCalls++;
+    gl.enable(gl.BLEND);
+    this.applyBlend();
+    this.bindTarget(null);
+    this.fieldSnapshot = t;
+    this.snapshotGen++;
+    return t;
+  }
+
+  /** The field snapshot as a small JPEG data URL for save-slot thumbnails (cached per snapshot). */
+  fieldSnapshotDataUrl(w = 192, h = 108): string | null {
+    const t = this.fieldSnapshot;
+    if (!t || typeof document === 'undefined') return null;
+    if (this.snapshotUrl.gen === this.snapshotGen) return this.snapshotUrl.url;
+    let url: string | null;
+    try {
+      const gl = this.gl;
+      const px = new Uint8ClampedArray(t.w * t.h * 4);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, t.fb);
+      gl.readPixels(0, 0, t.w, t.h, gl.RGBA, gl.UNSIGNED_BYTE, px);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      // GL rows run bottom-up: flip while copying into the canvas.
+      const src = document.createElement('canvas');
+      src.width = t.w;
+      src.height = t.h;
+      const ctx = src.getContext('2d')!;
+      const img = ctx.createImageData(t.w, t.h);
+      for (let y = 0; y < t.h; y++) img.data.set(px.subarray((t.h - 1 - y) * t.w * 4, (t.h - y) * t.w * 4), y * t.w * 4);
+      ctx.putImageData(img, 0, 0);
+      const c = document.createElement('canvas');
+      c.width = w;
+      c.height = h;
+      c.getContext('2d')?.drawImage(src, 0, 0, w, h);
+      url = c.toDataURL('image/jpeg', 0.7);
+    } catch {
+      url = null;
+    }
+    this.snapshotUrl = { gen: this.snapshotGen, url };
+    return url;
+  }
+
   /** The view transform uploaded as `u_xf` (safe-area origin × camera), for custom world-space passes. */
   viewTransform(): Float32Array {
     return this.xf;

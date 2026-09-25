@@ -330,7 +330,8 @@ export function installPlatform(g: Game): void {
     return { chapterTitle: ch ? `${ch.numeral}. ${ch.title}` : 'The End of the Demo', patient: step ? (step.kind === 'op' ? step.op.patient : step.story.place) : '' };
   });
 
-  setThumbnailSource(() => thumb);
+  // The end-of-operation field snapshot (ENG-0122) when there is one, else the in-play capture.
+  setThumbnailSource(() => game?.gfx.fieldSnapshotDataUrl() ?? thumb);
 
   const current = activeSave();
   if (current) {

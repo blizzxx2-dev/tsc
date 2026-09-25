@@ -8,7 +8,7 @@ import { attachBarkDirector } from '../content/barkDirector';
 import { hex, withAlpha } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { organPalette } from '../render/organs';
-import { BloodPool, Bubo, Sigil, surfDisc, surfLine } from '../surgery/entities';
+import { BloodPool, Bubo, Burn, Incision, Laceration, Sigil, surfDisc, surfLine } from '../surgery/entities';
 import { EggSac } from '../surgery/lauds';
 import { Particles } from '../render/particles';
 import { OperationVfx } from './opVfx';
@@ -89,6 +89,10 @@ export class OperationScene implements Scene {
   private particles = new Particles();
   /** Persistent field-space decal maps (ENG-0108–0121): blood that stays, dries and is drained away. */
   private decals: DecalMaps | null = null;
+  /** The end-of-operation field snapshot has been taken (ENG-0122). */
+  private snapped = false;
+  /** Seconds until each open wound next weeps onto the blood map (ENG-0113). */
+  private weepT = 0;
   /** Radius at which each pool last stained the field. */
   private poolStains = new WeakMap<object, number>();
   /** HUD particles (ENG-0144): COOL sparkle, chain-milestone flare; real time, UI layer. */
@@ -207,6 +211,15 @@ export class OperationScene implements Scene {
     if (!this.runOpts.practice) attachBarkDirector(op);
     this.vfx = new OperationVfx(() => this.particles);
     this.vfx.listen(op, () => bloodScale(presentation.gore));
+    // Burns leave scars on the scorch map; hexfire keeps a violet rim (ENG-0117).
+    op.events.on('spawn', ({ entity }) => {
+      if (!(entity instanceof Burn) || !this.decals) return;
+      const t = op.elapsed;
+      const { x, y } = entity.pos;
+      const r = entity.radius;
+      this.decals.stamp({ map: 'scorch', brush: 'splat', x, y, r: r * 1.1, rot: this.presRng.next() * 6.28, value: [entity.source === 'acid' ? 0.35 : 0.7, 0, 0], mode: 'add', t, seed: this.presRng.next() });
+      if (entity.source === 'hexfire') this.decals.stamp({ map: 'scorch', brush: 'ring', x, y, r: r * 1.25, value: [0, 1, 0], mode: 'add', t });
+    });
     op.events.on('rate', ({ rating, pos }) => rating === 'cool' && this.uiFx.burst('uiSparkle', pos));
     // Replay for bug reports (ENG-0256): live while the operation runs, packed once it ends.
     const header = () => ({ build: BUILD.id, content: contentHash(op.def) });
@@ -282,6 +295,7 @@ export class OperationScene implements Scene {
     this.camera.reset();
     this.particles = new Particles(undefined, this.runOpts.seed ?? this.def.seed ?? 1);
     this.decals?.reset();
+    this.snapped = false;
     this.ctl = new OperationInput();
     this.paused = false;
     this.resumeT = 0;
@@ -443,6 +457,27 @@ export class OperationScene implements Scene {
     const d = this.decals;
     if (!d) return;
     const draining = op.tool === 'leech' && game.input.down && op.status === 'running';
+    const t = op.elapsed;
+    // Cautery (ENG-0117): the Brand sears where it touches tissue.
+    if (op.tool === 'brand' && game.input.down && op.status === 'running' && onBody(game.input.pos))
+      d.stamp({ map: 'scorch', brush: 'soft', x: game.input.pos.x, y: game.input.pos.y, r: 11, value: [0.035, 0, 0], mode: 'add', t });
+    // Fresh cuts weep along their length until they are sutured (ENG-0113).
+    this.weepT -= op.timeScale / 120;
+    const weep = this.weepT <= 0 && op.status === 'running';
+    if (weep) this.weepT = 0.35;
+    for (const e of op.entities) {
+      if (!weep || !e.alive) continue;
+      if (e instanceof Laceration && e.bleed > 0) {
+        const k = this.presRng.next();
+        const ang = Math.atan2(e.b.y - e.a.y, e.b.x - e.a.x);
+        d.stamp({ map: 'blood', brush: 'streak', x: e.a.x + (e.b.x - e.a.x) * k, y: e.a.y + (e.b.y - e.a.y) * k, r: 7 + 5 * e.bleed, rot: ang, value: [0.22 * Math.min(2, e.bleed), 1, 0], mode: 'add', t });
+      } else if (e instanceof Incision && e.state === 'open' && e.points.length > 1) {
+        const i = Math.min(e.points.length - 2, Math.floor(this.presRng.next() * (e.points.length - 1)));
+        const a = e.points[i];
+        const b = e.points[i + 1];
+        d.stamp({ map: 'blood', brush: 'streak', x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, r: 8, rot: Math.atan2(b.y - a.y, b.x - a.x), value: [0.18, 1, 0], mode: 'add', t });
+      }
+    }
     for (const e of op.entities) {
       if (!(e instanceof BloodPool) || !e.alive || e.ichor !== 'blood') continue;
       // A pool stains the field once as it spreads (each 6 px of growth), not every frame.
@@ -521,6 +556,7 @@ export class OperationScene implements Scene {
       ],
     });
     const colours = palette();
+    this.decals.drawScorch(t);
     this.decals.drawBlood(op.elapsed, { fresh: vec3(speciesBlood(colours.blood, pal.species)), light: { x: (light.x - FIELD.cx) / FIELD.rx, y: -(light.y - FIELD.cy) / FIELD.ry } });
     g.fluidComposite(light, { blood: speciesBlood(colours.blood, pal.species), pus: colours.pus, bile: colours.bile, gore: presentation.gore });
     // Entities, particles and world FX go through the world camera (ENG-0045); endWorld resets it.
@@ -577,6 +613,12 @@ export class OperationScene implements Scene {
       tint: ch2 ? [0.95, 0.98, 1.05] : [1.03, 0.99, 0.94],
       lift: ch2 ? [0.0, 0.004, 0.012] : [0.012, 0.004, 0.0],
     });
+
+    // Field snapshot (ENG-0122): the finished field, for the results screen and the slot thumbnail.
+    if (!this.snapped && (op.status === 'won' || op.status === 'lost') && this.endT > 0.9) {
+      this.snapped = true;
+      g.snapshotWorld();
+    }
 
     // ---------------------------------------------------------------- UI
     drawFieldOverlays(g, op);

@@ -166,18 +166,18 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ### Cut masks
 - [x] ENG-0111 · Demo · P0 · M · Cut mask map (R8) — `Incision`/`Laceration` stamp open width along their path; flesh shader renders parted tissue with inner-wall shading and depth darkening
 - [ ] ENG-0112 · Demo · P1 · M · Suture closure — completing a `StitchLine` erodes the cut mask along the thread over 0.4 s and leaves stitch-mark decals
-- [ ] ENG-0113 · Demo · P1 · S · Cut edge bleed — mask edges feed the blood decal map so fresh cuts weep along their length until sutured
+- [x] ENG-0113 · Demo · P1 · S · Cut edge bleed — mask edges feed the blood decal map so fresh cuts weep along their length until sutured
 
 ### Blood & wound decal maps
 - [x] ENG-0114 · Demo · P0 · M · Blood decal map (RGBA: colour, wetness, age) — pools, spurts and droplets stamp persistent blood that darkens and dries over ~20 s of world time
 - [x] ENG-0115 · Demo · P0 · S · Leech-Pipe drain erases the blood map under the pipe — visible field cleaning matches `BloodPool` removal in sim
 - [x] ENG-0116 · Demo · P1 · S · Low-res readback (64×36) of blood coverage for tests and the debug overlay — draining a pool reduces coverage within tolerance (Playwright test)
-- [ ] ENG-0117 · Demo · P1 · M · Scorch/sear decals from Cautery Brand and burns — hexfire leaves violet-ringed scars that persist to the results snapshot
+- [x] ENG-0117 · Demo · P1 · M · Scorch/sear decals from Cautery Brand and burns — hexfire leaves violet-ringed scars that persist to the results snapshot
 - [ ] ENG-0118 · Demo · P1 · S · Saint's Salve film layer — glossy translucent gel decal with high specular that fades as the sim marks the wound set
 - [ ] ENG-0119 · Demo · P2 · M · 10 Hz decal update pass (ping-pong) for time-based effects: blood drying, pus spreading, corruption creep — cost ≤0.3 ms
 - [x] ENG-0120 · Demo · P0 · M · Rebuildable decal maps — maps regenerate from a recorded stamp log (sim events) so context loss or render-scale changes restore identical fields
 - [x] ENG-0121 · Demo · P1 · S · Decal lifecycle — mask/decal maps reset on operation restart and released on exit; VRAM counter returns to baseline
-- [ ] ENG-0122 · Demo · P2 · S · Results "field snapshot" — final world target copied to a 480×270 texture shown on the results screen and saved as the slot thumbnail
+- [x] ENG-0122 · Demo · P2 · S · Results "field snapshot" — final world target copied to a 480×270 texture shown on the results screen and saved as the slot thumbnail
 
 ## ENG-F · GPU particle system (Demo)
 

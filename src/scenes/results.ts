@@ -80,6 +80,19 @@ export class ResultsScene implements Scene {
     return { actions, costly: worst ? t('ui.results.costly', { n: worst[1], label: worst[0] }) : null };
   }
 
+  /** The field as it was left (ENG-0122), pinned beside the ledger like a sketch in the case book. */
+  private drawSnapshot(g: Gfx, a: number): void {
+    const snap = g.fieldSnapshot;
+    if (!snap || a <= 0) return;
+    const w = 248;
+    const h = Math.round((w * snap.h) / snap.w);
+    const x = 30;
+    const y = 250;
+    g.plate(x - 8, y - 8, w + 16, h + 44, { radius: 3, alpha: a, border: hex(INK.gilt, 0.7) });
+    g.texQuad(snap.tex, x, y, w, h, hex('#ffffff', a), true);
+    g.text(t('ui.results.field'), x + w / 2, y + h + 26, { size: 16, font: 'italic', color: hex(INK.dim, a), align: 'center', shadow: false });
+  }
+
   render(g: Gfx, game: Game): void {
     const op = this.op;
     g.beginWorld();
@@ -88,6 +101,7 @@ export class ResultsScene implements Scene {
 
     const r = { x: 300, y: 36, w: 680, h: 580 };
     const a = Math.min(1, this.t * 3);
+    this.drawSnapshot(g, a);
     glass(g, r, { alpha: a, strength: 1.12 });
     heading(g, t('ui.results.title'), VIEW_W / 2, r.y + 60, 420, a, 30);
     g.text(t('ui.results.subtitle', { title: op.def.title, patient: op.def.patient }), VIEW_W / 2, r.y + 108, { size: 19, font: 'italic', color: hex(INK.dim, a), align: 'center', shadow: false });

@@ -18,7 +18,7 @@
 import type { Vec } from '../core/math';
 import type { Gfx } from './gfx';
 import type { Quality } from './quality';
-import { BLOOD_DECAL_FS, BRUSHES, COVERAGE_FS, COVERAGE_VS, DECAL_VS, STAMP_FS, STAMP_VS, type Brush } from './shaders/decal';
+import { BLOOD_DECAL_FS, BRUSHES, COVERAGE_FS, COVERAGE_VS, DECAL_VS, SCORCH_DECAL_FS, STAMP_FS, STAMP_VS, type Brush } from './shaders/decal';
 import { RenderTargetPool, type Target } from './targets';
 
 export type DecalMapId = 'blood' | 'scorch';
@@ -73,6 +73,7 @@ export class DecalMaps {
   private stampProg: WebGLProgram | null = null;
   private bloodProg: WebGLProgram | null = null;
   private covProg: WebGLProgram | null = null;
+  private scorchProg: WebGLProgram | null = null;
   private vao: WebGLVertexArrayObject | null = null;
   private inst: WebGLBuffer | null = null;
   private corners: WebGLBuffer | null = null;
@@ -96,7 +97,7 @@ export class DecalMaps {
     this.unRestore = reg.onRestore(() => {
       this.pool.forget();
       this.maps.clear();
-      this.stampProg = this.bloodProg = this.covProg = null;
+      this.stampProg = this.bloodProg = this.covProg = this.scorchProg = null;
       this.vao = null;
       this.inst = null;
       this.instBytes = 0;
@@ -171,7 +172,8 @@ export class DecalMaps {
     reg.release(this.stampProg);
     reg.release(this.bloodProg);
     reg.release(this.covProg);
-    this.covProg = null;
+    reg.release(this.scorchProg);
+    this.covProg = this.scorchProg = null;
     reg.release(this.vao);
     reg.release(this.inst);
     reg.release(this.corners);
@@ -334,6 +336,32 @@ export class DecalMaps {
     gl.uniform3fv(this.u(p, 'u_dried'), look.dried ?? [look.fresh[0] * 0.32 + 0.03, look.fresh[1] * 0.3 + 0.015, look.fresh[2] * 0.3 + 0.01]);
     const l = look.light ?? { x: -0.5, y: 0.7 };
     gl.uniform2f(this.u(p, 'u_light'), l.x, l.y);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    g.resyncBlend();
+  }
+
+  /** Shade the scorch map (Brand sears, burn scars, hexfire rims) onto the field (ENG-0117). */
+  drawScorch(time: number): void {
+    if (!this.maps.has('scorch')) return;
+    const g = this.g;
+    g.flush('program');
+    const gl = g.gl;
+    if (!this.scorchProg) this.scorchProg = g.registry.createProgram('decal-scorch', DECAL_VS, SCORCH_DECAL_FS);
+    const p = this.scorchProg;
+    const t = this.map('scorch');
+    gl.useProgram(p);
+    gl.bindVertexArray(null);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, t.tex);
+    gl.uniform1i(this.u(p, 'u_map'), 0);
+    gl.uniform2f(this.u(p, 'u_texel'), 1 / t.w, 1 / t.h);
+    gl.uniform4f(this.u(p, 'u_rect'), FIELD_MAP_RECT.x, FIELD_MAP_RECT.y, FIELD_MAP_RECT.w, FIELD_MAP_RECT.h);
+    gl.uniform2f(this.u(p, 'u_view'), g.vw, g.vh);
+    gl.uniformMatrix3fv(this.u(p, 'u_xf'), false, g.viewTransform());
+    gl.uniform1f(this.u(p, 'u_time'), time);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);

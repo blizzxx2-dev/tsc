@@ -957,6 +957,7 @@
   "hud.phase.sealed": "Not yet: finish the phase at hand.",
   "hud.litany.ending": "{s, number} s of stillness left",
   "ui.results.time_taken": "Time taken",
+  "ui.results.field": "The field, as you left it",
   "ui.results.litany_used": "Litany spoken",
   "ui.results.actions": "By action",
   "ui.results.costly": "Costliest: {n, number} × {label}",

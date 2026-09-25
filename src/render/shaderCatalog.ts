@@ -14,7 +14,7 @@ import { PBR_FS, PBR_VS, SHADOW_FS, SHADOW_VS } from './renderer3d';
 import { fleshShaderSource } from './shaders/flesh';
 import { QUALITIES, SHADER_TIERS } from './quality';
 import { PARTICLE_FS, PARTICLE_VS } from './shaders/particle';
-import { BLOOD_DECAL_FS, COVERAGE_FS, COVERAGE_VS, DECAL_VS, STAMP_FS, STAMP_VS } from './shaders/decal';
+import { BLOOD_DECAL_FS, COVERAGE_FS, COVERAGE_VS, DECAL_VS, SCORCH_DECAL_FS, STAMP_FS, STAMP_VS } from './shaders/decal';
 
 export interface ShaderVariant {
   name: string;
@@ -48,6 +48,7 @@ export function shaderCatalog(): ShaderVariant[] {
     { name: 'decal-stamp', vs: STAMP_VS, fs: STAMP_FS },
     { name: 'decal-blood', vs: DECAL_VS, fs: BLOOD_DECAL_FS },
     { name: 'decal-coverage', vs: COVERAGE_VS, fs: COVERAGE_FS },
+    { name: 'decal-scorch', vs: DECAL_VS, fs: SCORCH_DECAL_FS },
   ];
   // Quality tiers (ENG-0082): each tier's flesh variant, with its mediump fallback, plus the live-noise A/B variant.
   for (const q of QUALITIES) {

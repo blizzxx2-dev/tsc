@@ -136,3 +136,29 @@ void main() {
     for (int i = 0; i < 4; i++) d += clamp(texture(u_map, v_uv + (vec2(float(i), float(j)) / 4.0 - 0.375) * u_cell).r, 0.0, 1.0);
   o = vec4(d / 16.0, 0.0, 0.0, 1.0);
 }`;
+
+/**
+ * Scorch composite (ENG-0117): R char, G hexfire. Char is a matte brown-black crust with a faint
+ * blistered edge; hexfire scars glow violet along their rim, pulsing slowly with world time.
+ */
+export const SCORCH_DECAL_FS = /* glsl */ `#version 300 es
+precision highp float;
+in vec2 v_uv;
+uniform sampler2D u_map;
+uniform vec2 u_texel;
+uniform float u_time;
+out vec4 o;
+void main() {
+  vec4 m = texture(u_map, v_uv);
+  float c = clamp(m.r, 0.0, 1.2);
+  float hx = clamp(m.g, 0.0, 1.0);
+  if (c < 0.02 && hx < 0.02) discard;
+  float edge = clamp(texture(u_map, v_uv + vec2(u_texel.x * 2.0, 0.0)).r + texture(u_map, v_uv - vec2(u_texel.x * 2.0, 0.0)).r - 2.0 * m.r, -1.0, 1.0);
+  float a = smoothstep(0.02, 0.6, c);
+  vec3 col = mix(vec3(0.24, 0.12, 0.07), vec3(0.05, 0.03, 0.025), smoothstep(0.2, 0.9, c));
+  col += vec3(0.25, 0.08, 0.02) * max(0.0, edge) * 2.0;
+  // curse-violet: hexfire scars keep a Malison glow.
+  vec3 violet = vec3(0.62, 0.3, 0.95) * (0.75 + 0.25 * sin(u_time * 1.7));
+  vec3 outc = col * a + violet * hx * 0.8;
+  o = vec4(outc, max(a, hx * 0.5));
+}`;
