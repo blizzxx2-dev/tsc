@@ -15,9 +15,9 @@ const SRC = join(__dirname, '../../../src');
 describe('z-order (ART-0362)', () => {
   it('the fluid layer (pools, spray) is composited before any entity sprite is drawn', () => {
     const scene = readFileSync(join(SRC, 'scenes/operation.ts'), 'utf8');
-    const render = scene.slice(scene.indexOf('  render(g: Gfx, game: Game): void {'));
+    const render = scene.slice(scene.indexOf('  render(g: Gfx, game: Game'));
     const composite = render.indexOf('g.fluidComposite(');
-    const sprites = render.indexOf('for (const e of ents) e.draw(g, op);');
+    const sprites = render.indexOf('drawInterpolated(ents,');
     expect(composite).toBeGreaterThan(0);
     expect(sprites).toBeGreaterThan(composite);
   });
