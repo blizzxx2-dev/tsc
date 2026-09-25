@@ -18,7 +18,7 @@ jobs:
     outputs:
       tag: ${{ steps.bump.outputs.tag }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with: { node-version-file: .nvmrc }
       - id: bump
@@ -51,7 +51,7 @@ jobs:
     needs: [tag, steam-beta]
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with: { ref: '${{ needs.tag.outputs.tag }}', fetch-depth: 0 }
       - name: Patch notes draft + smoke checklist issue
         env:
