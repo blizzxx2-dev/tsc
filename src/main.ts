@@ -52,7 +52,7 @@ import { OperationScene } from './scenes/operation';
 import { bindings } from './input/bindings';
 import { loadLayoutLabels } from './input/glyphs';
 import { downloadRecording, parseRecording, Recorder, Replayer } from './input/record';
-import { Transition } from './ui/transition';
+import { Transition, type TransitionOptions } from './ui/transition';
 import { GalleryScene } from './scenes/gallery';
 import { displayPrefs } from './ui/display';
 import { setFallbackHighlight, setReadableFont } from './render/text';
@@ -217,9 +217,9 @@ class Main implements Game {
   recorder: Recorder | null = null;
   private recording: OperationScene | null = null;
 
-  go(scene: Scene): void {
+  go(scene: Scene, opts?: TransitionOptions): void {
     if (this.instantGo) this.goNow(scene);
-    else this.transition.request(() => this.goNow(scene));
+    else this.transition.request(() => this.goNow(scene), opts);
   }
 
   /** Dev/automation jumps (`?op=`, `?ui=`) change scene without a transition. */

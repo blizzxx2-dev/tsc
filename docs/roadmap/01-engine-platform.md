@@ -101,7 +101,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ### Scene state machine
 - [x] ENG-0062 · Demo · P0 · M · Scene lifecycle `enter/exit/pause/resume/dispose`; `go()` disposes the outgoing scene — 50 operation restarts leave GL object and listener counts unchanged (leak test)
 - [x] ENG-0063 · Demo · P0 · M · Scene stack — push/pop overlays (pause, options, confirm dialog, glossary) over a live scene that stops updating but keeps rendering underneath
-- [ ] ENG-0064 · Demo · P1 · M · Transition system — fade, iris and ink-bleed wipes rendered on the Overlay layer; `go(scene, {transition:'ink', ms:600})`; input blocked during transitions
+- [x] ENG-0064 · Demo · P1 · M · Transition system — fade, iris and ink-bleed wipes rendered on the Overlay layer; `go(scene, {transition:'ink', ms:600})`; input blocked during transitions
 - [x] ENG-0065 · Demo · P1 · M · Async scene loading — `LoadingScene` awaits the next scene's asset bundle with a progress quill; skipped when already resident, never flashes for <300 ms
 - [ ] ENG-0066 · Demo · P1 · S · Global overlay host — toasts, autosave quill, achievement popups, FPS counter and Steam-overlay pause veil render independently of the active scene
 - [ ] ENG-0067 · Demo · P1 · M · Typed scene router — routes for title, story, briefing, operation, results, options, chapterSelect, credits, demoEnd with `?scene=` dev deep links, replacing ad-hoc constructors in `flow.ts`

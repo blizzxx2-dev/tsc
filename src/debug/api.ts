@@ -130,9 +130,9 @@ export class DebugApi {
   constructor(private game: DebugGame) {
     this.wrapInput();
     const go = game.go.bind(game);
-    game.go = (scene: Scene) => {
+    game.go = (scene: Scene, opts?: Parameters<DebugGame['go']>[1]) => {
       this.wrapScene(scene);
-      go(scene);
+      go(scene, opts);
     };
     if (game.scene) this.wrapScene(game.scene);
   }

@@ -70,6 +70,8 @@ export function playOperation(game: Game, def: OperationDef, onWin: () => void, 
         onLeave,
         over,
       ),
+      // Scrubbing in: the view narrows onto the patient (ENG-0064).
+      { transition: 'iris', ms: 700 },
     );
   game.go(new BriefingScene(def, save.best[def.id], () => begin(), onLeave));
 }
