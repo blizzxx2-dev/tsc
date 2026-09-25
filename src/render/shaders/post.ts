@@ -89,6 +89,7 @@ uniform float u_beat;    // heartbeat pulse 0..1 from the ECG clock
 uniform float u_curse;   // Malison presence 0..1: ink creeping from the edges
 uniform vec2 u_outcome;  // x: flatline 0..1 (desaturate, burn, fade), y: victory 0..1 (warm swell)
 uniform float u_hdr;     // 1 when the scene target is floating point
+uniform vec4 u_prefs;    // player display options (UIX-0105): x grain, y vignette, z brightness gamma, w unused
 out vec4 o;
 // Soft shoulder: identity below the knee, gently compresses HDR highlights above it.
 vec3 shoulder(vec3 c) {
@@ -182,7 +183,7 @@ void main() {
   vec2 vq = v_uv - 0.5;
   // Aspect-aware vignette: measured in height units so ultrawide edges aren't crushed.
   float vig = rsmooth(0.85, 0.25, length(vq * vec2(min(aspect / (16.0 / 9.0), 1.0), 0.8)));
-  c *= mix(0.35, 1.0, vig);
+  c *= mix(mix(0.35, 1.0, vig), 1.0 - (1.0 - vig) * 0.25, 1.0 - u_prefs.y);
   // Failing vitals: progressive desaturation and an edge pulse on each heartbeat.
   float lumD = dot(c, vec3(0.299, 0.587, 0.114));
   c = mix(c, vec3(lumD), u_danger * 0.45);
@@ -216,7 +217,8 @@ void main() {
 
   // Film grain (animated interleaved-gradient noise), then ±0.5 LSB dither against banding.
   vec2 fc = gl_FragCoord.xy;
-  c += (ign(fc + floor(u_time * 24.0) * 5.588) - 0.5) * 0.03;
+  c += (ign(fc + floor(u_time * 24.0) * 5.588) - 0.5) * 0.03 * u_prefs.x;
+  c = pow(max(c, vec3(0.0)), vec3(1.0 / u_prefs.z));
   c += (ign(fc + 17.0) - 0.5) / 255.0;
   o = vec4(c, 1.0);
 }`;

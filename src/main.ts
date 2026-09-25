@@ -32,6 +32,10 @@ import { OperationScene } from './scenes/operation';
 import { bindings } from './input/bindings';
 import { loadLayoutLabels } from './input/glyphs';
 import { downloadRecording, parseRecording, Recorder, Replayer } from './input/record';
+import { Transition } from './ui/transition';
+import { GalleryScene } from './scenes/gallery';
+import { displayPrefs } from './ui/display';
+import { bindUiSounds } from './ui/events';
 
 /** Dev/QA tooling ships in dev and QA builds; `vite build --mode release` strips it (ENG-0237). */
 const DEV_TOOLS = import.meta.env.DEV || import.meta.env.MODE !== 'release';
@@ -58,6 +62,8 @@ class Main implements Game {
   private contextLost = false;
   private hidden = false;
   private losses: number[] = [];
+  /** Scene transitions (UIX-0009): fade through black, input blocked, no double-trigger. */
+  readonly transition = new Transition();
 
   constructor(private canvas: HTMLCanvasElement) {
     this.audio.volume = settings.volume;
@@ -127,6 +133,7 @@ class Main implements Game {
       console.info('WebGL context restored');
     });
     this.resize();
+    bindUiSounds((c) => this.audio.play(c));
     installPlatform(this);
   }
 
@@ -158,6 +165,22 @@ class Main implements Game {
   private recording: OperationScene | null = null;
 
   go(scene: Scene): void {
+    if (this.instantGo) this.goNow(scene);
+    else this.transition.request(() => this.goNow(scene));
+  }
+
+  /** Dev/automation jumps (`?op=`, `?ui=`) change scene without a transition. */
+  instantGo = false;
+  instant(fn: () => void): void {
+    this.instantGo = true;
+    try {
+      fn();
+    } finally {
+      this.instantGo = false;
+    }
+  }
+
+  private goNow(scene: Scene): void {
     if (this.recorder) {
       const leaving = this.recording && scene !== this.recording && !(scene instanceof OptionsScene);
       if (leaving && this.recording) {
@@ -182,7 +205,8 @@ class Main implements Game {
   }
 
   start(first: Scene): void {
-    this.go(first);
+    this.goNow(first);
+    this.transition.fadeIn();
     this.last = performance.now();
     const frame = (now: number) => {
       if (this.boundary.halted) return;
@@ -211,12 +235,16 @@ class Main implements Game {
     platformFrame(Math.min(dt, 0.25));
     const clock = this.clock;
     this.gfx.renderScale = settings.renderScale;
+    Object.assign(this.gfx.displayPrefs, displayPrefs(settings));
+    this.clock.reduceMotion = settings.reduceMotion;
     this.gfx.gpuTimer.enabled = this.profiler.enabled && this.gfx.plan.gpuProfiler;
     this.limiter.cap = settings.frameCap;
     p.begin('sim');
     for (let i = 0; i < steps; i++) {
       this.input.beginStep(ends[i]);
       clock.tick(FIXED_DT);
+      this.transition.update(FIXED_DT);
+      if (this.transition.busy) continue;
       const top = this.scenes.top;
       if (!this.boundary.run('update', sceneName(top), clock.frames, clock.ticks, () => this.scenes.update(FIXED_DT))) break;
     }
@@ -227,10 +255,12 @@ class Main implements Game {
     this.sceneAudio.frame(top, Math.min(dt, 0.25), this.input);
     p.end('audio');
     p.begin('render');
-    this.boundary.run('render', sceneName(top), clock.frames, clock.ticks, () => this.scenes.render(this.gfx, this.fixed.alpha));
+    const renderScenes = () => this.scenes.render(this.gfx, this.fixed.alpha);
+    this.boundary.run('render', sceneName(top), clock.frames, clock.ticks, () => (this.transition.busy ? this.input.suppress(renderScenes) : renderScenes()));
     this.sceneAudio.overlay(this.gfx);
     p.end('render');
     this.gfx.setCamera(null);
+    this.transition.draw(this.gfx);
     this.profiler.draw(this.gfx, this.gfx.stats, this.gfx.registry, this.gfx.plan.gpuProfiler ? this.gfx.gpuTimer : null);
     this.gfx.endFrame();
     this.gfx.gpuTimer.collect();
@@ -328,7 +358,7 @@ async function boot(): Promise<void> {
   const def = opId ? [...allOperations(), ...dev].find((o) => o.id === opId) : undefined;
   if (def) {
     const back = () => game.go(new TitleScene());
-    playOperation(game, def, back, back);
+    game.instant(() => playOperation(game, def, back, back));
   }
   // ?record=1 saves each operation's input stream as JSON when it ends; ?replay=<url> plays one back (INP-0016).
   if (params.get('record') === '1') {
@@ -356,9 +386,11 @@ async function boot(): Promise<void> {
   // ?scene=artview|fleshlab opens an art dev page.
   const artScene = DEV_TOOLS ? artDevScene(params.get('scene')) : null;
   if (artScene) game.go(artScene);
+  // ?ui=gallery shows every widget for visual review (UIX-0006).
+  if (params.get('ui') === 'gallery') game.instant(() => game.go(new GalleryScene(() => game.go(new TitleScene()))));
   // ?story=<backdrop> previews a story environment.
   const storyBg = params.get('story');
-  if (storyBg) game.go(new StoryScene({ id: 'preview', place: 'Preview', backdrop: storyBg as Backdrop, lines: [{ who: (params.get('who') ?? 'narrator') as CharacterId, text: 'The Free City of Kessendorf. Winter, in the ninth year of the Long Muster.' }] }, () => game.go(new TitleScene())));
+  if (storyBg) game.instant(() => game.go(new StoryScene({ id: 'preview', place: 'Preview', backdrop: storyBg as Backdrop, lines: [{ who: (params.get('who') ?? 'narrator') as CharacterId, text: 'The Free City of Kessendorf. Winter, in the ninth year of the Long Muster.' }] }, () => game.go(new TitleScene()))));
 }
 
 void boot();

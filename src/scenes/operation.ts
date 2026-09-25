@@ -29,6 +29,7 @@ import { dragGlyphFor, glyphFor, toolKeyLabel } from '../input/glyphs';
 import { operationOptions } from '../surgery/session';
 import type { OperationOptions } from '../surgery/operation';
 import { drawDebug, drawDialogue, drawDrainArrow, drawFieldOverlays, drawLitanyPractice, drawSecondaryVitals, drawTrayState, drawTutorial } from './gameplayHud';
+import { PauseScene, type PauseResult } from './pause';
 
 export interface OperationOutcome {
   op: Operation;
@@ -63,6 +64,10 @@ export class OperationScene implements Scene {
   private popups: Popup[] = [];
   /** Sounds requested since the last tick (deduplicated). */
   private debug = false;
+  /** The last 20 callouts, for the pause menu's log (UIX-0060). */
+  readonly calloutLog: string[] = [];
+  /** Seconds left of the 3-2-1 resume countdown (UIX-0101). */
+  private resumeT = 0;
 
   constructor(
     private def: OperationDef,
@@ -80,6 +85,25 @@ export class OperationScene implements Scene {
   private listen(op: Operation): void {
     op.events.on('popup', (p) => this.popups.push({ ...p, t: 0 }));
     op.events.on('fx', (e) => this.particles.spawn(e));
+    op.events.on('say', ({ lines }) => {
+      this.calloutLog.push(...lines);
+      if (this.calloutLog.length > 20) this.calloutLog.splice(0, this.calloutLog.length - 20);
+    });
+  }
+
+  /** Open the "Respite" overlay (UIX-0100). The operation stops updating until it closes. */
+  private openPause(game: Game): void {
+    this.paused = true;
+    this.ctl.suspend(this.op);
+    if (game.clock) game.clock.paused = true;
+    game.push!(new PauseScene(this.op, this.calloutLog, (r) => this.closePause(r)));
+  }
+
+  private closePause(r: PauseResult): void {
+    if (r === 'restart') return this.restart();
+    if (r === 'abandon') return this.onQuit();
+    this.paused = false;
+    this.resumeT = settings.resumeCountdown ? 3 : 0;
   }
 
   /** Apply player assists, difficulty and kit to the operation definition. */
@@ -116,6 +140,8 @@ export class OperationScene implements Scene {
     this.particles = new Particles();
     this.ctl = new OperationInput();
     this.paused = false;
+    this.resumeT = 0;
+    this.calloutLog.length = 0;
     this.endT = 0;
   }
 
@@ -124,7 +150,17 @@ export class OperationScene implements Scene {
     const op = this.op;
 
     const pause = this.ctl.pauseRequest(input);
-    if (pause && op.status !== 'won' && op.status !== 'lost') this.paused = pause === 'pause' ? true : !this.paused;
+    if (pause && op.status !== 'won' && op.status !== 'lost') {
+      if (game.push && game.pop) {
+        if (!this.paused) return this.openPause(game);
+      } else this.paused = pause === 'pause' ? true : !this.paused;
+    }
+    if (this.resumeT > 0) {
+      // Resume countdown: the world holds still until it runs out.
+      this.resumeT = Math.max(0, this.resumeT - dt);
+      if (game.clock) game.clock.paused = true;
+      return this.ctl.suspend(op);
+    }
     op.paused = this.paused;
     // Pause stops sim and world clocks; UI keeps animating (ENG-0057). The Litany scales world time.
     if (game.clock) {
@@ -215,7 +251,7 @@ export class OperationScene implements Scene {
     const op = this.op;
     const pal = organPalette(op.def);
     const t = g.time;
-    const sk = op.shake * settings.shake;
+    const sk = settings.reduceMotion ? 0 : op.shake * settings.shake;
     const sway = op.sway();
     const shake = sk > 0 ? { x: (Math.random() - 0.5) * sk + sway.x, y: (Math.random() - 0.5) * sk + sway.y } : sway;
 
@@ -339,7 +375,12 @@ export class OperationScene implements Scene {
       g.text(tSource(op.lostReason), VIEW_W / 2, 410, { size: 24, font: 'italic', color: hex(UI.parch), align: 'center' });
     }
 
-    if (this.paused) this.drawPause(g, game);
+    if (this.paused && !game.push) this.drawPause(g, game);
+    if (this.resumeT > 0) {
+      const n = Math.ceil(this.resumeT);
+      const f = this.resumeT - Math.floor(this.resumeT);
+      giltText(g, formatNumber(n), VIEW_W / 2, 400, { size: 120 * (0.85 + 0.15 * f), align: 'center' });
+    }
     this.ctl.draw(g, op, this.paused);
 
     // Cursor: reticle at the tip with the instrument beside it.

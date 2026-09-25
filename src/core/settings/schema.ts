@@ -91,6 +91,37 @@ export interface Settings {
   /** Assist: Space invokes the Litany instead of drawing the star. */
   litanyKey: boolean;
   pauseOnFocusLoss: boolean;
+  // UI & presentation (UIX)
+  /** Tool tooltip mode (UIX-0053). */
+  toolHints: 'always' | 'first' | 'off';
+  /** Floating vitals-loss numbers (UIX-0049). */
+  damageNumbers: boolean;
+  /** Hide score, combo and phase pips (UIX-0071). */
+  minimalHud: boolean;
+  /** Ask before abandoning or restarting an operation (UIX-0106). */
+  confirmAbandon: boolean;
+  /** Skip tutorial prompts already seen (UIX-0106/0142). */
+  skipSeenTutorials: boolean;
+  /** Resume from pause with a 3-2-1 countdown (UIX-0101). */
+  resumeCountdown: boolean;
+  /** Story text, callouts, subtitles and tooltips scale (UIX-0148). */
+  textScale: number;
+  /** Story text-box opacity (UIX-0128). */
+  textBoxOpacity: number;
+  /** Ctrl-skip also passes unread lines (UIX-0124). */
+  skipUnread: boolean;
+  /** Blood and open-wound rendering (UIX-0155). */
+  goreLevel: 'full' | 'reduced' | 'minimal';
+  /** Abstract insect/spider art and muted chitter (UIX-0156). */
+  creatureFilter: boolean;
+  /** Body text in a hyperlegible face instead of IM Fell English (UIX-0150). */
+  readableFont: boolean;
+  /** Reticle colour (UIX-0056). */
+  cursorColor: 'brass' | 'white' | 'cyan' | 'magenta';
+  /** Display brightness / gamma multiplier (UIX-0076). */
+  brightness: number;
+  /** Post-process vignette (UIX-0105). */
+  vignette: boolean;
   // controls
   bindings: Bindings;
   swapMouseButtons: boolean;
@@ -160,6 +191,21 @@ export const SETTINGS_SCHEMA: readonly SettingDef[] = [
   d('timerAssist', 'gameplay', 'choice', { type: 'enum', options: [1, 1.5, 2] }),
   d('litanyKey', 'gameplay', 'toggle', { type: 'bool' }),
   d('pauseOnFocusLoss', 'gameplay', 'toggle', { type: 'bool' }),
+  d('toolHints', 'gameplay', 'choice', { type: 'enum', options: ['always', 'first', 'off'] }),
+  d('damageNumbers', 'gameplay', 'toggle', { type: 'bool' }),
+  d('minimalHud', 'gameplay', 'toggle', { type: 'bool' }),
+  d('confirmAbandon', 'gameplay', 'toggle', { type: 'bool' }),
+  d('skipSeenTutorials', 'gameplay', 'toggle', { type: 'bool' }),
+  d('resumeCountdown', 'accessibility', 'toggle', { type: 'bool' }),
+  d('textScale', 'accessibility', 'choice', { type: 'number', min: 1, max: 1.75, step: 0.25, options: [1, 1.25, 1.5, 1.75] }),
+  d('textBoxOpacity', 'accessibility', 'slider', { type: 'number', min: 0.6, max: 1, step: 0.1 }),
+  d('skipUnread', 'accessibility', 'toggle', { type: 'bool' }),
+  d('goreLevel', 'accessibility', 'choice', { type: 'enum', options: ['full', 'reduced', 'minimal'] }),
+  d('creatureFilter', 'accessibility', 'toggle', { type: 'bool' }),
+  d('readableFont', 'accessibility', 'toggle', { type: 'bool' }),
+  d('cursorColor', 'accessibility', 'choice', { type: 'enum', options: ['brass', 'white', 'cyan', 'magenta'] }),
+  d('brightness', 'display', 'slider', { type: 'number', min: 0.7, max: 1.3, step: 0.05 }),
+  d('vignette', 'graphics', 'toggle', { type: 'bool' }),
   d('bindings', 'controls', 'bindings', { type: 'bindings' }),
   d('swapMouseButtons', 'controls', 'toggle', { type: 'bool' }),
   d('gamepadCursorSpeed', 'controls', 'slider', { type: 'number', min: 200, max: 2000, step: 100 }),
@@ -203,6 +249,21 @@ export const DEFAULT_SETTINGS: Readonly<Settings> = Object.freeze({
   timerAssist: 1,
   litanyKey: false,
   pauseOnFocusLoss: true,
+  toolHints: 'first',
+  damageNumbers: true,
+  minimalHud: false,
+  confirmAbandon: true,
+  skipSeenTutorials: false,
+  resumeCountdown: false,
+  textScale: 1,
+  textBoxOpacity: 1,
+  skipUnread: false,
+  goreLevel: 'full',
+  creatureFilter: false,
+  readableFont: false,
+  cursorColor: 'brass',
+  brightness: 1,
+  vignette: true,
   bindings: Object.freeze({ ...DEFAULT_BINDINGS }) as Bindings,
   swapMouseButtons: false,
   gamepadCursorSpeed: 900,

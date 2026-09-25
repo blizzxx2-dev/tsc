@@ -1,6 +1,7 @@
 // Screenshot tool for visual review. Builds must exist (npm run build).
 // Usage: node scripts/shoot.mjs <outDir> [shot ...]
 //   shots: title | story:<backdrop>[:<characterId>] | op:<id>:<seconds>[:<toolKey 1-8>] | scene:<artview|fleshlab>[:<query>] (default: title story:hospice op:showcase:3)
+//          url:<query>[:<keys,comma,separated>] (e.g. url:ui=gallery)  pause:<id>:<seconds> (operation, then Escape)
 import { chromium } from 'playwright';
 import { preview } from 'vite';
 import { mkdirSync } from 'node:fs';
@@ -30,10 +31,20 @@ try {
     } else if (kind === 'scene') {
       await page.goto(`${url}?scene=${a}${b ? `&${b}` : ''}`);
       await page.waitForTimeout(3000);
-    } else if (kind === 'op') {
+    } else if (kind === 'url') {
+      // Waits on rendered frames rather than wall time, so it also works on a loaded software rasteriser.
+      const frames = (n) => page.evaluate((k) => new Promise((r) => { const f0 = window.__game.clock.frames; const poll = () => (window.__game.clock.frames >= f0 + k ? r() : setTimeout(poll, 30)); poll(); }), n);
+      await page.goto(`${url}?${a}`);
+      await page.waitForFunction(() => window.__game?.clock.frames > 2 && !window.__game.transition?.busy, null, { timeout: 120000 });
+      for (const k of (b ?? '').split(',').filter(Boolean)) {
+        await page.keyboard.press(k);
+        await frames(3);
+      }
+      await frames(4);
+    } else if (kind === 'op' || kind === 'pause') {
       const [opId, query] = a.split('?');
       await page.goto(`${url}?op=${opId}${query ? '&' + query : ''}`);
-      await page.waitForFunction(() => window.__game?.scene && typeof window.__game.scene.onBegin === 'function', null, { timeout: 30000 });
+      await page.waitForFunction(() => window.__game?.scene && typeof window.__game.scene.onBegin === 'function' && !window.__game.transition?.busy, null, { timeout: 30000 });
       await page.keyboard.press('Enter');
       await page.waitForFunction(() => !!window.__game?.scene?.op, null, { timeout: 30000 });
       await page.evaluate((s) => {
@@ -44,8 +55,13 @@ try {
       if (tool) await page.keyboard.press(`Digit${tool}`);
       await page.mouse.move(660, 380);
       await page.waitForTimeout(600);
+      if (kind === 'pause') {
+        await page.keyboard.press('Escape');
+        // The pause overlay fades in over several frames.
+        await page.waitForTimeout(1600);
+      }
     }
-    await page.screenshot({ path: `${out}/${shot.replace(/:/g, '_')}.png` });
+    await page.screenshot({ path: `${out}/${shot.replace(/:/g, '_').replace(/,/g, '-')}.png`, timeout: 120000 });
     console.log('shot', shot);
   }
 } finally {

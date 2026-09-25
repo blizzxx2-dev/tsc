@@ -40,7 +40,7 @@ try {
     await page.goto(`${url}?op=showcase`);
     await page.waitForFunction(() => window.__game?.clock.frames > 1, null, { timeout: 30000 });
     await page.keyboard.press('Enter');
-    await page.waitForFunction(() => window.__game.scene.op, null, { timeout: 30000 });
+    await page.waitForFunction(() => window.__game.scene.op && !window.__game.transition?.busy, null, { timeout: 30000 });
     await page.evaluate(() => {
       const op = window.__game.scene.op;
       for (let t = 0; t < 3; t += 1 / 60) op.update(1 / 60);

@@ -20,6 +20,7 @@ in vec2 v_uv;
 uniform sampler2D u_tex;
 out vec4 o;
 void main() { o = vec4(texture(u_tex, v_uv).rgb, 1.0); }`;
+import type { DisplayPrefs } from '../ui/display';
 
 const TAU = Math.PI * 2;
 const MAX_VERTS = 60000;
@@ -144,6 +145,8 @@ export class Gfx {
   readonly gl: WebGL2RenderingContext;
   /** Every GL object, for leak counts, VRAM budget and context restore (ENG-0198). */
   readonly registry: GlRegistry;
+  /** Player display options as renderer multipliers (UIX-0105); the shell refreshes it every frame. */
+  readonly displayPrefs: DisplayPrefs = { bloom: 1, grain: 1, vignette: 1, gamma: 1, flicker: 1, chroma: 1 };
   readonly caps: GpuCaps;
   readonly plan: FallbackPlan;
   readonly targets: RenderTargetPool;
@@ -543,14 +546,16 @@ export class Gfx {
     gl.uniform1f(this.u(this.post, 'u_litany'), p.litany);
     gl.uniform1f(this.u(this.post, 'u_danger'), p.danger);
     // Mip-chain bloom sums five levels; scale so `bloom` keeps its old meaning.
-    gl.uniform1f(this.u(this.post, 'u_bloomAmt'), p.bloom * 0.35);
+    gl.uniform1f(this.u(this.post, 'u_bloomAmt'), p.bloom * 0.35 * this.displayPrefs.bloom);
+    const dp = this.displayPrefs;
+    gl.uniform4f(this.u(this.post, 'u_prefs'), dp.grain, dp.vignette, dp.gamma, 0);
     gl.uniform1f(this.u(this.post, 'u_beat'), p.beat ?? 0);
     gl.uniform1f(this.u(this.post, 'u_curse'), p.curse ?? 0);
     gl.uniform2fv(this.u(this.post, 'u_outcome'), p.outcome ?? [0, 0]);
     gl.uniform1f(this.u(this.post, 'u_hdr'), this.floatTargets ? 1 : 0);
     gl.uniform2f(this.u(this.post, 'u_shake'), p.shake.x / this.vw, -p.shake.y / this.vh);
-    gl.uniform1f(this.u(this.post, 'u_flicker'), Math.sin(this.time * 9.1) * Math.sin(this.time * 3.7));
-    gl.uniform1f(this.u(this.post, 'u_chroma'), p.chroma ?? 0);
+    gl.uniform1f(this.u(this.post, 'u_flicker'), Math.sin(this.time * 9.1) * Math.sin(this.time * 3.7) * this.displayPrefs.flicker);
+    gl.uniform1f(this.u(this.post, 'u_chroma'), (p.chroma ?? 0) * this.displayPrefs.chroma);
     gl.uniform3fv(this.u(this.post, 'u_tint'), p.tint ?? [1, 1, 1]);
     gl.uniform3fv(this.u(this.post, 'u_lift'), p.lift ?? [0, 0, 0]);
     gl.uniform2f(this.u(this.post, 'u_res'), this.canvas.width, this.canvas.height);
