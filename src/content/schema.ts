@@ -9,6 +9,7 @@
  *
  * Positions are `[dx, dy]` offsets from the centre of the operating field (the `at()` convention).
  */
+import type { PoisonId } from './poisons';
 import { ChoirMagus, DeadPulse, FrostWight, GhoulClaw, Sellsword, WormMatriarch } from '../surgery/bosses/alphaElites';
 import type { Vec } from '../core/math';
 import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, SALVE_MAX, Sigil, SIGILS, Venom, type EmbeddedKind } from '../surgery/entities';
@@ -36,7 +37,7 @@ export type EntitySpec =
   | ({ e: 'burn'; at: Pt; r: number; source?: 'fire' | 'acid' | 'hexfire' } & Common)
   | ({ e: 'bubo'; at: Pt; r?: number; maxR?: number } & Common)
   | ({ e: 'rot'; at: Pt; r: number; spread?: number } & Common)
-  | ({ e: 'venom'; at: Pt; rate?: number } & Common)
+  | ({ e: 'venom'; at: Pt; rate?: number; poison?: PoisonId } & Common)
   | ({ e: 'grub'; at: Pt; speed?: number } & Common)
   | ({ e: 'sigil'; at: Pt; shape: keyof typeof SIGILS; size?: number; lashEvery?: number } & Common)
   | ({ e: 'pool'; at: Pt; r: number; ichor?: 'blood' | 'pus' | 'blackbile' } & Common)
@@ -146,9 +147,9 @@ export const ENTITY_REGISTRY: { [K in EntityId]: Entry<K> } = {
     make: (s) => new Rot(P(s.at), s.r, s.spread),
   },
   venom: {
-    params: { at: { type: 'pt' }, rate: num(true, [0, 30]) },
+    params: { at: { type: 'pt' }, rate: num(true, [0, 30]), poison: { type: 'string', optional: true, oneOf: ['spider', 'serpent', 'wyrm', 'nightshade'] } },
     needs: () => [['tincture']],
-    make: (s, op) => new Venom(P(s.at), op, s.rate),
+    make: (s, op) => new Venom(P(s.at), op, s.rate, 'violet', s.poison),
   },
   grub: {
     params: { at: { type: 'pt' }, speed: num(true, [0, 200]) },

@@ -1,3 +1,4 @@
+import { poisonFor, type PoisonId } from '../content/poisons';
 import { fxRandom } from './fxRandom';
 import { burnSeverity } from '../art/burnGrades';
 import { clamp, dist, pointSegment, type Vec } from '../core/math';
@@ -1658,6 +1659,8 @@ export class Venom extends Entity {
     op: Operation,
     public rate = 6,
     public color: 'green' | 'violet' = 'violet',
+    /** How it looks (ENG-0267); defaults by antidote colour. */
+    public poison?: PoisonId,
   ) {
     super(pos);
     this.layer = 1;
@@ -1767,9 +1770,10 @@ export class Venom extends Entity {
 
   draw(g: Gfx, op: Operation): void {
     const { x, y } = this.pos;
-    const ink = this.color === 'green' ? '#0e1a0a' : '#140a1e';
+    const look = poisonFor(this.color, this.poison);
+    const ink = look.ink;
     // The spreading vein web, fading as the tincture takes hold.
-    venomArt(g, this.pos, this.spreadR * 1.5 + 24, Math.min(1, this.holdT / op.tuning.tincture.antivenomHold), this.color === 'green' ? [0.05, 0.1, 0.03] : [0.08, 0.03, 0.12], this.id);
+    venomArt(g, this.pos, this.spreadR * 1.5 + 24, Math.min(1, this.holdT / op.tuning.tincture.antivenomHold), look.stain, this.id);
     for (const v of this.veins) {
       const pts: Vec[] = [{ x, y }];
       const r = this.spreadR * v.l;
@@ -1786,13 +1790,13 @@ export class Venom extends Entity {
       const p = pointAlong(this.vein, this.ligature);
       g.circle(p.x, p.y, 5, hex('#efe6c4'));
     }
-    const moteCol = this.color === 'green' ? '#90e060' : '#e0b040';
+    const moteCol = look.mote;
     for (const m of this.motes) {
       const p = this.motePos(m);
       g.glow(p.x, p.y, 14, hex(moteCol, 0.5));
       g.circle(p.x, p.y, 4, hex(moteCol));
     }
-    g.circle(x, y, 10, hex(this.color === 'green' ? '#1a3010' : '#2a1030'));
+    g.circle(x, y, 10, hex(look.core));
     // Twin puncture marks.
     g.circle(x - 5, y, 3, hex('#000000'));
     g.circle(x + 5, y, 3, hex('#000000'));
