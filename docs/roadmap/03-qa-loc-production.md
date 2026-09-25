@@ -178,8 +178,8 @@ Tasks below add the QA, localisation and production/legal work around them.
 - [ ] LOC-0010 · Demo · P1 · S · Rank-letter policy — XS/S/A/B/C stay Latin capitals in every language (translator note); rating words follow the OPS wording decision and the termbase
 
 ### Simulation text not covered by NAR/CON/UIX extraction
-- [ ] LOC-0011 · Demo · P0 · M · Rating labels to keys — every `rate(…, label)` literal in `src/surgery/*.ts` ('Incision', 'Closed', 'Drained', 'Stitched', 'Sealed', 'Nick', 'Barbs freed', 'Torn', 'Debrided', 'Burn dressed', 'Lanced', 'Cleansed', 'Rot purged', 'Antidote', 'Seared', 'Plucked', 'Curse broken', 'Wounded', 'Malison unmade', 'It rejoined', 'Cast out', 'Silenced', 'Hatched') becomes a key; the sim stores keys, the HUD resolves text
-- [ ] LOC-0012 · Demo · P0 · S · Popups, loss reasons and object labels to keys — 'THE LITANY OF STILLNESS', 'The curse lashes out!', '-N'/'+N' vitals popups, 'The patient has died.', 'Time has run out.' and the `Embedded` spec labels (Arrow, Bolt, Lead shot, Fang, Shard, Glass, Hexstone) resolved through `t()`
+- [ ] LOC-0011 · Demo · P0 · M · Rating labels to keys — every `rate(…, label)` literal in `src/surgery/*.ts` ('Incision', 'Off the line', 'Closed', 'Drained', 'Stitched', 'Sealed', 'Nick', 'Barbs freed', 'Torn', 'Debrided', 'Burn dressed', 'Lanced', 'Cleansed', 'Rot purged', 'Antidote', 'Seared', 'Plucked', 'Curse broken', 'Wounded', 'Malison unmade', 'It rejoined', 'Cast out', 'Silenced', 'Hatched') becomes a key; the sim stores keys, the HUD resolves text
+- [ ] LOC-0012 · Demo · P0 · S · Popups, loss reasons and object labels to keys — 'THE LITANY OF STILLNESS', 'The curse lashes out!', 'It burst!', 'Found it!', 'Found!', '-N'/'+N' vitals popups, 'The patient has died.', 'Time has run out.' and the `Embedded` spec labels (Arrow, Bolt, Lead shot, Fang, Shard, Glass, Hexstone) resolved through `t()`
 - [ ] LOC-0013 · Demo · P0 · S · No runtime sentence assembly — the `${label} ${RATING_TEXT}` and `x${combo}` popups rebuilt as ICU patterns (`{label} {rating}`, `×{combo}`) so each language can reorder; audit script flags template literals that feed text draws
 - [ ] LOC-0014 · Demo · P1 · S · Patient grammatical gender — `OperationDef.patientGender` (m/f/unknown) passed to callouts as an ICU `select` so FR/DE/ES/PL/PT lines like "his pulse is weak" agree; all ten demo ops annotated
 
@@ -213,7 +213,7 @@ Tasks below add the QA, localisation and production/legal work around them.
 ## LOC-D · Termbase & localisation style guide (Demo)
 
 - [ ] LOC-0034 · Demo · P0 · M · Multilingual termbase in the TMS — seeded from the NAR translator glossary (80 locked terms): approved target term, part of speech, grammatical gender, plural forms and do-not-translate flag per language
-- [ ] LOC-0035 · Demo · P0 · S · Canonical-hours equivalents — Matins, Lauds, Prime, Terce, Sext, None, Vespers, Compline mapped to each language's established liturgical term (FR Matines…Complies, DE Matutin…Komplet, ES Maitines…Completas, PL Jutrznia…Kompleta), noting each is also a boss name and chapter title
+- [ ] LOC-0035 · Demo · P0 · S · Canonical-hours equivalents — Matins, Lauds, Prime, Terce, Sext, None, Vespers, Compline mapped to each language's established liturgical term (FR Matines…Complies, DE Matutin…Komplet, ES Maitines…Completas; PL/PT-BR/IT/RU/JA/KO supplied by the lead translators), noting each is also a boss name and chapter title
 - [ ] LOC-0036 · Demo · P0 · S · Instrument names per language — Lancet, Tongs, Leech-Pipe, Gut Thread, Saint's Salve, Tincture, Cautery Brand, Scrying Lens translated within the tool-tray width, keeping the period flavour; approved by each lead translator
 - [ ] LOC-0037 · Demo · P0 · S · Rating-word translations — COOL/GOOD/BAD/MISS (or their replacements after the OPS wording decision) and the combo "×N" pattern approved per language; must stay ≤ 6 characters where possible for popup legibility
 - [ ] LOC-0038 · Demo · P0 · M · Archaic-register localisation style guide `docs/loc/style-guide.md` — translator-facing summary of the NAR English diction rules plus per-language register targets with 15 approved sample lines each for DE, FR, ES, PL, PT-BR (e.g. FR vouvoiement throughout, DE Ihr-forms for Stroh)
@@ -262,11 +262,11 @@ Tasks below add the QA, localisation and production/legal work around them.
 - [ ] QAT-0033 · Demo · P0 · S · Incision & StitchLine snapshots — on-line trace ratings by mean deviation (< 6 px COOL, < 13 px GOOD, else BAD), off-line BAD + 2 vitals, one-stroke close COOL 'Closed' vs multi-stroke GOOD
 - [ ] QAT-0034 · Demo · P0 · S · BloodPool snapshots — leech drain for blood, pus and black bile; 'Drained' GOOD only when the starting radius was ≥ 20
 - [ ] QAT-0035 · Demo · P0 · S · Laceration snapshots — stitching while flooded says 'flooded' and makes no progress; one-stroke stitch COOL 'Stitched'; nicks ≤ `SALVE_MAX` (46) sealed by salve GOOD 'Sealed'; claw-rake triples from `chapter2.ts`
-- [ ] QAT-0036 · Demo · P0 · S · Barbed-arrow snapshots — two lancet nicks rate 'Nick' then 'Barbs freed'; pulling with fewer nicks rates BAD 'Torn', costs 8 vitals, spawns a laceration and says 'barbs' once
+- [ ] QAT-0036 · Demo · P0 · S · Barbed-arrow snapshots — two lancet nicks rate 'Nick' then 'Barbs freed'; pulling more than 18 px with fewer nicks rates BAD 'Torn', costs 8 vitals, spawns a laceration of spec wound + 30 px bleeding at 1.6 and says 'barbs' once
 - [ ] QAT-0037 · Demo · P0 · S · Clean-extraction snapshots — bolt, lead shot, fang, shard and glass pulled clear in < 0.9 s rate COOL, slower GOOD, each with its spec label
 - [ ] QAT-0038 · Demo · P1 · S · Hexstone & hidden-object snapshots — hexstone drain and 'hexstone' callout while lodged; hidden shards ignore presses until the Scrying Lens reveals them (op2-2 `hiddenShard` layout)
 - [ ] QAT-0039 · Demo · P0 · S · Burn snapshots (fire, acid, hexfire) — salve before debriding says 'burn-eschar'; each pluck GOOD 'Debrided'; last flake says 'burn-salve'; full salve COOL 'Burn dressed'
-- [ ] QAT-0040 · Demo · P0 · S · Bubo snapshots — lance COOL below 75 % of max radius else GOOD 'Lanced'; a burst costs 10 vitals and spawns pus; salving undrained pus says 'pus'; drained + salved GOOD 'Cleansed'
+- [ ] QAT-0040 · Demo · P0 · S · Bubo snapshots — lance COOL below 75 % of max radius else GOOD 'Lanced'; a burst costs 10 vitals, pops 'It burst!' and spawns a pus pool plus a 40 px laceration; salving undrained pus says 'pus'; drained + salved GOOD 'Cleansed'
 - [ ] QAT-0041 · Demo · P0 · S · Rot & Coverage snapshots — spread rate, partial salve regrowth, 'Rot purged'; `Coverage` cell counts for radii 0/12/46/100, `brush` counts only new cells, `contains(p, pad)` edges
 - [ ] QAT-0042 · Demo · P0 · S · Venom snapshots — tincture 'Antidote' COOL while spread radius < 50 else GOOD; untreated drain rises monotonically at the op's `rate`
 - [ ] QAT-0043 · Demo · P0 · S · Grub & SpiderlingGrub snapshots — brand hold COOL 'Seared', tongs pluck GOOD 'Plucked'; grubs never leave the `FIELD` ellipse in 60 s of wandering
@@ -390,7 +390,7 @@ Tasks below add the QA, localisation and production/legal work around them.
 ## LOC-F · Demo languages: Chapters 1–2 (Demo)
 
 ### Core set
-- [ ] LOC-0056 · Demo · P0 · M · French, Chapters 1–2 — Ch1–2 story, callouts, barks, UI and codex translated; renderer post-processor inserts U+202F before ; : ! ? and inside « » so translators type plain spaces
+- [ ] LOC-0056 · Demo · P0 · M · French, Chapters 1–2 — Ch1–2 story, callouts, barks, UI and codex translated; renderer post-processor applies French spacing (U+202F before ; ! ?, U+00A0 before : and inside « ») so translators type plain spaces
 - [ ] LOC-0057 · Demo · P0 · M · French demo LQA — native reviewer plays every demo op and story scene in the `loc` build; 0 open S1/S2 loc bugs, termbase score 100 %
 - [ ] LOC-0058 · Demo · P0 · M · German, Chapters 1–2 — Ch1–2 translated; soft hyphens (U+00AD) placed in compounds longer than 14 letters and honoured by the text wrapper; ß/ẞ verified in every font role
 - [ ] LOC-0059 · Demo · P0 · M · German demo LQA — native reviewer pass on every demo screen, op and scene; Ihr/Sie register checked against the style guide; 0 open S1/S2
@@ -399,7 +399,7 @@ Tasks below add the QA, localisation and production/legal work around them.
 - [ ] LOC-0062 · Demo · P0 · M · Polish, Chapters 1–2 — Ch1–2 translated; plural forms one/few/many/other verified for every counted string (stitches, shards, seconds)
 - [ ] LOC-0063 · Demo · P0 · M · Polish demo LQA — native reviewer pass including the Latin-extended display-font fallback on titles; 0 open S1/S2
 - [ ] LOC-0064 · Demo · P0 · M · Brazilian Portuguese, Chapters 1–2 — Ch1–2 translated; register and gendered agreement per the style guide
-- [ ] LOC-0065 · Demo · P0 · M · Brazilian Portuguese demo LQA — native reviewer pass; 0 open S1/S2
+- [ ] LOC-0065 · Demo · P0 · M · Brazilian Portuguese demo LQA — native reviewer pass on every demo screen, op and scene; gendered agreement spot-checked on all patient callouts; 0 open S1/S2
 
 ### Stretch set (only after a "go" at demo feature lock)
 - [ ] LOC-0066 · Demo · P2 · M · Russian, Chapters 1–2 — Ch1–2 translated; one/few/many/other plurals; Cyrillic body, italic and display roles resolved through the font-role map
