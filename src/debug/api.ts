@@ -288,7 +288,11 @@ export class DebugApi {
         g.gfx.time += dt;
         g.input.beginFrame();
         g.scene?.update(dt, g);
-        if (mode === 'all' || (mode === 'last' && i === frames - 1)) g.scene?.render(g.gfx, g);
+        if (mode === 'all' || (mode === 'last' && i === frames - 1)) {
+          g.scene?.render(g.gfx, g);
+          // Global overlays (ENG-0066) — debug views included — on top of the stepped frame.
+          (g as { overlays?: { draw(gfx: typeof g.gfx): void } }).overlays?.draw(g.gfx);
+        }
         g.input.endFrame();
       }
     } finally {

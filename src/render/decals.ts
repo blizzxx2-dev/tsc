@@ -110,6 +110,11 @@ export class DecalMaps {
     return DECAL_MAP_SIZE[this.quality];
   }
 
+  /** The live maps, for the render-target viewer (ENG-0233). */
+  debugTextures(): { name: string; tex: WebGLTexture; w: number; h: number; flip: boolean }[] {
+    return [...this.maps].map(([id, t]) => ({ name: `decal:${id}`, tex: t.tex, w: t.w, h: t.h, flip: true }));
+  }
+
   /** Stamps logged since the last reset. */
   get stampCount(): number {
     let n = this.queue.length;

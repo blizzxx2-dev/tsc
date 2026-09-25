@@ -333,8 +333,8 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ## ENG-M · Developer tooling & debug overlays (Demo)
 
 - [ ] ENG-0231 · Demo · P1 · M · Shader hot reload — saving a `.glsl` file recompiles affected programs at runtime; a failed compile keeps the previous program and shows the error on an overlay
-- [ ] ENG-0232 · Demo · P1 · M · Debug overlays (dev builds) — entity hit shapes and ids, `FIELD`/opening outline, pointer path samples, camera bounds, layer draw counts
-- [ ] ENG-0233 · Demo · P1 · S · Render-target viewer — thumbnails of scene, bloom mips, cut mask, blood/corruption decal maps, LUT, with click-to-enlarge
+- [x] ENG-0232 · Demo · P1 · M · Debug overlays (dev builds) — entity hit shapes and ids, `FIELD`/opening outline, pointer path samples, camera bounds, layer draw counts
+- [x] ENG-0233 · Demo · P1 · S · Render-target viewer — thumbnails of scene, bloom mips, cut mask, blood/corruption decal maps, LUT, with click-to-enlarge
 - [x] ENG-0234 · Demo · P1 · M · Dev console (backtick) — `op <id>`, `phase <n>`, `vitals <n>`, `litany`, `win`, `lose`, `timescale <x>`, `seed <n>`, `god`, `tier <low|med|high>`, `lose-context`
 - [ ] ENG-0235 · Demo · P2 · M · Tweakables panel — shader/post/particle uniforms editable live, save-to-JSON writes back into content/preset files in dev
 - [x] ENG-0236 · Demo · P1 · S · Time controls in dev — pause, single-step one fixed tick, 0.25× slow-mo, 4× fast-forward

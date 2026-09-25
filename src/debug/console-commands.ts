@@ -7,6 +7,8 @@ import { PRESET_NAMES } from './presets';
 const RANKS: Rank[] = ['XS', 'S', 'A', 'B', 'C'];
 
 export interface ConsoleHooks {
+  /** Visual debug overlays (ENG-0232/0233). */
+  visual?: { shapes: boolean; targets: boolean };
   /** Telemetry controls, when the telemetry module is present. */
   telemetry?: { setEnabled(on: boolean): void; enabled(): boolean; dump(): unknown[] };
 }
@@ -152,6 +154,29 @@ export function buildCommands(api: DebugApi, hooks: ConsoleHooks = {}): CommandR
       },
     },
   );
+  if (hooks.visual) {
+    const v = hooks.visual;
+    reg.add(
+      {
+        name: 'overlay',
+        usage: '[on|off]',
+        help: 'hit shapes, ids, FIELD outline, pointer samples, camera bounds, draw counts (F2)',
+        run: (_a, [x]) => {
+          v.shapes = x === undefined ? !v.shapes : boolArg(x);
+          return `overlay ${v.shapes ? 'on' : 'off'}`;
+        },
+      },
+      {
+        name: 'targets',
+        usage: '[on|off]',
+        help: 'render-target viewer: thumbnails, click to enlarge (Shift+F2)',
+        run: (_a, [x]) => {
+          v.targets = x === undefined ? !v.targets : boolArg(x);
+          return `targets ${v.targets ? 'on' : 'off'}`;
+        },
+      },
+    );
+  }
   if (hooks.telemetry) {
     const t = hooks.telemetry;
     reg.add({

@@ -596,11 +596,41 @@ export class Gfx {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   }
 
+  /** The last finished frame's counters (debug overlays read these). */
+  lastStats: FrameStats = emptyStats();
+  private sectionName = '';
+  private sectionStart = 0;
+
+  /** Attribute draw calls since the previous section mark to it, and start `name` (ENG-0232). */
+  private section(name: string): void {
+    const st = this.stats;
+    if (this.sectionName) st.sections[this.sectionName] = (st.sections[this.sectionName] ?? 0) + st.drawCalls - this.sectionStart;
+    this.sectionName = name;
+    this.sectionStart = st.drawCalls;
+  }
+
   /** Zero the per-frame counters (call at frame start); returns the finished frame's stats. */
   resetStats(): FrameStats {
+    this.section('');
     const s = this.stats;
+    this.lastStats = s;
     this.stats = emptyStats();
+    this.sectionStart = 0;
     return s;
+  }
+
+  /** Every texture worth inspecting (ENG-0233): render targets, LUTs, the glyph atlas, baked noise, the field snapshot. */
+  debugTextures(): { name: string; tex: WebGLTexture; w: number; h: number; flip: boolean }[] {
+    const out: { name: string; tex: WebGLTexture; w: number; h: number; flip: boolean }[] = [];
+    for (const k of this.targets.keys()) {
+      const t = this.targets.get(k)!;
+      out.push({ name: k, tex: t.tex, w: t.w, h: t.h, flip: true });
+    }
+    for (const [name, tex] of this.luts) out.push({ name: `lut:${name}`, tex, w: LUT_SIZE * LUT_SIZE, h: LUT_SIZE, flip: false });
+    out.push({ name: 'glyph-atlas', tex: this.atlas.texture, w: 2048, h: 2048, flip: false });
+    if (this.noiseTex) out.push({ name: 'noise-fbm', tex: this.noiseTex, w: 512, h: 512, flip: false });
+    if (this.cellsTex) out.push({ name: 'noise-cells', tex: this.cellsTex, w: 512, h: 512, flip: false });
+    return out;
   }
 
   private u(p: WebGLProgram, name: string): WebGLUniformLocation | null {
@@ -673,6 +703,7 @@ export class Gfx {
     if (q && q !== this.shaderQuality) this.setShaderQuality(q);
     this.ensureTargets();
     this.gpuTimer.mark('world');
+    this.section('world');
     if (this.msaaFb) {
       this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.msaaFb);
       this.outW = this.scene.w;
@@ -688,6 +719,7 @@ export class Gfx {
   endWorld(p: PostParams): void {
     this.flush('end');
     this.gpuTimer.mark('post');
+    this.section('post');
     const gl = this.gl;
     if (this.msaaFb) {
       gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.msaaFb);
@@ -785,6 +817,7 @@ export class Gfx {
     this.tf = [1, 0, 0, 1, 0, 0];
     this.setCamera(null);
     this.gpuTimer.mark('ui');
+    this.section('ui');
   }
 
   /** FXAA fallback when the world target has no MSAA (ENG-0193); returns the texture post should read. */
@@ -805,6 +838,7 @@ export class Gfx {
   /** Draw a screen with no world layer (menus, story): UI straight to the screen. */
   beginScreen(clear: [number, number, number] = [0.03, 0.025, 0.025]): void {
     this.gpuTimer.mark('ui');
+    this.section('ui');
     this.setCamera(null);
     this.bindTarget(null);
     this.gl.clearColor(clear[0], clear[1], clear[2], 1);
@@ -941,6 +975,7 @@ export class Gfx {
     this.ensureTargets();
     this.flush('program');
     this.gpuTimer.mark('layers');
+    this.section('layers');
     this.bindTarget(which === 'surface' ? this.surface : this.fluid);
     this.gl.clearColor(0, 0, 0, 0);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);

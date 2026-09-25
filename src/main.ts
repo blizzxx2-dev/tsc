@@ -339,7 +339,8 @@ class Main implements Game {
     this.gfx.setCamera(null);
     this.transition.draw(this.gfx);
     this.overlays.update(Math.min(dt, 0.25));
-    this.overlays.draw(this.gfx);
+    // While the QA API holds the frame frozen the canvas keeps its last image; stepping draws overlays itself.
+    if (!(this as { debug?: { isFrozen(): boolean } }).debug?.isFrozen()) this.overlays.draw(this.gfx);
     // Not under automation (goldens must not carry a sha), nor while the QA API holds the frame frozen.
     if (DEV_TOOLS && !navigator.webdriver && !(this as { debug?: { isFrozen(): boolean } }).debug?.isFrozen()) this.drawDevStamp();
     this.gfx.endFrame();
