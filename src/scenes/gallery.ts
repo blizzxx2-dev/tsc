@@ -57,7 +57,7 @@ export class GalleryScene implements Scene {
   render(g: Gfx, game: Game): void {
     g.beginWorld();
     drawBackdrop(g, 'chapel', g.time);
-    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1 });
+    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1, defocus: 8 });
     leatherPanel(g, { x: 120, y: 60, w: 560, h: 620 });
     parchmentSheet(g, { x: 680, y: 200, w: 480, h: 400 }, 3);
     g.text(t('ui.gallery.title'), VIEW_W / 2, 44, { size: 30, font: 'display', color: hex(UI.gilt), align: 'center' });

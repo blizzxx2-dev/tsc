@@ -1,3 +1,4 @@
+import { choirMaskPlate, kilnRowsPlate, leechJarPlate, pyrePlate, woundManPlate } from './plates';
 import type { FontId } from '../render/text';
 /**
  * Art viewer (`?scene=artview`): every piece of the procedural UI kit on one board, with
@@ -46,7 +47,7 @@ export class ArtViewScene implements Scene {
 
   constructor() {
     const q = new URLSearchParams(location.search);
-    this.page = Math.max(0, Math.min(3, Number(q.get('page') ?? 1) - 1));
+    this.page = Math.max(0, Math.min(4, Number(q.get('page') ?? 1) - 1));
     if (q.get('t')) {
       this.t = Number(q.get('t'));
       this.playing = false;
@@ -64,6 +65,7 @@ export class ArtViewScene implements Scene {
     if (input.keyPressed('Digit2')) this.page = 1;
     if (input.keyPressed('Digit3')) this.page = 2;
     if (input.keyPressed('Digit4')) this.page = 3;
+    if (input.keyPressed('Digit5')) this.page = 4;
     if (input.keyPressed('KeyR')) this.t = 0;
     this.zoom = Math.max(0.5, Math.min(3, this.zoom * (1 - input.wheel * 0.1)));
   }
@@ -81,11 +83,22 @@ export class ArtViewScene implements Scene {
     if (this.page === 0) this.kit(g);
     else if (this.page === 1) this.seals(g);
     else if (this.page === 2) this.instruments(g);
-    else this.type(g);
+    else if (this.page === 3) this.type(g);
+    else this.plates(g);
     g.restore();
     const label = (s: string, x: number, y: number) => g.text(s, x, y, { size: 13, color: hex('#e8dcc0', 0.8), shadow: hex('#000000', 0.9) });
-    label(`Art viewer — page ${this.page + 1}/4 (1-4)   B: background   wheel: zoom   ←/→: frame ${Math.floor(this.t * 12)}   Space: ${this.playing ? 'pause' : 'play'}   R: restart`, 12, VIEW_H - 10);
+    label(`Art viewer — page ${this.page + 1}/5 (1-5)   B: background   wheel: zoom   ←/→: frame ${Math.floor(this.t * 12)}   Space: ${this.playing ? 'pause' : 'play'}   R: restart`, 12, VIEW_H - 10);
     g.endFrame();
+  }
+
+  /** ART-0060/0061 woodcut plates. */
+  private plates(g: Gfx): void {
+    const t = this.t;
+    kilnRowsPlate(g, { x: 20, y: 20, w: 400, h: 320 }, t, 'Kiln Rows (demo end)');
+    woundManPlate(g, { x: 440, y: 20, w: 400, h: 320 }, t, 'Wound Man');
+    leechJarPlate(g, { x: 860, y: 20, w: 400, h: 320 }, t, 'Leech jar');
+    pyrePlate(g, { x: 230, y: 360, w: 400, h: 320 }, t, 'Pyre');
+    choirMaskPlate(g, { x: 650, y: 360, w: 400, h: 320 }, t, 'Choir mask');
   }
 
   /** ART-0081 type specimen: every text style on the surface it is used on. */

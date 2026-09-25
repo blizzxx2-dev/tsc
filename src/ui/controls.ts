@@ -7,6 +7,7 @@
  * Look: dark oak/leather and brass for menus, ink on parchment for documents,
  * gilt only for focus and headings, never flat neon highlights.
  */
+import { diamond, glass, hglow, INK, menuItem, meter, rule } from './hudKit';
 import { hex, mix, withAlpha, type RGBA } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import type { Ui, UiNode, NodeState, Rect } from './kit';
@@ -14,7 +15,6 @@ import { UI } from './ornaments';
 import { candleFlicker, pulse } from './motion';
 import { fitText, wrapLines } from './text';
 import { VIEW_W } from './layout';
-import { palette } from './theme';
 
 /** Horizontal band fading to transparent at both ends. */
 export function hband(g: Gfx, x: number, y: number, w: number, h: number, c: RGBA, edge = 0.3): void {
@@ -80,25 +80,8 @@ export function arrow(g: Gfx, x: number, y: number, dir: -1 | 1, s: number, c: R
 const textY = (r: Rect, size: number) => r.y + r.h / 2 + size * 0.34;
 
 /** Title-screen / pause menu entry: centred lettering on dark leather. */
-export function menuEntry(g: Gfx, n: UiNode, s: NodeState, t: number, size = 30): void {
-  const r = n.rect;
-  const k = s.glow;
-  const cx = r.x + r.w / 2;
-  if (k > 0) {
-    hband(g, r.x, r.y, r.w, r.h, hex('#5a1418', 0.5 * k * candleFlicker(t)));
-    hrule(g, r.x + 10, r.y, r.w - 20, hex(UI.brass, 0.8 * k));
-    hrule(g, r.x + 10, r.y + r.h, r.w - 20, hex(UI.brass, 0.8 * k));
-    g.glow(cx, r.y + r.h / 2, r.w * 0.4, hex('#ffb050', 0.07 * k));
-  }
-  const tw = Math.min(g.measure(n.label, size, 'body'), r.w - 60);
-  if (k > 0.05) {
-    const gap = tw / 2 + 22;
-    lozenge(g, cx - gap, r.y + r.h / 2, 5 * k, hex(UI.gilt, k));
-    lozenge(g, cx + gap, r.y + r.h / 2, 5 * k, hex(UI.gilt, k));
-  }
-  const col = !n.enabled ? hex('#6a6050') : mix(hex(palette().ink), hex('#fff0c0'), k);
-  const col2 = !n.enabled ? hex('#4a4238') : mix(hex('#b8a888'), hex(UI.gilt), k);
-  fitText(g, n.id, n.label, cx, textY(r, size), r.w - 40, { size, color: col, color2: col2, align: 'center' });
+export function menuEntry(g: Gfx, n: UiNode, s: NodeState, _t: number, size = 30): void {
+  menuItem(g, n.rect, n.label, s.glow, n.enabled, size, s.active);
 }
 
 /** Button on parchment: dark ink, red ink when focused, with a ruled underline. */
@@ -115,131 +98,113 @@ export function parchmentEntry(g: Gfx, n: UiNode, s: NodeState, _t: number, size
 }
 
 /**
- * Wax-seal button (UIX-0021) for primary actions: a poured wax plaque with the
- * label pressed into it; squashes while held (MOTION.press) and turns to cold
- * grey wax when disabled.
+ * Primary action button (UIX-0021): a raised gilt-edged plate with a tracked caps label; it
+ * lifts and glows on focus, sinks while held, and goes cold grey when disabled.
  */
-export function sealButton(g: Gfx, n: UiNode, s: NodeState, t: number, size = 28): void {
+export function sealButton(g: Gfx, n: UiNode, s: NodeState, _t: number, size = 28): void {
   const r = n.rect;
   const k = s.glow;
-  const squash = s.active ? 0.93 : 1;
-  const cx = r.x + r.w / 2;
-  const cy = r.y + r.h / 2;
-  const w = r.w * (s.active ? 1.02 : 1);
-  const h = r.h * squash;
-  const base = n.enabled ? '#8a1016' : '#4a4a4e';
-  const lo = n.enabled ? '#4a0608' : '#2a2a2e';
-  // Poured wax: a rounded bar whose edge wobbles slightly, like wax that ran before it set.
-  const pts: { x: number; y: number }[] = [];
-  const rad = h / 2;
-  const hw = w / 2 - rad;
-  const N = 14;
-  for (let side = 0; side < 2; side++) {
-    const sx = side === 0 ? cx + hw : cx - hw;
-    for (let i = 0; i <= N; i++) {
-      const a = -Math.PI / 2 + (i / N) * Math.PI + side * Math.PI;
-      const wob = 1 + 0.05 * Math.sin(i * 2.3 + side * 4 + r.x * 0.07);
-      pts.push({ x: sx + Math.cos(a) * rad * wob, y: cy + Math.sin(a) * rad * wob });
-    }
-  }
-  g.poly(
-    pts.map((p) => ({ x: p.x + 3, y: p.y + 4 })),
-    hex('#000000', 0.5),
-  );
-  g.poly(pts, hex(lo), hex(base));
-  // Glossy highlight and an inner pressed ring.
-  hband(g, cx - w * 0.38, cy - h * 0.36, w * 0.76, h * 0.16, hex('#ff9a9a', n.enabled ? 0.18 + 0.12 * k : 0.08), 0.4);
-  g.rectLine(cx - w / 2 + 10, cy - h / 2 + 7, w - 20, h - 14, 1, hex('#000000', 0.25));
-  if (k > 0) g.glow(cx, cy, w * 0.55, hex('#ff6040', 0.12 * k * candleFlicker(t)));
-  const col = n.enabled ? mix(hex('#f0c8b0'), hex('#fff2dc'), k) : hex('#9a9aa0');
-  fitText(g, n.id, n.label, cx, cy + size * 0.34, w - 36, { size, color: col, align: 'center', shadow: hex('#2a0204', 0.9) });
-  if (s.focus && k > 0) focusRing(g, { x: r.x - 4, y: r.y - 2, w: r.w + 8, h: r.h + 4 }, k * 0.8, t);
+  const on = n.enabled;
+  const dy = s.active ? 1 : 0;
+  g.plate(r.x, r.y + dy, r.w, r.h, {
+    radius: 3,
+    chamfer: true,
+    top: hex(on ? mixHex('#3a2a18', '#5a3e1e', k) : '#262422', 0.97),
+    bottom: hex(on ? '#1a120a' : '#141312', 0.97),
+    border: hex(on ? INK.gold : '#5a5650', on ? 0.85 + 0.15 * k : 0.6),
+    borderW: 1.4,
+    inset: hex('#fff1c4', on ? 0.12 + 0.12 * k : 0.04),
+    insetD: 4,
+    bevel: s.active ? 0.3 : 0.85,
+    shadow: [0.6, s.active ? 4 : 10, s.active ? 1 : 4],
+    glow: on && k > 0 ? hex(INK.gold, 0.28 * k) : undefined,
+    glowR: 16,
+  });
+  const fs = Math.round(size * 0.72);
+  const label = n.label.toUpperCase();
+  const top = on ? (k > 0.5 ? INK.goldHi : '#f0e2c0') : '#8a8680';
+  const bot = on ? INK.gold : '#6a6660';
+  g.text(label, r.x + r.w / 2, r.y + r.h / 2 + fs * 0.36 + dy, { size: fs, font: 'display', color: hex(top), color2: hex(bot), align: 'center', tracking: 0.14, shadow: hex('#000000', 0.85), soft: true });
 }
 
+const mixHex = (a: string, b: string, k: number): string => {
+  const pa = parseInt(a.slice(1), 16);
+  const pb = parseInt(b.slice(1), 16);
+  const ch = (sh: number) => Math.round(((pa >> sh) & 255) * (1 - k) + ((pb >> sh) & 255) * k);
+  return `#${((ch(16) << 16) | (ch(8) << 8) | ch(0)).toString(16).padStart(6, '0')}`;
+};
+
 /** Options row: label on the left, control on the right. */
-export function optionRow(g: Gfx, n: UiNode, s: NodeState, t: number, o: { size?: number; split?: number; light?: boolean } = {}): void {
+export function optionRow(g: Gfx, n: UiNode, s: NodeState, _t: number, o: { size?: number; split?: number; light?: boolean } = {}): void {
   const r = n.rect;
   const k = s.glow;
-  const size = o.size ?? 24;
+  const size = Math.round((o.size ?? 24) * 0.86);
   const light = o.light ?? false;
   const split = o.split ?? 0.5;
   if (k > 0) {
-    hband(g, r.x, r.y, r.w, r.h, light ? hex('#8a6a3a', 0.2 * k) : hex('#5a1418', 0.45 * k * candleFlicker(t)), 0.08);
-    g.rect(r.x, r.y + 4, 3, r.h - 8, hex(UI.gilt, 0.9 * k));
+    hglow(g, { x: r.x - r.w * 0.1, y: r.y + 1, w: r.w * 1.2, h: r.h - 2 }, light ? hex('#8a6a3a', 0.2 * k) : hex('#7a5626', 0.26 * k));
+    g.rect(r.x, r.y + 6, 2, r.h - 12, hex(INK.gold, 0.95 * k));
+    g.glow(r.x + 1, r.y + r.h / 2, 16, hex(INK.gold, 0.2 * k));
   }
-  const ink = light ? hex(UI.inkDark) : hex(palette().ink);
-  const hi = light ? hex('#7a0c12') : hex(UI.gilt);
-  const labelCol = !n.enabled ? hex('#6a6050') : mix(ink, hi, k);
+  const labelCol = light ? (!n.enabled ? hex('#8a7a60') : mix(hex(UI.inkDark), hex('#7a0c12'), k)) : !n.enabled ? hex(INK.faint) : mix(hex('#d8ccb4'), hex('#fff4dc'), k);
   const cy = textY(r, size);
-  fitText(g, n.id, n.label, r.x + 18, cy, r.w * split - 24, { size, color: labelCol, shadow: light ? false : undefined });
+  fitText(g, n.id, n.label, r.x + 20, cy, r.w * split - 28, { size, color: labelCol, shadow: light ? false : hex('#000000', 0.7) });
   const cx0 = r.x + r.w * split;
   const cw = r.w * (1 - split) - 16;
-  const valCol = light ? hex('#5a0a10') : hex(UI.gilt);
+  const valCol = light ? hex('#5a0a10') : hex(INK.gold);
+  const valOpts = (align: 'left' | 'center' | 'right') => ({ size: Math.round(size * 0.62), font: 'display' as const, color: valCol, align, tracking: 0.12, shadow: light ? (false as const) : hex('#000000', 0.8) });
   if (n.kind === 'slider') {
-    const tr = { x: cx0 + 10, y: r.y + r.h / 2 - 3, w: cw - 70, h: 6 };
-    g.rect(tr.x, tr.y, tr.w, tr.h, hex('#000000', 0.55));
+    const tr = { x: cx0 + 10, y: r.y + r.h / 2 - 3, w: cw - 84, h: 6 };
     const f = n.frac ?? 0;
-    g.rectGrad(tr.x, tr.y, tr.w * f, tr.h, hex(UI.gilt), hex(UI.giltLo));
-    g.rectLine(tr.x - 1, tr.y - 1, tr.w + 2, tr.h + 2, 1, hex(UI.brass, 0.8));
-    for (let i = 1; i < 10; i++) g.rect(tr.x + (tr.w * i) / 10, tr.y + tr.h + 3, 1, 4, hex(UI.brass, 0.5));
+    meter(g, tr, f, INK.goldHi, INK.goldLo, 10);
     const kx = tr.x + tr.w * f;
-    // A wax bead on a brass rule (ART-0058).
-    g.circle(kx + 1, tr.y + 5, 10, hex('#000000', 0.5));
-    g.circleGrad(kx, tr.y + 3, 9, hex(k > 0.5 ? '#c02028' : '#8a1016'), hex('#3a0406'));
-    g.circleGrad(kx - 3, tr.y, 3.5, hex('#ffb0a0', 0.55), hex('#ffb0a0', 0));
-    if (n.value) g.text(n.value, r.x + r.w - 16, cy, { size: size * 0.85, color: valCol, align: 'right', shadow: light ? false : undefined });
+    diamond(g, kx, tr.y + 3, 7 + k, hex(k > 0.5 ? INK.goldHi : INK.gold), hex('#000000', 0.8));
+    diamond(g, kx, tr.y + 3, 2.2, hex('#3a2a10'));
+    if (n.value) g.text(n.value.toUpperCase(), r.x + r.w - 16, cy - size * 0.1, valOpts('right'));
   } else if (n.kind === 'toggle') {
-    const sw = { x: r.x + r.w - 16 - 64, y: r.y + r.h / 2 - 12, w: 64, h: 24 };
-    g.rectGrad(sw.x, sw.y, sw.w, sw.h, hex('#0a0604'), hex('#24140c'));
-    g.rectLine(sw.x, sw.y, sw.w, sw.h, 1.5, hex(UI.brass));
     const on = !!n.on;
-    if (on) g.rectGrad(sw.x + 2, sw.y + 2, sw.w / 2 - 2, sw.h - 4, hex('#a8741c', 0.9), hex('#6a4410', 0.9));
-    const kx = on ? sw.x + sw.w - 16 : sw.x + 16;
-    g.circleGrad(kx, sw.y + sw.h / 2 - 1, 10, hex(on ? UI.brassHi : '#8a8070'), hex(on ? UI.brassLo : '#3a3430'));
-    // Shape redundancy: a check for on, a bar for off.
-    if (on) g.polyline([{ x: kx - 4, y: sw.y + 12 }, { x: kx - 1, y: sw.y + 15 }, { x: kx + 5, y: sw.y + 8 }], 2, hex('#2a1a08'));
-    else g.rect(kx - 4, sw.y + 11, 8, 2, hex('#1a1410'));
-    if (n.value) g.text(n.value, sw.x - 12, cy, { size: size * 0.85, color: valCol, align: 'right', shadow: light ? false : undefined });
+    const sw = { x: r.x + r.w - 16 - 54, y: r.y + r.h / 2 - 11, w: 54, h: 22 };
+    g.plate(sw.x, sw.y, sw.w, sw.h, { radius: 11, top: hex(on ? '#6a4a1c' : '#0c0a08', 0.95), bottom: hex(on ? '#3a2810' : '#16120e', 0.95), border: hex(on ? INK.gold : '#4a4034', 0.9), borderW: 1.2, bevel: -0.5, shadow: [0, 0, 0] });
+    const kx = on ? sw.x + sw.w - 11 : sw.x + 11;
+    g.plate(kx - 8, sw.y + 3, 16, 16, { radius: 8, top: hex(on ? '#fff1c4' : '#8a8070'), bottom: hex(on ? '#c9a55c' : '#4a4238'), border: hex('#000000', 0.5), borderW: 1, bevel: 0.8, shadow: [0.5, 3, 1] });
+    if (on) g.glow(kx, sw.y + 11, 14, hex(INK.gold, 0.25));
+    if (n.value) g.text(n.value.toUpperCase(), sw.x - 14, cy - size * 0.1, valOpts('right'));
   } else if (n.kind === 'stepper' || n.kind === 'dropdown') {
     const ax0 = cx0 + 16;
     const ax1 = r.x + r.w - 20;
-    const ac = hex(n.enabled ? UI.brass : '#5a5040', 0.6 + 0.4 * k);
-    arrow(g, ax0, r.y + r.h / 2, -1, 12, ac);
-    arrow(g, ax1, r.y + r.h / 2, 1, 12, ac);
-    fitText(g, `${n.id}.value`, n.value ?? '', (ax0 + ax1) / 2, cy, ax1 - ax0 - 36, { size, color: valCol, align: 'center', shadow: light ? false : undefined });
+    const ac = hex(n.enabled ? INK.gold : '#5a5040', 0.45 + 0.55 * k);
+    arrow(g, ax0, r.y + r.h / 2, -1, 8, ac);
+    arrow(g, ax1, r.y + r.h / 2, 1, 8, ac);
+    fitText(g, `${n.id}.value`, (n.value ?? '').toUpperCase(), (ax0 + ax1) / 2, cy - size * 0.1, ax1 - ax0 - 36, valOpts('center'));
   } else if (n.value) {
-    fitText(g, `${n.id}.value`, n.value, r.x + r.w - 16, cy, cw, { size: size * 0.85, color: valCol, align: 'right', shadow: light ? false : undefined });
+    fitText(g, `${n.id}.value`, n.value.toUpperCase(), r.x + r.w - 16, cy - size * 0.1, cw, valOpts('right'));
   }
 }
 
-/** Tab-bar tab (UIX-0006): engraved label on a brass-edged leather tab; the selected tab is lit and joined to the page. */
-export function tab(g: Gfx, n: UiNode, s: NodeState, t: number, selected: boolean, size = 22): void {
+/** Tab-bar tab (UIX-0006): tracked caps; the selected tab is gold with a lit bar beneath it. */
+export function tab(g: Gfx, n: UiNode, s: NodeState, _t: number, selected: boolean, size = 22): void {
   const r = n.rect;
   const k = s.glow;
+  const fs = Math.round(size * 0.66);
+  const cx = r.x + r.w / 2;
   if (selected) {
-    g.rectGrad(r.x, r.y, r.w, r.h, hex('#5a2418'), hex('#2a100a'));
-    g.rect(r.x, r.y, r.w, 2, hex(UI.gilt));
-    g.rect(r.x, r.y, 1.5, r.h, hex(UI.brass));
-    g.rect(r.x + r.w - 1.5, r.y, 1.5, r.h, hex(UI.brass));
-  } else {
-    g.rectGrad(r.x + 2, r.y + 4, r.w - 4, r.h - 4, hex('#241410', 0.9), hex('#140a08', 0.9));
-    g.rect(r.x + 2, r.y + r.h - 1, r.w - 4, 1, hex(UI.brass, 0.6));
-    if (k > 0) g.rect(r.x + 6, r.y + 5, r.w - 12, 2, hex(UI.gilt, 0.6 * k));
-  }
-  const col = selected ? hex('#fff0c0') : mix(hex(palette().inkDim), hex(UI.gilt), k);
-  fitText(g, n.id, n.label, r.x + r.w / 2, textY(r, size) + 1, r.w - 12, { size, color: col, color2: selected ? hex(UI.gilt) : undefined, align: 'center' });
-  if (s.focus && k > 0.3 && !selected) focusRing(g, r, k * 0.6, t);
+    hglow(g, { x: r.x, y: r.y, w: r.w, h: r.h }, hex('#7a5626', 0.3));
+    rule(g, cx, r.y + r.h - 2, r.w * 0.9, hex(INK.gold, 0.95), 2);
+    g.glow(cx, r.y + r.h - 1, r.w * 0.35, hex(INK.gold, 0.18));
+  } else if (k > 0) rule(g, cx, r.y + r.h - 2, r.w * 0.7, hex(INK.gilt, 0.5 * k), 1);
+  const col = selected ? hex(INK.goldHi) : mix(hex(INK.dim), hex('#f0e2c0'), k);
+  fitText(g, n.id, n.label.toUpperCase(), cx, textY(r, fs) + 1, r.w - 12, { size: fs, font: 'display', color: col, color2: selected ? hex(INK.gold) : undefined, align: 'center', tracking: 0.14, shadow: hex('#000000', 0.8) });
 }
 
 /** List item in a scroll list (chapter steps, operating theatre, backlog). */
-export function listItem(g: Gfx, n: UiNode, s: NodeState, t: number, selected = false): void {
+export function listItem(g: Gfx, n: UiNode, s: NodeState, _t: number, selected = false): void {
   const r = n.rect;
   const k = Math.max(s.glow, selected ? 0.6 : 0);
   if (k > 0) {
-    hband(g, r.x, r.y, r.w, r.h, hex('#5a1418', 0.42 * k * candleFlicker(t)), 0.06);
-    g.rect(r.x, r.y + 3, 3, r.h - 6, hex(UI.gilt, 0.9 * k));
+    hglow(g, { x: r.x - r.w * 0.1, y: r.y + 1, w: r.w * 1.2, h: r.h - 2 }, hex('#7a5626', 0.26 * k));
+    g.rect(r.x, r.y + 5, 2, r.h - 10, hex(INK.gold, 0.95 * k));
   }
-  hrule(g, r.x + 8, r.y + r.h, r.w - 16, hex(UI.brass, 0.25));
+  g.rect(r.x + 8, r.y + r.h, r.w - 16, 1, hex(INK.gilt, 0.14));
 }
 
 /** Draw every node of a UI with its default renderer (galleries, simple menus). */
@@ -282,15 +247,13 @@ export function tooltip(g: Gfx, anchor: Rect, title: string | undefined, body: s
   const h = pad * 2 + (title ? 26 : 0) + lines.length * size * 1.3 - 4;
   const vr = g.viewRect();
   const r = tooltipRect(anchor, w, h, vr);
-  g.rect(r.x + 3, r.y + 5, r.w, r.h, hex('#000000', 0.45 * alpha));
-  g.rectGrad(r.x, r.y, r.w, r.h, hex('#efe0b8', 0.97 * alpha), hex('#d2bb8c', 0.97 * alpha));
-  g.rectLine(r.x, r.y, r.w, r.h, 1, hex('#6a4a22', 0.8 * alpha));
+  glass(g, r, { alpha, strength: 1.1 });
   let y = r.y + pad + 16;
   if (title) {
-    g.text(title, r.x + pad, y, { size: 20, color: hex('#6a0a10', alpha), shadow: false });
+    g.text(title.toUpperCase(), r.x + pad, y - 2, { size: 13, font: 'display', color: hex(INK.gold, alpha), tracking: 0.14, shadow: false });
     y += 26;
   }
-  lines.forEach((l, i) => g.text(l, r.x + pad, y + i * size * 1.3, { size, color: hex(UI.inkDark, alpha), shadow: false }));
+  lines.forEach((l, i) => g.text(l, r.x + pad, y + i * size * 1.3, { size, color: hex(INK.text, alpha), shadow: false }));
   return r;
 }
 

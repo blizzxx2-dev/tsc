@@ -1,4 +1,5 @@
 import { cursorColour } from './hudPrefs';
+import { menuItem } from './hudKit';
 import { nineSlice } from './nineSlice';
 import { settings } from '../core/settings';
 import type { Input } from '../core/input';
@@ -6,7 +7,6 @@ import type { Vec } from '../core/math';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import type { ToolId } from '../surgery/types';
-import { PALETTE } from './layout';
 import { leatherPanel, parchmentSheet, UI } from './ornaments';
 import { uiButton } from '../audio/ui-hooks';
 import { crosshairArt, toolArt, type ToolState } from '../art/kit';
@@ -39,18 +39,6 @@ export function buttonSurface(on: 'dark' | 'parchment'): void {
   surface = on;
 }
 
-/** A rubbed smear of wax behind a hovered choice: irregular, a little glossy. */
-function waxRub(g: Gfx, r: Rect, pressed: boolean, onLight: boolean): void {
-  const n = Math.max(4, Math.round(r.w / 18));
-  const base = onLight ? (pressed ? '#6a0a10' : '#8a1016') : pressed ? '#3a0608' : '#5a1418';
-  const a = onLight ? (pressed ? 0.3 : 0.2) : pressed ? 0.75 : 0.55;
-  for (let i = 0; i < n; i++) {
-    const k = (i + 0.5) / n;
-    const wob = Math.sin(i * 2.7 + r.x) * 0.25;
-    g.circleGrad(r.x + 8 + k * (r.w - 16), r.y + r.h * (0.5 + wob * 0.2), r.h * (0.62 + 0.12 * Math.sin(i * 1.3)), hex(base, a), hex(base, 0));
-  }
-  g.line({ x: r.x + 14, y: r.y + r.h * 0.22 }, { x: r.x + r.w - 20, y: r.y + r.h * 0.18 }, 1, hex('#ffb0a0', onLight ? 0.12 : 0.18));
-}
 
 /**
  * Menu-style text button with three states: idle, hover (a wax rub; darker while pressed)
@@ -58,25 +46,12 @@ function waxRub(g: Gfx, r: Rect, pressed: boolean, onLight: boolean): void {
  * `buttonSurface`) switches to dark ink.
  */
 export function button(g: Gfx, input: Input, label: string, x: number, y: number, size = 30, enabled = true, onLight = surface === 'parchment'): boolean {
-  const w = g.measure(label, size, 'body') + 56;
+  const fs = Math.round(size * 0.74);
+  const w = g.measure(label.toUpperCase(), fs, 'display', 0.14) + 90;
   const r = { x: x - w / 2, y: y - size * 0.95, w, h: size * 1.35 };
   const hover = enabled && inRect(input.pos, r);
   const pressed = hover && input.down;
-  const dy = pressed ? 1.5 : 0;
-  if (hover) {
-    waxRub(g, r, pressed, onLight);
-    if (!onLight) {
-      g.line({ x: r.x + 10, y: r.y }, { x: r.x + r.w - 10, y: r.y }, 1, hex(UI.brass, 0.8));
-      g.line({ x: r.x + 10, y: r.y + r.h }, { x: r.x + r.w - 10, y: r.y + r.h }, 1, hex(UI.brass, 0.8));
-      g.glow(x, y - size * 0.3, w * 0.45, hex('#ffb050', 0.08));
-    }
-    const dc = hex(onLight ? '#8a1016' : UI.gilt);
-    for (const dx of [r.x + 12, r.x + r.w - 12]) g.poly([{ x: dx, y: y - size * 0.55 }, { x: dx + 5, y: y - size * 0.3 }, { x: dx, y: y - size * 0.05 }, { x: dx - 5, y: y - size * 0.3 }], dc);
-  }
-  if (onLight) g.text(label, x, y + dy, { size, color: hex(!enabled ? '#8a7a60' : hover ? '#6a0a10' : '#2a1a10', enabled ? 1 : 0.6), align: 'center', shadow: false });
-  else if (!enabled) g.text(label, x, y, { size, color: hex('#5a5040', 0.8), align: 'center' });
-  else if (hover) g.text(label, x, y + dy, { size, color: hex('#fff0c0'), color2: hex(UI.gilt), align: 'center' });
-  else g.text(label, x, y, { size, color: hex(PALETTE.ink), color2: hex('#b8a888'), align: 'center' });
+  menuItem(g, r, label, hover ? 1 : 0, enabled, size, pressed, onLight);
   uiButton(label, hover, hover && input.pressed);
   return hover && input.pressed;
 }

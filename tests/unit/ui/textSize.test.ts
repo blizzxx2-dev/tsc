@@ -1,4 +1,8 @@
-/** UIX-0024: no player-facing text below 16 px (virtual). Dev-only overlays are exempt. */
+/**
+ * UIX-0024: no player-facing text below 16 px (virtual). Dev-only overlays are exempt, and so are
+ * tracked all-caps display labels (Cinzel with `tracking`) down to 12 px: capitals carry no
+ * x-height, so 12 px caps stand as tall as the lowercase of 16 px body text.
+ */
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -22,7 +26,8 @@ describe('UIX-0024 minimum text size', () => {
           if (
             /\bsize: ?(1[0-5]|[0-9])(\.\d+)?[,} ]/.test(line) &&
             /\.text\(|textBlock\(|fitText\(|fitBlock\(/.test(line) &&
-            !DEV.some((re) => re.test(`${f}:${line}`))
+            !DEV.some((re) => re.test(`${f}:${line}`)) &&
+            !(/font: 'display'/.test(line) && /tracking:/.test(line) && /\bsize: ?1[2-5]\b/.test(line))
           )
             small.push(where);
         });

@@ -11,7 +11,7 @@ export interface AssetEntry {
   /** Sprite sheets: hashed page image URLs, in page order. */
   pages?: string[];
   /** Fonts: CSS face descriptors. */
-  font?: { family: string; style: string; weight: string };
+  font?: { family: string; style: string; weight: string; unicodeRange?: string };
   /** Images: pixel size. */
   w?: number;
   h?: number;

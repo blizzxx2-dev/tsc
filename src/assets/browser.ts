@@ -40,7 +40,7 @@ export function browserBackend(gfx: Gfx): LoaderBackend {
     },
     async font(_id, bytes, entry) {
       const f = entry.font!;
-      const face = new FontFace(f.family, bytes, { style: f.style, weight: f.weight });
+      const face = new FontFace(f.family, bytes, { style: f.style, weight: f.weight, ...(f.unicodeRange ? { unicodeRange: f.unicodeRange } : {}) });
       await face.load();
       document.fonts.add(face);
       return { value: face, dispose: () => document.fonts.delete(face) };

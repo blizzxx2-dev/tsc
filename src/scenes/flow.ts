@@ -1,4 +1,5 @@
 import type { BundleId } from '../assets/manifest.gen';
+import { LoadingScene } from './loading';
 import type { Game } from '../core/scene';
 import { advance, load, recordBest, store, type SaveData } from '../core/save';
 import { CAMPAIGN } from '../content/campaign';
@@ -65,13 +66,16 @@ export function playOperation(game: Game, def: OperationDef, onWin: () => void, 
 }
 
 /** Play the campaign from a given chapter/step, saving progress as it goes. */
-export function playStep(game: Game, chapter: number, step: number): void {
+export function playStep(game: Game, chapter: number, step: number, loaded = false): void {
   const ch = CAMPAIGN[chapter];
   // Past the last chapter of the demo: the thank-you / wishlist screen.
   if (!ch) {
     emitGameEvent({ type: 'edition-complete' });
     return game.go(new DemoEndScene());
   }
+  // A chapter whose art isn't resident yet shows the loading vignette first (ART-0061).
+  const bundle = `chapter${chapter + 1}` as BundleId;
+  if (!loaded && game.assets && game.assets.bundleSize(bundle) > 0 && !game.assets.isResident(bundle)) return game.go(new LoadingScene(bundle, chapter, () => playStep(game, chapter, step, true)));
   syncChapterBundles(game, chapter, step);
   const s = ch.steps[step];
   if (!s) {

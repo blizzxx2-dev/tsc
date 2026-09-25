@@ -141,6 +141,11 @@ export class AssetLoader {
     return this.bundlesHeld.has(b) && ((this.bundles[b] ?? []) as AssetId[]).every((id) => this.loaded.has(id));
   }
 
+  /** How many assets a bundle holds (0 for an empty or unknown bundle). */
+  bundleSize(b: BundleId): number {
+    return (this.bundles[b] ?? []).length;
+  }
+
   heldBundles(): BundleId[] {
     return [...this.bundlesHeld];
   }

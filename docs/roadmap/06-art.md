@@ -97,12 +97,12 @@ Cross-refs: ENG (texture loading, atlases, shader inputs), UX (layouts and widge
 - [x] ART-0053 · Demo · P0 · M · Dialogue box: parchment scroll with a speaker name-plate cartouche (tinted per `CAST.color`), a continue-arrow quill glyph and an auto/skip indicator
 - [x] ART-0054 · Demo · P1 · S · Choice-button art: 3 states (idle, hover and pressed wax-rub, disabled faded) for VN choices and menu buttons
 - [x] ART-0055 · Demo · P1 · S · Tooltip frame (small vellum slip with a pin) and a keybind glyph plate for tutorial prompts
-- [ ] ART-0056 · Demo · P1 · M · Briefing screen art: a patient chart on vellum with a Wound-Man diagram and pin markers for ailment locations, plus stamped prognosis boxes
-- [ ] ART-0057 · Demo · P1 · M · Title-menu frame: an illuminated manuscript page with a rubricated initial and marginalia beasts
+- [x] ART-0056 · Demo · P1 · M · Briefing screen art: a patient chart on vellum with a Wound-Man diagram and pin markers for ailment locations, plus stamped prognosis boxes
+- [x] ART-0057 · Demo · P1 · M · Title-menu frame: an illuminated manuscript page with a rubricated initial and marginalia beasts
 - [x] ART-0058 · Demo · P1 · M · Options menu art: tabbed ledger pages (Video, Audio, Controls, Accessibility, Language), with sliders drawn as a brass rule plus a wax bead
 - [ ] ART-0059 · Demo · P1 · S · Save/load slot cards: ledger entries with chapter vignette thumbnails (1 per chapter scene) and a date-stamp style
-- [ ] ART-0060 · Demo · P1 · M · End-of-demo wishlist screen: a woodcut plate of the Chapter 3 teaser with a "Wishlist on Steam" button in UI-kit style
-- [ ] ART-0061 · Demo · P2 · S · Loading-screen art: 4 woodcut vignettes (Wound Man, leech jar, Pyre, Choir mask) with an hourglass spinner
+- [x] ART-0060 · Demo · P1 · M · End-of-demo wishlist screen: a woodcut plate of the Chapter 3 teaser with a "Wishlist on Steam" button in UI-kit style
+- [x] ART-0061 · Demo · P2 · S · Loading-screen art: 4 woodcut vignettes (Wound Man, leech jar, Pyre, Choir mask) with an hourglass spinner
 - [ ] ART-0062 · Alpha · P2 · M · Challenge-mode board: a guild notice board with pinned bills per challenge, parchment variants and a rank-wax stamp
 - [ ] ART-0063 · Alpha · P2 · M · Discipline-select art for field triage, diagnosis, inquisition forensics and bone-setting — one illuminated tab each
 

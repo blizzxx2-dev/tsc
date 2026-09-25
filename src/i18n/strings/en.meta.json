@@ -2,8 +2,8 @@
   "ui.game.title": {
     "scene": "title",
     "font": "display",
-    "size": 116,
-    "maxPx": 900,
+    "size": 84,
+    "maxPx": 1180,
     "context": "Game title on the title screen.",
     "screenshot": "docs/loc/screens/title.png",
     "dnt": true,
@@ -541,15 +541,6 @@
     "context": "HUD label above the vitals number.",
     "screenshot": "docs/loc/screens/operation.png"
   },
-  "hud.combo": {
-    "scene": "operation",
-    "font": "italic",
-    "size": 22,
-    "maxPx": 60,
-    "context": "Combo counter on the wax seal in the HUD.",
-    "screenshot": "docs/loc/screens/operation.png",
-    "note": "Keep × (U+00D7) unless the language has a native multiplication sign convention."
-  },
   "hud.chain": {
     "scene": "operation",
     "font": "italic",
@@ -570,17 +561,17 @@
   "hud.op_complete": {
     "scene": "operation",
     "font": "display",
-    "size": 56,
-    "maxPx": 560,
-    "context": "Banner at the end of an operation.",
+    "size": 46,
+    "maxPx": 1000,
+    "context": "Title card across the operating field at the end of an operation (engraved capitals on a dark band).",
     "screenshot": "docs/loc/screens/operation.png"
   },
   "hud.patient_lost": {
     "scene": "operation",
     "font": "display",
-    "size": 56,
-    "maxPx": 560,
-    "context": "Banner at the end of an operation.",
+    "size": 46,
+    "maxPx": 1000,
+    "context": "Title card across the operating field at the end of an operation (engraved capitals on a dark band).",
     "screenshot": "docs/loc/screens/operation.png"
   },
   "hud.litany.active": {
@@ -5630,7 +5621,7 @@
     "scene": "operation",
     "font": "display",
     "size": 28,
-    "maxPx": 380,
+    "maxPx": 900,
     "context": "HUD label above the vitals number.",
     "screenshot": "docs/loc/screens/operation.png"
   },
@@ -5903,5 +5894,101 @@
     "context": "Phase objective on the phase banner and under the timer.",
     "screenshot": "docs/loc/screens/operation.png",
     "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "ui.briefing.prognosis": {
+    "scene": "briefing",
+    "font": "body",
+    "size": 20,
+    "maxPx": 220,
+    "context": "Label before three prognosis boxes on the patient chart; one box gets a red stamp.",
+    "screenshot": "docs/loc/screens/briefing.png"
+  },
+  "ui.briefing.prognosis.fair": {
+    "scene": "briefing",
+    "font": "body",
+    "size": 18,
+    "maxPx": 140,
+    "context": "A prognosis box on the patient chart (a surgeon's estimate of the outcome). Short adjective.",
+    "screenshot": "docs/loc/screens/briefing.png"
+  },
+  "ui.briefing.prognosis.guarded": {
+    "scene": "briefing",
+    "font": "body",
+    "size": 18,
+    "maxPx": 140,
+    "context": "A prognosis box on the patient chart (a surgeon's estimate of the outcome). Short adjective.",
+    "screenshot": "docs/loc/screens/briefing.png"
+  },
+  "ui.briefing.prognosis.grave": {
+    "scene": "briefing",
+    "font": "body",
+    "size": 18,
+    "maxPx": 140,
+    "context": "A prognosis box on the patient chart (a surgeon's estimate of the outcome). Short adjective.",
+    "screenshot": "docs/loc/screens/briefing.png"
+  },
+  "ui.demoend.plate": {
+    "scene": "demoend",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 410,
+    "context": "Caption under a woodcut picture teasing the next chapter (a district of glass kilns and forges) on the end-of-demo screen.",
+    "screenshot": "docs/loc/screens/demoend.png"
+  },
+  "ui.loading.label": {
+    "scene": "loading",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 600,
+    "context": "Shown under an hourglass while the next chapter loads.",
+    "screenshot": "docs/loc/screens/loading.png"
+  },
+  "ui.loading.wound_man": {
+    "scene": "loading",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 640,
+    "context": "Caption under a woodcut picture on the loading screen. Period tone, sentence fragment.",
+    "screenshot": "docs/loc/screens/loading.png"
+  },
+  "ui.loading.leech_jar": {
+    "scene": "loading",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 640,
+    "context": "Caption under a woodcut picture on the loading screen. Period tone, sentence fragment.",
+    "screenshot": "docs/loc/screens/loading.png"
+  },
+  "ui.loading.pyre": {
+    "scene": "loading",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 640,
+    "context": "Caption under a woodcut picture on the loading screen. Period tone, sentence fragment.",
+    "screenshot": "docs/loc/screens/loading.png"
+  },
+  "ui.loading.choir": {
+    "scene": "loading",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 640,
+    "context": "Caption under a woodcut picture on the loading screen. Period tone, sentence fragment.",
+    "screenshot": "docs/loc/screens/loading.png"
+  },
+  "hud.score": {
+    "scene": "operation",
+    "font": "display",
+    "size": 11,
+    "maxPx": 120,
+    "context": "Small engraved caps label above the score number in the operation HUD.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "hud.litany": {
+    "scene": "operation",
+    "font": "display",
+    "size": 11,
+    "maxPx": 120,
+    "context": "Small caps label beside the Litany (holy rite) medallion in the operation HUD.",
+    "screenshot": "docs/loc/screens/operation.png"
   }
 }

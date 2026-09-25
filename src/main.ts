@@ -1,3 +1,4 @@
+import { DemoEndScene } from './scenes/demoend';
 import { Audio } from './core/audio';
 import { ErrorBoundary, type CrashRecord } from './core/boundary';
 import { Clock } from './core/clock';
@@ -390,6 +391,8 @@ async function boot(): Promise<void> {
   // ?scene=artview|fleshlab opens an art dev page.
   const artScene = DEV_TOOLS ? artDevScene(params.get('scene')) : null;
   if (artScene) game.go(artScene);
+  // ?ui=demoend opens the end-of-demo screen for art review.
+  if (DEV_TOOLS && params.get('ui') === 'demoend') game.instant(() => game.go(new DemoEndScene()));
   // ?ui=gallery shows every widget for visual review (UIX-0006).
   if (params.get('ui') === 'gallery') game.instant(() => game.go(new GalleryScene(() => game.go(new TitleScene()))));
   // ?story=<backdrop> previews a story environment.

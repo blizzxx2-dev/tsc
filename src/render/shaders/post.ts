@@ -90,6 +90,7 @@ uniform float u_curse;   // Malison presence 0..1: ink creeping from the edges
 uniform vec2 u_outcome;  // x: flatline 0..1 (desaturate, burn, fade), y: victory 0..1 (warm swell)
 uniform float u_hdr;     // 1 when the scene target is floating point
 uniform vec4 u_prefs;    // player display options (UIX-0105): x grain, y vignette, z brightness gamma, w reduced motion
+uniform float u_defocus; // menu depth of field: disc blur radius in px (0 = sharp)
 out vec4 o;
 // Soft shoulder: identity below the knee, gently compresses HDR highlights above it.
 vec3 shoulder(vec3 c) {
@@ -149,6 +150,23 @@ void main() {
   c.r = texture(u_scene, uv + dir).r;
   c.g = texture(u_scene, uv).g;
   c.b = texture(u_scene, uv - dir).b;
+  // Depth of field for menu backdrops: a 32-tap golden-angle disc; bright taps weigh more, so
+  // lights open into soft bokeh discs instead of smearing.
+  if (u_defocus > 0.0) {
+    vec3 acc = vec3(0.0);
+    float wsum = 0.0;
+    vec2 px = 1.0 / u_res;
+    for (int i = 0; i < 32; i++) {
+      float fi = float(i) + 0.5;
+      float r = sqrt(fi / 32.0) * u_defocus;
+      float a = fi * 2.39996323;
+      vec3 s = texture(u_scene, uv + vec2(cos(a), sin(a)) * r * px).rgb;
+      float w = 1.0 + 4.0 * smoothstep(0.55, 1.2, dot(s, vec3(0.333)));
+      acc += s * w;
+      wsum += w;
+    }
+    c = acc / wsum;
+  }
   c += texture(u_bloom, uv).rgb * u_bloomAmt * (1.0 + u_outcome.y * 1.2);
   if (u_hdr > 0.5) c = shoulder(c);
   // Per-chapter grade.

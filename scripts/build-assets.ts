@@ -20,7 +20,7 @@ interface Rules {
   bundles: string[];
   rules: { match: string; bundle: string }[];
   default: string;
-  fonts: Record<string, { family: string; style: string; weight: string }>;
+  fonts: Record<string, { family: string; style: string; weight: string; unicodeRange?: string }>;
   budgetMB: number;
 }
 interface Entry {
@@ -30,7 +30,7 @@ interface Entry {
   bundle: string;
   hash: string;
   pages?: string[];
-  font?: { family: string; style: string; weight: string };
+  font?: { family: string; style: string; weight: string; unicodeRange?: string };
   w?: number;
   h?: number;
   status?: Status;

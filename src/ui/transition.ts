@@ -13,6 +13,8 @@ export class Transition {
   phase: 'idle' | 'out' | 'in' = 'idle';
   t = 0;
   private swap: (() => void) | null = null;
+  /** Automation (a frozen QA loop stepping frame by frame) swaps scenes instantly, like Reduced Motion. */
+  instant = false;
 
   constructor(readonly duration = MOTION.transition) {}
 
@@ -28,7 +30,7 @@ export class Transition {
    */
   request(swap: () => void): boolean {
     if (this.phase === 'out') return false;
-    if (reducedMotion() || this.duration <= 0) {
+    if (this.instant || reducedMotion() || this.duration <= 0) {
       this.phase = 'idle';
       swap();
       return true;
@@ -41,9 +43,18 @@ export class Transition {
 
   /** Start by fading in from black (first scene after boot). */
   fadeIn(): void {
-    if (reducedMotion()) return;
+    if (this.instant || reducedMotion()) return;
     this.phase = 'in';
     this.t = 0;
+  }
+
+  /** Finish at once: run a pending swap and clear the veil. */
+  settle(): void {
+    const s = this.swap;
+    this.swap = null;
+    this.phase = 'idle';
+    this.t = 0;
+    s?.();
   }
 
   update(dt: number): void {

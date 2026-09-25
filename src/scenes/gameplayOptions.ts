@@ -102,7 +102,7 @@ export class GameplayOptionsScene implements Scene {
   render(g: Gfx, game: Game): void {
     g.beginWorld();
     drawBackdrop(g, 'chapel', g.time);
-    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1 });
+    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1, defocus: 8 });
     panel(g, { x: 260, y: 40, w: 760, h: 650 });
     g.text(t('ui.gameplay.title'), VIEW_W / 2, 100, { size: 40, font: 'display', color: hex(PALETTE.ink), align: 'center' });
     g.text(t('ui.gameplay.fees', { n: progress.fees }), 980, 100, { size: 16, font: 'italic', color: hex(PALETTE.gold), align: 'right' });

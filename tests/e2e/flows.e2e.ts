@@ -53,7 +53,10 @@ describe('new game flow', () => {
     await g.step(70); // the ledger's buttons appear after 1 s
     expect(s.save.best['op1-1']?.score).toBeGreaterThan(0);
     s = await g.click(RESULTS.continue.x, RESULTS.continue.y);
+    // The operation's aftermath scene plays first, then the chapter carries on.
     expect(s.scene).toBe('story');
+    expect(s.story?.id).toBe('a1-1');
+    for (let i = 0; i < 60 && s.story?.id === 'a1-1'; i++) s = await g.key('Space');
     expect(s.story?.id).toBe('s1-2');
     expect(s.save.progress).toEqual({ chapter: 0, step: 2 });
     expect(g.errors).toEqual([]);
@@ -98,7 +101,7 @@ describe('continue / resume', () => {
     expect(s.scene).toBe('briefing');
     s = await g.key('Enter');
     expect(s.op?.id).toBe('op1-5');
-    await g.step(120);
+    await g.until('surgery', (st) => st.op?.status === 'running', 600);
     s = await g.key('Escape');
     expect(s.paused).toBe(true);
     s = await g.click(640, 490); // Abandon the Patient
@@ -141,7 +144,7 @@ describe('retry and quit', () => {
       expect(s.scene).toBe('briefing');
       s = await g.key('Enter');
       expect(s.scene).toBe('operation');
-      await g.step(90, 'last');
+      await g.until('surgery', (st) => st.op?.status === 'running', 600);
       s = await g.key('Escape');
       expect(s.paused).toBe(true);
       s = await g.click(640, 490); // Abandon the Patient
@@ -157,6 +160,8 @@ describe('retry and quit', () => {
   });
 });
 
+type Rect = { x: number; y: number; w: number; h: number };
+
 describe('options persistence', () => {
   const game = useGame();
 
@@ -166,8 +171,20 @@ describe('options persistence', () => {
     const before = s.settings;
     s = await g.click(640, 390 + 60 * 2); // Options (fresh save: Take the Oath, Operating Theatre, Options)
     expect(s.scene).toBe('options');
-    // Rows start at y=170 and are 58 apart; the right half of a row steps forward.
-    for (let row = 0; row < 6; row++) s = await g.click(900, 170 + row * 58 + 25);
+    // The options screen is tabbed: find the tab and row that own each setting, click the tab,
+    // point at the row (hover moves focus) and step it forward with the keyboard, as a player would.
+    for (const key of ['volume', 'muted', 'shake', 'reduceFlashing', 'timerAssist', 'litanyKey']) {
+      const where = await g.api<{ tab: string; index: number } | null>('optionLocate', key);
+      expect(where, key).not.toBeNull();
+      await g.step(1, 'all'); // nodes are declared on the scene's next update
+      const tr = (await g.api<Rect>('nodeRect', `tab.${where!.tab}`))!;
+      await g.click(tr.x + tr.w / 2, tr.y + tr.h / 2);
+      await g.step(1, 'all');
+      const rect = (await g.api<Rect>('nodeRect', `row${where!.index}`))!;
+      await g.page.mouse.move(rect.x + rect.w / 2, rect.y + rect.h / 2);
+      await g.step(1, 'all');
+      s = await g.key('ArrowRight');
+    }
     const changed = s.settings;
     for (const k of ['volume', 'muted', 'shake', 'reduceFlashing', 'timerAssist', 'litanyKey']) expect(changed[k], k).not.toEqual(before[k]);
     await g.key('Escape');

@@ -1,4 +1,5 @@
 import type { Game, Scene } from '../core/scene';
+import { glass, heading, INK } from '../ui/hudKit';
 import { DEFAULT_SETTINGS, saveSettings, settings, type Settings } from '../core/settings';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
@@ -12,8 +13,8 @@ import { ControlsScene } from '../input/controlsScene';
 import { glyphFor } from '../input/glyphs';
 import { litanyMode } from '../input/opinput';
 import { Ui, type UiNode } from '../ui/kit';
-import { drawTooltip, hrule, menuEntry, optionRow, sealButton, tab } from '../ui/controls';
-import { divider, giltText, leatherPanel, UI } from '../ui/ornaments';
+import { drawTooltip, menuEntry, optionRow, sealButton, tab } from '../ui/controls';
+import { UI } from '../ui/ornaments';
 import { MOTION, tween } from '../ui/motion';
 import { ScrollList } from '../ui/scroll';
 import { fitBlock } from '../ui/text';
@@ -360,15 +361,13 @@ export class OptionsScene implements Scene {
     } else if (this.overWorld) {
       g.beginWorld();
       drawBackdrop(g, 'chapel', g.time);
-      g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1 });
+      g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1, defocus: 8 });
     } else g.beginScreen();
     const pr = { x: 180, y: 34, w: 920, h: 656 };
-    leatherPanel(g, pr);
-    giltText(g, t('ui.options.title'), VIEW_W / 2, 96, { size: 50, align: 'center' });
-    divider(g, VIEW_W / 2, 112, 300);
-    // Page under the tabs.
-    g.rectGrad(pr.x + 18, 170, pr.w - 36, 402, hex('#2a100a', 0.9), hex('#180806', 0.9));
-    g.rect(pr.x + 18, 170, pr.w - 36, 2, hex(UI.gilt, 0.8));
+    glass(g, pr, { strength: 1.12, alpha: k });
+    heading(g, t('ui.options.title'), VIEW_W / 2, 92, 360, k, 30);
+    // Page under the tabs: a recessed well.
+    g.plate(pr.x + 18, 172, pr.w - 36, 400, { radius: 2, top: hex('#060504', 0.55), bottom: hex('#0c0907', 0.55), border: hex(INK.gilt, 0.22), borderW: 1, bevel: -0.4, shadow: [0, 0, 0], grain: 0.4 });
     const t0 = g.time;
     const fade = tween(this.tabT, MOTION.page);
     g.pushClip(this.list.view);
@@ -384,10 +383,10 @@ export class OptionsScene implements Scene {
             { x: n.rect.x + n.rect.w - 18, y: n.rect.y + 23 },
             { x: n.rect.x + n.rect.w - 30, y: n.rect.y + 31 },
           ],
-          hex(UI.brass),
+          hex(INK.gold),
         );
       } else optionRow(g, shifted, s, t0, { size: 23, split: 0.5 });
-      hrule(g, n.rect.x + 12, n.rect.y + n.rect.h + 2, n.rect.w - 24, hex(UI.brass, 0.18));
+      g.rect(n.rect.x + 12, n.rect.y + n.rect.h + 2, n.rect.w - 24, 1, hex(INK.gilt, 0.12));
     }
     g.popClip();
     this.list.drawBar(g, this.rows.length);
@@ -401,7 +400,7 @@ export class OptionsScene implements Scene {
     const row = fi >= 0 ? this.rows[fi] : undefined;
     if (row) {
       const noteW = row.preview ? 560 : 820;
-      fitBlock(g, `options.${row.id}.note`, rowNote(row), 230, 590, noteW, 1, { size: 18, font: 'italic', color: hex(palette().inkDim) });
+      fitBlock(g, `options.${row.id}.note`, rowNote(row), 230, 596, noteW, 1, { size: 17, font: 'italic', color: hex(INK.dim) });
       if (row.preview === 'palette') paletteSwatches(g, 820, 574);
     }
     drawTooltip(g, this.ui);

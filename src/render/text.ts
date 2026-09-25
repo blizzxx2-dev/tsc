@@ -15,10 +15,14 @@ export function setFallbackHighlight(on: boolean): void {
 }
 export const fallbackHighlight = (): boolean => highlightFallback;
 
-export const FONT_FAMILIES: Record<FontId, { style: string; family: string }> = {
-  body: { style: 'normal', family: '"IM Fell English", "Palatino Linotype", "Book Antiqua", Georgia, serif' },
-  italic: { style: 'italic', family: '"IM Fell English", "Palatino Linotype", Georgia, serif' },
-  display: { style: 'normal', family: '"UnifrakturMaguntia", "IM Fell English", Georgia, serif' },
+/**
+ * UI typography: Cinzel (engraved Roman capitals) for titles, banners and labels; EB Garamond for
+ * body text and narration. Both OFL, with Latin Extended subsets for PL/CS/HU.
+ */
+export const FONT_FAMILIES: Record<FontId, { style: string; weight: number; family: string }> = {
+  body: { style: 'normal', weight: 500, family: '"EB Garamond", "Palatino Linotype", "Book Antiqua", Georgia, serif' },
+  italic: { style: 'italic', weight: 500, family: '"EB Garamond", "Palatino Linotype", Georgia, serif' },
+  display: { style: 'normal', weight: 600, family: '"Cinzel", "Trajan Pro", "EB Garamond", Georgia, serif' },
 };
 
 export interface Glyph {
@@ -45,7 +49,10 @@ const PAD = 6;
  * source) into one WebGL texture, so all text batches with the shapes.
  */
 export class GlyphAtlas {
+  /** Layout size: `measure`/advances are in these units, whatever tier a glyph is drawn from. */
   readonly baseSize = 56;
+  /** Raster tiers (px): text is drawn from the smallest tier at least as large as its on-screen size. */
+  static readonly TIERS = [16, 24, 36, 56, 84] as const;
   texture: WebGLTexture;
   readonly white = { u: 1 / SIZE, v: 1 / SIZE };
   private canvas: HTMLCanvasElement;
@@ -95,39 +102,46 @@ export class GlyphAtlas {
     this.dirty = true;
   }
 
-  private font(f: FontId): string {
-    const { style, family } = FONT_FAMILIES[f];
-    return `${style} ${this.baseSize}px ${readable && f !== 'display' ? READABLE : family}`;
+  private font(f: FontId, px: number = this.baseSize): string {
+    const { style, weight, family } = FONT_FAMILIES[f];
+    return `${style} ${weight} ${px}px ${readable && f !== 'display' ? READABLE : family}`;
   }
 
   /** Cache key for a face: the readable swap gets its own glyphs and metrics. */
-  private face(f: FontId): string {
-    return readable && f !== 'display' ? `${f}~r` : f;
+  private face(f: FontId, px: number = this.baseSize): string {
+    return (readable && f !== 'display' ? `${f}~r` : f) + '@' + px;
   }
 
-  ascent(f: FontId): number {
-    return this.metricsFor(f).ascent;
+  /** The raster tier for text drawn `screenPx` tall. */
+  tier(screenPx: number): number {
+    for (const t of GlyphAtlas.TIERS) if (t >= screenPx * 0.95) return t;
+    return GlyphAtlas.TIERS[GlyphAtlas.TIERS.length - 1];
   }
 
-  private metricsFor(f: FontId): { ascent: number; descent: number } {
-    let m = this.metrics.get(this.face(f));
+  ascent(f: FontId, px: number = this.baseSize): number {
+    return this.metricsFor(f, px).ascent;
+  }
+
+  private metricsFor(f: FontId, px: number = this.baseSize): { ascent: number; descent: number } {
+    let m = this.metrics.get(this.face(f, px));
     if (!m) {
-      this.ctx.font = this.font(f);
+      this.ctx.font = this.font(f, px);
       const tm = this.ctx.measureText('Hgjy|');
-      m = { ascent: Math.ceil(tm.actualBoundingBoxAscent + 4), descent: Math.ceil(tm.actualBoundingBoxDescent + 4) };
-      this.metrics.set(this.face(f), m);
+      const padK = px / this.baseSize;
+      m = { ascent: Math.ceil(tm.actualBoundingBoxAscent + 4 * padK), descent: Math.ceil(tm.actualBoundingBoxDescent + 4 * padK) };
+      this.metrics.set(this.face(f, px), m);
     }
     return m;
   }
 
-  glyph(ch: string, f: FontId): Glyph {
-    const key = this.face(f) + ch;
+  glyph(ch: string, f: FontId, px: number = this.baseSize): Glyph {
+    const key = this.face(f, px) + ch;
     let g = this.glyphs.get(key);
     if (g) return g;
     const ctx = this.ctx;
-    ctx.font = this.font(f);
+    ctx.font = this.font(f, px);
     const adv = ctx.measureText(ch).width;
-    const m = this.metricsFor(f);
+    const m = this.metricsFor(f, px);
     if (ch === ' ') {
       g = { u0: 0, v0: 0, u1: 0, v1: 0, w: 0, h: 0, ox: 0, oy: 0, adv };
       this.glyphs.set(key, g);
@@ -156,7 +170,7 @@ export class GlyphAtlas {
     ctx.textBaseline = 'alphabetic';
     ctx.fillText(ch, this.penX + PAD + 4, this.penY + PAD + m.ascent);
     const fallback = this.isFallback(ch, f);
-    ctx.font = this.font(f);
+    ctx.font = this.font(f, px);
     g = {
       u0: this.penX / SIZE,
       v0: this.penY / SIZE,
@@ -184,12 +198,13 @@ export class GlyphAtlas {
     const ctx = this.ctx;
     const face = this.font(f);
     const primary = face.slice(0, face.indexOf(',') >= 0 ? face.indexOf(',') : face.length);
-    const [style, size] = face.split(' ');
+    const [style, weight, size] = face.split(' ');
     const w = (font: string) => {
       ctx.font = font;
       return ctx.measureText(ch).width;
     };
-    return w(`${primary}, monospace`) === w(`${style} ${size} monospace`) && w(`${primary}, cursive`) === w(`${style} ${size} cursive`);
+    const generic = (g: string) => `${style} ${weight} ${size} ${g}`;
+    return w(`${primary}, monospace`) === w(generic('monospace')) && w(`${primary}, cursive`) === w(generic('cursive'));
   }
 
   measure(str: string, f: FontId): number {

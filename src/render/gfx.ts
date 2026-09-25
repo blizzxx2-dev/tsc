@@ -1,5 +1,5 @@
 import type { Vec } from '../core/math';
-import { alphaOf, hex, type RGBA } from './color';
+import { alphaOf, hex, withAlpha, type RGBA } from './color';
 import { bakeLut, GRADES, LUT_SIZE } from './lut';
 import { fallbackHighlight, GlyphAtlas, type FontId } from './text';
 import { BRIGHT_FS, CREATURE_FS, DOWN_FS, FLESH_FS, FLUID_FS, FULL_VS, IMAGE_FS, IMAGE_VS, PORTRAIT_FS, POST_FS, RECT_VS, SCENE_FS, UP_FS } from './shaders';
@@ -12,6 +12,7 @@ import { RenderTargetPool, type Target } from './targets';
 import { checkerPixels, Texture } from './texture';
 import { scissorRect } from './viewport';
 import { UI_ART_FS } from '../art/uiShader';
+import { PLATE_FS } from './shaders/plate';
 
 /** Bilinear upsample of a reduced-resolution layer. */
 const UPSAMPLE_FS = `#version 300 es
@@ -47,6 +48,10 @@ export interface TextOpts {
   font?: FontId;
   shadow?: RGBA | false;
   maxWidth?: number;
+  /** Extra letter spacing in em (0.12 for engraved caps labels). */
+  tracking?: number;
+  /** Soft shadow: the shadow is drawn as a small blurred halo instead of one hard offset copy. */
+  soft?: boolean;
 }
 
 export interface ImageHandle {
@@ -54,6 +59,24 @@ export interface ImageHandle {
   w: number;
   h: number;
   ready: boolean;
+}
+
+export interface PlateOpts {
+  radius?: number;
+  chamfer?: boolean;
+  top?: RGBA;
+  bottom?: RGBA;
+  border?: RGBA;
+  borderW?: number;
+  inset?: RGBA;
+  insetD?: number;
+  bevel?: number;
+  /** [alpha, blur px, offset y px]; alpha 0 disables. */
+  shadow?: [number, number, number];
+  glow?: RGBA;
+  glowR?: number;
+  grain?: number;
+  alpha?: number;
 }
 
 export interface ImageOpts {
@@ -120,6 +143,8 @@ export interface PostParams {
   lens?: [number, number, number, number];
   /** Damage flash: direction from screen centre (virtual px) and intensity 0..1. */
   hurt?: [number, number, number];
+  /** Depth-of-field blur for menu backdrops, in virtual px (0 = sharp). */
+  defocus?: number;
 }
 
 export interface GfxOptions {
@@ -264,6 +289,7 @@ export class Gfx {
     // Lazily compiled programs belong to the old context after a restore.
     this.sceneProgs.clear();
     this.uiArtProg = null;
+    this.plateProg = null;
     this.upsampleProg = null;
     this.downProg = reg.createProgram('bloom-down', FULL_VS, DOWN_FS);
     this.upProg = reg.createProgram('bloom-up', FULL_VS, UP_FS);
@@ -574,6 +600,7 @@ export class Gfx {
     gl.uniform2fv(this.u(this.post, 'u_litanyCenter'), p.litanyCenter ?? [0.5, 0.5]);
     gl.uniform1f(this.u(this.post, 'u_litanyAge'), p.litanyAge ?? 10);
     gl.uniform3fv(this.u(this.post, 'u_hurt'), p.hurt ?? [0, 0, 0]);
+    gl.uniform1f(this.u(this.post, 'u_defocus'), (p.defocus ?? 0) * (this.canvas.width / this.vw));
     const ln = p.lens ?? [0, 0, 0, 0];
     gl.uniform4f(this.u(this.post, 'u_lens'), ln[0] / this.vw, 1 - ln[1] / this.vh, ln[2] / this.vh, ln[3]);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -831,6 +858,7 @@ export class Gfx {
   private lookDevClip = false;
 
   private uiArtProg: WebGLProgram | null = null;
+  private plateProg: WebGLProgram | null = null;
 
   /**
    * Procedural UI art (src/art/uiShader.ts) drawn into a rect, premultiplied. `mode` picks the
@@ -855,6 +883,47 @@ export class Gfx {
     gl.uniform3fv(this.u(pr, 'u_col'), p.col ?? [0.55, 0.06, 0.08]);
     gl.uniform3fv(this.u(pr, 'u_col2'), p.col2 ?? [0.9, 0.8, 0.5]);
     gl.uniform4fv(this.u(pr, 'u_a'), p.a ?? [0, 0, 0, 0]);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    this.applyBlend();
+  }
+
+  /**
+   * A UI plate (PLATE_FS): the material every HUD and menu surface is made of. Colours are
+   * straight-alpha RGBA numbers. Honours translate/uniform scale of the current transform.
+   */
+  plate(x: number, y: number, w: number, h: number, o: PlateOpts = {}): void {
+    if (w <= 0 || h <= 0) return;
+    const t = this.tf;
+    const k = Math.hypot(t[0], t[1]) || 1;
+    const X = t[0] * x + t[2] * y + t[4];
+    const Y = t[1] * x + t[3] * y + t[5];
+    const shadow = o.shadow ?? [0.55, 18, 6];
+    const pad = Math.ceil(Math.max(shadow[1] + Math.abs(shadow[2]), o.glow ? (o.glowR ?? 16) * 1.5 : 0, 2)) * k;
+    this.flush('program');
+    this.stats.drawCalls++;
+    const gl = this.gl;
+    const pr = (this.plateProg ??= this.registry.createProgram('ui-plate', RECT_VS, PLATE_FS));
+    gl.useProgram(pr);
+    this.rectQuad(X - pad, Y - pad, w * k + pad * 2, h * k + pad * 2);
+    const c4 = (c: RGBA | undefined, fallback: [number, number, number, number]): [number, number, number, number] =>
+      c === undefined ? fallback : [(c & 0xff) / 255, ((c >>> 8) & 0xff) / 255, ((c >>> 16) & 0xff) / 255, ((c >>> 24) & 0xff) / 255];
+    gl.uniform2f(this.u(pr, 'u_view'), this.vw, this.vh);
+    gl.uniform2f(this.u(pr, 'u_size'), w * k, h * k);
+    gl.uniform1f(this.u(pr, 'u_pad'), pad);
+    gl.uniform2f(this.u(pr, 'u_shape'), (o.radius ?? 4) * k, o.chamfer ? 1 : 0);
+    gl.uniform4fv(this.u(pr, 'u_top'), c4(o.top, [0.09, 0.07, 0.06, 0.92]));
+    gl.uniform4fv(this.u(pr, 'u_bot'), c4(o.bottom ?? o.top, [0.04, 0.03, 0.03, 0.94]));
+    gl.uniform4fv(this.u(pr, 'u_border'), c4(o.border, [0.72, 0.58, 0.32, 0.9]));
+    gl.uniform1f(this.u(pr, 'u_bw'), (o.borderW ?? 1.25) * k);
+    gl.uniform4fv(this.u(pr, 'u_inset'), c4(o.inset, [0, 0, 0, 0]));
+    gl.uniform1f(this.u(pr, 'u_insetD'), (o.insetD ?? 4) * k);
+    gl.uniform1f(this.u(pr, 'u_bevel'), o.bevel ?? 0.6);
+    gl.uniform4f(this.u(pr, 'u_shadow'), shadow[0], shadow[1] * k, shadow[2] * k, 0);
+    gl.uniform4fv(this.u(pr, 'u_glow'), c4(o.glow, [0, 0, 0, 0]));
+    gl.uniform1f(this.u(pr, 'u_glowR'), (o.glowR ?? 16) * k);
+    gl.uniform1f(this.u(pr, 'u_grain'), o.grain ?? 1);
+    gl.uniform1f(this.u(pr, 'u_alpha'), o.alpha ?? 1);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
     this.applyBlend();
@@ -1412,16 +1481,31 @@ export class Gfx {
 
   // ------------------------------------------------------------ text
 
-  measure(str: string, size = 20, font: FontId = 'body'): number {
-    return this.atlas.measure(str, font) * (size / this.atlas.baseSize);
+  measure(str: string, size = 20, font: FontId = 'body', tracking = 0): number {
+    const n = [...str].length;
+    return this.atlas.measure(str, font) * (size / this.atlas.baseSize) + (n > 1 ? (n - 1) * tracking * size : 0);
   }
 
   text(str: string, x: number, y: number, o: TextOpts = {}): void {
     const size = o.size ?? 20;
     const font = o.font ?? 'body';
     const color = o.color ?? 0xffc0dce8;
-    if (o.shadow !== false) this.textRaw(str, x + size * 0.06, y + size * 0.08, size, font, o.shadow ?? (0xb0000000 >>> 0), o.align ?? 'left');
-    this.textRaw(str, x, y, size, font, color, o.align ?? 'left', o.color2 ?? color);
+    const tr = o.tracking ?? 0;
+    const align = o.align ?? 'left';
+    if (o.shadow !== false) {
+      const sc = o.shadow ?? (0xb0000000 >>> 0);
+      if (o.soft) {
+        // Eight faint taps around a downward offset approximate a blurred drop shadow.
+        const r = Math.max(1, size * 0.06);
+        const a = ((sc >>> 24) & 255) / 255;
+        const faint = withAlpha(sc, a * 0.22);
+        for (let i = 0; i < 8; i++) {
+          const ang = (i / 8) * Math.PI * 2;
+          this.textRaw(str, x + Math.cos(ang) * r, y + size * 0.06 + Math.sin(ang) * r, size, font, faint, align, faint, tr);
+        }
+      } else this.textRaw(str, x + size * 0.06, y + size * 0.08, size, font, sc, align, sc, tr);
+    }
+    this.textRaw(str, x, y, size, font, color, align, o.color2 ?? color, tr);
   }
 
   /** Word-wrapped text; returns the height used. */
@@ -1449,21 +1533,32 @@ export class Gfx {
     return lines.length * size * lineH;
   }
 
-  private textRaw(str: string, x: number, y: number, size: number, font: FontId, c: RGBA, align: Align, c2: RGBA = c): void {
+  /** Output pixels per virtual pixel, including the current transform's scale. */
+  private pixelScale(): number {
+    const out = this.outW || this.canvas.width;
+    return (out / (this.vw || 1280)) * (Math.hypot(this.tf[0], this.tf[1]) || 1);
+  }
+
+  private textRaw(str: string, x: number, y: number, size: number, font: FontId, c: RGBA, align: Align, c2: RGBA = c, tracking = 0): void {
+    // Layout in base units (so measure() and drawing agree); glyph images from the raster tier
+    // nearest the on-screen size, so small text stays crisp and large text stays sharp.
     const s = size / this.atlas.baseSize;
-    const w = this.atlas.measure(str, font) * s;
+    const tier = this.atlas.tier(size * this.pixelScale());
+    const ts = size / tier;
+    const w = this.measure(str, size, font, tracking);
     let cx = align === 'center' ? x - w / 2 : align === 'right' ? x - w : x;
-    const top = y - this.atlas.ascent(font) * s;
+    const top = y - this.atlas.ascent(font, tier) * ts;
     const lqa = fallbackHighlight();
     for (const ch of str) {
-      const g = this.atlas.glyph(ch, font);
+      const base = this.atlas.glyph(ch, font);
+      const g = tier === this.atlas.baseSize ? base : this.atlas.glyph(ch, font, tier);
       if (g.w > 0) {
         if (lqa && g.fallback) c = c2 = MAGENTA;
         this.room(6);
-        const x0 = cx + g.ox * s;
-        const y0 = top + g.oy * s;
-        const x1 = x0 + g.w * s;
-        const y1 = y0 + g.h * s;
+        const x0 = cx + g.ox * ts;
+        const y0 = top + g.oy * ts;
+        const x1 = x0 + g.w * ts;
+        const y1 = y0 + g.h * ts;
         this.vert(x0, y0, g.u0, g.v0, c);
         this.vert(x1, y0, g.u1, g.v0, c);
         this.vert(x1, y1, g.u1, g.v1, c2);
@@ -1471,7 +1566,7 @@ export class Gfx {
         this.vert(x1, y1, g.u1, g.v1, c2);
         this.vert(x0, y1, g.u0, g.v1, c2);
       }
-      cx += g.adv * s;
+      cx += base.adv * s + tracking * size;
     }
   }
 }

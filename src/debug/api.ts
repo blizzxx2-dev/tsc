@@ -4,6 +4,9 @@
  * Versioned: bump DEBUG_API_VERSION on any breaking change and keep tests/e2e in step.
  * Only bundled in dev and QA builds (see ./hooks.ts); `vite build` (production) strips it.
  */
+import { OPTION_TABS, optionRows } from '../scenes/options';
+import { LoadingScene } from '../scenes/loading';
+import type { Transition } from '../ui/transition';
 import { CAMPAIGN, allOperations } from '../content/campaign';
 import { SHOWCASE } from '../content/dev';
 import type { StoryDef } from '../content/story';
@@ -28,9 +31,9 @@ import { opView, stateHash, type OpView } from './state';
 export const DEBUG_API_VERSION = 1;
 
 /** The concrete game object from main.ts (Game plus the active scene). */
-export type DebugGame = Game & { scene: Scene | null };
+export type DebugGame = Game & { scene: Scene | null; transition?: Transition };
 
-export type SceneName = 'title' | 'story' | 'briefing' | 'operation' | 'results' | 'options' | 'operations' | 'demoend' | 'unknown';
+export type SceneName = 'title' | 'story' | 'briefing' | 'operation' | 'results' | 'options' | 'operations' | 'demoend' | 'loading' | 'unknown';
 
 export interface DebugState {
   version: number;
@@ -61,6 +64,8 @@ interface InputInternals {
   wheel: number;
   keysPressed: Set<string>;
   beginFrame(): void;
+  beginStep(tEnd?: number, dt?: number): void;
+  beginRender(): void;
   endFrame(): void;
 }
 
@@ -73,6 +78,7 @@ export function sceneName(s: Scene | null): SceneName {
   if (s instanceof OptionsScene) return 'options';
   if (s instanceof OperationsScene) return 'operations';
   if (s instanceof DemoEndScene) return 'demoend';
+  if (s instanceof LoadingScene) return 'loading';
   return 'unknown';
 }
 
@@ -107,14 +113,27 @@ export class DebugApi {
   private wrapInput(): void {
     const input = this.game.input as unknown as InputInternals;
     const begin = input.beginFrame.bind(input);
+    const beginStep = input.beginStep.bind(input);
+    const beginRender = input.beginRender.bind(input);
     const end = input.endFrame.bind(input);
-    input.beginFrame = () => {
-      if (!this.frozen || this.stepping) return begin();
-      // Neutral frame: leave pending pointer/keyboard events queued for the next step.
+    // Neutral frame: leave pending pointer/keyboard events queued for the next step.
+    const neutral = () => {
       input.pressed = input.released = input.rightPressed = false;
       input.wheel = 0;
       input.keysPressed = new Set();
       input.path = [input.pos];
+    };
+    input.beginFrame = () => {
+      if (!this.frozen || this.stepping) return begin();
+      neutral();
+    };
+    // The fixed-step loop consumes input through beginStep/beginRender: hold those too while frozen.
+    input.beginStep = (tEnd?: number, dt?: number) => {
+      if (!this.frozen || this.stepping) return beginStep(tEnd, dt);
+      neutral();
+    };
+    input.beginRender = () => {
+      if (!this.frozen || this.stepping) return beginRender();
     };
     input.endFrame = () => {
       if (!this.frozen || this.stepping) end();
@@ -141,11 +160,33 @@ export class DebugApi {
 
   freeze(): DebugState {
     this.frozen = true;
+    // Stepped automation expects a click to land in the next scene at once: no fades.
+    const tr = this.game.transition;
+    if (tr) {
+      tr.instant = true;
+      tr.settle();
+    }
     return this.state();
   }
 
   thaw(): void {
     this.frozen = false;
+    if (this.game.transition) this.game.transition.instant = false;
+  }
+
+  /** Which options tab and row index own a settings key (for UI automation that clicks the real screen). */
+  optionLocate(key: string): { tab: string; index: number } | null {
+    for (const tab of OPTION_TABS) {
+      const index = optionRows(tab).findIndex((r) => r.keys?.includes(key as never));
+      if (index >= 0) return { tab, index };
+    }
+    return null;
+  }
+
+  /** The screen rect of a node in the current scene's UI tree (`tab.audio`, `row3`…), if any. */
+  nodeRect(id: string): { x: number; y: number; w: number; h: number } | null {
+    const ui = (this.game.scene as unknown as { ui?: { nodes: { id: string; rect: { x: number; y: number; w: number; h: number } }[] } }).ui;
+    return ui?.nodes.find((n) => n.id === id)?.rect ?? null;
   }
 
   /** Set the renderer's animation clock (shader time), so captures are repeatable. */

@@ -6,6 +6,8 @@ import { CAMPAIGN } from '../content/campaign';
 import { VIEW_W } from '../ui/layout';
 import { divider, leatherPanel, UI, waxSeal, woodcutCorner } from '../ui/ornaments';
 import { chapterSeal } from '../art/kit';
+import { settings } from '../core/settings';
+import { kilnRowsPlate } from '../art/plates';
 import { button, reticle } from '../ui/widgets';
 import { drawBackdrop } from './backdrop';
 import { save } from './flow';
@@ -27,7 +29,7 @@ export class DemoEndScene implements Scene {
   render(g: Gfx, game: Game): void {
     g.beginWorld();
     drawBackdrop(g, 'night', g.time);
-    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1.1 });
+    g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1.1, defocus: 8 });
     const a = Math.min(1, this.t);
     {
       const vr = g.viewRect();
@@ -40,21 +42,24 @@ export class DemoEndScene implements Scene {
 
     // A pressed seal for each chapter finished (ART-0067).
     CAMPAIGN.forEach((c, i) => chapterSeal(g, VIEW_W / 2 + (i === 0 ? -330 : 330), 150, 38, c.numeral, this.t - 0.6 - i * 0.25));
-    const panelR = { x: 250, y: 232, w: 780, h: 330 };
+    const panelR = { x: 70, y: 232, w: 680, h: 330 };
     leatherPanel(g, panelR, { alpha: 0.94 * a });
     for (const [x, y, dx, dy] of [[panelR.x, panelR.y, 1, 1], [panelR.x + panelR.w, panelR.y, -1, 1], [panelR.x, panelR.y + panelR.h, 1, -1], [panelR.x + panelR.w, panelR.y + panelR.h, -1, -1]] as const) woodcutCorner(g, x, y, dx, dy, 0, hex(UI.brass, a), 1, '#2a1812');
-    g.text(t('ui.demoend.ledger'), VIEW_W / 2, panelR.y + 42, { size: 24, color: hex(UI.gilt), align: 'center' });
+    g.text(t('ui.demoend.ledger'), panelR.x + panelR.w / 2, panelR.y + 42, { size: 24, color: hex(UI.gilt), align: 'center' });
     const ops = CAMPAIGN.flatMap((c) => c.steps.flatMap((s) => (s.kind === 'op' ? [{ ch: c.numeral, op: s.op }] : [])));
     ops.forEach(({ ch, op }, i) => {
       const col = i < 5 ? 0 : 1;
       const row = i % 5;
-      const x = panelR.x + 50 + col * 370;
+      const x = panelR.x + 36 + col * 322;
       const y = panelR.y + 90 + row * 48;
       const best = save.best[op.id];
       g.text(t('ui.demoend.ledger_entry', { chapter: ch, index: row + 1, title: op.title }), x, y, { size: 20, color: hex(UI.parch) });
-      if (best) waxSeal(g, x + 320, y - 7, 17, '#8a1016', best.rank, best.rank === 'XS' ? 14 : 20);
-      else g.text('—', x + 320, y, { size: 20, color: hex('#6a5a40'), align: 'center' });
+      if (best) waxSeal(g, x + 284, y - 7, 17, '#8a1016', best.rank, best.rank === 'XS' ? 14 : 20);
+      else g.text('—', x + 284, y, { size: 20, color: hex('#6a5a40'), align: 'center' });
     });
+
+    // A woodcut plate of what comes next (ART-0060).
+    kilnRowsPlate(g, { x: 780, y: 232, w: 430, h: 330 }, settings.reduceMotion ? 0 : this.t, t('ui.demoend.plate'), a);
 
     if (this.t > 0.8) {
       if (button(g, game.input, t('ui.demoend.wishlist'), VIEW_W / 2, 620, 32)) platform.steam.openStore(EDITIONS.full.steamAppId);

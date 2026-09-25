@@ -14,20 +14,21 @@ import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOW
 import { TOOL_INFO, toolInfo, type ToolId } from '../surgery/types';
 import { anchorShift, PALETTE, viewRect, VIEW_W } from '../ui/layout';
 import { button, inRect, reticle, toolIcon } from '../ui/widgets';
-import { banner, divider, giltText, hourglass, keyPlate, leatherPanel, medallion, plaque, scroll, tooltipSlip, UI } from '../ui/ornaments';
+import { divider, giltText, UI } from '../ui/ornaments';
 import { buttonSurface } from '../ui/widgets';
 import type { ActionId } from '../input/actions';
 import { DamageAggregator, ToolHints } from '../ui/hudPrefs';
+import { band, caps, diamond, glass, INK, keycap, meter, numerals, titleRule, well } from '../ui/hudKit';
 import { localeInfo } from '../i18n/locales';
 import { getLocale } from '../i18n';
 import { bloodScale, GORE_LEVEL, presentation } from '../render/presentation';
 import { highContrast, palette } from '../ui/theme';
 import { giltNumerals, snuffedVeil } from '../ui/ornaments';
-import { ledgerArt, ratingStamp, ribbonArt, starReliquary, tallyRibbon, tinctureGauge, trayPocketArt, vialArt } from '../art/kit';
-import { cursorTint, quillTrace, vialLevel } from '../art/hud';
+import { ledgerArt, ratingStamp, ribbonArt, starReliquary, vialArt } from '../art/kit';
+import { cursorTint, vialLevel } from '../art/hud';
 import { CAST } from '../content/characters';
 import { ASSISTANT_NAME } from '../content/characters';
-import { vec3, type RGBA } from '../render/color';
+import { vec3 } from '../render/color';
 import { settings } from '../core/settings';
 import { OptionsScene } from './options';
 import { litanyMode, OperationInput } from '../input/opinput';
@@ -42,8 +43,7 @@ export interface OperationOutcome {
   won: boolean;
 }
 
-const TRAY = { x: 14, y: 106, w: 88, h: 58, gap: 6 };
-const ECG = { x: 160, y: 20, w: 252, h: 52 };
+const TRAY = { x: 24, y: 124, w: 64, h: 60, gap: 8 };
 
 /** 1 → I, 2 → II … for phase banners. */
 const roman = (n: number): string => ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'][n - 1] ?? String(n);
@@ -407,21 +407,17 @@ export class OperationScene implements Scene {
     if (drawLitanyPractice(g, op, game.input)) op.skipPractice();
     drawDialogue(g, op, game.input);
 
-    if (op.status === 'intro') {
-      const a = Math.min(1, op.elapsed * 3);
-      banner(g, VIEW_W / 2, 300, 520, 70);
-      giltText(g, op.def.title, VIEW_W / 2, 350, { size: 50 * (0.9 + 0.1 * a), align: 'center' });
-      g.text(op.def.patient, VIEW_W / 2, 400, { size: 24, font: 'italic', color: hex(UI.parch, a), align: 'center' });
-    }
-    if (op.status === 'won') {
-      banner(g, VIEW_W / 2, 310, 620, 76);
-      giltText(g, tr('hud.op_complete'), VIEW_W / 2, 364, { size: 56, align: 'center' });
-    }
-    if (op.status === 'lost') {
-      banner(g, VIEW_W / 2, 300, 620, 76, '#1a0a0a');
-      g.text(tr('hud.patient_lost'), VIEW_W / 2, 354, { size: 54, font: 'display', color: hex('#e04848'), color2: hex('#7a0c10'), align: 'center' });
-      g.text(tSource(op.lostReason), VIEW_W / 2, 410, { size: 24, font: 'italic', color: hex(UI.parch), align: 'center' });
-    }
+    // Title cards: a dark band across the field with a tracked Cinzel title and a lozenge rule.
+    const card = (title: string, sub: string | null, a: number, top: string, bottom: string) => {
+      const vr = viewRect();
+      band(g, 296, 128, a, vr.x, vr.w);
+      g.text(title.toUpperCase(), VIEW_W / 2, 356, { size: 46, font: 'display', color: hex(top, a), color2: hex(bottom, a), align: 'center', tracking: 0.14, shadow: hex('#000000', 0.9 * a), soft: true });
+      titleRule(g, VIEW_W / 2, 374, 460, a);
+      if (sub) g.text(sub, VIEW_W / 2, 404, { size: 21, font: 'italic', color: hex(INK.text, a), align: 'center', shadow: hex('#000000', 0.9 * a), soft: true });
+    };
+    if (op.status === 'intro') card(op.def.title, op.def.patient, Math.min(1, op.elapsed * 3), INK.goldHi, INK.gold);
+    if (op.status === 'won') card(tr('hud.op_complete'), null, 1, INK.goldHi, INK.gold);
+    if (op.status === 'lost') card(tr('hud.patient_lost'), tSource(op.lostReason), 1, '#ffb0a8', '#c0282c');
 
     if (this.paused && !game.push) this.drawPause(g, game);
     if (this.resumeT > 0) {
@@ -446,55 +442,68 @@ export class OperationScene implements Scene {
     const t = g.time;
     const pal = palette();
     const vcol = op.vitals > 60 ? pal.vitalsGood : op.vitals > 30 ? pal.vitalsWarn : pal.vitalsDanger;
+    const plateK = pal.plate > 0 ? 1.15 : 1;
 
-    // ---- Vitals: heart medallion, engraved number, blood tube and a phosphor pulse-glass.
-    leatherPanel(g, { x: 14, y: 10, w: 410, h: 72 }, { corners: false });
-    const beat = 1 + this.pulse * 0.18;
-    medallion(g, 52, 46, 27, hex('#240608'));
-    heart(g, 52, 48, 14 * beat, hex(op.vitals > 30 ? '#c0182a' : '#ff3030'));
-    g.glow(52, 48, 30 * (settings.reduceMotion ? 1 : beat), hex('#ff2030', settings.reduceMotion ? 0.25 : 0.15 + this.pulse * 0.25));
-    // High contrast (UIX-0149): solid plates behind the HUD's numbers.
-    if (pal.plate > 0) {
-      g.rect(86, 16, 64, 56, hex('#000000', pal.plate));
-      g.rect(VIEW_W / 2 - 20, 44, 96, 34, hex('#000000', pal.plate));
-      if (!settings.minimalHud) g.rect(VIEW_W - 200, 44, 184, 34, hex('#000000', pal.plate));
-    }
-    g.text(tr('hud.vitals'), 92, 30, { size: 16, color: hex(UI.brass), shadow: false });
-    g.text(formatVitals(op.displayVitals()), 92, 64, { size: 38, font: 'body', color: hex('#ffffff'), color2: hex(vcol), shadow: hex('#000000', 0.9) });
-    drawDrainArrow(g, op, 146, 50);
-    drawSecondaryVitals(g, op, 160, 80);
-    tinctureGauge(g, { x: 88, y: 66, w: 64, h: 13 }, op.vitals / op.maxVitals, op.vitals < 30 ? 1 - op.vitals / 30 : 0, this.pulse);
-    quillTrace(g, ECG, this.ecg, op.vitals, t);
+    // ---- Vitals: label, big numeral, pulse trace in a recessed window, and a blood meter.
+    const V = { x: 16, y: 14, w: 316, h: 86 };
+    glass(g, V, { strength: plateK });
+    caps(g, tr('hud.vitals'), V.x + 18, V.y + 22, 11);
+    const low = op.vitals <= 30;
+    const beat = settings.reduceMotion ? 0 : this.pulse;
+    g.text(formatVitals(op.displayVitals()), V.x + 16, V.y + 64, { size: 42, font: 'display', color: hex('#ffffff'), color2: hex(vcol), tracking: 0.04, shadow: hex('#000000', 0.85), soft: true });
+    drawDrainArrow(g, op, V.x + 96, V.y + 38);
+    // Pulse window: a phosphor trace in a dark well.
+    const W = { x: V.x + 118, y: V.y + 14, w: V.w - 132, h: 46 };
+    well(g, W);
+    g.pushClip(W);
+    for (let i = 1; i < 6; i++) g.rect(W.x + (W.w * i) / 6, W.y + 2, 1, W.h - 4, hex('#c9a55c', 0.07));
+    g.rect(W.x + 2, W.y + W.h * 0.62, W.w - 4, 1, hex('#c9a55c', 0.08));
+    const pts = this.ecg.map((v, i) => ({ x: W.x + 3 + (i / Math.max(1, this.ecg.length - 1)) * (W.w - 6), y: W.y + W.h * 0.62 - v * W.h * 0.5 }));
+    const tcol = low ? '#ff5a4a' : '#ff8a6a';
+    g.polyline(pts, 5, hex(tcol, 0.12));
+    g.polyline(pts, 2.4, hex(tcol, 0.35));
+    g.polyline(pts, 1.2, hex('#ffe0d0', 0.95));
+    const head = pts[pts.length - 1];
+    if (head) g.glow(head.x, head.y, 10, hex('#ff6a4a', 0.5));
+    g.popClip();
+    meter(g, { x: V.x + 18, y: V.y + V.h - 16, w: V.w - 32, h: 6 }, op.vitals / op.maxVitals, low ? '#ff4a3a' : '#e0443c', low ? '#7a0c10' : '#8a1016', 10);
+    if (low) g.plate(V.x, V.y, V.w, V.h, { radius: 3, top: hex('#000000', 0), border: hex('#ff3a2a', 0.35 + 0.35 * beat), borderW: 1.5, bevel: 0, shadow: [0, 0, 0], glow: hex('#ff2a1a', 0.25 + 0.3 * beat), glowR: 14 });
+    drawSecondaryVitals(g, op, V.x + 18, V.y + V.h + 22);
 
-    // ---- Title banner, hourglass timer and phase beads.
-    banner(g, VIEW_W / 2, 6, 360, 30);
-    giltText(g, op.def.title, VIEW_W / 2, 28, { size: 20, align: 'center' });
-    const pl = { x: VIEW_W / 2 - 78, y: 40, w: 156, h: 40 };
-    plaque(g, pl);
-    hourglass(g, pl.x + 26, pl.y + 20, 26, op.timeLeft / op.def.timeLimit, t);
-    const low = op.timeLeft < op.tuning.flow.timerWarn && op.status === 'running';
-    const tcol = op.litanyTime > 0 ? UI.gilt : low ? (Math.sin(t * 8) > 0 ? '#ff5040' : '#a02018') : UI.parch;
-    g.text(formatClock(op.timeLeft), pl.x + 98, pl.y + 31, { size: 28, color: hex(tcol), align: 'center' });
+    // ---- Operation title, the clock, and phase lozenges: a chamfered plate at top centre.
+    const T = { x: VIEW_W / 2 - 130, y: 14, w: 260, h: 70 };
+    glass(g, T, { chamfer: true, radius: 12, strength: plateK });
+    caps(g, op.def.title, VIEW_W / 2, T.y + 22, 11, hex(INK.dim), 'center');
+    const lowT = op.timeLeft < op.tuning.flow.timerWarn && op.status === 'running';
+    const flash = lowT && Math.sin(t * 8) > 0;
+    const [ct, cb] = op.litanyTime > 0 ? [INK.goldHi, INK.gold] : lowT ? (flash ? ['#ffd0c0', '#ff4a3a'] : ['#ff9a8a', '#a0201a']) : ['#ffffff', '#d8ccb4'];
+    numerals(g, formatClock(op.timeLeft), VIEW_W / 2, T.y + 58, 30, ct, cb, 'center');
+    // Sand-time as a thin meter along the plate's foot.
+    const tf = op.timeLeft / op.def.timeLimit;
+    g.rect(T.x + 22, T.y + T.h - 7, (T.w - 44) * tf, 1.5, hex(lowT ? '#ff5a4a' : INK.gilt, 0.8));
     this.drawBanner(g);
     // Minimal HUD (UIX-0071): vitals, timer, tray and Litany only.
     if (settings.minimalHud) return;
     for (let i = 0; i < op.phaseCount; i++) {
-      const bx = VIEW_W / 2 - ((op.phaseCount - 1) * 16) / 2 + i * 16;
+      const bx = VIEW_W / 2 - ((op.phaseCount - 1) * 18) / 2 + i * 18;
       const done = i < op.phase;
       const cur = i === op.phase;
-      g.circle(bx, 92, cur ? 5.5 : 4.5, hex('#000000', 0.5));
-      g.circleGrad(bx, 91, cur ? 5 : 4, hex(done ? UI.gilt : cur ? '#e8c8a0' : '#4a3a28'), hex(done ? UI.giltLo : cur ? '#8a6a48' : '#241a10'));
+      diamond(g, bx, T.y + T.h + 12, cur ? 5 : 4, hex(done ? INK.gold : cur ? INK.goldHi : '#3a3024'), hex('#000000', 0.7));
+      if (cur) g.glow(bx, T.y + T.h + 12, 12, hex(INK.gold, 0.25));
     }
 
-    // ---- Score and chain.
-    leatherPanel(g, { x: VIEW_W - 280, y: 10, w: 266, h: 72 }, { corners: false });
-    g.text(op.def.patient, VIEW_W - 30, 30, { size: 16, font: 'italic', color: hex(UI.parchLo), align: 'right', shadow: false });
-    giltText(g, formatNumber(op.score), VIEW_W - 30, 68, { size: 34, font: 'body', align: 'right' });
+    // ---- Score, patient and chain: right.
+    const S = { x: VIEW_W - 16 - 250, y: 14, w: 250, h: 70 };
+    glass(g, S, { strength: plateK });
+    caps(g, tr('hud.score'), S.x + S.w - 18, S.y + 22, 11, hex(INK.dim), 'right');
+    g.text(op.def.patient, S.x + 18, S.y + 24, { size: 16, font: 'italic', color: hex(INK.dim), shadow: false });
+    numerals(g, formatNumber(op.score), S.x + S.w - 18, S.y + 58, 30, INK.goldHi, INK.gold, 'right');
     if (op.combo > 1) {
       const pop = 1 + Math.max(0, 0.3 - (this.comboT ?? 0)) * 1.2;
-      tallyRibbon(g, VIEW_W - 150, 100, 190 * Math.min(1.1, pop), 26, op.combo);
-      g.text(tr('hud.combo', { combo: op.combo }), VIEW_W - 238, 54, { size: 22 * pop, color: hex('#ffe0c0'), align: 'center', shadow: hex('#3a0406', 0.8) });
-      g.text(tr('hud.chain'), VIEW_W - 238, 80, { size: 16, font: 'italic', color: hex(UI.brass), align: 'center', shadow: false });
+      const C = { x: S.x + S.w - 128, y: S.y + S.h + 10, w: 128, h: 34 };
+      glass(g, C, { glow: hex(INK.gold, 0.18), glowR: 12 });
+      caps(g, tr('hud.chain'), C.x + 14, C.y + 22, 10, hex(INK.dim));
+      numerals(g, `×${op.combo}`, C.x + C.w - 14, C.y + 25, 22 * Math.min(1.25, pop), INK.goldHi, INK.gold, 'right');
     }
   }
 
@@ -502,77 +511,103 @@ export class OperationScene implements Scene {
     const b = this.banner;
     if (!b) return;
     const objective = this.op.def.phases[b.phase]?.objective;
-    // The objective stays as a small line under the timer for the rest of the phase.
-    if (objective && b.t > 2) g.text(tSource(objective), VIEW_W / 2, 118, { size: 16, font: 'italic', color: hex(UI.parch, 0.85), align: 'center' });
+    // The objective stays as a small line under the phase lozenges for the rest of the phase.
+    if (objective && b.t > 2 && !settings.minimalHud) g.text(tSource(objective), VIEW_W / 2, 124, { size: 16, font: 'italic', color: hex(INK.text, 0.85), align: 'center', shadow: hex('#000000', 0.9), soft: true });
     if (b.t > 2 || (b.phase === 0 && !b.boss && !objective)) return;
     const still = settings.reduceMotion;
-    const inK = still ? 1 : Math.min(1, b.t / 0.3);
-    const a = b.t < 1.7 ? 1 : Math.max(0, 1 - (b.t - 1.7) / 0.3);
+    const inK = still ? 1 : Math.min(1, b.t / 0.35);
+    const a = (b.t < 1.7 ? 1 : Math.max(0, 1 - (b.t - 1.7) / 0.3)) * inK;
     const ease = 1 - (1 - inK) ** 3;
-    const cx = VIEW_W / 2 + (1 - ease) * -420;
+    const vr = viewRect();
     const title = b.boss ? tr('hud.banner.malison') : tr('hud.banner.phase', { n: roman(b.phase + 1) });
-    ribbonArt(g, cx, 150, 420, 46, b.boss ? '#3a0a3a' : '#5a0c10', ease);
-    g.text(title, cx, 176, { size: 28, font: 'display', color: hex(UI.gilt, a), color2: hex(UI.giltLo, a), align: 'center', shadow: hex('#0a0402', 0.8 * a) });
-    if (objective) g.text(tSource(objective), cx, 212, { size: 18, font: 'italic', color: hex(UI.parch, a), align: 'center' });
+    const y = 196;
+    band(g, y - 44, 96, a, vr.x, vr.w);
+    const spread = 0.12 + 0.1 * ease;
+    g.text(title.toUpperCase(), VIEW_W / 2, y + 6, { size: 38, font: 'display', color: hex(b.boss ? '#f0dcff' : INK.goldHi, a), color2: hex(b.boss ? INK.curse : INK.gold, a), align: 'center', tracking: spread, shadow: hex('#000000', 0.9 * a), soft: true });
+    titleRule(g, VIEW_W / 2, y + 20, 420 * (0.6 + 0.4 * ease), a);
+    if (objective) g.text(tSource(objective), VIEW_W / 2, y + 44, { size: 19, font: 'italic', color: hex(INK.text, a), align: 'center', shadow: hex('#000000', 0.9 * a), soft: true });
   }
 
   private drawTray(g: Gfx): void {
     const op = this.op;
     const n = op.def.tools.length;
-    leatherPanel(g, { x: TRAY.x - 6, y: TRAY.y - 8, w: TRAY.w + 12, h: Math.max(n, 8) * (TRAY.h + TRAY.gap) + 10 }, { corners: false, border: 3 });
-    for (let i = n; i < 8; i++) trayPocketArt(g, { x: TRAY.x + 2, y: TRAY.y + i * (TRAY.h + TRAY.gap) + 2, w: TRAY.w - 4, h: TRAY.h - 4 }, false);
+    const frame = { x: TRAY.x - 8, y: TRAY.y - 8, w: TRAY.w + 16, h: n * (TRAY.h + TRAY.gap) - TRAY.gap + 16 };
+    glass(g, frame, { strength: palette().plate > 0 ? 1.15 : 1 });
     op.def.tools.forEach((id, i) => {
       const r = this.slot(i);
       const sel = op.tool === id;
-      const ox = sel ? 4 : 0;
-      trayPocketArt(g, { x: r.x + 2 + ox, y: r.y + 2, w: r.w - 4, h: r.h - 4 }, sel);
-      toolIcon(g, id, r.x + r.w / 2 + 6 + ox, r.y + r.h / 2 + 1, sel ? 1.05 : 0.82, g.time, sel ? 'selected' : 'idle');
-      // Engraved key tag.
-      g.circleGrad(r.x + 13, r.y + 14, 10, hex(sel ? UI.brassHi : '#c8a050'), hex(UI.brassLo));
-      g.text(toolKeyLabel(TOOL_INFO.findIndex((ti) => ti.id === id) + 1), r.x + 13, r.y + 20, { size: 17, color: hex('#140a02'), align: 'center', shadow: false });
+      g.plate(r.x, r.y, r.w, r.h, {
+        radius: 3,
+        top: hex(sel ? '#3a2c1c' : '#16110d', 0.95),
+        bottom: hex(sel ? '#1e150d' : '#0a0806', 0.95),
+        border: hex(sel ? INK.gold : '#5a4a34', sel ? 1 : 0.7),
+        borderW: sel ? 1.6 : 1,
+        inset: sel ? hex('#fff1c4', 0.18) : undefined,
+        insetD: 3,
+        bevel: sel ? 0.9 : 0.5,
+        shadow: [0.5, 6, 2],
+        glow: sel ? hex(INK.gold, 0.3) : undefined,
+        glowR: 12,
+      });
+      toolIcon(g, id, r.x + r.w / 2, r.y + r.h / 2 + 2, sel ? 0.98 : 0.84, g.time, sel ? 'selected' : 'idle');
+      // Key number: small engraved numeral in the corner.
+      g.text(toolKeyLabel(TOOL_INFO.findIndex((ti) => ti.id === id) + 1), r.x + 8, r.y + 16, { size: 12, font: 'display', tracking: 0.05, color: hex(sel ? INK.goldHi : INK.dim), shadow: hex('#000000', 0.8) });
       if (id === 'tincture' && op.injectCooldown > 0) {
         const f = op.injectCooldown / TINCTURE_COOLDOWN;
-        g.rect(r.x + 2, r.y + 2 + (r.h - 4) * (1 - f), r.w - 4, (r.h - 4) * f, hex('#000000', 0.45));
-        vialArt(g, r.x + r.w - 13, r.y + r.h / 2 + 2, 30, vialLevel(f), f > 0.97);
+        g.rect(r.x + 2, r.y + 2 + (r.h - 4) * (1 - f), r.w - 4, (r.h - 4) * f, hex('#000000', 0.5));
+        vialArt(g, r.x + r.w - 12, r.y + r.h / 2 + 2, 26, vialLevel(f), f > 0.97);
       }
     });
 
-    // Tool name + hint: a tooltip beside the selected slot that fades after a switch.
+    // Tool name + hint: a plate beside the selected slot that fades after a switch.
     if (this.hintT > 0) {
       const info = toolInfo(op.tool);
       const r = this.slot(op.def.tools.indexOf(op.tool));
       const a = Math.min(1, this.hintT);
       const ts = settings.textScale;
-      // A vellum slip pinned beside the tray, with the instrument's key on a brass plate (ART-0055).
       const hint = tr(`tool.${info.id}.hint`);
       const hs = Math.round(16 * ts);
-      const w = Math.round(270 * ts);
-      const lines = g.wrap(hint, w - 24, hs).length;
-      const tip = { x: r.x + r.w + 14, y: r.y + 2, w, h: Math.round(32 * ts + lines * hs * 1.15 + 14) };
-      tooltipSlip(g, tip, a);
-      g.text(tr(`tool.${info.id}.name`), tip.x + 12, tip.y + 22 * ts, { size: Math.round(18 * ts), color: hex('#6a0a10', a), shadow: false });
-      if (a > 0.5) keyPlate(g, tip.x + tip.w - 30, tip.y + 16 * ts, glyphFor(`tool.select.${TOOL_INFO.findIndex((ti) => ti.id === info.id) + 1}` as ActionId), 16);
-      g.textBlock(hint, tip.x + 12, tip.y + 32 * ts + hs * 0.6, tip.w - 24, { size: hs, color: hex(UI.inkDark, a), shadow: false }, 1.15);
+      const w = Math.round(290 * ts);
+      const lines = g.wrap(hint, w - 32, hs).length;
+      const tip = { x: r.x + r.w + 20, y: r.y - 4, w, h: Math.round(40 * ts + lines * hs * 1.25 + 12) };
+      glass(g, tip, { alpha: a });
+      g.tri(tip.x, r.y + r.h / 2 - 7, tip.x, r.y + r.h / 2 + 7, tip.x - 8, r.y + r.h / 2, hex(INK.gilt, 0.75 * a));
+      caps(g, tr(`tool.${info.id}.name`), tip.x + 16, tip.y + 24 * ts, Math.round(13 * ts), hex(INK.gold, a));
+      if (a > 0.3) keycap(g, glyphFor(`tool.select.${TOOL_INFO.findIndex((ti) => ti.id === info.id) + 1}` as ActionId), tip.x + tip.w - 40, tip.y + 20 * ts, 11, a);
+      g.textBlock(hint, tip.x + 16, tip.y + 34 * ts + hs * 0.75, tip.w - 32, { size: hs, color: hex(INK.text, a), shadow: false }, 1.25);
     }
 
-    // Litany medallion (only once the rite has been learned).
+    // Litany reliquary (only once the rite has been learned), bottom right.
     if (op.def.litany === false) return;
-    const lx = 54;
-    const ly = 674 + anchorShift('bottom');
+    const lx = VIEW_W - 60;
+    const ly = 664 + anchorShift('bottom');
     const ready = op.canInvokeLitany();
-    starReliquary(g, lx, ly, 32, { fill: op.litanyTime > 0 ? op.litanyTime / LITANY_DURATION : ready ? 1 : 0, spent: !ready && op.litanyTime <= 0, glint: ready, active: op.litanyTime > 0 });
+    g.plate(lx - 40, ly - 40, 80, 80, { radius: 40, top: hex('#1a1411', 0.88), bottom: hex('#0a0807', 0.92), border: hex(ready ? INK.gold : '#5a4a34', 0.9), borderW: 1.4, bevel: 0.7, shadow: [0.6, 14, 4], glow: ready ? hex(INK.gold, 0.22) : undefined, glowR: 16 });
+    starReliquary(g, lx, ly, 28, { fill: op.litanyTime > 0 ? op.litanyTime / LITANY_DURATION : ready ? 1 : 0, spent: !ready && op.litanyTime <= 0, glint: ready, active: op.litanyTime > 0 });
     const label = ready ? { draw: `${dragGlyphFor('litany.draw')} ★`, key: glyphFor('litany.key'), both: `${dragGlyphFor('litany.draw')} ★ / ${glyphFor('litany.key')}` }[litanyMode()] : op.litanyTime > 0 ? tr('hud.litany.active') : tr('hud.litany.spent');
-    g.text(label, lx + 42, ly + 6, { size: 16, font: 'italic', color: hex(ready ? UI.gilt : UI.parchLo, 0.9) });
+    caps(g, tr('hud.litany'), lx - 52, ly - 8, 11, hex(ready ? INK.gold : INK.faint), 'right');
+    g.text(label, lx - 52, ly + 14, { size: 16, font: 'italic', color: hex(ready ? INK.text : INK.faint, 0.9), align: 'right', shadow: hex('#000000', 0.8), soft: true });
   }
 
   private drawCallout(g: Gfx, t: number): void {
     const line = this.op.callouts[0];
     if (!line) return;
-    const mx = 238;
-    const my = 676;
-    medallion(g, mx, my, 30, hex('#1a2a20'));
+    // Text scale (UIX-0148): the plate grows upward and wraps rather than overflowing.
+    const ts = settings.textScale;
+    const size = Math.round(19 * ts);
+    const textW = 700;
+    const text = tSource(line, { gender: this.op.def.patientGender ?? 'unknown' });
+    const lines = g.wrap(text, textW, size).length;
+    const h = Math.max(78, 44 + lines * size * 1.3);
+    const r = { x: VIEW_W / 2 - 400, y: 704 - h, w: 800, h };
+    glass(g, r);
+    // Portrait in a gilt ring on the plate's left.
+    const mx = r.x + 46;
+    const my = r.y + r.h / 2;
+    g.plate(mx - 32, my - 32, 64, 64, { radius: 32, top: hex('#1e2a24'), bottom: hex('#0c1210'), border: hex(INK.gilt, 0.9), borderW: 1.5, bevel: 0.5, shadow: [0.5, 8, 2] });
     const talking = this.op.calloutT * 60 < line.length;
-    g.portrait(mx - 34, my - 44, 68, 86, {
+    g.pushClip({ x: mx - 30, y: my - 30, w: 60, h: 60 });
+    g.portrait(mx - 36, my - 40, 72, 92, {
       style: 1,
       rim: vec3(CAST.ilse.color),
       cloth: vec3(CAST.ilse.cloth ?? '#3e454e'),
@@ -581,18 +616,11 @@ export class OperationScene implements Scene {
       seed: 3,
       talk: talking ? 0.5 + 0.5 * Math.sin(t * 16) : 0,
     });
-    // Text scale (UIX-0148): the callout grows upward and wraps rather than overflowing.
-    const ts = settings.textScale;
-    const size = Math.round(19 * ts);
-    const lines = Math.ceil(g.measure(line, size) / 800);
-    const h = Math.max(50, 30 + lines * size * 1.3);
-    const r = { x: mx + 44, y: 702 - h, w: 840, h };
-    scroll(g, r);
-    g.text(ASSISTANT_NAME, r.x + 16, r.y + 20, { size: 16, color: hex('#6a0a10'), shadow: false });
+    g.popClip();
+    caps(g, ASSISTANT_NAME, r.x + 94, r.y + 26, 11, hex(INK.gold));
     // Keyed callouts are translated with the patient's grammatical gender for ICU select (LOC-0014).
-    const text = tSource(line, { gender: this.op.def.patientGender ?? 'unknown' });
     const shown = text.slice(0, Math.floor(this.op.calloutT * 60 * settings.textSpeed));
-    g.textBlock(shown, r.x + 16, r.y + 22 + size, 808, { size, color: hex(UI.inkDark), shadow: false }, 1.3);
+    g.textBlock(shown, r.x + 94, r.y + 34 + size * 0.8, textW, { size, color: hex(INK.text), shadow: hex('#000000', 0.8), soft: true }, 1.3);
   }
 
   private drawPopups(g: Gfx): void {
@@ -644,10 +672,3 @@ export function ecgWave(ph: number): number {
   return bump(0.1, 0.025, 0.12) - bump(0.19, 0.008, 0.15) + bump(0.21, 0.01, 1) - bump(0.235, 0.01, 0.3) + bump(0.42, 0.05, 0.25);
 }
 
-/** A stylised heart, for the vitals medallion. */
-function heart(g: Gfx, x: number, y: number, s: number, c: RGBA): void {
-  g.circle(x - s * 0.5, y - s * 0.3, s * 0.55, c);
-  g.circle(x + s * 0.5, y - s * 0.3, s * 0.55, c);
-  g.tri(x - s * 1.02, y - s * 0.15, x + s * 1.02, y - s * 0.15, x, y + s * 1.0, c);
-  g.circle(x - s * 0.55, y - s * 0.45, s * 0.18, hex('#ffffff', 0.35));
-}

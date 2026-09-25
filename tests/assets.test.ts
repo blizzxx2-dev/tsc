@@ -80,7 +80,7 @@ describe('asset loader (ENG-0210/0211/0212)', () => {
   });
 
   it('the generated manifest covers the boot fonts and the fx sprite sheet', () => {
-    expect(BUNDLES.boot.filter((id) => MANIFEST[id].type === 'font').length).toBe(5); // Fell ×2, Fraktur, Atkinson Hyperlegible ×2 (readable-font option, UIX-0150)
+    expect(BUNDLES.boot.filter((id) => MANIFEST[id].type === 'font').length).toBe(8); // Cinzel ×2, EB Garamond ×4 (latin + latin-ext), Atkinson Hyperlegible ×2 (readable-font option, UIX-0150)
     expect(MANIFEST['sprites/fx'].pages!.length).toBeGreaterThan(0);
     for (const e of Object.values(MANIFEST) as AssetEntry[]) expect(e.url).toMatch(/^assets\/.+\.[0-9a-f]{10}\.\w+$/);
   });
