@@ -22,6 +22,7 @@ import { RANK_WAX } from './rankArt';
 import type { ActionId } from '../input/actions';
 import { DamageAggregator, ToolHints } from '../ui/hudPrefs';
 import { stackPopup } from '../ui/popupStack';
+import { clearOfHud, HUD_SCORE, HUD_TIMER, HUD_VITALS, operationHud } from '../ui/popupPlacement';
 import { speciesBlood } from '../render/organs';
 import { band, caps, heading, heartIcon, phaseSeal, ratingStamp, glass, INK, keycap, meter, numerals, titleRule, well } from '../ui/hudKit';
 import { localeInfo } from '../i18n/locales';
@@ -42,7 +43,8 @@ import { drawGraspOutline } from '../input/hover';
 import { HoldToRetry } from '../input/retry';
 import { bindings } from '../input/bindings';
 import { dragGlyphFor, glyphFor, toolKeyLabel } from '../input/glyphs';
-import { calmWave, drawBossHud, drawLitanyTheft, drawTorpor, ecgCalm, toolBlinded } from '../surgery/bosses/hud';
+import { bossBarRect, calmWave, drawBossHud, drawLitanyTheft, drawTorpor, ecgCalm, toolBlinded } from '../surgery/bosses/hud';
+import { activeBoss } from '../surgery/bosses/base';
 import { BossAudio, withBossContext } from './bossAudio';
 import { BOSS_OPS, watchEncounters } from '../surgery/bosses/codex';
 import { loadProgress, storeProgress } from '../surgery/progress';
@@ -56,6 +58,14 @@ export interface OperationOutcome {
   op: Operation;
   won: boolean;
 }
+
+/** The boss HP bar, when a Malison or elite is on the table (popups keep off it too). */
+const bossPlates = (op: Operation) => {
+  const b = activeBoss(op);
+  if (!b) return [];
+  const r = bossBarRect(b);
+  return [{ x: r.x, y: r.y - 24, w: r.w, h: r.h + 28 }]; // the bar and the Hour's name above it
+};
 
 /** 1 → I, 2 → II … for phase banners. */
 const roman = (n: number): string => ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'][n - 1] ?? String(n);
@@ -635,7 +645,7 @@ export class OperationScene implements Scene {
     const plateK = pal.plate > 0 ? 1.15 : 1;
 
     // ---- Vitals: label, big numeral, pulse trace in a recessed window, and a blood meter.
-    const V = { x: 16, y: 14, w: 316, h: 86 };
+    const V = { ...HUD_VITALS };
     glass(g, V, { strength: plateK });
     caps(g, tr('hud.vitals'), V.x + 34, V.y + 22, 11);
     heartIcon(g, V.x + 22, V.y + 18, 7, op.status === 'lost' ? 'dead' : op.vitals > 60 ? 'good' : op.vitals > 30 ? 'warn' : 'danger', settings.reduceMotion ? 1 : this.beatPhase % 1);
@@ -675,7 +685,7 @@ export class OperationScene implements Scene {
     drawSecondaryVitals(g, op, V.x + 18, V.y + V.h + 22);
 
     // ---- Operation title, the clock, and phase lozenges: a chamfered plate at top centre.
-    const T = { x: VIEW_W / 2 - 130, y: 14, w: 260, h: 70 };
+    const T = { ...HUD_TIMER };
     glass(g, T, { chamfer: true, radius: 12, strength: plateK });
     caps(g, op.def.title, VIEW_W / 2, T.y + 22, 11, hex(INK.dim), 'center');
     const lowT = op.timeLeft < op.tuning.flow.timerWarn && op.status === 'running';
@@ -710,7 +720,7 @@ export class OperationScene implements Scene {
     drawBossHud(g, op);
 
     // ---- Score, patient and chain: right.
-    const S = { x: VIEW_W - 16 - 250, y: 14, w: 250, h: 70 };
+    const S = { ...HUD_SCORE };
     glass(g, S, { strength: plateK });
     caps(g, tr('hud.score'), S.x + S.w - 18, S.y + 22, 11, hex(INK.dim), 'right');
     g.text(op.def.patient, S.x + 18, S.y + 24, { size: 16, font: 'italic', color: hex(INK.dim), shadow: false });
@@ -1035,12 +1045,13 @@ export class OperationScene implements Scene {
       g.arc(r.x, r.y, (r.big ? 18 : 12) + k * (r.big ? 34 : 22), r.big ? 3 : 2, hex('#ff5a4a', 0.8 * a));
       if (r.big) g.glow(r.x, r.y, 30 + k * 20, hex('#ff2a1a', 0.3 * a));
     }
+    // Popups step off the HUD plates (GAM-0144): never under the vitals, clock, score, chain, tray or reliquary.
+    const hud = this.popups.length ? operationHud({ tools: this.op.def.tools.length, traySide: traySide(), litany: this.op.def.litany !== false, callout: !!this.calloutRect, extra: [this.pauseRect, ...bossPlates(this.op)] }) : [];
     for (const p of this.popups) {
       const a = Math.min(1, (1.1 - p.t) * 3);
       // Reduced Motion: popups neither rise nor pop (UIX-0152).
       const rise = still ? 0 : p.t * 40;
-      const x = p.pos.x;
-      const y = p.pos.y - 26 - rise - (p.lift ?? 0);
+      const { x, y } = clearOfHud(p.pos.x, p.pos.y - 26 - rise - (p.lift ?? 0), hud);
       if (!p.rating) {
         if (/^[+\-×\d]/.test(p.text)) giltNumerals(g, p.text, x, y, 20, a);
         else g.text(tSource(p.text), x, y, { size: 20, color: withAlpha(hex(p.color), a), align: 'center' });

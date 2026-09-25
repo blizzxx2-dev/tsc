@@ -237,7 +237,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0141 · Demo · P0 · S · MISS policy — only tool-on-nothing actions > 0.25 s or wrong-organ actions rate MISS; plain clicks on empty flesh never do (test)
 - [x] GAM-0142 · Demo · P1 · S · Combo timeout — combo resets if no rated action for 6 s (prevents idling on a combo); Litany pauses the timeout
 - [x] GAM-0143 · Demo · P1 · S · Combo milestones — at ×10 and ×20 play chime + "Steady hands!" callout; no score change beyond multiplier
-- [ ] GAM-0144 · Demo · P1 · S · Popup text consistency — COOL/GOOD/BAD/MISS + combo "×N" placement never overlaps HUD (layout test at 1280×720 and 3840×2160)
+- [x] GAM-0144 · Demo · P1 · S · Popup text consistency — COOL/GOOD/BAD/MISS + combo "×N" placement never overlaps HUD (layout test at 1280×720 and 3840×2160)
 
 ### Slow-play farming fix (known issue)
 - [x] GAM-0145 · Demo · P0 · S · Reproduce farming — bot variant `farm` stalls Matins/Lauds kill for 120 s; test asserts farm score > fast score (current failing behaviour captured)
