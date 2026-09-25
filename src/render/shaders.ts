@@ -255,7 +255,19 @@ uniform vec2 u_res;
 uniform vec2 u_litanyCenter;
 uniform float u_litanyAge;
 uniform vec3 u_hurt; // xy: direction from screen centre, z: intensity
+uniform sampler2D u_lutA;
+uniform sampler2D u_lutB;
+uniform float u_lutMix;
 out vec4 o;
+// 32³ LUT stored as a 1024×32 strip; blue selects the slice, blended between neighbours.
+vec3 lut(sampler2D t, vec3 c) {
+  c = clamp(c, 0.0, 1.0);
+  float b = c.b * 31.0;
+  float b0 = floor(b), b1 = min(b0 + 1.0, 31.0);
+  vec2 uv0 = vec2((b0 * 32.0 + c.r * 31.0 + 0.5) / 1024.0, (c.g * 31.0 + 0.5) / 32.0);
+  vec2 uv1 = vec2((b1 * 32.0 + c.r * 31.0 + 0.5) / 1024.0, uv0.y);
+  return mix(texture(t, uv0).rgb, texture(t, uv1).rgb, b - b0);
+}
 // smoothstep with edge0 > edge1 is undefined in GLSL; this is the portable falling edge.
 float rsmooth(float hi, float lo, float x) { return 1.0 - smoothstep(lo, hi, x); }
 
@@ -292,10 +304,9 @@ void main() {
   // Per-chapter grade.
   c = c * u_tint + u_lift;
 
-  // Candlelit grade: warm highlights, cool-green shadows.
+  // LUT grade, crossfading between two looks.
+  c = mix(lut(u_lutA, c), lut(u_lutB, c), u_lutMix);
   float l = dot(c, vec3(0.299, 0.587, 0.114));
-  c = mix(c, c * vec3(1.06, 0.98, 0.86), smoothstep(0.2, 0.9, l));
-  c = mix(c, c * vec3(0.9, 1.0, 0.96), rsmooth(0.4, 0.0, l));
   c *= 1.0 - u_flicker * 0.05;
 
   if (u_litany > 0.0) {

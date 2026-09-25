@@ -246,6 +246,9 @@ export class OperationScene implements Scene {
       shake,
       bloom: 0.7,
       chroma: (this.corrupt * 1.2 + danger * 0.8 + Math.min(1, op.shake / 10) * 0.6) * soften,
+      lutA: ch2 ? 'dawn' : 'candle',
+      lutB: danger > 0.5 ? 'failing' : 'curse',
+      lutMix: Math.max(this.corrupt * 0.8, danger > 0.5 ? (danger - 0.5) * 1.2 : 0),
       litanyCenter: this.litanyCenter,
       litanyAge: op.litanyTime > 0 ? LITANY_DURATION - op.litanyTime : 10,
       hurt: (() => {

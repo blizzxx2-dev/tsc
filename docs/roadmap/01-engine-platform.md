@@ -218,7 +218,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0150 · Demo · P1 · S · Dither at final output (blue-noise ±0.5 LSB) — gradient test capture shows no visible banding in the dark vignette
 
 ### Grading & look
-- [ ] ENG-0151 · Demo · P0 · M · LUT colour grading — 32³ LUT strips sampled as 2D textures, crossfade between two LUTs over time; replaces the hard-coded candlelit grade math (neutral-plus-candle default LUT keeps parity)
+- [x] ENG-0151 · Demo · P0 · M · LUT colour grading — 32³ LUT strips sampled as 2D textures, crossfade between two LUTs over time; replaces the hard-coded candlelit grade math (neutral-plus-candle default LUT keeps parity)
 - [ ] ENG-0152 · Demo · P1 · S · LUT authoring pipeline — neutral LUT PNG exported by script, graded externally, dropped into `assets/luts/`; build validates size and format
 - [ ] ENG-0153 · Demo · P1 · S · Chapter 1–2 LUTs — per-location grades (hospice, theatre, street, chapel, night) selected by story backdrop and operation def
 - [ ] ENG-0154 · Demo · P1 · S · Aspect-aware vignette — parameters derived from aspect ratio so 21:9/32:9 edges are not over-darkened and 16:10 not under-darkened

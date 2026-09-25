@@ -1,5 +1,6 @@
 import type { Vec } from '../core/math';
 import { alphaOf, type RGBA } from './color';
+import { bakeLut, GRADES, LUT_SIZE } from './lut';
 import { GlyphAtlas, type FontId } from './text';
 import { BLUR_FS, BRIGHT_FS, FLESH_FS, FLUID_FS, FULL_VS, IMAGE_FS, IMAGE_VS, PORTRAIT_FS, CREATURE_FS, POST_FS, PRIM_FS, PRIM_VS, RECT_VS, SCENE_FS } from './shaders';
 
@@ -67,6 +68,10 @@ export interface PostParams {
   /** Colour grade: multiplicative tint and lift, per chapter/location. */
   tint?: [number, number, number];
   lift?: [number, number, number];
+  /** Colour grade: two named LUTs (see render/lut.ts) and the blend between them. */
+  lutA?: string;
+  lutB?: string;
+  lutMix?: number;
   /** Litany ripple origin (0..1 screen, y up) and seconds since invoked. */
   litanyCenter?: [number, number];
   litanyAge?: number;
@@ -135,6 +140,7 @@ export class Gfx {
   private portraitProg: WebGLProgram;
   private creatureProg: WebGLProgram;
   private images = new Map<string, ImageHandle>();
+  private luts = new Map<string, WebGLTexture>();
   private pw = 0;
   private ph = 0;
   readonly atlas: GlyphAtlas;
@@ -324,6 +330,11 @@ export class Gfx {
     gl.uniform3fv(this.u(this.post, 'u_tint'), p.tint ?? [1, 1, 1]);
     gl.uniform3fv(this.u(this.post, 'u_lift'), p.lift ?? [0, 0, 0]);
     gl.uniform2f(this.u(this.post, 'u_res'), this.canvas.width, this.canvas.height);
+    this.bindTex(this.lut(p.lutA ?? 'candle'), 2);
+    this.bindTex(this.lut(p.lutB ?? p.lutA ?? 'candle'), 3);
+    gl.uniform1i(this.u(this.post, 'u_lutA'), 2);
+    gl.uniform1i(this.u(this.post, 'u_lutB'), 3);
+    gl.uniform1f(this.u(this.post, 'u_lutMix'), p.lutMix ?? 0);
     gl.uniform2fv(this.u(this.post, 'u_litanyCenter'), p.litanyCenter ?? [0.5, 0.5]);
     gl.uniform1f(this.u(this.post, 'u_litanyAge'), p.litanyAge ?? 10);
     gl.uniform3fv(this.u(this.post, 'u_hurt'), p.hurt ?? [0, 0, 0]);
@@ -350,6 +361,22 @@ export class Gfx {
   private bindTex(t: WebGLTexture, unit: number): void {
     this.gl.activeTexture(this.gl.TEXTURE0 + unit);
     this.gl.bindTexture(this.gl.TEXTURE_2D, t);
+  }
+
+  /** Baked LUT texture by grade name (cached). */
+  private lut(name: string): WebGLTexture {
+    let t = this.luts.get(name);
+    if (t) return t;
+    const gl = this.gl;
+    t = gl.createTexture()!;
+    gl.bindTexture(gl.TEXTURE_2D, t);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, LUT_SIZE * LUT_SIZE, LUT_SIZE, 0, gl.RGBA, gl.UNSIGNED_BYTE, bakeLut(GRADES[name] ?? GRADES.neutral));
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    this.luts.set(name, t);
+    return t;
   }
 
   // ------------------------------------------------------------ images
