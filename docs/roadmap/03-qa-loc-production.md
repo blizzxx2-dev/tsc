@@ -31,26 +31,26 @@ Tasks below add the QA, localisation and production/legal work around them.
 ## QAT-A · Test & CI foundation (Demo)
 
 ### Test infrastructure
-- [ ] QAT-0001 · Demo · P0 · S · Vitest projects config — `vitest.config.ts` with projects `unit` (node, `src/surgery`, `src/core`, `src/content`), `sim` (bot runs, 60 s timeout) and `e2e` (Playwright); npm scripts `test:unit`, `test:sim`, `test:e2e`, `test:visual` documented in CONTRIBUTING.md
-- [ ] QAT-0002 · Demo · P0 · S · Shared sim helpers `tests/helpers/sim.ts` extracted from `tests/bot.ts` — `makeOp(def)`, `step(op, seconds)`, `press/drag/release` `Pointer` builders, `strokePath(op, tool, points)`, `zigzag(a, b, amplitude, crossings)`; bot.ts and every entity test import them (no duplicated `DT`/pointer code)
-- [ ] QAT-0003 · Demo · P1 · S · Isolated-entity factory `defWith(spawn, overrides)` — single-phase `OperationDef` with `baseDrain: 0`, `timeLimit: 999`, all eight tools, so each entity is exercised without neighbours
-- [ ] QAT-0004 · Demo · P1 · S · Test-code lint via `@vitest/eslint-plugin` (added to the PLT ESLint config) — no focused tests (`.only`), no `.skip` without an issue link, every test asserts; CI fails on violations
-- [ ] QAT-0005 · Demo · P1 · S · Quiet test output — `operations.test.ts`/`balance.test.ts` stop printing a `console.log` line per op; summaries go to assertion messages and a `sim-report.json` artefact; CI log for the unit project ≤ 200 lines
-- [ ] QAT-0006 · Demo · P2 · S · Pre-commit hooks (simple-git-hooks + lint-staged) — staged `*.ts` run Prettier and ESLint `--fix`; pre-push runs `tsc --noEmit` and `vitest related --run` on changed files
-- [ ] QAT-0007 · Demo · P2 · S · Commit-message lint — commitlint (conventional commits) as a `commit-msg` hook and a PR check, so the PLT changelog/patch-notes generator always receives typed commits
-- [ ] QAT-0008 · Demo · P1 · S · Secret scanning — gitleaks on every PR and push blocks Steamworks builder credentials, crash-reporter and telemetry tokens and signing material; allow-list reviewed each milestone
-- [ ] QAT-0009 · Demo · P1 · S · Test reporting — Vitest and Playwright emit JUnit XML; CI publishes a per-run summary (passed/failed/flaky, slowest 10 tests); any unit test slower than 2 s is flagged
+- [x] QAT-0001 · Demo · P0 · S · Vitest projects config — `vitest.config.ts` with projects `unit` (node, `src/surgery`, `src/core`, `src/content`), `sim` (bot runs, 60 s timeout) and `e2e` (Playwright); npm scripts `test:unit`, `test:sim`, `test:e2e`, `test:visual` documented in CONTRIBUTING.md
+- [x] QAT-0002 · Demo · P0 · S · Shared sim helpers `tests/helpers/sim.ts` extracted from `tests/bot.ts` — `makeOp(def)`, `step(op, seconds)`, `press/drag/release` `Pointer` builders, `strokePath(op, tool, points)`, `zigzag(a, b, amplitude, crossings)`; bot.ts and every entity test import them (no duplicated `DT`/pointer code)
+- [x] QAT-0003 · Demo · P1 · S · Isolated-entity factory `defWith(spawn, overrides)` — single-phase `OperationDef` with `baseDrain: 0`, `timeLimit: 999`, all eight tools, so each entity is exercised without neighbours
+- [x] QAT-0004 · Demo · P1 · S · Test-code lint via `@vitest/eslint-plugin` (added to the PLT ESLint config) — no focused tests (`.only`), no `.skip` without an issue link, every test asserts; CI fails on violations
+- [x] QAT-0005 · Demo · P1 · S · Quiet test output — `operations.test.ts`/`balance.test.ts` stop printing a `console.log` line per op; summaries go to assertion messages and a `sim-report.json` artefact; CI log for the unit project ≤ 200 lines
+- [x] QAT-0006 · Demo · P2 · S · Pre-commit hooks (simple-git-hooks + lint-staged) — staged `*.ts` run Prettier and ESLint `--fix`; pre-push runs `tsc --noEmit` and `vitest related --run` on changed files
+- [x] QAT-0007 · Demo · P2 · S · Commit-message lint — commitlint (conventional commits) as a `commit-msg` hook and a PR check, so the PLT changelog/patch-notes generator always receives typed commits
+- [x] QAT-0008 · Demo · P1 · S · Secret scanning — gitleaks on every PR and push blocks Steamworks builder credentials, crash-reporter and telemetry tokens and signing material; allow-list reviewed each milestone
+- [x] QAT-0009 · Demo · P1 · S · Test reporting — Vitest and Playwright emit JUnit XML; CI publishes a per-run summary (passed/failed/flaky, slowest 10 tests); any unit test slower than 2 s is flagged
 
 ### Smoke & helper scripts
-- [ ] QAT-0010 · Demo · P0 · S · Smoke exit code — `scripts/smoke.mjs` exits 1 when a `pageerror` or console error was captured (today `process.exit(0)` runs unconditionally in `finally`) and enforces a 90 s global timeout
-- [ ] QAT-0011 · Demo · P1 · S · Replace fixed `waitForTimeout` sleeps with waits on game state (active scene, `op.status`, `op.phase`) — smoke passes 20/20 consecutive runs and is ≥ 30 % faster
-- [ ] QAT-0012 · Demo · P1 · S · Smoke covers Chapter 2 by default — op2-1…op2-5 and the Lauds fight are in the fixed run list instead of the optional `EXTRA_OPS` env var
-- [ ] QAT-0013 · Demo · P2 · S · Portable scripts — `CHROMIUM` falls back to Playwright's bundled browser; `scripts/.one.mjs` becomes `npm run shot -- <op> <seconds> <out.png>` without hard-coded `/home/user/tsc` or `/opt/pw-browsers` paths
+- [x] QAT-0010 · Demo · P0 · S · Smoke exit code — `scripts/smoke.mjs` exits 1 when a `pageerror` or console error was captured (today `process.exit(0)` runs unconditionally in `finally`) and enforces a 90 s global timeout
+- [x] QAT-0011 · Demo · P1 · S · Replace fixed `waitForTimeout` sleeps with waits on game state (active scene, `op.status`, `op.phase`) — smoke passes 20/20 consecutive runs and is ≥ 30 % faster
+- [x] QAT-0012 · Demo · P1 · S · Smoke covers Chapter 2 by default — op2-1…op2-5 and the Lauds fight are in the fixed run list instead of the optional `EXTRA_OPS` env var
+- [x] QAT-0013 · Demo · P2 · S · Portable scripts — `CHROMIUM` falls back to Playwright's bundled browser; `scripts/.one.mjs` becomes `npm run shot -- <op> <seconds> <out.png>` without hard-coded `/home/user/tsc` or `/opt/pw-browsers` paths
 
 ### QA-owned pipelines
 - [ ] QAT-0014 · Demo · P1 · M · Nightly QA workflow — sim/characterisation suites, E2E flows, localised and pseudo-loc captures, playtest-replay re-sims; summary posted to the job summary and the team Discord webhook; failures open an issue labelled `nightly`
-- [ ] QAT-0015 · Demo · P1 · S · Flaky-test policy — Playwright `retries: 2` in CI; a test that passes only on retry auto-files a `flaky` issue; quarantined tests listed in `tests/QUARANTINE.md` with a 2-week fix deadline
-- [ ] QAT-0016 · Demo · P2 · S · Playwright sharding — suites run with `--shard=i/4` across parallel jobs once E2E + visual exceed 5 minutes; one merged HTML report uploaded per run
+- [x] QAT-0015 · Demo · P1 · S · Flaky-test policy — Playwright `retries: 2` in CI; a test that passes only on retry auto-files a `flaky` issue; quarantined tests listed in `tests/QUARANTINE.md` with a 2-week fix deadline
+- [x] QAT-0016 · Demo · P2 · S · Playwright sharding — suites run with `--shard=i/4` across parallel jobs once E2E + visual exceed 5 minutes; one merged HTML report uploaded per run
 
 ## OPS-A · Production cadence & tracking (Demo)
 
@@ -243,64 +243,64 @@ Tasks below add the QA, localisation and production/legal work around them.
 ## QAT-B · Rule tests & characterisation suites (Demo)
 
 ### Operation rules (current behaviour; tables switch to the GAM scoring spec when it lands)
-- [ ] QAT-0017 · Demo · P0 · S · Combo multiplier table — `rate()` awards `round(points × (1 + min(combo, 20) × 0.05))`: first COOL = 105, 20th consecutive COOL = 200, 25th still 200; GOOD at combo 1 = 63
-- [ ] QAT-0018 · Demo · P0 · S · Combo break — BAD and MISS reset `combo` to 0, keep `maxCombo`, award 15 and 0 points, and push the matching cue; `counts` tallies every rating exactly once
-- [ ] QAT-0019 · Demo · P0 · S · Rank boundary table — `rank()` inclusive at exactly the S/A/B thresholds; XS only with score ≥ S and `bad + miss === 0`; one BAD turns an XS run into S; driven by one table shared with the results screen
-- [ ] QAT-0020 · Demo · P0 · S · Victory bonus — clearing the last phase adds `round(vitals) × 20 + round(timeLeft) × 10` exactly once; further `update()` calls leave score, vitals and timer unchanged
-- [ ] QAT-0021 · Demo · P0 · S · Loss states — vitals reaching 0 → `lost` with 'The patient has died.'; timer reaching 0 → `timeLeft` clamped to 0 with 'Time has run out.'; the flatline cue fires once and later updates are no-ops
-- [ ] QAT-0022 · Demo · P0 · S · Litany clock — during the 8 s Litany `timeLeft` does not decrease, `elapsed` does, and entity updates receive dt × 0.15 (`LITANY_SCALE`)
-- [ ] QAT-0023 · Demo · P0 · S · Litany gating — `invokeLitany()` succeeds once per operation, fails when `def.litany === false` or status ≠ running, and emits exactly one 'litany' cue
-- [ ] QAT-0024 · Demo · P0 · S · Tincture — a 0.7 s hold on the body heals 25 (capped at 99) and starts a 6 s cooldown; releasing early resets progress; off-body or cooling-down holds heal nothing
-- [ ] QAT-0025 · Demo · P1 · S · Empty lancet press — a press on bare body rates MISS, costs 3 vitals and pushes the 'cut' cue; a press outside the `FIELD` ellipse does nothing
-- [ ] QAT-0026 · Demo · P1 · S · Brand on healthy flesh — holding the brand on bare body drains 4 vitals/s and says 'brand-flesh' once; holding it on a grub, sigil, Choir Voice or open Malison drains nothing
-- [ ] QAT-0027 · Demo · P0 · S · Phase flow — intro waits 1.2 s, the next phase spawns 0.8 s after the last required entity dies, non-required entities never block, clearing the final phase wins
-- [ ] QAT-0028 · Demo · P1 · S · Damage feedback — `hurt()` ignored unless running; shake capped at 12 and decaying 30/s; hits ≥ 1 create a red `-N` popup; popups expire after 1.1 s
-- [ ] QAT-0029 · Demo · P1 · S · Callout queue — each line shows for `max(2.4 s, 0.055 s × length)`; `sayOnce` never repeats a flag; the low-vitals line fires once when vitals drop below 30
-- [ ] QAT-0030 · Demo · P1 · S · Tool selection — `setTool` ignores tools not in `def.tools`, `cycleTool(±1)` wraps both ways, switching tools releases the captured entity and cancels a tincture hold
-- [ ] QAT-0031 · Demo · P1 · S · Input priority — presses go to the highest-`layer` entity first (Malison layer 4 over a laceration beneath it); hidden entities never receive presses or sweeps
+- [x] QAT-0017 · Demo · P0 · S · Combo multiplier table — `rate()` awards `round(points × (1 + min(combo, 20) × 0.05))`: first COOL = 105, 20th consecutive COOL = 200, 25th still 200; GOOD at combo 1 = 63
+- [x] QAT-0018 · Demo · P0 · S · Combo break — BAD and MISS reset `combo` to 0, keep `maxCombo`, award 15 and 0 points, and push the matching cue; `counts` tallies every rating exactly once
+- [x] QAT-0019 · Demo · P0 · S · Rank boundary table — `rank()` inclusive at exactly the S/A/B thresholds; XS only with score ≥ S and `bad + miss === 0`; one BAD turns an XS run into S; driven by one table shared with the results screen
+- [x] QAT-0020 · Demo · P0 · S · Victory bonus — clearing the last phase adds `round(vitals) × 20 + round(timeLeft) × 10` exactly once; further `update()` calls leave score, vitals and timer unchanged
+- [x] QAT-0021 · Demo · P0 · S · Loss states — vitals reaching 0 → `lost` with 'The patient has died.'; timer reaching 0 → `timeLeft` clamped to 0 with 'Time has run out.'; the flatline cue fires once and later updates are no-ops
+- [x] QAT-0022 · Demo · P0 · S · Litany clock — during the 8 s Litany `timeLeft` does not decrease, `elapsed` does, and entity updates receive dt × 0.15 (`LITANY_SCALE`)
+- [x] QAT-0023 · Demo · P0 · S · Litany gating — `invokeLitany()` succeeds once per operation, fails when `def.litany === false` or status ≠ running, and emits exactly one 'litany' cue
+- [x] QAT-0024 · Demo · P0 · S · Tincture — a 0.7 s hold on the body heals 25 (capped at 99) and starts a 6 s cooldown; releasing early resets progress; off-body or cooling-down holds heal nothing
+- [x] QAT-0025 · Demo · P1 · S · Empty lancet press — a press on bare body rates MISS, costs 3 vitals and pushes the 'cut' cue; a press outside the `FIELD` ellipse does nothing
+- [x] QAT-0026 · Demo · P1 · S · Brand on healthy flesh — holding the brand on bare body drains 4 vitals/s and says 'brand-flesh' once; holding it on a grub, sigil, Choir Voice or open Malison drains nothing
+- [x] QAT-0027 · Demo · P0 · S · Phase flow — intro waits 1.2 s, the next phase spawns 0.8 s after the last required entity dies, non-required entities never block, clearing the final phase wins
+- [x] QAT-0028 · Demo · P1 · S · Damage feedback — `hurt()` ignored unless running; shake capped at 12 and decaying 30/s; hits ≥ 1 create a red `-N` popup; popups expire after 1.1 s
+- [x] QAT-0029 · Demo · P1 · S · Callout queue — each line shows for `max(2.4 s, 0.055 s × length)`; `sayOnce` never repeats a flag; the low-vitals line fires once when vitals drop below 30
+- [x] QAT-0030 · Demo · P1 · S · Tool selection — `setTool` ignores tools not in `def.tools`, `cycleTool(±1)` wraps both ways, switching tools releases the captured entity and cancels a tincture hold
+- [x] QAT-0031 · Demo · P1 · S · Input priority — presses go to the highest-`layer` entity first (Malison layer 4 over a laceration beneath it); hidden entities never receive presses or sweeps
 
 ### Characterisation suites (lock today's behaviour before the GAM/BOS refactors)
-- [ ] QAT-0032 · Demo · P0 · M · Characterisation harness — scripted interactions per entity record an event trace (ratings with labels, hurt amounts, spawns, callout flags, cues) to snapshot files; the GAM tuning extraction and sim/draw split must keep snapshots identical unless the PR carries a `behaviour-change` label
-- [ ] QAT-0033 · Demo · P0 · S · Incision & StitchLine snapshots — on-line trace ratings by mean deviation (< 6 px COOL, < 13 px GOOD, else BAD), off-line BAD + 2 vitals, one-stroke close COOL 'Closed' vs multi-stroke GOOD
-- [ ] QAT-0034 · Demo · P0 · S · BloodPool snapshots — leech drain for blood, pus and black bile; 'Drained' GOOD only when the starting radius was ≥ 20
-- [ ] QAT-0035 · Demo · P0 · S · Laceration snapshots — stitching while flooded says 'flooded' and makes no progress; one-stroke stitch COOL 'Stitched'; nicks ≤ `SALVE_MAX` (46) sealed by salve GOOD 'Sealed'; claw-rake triples from `chapter2.ts`
-- [ ] QAT-0036 · Demo · P0 · S · Barbed-arrow snapshots — two lancet nicks rate 'Nick' then 'Barbs freed'; pulling more than 18 px with fewer nicks rates BAD 'Torn', costs 8 vitals, spawns a laceration of spec wound + 30 px bleeding at 1.6 and says 'barbs' once
-- [ ] QAT-0037 · Demo · P0 · S · Clean-extraction snapshots — bolt, lead shot, fang, shard and glass pulled clear in < 0.9 s rate COOL, slower GOOD, each with its spec label
-- [ ] QAT-0038 · Demo · P1 · S · Hexstone & hidden-object snapshots — hexstone drain and 'hexstone' callout while lodged; hidden shards ignore presses until the Scrying Lens reveals them (op2-2 `hiddenShard` layout)
-- [ ] QAT-0039 · Demo · P0 · S · Burn snapshots (fire, acid, hexfire) — salve before debriding says 'burn-eschar'; each pluck GOOD 'Debrided'; last flake says 'burn-salve'; full salve COOL 'Burn dressed'
-- [ ] QAT-0040 · Demo · P0 · S · Bubo snapshots — lance COOL below 75 % of max radius else GOOD 'Lanced'; a burst costs 10 vitals, pops 'It burst!' and spawns a pus pool plus a 40 px laceration; salving undrained pus says 'pus'; drained + salved GOOD 'Cleansed'
-- [ ] QAT-0041 · Demo · P0 · S · Rot & Coverage snapshots — spread rate, partial salve regrowth, 'Rot purged'; `Coverage` cell counts for radii 0/12/46/100, `brush` counts only new cells, `contains(p, pad)` edges
-- [ ] QAT-0042 · Demo · P0 · S · Venom snapshots — tincture 'Antidote' COOL while spread radius < 50 else GOOD; untreated drain rises monotonically at the op's `rate`
-- [ ] QAT-0043 · Demo · P0 · S · Grub & SpiderlingGrub snapshots — brand hold COOL 'Seared', tongs pluck GOOD 'Plucked'; grubs never leave the `FIELD` ellipse in 60 s of wandering
-- [ ] QAT-0044 · Demo · P0 · S · Sigil snapshots — eye, trident, crown and hourglass glyphs; 'Curse broken' COOL within 4 s of spawn else GOOD; a lash costs 4 vitals every `lashEvery` seconds (5 default, 4.5 in op2-4) with its popup
-- [ ] QAT-0045 · Demo · P0 · S · EggSac snapshots — lance COOL when more than 8 s remain before hatching else GOOD 'Lanced'; hatching rates MISS 'Hatched', costs 6 vitals and releases spiderlings; 5 s warning line said once per sac
-- [ ] QAT-0046 · Demo · P0 · M · Matins snapshots — shroud open/veiled rhythm, brand while veiled says 'malison-veiled' with no damage, 'Wounded' spawns hexlings, rend lacerations while moving, 'Malison unmade' splits into shards; shard rejoin MISS + 10 vitals, cast-out COOL
-- [ ] QAT-0047 · Demo · P0 · M · Lauds snapshots — Voices shield the heart ('lauds-shielded'), each Voice silenced by a brand hold (COOL 'Silenced', silence decays at 0.35/s when released), Hymn lacerations, submerge → Lens hunt, 'Malison unmade' → hexstone shards
+- [x] QAT-0032 · Demo · P0 · M · Characterisation harness — scripted interactions per entity record an event trace (ratings with labels, hurt amounts, spawns, callout flags, cues) to snapshot files; the GAM tuning extraction and sim/draw split must keep snapshots identical unless the PR carries a `behaviour-change` label
+- [x] QAT-0033 · Demo · P0 · S · Incision & StitchLine snapshots — on-line trace ratings by mean deviation (< 6 px COOL, < 13 px GOOD, else BAD), off-line BAD + 2 vitals, one-stroke close COOL 'Closed' vs multi-stroke GOOD
+- [x] QAT-0034 · Demo · P0 · S · BloodPool snapshots — leech drain for blood, pus and black bile; 'Drained' GOOD only when the starting radius was ≥ 20
+- [x] QAT-0035 · Demo · P0 · S · Laceration snapshots — stitching while flooded says 'flooded' and makes no progress; one-stroke stitch COOL 'Stitched'; nicks ≤ `SALVE_MAX` (46) sealed by salve GOOD 'Sealed'; claw-rake triples from `chapter2.ts`
+- [x] QAT-0036 · Demo · P0 · S · Barbed-arrow snapshots — two lancet nicks rate 'Nick' then 'Barbs freed'; pulling more than 18 px with fewer nicks rates BAD 'Torn', costs 8 vitals, spawns a laceration of spec wound + 30 px bleeding at 1.6 and says 'barbs' once
+- [x] QAT-0037 · Demo · P0 · S · Clean-extraction snapshots — bolt, lead shot, fang, shard and glass pulled clear in < 0.9 s rate COOL, slower GOOD, each with its spec label
+- [x] QAT-0038 · Demo · P1 · S · Hexstone & hidden-object snapshots — hexstone drain and 'hexstone' callout while lodged; hidden shards ignore presses until the Scrying Lens reveals them (op2-2 `hiddenShard` layout)
+- [x] QAT-0039 · Demo · P0 · S · Burn snapshots (fire, acid, hexfire) — salve before debriding says 'burn-eschar'; each pluck GOOD 'Debrided'; last flake says 'burn-salve'; full salve COOL 'Burn dressed'
+- [x] QAT-0040 · Demo · P0 · S · Bubo snapshots — lance COOL below 75 % of max radius else GOOD 'Lanced'; a burst costs 10 vitals, pops 'It burst!' and spawns a pus pool plus a 40 px laceration; salving undrained pus says 'pus'; drained + salved GOOD 'Cleansed'
+- [x] QAT-0041 · Demo · P0 · S · Rot & Coverage snapshots — spread rate, partial salve regrowth, 'Rot purged'; `Coverage` cell counts for radii 0/12/46/100, `brush` counts only new cells, `contains(p, pad)` edges
+- [x] QAT-0042 · Demo · P0 · S · Venom snapshots — tincture 'Antidote' COOL while spread radius < 50 else GOOD; untreated drain rises monotonically at the op's `rate`
+- [x] QAT-0043 · Demo · P0 · S · Grub & SpiderlingGrub snapshots — brand hold COOL 'Seared', tongs pluck GOOD 'Plucked'; grubs never leave the `FIELD` ellipse in 60 s of wandering
+- [x] QAT-0044 · Demo · P0 · S · Sigil snapshots — eye, trident, crown and hourglass glyphs; 'Curse broken' COOL within 4 s of spawn else GOOD; a lash costs 4 vitals every `lashEvery` seconds (5 default, 4.5 in op2-4) with its popup
+- [x] QAT-0045 · Demo · P0 · S · EggSac snapshots — lance COOL when more than 8 s remain before hatching else GOOD 'Lanced'; hatching rates MISS 'Hatched', costs 6 vitals and releases spiderlings; 5 s warning line said once per sac
+- [x] QAT-0046 · Demo · P0 · M · Matins snapshots — shroud open/veiled rhythm, brand while veiled says 'malison-veiled' with no damage, 'Wounded' spawns hexlings, rend lacerations while moving, 'Malison unmade' splits into shards; shard rejoin MISS + 10 vitals, cast-out COOL
+- [x] QAT-0047 · Demo · P0 · M · Lauds snapshots — Voices shield the heart ('lauds-shielded'), each Voice silenced by a brand hold (COOL 'Silenced', silence decays at 0.35/s when released), Hymn lacerations, submerge → Lens hunt, 'Malison unmade' → hexstone shards
 - [ ] QAT-0048 · Alpha · P1 · M · Ch3–5 characterisation snapshots — every Chapter 3–5 entity and Malison hour snapshotted as it lands (GAM-E ailments, BOS bosses), before its first tuning pass
 
 ### Cross-cutting
-- [ ] QAT-0049 · Demo · P1 · M · Tool × entity matrix — one table-driven test pressing/holding/dragging each of the 8 tools on each entity type; asserts the documented response (ignored, hint callout or penalty) and that no pair throws
-- [ ] QAT-0050 · Demo · P0 · S · Save helper tests — `fresh()` defaults, `recordBest` rank order XS > S > A > B > C with equal-rank higher-score rule and return value, `advance` never regressing progress
-- [ ] QAT-0051 · Demo · P1 · M · Scoring invariants (fast-check) — random pointer/tool streams on every demo op: vitals ∈ [0, 99], score never decreases, `combo ≤ counts.cool + counts.good`, status only moves intro → running → won|lost (crash/NaN fuzzing stays with INP)
-- [ ] QAT-0052 · Demo · P2 · M · Mutation testing (StrykerJS) on `src/surgery/operation.ts` and `entities.ts` — baseline mutation score recorded; ≥ 75 % on `operation.ts` by the demo RC; surviving mutants in scoring code filed as test gaps
-- [ ] QAT-0053 · Demo · P1 · S · Story data checks — every line's speaker exists in `CAST`, no empty lines, every chapter ends with a story step carrying its END OF CHAPTER narration, story ids unique across chapters
+- [x] QAT-0049 · Demo · P1 · M · Tool × entity matrix — one table-driven test pressing/holding/dragging each of the 8 tools on each entity type; asserts the documented response (ignored, hint callout or penalty) and that no pair throws
+- [x] QAT-0050 · Demo · P0 · S · Save helper tests — `fresh()` defaults, `recordBest` rank order XS > S > A > B > C with equal-rank higher-score rule and return value, `advance` never regressing progress
+- [x] QAT-0051 · Demo · P1 · M · Scoring invariants (fast-check) — random pointer/tool streams on every demo op: vitals ∈ [0, 99], score never decreases, `combo ≤ counts.cool + counts.good`, status only moves intro → running → won|lost (crash/NaN fuzzing stays with INP)
+- [x] QAT-0052 · Demo · P2 · M · Mutation testing (StrykerJS) on `src/surgery/operation.ts` and `entities.ts` — baseline mutation score recorded; ≥ 75 % on `operation.ts` by the demo RC; surviving mutants in scoring code filed as test gaps
+- [x] QAT-0053 · Demo · P1 · S · Story data checks — every line's speaker exists in `CAST`, no empty lines, every chapter ends with a story step carrying its END OF CHAPTER narration, story ids unique across chapters
 
 ## QAT-C · Replay-based QA (Demo; builds on the ENG/GAM recorder and golden runs)
 
 - [ ] QAT-0054 · Demo · P0 · M · Failure-path goldens — per demo op a loss-by-vitals and a loss-by-timer replay, plus a last-second-Litany replay for Matins and Lauds, added to the golden suite so loss handling and results are regression-tested
 - [ ] QAT-0055 · Demo · P1 · M · Human replay corpus — playtest builds record replays (with consent); one human run per op per playtest round is added to `tests/replays/human/` and re-simulated every nightly
 - [ ] QAT-0056 · Demo · P1 · S · Runtime parity — the same replays re-simulated in Node (Vitest), Chromium (Playwright) and the packaged desktop build produce identical state hashes; any divergence blocks the build
-- [ ] QAT-0057 · Demo · P1 · S · Golden-update review — PRs that change golden hashes need the `behaviour-change` label and a GAM reviewer via CODEOWNERS; bot-only changes never rewrite goldens
+- [x] QAT-0057 · Demo · P1 · S · Golden-update review — PRs that change golden hashes need the `behaviour-change` label and a GAM reviewer via CODEOWNERS; bot-only changes never rewrite goldens
 - [ ] QAT-0058 · Demo · P1 · S · Replay-first bug workflow — S1/S2 gameplay bugs carry the PLT/INP F8 replay or a note why not; triage re-simulates it to confirm the repro before assignment
 
 ## QAT-D · End-to-end flows (Demo)
 
-- [ ] QAT-0059 · Demo · P0 · M · Playwright E2E project — `tests/e2e/` on the built preview (SwiftShader) using the stable debug API; traces and screenshots kept on failure
-- [ ] QAT-0060 · Demo · P0 · M · New-game flow — title → prologue → op1-1 won with bot-planned *real* mouse events → results → s1-2; the save's progress is asserted after each step
-- [ ] QAT-0061 · Demo · P0 · S · Continue/resume flow — reload mid-chapter and Continue lands on the saved step; quitting mid-operation resumes at that operation's briefing (PLT autosave rule)
-- [ ] QAT-0062 · Demo · P1 · S · Retry & quit flows — loss → results → Retry restarts with the same seed; pause → Quit to title → Continue; ENG GL-object counters unchanged after 10 loops
-- [ ] QAT-0063 · Demo · P1 · S · Options persistence — each option changed, page reloaded, value retained and applied (e.g. volume reaches the master gain, reduce-flashing reaches the post-process uniforms)
-- [ ] QAT-0064 · Demo · P1 · M · Input-path parity — a bot plan executed through Playwright mouse events and directly through `handlePointer` yields the same rating counts (±1) on op1-1 and op1-2, validating the `Input` → `Pointer` conversion
+- [x] QAT-0059 · Demo · P0 · M · Playwright E2E project — `tests/e2e/` on the built preview (SwiftShader) using the stable debug API; traces and screenshots kept on failure
+- [x] QAT-0060 · Demo · P0 · M · New-game flow — title → prologue → op1-1 won with bot-planned *real* mouse events → results → s1-2; the save's progress is asserted after each step
+- [x] QAT-0061 · Demo · P0 · S · Continue/resume flow — reload mid-chapter and Continue lands on the saved step; quitting mid-operation resumes at that operation's briefing (PLT autosave rule)
+- [x] QAT-0062 · Demo · P1 · S · Retry & quit flows — loss → results → Retry restarts with the same seed; pause → Quit to title → Continue; ENG GL-object counters unchanged after 10 loops
+- [x] QAT-0063 · Demo · P1 · S · Options persistence — each option changed, page reloaded, value retained and applied (e.g. volume reaches the master gain, reduce-flashing reaches the post-process uniforms)
+- [x] QAT-0064 · Demo · P1 · M · Input-path parity — a bot plan executed through Playwright mouse events and directly through `handlePointer` yields the same rating counts (±1) on op1-1 and op1-2, validating the `Input` → `Pointer` conversion
 - [ ] QAT-0065 · Demo · P1 · S · Language-switch flow — each demo language selected mid-story; text re-lays out, no missing-key markers, the same line stays on screen
 
 ## QAT-E · Visual & performance QA (Demo; builds on the ENG/ART/UIX screenshot suites)
@@ -311,15 +311,15 @@ Tasks below add the QA, localisation and production/legal work around them.
 - [ ] QAT-0069 · Demo · P1 · S · Pseudo-loc capture set — `qps` and `qps-long` captures of every demo screen nightly, compared against the previous night to catch new overflow
 - [ ] QAT-0070 · Demo · P1 · S · Context-loss visual test — `WEBGL_lose_context` lose/restore mid-operation; the first frame after restore matches the pre-loss capture within tolerance and the sim resumes
 - [ ] QAT-0071 · Demo · P2 · S · No-WebGL2 path — the browser build shows the `#fatal` text and the desktop build shows the ENG fatal screen with GPU info when WebGL2 is disabled (screenshot tests)
-- [ ] QAT-0072 · Demo · P1 · S · Sim micro-benchmarks (`vitest bench`) — `Operation.update` + `handlePointer` with 150 live entities tracked nightly; a > 20 % regression opens an issue
-- [ ] QAT-0073 · Demo · P2 · S · Perf-run protocol `docs/qa/perf-protocol.md` — fixed driver versions, power plan, SteamOS version, warm-up, median of 3 runs; applied to every ENG benchmark capture on reference machines
+- [x] QAT-0072 · Demo · P1 · S · Sim micro-benchmarks (`vitest bench`) — `Operation.update` + `handlePointer` with 150 live entities tracked nightly; a > 20 % regression opens an issue
+- [x] QAT-0073 · Demo · P2 · S · Perf-run protocol `docs/qa/perf-protocol.md` — fixed driver versions, power plan, SteamOS version, warm-up, median of 3 runs; applied to every ENG benchmark capture on reference machines
 
 ## QAT-F · Debug & test tooling (Demo; extends the ENG dev console and GAM cheats)
 
-- [ ] QAT-0074 · Demo · P0 · M · Stable automation API `window.__game.debug` (versioned) — `state()`, `skipPhase()`, `setVitals()`, `waitFor(status)`, `goto(chapter, step)`; smoke and E2E stop reading `scene.op.entities` internals; stripped from release with the other dev code
-- [ ] QAT-0075 · Demo · P1 · S · Test-state presets — saves for fresh, mid-Ch1 (before op1-3), pre-Matins, Ch2 start, pre-Lauds, demo complete and all-XS; loadable via `preset <name>` and `?preset=`
-- [ ] QAT-0076 · Demo · P1 · S · Cheat menu overlay (F1) — controller- and Deck-navigable list mirroring the common console commands, for testers without a keyboard
-- [ ] QAT-0077 · Demo · P1 · S · Content-navigation commands — `chapter <n> <step>`, `story <id> [line]`, `unlockall`, `results <rank>`, `flag <name> <value>`, `demoend` added to the ENG console
+- [x] QAT-0074 · Demo · P0 · M · Stable automation API `window.__game.debug` (versioned) — `state()`, `skipPhase()`, `setVitals()`, `waitFor(status)`, `goto(chapter, step)`; smoke and E2E stop reading `scene.op.entities` internals; stripped from release with the other dev code
+- [x] QAT-0075 · Demo · P1 · S · Test-state presets — saves for fresh, mid-Ch1 (before op1-3), pre-Matins, Ch2 start, pre-Lauds, demo complete and all-XS; loadable via `preset <name>` and `?preset=`
+- [x] QAT-0076 · Demo · P1 · S · Cheat menu overlay (F1) — controller- and Deck-navigable list mirroring the common console commands, for testers without a keyboard
+- [x] QAT-0077 · Demo · P1 · S · Content-navigation commands — `chapter <n> <step>`, `story <id> [line]`, `unlockall`, `results <rank>`, `flag <name> <value>`, `demoend` added to the ENG console
 - [ ] QAT-0078 · Demo · P2 · S · Console history in bug reports — commands used in the session are included in the PLT F8 bundle so cheated states are visible in repro data
 
 ## QAT-G · Operation editor with live preview (Alpha; on the CON operation schema)
@@ -334,28 +334,28 @@ Tasks below add the QA, localisation and production/legal work around them.
 
 ## QAT-H · Bug process & triage (Demo)
 
-- [ ] QAT-0086 · Demo · P0 · S · Severity taxonomy — S1 crash/save loss/progression block, S2 major feature broken without workaround, S3 workaround exists or clearly visible, S4 cosmetic; each with examples from this game
+- [x] QAT-0086 · Demo · P0 · S · Severity taxonomy — S1 crash/save loss/progression block, S2 major feature broken without workaround, S3 workaround exists or clearly visible, S4 cosmetic; each with examples from this game
 - [ ] QAT-0087 · Demo · P0 · S · Labels & board — severity, area (sim, render, audio, ui, story, loc, input, save, platform, perf, legal), `found-in`, `fixed-in`, `repro-rate`, `playtest`, `community`, `regression`; columns New → Triaged → In progress → Fixed → Verified
-- [ ] QAT-0088 · Demo · P1 · S · Issue templates — bug (build id, OS, GPU, steps, expected/actual, F8 bundle), crash, loc/text, perf, feature request; required fields enforced by issue forms
+- [x] QAT-0088 · Demo · P1 · S · Issue templates — bug (build id, OS, GPU, steps, expected/actual, F8 bundle), crash, loc/text, perf, feature request; required fields enforced by issue forms
 - [ ] QAT-0089 · Demo · P1 · S · Triage cadence — twice-weekly triage; S1 acknowledged within 24 h and S2 within 72 h; weekly bug trend chart in the sprint review
-- [ ] QAT-0090 · Demo · P1 · S · Regression policy — every fixed S1/S2 gains an automated test, snapshot or golden replay before it can move to Verified
+- [x] QAT-0090 · Demo · P1 · S · Regression policy — every fixed S1/S2 gains an automated test, snapshot or golden replay before it can move to Verified
 - [ ] QAT-0091 · Demo · P1 · S · Known-issues list — maintained for each public build and pinned in the Steam discussions and Discord
-- [ ] QAT-0092 · Demo · P2 · S · QA metrics — open bugs by severity and area, find vs fix rate, reopen rate and escaped defects (first reported by players) per build, shown in the weekly status note
+- [x] QAT-0092 · Demo · P2 · S · QA metrics — open bugs by severity and area, find vs fix rate, reopen rate and escaped defects (first reported by players) per build, shown in the weekly status note
 - [ ] QAT-0093 · Demo · P1 · S · Community bug intake — Discord #bug-reports and Steam forum reports triaged weekly into GitHub issues with the `community` label and a reply linking the fix version
 
 ## QAT-I · Telemetry, funnels & dashboards (Demo; extends the PLT opt-in telemetry)
 
 ### Pipeline
-- [ ] QAT-0094 · Demo · P0 · M · Event schema v1 (versioned JSON Schema) extending the PLT event set — `session_start` (build, OS, GPU family, locale, edition, install id), `op_start`, `op_end` (op, result, rank, score, duration, min vitals, rating counts, max combo, Litany used, tinctures, assists), `op_fail` (reason, phase, live entity kinds), `rating` (tool, entity kind, rating, x/y quantised to 32 px), `tool_select`, `story_skip`, `settings_changed`, `wishlist_click`, `quit`
-- [ ] QAT-0095 · Demo · P0 · S · Schema tests — every event the game emits validates against the schema in unit tests; unknown fields or missing required fields fail CI
+- [x] QAT-0094 · Demo · P0 · M · Event schema v1 (versioned JSON Schema) extending the PLT event set — `session_start` (build, OS, GPU family, locale, edition, install id), `op_start`, `op_end` (op, result, rank, score, duration, min vitals, rating counts, max combo, Litany used, tinctures, assists), `op_fail` (reason, phase, live entity kinds), `rating` (tool, entity kind, rating, x/y quantised to 32 px), `tool_select`, `story_skip`, `settings_changed`, `wishlist_click`, `quit`
+- [x] QAT-0095 · Demo · P0 · S · Schema tests — every event the game emits validates against the schema in unit tests; unknown fields or missing required fields fail CI
 - [ ] QAT-0096 · Demo · P0 · M · Ingest backend — Cloudflare Worker + database (or self-hosted PostHog) with EU storage, per-install rate limiting, no IP address stored, install id resettable from Options
-- [ ] QAT-0097 · Demo · P1 · S · Client batching — flush every 60 s and on quit, offline queue capped at 1 MB, exponential backoff; telemetry adds < 0.1 ms per frame (measured)
+- [x] QAT-0097 · Demo · P1 · S · Client batching — flush every 60 s and on quit, offline queue capped at 1 MB, exponential backoff; telemetry adds < 0.1 ms per frame (measured)
 - [ ] QAT-0098 · Demo · P1 · S · Remote kill switch — a config endpoint disables all telemetry or single events without a new build; the client re-reads it at session start
 - [ ] QAT-0099 · Demo · P1 · S · Staging dataset — dev, QA and playtest builds report to a separate dataset; dashboards exclude them by build flavour
 - [ ] QAT-0100 · Demo · P1 · S · Retention job — raw events deleted after 90 days by a scheduled job, aggregates kept; deletion-by-install-id endpoint tested end to end
 
 ### Analysis
-- [ ] QAT-0101 · Demo · P0 · S · Demo funnel definition — launch → consent answered → title → new game → op1-1 started → op1-1 won → … → Matins won → Ch2 started → Lauds won → demo-end shown → wishlist clicked; each step one event
+- [x] QAT-0101 · Demo · P0 · S · Demo funnel definition — launch → consent answered → title → new game → op1-1 started → op1-1 won → … → Matins won → Ch2 started → Lauds won → demo-end shown → wishlist clicked; each step one event
 - [ ] QAT-0102 · Demo · P0 · M · Demo funnel dashboard — drop-off per step with daily cohorts by build, OS and locale; a Next Fest daily snapshot exported to the production channel
 - [ ] QAT-0103 · Demo · P1 · M · Fail-point dashboard — per op: loss reason split (vitals/timer), phase of loss, live entity kinds at loss, retries before first win; top-3 fail phases highlighted for GAM tuning
 - [ ] QAT-0104 · Demo · P1 · M · Tool-usage heatmaps — per op and tool, density of COOL/GOOD/BAD/MISS positions drawn over a capture of that op's operating field
@@ -368,9 +368,9 @@ Tasks below add the QA, localisation and production/legal work around them.
 
 ## QAT-J · Compatibility & platform QA (Demo)
 
-- [ ] QAT-0111 · Demo · P0 · S · Compatibility matrix `docs/qa/compat-matrix.md` — aggregates the ENG GPU/ANGLE, PLT OS/display and INP device matrices into one board with owner, status and evidence link per cell
+- [x] QAT-0111 · Demo · P0 · S · Compatibility matrix `docs/qa/compat-matrix.md` — aggregates the ENG GPU/ANGLE, PLT OS/display and INP device matrices into one board with owner, status and evidence link per cell
 - [ ] QAT-0112 · Demo · P1 · M · Demo lab sweep — contracted lab or tester pool runs the demo smoke + one boss on ≥ 15 configs (NVIDIA GTX 900–RTX 40, AMD Polaris–RDNA3, Intel UHD/Iris Xe/Arc, hybrid-graphics laptops); results merged into the matrix
-- [ ] QAT-0113 · Demo · P1 · S · OS-locale edge cases — Windows display/format set to tr-TR, de-DE, pl-PL and pt-BR: no key-casing bugs (Turkish dotted/dotless i), no decimal-comma breakage in settings or saves
+- [x] QAT-0113 · Demo · P1 · S · OS-locale edge cases — Windows display/format set to tr-TR, de-DE, pl-PL and pt-BR: no key-casing bugs (Turkish dotted/dotless i), no decimal-comma breakage in settings or saves
 - [ ] QAT-0114 · Demo · P1 · S · Antivirus false positives — each RC scanned on VirusTotal; any detection gets a vendor submission (e.g. Microsoft Defender portal) and a clean re-scan before release
 - [ ] QAT-0115 · Demo · P1 · S · Desktop security verification — Electronegativity scan and a checklist confirming the PLT hardening (context isolation, no Node integration, CSP, devtools off) in the packaged demo; no high findings
 
@@ -482,33 +482,33 @@ Tasks below add the QA, localisation and production/legal work around them.
 ## QAT-L · Demo test plan, test suites & certification (Demo)
 
 ### Plan & cases
-- [ ] QAT-0128 · Demo · P0 · M · Demo test plan `docs/qa/demo-test-plan.md` — scope (front end, options, tutorials, 10 ops, 2 bosses, story, save/Cloud, results, demo end), platforms, entry/exit criteria, schedule and the suites below
-- [ ] QAT-0129 · Demo · P0 · S · Exit criteria — 0 open S1/S2, ≤ 15 S3 with owner sign-off, crash-free sessions ≥ 99.5 % in the RC playtest round, perf budgets met on Deck and min-spec, every suite executed on the RC
-- [ ] QAT-0130 · Demo · P1 · S · Test-case repository `docs/qa/cases/` — cases with stable ids (e.g. `TC-SAVE-004`), priority and `smoke`/`regression`/`full` tags; the regression set runs in ≤ 4 h by one tester
+- [x] QAT-0128 · Demo · P0 · M · Demo test plan `docs/qa/demo-test-plan.md` — scope (front end, options, tutorials, 10 ops, 2 bosses, story, save/Cloud, results, demo end), platforms, entry/exit criteria, schedule and the suites below
+- [x] QAT-0129 · Demo · P0 · S · Exit criteria — 0 open S1/S2, ≤ 15 S3 with owner sign-off, crash-free sessions ≥ 99.5 % in the RC playtest round, perf budgets met on Deck and min-spec, every suite executed on the RC
+- [x] QAT-0130 · Demo · P1 · S · Test-case repository `docs/qa/cases/` — cases with stable ids (e.g. `TC-SAVE-004`), priority and `smoke`/`regression`/`full` tags; the regression set runs in ≤ 4 h by one tester
 
 ### Suites (written and executed on the RC)
-- [ ] QAT-0131 · Demo · P0 · S · Front-end suite — new game, continue, chapter select, options entry/exit, credits, quit, demo ribbon, owned-full-game title state
-- [ ] QAT-0132 · Demo · P0 · S · Story suite — advance, skip, auto, backlog, choices and flags, speaker plates, END OF CHAPTER cards for s1-end and s2-end
-- [ ] QAT-0133 · Demo · P0 · M · Per-operation suite × 10 — win, loss by vitals, loss by timer, retry, quit mid-op, alt-tab mid-op, Litany used/unused, every hotkey and wheel switch, rank seal and NEW BEST on results
-- [ ] QAT-0134 · Demo · P0 · S · Tutorial suite — each tool tutorial completes, can be failed and retried, can be skipped on replay, and shows mouse or gamepad glyphs to match the last device
-- [ ] QAT-0135 · Demo · P0 · S · Save suite — quit at every story/op boundary and relaunch to the right step; kill during save; corrupted and deleted save; Steam Cloud round trip between two PCs
-- [ ] QAT-0136 · Demo · P0 · S · Options suite — every option applies immediately and survives restart (audio buses, display mode, render scale, frame cap, shake, flashing, text size, gore level, assists, language, bindings)
-- [ ] QAT-0137 · Demo · P1 · S · Audio & focus suite — bus volumes, mute when unfocused, headphone unplug mid-op, overlay open during an op, minimise/restore
-- [ ] QAT-0138 · Demo · P0 · S · Demo-end suite — after s2-end the demo-complete scene appears, the wishlist button works with the Steam overlay on and off, no route reaches Chapter 3, replaying ops from the summary works
-- [ ] QAT-0139 · Demo · P1 · S · Steam edge-case suite — Steam offline mode, launch outside Steam (restart via Steam), overlay disabled, Big Picture/Deck gaming mode, Cloud conflict dialog
+- [x] QAT-0131 · Demo · P0 · S · Front-end suite — new game, continue, chapter select, options entry/exit, credits, quit, demo ribbon, owned-full-game title state
+- [x] QAT-0132 · Demo · P0 · S · Story suite — advance, skip, auto, backlog, choices and flags, speaker plates, END OF CHAPTER cards for s1-end and s2-end
+- [x] QAT-0133 · Demo · P0 · M · Per-operation suite × 10 — win, loss by vitals, loss by timer, retry, quit mid-op, alt-tab mid-op, Litany used/unused, every hotkey and wheel switch, rank seal and NEW BEST on results
+- [x] QAT-0134 · Demo · P0 · S · Tutorial suite — each tool tutorial completes, can be failed and retried, can be skipped on replay, and shows mouse or gamepad glyphs to match the last device
+- [x] QAT-0135 · Demo · P0 · S · Save suite — quit at every story/op boundary and relaunch to the right step; kill during save; corrupted and deleted save; Steam Cloud round trip between two PCs
+- [x] QAT-0136 · Demo · P0 · S · Options suite — every option applies immediately and survives restart (audio buses, display mode, render scale, frame cap, shake, flashing, text size, gore level, assists, language, bindings)
+- [x] QAT-0137 · Demo · P1 · S · Audio & focus suite — bus volumes, mute when unfocused, headphone unplug mid-op, overlay open during an op, minimise/restore
+- [x] QAT-0138 · Demo · P0 · S · Demo-end suite — after s2-end the demo-complete scene appears, the wishlist button works with the Steam overlay on and off, no route reaches Chapter 3, replaying ops from the summary works
+- [x] QAT-0139 · Demo · P1 · S · Steam edge-case suite — Steam offline mode, launch outside Steam (restart via Steam), overlay disabled, Big Picture/Deck gaming mode, Cloud conflict dialog
 
 ### Exploratory charters (session reports in `docs/qa/charters/`)
-- [ ] QAT-0140 · Demo · P1 · S · Charter: tool switching and capture — switching tools, pausing and opening the overlay mid-drag, mid-hold and mid-pull on every entity type
-- [ ] QAT-0141 · Demo · P1 · S · Charter: Litany edge cases — star drawn during phase transitions, at 1 vitals, while paused, while a Voice or shard is grabbed, and on the last second of the timer
-- [ ] QAT-0142 · Demo · P1 · S · Charter: window and display chaos — alt-tab spam, monitor unplug, display sleep, DPI change while moving the window, fullscreen toggles during a boss
-- [ ] QAT-0143 · Demo · P1 · S · Charter: entity pressure — Lauds Hymn plus spiderlings plus pools at maximum; frame time, readability and input priority observed and logged
+- [x] QAT-0140 · Demo · P1 · S · Charter: tool switching and capture — switching tools, pausing and opening the overlay mid-drag, mid-hold and mid-pull on every entity type
+- [x] QAT-0141 · Demo · P1 · S · Charter: Litany edge cases — star drawn during phase transitions, at 1 vitals, while paused, while a Voice or shard is grabbed, and on the last second of the timer
+- [x] QAT-0142 · Demo · P1 · S · Charter: window and display chaos — alt-tab spam, monitor unplug, display sleep, DPI change while moving the window, fullscreen toggles during a boss
+- [x] QAT-0143 · Demo · P1 · S · Charter: entity pressure — Lauds Hymn plus spiderlings plus pools at maximum; frame time, readability and input priority observed and logged
 
 ### Soak, localisation & sign-off
 - [ ] QAT-0144 · Demo · P1 · S · Idle soak — 8 h each on the title, a paused operation and the demo-end summary; no crash, memory growth < 50 MB, audio still plays
 - [ ] QAT-0145 · Demo · P0 · S · Localisation functional pass — per demo language: switching, fonts, no missing keys or fallback glyphs, no clipped text on any demo screen (linguistic quality stays with LOC LQA)
-- [ ] QAT-0146 · Demo · P0 · S · Certification master checklist `docs/qa/cert-demo.md` — Steamworks, Deck, legal-screen and accessibility items from PLT, INP, UIX and OPS aggregated with evidence links; every item green before the go/no-go gate
+- [x] QAT-0146 · Demo · P0 · S · Certification master checklist `docs/qa/cert-demo.md` — Steamworks, Deck, legal-screen and accessibility items from PLT, INP, UIX and OPS aggregated with evidence links; every item green before the go/no-go gate
 - [ ] QAT-0147 · Demo · P0 · S · Demo RC sign-off — `docs/qa/signoff/demo-rc.md` with build SHA, suite results, exit-criteria status and the open-issue list; required before the build is set live
-- [ ] QAT-0148 · Demo · P1 · S · Demo patch regression checklist — 60-minute smoke (boot, op1-1, Matins, Lauds, save/resume, demo end, language switch) run on every demo hotfix before it goes live
+- [x] QAT-0148 · Demo · P1 · S · Demo patch regression checklist — 60-minute smoke (boot, op1-1, Matins, Lauds, save/resume, demo end, language switch) run on every demo hotfix before it goes live
 - [ ] QAT-0149 · Demo · P1 · S · Next Fest QA rota — daily crash and forum sweep during the festival week; each hotfix verified inside the PLT 4-hour pipeline
 - [ ] QAT-0150 · Alpha · P1 · S · Post-demo bug review — every community-reported demo bug fixed or deferred with a reason before the Alpha gate
 
@@ -523,14 +523,14 @@ Tasks below add the QA, localisation and production/legal work around them.
 ## QAT-M · Full-game QA: Alpha → Release → Post
 
 ### Alpha
-- [ ] QAT-0151 · Alpha · P0 · S · Alpha test plan — Ch1–5 playable end to end with placeholder art, all core systems feature-complete; entry/exit criteria and new suites for Ch3–5 listed
+- [x] QAT-0151 · Alpha · P0 · S · Alpha test plan — Ch1–5 playable end to end with placeholder art, all core systems feature-complete; entry/exit criteria and new suites for Ch3–5 listed
 - [ ] QAT-0152 · Alpha · P1 · M · Chapter III functional pass — every op (Prime and Terce included) won, lost by vitals and by timer, retried; story scenes and flags checked; results filed per op
 - [ ] QAT-0153 · Alpha · P1 · M · Chapter IV functional pass — every op (Sext and None included) won, lost by vitals and by timer, retried; story scenes and flags checked
 - [ ] QAT-0154 · Alpha · P1 · M · Chapter V functional pass — every op (Vespers and Compline included) won, lost by vitals and by timer, retried; endings and credits reached
 - [ ] QAT-0155 · Alpha · P1 · S · Campaign graph checks for five chapters — every chapter reachable, unlocks chain correctly, challenge-mode entries reference existing ops, demo carry-over lands on Ch3
 
 ### Beta
-- [ ] QAT-0156 · Beta · P0 · S · Beta test plan — content complete, all shipped languages, full compatibility matrix, accessibility and performance; exit criteria for the RC
+- [x] QAT-0156 · Beta · P0 · S · Beta test plan — content complete, all shipped languages, full compatibility matrix, accessibility and performance; exit criteria for the RC
 - [ ] QAT-0157 · Beta · P1 · M · Final-content regression — Ch3–5 re-run with final art, audio and VO against the Alpha suites; visual/readability regressions filed to ART/ENG
 - [ ] QAT-0158 · Beta · P1 · M · Field-triage discipline suite — patient queue, switching patients, simultaneous timers, scoring; win/loss paths
 - [ ] QAT-0159 · Beta · P1 · M · Diagnosis discipline suite — symptom inspection, wrong-diagnosis penalties, case completion and scoring
@@ -541,13 +541,13 @@ Tasks below add the QA, localisation and production/legal work around them.
 - [ ] QAT-0164 · Beta · P0 · M · Full-game localisation functional pass — every shipped language across all chapters, disciplines and challenge mode; fonts, keys, clipping
 
 ### Release
-- [ ] QAT-0165 · Release · P0 · S · Full-game certification checklist `docs/qa/cert-1.0.md` — demo checklist extended with achievements, leaderboards, Cloud, Deck and store items; evidence links for every row
+- [x] QAT-0165 · Release · P0 · S · Full-game certification checklist `docs/qa/cert-1.0.md` — demo checklist extended with achievements, leaderboards, Cloud, Deck and store items; evidence links for every row
 - [ ] QAT-0166 · Release · P0 · M · Release-candidate regression — full test plan on every matrix OS; results in `docs/qa/signoff/1.0-rc.md` with build SHA
 - [ ] QAT-0167 · Release · P0 · S · Day-one patch verification — patch build passes the RC regression subset and upgrades a 1.0 save and a demo carry-over save without loss
 
 ### Post-launch
-- [ ] QAT-0168 · Post · P1 · S · Patch regression suite — automated suites plus a 2-hour manual checklist for every post-launch patch; results attached to the patch notes PR
-- [ ] QAT-0169 · Post · P1 · M · Update and DLC test plans — per release: new content suites, saves with and without the DLC, DLC ownership checks online and offline, leaderboards unaffected
+- [x] QAT-0168 · Post · P1 · S · Patch regression suite — automated suites plus a 2-hour manual checklist for every post-launch patch; results attached to the patch notes PR
+- [x] QAT-0169 · Post · P1 · M · Update and DLC test plans — per release: new content suites, saves with and without the DLC, DLC ownership checks online and offline, leaderboards unaffected
 - [ ] QAT-0170 · Post · P2 · S · Player-reported crash review — top 10 crash signatures reviewed every two weeks for the first three months; each fixed or explained in the known-issues list
 
 ## LOC-H · Full-game localisation (Beta → Post)
