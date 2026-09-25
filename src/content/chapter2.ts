@@ -1,6 +1,6 @@
 import { OP_2_1, OP_2_2, OP_2_3, OP_2_4, OP_2_5 } from './ops/ch2';
 import type { Chapter } from './campaign';
-import { n, say, type StoryDef } from './story';
+import { choose, n, onlyIf, say, type StoryDef } from './story';
 import { when } from './conditions';
 
 // ====================================================================== stories
@@ -56,6 +56,11 @@ export const STORY_2_3: StoryDef = {
   ],
 };
 
+/**
+ * s2-4 (NAR-0062): the first moral pressure. Stroh wants the cantor alive *and awake* for the
+ * question; Kreuzer answers as a surgeon or as the Inquisitor's instrument. The pick writes
+ * `cantorMercy`, which Chapter III reads (s3-1): see docs/narrative/flags.md.
+ */
 export const STORY_2_4: StoryDef = {
   id: 's2-4',
   place: 'The muster camp — before midnight',
@@ -64,9 +69,15 @@ export const STORY_2_4: StoryDef = {
     say('stroh', 'Doctor. I have brought you a gift.'),
     n('Two of the Inquisitor’s men drag a thin, grey-robed figure into the light. His chest is a lattice of glowing sigils.'),
     say('stroh', 'A lay-cantor of the Hollow Choir. We took him in the barrow-fields, singing to the dead. Something in the barrows sang back.'),
-    say('stroh', 'The moment he began to confess, those marks ignited. His masters would rather he burned than spoke.'),
-    say('stroh', 'He also swallowed something. You will keep him alive. I have questions, and the dead are poor at answering them.'),
-    say('ilse', '…Doctor. Whatever he is, he’s a patient.'),
+    say('stroh', 'The moment he began to confess, those marks ignited. He also swallowed something. His masters would rather he burned than spoke.'),
+    say('stroh', 'You will keep him alive, Doctor — and awake. I have questions, and the dead are poor at answering them.'),
+    say('ilse', '…He’s dying, Doctor. Whatever else he is, he’s a patient.'),
+    choose('narrator', 'The cantor’s eyes find Kreuzer’s. Stroh waits, one glove already off.', [
+      { id: 'mercy', text: 'I treat the man on my table, Inquisitor, not your witness. If he needs poppy for the pain, he has poppy.', set: { cantorMercy: true } },
+      { id: 'awake', text: 'You’ll have him alive and awake, Inquisitor. Keep your men out of my light.', set: { cantorMercy: false } },
+    ]),
+    ...onlyIf({ flag: 'cantorMercy' }, { ...say('stroh', 'Poppy. So the Choir’s man sleeps soft while the city burns its sick. I shall remember whose mercy that was.'), stamp: 'suspect' }),
+    ...onlyIf({ flag: 'cantorMercy', is: false }, say('stroh', 'Alive and awake. Good. We understand each other, Doctor — a rarer thing than you know.')),
     say('kreuzer', 'On the table. Now.'),
   ],
 };
@@ -125,6 +136,8 @@ export const CHAPTER_2: Chapter = {
   id: 'ch2',
   numeral: 'II',
   title: 'The Hour of Lauds',
+  // s2-4 writes `cantorMercy` and shows Stroh's reply by it; the engine counts `litanySeenCount` (docs/narrative/flags.md).
+  flags: { reads: ['cantorMercy'], writes: ['cantorMercy'] },
   steps: [
     { kind: 'story', story: STORY_2_1 },
     { kind: 'op', op: OP_2_1 },

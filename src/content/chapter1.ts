@@ -146,6 +146,8 @@ export const CHAPTER_1 = {
   id: 'ch1',
   numeral: 'I',
   title: 'The Hour of Matins',
+  // No choices yet: the engine's `litanySeenCount` starts counting at op1-5 (docs/narrative/flags.md).
+  flags: { reads: [], writes: [] },
   steps: [
     { kind: 'story', story: PROLOGUE },
     { kind: 'op', op: OP_1_1 },

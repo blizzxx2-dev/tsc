@@ -6,7 +6,7 @@ import { TerceMalison, TERCE_DEFAULT } from '../surgery/bosses/terce';
 import type { Operation, OperationDef } from '../surgery/operation';
 import { at, closeIncision } from './chapter1';
 import type { Chapter } from './campaign';
-import { n, say, type StoryDef } from './story';
+import { choose, n, onlyIf, say, type StoryDef } from './story';
 
 const ALL = ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture', 'brand', 'lens'] as const;
 
@@ -21,6 +21,10 @@ export const STORY_3_1: StoryDef = {
     n('Prime: the first work of the day. In the old offices, it is when the roll of the dead is read aloud.'),
     n('The Watch comes home down the Timber Road to a city that smells of the Kilnrows: saltpetre, coal, and fear.'),
     say('stroh', 'Doctor. I said we would speak after Prime. It is after Prime.'),
+    // The cantor's fate follows s2-4 (`cantorMercy`, NAR-0116); the candles follow how often the star was drawn.
+    ...onlyIf({ flag: 'cantorMercy' }, say('stroh', 'Your cantor, by the way. Three days asleep on your poppy, then dead of it, having told us a hymn. I keep a ledger of mercies.')),
+    ...onlyIf({ flag: 'cantorMercy', is: false }, say('stroh', 'Your cantor talked, by the way. Four nights of it, awake the whole while, as you promised. I keep a ledger of such things.')),
+    ...onlyIf((f) => Number(f.get('litanySeenCount') ?? 0) >= 2, say('stroh', 'And twice now I have stood in a room with you while every candle in it forgot to flicker. That is in the ledger too.')),
     say('kreuzer', 'I have patients, Inquisitor.'),
     say('stroh', 'You have one more. The council has renewed the Inspection Decree. Every child with a mark is to be examined.'),
     n('A woman in a founder’s apron pushes a small girl forward. Two nubs of horn rise through the child’s fair hair.'),
@@ -37,11 +41,24 @@ export const STORY_3_2: StoryDef = {
   lines: [
     say('stroh', 'Well? You have examined her. Put it in writing. Born, or turned.'),
     n('The buds are new. Anyone with a surgeon’s eye could see it: the bone around them is barely a year old.'),
-    say('kreuzer', 'She was born with them. A natural growth. I will cut them back so they don’t press on the skull.'),
-    say('stroh', 'A natural growth. With a sigil under each.'),
-    say('kreuzer', 'Hornfolk children are often marked. Midwives’ charms. It means nothing.'),
-    say('ilse', '…I will witness it, Inquisitor. Sister Ilse, of the Merciful Order. A natural growth.'),
-    say('stroh', 'Two signatures. Very well. Paper is patient, Doctor. It keeps.'),
+    // The certificate (NAR-0119): a kind lie or a true sentence. Writes `hornchildCertificate` for Chapters IV–V.
+    choose('narrator', 'Liesl’s mother has not breathed since the question. The certificate waits for a signature.', [
+      { id: 'natural', text: 'She was born with them. A natural growth. I will cut them back so they don’t press on the skull.', set: { hornchildCertificate: 'natural' } },
+      { id: 'turned', text: 'The bone is new, Inquisitor. Turned late — within the year. Write what I say, and let the Tribunal answer for it.', set: { hornchildCertificate: 'turned' } },
+    ]),
+    ...onlyIf(
+      { flag: 'hornchildCertificate', is: 'natural' },
+      say('stroh', 'A natural growth. With a sigil under each.'),
+      say('kreuzer', 'Hornfolk children are often marked. Midwives’ charms. It means nothing.'),
+      say('ilse', '…I will witness it, Inquisitor. Sister Ilse, of the Merciful Order. A natural growth.'),
+      say('stroh', 'Two signatures. Very well. Paper is patient, Doctor. It keeps.'),
+    ),
+    ...onlyIf(
+      { flag: 'hornchildCertificate', is: 'turned' },
+      say('stroh', 'Turned. Then she is the Choir’s, and the Choir’s things go to the Tribunal. Sister — the mother will want holding.'),
+      say('ilse', '…Doctor. She is seven.'),
+      say('kreuzer', 'And the truth is the truth at any age, Sister. I cut first. The Tribunal may have what I leave.'),
+    ),
     n('He folds the certificate into his coat. Somewhere beneath the hospice roof, a bird that should not be awake begins to sing.'),
     say('haller', 'Trepan the buds, lift the bone, cut them out clean and sear what’s under. She is seven. Be quick.'),
   ],
@@ -518,6 +535,8 @@ export const CHAPTER_3: Chapter = {
   id: 'ch3',
   numeral: 'III',
   title: 'Prime and Terce',
+  // NAR-0116: reads the demo's choice and Litany count; writes the certificate, Stroh's tooth (op3-9) and Haller's fate (op3-11).
+  flags: { reads: ['cantorMercy', 'litanySeenCount', 'hornchildCertificate'], writes: ['hornchildCertificate', 'strohTooth', 'hallerFate'] },
   steps: [
     { kind: 'story', story: STORY_3_1 },
     { kind: 'story', story: STORY_3_2 },
