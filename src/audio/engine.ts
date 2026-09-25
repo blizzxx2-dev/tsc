@@ -124,8 +124,12 @@ export class AudioEngine {
 
   /** Override the clock (offline renders drive a simulated timeline). */
   clock: (() => number) | null = null;
-  /** Offline render: no wall-clock timers (node clean-up happens with the context). */
+  /**
+   * Offline render: no wall-clock timers. Node clean-ups are queued against the simulated clock
+   * instead and run by `flushDeferred()` between render chunks (tests/audio/offline.ts).
+   */
   offline = false;
+  private deferred: { at: number; fn: () => void }[] = [];
 
   /** Highest safe filter frequency for this context (filters above Nyquist misbehave on some implementations). */
   get nyquistSafe(): number {
@@ -376,7 +380,8 @@ export class AudioEngine {
           }
           r.off = undefined;
         };
-        if (this.offline || typeof setTimeout === 'undefined') stop();
+        if (this.offline) this.later(stop, 4000);
+        else if (typeof setTimeout === 'undefined') stop();
         else r.off = setTimeout(stop, 4000);
       }
     }
@@ -477,6 +482,8 @@ export class AudioEngine {
     } else if (DEV_FALLBACK) {
       end = DEV_FALLBACK(this.synth.begin(now, g));
     } else end = now;
+    // Offline, a finished one-shot leaves the graph (a browser frees ended subgraphs itself).
+    if (this.offline) this.later(() => head.disconnect(), (end + 0.05 - now) * 1000 + 80);
     const voice = this.voices.add({
       event: key,
       prio,
@@ -488,7 +495,7 @@ export class AudioEngine {
         g.gain.cancelScheduledValues(t);
         g.gain.setValueAtTime(g.gain.value, t);
         g.gain.linearRampToValueAtTime(0, t + 0.02);
-        if (!this.offline) setTimeoutSafe(() => head.disconnect(), 60);
+        this.later(() => head.disconnect(), 60);
       },
     });
     return voice;
@@ -550,7 +557,7 @@ export class AudioEngine {
     r.gain.gain.setValueAtTime(r.gain.gain.value, now);
     r.gain.gain.linearRampToValueAtTime(0, now + fadeMs / 1000);
     const node = r.panner ?? r.gain;
-    if (!this.offline) setTimeoutSafe(() => node.disconnect(), Math.max(0, (end - now) * 1000) + 80);
+    this.later(() => node.disconnect(), Math.max(0, (end - now) * 1000) + 80);
   }
 
   get activeLoops(): number {
@@ -562,6 +569,25 @@ export class AudioEngine {
   }
 
   // ------------------------------------------------------------------ frame
+
+  /** Run `fn` in `ms` — on the wall clock, or, offline, at that point of the simulated timeline. */
+  private later(fn: () => void, ms: number): void {
+    if (this.offline) this.deferred.push({ at: this.now + ms / 1000, fn });
+    else setTimeoutSafe(fn, ms);
+  }
+
+  /**
+   * Offline renders: run the clean-ups (finished voices leaving the graph) due by `upTo` seconds.
+   * Called with the render position while the OfflineAudioContext is suspended, so a node is
+   * never cut before the renderer has passed its end.
+   */
+  flushDeferred(upTo = this.now): void {
+    if (!this.deferred.length) return;
+    const due = this.deferred.filter((d) => d.at <= upTo);
+    if (!due.length) return;
+    this.deferred = this.deferred.filter((d) => d.at > upTo);
+    for (const d of due) d.fn();
+  }
 
   /** Per-frame housekeeping: loop grains, snapshot fades, ducking, captions. */
   update(dt: number): void {

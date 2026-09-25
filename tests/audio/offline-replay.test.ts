@@ -8,8 +8,8 @@ import { describe, expect, it } from 'vitest';
 import { AudioSystem } from '../../src/audio/system';
 import { dbToGain } from '../../src/audio/mixer';
 import { allOperations } from '../../src/content/campaign';
-import { offlineEngine, stats } from './offline';
-import { replay } from './replay';
+import { offlineEngine, renderChunked, stats } from './offline';
+import { replay, replayStepper } from './replay';
 
 const rmsDb = (chs: Float32Array[], a: number, b: number) => 20 * Math.log10(Math.max(1e-9, stats(chs, a, b).rms));
 
@@ -25,18 +25,31 @@ describe('offline renders', () => {
     let t = 0.05;
     sys.engine.clock = () => t;
     sys.engine.offline = true;
-    Object.assign(sys.engine.prefs, { muted: false, master: 100, music: 80, sfx: 90, ambience: 70, ui: 70, voice: 100, mono: false, dynamicRange: 'full', heartbeat: 'always', captions: false });
+    Object.assign(sys.engine.prefs, {
+      muted: false,
+      master: 100,
+      music: 80,
+      sfx: 90,
+      ambience: 70,
+      ui: 70,
+      voice: 100,
+      mono: false,
+      dynamicRange: 'full',
+      heartbeat: 'always',
+      captions: false,
+    });
     sys.unlock();
     sys.kind = 'operation';
-    const r = replay(def, sys, (time, s) => {
+    const r = replayStepper(def, sys, (time, s) => {
       t = time + 0.05;
       s.music.update();
       s.amb.update(1 / 60);
     });
+    // Simulated and rendered a second at a time (see renderChunked).
+    const chs = await renderChunked(ctx, sys.engine, (to) => r.advance(to));
+    expect(r.done).toBe(true);
     expect(r.op.status).toBe('won');
     expect(r.played.length).toBeGreaterThan(100);
-    const buf = await ctx.startRendering();
-    const chs = [buf.getChannelData(0), buf.getChannelData(1)];
     const s = stats(chs);
     expect(s.finite).toBe(true);
     expect(s.peak).toBeLessThanOrEqual(dbToGain(-0.5));

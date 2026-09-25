@@ -2,7 +2,7 @@
 import { AudioSystem } from '../../src/audio/system';
 import type { EventId } from '../../src/audio/events';
 import type { Operation, OperationDef } from '../../src/surgery/operation';
-import { playWithBot } from '../bot';
+import { botStepper } from '../bot';
 
 export interface Played {
   t: number;
@@ -17,8 +17,20 @@ export interface Replay {
   cues: { t: number; cue: string; litanyTime: number }[];
 }
 
+/** A replay driven in steps: `advance(to)` simulates up to `to` seconds (offline renders run it between chunks). */
+export interface SteppedReplay extends Replay {
+  advance(to: number): void;
+  readonly done: boolean;
+}
+
 /** Replay `def` with the bot, feeding every frame to a fresh AudioSystem's director. */
 export function replay(def: OperationDef, sys = new AudioSystem(), onFrame?: (t: number, sys: AudioSystem) => void): Replay {
+  const r = replayStepper(def, sys, onFrame);
+  r.advance(Infinity);
+  return r;
+}
+
+export function replayStepper(def: OperationDef, sys = new AudioSystem(), onFrame?: (t: number, sys: AudioSystem) => void): SteppedReplay {
   const played: Played[] = [];
   const cues: Replay['cues'] = [];
   let t = 0;
@@ -30,7 +42,7 @@ export function replay(def: OperationDef, sys = new AudioSystem(), onFrame?: (t:
   let phase = 0;
   let wasDown = false;
   let pending: string[] = [];
-  const { op } = playWithBot(def, {
+  const bot = botStepper(def, {
     think: 1,
     onOp: (op) => op.events.on('cue', (c) => pending.push(c)),
     onFrame: (op, ptr, dt) => {
@@ -54,5 +66,17 @@ export function replay(def: OperationDef, sys = new AudioSystem(), onFrame?: (t:
       onFrame?.(t, sys);
     },
   });
-  return { op, sys, played, cues };
+  let done = false;
+  return {
+    op: bot.op,
+    sys,
+    played,
+    cues,
+    get done() {
+      return done;
+    },
+    advance(to) {
+      while (!done && t < to) if (!bot.step()) done = true;
+    },
+  };
 }

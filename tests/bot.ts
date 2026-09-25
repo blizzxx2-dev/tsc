@@ -11,7 +11,7 @@
  * - `sloppy`  steady, but 30 % of order-sensitive steps are done wrong (no barb nick, no bolt pause, overcut buboes…)
  */
 import { dist, Rng, type Vec } from '../src/core/math';
-import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, SALVE_MAX, Sigil, Venom, Wadding } from '../src/surgery/entities';
+import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, projectAlong, Rot, SALVE_MAX, Sigil, Venom, Wadding } from '../src/surgery/entities';
 import type { Entity } from '../src/surgery/entity';
 import { ChoirVoice, DawnOverlay, EggSac, LaudsBody, LaudsMalison, LightThread, SpiderlingGrub } from '../src/surgery/lauds';
 import { Malison, MalisonAsh, MalisonShard } from '../src/surgery/malison';
@@ -109,6 +109,61 @@ export function zigzag(line: Vec[], crossings: number, amp = 26): Vec[] {
     pts.push({ x: p.x + n.x * side, y: p.y + n.y * side });
   }
   return pts;
+}
+
+/**
+ * Stitch a wound that already carries stitches: one stab through each remaining gap (a repeat of
+ * the first zig-zag lands beside the old stitches and is refused). Each stab lands 4.5 px past the
+ * wound, so the stitch sits where it was aimed along it; a gap too narrow to fit one cleanly is
+ * stabbed from the side the neighbouring stitches lean away from.
+ */
+export function* restitch(lac: Laceration): Action {
+  const line = [lac.a, lac.b];
+  const st = lac.stitch;
+  const total = st.length;
+  const d = { x: (lac.b.x - lac.a.x) / (total || 1), y: (lac.b.y - lac.a.y) / (total || 1) };
+  const n = { x: -d.y, y: d.x };
+  const at = st.marks.map((m) => ({ s: projectAlong(line, m).at, o: (m.x - lac.a.x) * n.x + (m.y - lac.a.y) * n.y })).sort((a, b) => a.s - b.s);
+  const edges = [0, ...at.map((m) => m.s), total];
+  const gaps = edges.slice(1).map((b, i) => ({ a: edges[i], b, lean: (at[i - 1]?.o ?? 0) + (at[i]?.o ?? 0) }));
+  const stabs: { s: number; side: number }[] = [];
+  for (const g of gaps) {
+    const len = g.b - g.a;
+    // Room for a stitch at least `minSpacing` (10 px) from both neighbours.
+    if (len < 21) continue;
+    const k = Math.max(1, Math.ceil(len / 40) - 1);
+    for (let i = 1; i <= k; i++) stabs.push({ s: g.a + (len * i) / (k + 1), side: 0 });
+  }
+  if (!stabs.length) {
+    const g = gaps.reduce((w, x) => (x.b - x.a > w.b - w.a ? x : w));
+    stabs.push({ s: (g.a + g.b) / 2, side: g.lean >= 0 ? -1 : 1 });
+  }
+  const P = (s: number, o: number): Vec => ({ x: lac.a.x + d.x * s + n.x * o, y: lac.a.y + d.y * s + n.y * o });
+  let side = stabs[0].side || 1;
+  let p = P(stabs[0].s, -8 * side);
+  yield { tool: 'thread', pos: p, down: true };
+  for (const stab of stabs) {
+    if (stab.side) side = stab.side;
+    // Approach along the wound on this side, then stab across it in one frame.
+    const from = P(stab.s, -8 * side);
+    for (let i = 1, k = Math.max(1, Math.ceil(dist(p, from) / 4)); i <= k; i++) yield { tool: 'thread', pos: { x: p.x + ((from.x - p.x) * i) / k, y: p.y + ((from.y - p.y) * i) / k }, down: true };
+    p = P(stab.s, 4.5 * side);
+    yield { tool: 'thread', pos: p, down: true };
+    side = -side;
+  }
+  yield { tool: 'thread', pos: p, down: false };
+}
+
+/** The thread stroke for a wound: a fresh zig-zag, or one stab through each remaining gap. */
+export function stitchWound(lac: Laceration): Action {
+  if (lac.stitch.count === 0) {
+    // One spare crossing, unless that would pack the stitches too close to the 10 px minimum
+    // spacing (short wounds): rejected stitches leave gaps no later stitch can fill.
+    const needed = Math.max(1, lac.stitch.needed);
+    const spare = (0.92 * lac.length) / (needed + 1) >= 13 ? 1 : 0;
+    return drag('thread', zigzag([lac.a, lac.b], needed + spare), 380);
+  }
+  return restitch(lac);
 }
 
 /** Brush raster over a disc. */
@@ -213,7 +268,7 @@ function plan(ctx: BotContext): Action | null {
   const laterOp = /^op[345]-/.test(op.def.id);
   if (!laterOp) for (const e of ents) if (!isKnown(e)) throw new Error(`bot: unknown entity kind ${e.constructor.name}`);
 
-  if (op.vitals < (ctx.expert ? 55 : 40) && op.injectCooldown === 0 && has('tincture')) return hold('tincture', () => ({ x: FIELD.cx + 330, y: FIELD.cy + 20 }), 0.8);
+  if (op.vitals < (ctx.expert ? 60 : 40) && op.injectCooldown === 0 && has('tincture')) return hold('tincture', () => ({ x: FIELD.cx + 330, y: FIELD.cy + 20 }), 0.8);
 
   // Let a hot brand cool rather than have it lock mid-searing.
   if (op.brandHeat > 4 && has('brand')) return pause(OFF_BODY, op.tool, 1.2);
@@ -236,7 +291,9 @@ function plan(ctx: BotContext): Action | null {
   // The Hours on MalisonBase (Matins, Lauds): their own strategies, unless wounds are piling up
   // (a farming bot only dodges while it stalls).
   const lacs = vis.filter((e): e is Laceration => e instanceof Laceration);
-  if (!stalling && (hoursUrgent(op) || !(lacs.length >= 3 || (lacs.length && op.vitals < 45) || find(BloodPool, (p) => p.r > 34)))) {
+  // An expert keeps the table clean (and the vitals up) rather than pressing on with wounds open.
+  const piling = ctx.expert ? lacs.length >= 2 || (lacs.length > 0 && op.vitals < 60) : lacs.length >= 3 || (lacs.length > 0 && op.vitals < 45);
+  if (!stalling && (hoursUrgent(op) || !(piling || find(BloodPool, (p) => p.r > 34)))) {
     const hours = planHours(op, kit);
     if (hours) return hours;
   } else if (lacs.length && ents.some((e) => e instanceof MalisonBase)) {
@@ -323,7 +380,7 @@ function plan(ctx: BotContext): Action | null {
   const lac = find(Laceration);
   if (lac) {
     if (lac.length <= SALVE_MAX && has('salve')) return salveOr(ctx, () => drag('salve', raster(lac.pos, lac.length / 2 + 6), 900));
-    return drag('thread', zigzag([lac.a, lac.b], Math.max(1, lac.stitch.needed - lac.stitch.count) + 1), 380);
+    return stitchWound(lac);
   }
   const re = find(Reopened);
   if (re) return drag('thread', zigzag([re.a, re.b], re.needed + 1), 380);
@@ -364,7 +421,7 @@ function plan(ctx: BotContext): Action | null {
 
 function tendLaceration(lac: Laceration, salve: boolean): Action {
   if (lac.length <= SALVE_MAX && salve) return drag('salve', raster(lac.pos, lac.length / 2 + 6), 900);
-  return drag('thread', zigzag([lac.a, lac.b], Math.max(1, lac.stitch.needed - lac.stitch.count) + 1), 380);
+  return stitchWound(lac);
 }
 
 // Boss-framework kinds (MalisonBase cores and elites, their wounds and overlays) are planned by tests/bot-hours.ts.
@@ -515,25 +572,46 @@ export function applyBotEvents(op: Operation, events: readonly BotEvent[]): void
   }
 }
 
-/** Play an operation to completion (or failure) with the bot. */
-export function playWithBot(def: OperationDef, opts: BotOptions = {}): BotResult {
+/** A bot playthrough driven one frame at a time (offline audio renders interleave it with rendering). */
+export interface BotStepper extends BotResult {
+  /** Simulate one frame; false once the operation is over (or the time cap is reached). */
+  step(): boolean;
+  /** Run to the end. */
+  finish(): BotResult;
+}
+
+export function botStepper(def: OperationDef, opts: BotOptions = {}): BotStepper {
   const maxSeconds = opts.maxSeconds ?? 900;
   const op = new Operation(def, opts);
   opts.onOp?.(op);
   const bot = new BotDriver(op, opts);
-  let frames = 0;
   let last: Pointer | null = null;
-  while ((op.status === 'intro' || op.status === 'running') && frames < maxSeconds * 60) {
-    frames++;
-    const j0 = op.journal.length;
-    const evs = bot.tick();
-    applyBotEvents(op, evs);
-    for (const ev of evs) if (ev.kind === 'pointer') last = ev.ptr;
-    op.update(DT);
-    if (opts.collect) for (const e of op.journal.slice(Math.min(j0, op.journal.length))) opts.collect(e);
-    opts.onFrame?.(op, last, DT);
-  }
-  return { op, frames };
+  const s: BotStepper = {
+    op,
+    frames: 0,
+    step() {
+      if (!(op.status === 'intro' || op.status === 'running') || s.frames >= maxSeconds * 60) return false;
+      s.frames++;
+      const j0 = op.journal.length;
+      const evs = bot.tick();
+      applyBotEvents(op, evs);
+      for (const ev of evs) if (ev.kind === 'pointer') last = ev.ptr;
+      op.update(DT);
+      if (opts.collect) for (const e of op.journal.slice(Math.min(j0, op.journal.length))) opts.collect(e);
+      opts.onFrame?.(op, last, DT);
+      return true;
+    },
+    finish() {
+      while (s.step());
+      return { op, frames: s.frames };
+    },
+  };
+  return s;
+}
+
+/** Play an operation to completion (or failure) with the bot. */
+export function playWithBot(def: OperationDef, opts: BotOptions = {}): BotResult {
+  return botStepper(def, opts).finish();
 }
 
 /**
