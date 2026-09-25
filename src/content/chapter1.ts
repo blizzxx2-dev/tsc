@@ -37,7 +37,7 @@ export const PROLOGUE: StoryDef = {
     say('kreuzer', 'Weissburg taught me the rules, Master. I came somewhere too poor to afford them.'),
     say('haller', 'Hm. Sister! Our young doctor has arrived just in time for the Tuesday knife-fights.'),
     say('ilse', 'Sister Ilse, of the Merciful Order. I keep the instruments, the ledgers, and the Master’s temper.'),
-    say('ilse', 'There’s a drover on the table already. Somebody at the Gilded Goose disagreed with his dice.'),
+    say('ilse', 'There’s a drover on the table already. Somebody at the Crooked Goose disagreed with his dice.'),
     say('haller', 'Knife wounds. Simple work. I’ll watch.'),
     say('haller', 'And Kreuzer — in this hospice we do not lose patients to simple work.'),
   ],

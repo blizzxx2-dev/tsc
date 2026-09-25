@@ -76,7 +76,7 @@ and death are never the punchline. Supporting rules:
 |---|---|---|---|
 | prologue.010 | “…just in time for the Tuesday knife-fights.” | Kessendorf's tavern violence | Pass |
 | prologue.011 | “…the instruments, the ledgers, and the Master’s temper.” | Haller (a speaker, not a patient) | Pass |
-| prologue.012 | “Somebody at the Gilded Goose disagreed with his dice.” | Tavern culture (the drover is not mocked for the wound) | Pass |
+| prologue.012 | “Somebody at the Crooked Goose disagreed with his dice.” | Tavern culture (the drover is not mocked for the wound) | Pass |
 | a1-1.001 | “He pays in turnips… He will break it by Friday.” | The drover's *choice* to gamble, not his wound | Pass |
 | a1-1.002–.004 | Haller: “simple work… I call it Tuesday… not leisurely” | The surgeon's performance | Pass |
 | a1-1.006 | “Under ‘fees, vegetable’. We have a column.” | Hospice poverty / bookkeeping | Pass |

@@ -1,0 +1,77 @@
+name,category,chapters,first_use,origin_note,ip_check,status,checker
+Kessendorf,place,1-5,prologue,"Invented German toponym (Kessel 'cauldron' + dorf); compare real Kesselsdorf, Saxony",web search 2026-09-25: no game/novel hit; avoid-list clear,clear,CL
+Weissburg,place,1-3,prologue,"German 'white castle'; real Weissenburg/Weissenberg towns exist",web search 2026-09-25: near-miss GW 'Weissbruck' (canal/town) — different word; kept,clear (near-miss noted),CL
+Grauwald,place,2,s2-1,"German 'grey forest'",web search 2026-09-25: no hit; GW has Grissenwald/Drakwald/Reikwald — different,clear,CL
+Timber Road,place,1-4,s1-2,Descriptive English,avoid-list clear,clear,CL
+Tanners' Rows,place,1;5,s1-4,"Descriptive; real historical street type (Tanner Row, York)","web search 2026-09-25: 'Tanner's Row' appears in the HBO Game of Thrones TV series (not the novels); ours is a plural descriptive street name — kept, counsel to confirm",check (counsel),CL
+Crooked Goose (tavern),place,1;5,prologue,Inn-sign phrase,"web search 2026-09-25: no hit. RENAMED from 'Gilded Goose' (exact Magic: The Gathering card name)",renamed,CL
+Gilded Goose,retired,—,—,Former tavern name,Exact MTG card title (Wizards of the Coast),retired,CL
+Hospice of Saint Ildra,place,1-5,prologue,Invented saint; replaces GW Shallya temple-hospital,avoid-list clear,clear,CL
+Gunsmiths' quarter,place,1,s1-3,Descriptive,—,clear,CL
+East gate,place,1;5,prologue,Descriptive,—,clear,CL
+barrow-fields,place,2,s2-1,Descriptive English (barrows = grave mounds),—,clear,CL
+the Kilnrows,place,3,s3-1,"Invented compound (kiln + rows)",avoid-list clear; no known fantasy use,clear,CL
+Saltpetre Lane,place,3,s3-3,Descriptive,—,clear,CL
+Iron Bridge,place,3,s3-5,Descriptive (many real Iron Bridges),—,clear,CL
+Penny Stair,place,3,s3-6,Descriptive,—,clear,CL
+Hall of Records,place,3,s3-7,Descriptive,—,clear,CL
+Guildhall of the Barber-Surgeons,place,3,s3-9,Historical institution (real barber-surgeon guildhalls),—,clear,CL
+Vennmark,place,3-4,s3-end,"Invented (Venn 'fen' + mark 'march/border')",avoid-list clear (GW has Ostermark/Sylvania — different),clear,CL
+Ostrau company,org,4,s4-1,Real Czech city name (Ostrava) used for a mercenary company,generic real toponym,clear,CL
+Wick Lane,place,5,s5-7,Descriptive,—,clear,CL
+Tribunal Court,place,5,s5-2,Descriptive,—,clear,CL
+Cathedral Steps,place,5,s5-5,Descriptive,—,clear,CL
+Hollow Night,holiday,4-5,s4-end,Invented; replaces GW Geheimnisnacht/Hexensnacht,avoid-list clear,clear,CL
+the Long Muster,era,1-5,prologue,Invented era name,no GW match,clear,CL
+Kessen Charter,era,docs,calendar.md,Invented,—,clear,CL
+"Hartung, Hornung, Lenzing, Saatmond, Wonnemond, Brachet, Heuet, Ernting, Scheiding, Gilbhart, Nebelung, Dustermond",calendar,docs,calendar.md,Historical German month names (public domain),no fantasy-calendar match known,clear,CL
+Ash Tribunal,org,1-5,s1-4,Replaces 'Order of the Pyre' (Paizo Pathfinder collision),web search 2026-09-25: no hit,clear,CL
+Order of the Pyre,retired,—,—,Former name,Paizo Pathfinder Hellknight order,retired,CL
+Merciful Order,org,1-5,prologue,Generic descriptive; replaces GW Order of the Bleeding Heart,—,clear,CL
+Hollow Choir,org,1-5,s2-4,Invented,"web search 2026-09-25: itch.io 5e monster 'The Hollow Choir' (Long Island Dungeon Master) and a novel title; Hollow Knight: Silksong has 'the Choir'. Fallback 'the Unsung' pre-approved (NAR-0020)",check (trademark search — human),CL
+the Watch / Kessendorf Watch,org,1-5,s1-2,Historical,—,clear,CL
+Founders' Guild / Gunsmiths' Guild,org,1;3,s1-3,Historical guild names,—,clear,CL
+Grey Beguines,org,3,s3-6b,Beguines are a real historical lay order (public domain),—,clear,CL
+League of Free Cities,org,docs,bible.md,Generic,—,clear,CL
+Malison,creature,1-5,s1-end,"Archaic English 'curse' (public domain)","web search 2026-09-25: 'Malison: The Cursed City' — dark-fantasy RPG announced by Devolver Digital; see NAR-0022 handoff",check (counsel — title conflict risk),CL
+Matins/Lauds/Prime/Terce/Sext/None/Vespers/Compline,term,1-5,s1-end,Canonical hours (public domain),—,clear,CL
+Office (the),term,2-5,s2-end,Liturgical term (Divine Office),—,clear,CL
+Litany of Stillness,term,1-5,s1-5,Original name,avoid-list clear; TC 'Healing Touch' parallel handled in docs/production/legal,clear,CL
+hexstone / hexfire / hexshard,term,2-5,s2-2,Replaces GW warpstone; common fantasy coinage,no 'warp-' coinage anywhere (test),check (knock-out search on 'Hexstone' — OPS-0052),CL
+gravehound,creature,2,s2-1,"Generic compound (grave + hound); used loosely in several games, not a GW unit",avoid-list clear,clear,CL
+corpse-eaters,creature,2,s2-1,Generic descriptive; not GW 'Crypt Ghouls',avoid-list clear,clear,CL
+brood-mother,creature,2,s2-3,Folk name for web-spinners,—,clear,CL
+web-spinner,creature,2,s2-3,Descriptive,—,clear,CL
+horned folk / hornfolk,people,1-4,s1-2,Replaces GW Beastmen; culture: antler-tallies,avoid-list clear (no Gor/Ungor/herdstone),clear,CL
+late-turned,term,3,s3-1,Replaces GW 'turnskin',avoid-list clear,clear,CL
+dwarf / mountain-folk,people,2-5,s2-2,Generic folklore word; culture: debt-knots (no grudges/runes/slayers),avoid-list clear,clear,CL
+giant / tithe-eater,people,4,s4-4,Replaces GW Ogre Kingdoms,avoid-list clear,clear,CL
+the thirst / blood-debt / thirsted,term,4,s4-6,Replaces GW 'Red Thirst'/'Blood Kiss'/'swain',avoid-list clear,clear,CL
+Delver's lung,disease,4,s4-3,Invented folk name (pattern: trade + organ),—,clear,CL
+Founder's colic,disease,3,s3-4,Based on historical 'painter's colic' (lead),—,clear,CL
+Saint Ildra,saint,1-5,prologue,Invented; emblem candle-and-key,—,clear,CL
+Saint Oswy the Carter,saint,docs,bible.md,Invented,—,clear,CL
+Saint Hedda of the Bellpit,saint,docs,bible.md,Invented,—,clear,CL
+Saint Ansel the Unshod,saint,docs,bible.md,Invented,—,clear,CL
+Dr. Kreuzer,person,1-5,prologue,Common German surname,no GW/Atlus character of that name,clear,CL
+Sister Ilse,person,1-5,prologue,Common German given name,—,clear,CL
+Master Haller,person,1-5,prologue,Surname,—,clear,CL
+Inquisitor Stroh,person,1-5,s1-4,Surname; 'Inquisitor' is a historical title,—,clear,CL
+Captain Mauer,person,1-5,s1-2,Surname,—,clear,CL
+Orsa Flintvein,person,2-5,s2-2,Invented compound surname,no known fantasy character,clear,CL
+Jost,person,1,op1-1,Historical given name,—,clear,CL
+Pieter,person,1;4,s1-2,Historical given name,—,clear,CL
+Anno,person,1,op1-3,Historical given name,—,clear,CL
+Matthis Kolb,person,1,s1-4,Historical given + surname (replaces 'Unknown vagrant'),—,clear,CL
+Emmerich,person,1,s1-5,Historical given name,—,clear,CL
+Tomas / Henning / Jorg,person,2,op2-1,Historical given names,—,clear,CL
+Aurel Vennholt (the Precentor),person,3-5,s3-end,Invented surname; 'precentor' is a real choir office,no known fantasy villain of that name,clear,CL
+Widow Aldegund Reiss,person,4-5,s4-8,Historical given name + surname,—,clear,CL
+Registrar Oswin Tallert,person,3,s3-7,Invented surname,—,clear,CL
+Liesl,person,3;5,s3-1,Given name,—,clear,CL
+Guildmaster Voss,person,3,s3-9,Surname,—,clear,CL
+"Kaspar, Jannik, Old Rudi, Wenzel, Ute Brandt, Berthold, Gottfried, Frieda, Mother Agathe, Brother Ansgar",person,3,s3-3,Historical given names/surnames,—,clear,CL
+"Ruprecht, Wendel, Brakka, Gutram, Lord Eckbert von Salm, Margit, Hanne",person,4,s4-1,Historical given names; 'von Salm' a real noble family name (extinct lines) used generically,"not GW 'von Carstein'",clear,CL
+"Lotte Harrach, Jakob, Dietmar, Greta, Rosina, Old Brigid, Guard-captain Ebner",person,5,s5-4,Historical given names/surnames,—,clear,CL
+Kreuzer Deep / Kreuzer Tunnel / Kreuzer Hope,place,2;4;5,a2-2,Running gag (NAR-0108),—,clear,CL
+Suture & Steel: The Malison Hours,title,—,store,Game title,"web search 2026-09-25: no game titled 'Suture & Steel'; subtitle 'Malison' collides in genre with 'Malison: The Cursed City' (Devolver) — NAR-0022 handoff",check (trademark — human),CL

@@ -27,35 +27,35 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] NAR-0002 · Demo · P0 · S · Humour rule in style guide — "jokes target institutions and folk belief, never the patient's suffering"; every Ch1–2 joke line audited against it and listed with pass/fail
 - [x] NAR-0003 · Demo · P1 · S · Diction rules — early-modern register without thee/thou; banned modern words list (okay, stress, germs, infection-as-germ-theory, adrenaline); lint script flags them in `src/content/*.ts`
 - [x] NAR-0004 · Demo · P1 · S · Line-length rule — VN lines ≤ 140 chars, barks ≤ 60 chars, callouts ≤ 28 chars; Vitest content test fails on violations
-- [ ] NAR-0005 · Demo · P1 · M · Story bible `docs/narrative/bible.md` — Kessendorf (free city, Burgomaster, council of guild-houses), the Long Muster, Saint Ildra and the Merciful Order, the Ash Tribunal, the Hollow Choir, the eight Hours; one page each
-- [ ] NAR-0006 · Demo · P1 · S · Calendar and dating convention — "year N of the Long Muster", month names, Hollow Night date; used consistently in Prologue and codex
-- [ ] NAR-0007 · Demo · P1 · S · Timeline of Ch1–2 — day/hour of every scene (Prologue → s2-end) in a table; scene `place` strings match it
-- [ ] NAR-0008 · Demo · P1 · S · Medical-lore primer — humoral theory as the characters believe it vs what the mechanics do (drain, salve, brand, tincture); 1 page for writers
-- [ ] NAR-0009 · Demo · P2 · S · Map sketch of Kessendorf and environs — hospice, Tanners' Rows, gunsmiths' quarter, Gilded Goose, east-gate pyres, Timber Road, Grauwald, barrow-fields; referenced by codex entries
-- [ ] NAR-0010 · Alpha · P1 · M · Extend bible to Ch3–5 locations — Kilnrows foundry quarter, the Raised Bridges, Guildhall of Barber-Surgeons, Vennmark marches, Hollow Night processions, the Tribunal court
+- [x] NAR-0005 · Demo · P1 · M · Story bible `docs/narrative/bible.md` — Kessendorf (free city, Burgomaster, council of guild-houses), the Long Muster, Saint Ildra and the Merciful Order, the Ash Tribunal, the Hollow Choir, the eight Hours; one page each
+- [x] NAR-0006 · Demo · P1 · S · Calendar and dating convention — "year N of the Long Muster", month names, Hollow Night date; used consistently in Prologue and codex
+- [x] NAR-0007 · Demo · P1 · S · Timeline of Ch1–2 — day/hour of every scene (Prologue → s2-end) in a table; scene `place` strings match it
+- [x] NAR-0008 · Demo · P1 · S · Medical-lore primer — humoral theory as the characters believe it vs what the mechanics do (drain, salve, brand, tincture); 1 page for writers
+- [x] NAR-0009 · Demo · P2 · S · Map sketch of Kessendorf and environs — hospice, Tanners' Rows, gunsmiths' quarter, Gilded Goose, east-gate pyres, Timber Road, Grauwald, barrow-fields; referenced by codex entries
+- [x] NAR-0010 · Alpha · P1 · M · Extend bible to Ch3–5 locations — Kilnrows foundry quarter, the Raised Bridges, Guildhall of Barber-Surgeons, Vennmark marches, Hollow Night processions, the Tribunal court
 
 ### IP-safety review (every name)
 - [x] NAR-0011 · Demo · P0 · S · Rename "Order of the Pyre" to "the Ash Tribunal" (Paizo Pathfinder collision) — update `characters.ts` title and STORY_1_4/STORY_1_5 lines ("The Tribunal does not distinguish between a prayer and a spell")
 - [x] NAR-0012 · Demo · P0 · S · Remove green hexstone — STORY_2_2 "The rock went green" rewritten to "black as a wet eye, and it had a pulse"; art ticket raised for black-glass-with-heartbeat look
 - [x] NAR-0013 · Demo · P0 · S · Rename `'warpshard'` embedded kind to `'hexshard'` in `chapter2.ts` and entities — no "warp-" coinages anywhere; grep test asserts zero matches for /warp/i in src
-- [ ] NAR-0014 · Demo · P0 · M · Name register `docs/narrative/names.csv` — every proper noun in Ch1–2 (people, places, orgs, items, diseases) with origin note, IP-check status and checker initials
+- [x] NAR-0014 · Demo · P0 · M · Name register `docs/narrative/names.csv` — every proper noun in Ch1–2 (people, places, orgs, items, diseases) with origin note, IP-check status and checker initials
 - [x] NAR-0015 · Demo · P0 · S · Blocklist test — Vitest scans `src/content` and localisation strings against the §7 avoid-list (Sigmar, Shallya, Morrslieb, Skaven, turnskin, swain, Nurgle, Reikland, etc.) and fails on any hit
 - [ ] NAR-0016 · Demo · P0 · S · Review "beast-folk"/"horned raiders" (STORY_1_2) against GW "Beastmen" — replace with "horned folk" and give them one original cultural detail (antler-tallies) in codex
-- [ ] NAR-0017 · Demo · P1 · S · Review "dwarf" usage for Orsa (STORY_2_2) — keep generic word, strip any grudge/rune/slayer/beard-oath tropes; add original "debt-knots in the beard" detail
-- [ ] NAR-0018 · Demo · P1 · S · Review "Gravehound" and "corpse-eaters" (STORY_2_1) — confirm not GW unit names; document in names.csv
-- [ ] NAR-0019 · Demo · P1 · S · Collision check for place names Kessendorf, Weissburg, Grauwald, Tanners' Rows, Gilded Goose — search games/novels; rename any exact fantasy-IP hit
+- [x] NAR-0017 · Demo · P1 · S · Review "dwarf" usage for Orsa (STORY_2_2) — keep generic word, strip any grudge/rune/slayer/beard-oath tropes; add original "debt-knots in the beard" detail
+- [x] NAR-0018 · Demo · P1 · S · Review "Gravehound" and "corpse-eaters" (STORY_2_1) — confirm not GW unit names; document in names.csv
+- [x] NAR-0019 · Demo · P1 · S · Collision check for place names Kessendorf, Weissburg, Grauwald, Tanners' Rows, Gilded Goose — search games/novels; rename any exact fantasy-IP hit
 - [ ] NAR-0020 · Demo · P1 · S · Trademark search for "Hollow Choir" (novel + itch.io supplement noted) — decision recorded; fallback "the Unsung" pre-approved for a single find-and-replace
 - [x] NAR-0021 · Demo · P1 · S · Trauma Center term sweep — no GUILT, Healing Touch, Caduceus, Delphi, strain names, "Angie" in any string or code comment shipped to players
 - [ ] NAR-0022 · Demo · P1 · S · Title/subtitle/tagline check — "Suture & Steel: The Malison Hours" and store tagline searched for trademark conflicts; no "Grim World of Perilous Adventure" echo
-- [ ] NAR-0023 · Demo · P2 · S · Saint names register — Saint Ildra plus any saint invoked in barks; emblem is a candle-and-key, never dove or bleeding heart
-- [ ] NAR-0024 · Alpha · P0 · M · IP review of all Ch3–5 names — Kilnrows, Vennmark, Precentor Aurel Vennholt, Registrar Tallert, etc.; logged in names.csv before VO recording
+- [x] NAR-0023 · Demo · P2 · S · Saint names register — Saint Ildra plus any saint invoked in barks; emblem is a candle-and-key, never dove or bleeding heart
+- [x] NAR-0024 · Alpha · P0 · M · IP review of all Ch3–5 names — Kilnrows, Vennmark, Precentor Aurel Vennholt, Registrar Tallert, etc.; logged in names.csv before VO recording
 - [ ] NAR-0025 · Beta · P0 · S · Final IP pass over localised strings (DE/FR/ES/PL/PT-BR) — translated names re-checked against the avoid-list in each language
 - [ ] NAR-0026 · Release · P0 · S · Legal sign-off record — names.csv frozen, reviewer and date recorded, attached to release checklist
 
 ### Sensitivity review
-- [ ] NAR-0027 · Demo · P1 · M · Sensitivity brief — rules for depicting plague, children in peril (Emmerich), religious persecution, torture (never shown on-screen, only implied), disability and amputation
+- [x] NAR-0027 · Demo · P1 · M · Sensitivity brief — rules for depicting plague, children in peril (Emmerich), religious persecution, torture (never shown on-screen, only implied), disability and amputation
 - [ ] NAR-0028 · Demo · P1 · S · Ch1–2 sensitivity read — external reader reviews all scenes; each note triaged (accept/decline + reason) in a tracked sheet
-- [ ] NAR-0029 · Demo · P1 · S · Content descriptor text for Steam page — blood/gore, body horror, religious persecution, implied torture; matches what the demo shows
+- [x] NAR-0029 · Demo · P1 · S · Content descriptor text for Steam page — blood/gore, body horror, religious persecution, implied torture; matches what the demo shows
 - [x] NAR-0030 · Demo · P2 · S · Vagrant patient (op1-4) — give him a name and one line of dignity in STORY_1_4 instead of "Unknown vagrant"
 - [ ] NAR-0031 · Alpha · P1 · M · Sensitivity read for Ch3 — flagellants and penitential self-harm treated without glamour; plague quarantine class politics
 - [ ] NAR-0032 · Alpha · P1 · M · Sensitivity read for Ch4 — war violence, the thirst/blood-debt courtesan (consent and agency in her choice)
@@ -178,7 +178,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] NAR-0109 · Alpha · P0 · M · Precentor arc doc — Aurel Vennholt, struck-off surgeon; motive: end all suffering with a perfect Compline; appears only as voice until Ch4, in person in Ch5
 - [ ] NAR-0110 · Alpha · P1 · S · Precentor's letters — 5 intercepted letters (one per chapter, Ch1–2 letters added to demo codex as locked stubs) building his case in his own voice
 - [x] NAR-0111 · Alpha · P1 · S · Precentor/Kreuzer mirror scene (Ch5) — both claim to stop pain; 20 lines; no villain monologue beyond 4 consecutive lines
-- [ ] NAR-0112 · Alpha · P2 · S · Hollow Choir hierarchy — Precentor, cantors, lay-cantors, acolytes; the hospice patron (Widow Aldegund Reiss) as secret acolyte; bible entry
+- [x] NAR-0112 · Alpha · P2 · S · Hollow Choir hierarchy — Precentor, cantors, lay-cantors, acolytes; the hospice patron (Widow Aldegund Reiss) as secret acolyte; bible entry
 
 ### Supporting cast
 - [ ] NAR-0113 · Alpha · P1 · S · Add cast entries to `characters.ts` — precentor, orsa, reiss, tallert, motherSuperior, burgomaster with colors and silhouettes
