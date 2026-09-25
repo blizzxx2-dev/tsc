@@ -9,7 +9,7 @@ Matins and Lauds — and your first nights at the Hospice of Saint Ildra. Wishli
 the Hours.
 
 **About the demo:** Play the first two chapters of *Suture & Steel*: stitch knife wounds from the
-Gilded Goose, free barbed arrows from a militiaman, lance plague buboes in the Tanners' Rows, and face
+Crooked Goose, free barbed arrows from a militiaman, lance plague buboes in the Tanners' Rows, and face
 the first two Malisons — the living curses of Matins and Lauds. The full game continues with five
 chapters and eight Malison hours. **Wishlist it now** to hear when the next Hour begins.
 <!-- loc:end -->

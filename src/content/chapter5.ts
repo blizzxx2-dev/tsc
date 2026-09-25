@@ -226,7 +226,7 @@ export const STORY_5_END: StoryDef = {
     say('mauer', 'Thirty-five. All thirty-five, Doctor. I said the names at the gate this morning, the six and the thirty-five.'),
     say('patient', 'I have named a new mine for you. The Kreuzer Hope. It is a very good mine. It has not fallen in once.', 'Orsa Flintvein'),
     say('haller', 'I read your letter. Unsang it, you say. Well. I only ever taught you to sing it. The rest was your own.'),
-    say('ilse', 'Doctor. There’s a drover on the table. Somebody at the Gilded Goose disagreed with his dice.'),
+    say('ilse', 'Doctor. There’s a drover on the table. Somebody at the Crooked Goose disagreed with his dice.'),
     say('kreuzer', 'Knife wounds. Simple work.'),
     say('ilse', 'And in this hospice, we do not lose patients to simple work.'),
     n('THE END — THE QUIET NIGHT, AVERTED'),

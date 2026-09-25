@@ -13,11 +13,16 @@ import { emitGameEvent } from '../platform/events';
 import { assisted } from '../core/settings';
 import { finishChapter, finishOperation } from '../surgery/session';
 import type { OperationOptions } from '../surgery/operation';
+import { lastOutcome, noteOutcome, resolveStory } from '../content/conditions';
+import { aftermathFor, failureFor } from '../content/narrative';
 
 export const save: SaveData = load();
 
-/** Briefing → operation → results for one operation, then hand control back. */
-export function playOperation(game: Game, def: OperationDef, onWin: () => void, onLeave: () => void, runOpts: OperationOptions = {}): void {
+/**
+ * Briefing → operation → results for one operation, then hand control back. In the campaign
+ * (`story`), a failure scene precedes the retry prompt and an aftermath scene follows a win (NAR).
+ */
+export function playOperation(game: Game, def: OperationDef, onWin: () => void, onLeave: () => void, story = false, runOpts: OperationOptions = {}): void {
   const begin = (over: OperationOptions = runOpts) =>
     game.go(
       new OperationScene(
@@ -28,22 +33,29 @@ export function playOperation(game: Game, def: OperationDef, onWin: () => void, 
           emitGameEvent({ type: 'operation-end', opId: def.id, won, rank: won ? op.rank() : null, score: op.score, assisted: assisted(), litanyUsed: op.litanyUsed });
           const summary = finishOperation(op);
           const cp = op.checkpointPhase();
-          game.go(
-            new ResultsScene(
-              op,
-              won,
-              summary.newBest || legacyBest,
-              {
-                next: won ? onWin : undefined,
-                retry: () => begin(runOpts),
-                quit: onLeave,
-                // Retry at Novice for this op only; boss ops can resume at the Malison.
-                retryNovice: op.opts.challenge || op.difficulty === 'novice' ? undefined : () => begin({ ...runOpts, difficulty: 'novice' }),
-                retryCheckpoint: cp !== null ? () => begin({ ...runOpts, checkpoint: cp }) : undefined,
-              },
-              summary,
-            ),
-          );
+          noteOutcome(def.id, won ? op.rank() : null, op.litanyUsed);
+          const after = story && won ? aftermathFor(def.id) : undefined;
+          const next = after ? () => game.go(new StoryScene(resolveStory(after, lastOutcome()), onWin)) : onWin;
+          const results = () =>
+            game.go(
+              new ResultsScene(
+                op,
+                won,
+                summary.newBest || legacyBest,
+                {
+                  next: won ? next : undefined,
+                  retry: () => begin(runOpts),
+                  quit: onLeave,
+                  // Retry at Novice for this op only; boss ops can resume at the Malison.
+                  retryNovice: op.opts.challenge || op.difficulty === 'novice' ? undefined : () => begin({ ...runOpts, difficulty: 'novice' }),
+                  retryCheckpoint: cp !== null ? () => begin({ ...runOpts, checkpoint: cp }) : undefined,
+                },
+                summary,
+              ),
+            );
+          const fail = story && !won ? failureFor(def.id) : undefined;
+          if (fail) game.go(new StoryScene(fail, results));
+          else results();
         },
         onLeave,
         over,
@@ -74,8 +86,8 @@ export function playStep(game: Game, chapter: number, step: number): void {
     store(save);
     playStep(game, chapter, step + 1);
   };
-  if (s.kind === 'story') game.go(new StoryScene(s.story, next));
-  else playOperation(game, s.op, next, () => game.go(new TitleScene()));
+  if (s.kind === 'story') game.go(new StoryScene(resolveStory(s.story, lastOutcome()), next));
+  else playOperation(game, s.op, next, () => game.go(new TitleScene()), true);
 }
 
 /**

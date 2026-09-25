@@ -728,7 +728,7 @@ export class Operation {
       return;
     }
     this.litanyPractice.attempts--;
-    this.popup('The words falter — try again.', { x: FIELD.cx, y: FIELD.cy - 120 }, '#e8dcc0');
+    this.popup('The words falter. Again.', { x: FIELD.cx, y: FIELD.cy - 120 }, '#e8dcc0');
     if (this.litanyPractice.attempts <= 0) this.skipPractice();
   }
 
@@ -786,7 +786,7 @@ export class Operation {
     if (this.ilseUsed || this.status !== 'running') return false;
     const pools = this.entities.filter((e) => e.alive && !e.hidden && 'ichor' in e && 'r' in e) as (Entity & { r: number })[];
     if (!pools.length) {
-      this.popup('Nothing for me to hold, Doctor.', this.cursor, '#e8dcc0');
+      this.popup('Nothing to hold, Doctor.', this.cursor, '#e8dcc0');
       return false;
     }
     const p = pools.sort((a, b) => b.r - a.r)[0];
@@ -971,7 +971,7 @@ export class Operation {
         if (this.brandHeat >= this.tuning.brand.overheatAfter) {
           this.brandLock = this.tuning.brand.overheatLock;
           this.brandHeat = 0;
-          this.popup('The brand is white-hot — let it cool!', ptr.pos, '#ff9040');
+          this.popup('White-hot! Let it cool.', ptr.pos, '#ff9040');
           this.sayOnce('overheat', 'The brand’s overheated. Give it a moment between searings.');
           this.releaseCapture();
         }

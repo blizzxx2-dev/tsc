@@ -4,6 +4,7 @@ import type { Operation, OperationDef } from '../surgery/operation';
 import { at, closeIncision } from './chapter1';
 import type { Chapter } from './campaign';
 import { n, say, type StoryDef } from './story';
+import { when } from './conditions';
 
 const hiddenShard = (x: number, y: number, a: number, kind: 'hexstone' | 'glass' | 'shard' = 'hexstone') => {
   const e = new Embedded(at(x, y), kind, a, false);
@@ -23,13 +24,15 @@ export const STORY_2_1: StoryDef = {
   backdrop: 'camp',
   lines: [
     n('CHAPTER II — THE HOUR OF LAUDS'),
-    n('A week after the page-boy, a writ arrives with the Watch’s seal: the hospice’s surgeon is requisitioned for the muster.'),
-    say('mauer', 'Don’t look at me like that, Doctor. I didn’t ask for you. The Inquisitor “suggested” it to the Burgomaster.'),
-    say('ilse', 'So he can watch you somewhere with fewer witnesses.'),
-    say('mauer', 'We’re clearing the Grauwald of raiders before the spring caravans. My lads need a surgeon more than a city needs rumours.'),
-    say('mauer', 'Speaking of which — the scouts came back. Two of them. Something followed them out of the barrow-fields.'),
-    say('ilse', 'Doctor, it’s a gravehound bite. Claw rakes across the back, and — look — it left its teeth in him.'),
-    say('ilse', 'Corpse-eaters carry a venom in their spit. Hold the tincture to the bite itself and it will draw the poison.'),
+    n('A week after the page-boy, a writ arrives under the Watch’s seal: the hospice’s surgeon is requisitioned for the muster.'),
+    say('mauer', 'Don’t look at me like that, Doctor. The Inquisitor dines with the Burgomaster on Thursdays. On Fridays, the Burgomaster signs things.'),
+    say('ilse', 'So Stroh can watch you somewhere with fewer witnesses.'),
+    say('mauer', 'Fewer? Forty men in this camp, Sister. Forty witnesses. Forty-one with the cook, and I don’t count the cook.'),
+    say('ilse', 'You count everyone, Captain. You counted the mules.'),
+    say('mauer', 'The mules keep better order. We clear the Grauwald of raiders before the spring caravans. Two scouts came back from the barrow-fields.'),
+    say('mauer', 'Something followed them out.'),
+    say('ilse', 'A gravehound. Claw rakes across his back — and it has left its teeth in him.'),
+    say('kreuzer', 'Corpse-eaters carry a venom in their spit. Tomas, isn’t it? Look at me, Tomas. You’ll keep the arm.'),
   ],
 };
 
@@ -38,13 +41,15 @@ export const STORY_2_2: StoryDef = {
   place: 'The muster camp — afternoon',
   backdrop: 'camp',
   lines: [
-    n('The scout will limp, but he will limp home.'),
     say('patient', 'Put me down, you long-legged oafs! I can walk! I can… mostly walk.', 'Orsa Flintvein'),
     say('mauer', 'Dwarf prospector. Her crew was working a seam in the hills when it caved in.'),
-    say('patient', 'The rock went black, Doctor. Black and wrong, like a bruise in the stone. It sang when we struck it. Then it burst.', 'Orsa Flintvein'),
-    say('ilse', 'There are shards under her skin that I can’t see — but the flesh around them is spoiling.'),
-    say('ilse', 'Master Haller sent this with me. His old Scrying Lens. Pass it slowly over the flesh and it shows what hides beneath.'),
+    say('patient', 'The rock went black, Doctor. Black as a wet eye, and it had a pulse. It sang when we struck it. Then it burst.', 'Orsa Flintvein'),
+    say('ilse', 'Mind her beard, Doctor. Every knot in it is tied for a debt.'),
+    say('patient', 'Nineteen knots. Nine are owed to me, ten I owe. If I die owing ten, my sons pay them, and my sons are idle.', 'Orsa Flintvein'),
+    say('ilse', 'There are shards under her skin I can’t see — but the flesh around them is spoiling.'),
+    say('ilse', 'Master Haller sent his old Scrying Lens with me. He says you are to break anything else of his first.'),
     say('patient', 'Dwarf hide’s thicker than yours, lad. You’ll want a strong arm on that thread.', 'Orsa Flintvein'),
+    say('kreuzer', 'Hold still, Mistress Flintvein, and I’ll owe you a knot.'),
   ],
 };
 
@@ -53,10 +58,13 @@ export const STORY_2_3: StoryDef = {
   place: 'The muster camp — night',
   backdrop: 'night',
   lines: [
-    n('Orsa sleeps in the supply wagon, snoring like a bellows. She has promised to name a mine after the Doctor. It will probably be a bad one.'),
-    say('mauer', 'Forager. Went to check his snares near the old web-trees. We found him wrapped up like a Martinmas ham.'),
-    say('ilse', 'A web-spinner bite. Venom, spreading fast. And these lumps under the skin… Saints. She laid in him.'),
-    say('ilse', 'Lance the sacs before they hatch, Doctor, and sear what spills out. If they hatch on their own, they’ll scatter.'),
+    n('Orsa sleeps in the supply wagon, snoring like a bellows. The sentries swear it keeps the wolves off.'),
+    say('mauer', 'Forager. Went to check his snares near the old web-trees. We found him wrapped up like a midwinter ham.'),
+    say('patient', '…the brood-mother… she kissed me… she was so gentle about it…', 'Henning'),
+    say('ilse', 'The foresters call the great web-spinners brood-mothers. Venom, spreading fast. And these lumps… Saints. She laid in him.'),
+    say('mauer', 'My lads won’t fetch water past the web-trees now. They say a brood-mother remembers every face that has seen her.'),
+    say('kreuzer', 'Then fetch my water from somewhere she hasn’t looked, Captain. And more light.'),
+    say('ilse', 'The sacs are swelling, Doctor. If they hatch on their own, they’ll scatter.'),
   ],
 };
 
@@ -67,7 +75,7 @@ export const STORY_2_4: StoryDef = {
   lines: [
     say('stroh', 'Doctor. I have brought you a gift.'),
     n('Two of the Inquisitor’s men drag a thin, grey-robed figure into the light. His chest is a lattice of glowing sigils.'),
-    say('stroh', 'A lay-cantor of the Hollow Choir. We took him in the barrow-fields, singing to the dead.'),
+    say('stroh', 'A lay-cantor of the Hollow Choir. We took him in the barrow-fields, singing to the dead. Something in the barrows sang back.'),
     say('stroh', 'The moment he began to confess, those marks ignited. His masters would rather he burned than spoke.'),
     say('stroh', 'He also swallowed something. You will keep him alive. I have questions, and the dead are poor at answering them.'),
     say('ilse', '…Doctor. Whatever he is, he’s a patient.'),
@@ -80,11 +88,15 @@ export const STORY_2_5: StoryDef = {
   place: 'The muster camp — dawn',
   backdrop: 'camp',
   lines: [
-    n('The cantor lived long enough to whisper one thing, before Stroh’s men took him away.'),
     say('patient', 'Lauds… is sung at dawn… with the muster… under the banner…', 'The cantor'),
-    say('mauer', 'The dawn muster? That’s now — the whole company’s singing the morning hymn—'),
-    n('Across the camp, the hymn falters. The standard-bearer drops to his knees, the banner falling across him.'),
-    say('ilse', 'Doctor! It’s Jorg, the standard-bearer — his chest is moving… it’s singing back!'),
+    say('mauer', 'The dawn muster? That’s now—'),
+    n('Across the camp, forty voices sing up the dawn. Beneath them, two more voices begin: one calling, one answering.'),
+    say('choir', 'Who keeps the watch before the sun?', 'The first voice'),
+    say('choir', 'The one who wakes, and wakes alone.', 'The answering voice'),
+    say('choir', 'Who sings the day when day is done?', 'The first voice'),
+    say('choir', 'The one we answer, bone to bone.', 'The answering voice'),
+    n('The standard-bearer drops to his knees, the banner falling across him. The hymn falters. The two voices do not.'),
+    say('ilse', 'Doctor! It’s Jorg — there are two of them in his chest, and each one answers the other!'),
     say('kreuzer', 'Clear a table. Sister — every instrument we have.'),
   ],
 };
@@ -95,13 +107,23 @@ export const STORY_2_END: StoryDef = {
   backdrop: 'chapel',
   lines: [
     n('The singing stops. The standard-bearer breathes. In the flesh over his heart, a single word: LAUDS.'),
+    say('ilse', 'And beside it — Doctor, look. An eye with a stroke through it. The same mark the page-boy carried.'),
     say('mauer', 'Two of them now. Matins in the city, Lauds in my own camp. Someone is keeping time, Doctor.'),
     say('ilse', 'Six more hours to the full Office. Prime. Terce. Sext. None. Vespers. Compline.'),
+    n('In the ward tent a wounded pikeman hums the dawn hymn in his sleep. Two notes. Then, from nowhere, the answer.'),
     say('stroh', 'Doctor Kreuzer.'),
-    say('stroh', 'When that thing screamed, every candle in this tent stopped flickering. The flames stood still. For eight heartbeats.'),
-    say('stroh', 'I counted.'),
-    say('kreuzer', '…The morning air is very still, Inquisitor.'),
-    say('stroh', 'So it is. We will speak at length, you and I. After Prime.'),
+    ...when(
+      { litany: true },
+      say('stroh', 'When that thing screamed, every candle in this tent stopped flickering. The flames stood still. For eight heartbeats.'),
+      say('stroh', 'I counted.'),
+      say('kreuzer', '…The morning air is very still, Inquisitor.'),
+    ),
+    ...when(
+      { litany: false },
+      say('stroh', 'I watched your hands while that thing screamed. They shook, Doctor. For once.'),
+      say('kreuzer', 'It was a long night, Inquisitor.'),
+    ),
+    say('stroh', 'We will speak at length, you and I. After Prime.'),
     n('END OF CHAPTER II — THE HOUR OF LAUDS'),
   ],
 };
