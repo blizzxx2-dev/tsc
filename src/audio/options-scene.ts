@@ -33,6 +33,8 @@ const TABS = ['Volume', 'Mix', 'Comfort', 'Captions'] as const;
 type Tab = (typeof TABS)[number];
 
 export class AudioOptionsScene implements Scene {
+  /** A menu page: moving between two plays the page-turn transition (ART-0306). */
+  readonly menuPage = true;
   private tab: Tab = 'Volume';
   private hover = -1;
   private devices: { id: string; label: string }[] = [];

@@ -3,6 +3,7 @@
  * they sit in the UI kit without painted assets. Each takes a rect and a time for gentle motion
  * (smoke, a guttering glow) that stops under reduced motion when `t` is held.
  */
+import { SWATCHES } from '../render/palette';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import type { Rect } from '../ui/widgets';
@@ -186,6 +187,12 @@ export function choirMaskPlate(g: Gfx, r: Rect, t: number, caption: string, a = 
   const cy = r.y + r.h * 0.45;
   const mw = r.w * 0.2;
   const mh = r.h * 0.3;
+  // ART-0303: the hooded head tilts slowly about the neck (a 12 s sway), and a violet glow breathes
+  // out through the sewn mouth on a 5 s breath.
+  g.save();
+  g.translate(cx, cy + mh * 1.2);
+  g.rotate(Math.sin((t * Math.PI * 2) / 12) * 0.07);
+  g.translate(-cx, -(cy + mh * 1.2));
   // Hood behind, then the mask of undyed cloth.
   g.ellipse(cx, cy + mh * 0.2, mw * 1.6, mh * 1.4, 0, hex('#3a3028', a));
   g.ellipse(cx, cy, mw, mh, 0, hex('#d8ccb0', 0.95 * a));
@@ -194,6 +201,13 @@ export function choirMaskPlate(g: Gfx, r: Rect, t: number, caption: string, a = 
   // Sewn mouth-slit: a line crossed by stitches. No eyes: the Choir has no faces.
   g.line({ x: cx - mw * 0.45, y: cy + mh * 0.35 }, { x: cx + mw * 0.45, y: cy + mh * 0.35 }, 2, hex(INK, 0.9 * a));
   for (let i = -3; i <= 3; i++) g.line({ x: cx + i * mw * 0.12, y: cy + mh * 0.28 }, { x: cx + i * mw * 0.12 + 2, y: cy + mh * 0.42 }, 1.4, hex('#6a0a10', 0.9 * a));
+  const breath = 0.5 - 0.5 * Math.cos((t * Math.PI * 2) / 5);
+  g.setBlend('add');
+  g.ellipse(cx, cy + mh * 0.35, mw * (0.6 + 0.25 * breath), mh * (0.1 + 0.08 * breath), 0, hex(SWATCHES.curseViolet, (0.25 + 0.45 * breath) * a), hex(SWATCHES.curseViolet, 0));
+  g.circleGrad(cx, cy + mh * 0.5, mw * (0.9 + 0.4 * breath), hex(SWATCHES.curseViolet, 0.18 * breath * a), hex(SWATCHES.curseViolet, 0));
+  g.line({ x: cx - mw * 0.4, y: cy + mh * 0.35 }, { x: cx + mw * 0.4, y: cy + mh * 0.35 }, 1.2, hex('#e8d0ff', 0.5 * breath * a));
+  g.setBlend('alpha');
+  g.restore();
   // Beeswax candles either side, guttering.
   for (const s of [-1, 1]) {
     const x = cx + s * r.w * 0.32;

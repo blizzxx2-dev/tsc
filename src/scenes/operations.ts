@@ -14,6 +14,8 @@ import { CodexScene } from './codex';
 
 /** Replay any operation already reached in the campaign, chasing better ranks. */
 export class OperationsScene implements Scene {
+  /** A menu page: moving between two plays the page-turn transition (ART-0306). */
+  readonly menuPage = true;
   private list: { chapter: string; def: OperationDef }[] = [];
 
   enter(): void {

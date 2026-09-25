@@ -11,7 +11,17 @@ export const presentation = {
   creatureFilter: false,
   /** 0 full, 1 reduced (browned blood, no spurts), 2 minimal (flat stains, no spray). */
   gore: 0 as 0 | 1 | 2,
+  /** Heartbeat 0..1 (1 at the beat), for reactions that twitch with it (ART-0299). */
+  pulse: 0,
+  /** Grubs that just felt a Lancet near-miss → the op time it happened (ART-0299). */
+  flinch: new WeakMap<object, number>(),
 };
+
+/** Embedded shafts twitch with the heartbeat in 3 frames (rest, lift, kick): the angle offset in radians. */
+export const shaftTwitch = (pulse: number): number => [0, 0.018, 0.04][pulse > 0.66 ? 2 : pulse > 0.33 ? 1 : 0];
+
+/** A flinch curl 0..1 over 0.35 s (fast in, eased out). */
+export const flinchCurl = (age: number): number => (age < 0 || age > 0.35 ? 0 : age < 0.06 ? age / 0.06 : 1 - (age - 0.06) / 0.29);
 
 export const GORE_LEVEL = { full: 0, reduced: 1, minimal: 2 } as const;
 

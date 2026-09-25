@@ -1,5 +1,5 @@
 import { clamp, dist, pointSegment, type Vec } from '../core/math';
-import { drawBlotch, presentation } from '../render/presentation';
+import { drawBlotch, flinchCurl, presentation, shaftTwitch } from '../render/presentation';
 import { hex, rgba } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { Coverage } from './coverage';
@@ -931,10 +931,15 @@ export class Embedded extends Entity {
       const far = { x: this.origin.x + Math.cos(ax) * (this.spec.len + 40), y: this.origin.y + Math.sin(ax) * (this.spec.len + 40) };
       g.dashed([this.origin, far], 1.5, hex(lensNear ? '#b9d7ff' : '#ffebbe', 0.35), 5, 7, -op.elapsed * 10);
     }
-    const tail = { x: x - ca * this.spec.len, y: y - sa * this.spec.len };
+    let tail = { x: x - ca * this.spec.len, y: y - sa * this.spec.len };
     switch (this.kind) {
       case 'arrow':
       case 'bolt': {
+        // The embedded shaft twitches with the heartbeat (ART-0299): the tail swings about the wound.
+        if (!this.grabbed) {
+          const tw = this.angle + shaftTwitch(presentation.pulse);
+          tail = { x: x - Math.cos(tw) * this.spec.len, y: y - Math.sin(tw) * this.spec.len };
+        }
         g.line({ x, y }, tail, this.kind === 'arrow' ? 4 : 6, hex(this.kind === 'arrow' ? '#7a5a36' : '#4d3a26'));
         const fl = hex(this.kind === 'arrow' ? '#d8d2c0' : '#6d6452');
         for (const s of [-1, 1]) {
@@ -1789,9 +1794,11 @@ export class Grub extends Entity {
     g.translate(this.pos.x, this.pos.y);
     g.rotate(this.heading);
     g.scale(s);
+    // A Lancet near-miss makes it flinch (ART-0299): the body curls and the head snaps back.
+    const curl = flinchCurl(op.elapsed - (presentation.flinch.get(this) ?? -9));
     for (let i = 3; i >= 0; i--) {
-      const wig = Math.sin(op.elapsed * 10 + i) * 2;
-      g.circle(-i * 7, wig, 7 - i * 0.8, i === 0 ? hex('#3a2a20') : rgba(220 - i * 10, 210 - i * 12, 170 - i * 10));
+      const wig = Math.sin(op.elapsed * 10 + i) * 2 * (1 - curl) + curl * (i - 1.5) * (i - 1.5) * 2.2;
+      g.circle(-i * (7 - curl * 1.8) + curl * 3, wig, 7 - i * 0.8, i === 0 ? hex('#3a2a20') : rgba(220 - i * 10, 210 - i * 12, 170 - i * 10));
     }
     g.restore();
     if (this.heat > 0) {

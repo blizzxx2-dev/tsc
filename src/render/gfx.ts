@@ -109,6 +109,8 @@ export interface FleshParams {
   deep: [number, number, number];
   vein: [number, number, number];
   pulse: number;
+  /** Tissue warp scale [x, y] about `center` (ART-0298, src/art/tissueWarp.ts); omitted = rim-only swell. */
+  warp?: [number, number];
   light: Vec;
   corrupt: number;
   /** Voronoi edge softness per organ (smaller = crisper membranes). */
@@ -206,6 +208,8 @@ export class Gfx {
   readonly gpuTimer: GpuTimer;
   /** Per-frame batcher counters (ENG-0024); reset by `resetStats()`. */
   stats: FrameStats = emptyStats();
+  /** The last finished frame's counters (for budget reports and automation). */
+  lastStats: FrameStats = emptyStats();
   /** World render scale 0.5–1 of the backbuffer (ENG-0181); UI and text always render at native resolution. */
   renderScale = 1;
   /** Shader quality tier in effect (ENG-0082); `setShaderQuality` changes it, `displayPrefs.quality` applies it lazily. */
@@ -479,6 +483,7 @@ export class Gfx {
   /** Zero the per-frame counters (call at frame start); returns the finished frame's stats. */
   resetStats(): FrameStats {
     const s = this.stats;
+    this.lastStats = s;
     this.stats = emptyStats();
     return s;
   }
@@ -1179,6 +1184,7 @@ export class Gfx {
     gl.uniform3fv(this.u(pr, 'u_deep'), f.deep);
     gl.uniform3fv(this.u(pr, 'u_vein'), f.vein);
     gl.uniform1f(this.u(pr, 'u_pulse'), f.pulse);
+    gl.uniform2f(this.u(pr, 'u_warp'), f.warp?.[0] ?? 0, f.warp?.[1] ?? 0);
     gl.uniform2f(this.u(pr, 'u_light'), f.light.x, f.light.y);
     gl.uniform1f(this.u(pr, 'u_corrupt'), f.corrupt);
     gl.uniform1f(this.u(pr, 'u_cellSoft'), f.cellSoft ?? 0.08);

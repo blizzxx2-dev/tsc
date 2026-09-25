@@ -20,6 +20,8 @@ import { dropdown } from './choice';
  * dropdown, tab bar, scroll list and the modal confirm dialog.
  */
 export class GalleryScene implements Scene {
+  /** A menu page: moving between two plays the page-turn transition (ART-0306). */
+  readonly menuPage = true;
   readonly ui = new Ui('gallery');
   private tab = 0;
   private on = true;

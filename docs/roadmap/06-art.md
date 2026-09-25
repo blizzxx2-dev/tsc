@@ -477,19 +477,19 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 
 ### Operation-field animation
 - [x] ART-0297 · Demo · P0 · S · Animation timing sheet: standard fps (12 for woodcut flipbooks, 24 for VFX), ease curves and hit-pause frames, applied to every flipbook in the demo
-- [ ] ART-0298 · Demo · P1 · M · Tissue breathing and heartbeat deformation: a mesh-warp map per flesh set synced to `u_pulse` (no visible sliding of ailment sprites)
-- [ ] ART-0299 · Demo · P1 · S · Embedded-object reaction animation: the arrow shaft twitches with the heartbeat (3-frame), and the grub flinches on a Lancet near-miss
+- [x] ART-0298 · Demo · P1 · M · Tissue breathing and heartbeat deformation: a mesh-warp map per flesh set synced to `u_pulse` (no visible sliding of ailment sprites)
+- [x] ART-0299 · Demo · P1 · S · Embedded-object reaction animation: the arrow shaft twitches with the heartbeat (3-frame), and the grub flinches on a Lancet near-miss
 - [x] ART-0300 · Beta · P2 · M · Organ-specific motion: lung inflate/deflate and gut peristalsis flipbooks for Chapters 3–5 organ sets
 
 ### Portrait & VN animation
 - [x] ART-0301 · Demo · P0 · S · Blink timing (random 2–6 s interval, 3 frames) and lip-flap timing tied to text reveal speed for all demo portraits
 - [x] ART-0302 · Demo · P1 · M · Idle breathing (a 2-layer mesh warp) on Kreuzer, Ilse, Haller, Stroh and Mauer portraits
-- [ ] ART-0303 · Demo · P2 · M · Hollow Choir mask animation: a slow tilt and a violet glow breathing from the mask's mouth
+- [x] ART-0303 · Demo · P2 · M · Hollow Choir mask animation: a slow tilt and a violet glow breathing from the mask's mouth
 - [ ] ART-0304 · Beta · P2 · M · Idle breathing on Chapter 3–5 principal portraits
 
 ### Title & menu animation
-- [ ] ART-0305 · Demo · P1 · M · Title screen animated layers: candle flicker, drifting ash and a slow key-art parallax (10 s loop)
-- [ ] ART-0306 · Demo · P2 · S · Menu transitions: a page-turn (8 frames) between menu pages and a wax-seal break on "New Game"
+- [x] ART-0305 · Demo · P1 · M · Title screen animated layers: candle flicker, drifting ash and a slow key-art parallax (10 s loop)
+- [x] ART-0306 · Demo · P2 · S · Menu transitions: a page-turn (8 frames) between menu pages and a wax-seal break on "New Game"
 - [ ] ART-0307 · Demo · P2 · S · Animated logo sting (3 s) for the game's boot sequence
 
 ---
@@ -539,11 +539,11 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 ## ART-O · Trailer storyboards
 
 ### Demo / announce trailer
-- [ ] ART-0332 · Demo · P0 · M · Announce trailer (60–75 s) beat sheet: hook (the barbed arrow), the world (Kessendorf), the tools, the Malison, the Litany, the title card and the wishlist call-to-action
+- [x] ART-0332 · Demo · P0 · M · Announce trailer (60–75 s) beat sheet: hook (the barbed arrow), the world (Kessendorf), the tools, the Malison, the Litany, the title card and the wishlist call-to-action
 - [ ] ART-0333 · Demo · P0 · M · Announce trailer storyboard: ≥ 30 panels with shot duration, camera move and the in-engine capture setup per panel
-- [ ] ART-0334 · Demo · P1 · S · Trailer capture scene list: debug seeds and states needed to reproduce each shot deterministically (with ENG's replay tool)
+- [x] ART-0334 · Demo · P1 · S · Trailer capture scene list: debug seeds and states needed to reproduce each shot deterministically (with ENG's replay tool)
 - [ ] ART-0335 · Demo · P1 · S · Trailer title cards and end slate (logo, "Free Demo on Steam", platforms, rating placeholder) in the woodcut style
-- [ ] ART-0336 · Demo · P1 · S · Steam store autoplay cut (30 s) storyboard, readable with sound off (burned-in woodcut captions)
+- [x] ART-0336 · Demo · P1 · S · Steam store autoplay cut (30 s) storyboard, readable with sound off (burned-in woodcut captions)
 - [ ] ART-0337 · Demo · P2 · S · Next Fest livestream overlay art: a frame, lower-thirds and a "Wishlist" bug
 
 ### Launch & post-launch trailers
@@ -560,14 +560,14 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [ ] ART-0342 · Demo · P0 · M · Outsourcing brief pack: art bible, style frames, naming/export specs, a sample finished asset per class and the IP-avoidance checklist — one zip per asset class
 - [ ] ART-0343 · Demo · P0 · M · Paid test task for 3 candidate vendors/freelancers (1 portrait with 3 expressions + 1 ailment sprite set), scored on a rubric (style match, turnaround, revisions needed)
 - [x] ART-0344 · Demo · P0 · S · Contract terms checklist: work-for-hire/full IP assignment, no AI-generated content without disclosure, source files delivered, credit line
-- [ ] ART-0345 · Demo · P1 · S · Asset tracker sheet (asset ID, vendor, stage, due, cost, approved-by) covering every Demo asset in this file
-- [ ] ART-0346 · Demo · P1 · S · Feedback protocol: paintover-based notes, max 2 revision rounds per stage, 48 h review SLA from our side
+- [x] ART-0345 · Demo · P1 · S · Asset tracker sheet (asset ID, vendor, stage, due, cost, approved-by) covering every Demo asset in this file
+- [x] ART-0346 · Demo · P1 · S · Feedback protocol: paintover-based notes, max 2 revision rounds per stage, 48 h review SLA from our side
 - [ ] ART-0347 · Demo · P1 · S · Shared delivery folder with automated naming/format validation (the CI script from ART-C run on upload)
 - [ ] ART-0348 · Alpha · P1 · M · Chapter 3–5 outsourcing plan: asset counts, vendor allocation and budget per chapter, with the portrait and background vendors locked
 - [ ] ART-0349 · Alpha · P2 · S · Vendor style-drift check: every 20th delivered asset placed next to the style frames in a monthly review
 
 ### Budget & schedule
-- [ ] ART-0350 · Demo · P0 · M · Demo art budget and schedule: cost and weeks per asset class (portraits, backgrounds, flesh sets, ailments, bosses, UI, store) with a 15% contingency
+- [x] ART-0350 · Demo · P0 · M · Demo art budget and schedule: cost and weeks per asset class (portraits, backgrounds, flesh sets, ailments, bosses, UI, store) with a 15% contingency
 - [ ] ART-0351 · Alpha · P1 · M · Full-game art budget re-forecast after demo actuals (cost per asset vs estimate)
 - [ ] ART-0352 · Demo · P1 · S · Credits list for all art contributors maintained in `docs/art/credits.md`, feeding the in-game credits
 
@@ -599,7 +599,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [ ] ART-0367 · Demo · P0 · S · Flesh texture budget: 1 organ set resident at a time at 1024² (KTX2/BasisU, ~5.3 MB with mips), with a 512² fallback for low settings
 - [ ] ART-0368 · Demo · P0 · S · Draw-budget rule for art: an operation frame ≤ 3 texture binds and ≤ 20k batched verts at peak VFX, measured with the ENG profiler overlay
 - [ ] ART-0369 · Demo · P0 · S · Overdraw budget: additive VFX ≤ 4× overdraw on the hot area at peak (Litany + motes + sparks), verified on the Steam Deck
-- [ ] ART-0370 · Demo · P1 · S · Download-size budget: demo art ≤ 400 MB on disk; the build report lists the 20 largest assets
+- [x] ART-0370 · Demo · P1 · S · Download-size budget: demo art ≤ 400 MB on disk; the build report lists the 20 largest assets
 - [ ] ART-0371 · Demo · P1 · S · Backgrounds: ≤ 4 layers × 1920×1080 WebP resident per story scene, with the next scene's background preloaded
 - [ ] ART-0372 · Demo · P1 · S · Portrait budget: ≤ 4 portraits resident (2048² atlas page each, expressions packed together)
 - [x] ART-0373 · Demo · P1 · S · Particle caps per effect (blood 64, sparks 48, motes 32, leaf 40) set in the VFX specs and enforced in code

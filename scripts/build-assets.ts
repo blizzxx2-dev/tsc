@@ -205,6 +205,8 @@ for (const [id, e] of Object.entries(entries)) {
 const perBundle = new Map<string, number>();
 for (const e of Object.values(entries)) perBundle.set(e.bundle, (perBundle.get(e.bundle) ?? 0) + e.bytes);
 const total = [...perBundle.values()].reduce((a, b) => a + b, 0);
+// Every entry (3D models included) for the download-size report below.
+const sized = Object.entries(entries).map(([id, e]) => ({ id, bundle: e.bundle, bytes: e.bytes }));
 
 // ---- generated 3D models (git-ignored, built locally by npm run art:models) get their own runtime
 // manifest, public/assets/models.json, so the committed manifest is identical on every clone.
@@ -245,6 +247,14 @@ const byStatus = (st: Status) => ids.filter((i) => entries[i].status === st).len
 console.log(`  status: ${byStatus('final')} final, ${byStatus('wip')} wip, ${byStatus('placeholder')} placeholder`);
 for (const b of rules.bundles)
   console.log(`  ${b.padEnd(13)} ${((perBundle.get(b) ?? 0) / 1024).toFixed(1).padStart(8)} KB  (${ids.filter((i) => entries[i].bundle === b).length} assets)`);
+// Download-size budget (ART-0370): demo art ≤ 400 MB on disk, and the 20 largest assets listed so a
+// surprise is visible in every build log. Reported, never enforced by recompressing (see above).
+const DEMO_ART_BUDGET = 400 * 2 ** 20;
+const demoBytes = sized.filter((e) => DEMO_BUNDLES.has(e.bundle)).reduce((a, e) => a + e.bytes, 0);
+console.log(`  demo art ${(demoBytes / 2 ** 20).toFixed(1)} MB of the ${DEMO_ART_BUDGET / 2 ** 20} MB budget${demoBytes > DEMO_ART_BUDGET ? '  — OVER BUDGET' : ''}`);
+console.log('  20 largest assets:');
+for (const e of [...sized].sort((a, b) => b.bytes - a.bytes).slice(0, 20))
+  console.log(`    ${(e.bytes / 1024).toFixed(1).padStart(9)} KB  ${e.id}  (${e.bundle})`);
 if (errors.length) {
   console.error('asset validation failed:\n  ' + errors.join('\n  '));
   process.exit(1);

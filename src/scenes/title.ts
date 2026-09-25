@@ -14,6 +14,8 @@ import { MOTION, tween } from '../ui/motion';
 import { fitText, wrapLines } from '../ui/text';
 import { uiEvents } from '../ui/events';
 import { drawBackdrop } from './backdrop';
+import { titleLayers, titleParallax } from '../art/titleLayers';
+import { nextTransitionStyle } from '../ui/transition';
 import { playStep, save } from './flow';
 import { OperationsScene } from './operations';
 import { OptionsScene } from './options';
@@ -48,6 +50,8 @@ const MENU = { x: VIEW_W / 2 - 210, w: 420, h: 42, gap: 4, y0: 352 };
  * Continue's place (UIX-0173). A damaged journal opens the recovery dialog (UIX-0094).
  */
 export class TitleScene implements Scene {
+  /** A menu page: moving between two plays the page-turn transition (ART-0306). */
+  readonly menuPage = true;
   readonly ui = new Ui('title');
   private t = 0;
 
@@ -91,6 +95,8 @@ export class TitleScene implements Scene {
    * campaign with the guided tutorials off. A profile that has already operated is not asked.
    */
   private newGame(game: Game): void {
+    // New Game breaks a wax seal on the way out (ART-0306).
+    nextTransitionStyle('seal');
     if (hasOperated(progress)) return game.go(new SaveSlotsScene('new'));
     confirm(game, {
       title: t('ui.title.operated_title'),
@@ -104,10 +110,13 @@ export class TitleScene implements Scene {
 
   render(g: Gfx, game: Game): void {
     g.beginWorld();
-    drawBackdrop(g, 'title', g.time, { pointer: settings.reduceMotion ? undefined : game.input.pos });
+    // Title layers (ART-0305): a 10 s parallax drift of the set, drifting ash and foreground candles.
+    const lt = settings.reduceMotion ? 0 : g.time;
+    drawBackdrop(g, 'title', g.time, { pointer: settings.reduceMotion ? undefined : titleParallax(lt, VIEW_W, VIEW_H, game.input.pos) });
     g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1.3, defocus: 7 });
     const a = Math.min(1, this.t);
     const vr = g.viewRect();
+    titleLayers(g, vr, lt);
     // Grade the backdrop down so the type carries the screen: a heavy vignette and a dark
     // column behind the menu.
     g.rect(vr.x, vr.y, vr.w, vr.h, hex('#050303', 0.42));

@@ -51,7 +51,7 @@ import { OperationScene } from './scenes/operation';
 import { bindings } from './input/bindings';
 import { loadLayoutLabels } from './input/glyphs';
 import { downloadRecording, parseRecording, Recorder, Replayer } from './input/record';
-import { Transition } from './ui/transition';
+import { isMenuPage, Transition } from './ui/transition';
 import { GalleryScene } from './scenes/gallery';
 import { displayPrefs } from './ui/display';
 import { setFallbackHighlight, setReadableFont } from './render/text';
@@ -187,7 +187,7 @@ class Main implements Game {
 
   go(scene: Scene): void {
     if (this.instantGo) this.goNow(scene);
-    else this.transition.request(() => this.goNow(scene));
+    else this.transition.request(() => this.goNow(scene), isMenuPage(this.scenes.top) && isMenuPage(scene) ? 'page' : undefined);
   }
 
   /** Dev/automation jumps (`?op=`, `?ui=`) change scene without a transition. */

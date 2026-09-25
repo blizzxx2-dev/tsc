@@ -21,6 +21,8 @@ import { DemoEndScene } from './demoend';
 import { TitleScene } from './title';
 
 export class ExtrasScene implements Scene {
+  /** A menu page: moving between two plays the page-turn transition (ART-0306). */
+  readonly menuPage = true;
   readonly ui = new Ui('extras');
   private t = 0;
 

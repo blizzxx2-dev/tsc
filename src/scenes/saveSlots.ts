@@ -43,6 +43,8 @@ export function slotCardRect(i: number): Rect {
 }
 
 export class SaveSlotsScene implements Scene {
+  /** A menu page: moving between two plays the page-turn transition (ART-0306). */
+  readonly menuPage = true;
   readonly ui = new Ui('slots');
   private t = 0;
   private slots = listSlots();

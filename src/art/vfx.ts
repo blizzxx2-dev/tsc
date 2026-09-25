@@ -11,9 +11,10 @@ import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { SWATCHES } from '../render/palette';
 import type { Particles } from '../render/particles';
-import { Laceration, Sigil } from '../surgery/entities';
+import { Grub, Laceration, Sigil } from '../surgery/entities';
+import { presentation } from '../render/presentation';
 import { Malison, MalisonShard } from '../surgery/malison';
-import { FIELD, LITANY_DURATION, onBody, TRAY_DISH, type Operation } from '../surgery/operation';
+import { FIELD, LEAD_DISH, LITANY_DURATION, onBody, TRAY_DISH, type Operation } from '../surgery/operation';
 import { EASE, FPS, frameOf } from './timing';
 
 const TAU = Math.PI * 2;
@@ -164,6 +165,8 @@ export class VfxLayer {
     ev.on('cut', () => {
       const p = op.pointer;
       if (!onBody(p)) return;
+      // Grubs the blade just missed flinch (ART-0299).
+      for (const e of op.entities) if (e instanceof Grub && e.alive && !e.hidden && dist(e.pos, p) < 60) presentation.flinch.set(e, op.elapsed);
       const a = Math.atan2(this.vel.y, this.vel.x) + Math.PI / 2 * (Math.random() < 0.5 ? 1 : -1);
       this.add('lancet-spray', p.x, p.y, a);
       if (this.gore > 0) this.add('blood-splatter', p.x + Math.cos(a) * 14, p.y + Math.sin(a) * 14, a, Math.floor(Math.random() * SPLATTERS.length));
@@ -179,9 +182,9 @@ export class VfxLayer {
     ev.on('stitch', () => this.add('suture-glint', op.pointer.x, op.pointer.y, Math.atan2(this.vel.y, this.vel.x)));
     ev.on('extract', () => {
       const p = op.pointer;
-      const inDish = dist(p, TRAY_DISH) <= TRAY_DISH.r;
-      this.add('tongs-clink', inDish ? TRAY_DISH.x : p.x, inDish ? TRAY_DISH.y : p.y);
-      this.particles.spawn({ kind: 'spark', pos: inDish ? TRAY_DISH : p, n: 5, speed: 140 });
+      const dish = [TRAY_DISH, LEAD_DISH].find((d) => dist(p, d) <= d.r);
+      this.add('tongs-clink', dish?.x ?? p.x, dish?.y ?? p.y);
+      this.particles.spawn({ kind: 'spark', pos: dish ?? p, n: 5, speed: 140 });
     });
     ev.on('cue', (c) => {
       if (c === 'inject') {

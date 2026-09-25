@@ -22,6 +22,8 @@ const title = (b: CodexBoss): string => t(`codex.${b}.title`);
 const body = (b: CodexBoss): string => t(`codex.${b}.body`);
 
 export class CodexScene implements Scene {
+  /** A menu page: moving between two plays the page-turn transition (ART-0306). */
+  readonly menuPage = true;
   private sel = 0;
   private readonly open: ReadonlySet<string>;
 

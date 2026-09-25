@@ -52,6 +52,7 @@ import type { OperationOptions } from '../surgery/operation';
 import { drawDebug, drawDialogue, drawDrainArrow, drawFieldOverlays, drawLitanyPractice, drawSecondaryVitals, drawTrayState, drawTutorial } from './gameplayHud';
 import { PauseScene, type PauseResult } from './pause';
 import { VfxLayer } from '../art/vfx';
+import { pushWarp, tissueWarp } from '../art/tissueWarp';
 import { drawFieldTool, drawTipDebug } from '../art/toolSprites';
 
 export interface OperationOutcome {
@@ -420,6 +421,7 @@ export class OperationScene implements Scene {
     presentation.creatureFilter = settings.creatureFilter;
     op.calloutPace = localeInfo(getLocale())?.reading ?? 1;
     presentation.gore = GORE_LEVEL[settings.goreLevel];
+    presentation.pulse = settings.reduceMotion ? 0 : this.pulse;
     const pal = organPalette(op.def);
     const t = g.time;
     const sk = settings.reduceMotion ? 0 : op.shake * settings.shake;
@@ -431,7 +433,10 @@ export class OperationScene implements Scene {
     // ---------------------------------------------------------------- data layers
     const ents = op.visibleEntities().sort((a, b) => a.layer - b.layer);
     const light = { x: FIELD.cx - 220 + Math.sin(t * 0.7) * 30, y: 60 + Math.sin(t * 1.3) * 10 };
+    // Tissue breathing and heartbeat (ART-0298): the flesh, its wounds, fluids and ailments share one warp.
+    const warp = tissueWarp(pal.kind, this.pulse, t, settings.reduceMotion);
     g.beginLayer('surface');
+    pushWarp(g, FIELD.cx, FIELD.cy, warp);
     for (const sc of op.scars) {
       surfLine(g, sc, 7, 0.18, 0.15, 0, 0.1);
       surfLine(g, sc, 12, 0, 0, 0, 0.2);
@@ -439,10 +444,13 @@ export class OperationScene implements Scene {
     for (const st of op.stains) surfDisc(g, st, st.r, 0, st.a);
     for (const e of ents) e.drawSurface(g, op);
     if (game.input.down && onBody(game.input.pos)) surfDisc(g, game.input.pos, 16, 0.28);
+    g.restore();
     g.endLayer();
     g.beginLayer('fluid');
+    pushWarp(g, FIELD.cx, FIELD.cy, warp);
     for (const e of ents) e.drawFluid(g, op);
     this.particles.drawFluid(g);
+    g.restore();
     g.endLayer();
 
     // ---------------------------------------------------------------- world
@@ -455,6 +463,7 @@ export class OperationScene implements Scene {
       deep: pal.deep,
       vein: pal.vein,
       pulse: this.pulse,
+      warp,
       light,
       corrupt: this.corrupt,
       cellSoft: pal.cellSoft,
@@ -469,12 +478,14 @@ export class OperationScene implements Scene {
     });
     const colours = palette();
     g.fluidComposite(light, { blood: speciesBlood(colours.blood, pal.species), pus: colours.pus, bile: colours.bile, gore: presentation.gore });
+    pushWarp(g, FIELD.cx, FIELD.cy, warp);
     for (const e of ents) e.draw(g, op);
     // High contrast: a 2 px ring around everything that takes an instrument.
     if (highContrast()) for (const e of ents) if (e.required) g.arc(e.pos.x, e.pos.y, 28, 2, hex('#ffffff', 0.85), 1);
     // Tongs in hand: outline the graspable the next press would seize (INP-0042).
     if (!this.paused) drawGraspOutline(g, op, this.ctl.toWorld(game.input.pos), bindings.prefs.hitScale, t);
     this.particles.draw(g);
+    g.restore();
     this.vfx.drawWorld(g, op, game.input.pos);
 
     // Scrying lens: shimmer where something hides.

@@ -147,6 +147,8 @@ const DECK_LAYOUT: [string, string][] = [
  * mouse, keyboard and gamepad.
  */
 export class ControlsScene implements Scene {
+  /** A menu page: moving between two plays the page-turn transition (ART-0306). */
+  readonly menuPage = true;
   private tab = 0;
   private row = 0;
   private col = 0;
