@@ -101,7 +101,7 @@ export function parchmentSheet(g: Gfx, r: Rect, seed = 1, kind: 'fresh' | 'foxed
 
 /** A parchment scroll with rolled wooden ends, for dialogue. */
 export function scroll(g: Gfx, r: Rect): void {
-  parchmentSheet(g, r, r.x + r.y);
+  parchmentSheet(g, r, r.x + r.y, 'fresh');
   for (const x of [r.x - 8, r.x + r.w - 8]) {
     g.rectGrad(x, r.y - 6, 16, r.h + 12, hex('#d8c498'), hex('#8a7048'));
     g.rectLine(x, r.y - 6, 16, r.h + 12, 1, hex('#4a3418'));

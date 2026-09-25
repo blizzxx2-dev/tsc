@@ -3,6 +3,14 @@ import { alphaOf, type RGBA } from './color';
 import { bakeLut, GRADES, LUT_SIZE } from './lut';
 import { GlyphAtlas, type FontId } from './text';
 import { UI_ART_FS } from '../art/uiShader';
+
+/** Bilinear upsample of a reduced-resolution layer. */
+const UPSAMPLE_FS = `#version 300 es
+precision mediump float;
+in vec2 v_uv;
+uniform sampler2D u_tex;
+out vec4 o;
+void main() { o = vec4(texture(u_tex, v_uv).rgb, 1.0); }`;
 import { BLUR_FS, BRIGHT_FS, FLESH_FS, FLUID_FS, FULL_VS, IMAGE_FS, IMAGE_VS, PORTRAIT_FS, CREATURE_FS, POST_FS, PRIM_FS, PRIM_VS, RECT_VS, SCENE_FS } from './shaders';
 
 const TAU = Math.PI * 2;
@@ -606,19 +614,53 @@ export class Gfx {
     this.applyBlend();
   }
 
-  /** Shader-rendered story environment (0 hospice … 5 camp) over the whole world target. */
-  sceneField(kind: number): void {
+  private sceneProgs = new Map<number, WebGLProgram>();
+  private sceneLow: Target | undefined;
+  private upsampleProg: WebGLProgram | null = null;
+
+  /**
+   * Shader-rendered story environment over the whole world target. Each location compiles its
+   * own specialised program (SCENE_FS with `#define KIND n`) on first use. `light` picks the
+   * lighting variant (0 night, 1 dusk, 2 day); `parallax` is a small pointer offset (-1..1).
+   * `scale` < 1 renders at reduced resolution and upsamples bilinearly (quality tiers).
+   */
+  sceneField(kind: number, opts: { light?: number; parallax?: [number, number]; variant?: number; scale?: number } = {}): void {
     this.flush();
     this.worldFb();
     const gl = this.gl;
-    const pr = this.sceneProg;
+    let pr = kind === 0 ? this.sceneProg : this.sceneProgs.get(kind);
+    if (!pr) {
+      pr = compile(gl, FULL_VS, SCENE_FS.replace('#version 300 es', `#version 300 es\n#define KIND ${kind}`));
+      this.sceneProgs.set(kind, pr);
+    }
+    const scale = Math.max(0.25, Math.min(1, opts.scale ?? 1));
+    if (scale < 0.99) {
+      const w = Math.max(1, Math.round(this.outW * scale));
+      const h = Math.max(1, Math.round(this.outH * scale));
+      if (!this.sceneLow || this.sceneLow.w !== w || this.sceneLow.h !== h) {
+        this.freeTarget(this.sceneLow);
+        this.sceneLow = this.makeTarget(w, h);
+      }
+      this.bindTarget(this.sceneLow);
+    }
     gl.useProgram(pr);
     gl.bindVertexArray(this.emptyVao);
     gl.disable(gl.BLEND);
     gl.uniform2f(this.u(pr, 'u_view'), this.vw, this.vh);
     gl.uniform1f(this.u(pr, 'u_time'), this.time);
     gl.uniform1i(this.u(pr, 'u_kind'), kind);
+    gl.uniform1f(this.u(pr, 'u_light'), opts.light ?? 0);
+    gl.uniform1f(this.u(pr, 'u_variant'), opts.variant ?? 0);
+    gl.uniform2fv(this.u(pr, 'u_parallax'), opts.parallax ?? [0, 0]);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
+    if (scale < 0.99 && this.sceneLow) {
+      this.worldFb();
+      const up = (this.upsampleProg ??= compile(gl, FULL_VS, UPSAMPLE_FS));
+      gl.useProgram(up);
+      this.bindTex(this.sceneLow.tex, 0);
+      gl.uniform1i(this.u(up, 'u_tex'), 0);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
     gl.enable(gl.BLEND);
   }
 

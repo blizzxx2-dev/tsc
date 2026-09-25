@@ -21,7 +21,7 @@ export class TitleScene implements Scene {
 
   render(g: Gfx, game: Game): void {
     g.beginWorld();
-    drawBackdrop(g, 'title', g.time);
+    drawBackdrop(g, 'title', g.time, { pointer: game.input.pos });
     g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1.1 });
     const a = Math.min(1, this.t);
     g.rect(0, 0, VIEW_W, VIEW_H, hex('#000000', 0.35));

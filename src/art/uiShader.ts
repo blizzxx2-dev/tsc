@@ -101,14 +101,14 @@ vec4 parchment(vec2 px, vec2 sz, float aa) {
   base *= 1.0 - 0.025 * step(0.85, fract(px.y * 0.09));
   // Tide-mark stains.
   float st = fbm(px * 0.012 + 7.0 + u_seed);
-  base = mix(base, base * vec3(0.86, 0.76, 0.6), smoothstep(0.55, 0.62, st) * 0.5);
-  base *= 1.0 - 0.12 * rsmooth(0.01, 0.0, abs(st - 0.6));
+  base = mix(base, base * vec3(0.9, 0.82, 0.68), smoothstep(0.58, 0.64, st) * 0.4 * min(variant + 0.4, 1.0));
+  base *= 1.0 - 0.06 * rsmooth(0.01, 0.0, abs(st - 0.62)) * min(variant + 0.3, 1.0);
   // Foxing: rust-brown spots.
   if (variant >= 1.0) {
     vec2 g = floor(px / 38.0);
     vec2 f = fract(px / 38.0) - 0.5 - (vec2(hash(g + u_seed), hash(g + 3.1)) - 0.5) * 0.6;
-    float spot = rsmooth(0.12 + 0.2 * hash(g + 9.0), 0.0, length(f)) * step(0.62, hash(g + 5.0));
-    base = mix(base, vec3(0.62, 0.4, 0.2), spot * (0.35 + 0.3 * noise(px * 0.3)));
+    float spot = rsmooth(0.06 + 0.14 * hash(g + 9.0), 0.0, length(f)) * step(0.8, hash(g + 5.0));
+    base = mix(base, vec3(0.66, 0.46, 0.26), spot * (0.18 + 0.2 * noise(px * 0.3)));
   }
   // Edge darkening; burnt edges char to black through an umber band.
   float burn = variant >= 2.0 ? 1.0 : 0.0;

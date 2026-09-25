@@ -5,7 +5,7 @@ import { CAST } from '../content/characters';
 import type { StoryDef } from '../content/story';
 import { PALETTE, VIEW_H, VIEW_W } from '../ui/layout';
 import { reticle } from '../ui/widgets';
-import { banner, divider, leatherPanel, UI } from '../ui/ornaments';
+import { divider, flowMark, nameCartouche, quillGlyph, scroll, UI } from '../ui/ornaments';
 import { drawBackdrop, drawPortrait } from './backdrop';
 
 const CPS = 48; // characters per second
@@ -53,7 +53,7 @@ export class StoryScene implements Scene {
     const line = this.line;
     const who = CAST[line.who];
     g.beginWorld();
-    drawBackdrop(g, this.story.backdrop, g.time);
+    drawBackdrop(g, this.story.backdrop, g.time, { lighting: this.story.lighting, pointer: game.input.pos });
     if (who.silhouette !== 'none') drawPortrait(g, who, 330, 500, g.time, true, this.shown < line.text.length);
     g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1 });
 
@@ -63,20 +63,22 @@ export class StoryScene implements Scene {
     divider(g, 30 + Math.min(600, g.measure(this.story.place, 21, 'italic')) / 2, 54, Math.min(600, g.measure(this.story.place, 21, 'italic')), hex(UI.brass, 0.6));
 
     const box = { x: 90, y: 500, w: VIEW_W - 180, h: 190 };
-    leatherPanel(g, box, { alpha: 0.97 });
+    scroll(g, box);
     const name = line.as ?? who.name;
     if (name) {
       const w = g.measure(name, 26) + 70;
-      banner(g, box.x + 30 + w / 2, box.y - 24, w, 40, '#3a0a0c');
+      nameCartouche(g, box.x + 30 + w / 2, box.y - 4, w, 38, who.color);
       g.text(name, box.x + 30 + w / 2, box.y + 5, { size: 26, color: hex('#fff0d0'), color2: hex(who.color), align: 'center' });
     }
     const narr = line.who === 'narrator';
     g.textBlock(line.text.slice(0, Math.floor(this.shown)), box.x + 40, box.y + 60, box.w - 80, {
       size: 25,
       font: narr ? 'italic' : 'body',
-      color: hex(narr ? PALETTE.inkDim : PALETTE.ink),
+      color: hex(narr ? '#5a4228' : UI.inkDark),
+      shadow: false,
     });
-    if (this.shown >= line.text.length) g.text('▼', box.x + box.w - 36, box.y + box.h - 18 + Math.sin(g.time * 5) * 3, { size: 16, color: hex(PALETTE.gold) });
+    if (this.shown >= line.text.length) quillGlyph(g, box.x + box.w - 40, box.y + box.h - 30, 16, g.time, hex('#6a0a10'));
+    if (game.input.key('ControlLeft') || game.input.key('ControlRight')) flowMark(g, box.x + box.w - 62, box.y + 24, 'skip', g.time);
     g.text('Click / Space: advance    Ctrl: fast    Esc: skip scene', VIEW_W - 30, VIEW_H - 8, { size: 13, color: hex(PALETTE.inkDim, 0.6), align: 'right', shadow: false });
     reticle(g, game.input.pos);
     g.endFrame();

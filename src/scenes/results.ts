@@ -4,11 +4,10 @@ import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import type { Operation } from '../surgery/operation';
 import { VIEW_W } from '../ui/layout';
-import { divider, parchmentSheet, UI, waxSeal } from '../ui/ornaments';
+import { divider, parchmentSheet, UI, woodcutCorner, woodcutEdge } from '../ui/ornaments';
+import { failSeal, rankSeal } from '../art/kit';
 import { button, reticle } from '../ui/widgets';
 import { drawBackdrop } from './backdrop';
-
-const RANK_WAX: Record<string, string> = { XS: '#b8861c', S: '#8a1016', A: '#2a5a3a', B: '#2a3a6a', C: '#4a4038' };
 
 /** The case record: a parchment ledger page, stamped with the rank in wax. */
 export class ResultsScene implements Scene {
@@ -42,6 +41,9 @@ export class ResultsScene implements Scene {
 
     const r = { x: 300, y: 40, w: 680, h: 560 };
     parchmentSheet(g, r, 7);
+    for (let k = 0; k < 4; k++) woodcutCorner(g, k % 2 ? r.x + r.w - 14 : r.x + 14, k < 2 ? r.y + 14 : r.y + r.h - 14, k % 2 ? -1 : 1, k < 2 ? 1 : -1, k, hex('#3a2414', 0.85));
+    for (const yy of [r.y + 14, r.y + r.h - 14]) woodcutEdge(g, r.x + 52, yy, r.x + r.w - 52, yy, hex('#3a2414', 0.7));
+    for (const xx of [r.x + 14, r.x + r.w - 14]) woodcutEdge(g, xx, r.y + 52, xx, r.y + r.h - 52, hex('#3a2414', 0.7), 1);
     const ink = hex(UI.inkDark);
     const faded = hex('#6a5030');
     g.text('Case Record', VIEW_W / 2, r.y + 62, { size: 46, font: 'display', color: hex('#6a0a10'), align: 'center', shadow: false });
@@ -83,16 +85,14 @@ export class ResultsScene implements Scene {
     if (this.won && this.t > 1.6) {
       const rank = op.rank();
       const k = Math.min(1, (this.t - 1.6) / 0.3);
-      const s = 1 + (1 - k) * 1.6;
-      waxSeal(g, sx, sy, 78 * s, RANK_WAX[rank]);
-      g.text(rank, sx, sy + 30 * s, { size: (rank === 'XS' ? 72 : 88) * s, font: 'display', color: hex('#ffe8c0', 0.95), color2: hex('#f0b070', 0.95), align: 'center', shadow: hex('#2a0204', 0.8) });
+      rankSeal(g, sx, sy, 78, rank, this.t - 1.6);
       if (k >= 1) {
         g.text('Rank', sx, sy - 100, { size: 22, font: 'italic', color: faded, align: 'center', shadow: false });
         if (this.newBest) g.text('A new best!', sx, sy + 118, { size: 22, color: hex('#6a0a10'), align: 'center', shadow: false });
         if (assisted()) g.text('(assisted)', sx, sy + 144, { size: 16, font: 'italic', color: faded, align: 'center', shadow: false });
       }
     } else if (!this.won) {
-      waxSeal(g, sx, sy, 70, '#2a2420', '†', 80);
+      failSeal(g, sx, sy, 70, this.t - 0.4);
     }
 
     if (this.t > 1) {
