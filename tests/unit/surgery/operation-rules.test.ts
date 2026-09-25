@@ -532,3 +532,99 @@ describe('QAT-0031 input priority', () => {
     expect(buried.pos).toEqual(buried.origin);
   });
 });
+
+/** Gaps found by the StrykerJS baseline on operation.ts (QAT-0052, docs/qa/mutation-testing.md). */
+describe('QAT-0052 mutation-testing gaps', () => {
+  it('the tincture cooldown expires after 6 s of play', () => {
+    const { op } = runningOp();
+    op.vitals = 40;
+    holdAt(op, 'tincture', C, 0.8, false);
+    expect(op.vitals).toBe(65);
+    op.vitals = 40;
+    step(op, TINCTURE_COOLDOWN - 0.2);
+    holdAt(op, 'tincture', C, 0.8, false);
+    expect(op.vitals).toBe(40);
+    step(op, 0.3);
+    expect(op.injectCooldown).toBe(0);
+    holdAt(op, 'tincture', C, 0.8, false);
+    expect(op.vitals).toBe(65);
+  });
+
+  it('pointer input is ignored unless the operation is running', () => {
+    const intro = makeOp(defWith(() => [new Probe(C)]));
+    tap(intro, 'lancet', at(-200, -100), false);
+    expect(intro.counts.miss).toBe(0);
+    expect(intro.pressId).toBe(0);
+    const { op } = runningOp();
+    op.lose('test');
+    tap(op, 'lancet', at(-200, -100), false);
+    expect(op.counts.miss).toBe(0);
+  });
+
+  it('rating popups carry the label and the rating word in the rating colour', () => {
+    const { op } = runningOp();
+    op.popups.length = 0;
+    op.rate('cool', C, 'Incision');
+    op.rate('good', C);
+    op.rate('bad', C, 'Torn');
+    op.rate('miss', C);
+    expect(op.popups.map((p) => [p.text, p.color, p.rating])).toEqual([
+      ['Incision COOL', '#f5d76e', 'cool'],
+      ['GOOD', '#9fd3a8', 'good'],
+      ['Torn BAD', '#d98a5f', 'bad'],
+      ['MISS', '#c0392b', 'miss'],
+    ]);
+    expect(op.fx.filter((f) => f.kind === 'gold')).toHaveLength(1);
+  });
+
+  it('the timer reaching exactly 0 ends the operation', () => {
+    const { op } = runningOp();
+    op.timeLeft = 0.5;
+    op.update(0.5);
+    expect(op.status).toBe('lost');
+  });
+
+  it('phase callouts are queued when a phase starts and the win is announced', () => {
+    const def = defWith(() => [], { phases: [{ callout: ['First line.', 'Second line.'], spawn: () => [new Probe(C)] }] });
+    const op = start(makeOp(def));
+    expect(op.callouts.slice(0, 2)).toEqual(['First line.', 'Second line.']);
+    for (const e of op.entities) e.kill();
+    step(op, 1);
+    expect(op.status).toBe('won');
+    expect(op.callouts).toContain('The operation is complete.');
+  });
+
+  it('quick-swap returns to the previous tool; nothing happens before a switch', () => {
+    const { op } = runningOp({ tools: ['thread', 'leech', 'salve'] });
+    op.quickSwap();
+    expect(op.tool).toBe('thread');
+    op.setTool('salve');
+    op.quickSwap();
+    expect(op.tool).toBe('thread');
+    op.quickSwap();
+    expect(op.tool).toBe('salve');
+  });
+
+  it('hurt shakes by 1.5 × the damage; the low-vitals flag is set', () => {
+    const { op } = runningOp();
+    op.hurt(2);
+    expect(op.shake).toBe(3);
+    op.vitals = 20;
+    op.update(DT);
+    expect(op.flags.has('low-vitals')).toBe(true);
+  });
+
+  it('keeps at most 160 lasting stains, dropping the oldest', () => {
+    const { op } = runningOp();
+    for (let i = 0; i < 170; i++) op.stain({ x: i, y: 0 }, 5);
+    expect(op.stains).toHaveLength(160);
+    expect(op.stains[0].x).toBe(10);
+  });
+
+  it('the Litany shows its banner above the field', () => {
+    const { op } = runningOp();
+    op.popups.length = 0;
+    op.invokeLitany();
+    expect(op.popups).toEqual([expect.objectContaining({ text: 'THE LITANY OF STILLNESS', color: '#f5d76e', pos: { x: FIELD.cx, y: FIELD.cy - 120 } })]);
+  });
+});

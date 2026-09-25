@@ -32,5 +32,6 @@ export const RANK_TABLE: readonly RankCase[] = [
   { label: 'on the XS line, one BAD', score: (r) => Math.ceil(r.S * XS_FACTOR), bad: 1, miss: 0, expected: 'S' },
   { label: 'on the XS line, one MISS', score: (r) => Math.ceil(r.S * XS_FACTOR), bad: 0, miss: 1, expected: 'S' },
   { label: 'far above S, one BAD', score: (r) => r.S * 3, bad: 1, miss: 0, expected: 'S' },
+  { label: 'on the XS line, one BAD and one MISS', score: (r) => Math.ceil(r.S * XS_FACTOR), bad: 1, miss: 1, expected: 'S' },
   { label: 'exactly A with BADs', score: (r) => r.A, bad: 5, miss: 5, expected: 'A' },
 ];

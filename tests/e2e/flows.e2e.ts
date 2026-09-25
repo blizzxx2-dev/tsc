@@ -182,5 +182,20 @@ describe('options persistence', () => {
     await g.api('operation', 'op1-1', true);
     s = await g.step(1);
     expect(s.op?.timeLeft).toBe(Math.round(180 * (changed.timerAssist as number)));
+    // Reduced flashing reaches the post-process parameters: the low-vitals pulse is scaled by 0.35.
+    await g.page.evaluate(() => {
+      const gfx = (window as unknown as { __game: { gfx: { endWorld(p: unknown): void } } }).__game.gfx;
+      const orig = gfx.endWorld.bind(gfx);
+      gfx.endWorld = (p: unknown) => {
+        (window as unknown as { __post: unknown }).__post = p;
+        orig(p);
+      };
+    });
+    await g.api('skipPhase');
+    await g.api('setVitals', 7);
+    await g.step(1, 'last');
+    const post = await g.page.evaluate(() => (window as unknown as { __post: { danger: number } }).__post);
+    expect(changed.reduceFlashing).toBe(true);
+    expect(post.danger).toBeCloseTo(((35 - 7) / 35) * 0.35, 2);
   });
 });
