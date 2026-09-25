@@ -7209,5 +7209,13 @@
     "maxPx": 176,
     "context": "Heading of the assistant note on the chart.",
     "screenshot": "docs/loc/screens/briefing.png"
+  },
+  "hud.intro.skip": {
+    "scene": "operation",
+    "font": "display",
+    "size": 11,
+    "maxPx": 260,
+    "context": "Hint under the operation title card: any press skips the card.",
+    "screenshot": "docs/loc/screens/operation.png"
   }
 }

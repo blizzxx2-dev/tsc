@@ -744,6 +744,11 @@ export class EggSac extends Entity {
     return 0.2;
   }
 
+  /** Fraction of the incubation left (1 = just laid, 0 = hatching). */
+  get hatchFrac(): number {
+    return Math.max(0, Math.min(1, this.hatchT / this.hatchIn));
+  }
+
   /** The swell tell: 0 → 1 over the last 3 s before hatching. */
   get swell(): number {
     return Math.max(0, Math.min(1, 1 - this.hatchT / 3));

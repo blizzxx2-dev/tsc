@@ -201,7 +201,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] UIX-0039 · Demo · P0 · S · Vitals damage feedback — a pale "lag" bar trails the real value by 0.5 s after damage; heal shows a green sweep; digits shake ±2 px on hits ≥ 5 (off with Reduced Motion)
 - [x] UIX-0040 · Demo · P1 · S · Beating heart icon — scales on each beat beside vitals (synced to the ECG beat phase) and changes shape per state (steady/strained/failing) so state is readable without colour
 - [ ] UIX-0041 · Demo · P1 · M · ECG monitor v2 — sweep-style trace with an erase gap instead of array shifting; waveform variants per state (tachycardia under venom, irregular under curse/Malison, weak below 25) selected by the scene; flatline with ink bleed on loss
-- [ ] UIX-0042 · Demo · P1 · S · Critical vitals state (< 30) — top-bar vitals block pulses red, screen edges vignette (existing post-process `danger`) and Ilse's low-vitals bark; state ends with hysteresis at 35
+- [x] UIX-0042 · Demo · P1 · S · Critical vitals state (< 30) — top-bar vitals block pulses red, screen edges vignette (existing post-process `danger`) and Ilse's low-vitals bark; state ends with hysteresis at 35
 - [x] UIX-0043 · Demo · P1 · S · Hourglass timer — sand level = timeLeft/timeLimit; sand frozen and gilded while the Litany holds; last 30 s the digits pulse and a tick event fires each second (AUD)
 - [x] UIX-0044 · Demo · P1 · S · Score roll-up — score counts up over 300 ms per gain; combo readout gains flame tiers at 5/10/20 (ember/flame/holy fire) and cracks visibly on combo break
 - [x] UIX-0045 · Demo · P2 · S · Phase progress v2 — pips become small seal icons with tooltip "Phase 2 of 4"; boss phases shown as notches on the Malison bar instead
@@ -218,7 +218,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] UIX-0052 · M0 · P1 · S · Tool hint tooltip — name + hint panel beside the selected tray slot, fading 2.5 s after each switch (replaced the static text under the tray)
 - [x] UIX-0053 · Demo · P1 · S · Tool hint modes — "Tool hints: Always / First uses / Off"; in First-uses mode the tooltip also re-appears after 5 s idle during a tool's first 3 uses; hint text raised from 13 px to ≥ 16 px
 - [x] UIX-0054 · Demo · P0 · M · Target-validity cursor — cursor tints green over a valid target for the current tool; over a target needing another tool it shows that tool's ghost icon ("Needs: Leech-Pipe"); shape changes (ring vs cross) so it is colour-independent
-- [ ] UIX-0055 · Demo · P1 · S · Hold-progress rings on the cursor for every hold tool — Leech (pool remaining), Brand (sear progress on grub/sigil/Malison), Lens reveal (0.4 s), Salve coverage %, Tincture injection (existing)
+- [x] UIX-0055 · Demo · P1 · S · Hold-progress rings on the cursor for every hold tool — Leech (pool remaining), Brand (sear progress on grub/sigil/Malison), Lens reveal (0.4 s), Salve coverage %, Tincture injection (existing)
 - [x] UIX-0056 · Demo · P1 · S · Cursor visibility — reticle has a dark outline and optional size (1×–2×) and colour (brass/white/cyan/magenta) settings; remains visible over dark blood, black bile and bright hexfire
 
 ### Callouts & guidance
@@ -227,18 +227,18 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] UIX-0059 · Demo · P1 · M · Ilse callout bust — portrait in the callout panel with calm/urgent/relieved/worried expressions keyed by line priority or tag; subtle blink and mouth flap while text types
 - [x] UIX-0060 · Demo · P1 · S · Callout log — last 20 callouts of the current operation viewable from the pause menu
 - [x] UIX-0061 · Demo · P1 · S · Phase objective banner — optional `PhaseDef.objective` ("Close the wounds", "Draw off the blood") shown for 2 s at phase start and kept as a small line under the timer
-- [ ] UIX-0062 · Demo · P2 · S · Threat markers — entities with a countdown (Malison shard rejoin, hexstone corruption every 7 s, bubo swelling) show a thin radial timer ring; edge arrows point to off-attention threats when the cursor is > 400 px away
+- [x] UIX-0062 · Demo · P2 · S · Threat markers — entities with a countdown (Malison shard rejoin, hexstone corruption every 7 s, bubo swelling) show a thin radial timer ring; edge arrows point to off-attention threats when the cursor is > 400 px away
 
 ### Boss HUD (Malison)
-- [ ] UIX-0063 · Demo · P0 · M · Malison intro card — 3 s blackletter title card ("The Malison — Hour of Matins" / "— Hour of Lauds") with woodcut illustration and bell hook; skippable after first view; shown before the boss phase spawns
+- [x] UIX-0063 · Demo · P0 · M · Malison intro card — 3 s blackletter title card ("The Malison — Hour of Matins" / "— Hour of Lauds") with woodcut illustration and bell hook; skippable after first view; shown before the boss phase spawns
 - [x] UIX-0064 · Demo · P0 · M · Malison bar — name plate + "unmaking" bar with phase notches under the top bar; veiled/open state icon (the brand can only hurt when open); shard phase shows remaining shard count
 - [x] UIX-0065 · Demo · P1 · S · Veil telegraph — 0.6 s before the shroud parts, the Malison bar icon and the creature outline flash a warning so players can pre-select the Brand
 - [x] UIX-0066 · Demo · P0 · M · Lauds HUD — Malison bar shows the orbiting Choir Voice count and a "shielded" state while any Voice sings, a Hymn telegraph ring expanding 0.8 s before each verse tears the flesh, and a "Submerged — use the Scrying Lens" state when it dives under the skin
 
 ### Litany & end-of-operation presentation
-- [ ] UIX-0067 · Demo · P0 · S · Litany indicator v2 — star fills per detected vertex while drawing, candle flame when ready, 8 s radial while active, caption from current binding (draw or Litany key); HUD dims 30 % during Stillness so the world reads first
+- [x] UIX-0067 · Demo · P0 · S · Litany indicator v2 — star fills per detected vertex while drawing, candle flame when ready, 8 s radial while active, caption from current binding (draw or Litany key); HUD dims 30 % during Stillness so the world reads first
 - [x] UIX-0068 · Demo · P1 · S · Litany end warning — last 1.5 s of Stillness the ripple contracts and the indicator flickers (paired with the AUD reverse swell)
-- [ ] UIX-0069 · Demo · P1 · S · Intro card v2 — shows patient name, ailment icon and time allowed for 1.2 s; any press skips; the intro no longer blocks the first click after it ends
+- [x] UIX-0069 · Demo · P1 · S · Intro card v2 — shows patient name, ailment icon and time allowed for 1.2 s; any press skips; the intro no longer blocks the first click after it ends
 - [x] UIX-0070 · Demo · P1 · S · Win/lose presentation — "Operation Complete" stamps as a wax seal; "The Patient Is Lost" bleeds in as ink; results follow after 2.2 s or on click after 0.8 s
 - [x] UIX-0071 · Demo · P2 · S · Minimal HUD option — hides score, combo and phase pips (vitals, timer, tray, Litany always shown)
 - [ ] UIX-0072 · Demo · P1 · S · Dev HUD (F3, dev builds only) — fps, frame ms, entity count, vitals drain/s per entity, active tool, input device, latency p95, audio voices

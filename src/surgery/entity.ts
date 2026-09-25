@@ -88,6 +88,10 @@ export abstract class Entity {
   /** Called every frame the button is held and nothing is captured (continuous tools). */
   onSweep(_op: Operation, _ptr: Pointer, _tool: ToolId, _dt: number): void {}
   private revealT = 0;
+  /** Seconds the Scrying Lens has rested on this hidden thing (for the HUD's hold ring). */
+  get revealProgress(): number {
+    return this.revealT;
+  }
 
   /** Lens hovering nearby: by default a hidden entity surfaces once the lens lingers over it. */
   onReveal(op: Operation, p: Vec, dt: number): void {

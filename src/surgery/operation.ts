@@ -313,6 +313,14 @@ export class Operation {
   private salveIdle = 0;
   /** Brand heat (s of continuous use) and lock-out. */
   brandHeat = 0;
+  /** True while the brand is pressed to the field (HUD hold ring). */
+  get holdingBrand(): boolean {
+    return this.brandHeld;
+  }
+  /** Skip the rest of the title card (UIX-0069). */
+  skipIntro(): void {
+    if (this.status === 'intro') this.phaseDelay = 0;
+  }
   brandLock = 0;
   private brandHeld = false;
   /** How many things the brand touched this frame (a grub seared alongside a Malison doesn't split). */

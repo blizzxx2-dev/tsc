@@ -7,7 +7,8 @@ import { attachBarkDirector } from '../content/barkDirector';
 import { hex, withAlpha } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { organPalette } from '../render/organs';
-import { Sigil, surfDisc, surfLine } from '../surgery/entities';
+import { Bubo, Sigil, surfDisc, surfLine } from '../surgery/entities';
+import { EggSac } from '../surgery/lauds';
 import { Particles } from '../render/particles';
 import { FlashLimiter } from '../render/flashLimiter';
 import { Malison, MalisonShard } from '../surgery/malison';
@@ -42,7 +43,7 @@ import { bindings } from '../input/bindings';
 import { dragGlyphFor, glyphFor, toolKeyLabel } from '../input/glyphs';
 import { calmWave, drawBossHud, drawLitanyTheft, drawTorpor, ecgCalm, toolBlinded } from '../surgery/bosses/hud';
 import { BossAudio, withBossAssists } from './bossAudio';
-import { watchEncounters } from '../surgery/bosses/codex';
+import { BOSS_OPS, watchEncounters } from '../surgery/bosses/codex';
 import { loadProgress, storeProgress } from '../surgery/progress';
 import { codexId } from './codex';
 import { operationOptions } from '../surgery/session';
@@ -105,6 +106,23 @@ export class OperationScene implements Scene {
   private milestone: { combo: number; t: number } | null = null;
   /** Pointer for HUD hover tips (phase seals). */
   private hoverPos = { x: -1, y: -1 };
+  /** Low-vitals alarm with hysteresis (UIX-0042): on at 30, off again only above 35. */
+  private lowLatch = false;
+  /** The Malison intro card (UIX-0063) is shown in full once; later meetings may skip it. */
+  private static malisonCardSeen(): boolean {
+    try {
+      return !!localStorage.getItem('suture-and-steel.seen.malison-card');
+    } catch {
+      return true;
+    }
+  }
+  private static markMalisonCard(): void {
+    try {
+      localStorage.setItem('suture-and-steel.seen.malison-card', '1');
+    } catch {
+      // no storage
+    }
+  }
   /** Sounds requested since the last tick (deduplicated). */
   private debug = false;
   /** The last 20 callouts, for the pause menu's log (UIX-0060). */
@@ -300,6 +318,11 @@ export class OperationScene implements Scene {
       this.banner.t += dt;
       if (this.banner.t > 2.2) this.banner.t = Math.min(this.banner.t, 99);
     }
+    // A press skips the title card (UIX-0069) and, once seen, the Malison card (UIX-0063).
+    if (input.pressed || input.actPressed('ui.confirm')) {
+      if (op.status === 'intro') op.skipIntro();
+      if (this.banner?.boss && this.banner.t < 3 && OperationScene.malisonCardSeen()) this.banner.t = 3;
+    }
     if (op.combo !== this.lastCombo) {
       this.comboT = 0;
       if (op.combo > this.lastCombo && op.tuning.scoring.comboMilestones.includes(op.combo)) this.milestone = { combo: op.combo, t: 0 };
@@ -463,6 +486,7 @@ export class OperationScene implements Scene {
 
     // ---------------------------------------------------------------- UI
     drawFieldOverlays(g, op);
+    if (!settings.minimalHud) this.drawThreatRings(g);
     drawTutorial(g, op);
     this.drawPopups(g);
     // HUD bars anchor to the visible top/bottom edges on 16:10 and 4:3 (ENG-0184).
@@ -488,7 +512,14 @@ export class OperationScene implements Scene {
       titleRule(g, VIEW_W / 2, 374, 460, a);
       if (sub) g.text(sub, VIEW_W / 2, 404, { size: 21, font: 'italic', color: hex(INK.text, a), align: 'center', shadow: hex('#000000', 0.9 * a), soft: true });
     };
-    if (op.status === 'intro') card(op.def.title, op.def.patient, Math.min(1, op.elapsed * 3), INK.goldHi, INK.gold);
+    if (op.status === 'intro') {
+      const ia = Math.min(1, op.elapsed * 3);
+      card(op.def.title, op.def.patient, ia, INK.goldHi, INK.gold);
+      // Time allowed and the first instrument, with a skip hint (UIX-0069).
+      numerals(g, formatClock(op.def.timeLimit), VIEW_W / 2 - 40, 440, 20, '#ffffff', '#d8ccb4', 'right', ia);
+      toolIcon(g, op.def.tools[0], VIEW_W / 2 + 10, 434, 0.5, t);
+      caps(g, tr('hud.intro.skip'), VIEW_W / 2, 470, 11, hex(INK.dim, ia), 'center');
+    }
     // Win: the card rises and a wax seal presses at 0.6 s; loss: the band bleeds in as ink spreads (UIX-0070).
     if (op.status === 'won') {
       const k = Math.min(1, this.endT / 0.5);
@@ -521,6 +552,7 @@ export class OperationScene implements Scene {
     const p = game.input.pos;
     this.hoverPos = p;
     if (op.tool === 'tincture' && op.injectT > 0) g.arc(p.x, p.y, 18, 3, hex(PALETTE.good), op.injectT / TINCTURE_TIME);
+    this.drawHoldRing(g, p);
     drawTorpor(g, op, p, viewRect());
     toolIcon(g, op.tool, p.x + 20, p.y - 20, 0.8 + this.toolFlash * 0.3, t);
     const aim = op.status === 'running' && !this.paused ? cursorTarget(op, p) : { kind: 'none' as const };
@@ -587,7 +619,9 @@ export class OperationScene implements Scene {
     glass(g, V, { strength: plateK });
     caps(g, tr('hud.vitals'), V.x + 34, V.y + 22, 11);
     heartIcon(g, V.x + 22, V.y + 18, 7, op.status === 'lost' ? 'dead' : op.vitals > 60 ? 'good' : op.vitals > 30 ? 'warn' : 'danger', settings.reduceMotion ? 1 : this.beatPhase % 1);
-    const low = op.vitals <= 30;
+    if (op.vitals <= 30) this.lowLatch = true;
+    else if (op.vitals >= 35) this.lowLatch = false;
+    const low = this.lowLatch;
     const beat = settings.reduceMotion ? 0 : this.pulse;
     const jig = this.digitShakeT > 0 && !settings.reduceMotion ? 2 * Math.sin(g.time * 90) : 0;
     g.text(formatVitals(op.displayVitals()), V.x + 16 + jig, V.y + 64 + jig * 0.5, { size: 42, font: 'display', color: hex('#ffffff'), color2: hex(vcol), tracking: 0.04, shadow: hex('#000000', 0.85), soft: true });
@@ -696,10 +730,12 @@ export class OperationScene implements Scene {
     const objective = this.op.def.phases[b.phase]?.objective;
     // The objective stays as a small line under the phase lozenges for the rest of the phase.
     if (objective && b.t > 2 && !settings.minimalHud) g.text(tSource(objective), VIEW_W / 2, 124, { size: 16, font: 'italic', color: hex(INK.text, 0.85), align: 'center', shadow: hex('#000000', 0.9), soft: true });
-    if (b.t > 2 || (b.phase === 0 && !b.boss && !objective)) return;
+    const hold = b.boss ? 3 : 2;
+    if (b.t > hold || (b.phase === 0 && !b.boss && !objective)) return;
     const still = settings.reduceMotion;
     const inK = still ? 1 : Math.min(1, b.t / 0.35);
-    const a = (b.t < 1.7 ? 1 : Math.max(0, 1 - (b.t - 1.7) / 0.3)) * inK;
+    const a = (b.t < hold - 0.3 ? 1 : Math.max(0, 1 - (b.t - (hold - 0.3)) / 0.3)) * inK;
+    if (b.boss && b.t > hold - 0.1) OperationScene.markMalisonCard();
     const ease = 1 - (1 - inK) ** 3;
     const vr = viewRect();
     const title = b.boss ? tr('hud.banner.malison') : tr('hud.banner.phase', { n: roman(b.phase + 1) });
@@ -708,7 +744,74 @@ export class OperationScene implements Scene {
     const spread = 0.12 + 0.1 * ease;
     g.text(title.toUpperCase(), VIEW_W / 2, y + 6, { size: 38, font: 'display', color: hex(b.boss ? '#f0dcff' : INK.goldHi, a), color2: hex(b.boss ? INK.curse : INK.gold, a), align: 'center', tracking: spread, shadow: hex('#000000', 0.9 * a), soft: true });
     titleRule(g, VIEW_W / 2, y + 20, 420 * (0.6 + 0.4 * ease), a);
-    if (objective) g.text(tSource(objective), VIEW_W / 2, y + 44, { size: 19, font: 'italic', color: hex(INK.text, a), align: 'center', shadow: hex('#000000', 0.9 * a), soft: true });
+    if (b.boss) {
+      const hour = BOSS_OPS[this.op.def.id];
+      const sub = hour ? tr(`codex.${hour}.title`) : null;
+      g.glow(VIEW_W / 2, y - 6, 220 * ease, hex(INK.curse, 0.18 * a));
+      if (sub) g.text(sub, VIEW_W / 2, y + 44, { size: 19, font: 'italic', color: hex('#e0c8ff', a), align: 'center', shadow: hex('#000000', 0.9 * a), soft: true });
+      if (OperationScene.malisonCardSeen()) caps(g, tr('hud.intro.skip'), VIEW_W / 2, y + 70, 10, hex(INK.dim, a), 'center');
+    } else if (objective) g.text(tSource(objective), VIEW_W / 2, y + 44, { size: 19, font: 'italic', color: hex(INK.text, a), align: 'center', shadow: hex('#000000', 0.9 * a), soft: true });
+  }
+
+  /** Threat timers (UIX-0062): a ring closes round anything ripening toward a burst or a hatch. */
+  private drawThreatRings(g: Gfx): void {
+    const op = this.op;
+    for (const e of op.entities) {
+      if (!e.alive || e.hidden) continue;
+      let left = -1;
+      let r = 0;
+      if (e instanceof Bubo) {
+        const tb = e.timeToBurst(op);
+        if (Number.isFinite(tb)) {
+          left = Math.max(0, Math.min(1, tb / op.tuning.bubo.swellTime));
+          r = e.maxR + 10;
+        }
+      } else if (e instanceof EggSac) {
+        left = e.hatchFrac;
+        r = 34;
+      }
+      if (left < 0 || left > 0.85) continue;
+      const urgent = left < 0.25;
+      const c = urgent ? '#ff5a4a' : '#e0b060';
+      const pulse = urgent && !settings.reduceMotion ? 0.6 + 0.4 * Math.sin(g.time * 10) : 0.85;
+      g.arc(e.pos.x, e.pos.y, r, 1.2, hex('#000000', 0.5));
+      g.arc(e.pos.x, e.pos.y, r, 2.2, hex(c, pulse), left);
+    }
+  }
+
+  /** Hold rings at the cursor (UIX-0055): the brand's heat and the Lens's reveal, beside the tincture's dose. */
+  private drawHoldRing(g: Gfx, p: { x: number; y: number }): void {
+    const op = this.op;
+    if (op.tool === 'brand' && op.holdingBrand && op.brandHeat > 0.05) {
+      const f = op.brandHeat / op.tuning.brand.overheatAfter;
+      g.arc(p.x, p.y, 18, 3, hex(f > 0.75 ? '#ff5a3a' : '#ffb060', 0.9), f);
+    } else if (op.tool === 'lens') {
+      let best = 0;
+      for (const e of op.entities) if (e.alive && e.hidden && e.revealProgress > best && dist(e.pos, p) < 90) best = e.revealProgress;
+      if (best > 0) g.arc(p.x, p.y, 18, 3, hex('#9fd3ff', 0.9), Math.min(1, best / op.tuning.lens.reveal));
+    }
+  }
+
+  /** Star vertices found so far in the Litany stroke (UIX-0067), lit round the reliquary. */
+  private starVertices(): number {
+    const pts = this.ctl.starTrail;
+    if (pts.length < 12) return 0;
+    const w = 4;
+    let corners = 0;
+    let last = -10;
+    for (let i = w; i < pts.length - w; i++) {
+      const a = pts[i - w];
+      const b = pts[i];
+      const c = pts[i + w];
+      const v1 = { x: b.x - a.x, y: b.y - a.y };
+      const v2 = { x: c.x - b.x, y: c.y - b.y };
+      const cos = (v1.x * v2.x + v1.y * v2.y) / (Math.hypot(v1.x, v1.y) * Math.hypot(v2.x, v2.y) || 1);
+      if (cos < 0.1 && i - last > w + 1) {
+        corners++;
+        last = i;
+      }
+    }
+    return Math.min(5, corners);
   }
 
   private drawTray(g: Gfx): void {
@@ -778,6 +881,16 @@ export class OperationScene implements Scene {
     this.litanyRect = { x: lx - 40, y: ly - 40, w: 80, h: 80 };
     const ready = op.canInvokeLitany();
     g.plate(lx - 40, ly - 40, 80, 80, { radius: 40, top: hex('#1a1411', 0.88), bottom: hex('#0a0807', 0.92), border: hex(ready ? INK.gold : '#5a4a34', 0.9), borderW: 1.4, bevel: 0.7, shadow: [0.6, 14, 4], glow: ready ? hex(INK.gold, 0.22) : undefined, glowR: 16 });
+    // Vertices found so far while the star is being drawn: five points light up round the reliquary.
+    if (this.ctl.starTrail.length > 1) {
+      const n = this.starVertices();
+      for (let i = 0; i < 5; i++) {
+        const ang = -Math.PI / 2 + (i / 5) * Math.PI * 2;
+        const on = i < n;
+        g.circle(lx + Math.cos(ang) * 36, ly + Math.sin(ang) * 36, on ? 3.5 : 2, hex(on ? INK.goldHi : '#5a4a34', on ? 1 : 0.8));
+        if (on) g.glow(lx + Math.cos(ang) * 36, ly + Math.sin(ang) * 36, 10, hex(INK.gold, 0.5));
+      }
+    }
     starReliquary(g, lx, ly, 28, { fill: op.litanyTime > 0 ? op.litanyTime / LITANY_DURATION : ready ? 1 : 0, spent: !ready && op.litanyTime <= 0, glint: ready, active: op.litanyTime > 0 });
     // Last two seconds of Stillness (UIX-0068): the reliquary flickers and the caption counts down.
     if (op.litanyTime > 0 && op.litanyTime < 2) {
