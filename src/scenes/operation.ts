@@ -762,7 +762,11 @@ export class OperationScene implements Scene {
     const S = { x: VIEW_W - 16 - 250, y: 14, w: 250, h: 70 };
     glass(g, S, { strength: plateK });
     caps(g, tr('hud.score'), S.x + S.w - 18, S.y + 22, 11, hex(INK.dim), 'right');
-    g.text(op.def.patient, S.x + 18, S.y + 24, { size: 16, font: 'italic', color: hex(INK.dim), shadow: false });
+    // A long patient name is cut with an ellipsis before it reaches the SCORE label (never shrunk below 16 px).
+    const nameRoom = S.w - 36 - g.measure(tr('hud.score').toUpperCase(), 11, 'display', 0.2) - 14;
+    let patient = op.def.patient;
+    while (patient.length > 4 && g.measure(patient, 16, 'italic') > nameRoom) patient = patient.slice(0, -2).trimEnd() + '…';
+    g.text(patient, S.x + 18, S.y + 24, { size: 16, font: 'italic', color: hex(INK.dim), shadow: false });
     const rolling = Math.abs(op.score - this.shownScore) >= 1;
     numerals(g, formatNumber(Math.round(this.shownScore)), S.x + S.w - 18, S.y + 58, 30, rolling ? '#ffffff' : INK.goldHi, INK.gold, 'right');
     if (op.combo > 1) {

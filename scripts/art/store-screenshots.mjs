@@ -81,7 +81,7 @@ for (const s of SHOTS) {
     await page.waitForFunction(() => !window.__game.transition?.busy, null, { timeout: 240000 });
     await page.mouse.move(1270, 710);
   }
-  await settle(s.story || s.results ? 150 : 40);
+  await settle(150);
   const png = await page.screenshot({ timeout: 240000 });
   await sharp(png).jpeg({ quality: 92, mozjpeg: true }).toFile(`${OUT}/${s.name}.jpg`);
   console.log(`${OUT}/${s.name}.jpg`);
