@@ -524,7 +524,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 ### Screenshots & store media
 - [ ] ART-0323 · Demo · P0 · M · 10 store screenshots at 1920×1080 captured in-engine from final demo art (3 ops, 2 bosses, 3 VN, the tool tray, results), with the HUD and no debug overlay
 - [ ] ART-0324 · Demo · P1 · S · 5 animated GIF/WebM clips (≤ 3 MB each) for the store description: arrow extraction, Litany, Matins eye, Lauds thread sever and the rank seal
-- [ ] ART-0325 · Demo · P1 · S · Store description section-header banners (616 px wide) in the woodcut style: "Operate", "The Malison", "Kessendorf"
+- [x] ART-0325 · Demo · P1 · S · Store description section-header banners (616 px wide) in the woodcut style: "Operate", "The Malison", "Kessendorf"
 - [ ] ART-0326 · Beta · P1 · M · 1.0 screenshot refresh covering Chapters 3–5 (≥ 5 new shots)
 - [ ] ART-0327 · Release · P1 · S · Seasonal/sale capsule overlays (template) for the Steam sale calendar
 
