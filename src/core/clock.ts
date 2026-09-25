@@ -61,6 +61,7 @@ export class Clock {
 }
 
 /** Hitstop lengths per impact (ENG-0058), in ms: 40–60 on heavy blows, capped by `HITSTOP_CAP_MS`. */
+/** Hit-pause lengths (the animation timing sheet, ART-0297 / docs/art/vfx/timing.md). */
 export const HITSTOP_MS = { malison: 60, harm: 50, extract: 40 } as const;
 /** A Malison lashes every tick; one hitstop per this many real seconds. */
 export const MALISON_HITSTOP_COOLDOWN = 0.6;

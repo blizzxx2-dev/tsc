@@ -51,6 +51,7 @@ import { operationOptions } from '../surgery/session';
 import type { OperationOptions } from '../surgery/operation';
 import { drawDebug, drawDialogue, drawDrainArrow, drawFieldOverlays, drawLitanyPractice, drawSecondaryVitals, drawTrayState, drawTutorial } from './gameplayHud';
 import { PauseScene, type PauseResult } from './pause';
+import { VfxLayer } from '../art/vfx';
 
 export interface OperationOutcome {
   op: Operation;
@@ -80,6 +81,10 @@ export class OperationScene implements Scene {
   /** Phase banner (ART-0078 / UIX-0061): a ribbon that slides in at each phase start. */
   private banner: { phase: number; t: number; boss: boolean | null } | null = null;
   private particles = new Particles();
+  /** Procedural VFX over the particles (ART-0275…0293). */
+  private vfx = new VfxLayer(this.particles);
+  /** The star that just read, handed to the Litany burn-in when the `litany` event follows. */
+  private pendingStar: { pts: { x: number; y: number }[]; c: { x: number; y: number } } | null = null;
   private flashLimit = new FlashLimiter();
   private comboT = 0;
   private lastCombo = 0;
@@ -180,6 +185,17 @@ export class OperationScene implements Scene {
       if (this.calloutLog.length > 20) this.calloutLog.splice(0, this.calloutLog.length - 20);
     });
     this.bossAudio.listen(op);
+    this.vfx.listen(op);
+    this.ctl.onStar = (trail, ok) => {
+      if (ok) this.pendingStar = { pts: trail, c: { x: trail.reduce((a, p) => a + p.x, 0) / trail.length, y: trail.reduce((a, p) => a + p.y, 0) / trail.length } };
+      else if (trail.length > 8) this.vfx.gestureFailed(trail);
+      this.vfx.trailReleased(trail);
+    };
+    op.events.on('litany', () => {
+      const st = this.pendingStar;
+      this.pendingStar = null;
+      this.vfx.litanyStart(st?.pts ?? null, st?.c ?? { x: FIELD.cx, y: FIELD.cy - 40 });
+    });
     // The first meeting with an Hour opens its codex page.
     watchEncounters(op, (boss) => {
       const p = loadProgress();
@@ -371,6 +387,7 @@ export class OperationScene implements Scene {
     this.corrupt += (cursed - this.corrupt) * Math.min(1, dt * 1.5);
 
     // Visual effects arrive as `fx` events; landed droplets become stains. Particles run on world time.
+    this.vfx.update(op, { dt, pointer: op.pointer, down: input.down, pulse: this.pulse, reduceMotion: settings.reduceMotion, reduceFlashing: settings.reduceFlashing, gore: bloodScale(presentation.gore) });
     this.particles.update(dt * op.timeScale, (p, kind, size) => {
       if (kind === 'blood' && onBody(p)) op.stain(p, size * 2.6, 0.3);
     });
@@ -455,6 +472,7 @@ export class OperationScene implements Scene {
     // Tongs in hand: outline the graspable the next press would seize (INP-0042).
     if (!this.paused) drawGraspOutline(g, op, this.ctl.toWorld(game.input.pos), bindings.prefs.hitScale, t);
     this.particles.draw(g);
+    this.vfx.drawWorld(g, op, game.input.pos);
 
     // Scrying lens: shimmer where something hides.
     if (op.tool === 'lens') {
@@ -465,12 +483,7 @@ export class OperationScene implements Scene {
       }
     }
 
-    if (this.ctl.starTrail.length > 1) {
-      g.setBlend('add');
-      g.polyline(this.ctl.starTrail, 8, hex('#f5d76e', 0.25));
-      g.polyline(this.ctl.starTrail, 3, hex('#fff0b0', 0.9));
-      g.setBlend('alpha');
-    }
+    this.vfx.drawLiveTrail(g, this.ctl.starTrail, g.time);
 
     const soften = settings.reduceFlashing ? 0.35 : 1;
     const danger = (op.status === 'running' ? Math.max(0, (35 - op.vitals) / 35) : op.status === 'lost' ? 1 : 0) * soften;
@@ -503,6 +516,7 @@ export class OperationScene implements Scene {
     });
 
     // ---------------------------------------------------------------- UI
+    this.vfx.drawScreen(g, op, viewRect(), { x: 16, y: 14 + anchorShift('top'), w: 316, h: 86 });
     drawFieldOverlays(g, op);
     if (!settings.minimalHud) this.drawThreatRings(g);
     drawTutorial(g, op);

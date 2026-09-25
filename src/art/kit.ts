@@ -6,6 +6,7 @@ import type { Vec } from '../core/math';
 import { hex, vec3, type RGBA } from '../render/color';
 import type { Gfx, TextOpts } from '../render/gfx';
 import type { ToolId } from '../surgery/types';
+import { FPS } from './timing';
 
 export interface Rect {
   x: number;
@@ -40,7 +41,7 @@ export const ART = {
 } as const;
 
 /** Woodcut flipbook rate for UI animation (12 fps). */
-export const FLIPBOOK_FPS = 12;
+export const FLIPBOOK_FPS: number = FPS.woodcut;
 export const frameAt = (t: number, frames: number, fps = FLIPBOOK_FPS): number => Math.max(0, Math.min(frames - 1, Math.floor(t * fps)));
 
 const TOOL_INDEX: Record<ToolId, number> = { lancet: 0, tongs: 1, leech: 2, thread: 3, salve: 4, tincture: 5, brand: 6, lens: 7 };

@@ -3,6 +3,7 @@ import { drawBlotch, presentation } from '../render/presentation';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { settings } from '../core/settings';
+import { dawnFlare, flareIntensity, lightThread, THREAD_SEVER_S, THREAD_TIE_S } from '../art/bossVfx';
 import { Entity } from './entity';
 import { Embedded, Laceration, Rot, surfDisc } from './entities';
 import { FIELD, onBody, type Operation } from './operation';
@@ -462,14 +463,10 @@ export class LaudsMalison extends MalisonBase {
   drawDawn(g: Gfx, op: Operation): void {
     if (this.phase.key !== 'dawn') return;
     const soften = settings.reduceFlashing ? 0.35 : 1;
-    if (this.flare.telling) {
-      const k = Math.min(1, (this.flare.t - (this.tune.flareEvery - this.flare.lead)) / this.flare.lead);
-      g.glow(FIELD.cx, FIELD.cy - FIELD.ry - 40, 520, hex('#ffc860', 0.35 * k * soften));
-    }
-    if (this.flareT > 0) {
-      const k = this.flareT / this.tune.flareFor;
-      g.glow(FIELD.cx, FIELD.cy, 900, hex('#fff0c0', 0.55 * k * soften));
-    }
+    // The dawn flare (ART-0238, docs/art/vfx/dawn-flare.md): a horizon glow foretells it, then a gold bloom burst whites out the Lens.
+    const tellK = this.flare.telling ? Math.min(1, (this.flare.t - (this.tune.flareEvery - this.flare.lead)) / this.flare.lead) : 0;
+    const k = this.flareT > 0 ? flareIntensity(this.tune.flareFor - this.flareT, this.tune.flareFor) : 0;
+    if (tellK > 0 || k > 0) dawnFlare(g, { x: -400, y: -400, w: 2080, h: 1520 }, { x: FIELD.cx, y: FIELD.cy - FIELD.ry }, k, tellK, soften, op.tool === 'lens' ? op.pointer : undefined);
     // Ripples where it swims (the Lens finds them).
     if (this.submerged && op.tool === 'lens' && !this.blinded) {
       const r = 20 + ((op.elapsed * 30) % 30);
@@ -604,16 +601,17 @@ export class LightThread extends Entity {
     const pa = this.a.pos;
     const pb = this.b.pos;
     if (this.unlinkT > 0) {
+      // Severed (ART-0237): the halves recoil, a ghost line waits, then the ends reach back and knot.
       const k = this.unlinkT / this.a.tune.unlink;
+      const since = this.a.tune.unlink - this.unlinkT;
       g.dashed([pa, pb], 1.5, hex('#e0c0ff', 0.25 * (1 - k) + 0.05), 6, 10);
+      if (since < THREAD_SEVER_S) lightThread(g, pa, pb, op.elapsed, { bright: 0.75, sever: since / THREAD_SEVER_S, tie: null });
+      else if (this.unlinkT < THREAD_TIE_S) lightThread(g, pa, pb, op.elapsed, { bright: 0.75, sever: null, tie: 1 - this.unlinkT / THREAD_TIE_S });
       return;
     }
     const tellK = this.dim.telling ? 0.5 + 0.5 * Math.sin(op.elapsed * 20) : 0;
     const bright = this.dimmed ? 0.18 : 0.75 - 0.3 * tellK;
-    g.setBlend('add');
-    g.line(pa, pb, 9, hex('#ffd8a0', bright * 0.3));
-    g.line(pa, pb, 3, hex('#fff0d0', bright));
-    g.setBlend('alpha');
+    lightThread(g, pa, pb, op.elapsed, { bright, sever: null, tie: null });
     // The response window, as an arc filling between the bodies.
     const p = this.a.pending;
     if (p) {
