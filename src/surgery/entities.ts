@@ -1154,6 +1154,10 @@ export class Wadding extends Entity {
  * until the leech-pipe draws the acid off. Hexfire: rekindles after salving
  * unless its ember is branded out.
  */
+export type BurnSource = 'fire' | 'acid' | 'hexfire' | 'dragon';
+/** Seconds for a dragon-breath burn's embers to cool to 1/e (ENG-0263). */
+export const DRAGON_COOL_S = 45;
+
 export class Burn extends Entity {
   flakes: Vec[] = [];
   readonly cov: Coverage;
@@ -1174,14 +1178,17 @@ export class Burn extends Entity {
   private stroke = -1;
   private oneStroke = true;
   noun = 'the burn';
+  /** World time it was laid (dragon-breath cools from here, ENG-0263). */
+  readonly bornAt: number;
 
   constructor(
     pos: Vec,
     public radius: number,
     op: Operation,
-    public source: 'fire' | 'acid' | 'hexfire' = 'fire',
+    public source: BurnSource = 'fire',
   ) {
     super(pos);
+    this.bornAt = op.elapsed;
     const B = op.tuning.burn;
     this.radiusNow = radius;
     this.cov = new Coverage(pos, source === 'acid' ? Math.max(radius, B.acidMax) : radius, 12);
@@ -1192,13 +1199,20 @@ export class Burn extends Entity {
       this.flakes.push({ x: pos.x + Math.cos(a) * r, y: pos.y + Math.sin(a) * r });
     }
     this.total = Math.max(1, n);
-    this.charCore = source === 'fire' && radius >= B.grade3Radius;
+    // Dragon-breath always chars deep (ENG-0263).
+    this.charCore = source === 'dragon' || (source === 'fire' && radius >= B.grade3Radius);
     this.acidLive = source === 'acid';
     this.ember = source === 'hexfire' ? { x: pos.x + radius * 0.3, y: pos.y - radius * 0.2 } : null;
   }
 
   get grade(): 1 | 2 | 3 {
-    return this.charCore || this.coreCut > 0 ? 3 : this.flakes.length > 0 || this.source !== 'fire' ? 2 : 1;
+    return this.charCore || this.coreCut > 0 || this.source === 'dragon' ? 3 : this.flakes.length > 0 || this.source !== 'fire' ? 2 : 1;
+  }
+
+  /** Dragon-breath heat 0..1 (ENG-0263): the ember bed cools over world time and as it is dressed. */
+  heat(now: number): number {
+    if (this.source !== 'dragon' || !this.alive) return 0;
+    return Math.exp(-Math.max(0, now - this.bornAt) / DRAGON_COOL_S) * (1 - this.healed() * 0.8) * (this.charCore ? 1 : 0.6);
   }
 
   /** Coverage of the cells currently burned (acid grows). */
@@ -1362,7 +1376,7 @@ export class Burn extends Entity {
     const left = this.flakes.length / this.total;
     if (this.source === 'acid') acidBurnArt(g, this.pos, this.radiusNow, this.acidLive ? 0 : 0.35 + 0.65 * cooled, this.id);
     // Severity from the shared grade table (GAM-0074), so the field matches the briefing chart.
-    else fireBurnArt(g, this.pos, this.radiusNow, burnSeverity(this.grade, left), cooled, this.id);
+    else fireBurnArt(g, this.pos, this.radiusNow, burnSeverity(this.grade, left), cooled, this.id, this.source === 'dragon' ? Math.max(0.001, this.heat(op.elapsed)) : 0);
     if (this.source === 'hexfire') {
       const heat = 0.35 + 0.65 * (1 - this.cov.fraction);
       hexfireEdgeArt(g, this.pos, this.radiusNow, this.smoulder >= 0 ? 0.5 + 0.5 * Math.abs(Math.sin(op.elapsed * 6)) : heat, this.id);

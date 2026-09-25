@@ -166,3 +166,14 @@ describe('curse corruption map (ENG-0099)', () => {
     expect(zv).toBeCloseTo(v, 5);
   });
 });
+
+describe('heat shimmer (ENG-0263)', () => {
+  it('a hot dragon-breath burn wavers the air over it; a plain burn does not', async () => {
+    const { Burn } = await import('../../../src/surgery/entities');
+    const { scene } = await run((op) => [new Burn(at(-100, 0), 40, op, 'dragon'), new Burn(at(100, 0), 40, op, 'fire')], 720);
+    const sh = (scene as unknown as { heatShimmer(): [number, number, number, number][] }).heatShimmer();
+    expect(sh).toHaveLength(1);
+    expect(sh[0][0]).toBeCloseTo(at(-100, 0).x);
+    expect(sh[0][3]).toBeGreaterThan(0.5);
+  });
+});

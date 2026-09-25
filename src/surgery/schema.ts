@@ -1,5 +1,5 @@
 import type { Vec } from '../core/math';
-import { Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, Sigil, SIGILS, Venom, type EmbeddedKind } from './entities';
+import { Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, Sigil, SIGILS, Venom, type BurnSource, type EmbeddedKind } from './entities';
 import type { Entity } from './entity';
 import { FIELD, type Operation } from './operation';
 import { FrostPatch, IceCrystal } from './ailments/frost';
@@ -56,8 +56,8 @@ export const AILMENT_SCHEMA: Record<string, Kind> = {
     },
   },
   burn: {
-    params: { radius: num(10, 100), source: opt({ type: 'enum', values: ['fire', 'acid', 'hexfire'] }) },
-    build: (op, at, p) => [new Burn(at, n(p, 'radius', 40), op, (p.source as 'fire' | 'acid' | 'hexfire') ?? 'fire')],
+    params: { radius: num(10, 100), source: opt({ type: 'enum', values: ['fire', 'acid', 'hexfire', 'dragon'] }) },
+    build: (op, at, p) => [new Burn(at, n(p, 'radius', 40), op, (p.source as BurnSource) ?? 'fire')],
   },
   bubo: { params: { r: opt(num(10, 40)), maxR: opt(num(20, 60)) }, build: (_op, at, p) => [new Bubo(at, n(p, 'r', 22), n(p, 'maxR', 40))] },
   rot: { params: { r: num(10, 60), spread: opt(num(0, 2)) }, build: (_op, at, p) => [new Rot(at, n(p, 'r', 30), n(p, 'spread', 0.6))] },

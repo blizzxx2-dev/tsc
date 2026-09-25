@@ -373,7 +373,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ### Afflictions
 - [x] ENG-0261 · Alpha · P0 · M · Petrification — per-pixel petrify map turns tissue to grey granite (voronoi fissures, desaturation, specular loss) with a creeping front; chisel strikes stamp crack decals and stone-dust particles
 - [x] ENG-0262 · Alpha · P0 · M · Frost/rime — dendritic frost growth over tissue, icy specular with slight refraction offset, thaw animation when warmed by the Brand, meltwater wetness
-- [ ] ENG-0263 · Alpha · P0 · M · Dragon-breath burns — deep char with glowing ember fissures (HDR emissive), heat-shimmer distortion pass masked to the wound, cooling over world time
+- [x] ENG-0263 · Alpha · P0 · M · Dragon-breath burns — deep char with glowing ember fissures (HDR emissive), heat-shimmer distortion pass masked to the wound, cooling over world time
 - [x] ENG-0264 · Alpha · P1 · M · Plague/gangrene spread — necrotic colour ramp and wetness loss driven by a spreading map updated in the 10 Hz decal pass, reversing where treated
 - [x] ENG-0265 · Alpha · P1 · M · Under-skin movement — larvae/parasite bulges travelling beneath tissue via a displacement term in the normal field, synced to sim positions
 - [x] ENG-0266 · Alpha · P1 · S · Hostile-spell residue — rune-scar emissive decals that pulse with world time and fade when dispelled

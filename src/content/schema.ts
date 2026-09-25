@@ -34,7 +34,7 @@ export type EntitySpec =
   | ({ e: 'laceration'; at: Pt; angle: number; len: number; bleed?: number } & Common)
   | ({ e: 'incision'; path: readonly Pt[] } & Common)
   | ({ e: 'embedded'; at: Pt; kind: EmbeddedKind; angle?: number; barbed?: boolean } & Common)
-  | ({ e: 'burn'; at: Pt; r: number; source?: 'fire' | 'acid' | 'hexfire' } & Common)
+  | ({ e: 'burn'; at: Pt; r: number; source?: 'fire' | 'acid' | 'hexfire' | 'dragon' } & Common)
   | ({ e: 'bubo'; at: Pt; r?: number; maxR?: number } & Common)
   | ({ e: 'rot'; at: Pt; r: number; spread?: number } & Common)
   | ({ e: 'venom'; at: Pt; rate?: number; poison?: PoisonId } & Common)
@@ -132,7 +132,7 @@ export const ENTITY_REGISTRY: { [K in EntityId]: Entry<K> } = {
     make: (s) => new Embedded(P(s.at), s.kind, s.angle ?? 0, s.barbed ?? s.kind === 'arrow'),
   },
   burn: {
-    params: { at: { type: 'pt' }, r: num(false, [8, 120]), source: { type: 'string', optional: true, oneOf: ['fire', 'acid', 'hexfire'] } },
+    params: { at: { type: 'pt' }, r: num(false, [8, 120]), source: { type: 'string', optional: true, oneOf: ['fire', 'acid', 'hexfire', 'dragon'] } },
     needs: () => [['tongs'], ['salve']],
     make: (s, op) => new Burn(P(s.at), s.r, op, s.source),
   },

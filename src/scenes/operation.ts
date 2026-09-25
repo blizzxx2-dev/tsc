@@ -872,6 +872,7 @@ export class OperationScene implements Scene {
       litanyCenter: this.ctl.litanyCenter,
       lens: op.tool === 'lens' ? [game.input.pos.x, game.input.pos.y, 95, 1] : undefined,
       refract: this.hexRefraction(),
+      shimmer: settings.reduceMotion ? [] : this.heatShimmer(),
       litanyAge: inverted ? inverted[1] : op.litanyTime > 0 ? LITANY_DURATION - op.litanyTime : 10,
       hurt: (() => {
         const age = op.elapsed - op.lastHurt.at;
@@ -1287,6 +1288,20 @@ export class OperationScene implements Scene {
     live.push({ x: X(ta.time), y: Y(op.vitals / op.maxVitals) });
     if (live.length > 1) g.polyline(live, 2, hex('#e04040', 0.95));
     if (this.taBest) caps(g, tr('hud.timeattack.new_best'), r.x + r.w / 2, r.y + r.h + 20, 14, hex(INK.goldHi), 'center');
+  }
+
+  /** Heat shimmer over hot dragon-breath burns (ENG-0263), fading as they cool. */
+  heatShimmer(): [number, number, number, number][] {
+    const out: [number, number, number, number][] = [];
+    const cam = this.camera.isIdentity ? null : this.camera;
+    for (const e of this.op.entities) {
+      if (out.length >= 4 || !(e instanceof Burn) || e.hidden) continue;
+      const h = e.heat(this.op.elapsed);
+      if (h < 0.05) continue;
+      const v = cam ? cam.toView(e.pos, { x: 0, y: 0 }) : e.pos;
+      out.push([v.x, v.y, e.radiusNow * 1.3 * (cam ? cam.zoom : 1), h]);
+    }
+    return out;
   }
 
   /** Hexstone refraction regions (ENG-0106): each visible stone bends the flesh behind it; stilled stones less. */

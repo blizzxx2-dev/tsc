@@ -96,6 +96,9 @@ uniform vec4 u_lens; // xy centre (0..1, y up), z radius (fraction of height), w
 // Hexstone refraction (ENG-0106): up to 6 glassy regions bending the flesh behind them.
 uniform vec4 u_refract[6]; // xy centre (0..1, y up), z radius (fraction of height), w strength
 uniform int u_refractN;
+// Heat shimmer (ENG-0263): up to 4 hot regions whose air wavers, masked to the wound.
+uniform vec4 u_shimmer[4]; // xy centre (0..1, y up), z radius (fraction of height), w strength
+uniform int u_shimmerN;
 uniform float u_beat;    // heartbeat pulse 0..1 from the ECG clock
 uniform float u_curse;   // Malison presence 0..1: ink creeping from the edges
 uniform float u_silence; // Compline's silence 0..1 (ART-0258): grey the world and hatch it like chalk on slate
@@ -172,6 +175,17 @@ void main() {
       // A lens-shaped bulge: pull toward the centre, strongest mid-radius, zero at the rim.
       float k = rf.w * r * (1.0 - r) * (1.0 - r) * 0.9;
       uv -= (d / vec2(aspect, 1.0)) * k;
+    }
+  }
+  for (int i = 0; i < 4; i++) {
+    if (i >= u_shimmerN) break;
+    vec4 sh = u_shimmer[i];
+    vec2 d = (uv - sh.xy) * vec2(aspect, 1.0);
+    float r = length(d) / sh.z;
+    if (r < 1.0) {
+      // Rising heat: fine wavering that climbs (y up), strongest over the core.
+      float m = (1.0 - r * r) * sh.w;
+      uv += vec2(sin(uv.y * 160.0 - u_time * 9.0 + uv.x * 40.0), sin(uv.x * 130.0 + u_time * 6.0) * 0.5) * 0.0022 * m;
     }
   }
   vec3 c;

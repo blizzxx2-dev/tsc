@@ -567,7 +567,7 @@ export class OperationAudio {
     for (const e of live) {
       if (e.hidden) continue;
       const pan = panOf(e.pos.x);
-      if (e instanceof Burn) burns.add(e.source === 'fire' ? 0 : e.source === 'acid' ? 1 : 2);
+      if (e instanceof Burn) burns.add(e.source === 'fire' ? 0 : e.source === 'acid' ? 1 : e.source === 'dragon' ? 3 : 2);
       else if (e instanceof Rot) rot++;
       else if (e instanceof Venom) this.loop(e, 'loop.venom.hiss', true, { spread: Math.min(1, (e.spreadR - 16) / 104) }, pan);
       else if (e instanceof SpiderlingGrub) {
@@ -599,6 +599,7 @@ export class OperationAudio {
       }
     }
     for (const src of [0, 1, 2]) this.loop(`burn${src}`, 'loop.burn.bed', running && burns.has(src), { source: src }, 0, 600);
+    this.loop('burn-dragon', 'loop.burn.dragon', running && burns.has(3), {}, 0, 600);
     this.loop('rot', 'loop.rot.creep', running && rot > 0, {}, 0, 600);
 
     // Pools growing: drips (rate-limited by the event's voice limit and a short gap).

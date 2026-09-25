@@ -95,9 +95,10 @@ export function hexstoneArt(g: Gfx, pos: Vec, angle: number, len: number, o: { c
 }
 
 /** Fire burn by severity (0 reddened, 0.5 blistered, 1 charred), cooling toward pink as salve takes. */
-export function fireBurnArt(g: Gfx, pos: Vec, radius: number, severity: number, cooled: number, seed = 0): void {
+export function fireBurnArt(g: Gfx, pos: Vec, radius: number, severity: number, cooled: number, seed = 0, dragonHeat = 0): void {
   const s = radius * 2.8;
-  g.ailment(AIL.fire, pos.x, pos.y, s, s, { seed, a: [radius, severity, cooled, 0] });
+  // `dragonHeat` > 0 marks dragon-breath (ENG-0263): deep char whose fissures glow HDR while hot.
+  g.ailment(AIL.fire, pos.x, pos.y, s, s, { seed, a: [radius, severity, cooled, dragonHeat] });
 }
 
 /** Acid burn: etched, bubbling (6 f) until neutralised. */

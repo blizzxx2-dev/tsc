@@ -378,13 +378,21 @@ vec4 fireBurn(vec2 q) {
   bc = mix(bc, lit(vec3(0.75, 0.25, 0.2), bn, 1.4, 70.0), wept * 0.75);
   acc = over(paint(bc, blister * 0.95), acc);
   // Char: cracked black eschar with ember fissures in the core (from severity 0.66).
-  float charR = smoothstep(0.55, 1.0, sev) * 0.65;
+  float dragon = u_a.w;
+  float charR = dragon > 0.0 ? 0.88 : smoothstep(0.55, 1.0, sev) * 0.65;
   float ch = rsmooth(charR, charR - 0.12, r);
   float crack = rsmooth(0.07, 0.0, voroEdge(q * 0.09 + u_seed));
   float ember = crack * (0.6 + 0.4 * sin(u_time * 3.0 + q.x * 0.1)) * (1.0 - cool);
   vec3 cc = lit(vec3(0.07, 0.05, 0.04) * (0.8 + 0.4 * noise(q * 0.3)), bumpN(q * 0.08, 3.0), 0.25, 12.0);
   cc = mix(cc, mix(vec3(0.15, 0.1, 0.08), vec3(1.0, 0.35, 0.06), 1.0 - cool), crack * 0.8);
   cc += vec3(1.0, 0.45, 0.1) * ember * 0.5;
+  // Dragon-breath (ENG-0263): the fissures run molten — HDR emissive above 1.0 so bloom takes it —
+  // breathing slowly and dimming as the bed cools.
+  if (dragon > 0.0) {
+    float wide = rsmooth(0.14, 0.0, voroEdge(q * 0.05 + u_seed + 4.0));
+    float breathe = 0.75 + 0.25 * sin(u_time * 1.7 + hash(floor(q * 0.05)) * 6.0);
+    cc += vec3(2.4, 0.9, 0.22) * max(crack, wide * 0.8) * dragon * breathe;
+  }
   // Ember speckle (ENG-0101): sparse sparks winking in the char until it cools.
   vec2 sp = floor(q * 0.35);
   float spark = step(0.93, hash(sp + u_seed)) * rsmooth(0.35, 0.1, length(fract(q * 0.35) - 0.5));

@@ -178,6 +178,8 @@ export interface PostParams {
   lens?: [number, number, number, number];
   /** Hexstone refraction regions (ENG-0106): up to 6 of [x, y, radius px, strength], view px. */
   refract?: readonly [number, number, number, number][];
+  /** Heat-shimmer regions (ENG-0263): up to 4 of [x, y, radius px, strength 0..1], view px. */
+  shimmer?: readonly [number, number, number, number][];
   /** Damage flash: direction from screen centre (virtual px) and intensity 0..1. */
   hurt?: [number, number, number];
   /** Depth-of-field blur for menu backdrops, in virtual px (0 = sharp). */
@@ -845,6 +847,11 @@ export class Gfx {
     rf.forEach(([x, y, r, k], i) => rfv.set([x / this.vw, 1 - y / this.vh, r / this.vh, k], i * 4));
     gl.uniform4fv(this.u(this.post, 'u_refract'), rfv);
     gl.uniform1i(this.u(this.post, 'u_refractN'), rf.length);
+    const sh = (p.shimmer ?? []).slice(0, 4);
+    const shv = new Float32Array(16);
+    sh.forEach(([x, y, r, k], i) => shv.set([x / this.vw, 1 - y / this.vh, r / this.vh, k], i * 4));
+    gl.uniform4fv(this.u(this.post, 'u_shimmer'), shv);
+    gl.uniform1i(this.u(this.post, 'u_shimmerN'), sh.length);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     gl.activeTexture(gl.TEXTURE0);
     this.stats.drawCalls += 6;
