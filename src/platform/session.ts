@@ -22,7 +22,7 @@ import { playStep, save } from '../scenes/flow';
 import { VIEW_H, VIEW_W } from '../ui/layout';
 import { t } from '../i18n';
 import { platform } from './index';
-import { Achievements, type AchievementState } from './achievements';
+import { Achievements, ACHIEVEMENTS, type AchievementState } from './achievements';
 import { BUILD, EDITION, buildLabel } from './build';
 import { IMPORT_DIALOG, importDemoProfile, indexCampaign, readDemoProfile } from './carryover';
 import { installErrorCapture, markFrame, parseDsn } from './crash';
@@ -33,6 +33,7 @@ import { GamepadController } from './gamepad';
 import { addScrubSecret, log } from './log';
 import { attachPresenter, notify, setBusyHandler } from './notify';
 import { OverlayGate } from './overlay';
+import { veilItem, type OverlayHost } from '../ui/overlayHost';
 import { exportSupportBundle, inputBuffer, InputBufferHook } from './support';
 import { bindings } from '../input/bindings';
 import { presenceFor, type Activity } from './richpresence';
@@ -336,13 +337,20 @@ export function installPlatform(g: Game): void {
   const current = activeSave();
   if (current) {
     achievements = new Achievements(EDITION, platform.steam, current as AchievementState, () => store(current));
-    onGameEvent((e) => achievements?.handle(e));
+    // Achievement popups on the global overlay (ENG-0066); Steam shows its own when it is running.
+    onGameEvent((e) => {
+      const fresh = achievements?.handle(e) ?? [];
+      const host = (game as unknown as { overlays?: OverlayHost } | null)?.overlays;
+      if (!platform.steam.available) for (const id of fresh) host?.toast('Achievement unlocked', ACHIEVEMENTS.find((a) => a.id === id)?.name ?? id, 'achievement');
+    });
     void achievements.flush();
   }
   onGameEvent((e) => {
     if (e.type === 'operation-end') timelineOperationEnd(e);
   });
   overlay = new OverlayGate(g.input, pauseOperation);
+  // The Steam overlay's pause veil is a global overlay too (ENG-0066).
+  (g as unknown as { overlays?: OverlayHost }).overlays?.add(veilItem(() => !!overlay?.up, () => 'Paused'));
   bufferHook = new InputBufferHook(g.input, inputBuffer);
   if (platform.args.kiosk) {
     // Show-floor build: every demo operation selectable, nothing persisted.

@@ -26,6 +26,7 @@ import { bindUiAudio } from './audio/ui-hooks';
 import { Input } from './core/input';
 import { FIXED_DT, FixedStep, FrameLimiter, RefreshEstimator, stepEndTimes } from './core/loop';
 import { DevTime } from './core/devTime';
+import { OverlayHost } from './ui/overlayHost';
 import { SceneStack, sceneName, type Game, type Scene } from './core/scene';
 import { lampsVeil, splashDone, splashProgress } from './core/splash';
 import { Gfx } from './render/gfx';
@@ -91,6 +92,8 @@ class Main implements Game {
   private losses: number[] = [];
   /** Scene transitions (UIX-0009): fade through black, input blocked, no double-trigger. */
   readonly transition = new Transition();
+  /** Game-wide overlays drawn above every scene (ENG-0066): toasts, achievement popups, FPS, Steam veil. */
+  readonly overlays = new OverlayHost();
 
   constructor(private canvas: HTMLCanvasElement) {
     this.audio.volume = settings.volume;
@@ -104,6 +107,8 @@ class Main implements Game {
     this.scenes = new SceneStack(this);
     this.clock.reduceMotion = settings.reduceMotion;
     this.limiter.cap = settings.frameCap;
+    // The profiler/FPS counter is a global overlay: drawn whatever the scene (F3).
+    this.overlays.add({ id: 'profiler', order: 100, draw: (g) => this.profiler.draw(g, g.stats, g.registry, g.plan.gpuProfiler ? g.gpuTimer : null) });
     this.boundary = new ErrorBoundary(
       (rec) => this.scenes.go(new InkRunScene(rec, () => this.scenes.go(new TitleScene()))),
       (rec) => this.fatal(rec),
@@ -317,9 +322,10 @@ class Main implements Game {
     p.end('render');
     this.gfx.setCamera(null);
     this.transition.draw(this.gfx);
+    this.overlays.update(Math.min(dt, 0.25));
+    this.overlays.draw(this.gfx);
     // Not under automation (goldens must not carry a sha), nor while the QA API holds the frame frozen.
     if (DEV_TOOLS && !navigator.webdriver && !(this as { debug?: { isFrozen(): boolean } }).debug?.isFrozen()) this.drawDevStamp();
-    this.profiler.draw(this.gfx, this.gfx.stats, this.gfx.registry, this.gfx.plan.gpuProfiler ? this.gfx.gpuTimer : null);
     this.gfx.endFrame();
     this.gfx.gpuTimer.collect();
     this.input.endFrame();

@@ -103,7 +103,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0063 · Demo · P0 · M · Scene stack — push/pop overlays (pause, options, confirm dialog, glossary) over a live scene that stops updating but keeps rendering underneath
 - [x] ENG-0064 · Demo · P1 · M · Transition system — fade, iris and ink-bleed wipes rendered on the Overlay layer; `go(scene, {transition:'ink', ms:600})`; input blocked during transitions
 - [x] ENG-0065 · Demo · P1 · M · Async scene loading — `LoadingScene` awaits the next scene's asset bundle with a progress quill; skipped when already resident, never flashes for <300 ms
-- [ ] ENG-0066 · Demo · P1 · S · Global overlay host — toasts, autosave quill, achievement popups, FPS counter and Steam-overlay pause veil render independently of the active scene
+- [x] ENG-0066 · Demo · P1 · S · Global overlay host — toasts, autosave quill, achievement popups, FPS counter and Steam-overlay pause veil render independently of the active scene
 - [ ] ENG-0067 · Demo · P1 · M · Typed scene router — routes for title, story, briefing, operation, results, options, chapterSelect, credits, demoEnd with `?scene=` dev deep links, replacing ad-hoc constructors in `flow.ts`
 - [ ] ENG-0068 · Demo · P1 · M · Service container — replace the module-level `save` singleton in `scenes/flow.ts` with injected `game.services` (save, settings, audio, platform, assets) so scenes run in tests with fakes
 - [x] ENG-0069 · Demo · P0 · M · Error boundary — exceptions in `update`/`render` are caught, logged with scene + frame context, and routed to an in-fiction "The ink has run" screen with Return to Title, instead of killing the rAF loop

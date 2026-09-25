@@ -42,7 +42,7 @@ export class Transition {
   /** Automation (a frozen QA loop stepping frame by frame) swaps scenes instantly, like Reduced Motion. */
   instant = false;
 
-  constructor(readonly duration = MOTION.transition) {
+  constructor(readonly duration: number = MOTION.transition) {
     this.len = duration;
   }
 
