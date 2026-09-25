@@ -52,6 +52,7 @@ import type { OperationOptions } from '../surgery/operation';
 import { drawDebug, drawDialogue, drawDrainArrow, drawFieldOverlays, drawLitanyPractice, drawSecondaryVitals, drawTrayState, drawTutorial } from './gameplayHud';
 import { PauseScene, type PauseResult } from './pause';
 import { VfxLayer } from '../art/vfx';
+import { ComplineLook } from '../art/complineLook';
 import { inkFlood } from '../art/outcomeArt';
 import { nextTransitionStyle } from '../ui/transition';
 import { pushWarp, tissueWarp } from '../art/tissueWarp';
@@ -87,6 +88,8 @@ export class OperationScene implements Scene {
   private particles = new Particles();
   /** Procedural VFX over the particles (ART-0275…0293). */
   private vfx = new VfxLayer(this.particles);
+  /** Compline's silence, stolen-Litany ripple and colour restore (ART-0258). */
+  private compline = new ComplineLook();
   /** The star that just read, handed to the Litany burn-in when the `litany` event follows. */
   /** Recent pointer positions while the Gut Thread works, for the trailing thread. */
   private threadTrail: { x: number; y: number }[] = [];
@@ -393,6 +396,7 @@ export class OperationScene implements Scene {
     this.corrupt += (cursed - this.corrupt) * Math.min(1, dt * 1.5);
 
     // Visual effects arrive as `fx` events; landed droplets become stains. Particles run on world time.
+    this.compline.update(op, dt);
     this.vfx.update(op, { dt, pointer: op.pointer, down: input.down, pulse: this.pulse, reduceMotion: settings.reduceMotion, reduceFlashing: settings.reduceFlashing, gore: bloodScale(presentation.gore) });
     this.particles.update(dt * op.timeScale, (p, kind, size) => {
       if (kind === 'blood' && onBody(p)) op.stain(p, size * 2.6, 0.3);
@@ -509,11 +513,13 @@ export class OperationScene implements Scene {
     const danger = (op.status === 'running' ? Math.max(0, (35 - op.vitals) / 35) : op.status === 'lost' ? 1 : 0) * soften;
     const litany = op.litanyTime > 0 ? Math.min(1, op.litanyTime, (LITANY_DURATION - op.litanyTime) * 3) * soften : 0;
     const ch2 = op.def.id.startsWith('op2');
+    const inverted = this.compline.invertedLitany();
     g.endWorld({
       trauma,
       spot: { cx: FIELD.cx, cy: FIELD.cy, rx: FIELD.rx, ry: FIELD.ry, k: 0.62 },
-      litany,
+      litany: inverted ? Math.max(litany, inverted[0] * soften) : litany,
       danger,
+      silence: this.compline.silence,
       shake,
       bloom: 0.7,
       chroma: (this.corrupt * 1.2 + danger * 0.8 + Math.min(1, op.shake / 10) * 0.6) * soften,
@@ -522,10 +528,10 @@ export class OperationScene implements Scene {
       lutMix: Math.max(this.corrupt * 0.8, danger > 0.5 ? (danger - 0.5) * 1.2 : 0),
       beat: this.pulse,
       curse: this.corrupt * 0.9 * soften,
-      outcome: [op.status === 'lost' ? Math.min(1, this.endT / 2) : 0, op.status === 'won' ? Math.min(1, this.endT / 1.2) : 0],
+      outcome: [op.status === 'lost' ? Math.min(1, this.endT / 2) : 0, Math.max(op.status === 'won' ? Math.min(1, this.endT / 1.2) : 0, this.compline.restore * 0.8)],
       litanyCenter: this.ctl.litanyCenter,
       lens: op.tool === 'lens' ? [game.input.pos.x, game.input.pos.y, 95, 1] : undefined,
-      litanyAge: op.litanyTime > 0 ? LITANY_DURATION - op.litanyTime : 10,
+      litanyAge: inverted ? inverted[1] : op.litanyTime > 0 ? LITANY_DURATION - op.litanyTime : 10,
       hurt: (() => {
         const age = op.elapsed - op.lastHurt.at;
         const k = this.flashLimit.filter(Math.max(0, 1 - age / 0.45) * Math.min(1, op.lastHurt.amount / 6) * soften, 1 / 60);

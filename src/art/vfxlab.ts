@@ -34,11 +34,11 @@ export class VfxLabScene implements Scene {
   private frozen = false;
   private parts = new Particles();
   private spawnT = 0;
-  private page: 'vfx' | 'tools' | 'bosses' | 'outcome' = 'vfx';
+  private page: 'vfx' | 'tools' | 'bosses' | 'outcome' | 'silence' = 'vfx';
 
   constructor() {
     const q = new URLSearchParams(location.search);
-    if (['tools', 'bosses', 'outcome'].includes(q.get('page') ?? '')) this.page = q.get('page') as 'tools' | 'bosses' | 'outcome';
+    if (['tools', 'bosses', 'outcome', 'silence'].includes(q.get('page') ?? '')) this.page = q.get('page') as 'tools' | 'bosses' | 'outcome' | 'silence';
     if (q.get('t')) {
       this.t = Number(q.get('t'));
       this.frozen = true;
@@ -74,6 +74,17 @@ export class VfxLabScene implements Scene {
   }
 
   render(g: Gfx, _game: Game): void {
+    if (this.page === 'silence') {
+      // ART-0258: Compline's silence through the real post pass, over the VFX board's colours.
+      g.beginWorld();
+      VFX_SPECS.forEach((s, i) => {
+        const c = this.cell(i);
+        g.rect(c.x + 2, c.y + 2, c.w - 4, c.h - 4, hex(i % 2 ? '#6a2a24' : '#3a5a70'));
+        drawVfxSample(g, s.id, c.x + c.w / 2, c.y + c.h / 2 + 4, 0.3, c);
+      });
+      g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 0.5, silence: 1 });
+      return g.endFrame();
+    }
     g.beginScreen([0.05, 0.03, 0.03]);
     if (this.page === 'tools') return this.tools(g);
     if (this.page === 'bosses') return this.bosses(g);

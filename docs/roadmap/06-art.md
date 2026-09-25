@@ -407,7 +407,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 ### Compline (Chapter 5 finale)
 - [ ] ART-0256 · Alpha · P0 · M · Compline concept: a veiled sleeper made of every Hour's motif, with a "Great Silence" form — callout sheet with 3 phases
 - [ ] ART-0257 · Beta · P0 · L · Compline sprites: 3 phase forms, silence-node sprites (intact/broken), a Litany-theft animation and a two-hand-combo final vulnerable state
-- [ ] ART-0258 · Beta · P0 · M · Compline VFX spec: audio-mute visual (desaturate + chalk-line hatching), an inverted Litany ripple and a final death that restores colour
+- [x] ART-0258 · Beta · P0 · M · Compline VFX spec: audio-mute visual (desaturate + chalk-line hatching), an inverted Litany ripple and a final death that restores colour
 - [ ] ART-0259 · Beta · P1 · M · Compline Book-of-Hours card, intro splash and a full-screen finale CG
 
 ### The Unsung Hour (secret, post-game)
@@ -569,7 +569,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 ### Budget & schedule
 - [x] ART-0350 · Demo · P0 · M · Demo art budget and schedule: cost and weeks per asset class (portraits, backgrounds, flesh sets, ailments, bosses, UI, store) with a 15% contingency
 - [ ] ART-0351 · Alpha · P1 · M · Full-game art budget re-forecast after demo actuals (cost per asset vs estimate)
-- [ ] ART-0352 · Demo · P1 · S · Credits list for all art contributors maintained in `docs/art/credits.md`, feeding the in-game credits
+- [x] ART-0352 · Demo · P1 · S · Credits list for all art contributors maintained in `docs/art/credits.md`, feeding the in-game credits
 
 ---
 

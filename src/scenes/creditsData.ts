@@ -6,6 +6,7 @@
  */
 import { FACES, type Face } from '../i18n/fonts';
 import { NOTICES } from './noticesData';
+import ART_CREDITS_MD from '../../docs/art/credits.md?raw';
 
 export interface CreditLine {
   /** String key of the role, or empty for a bare name line. */
@@ -21,13 +22,29 @@ export interface CreditSection {
 
 const STUDIO = 'Kessendorf Workshop';
 
+/**
+ * Art contributors from docs/art/credits.md (ART-0352): the first column of its table, in order,
+ * without duplicates. The art lead maintains that file; the credits roll follows it.
+ */
+export function parseArtCredits(md: string): string[] {
+  const names: string[] = [];
+  for (const line of md.split('\n')) {
+    const cells = line.split('|').map((c) => c.trim());
+    if (cells.length < 4 || !cells[1] || cells[1] === 'Credited as' || /^-+$/.test(cells[1])) continue;
+    if (!names.includes(cells[1])) names.push(cells[1]);
+  }
+  return names;
+}
+
+export const ART_CREDITS: readonly string[] = parseArtCredits(ART_CREDITS_MD);
+
 export const CREDIT_SECTIONS: readonly CreditSection[] = [
   {
     headingKey: 'ui.credits.section_team',
     lines: [
       { roleKey: 'ui.credits.role_direction', names: [STUDIO] },
       { roleKey: 'ui.credits.role_code', names: [STUDIO] },
-      { roleKey: 'ui.credits.role_art', names: [STUDIO] },
+      { roleKey: 'ui.credits.role_art', names: ART_CREDITS.length ? [...ART_CREDITS] : [STUDIO] },
       { roleKey: 'ui.credits.role_writing', names: [STUDIO] },
       { roleKey: 'ui.credits.role_audio', names: [STUDIO] },
       { roleKey: 'ui.credits.role_qa', names: [STUDIO] },

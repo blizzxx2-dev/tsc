@@ -153,6 +153,8 @@ export interface PostParams {
   beat?: number;
   /** Malison presence 0..1 (ink creeps from the frame edges). */
   curse?: number;
+  /** Compline's silence 0..1 (ART-0258): desaturate and chalk-hatch the frame. */
+  silence?: number;
   /** [flatline 0..1, victory 0..1] outcome transitions. */
   outcome?: [number, number];
   /** Bloom threshold override (per scene preset). */
@@ -637,6 +639,7 @@ export class Gfx {
     gl.uniform1f(this.u(this.post, 'u_flash'), dp.flash ?? 1);
     gl.uniform1f(this.u(this.post, 'u_beat'), p.beat ?? 0);
     gl.uniform1f(this.u(this.post, 'u_curse'), p.curse ?? 0);
+    gl.uniform1f(this.u(this.post, 'u_silence'), p.silence ?? 0);
     gl.uniform2fv(this.u(this.post, 'u_outcome'), p.outcome ?? [0, 0]);
     gl.uniform1f(this.u(this.post, 'u_hdr'), this.floatTargets ? 1 : 0);
     const shake = p.trauma !== undefined ? shakeOffset(p.trauma, this.time, { scale: dp.still ? 0 : 1 }) : p.shake;

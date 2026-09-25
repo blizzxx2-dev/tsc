@@ -95,6 +95,7 @@ uniform float u_lutMix;
 uniform vec4 u_lens; // xy centre (0..1, y up), z radius (fraction of height), w strength
 uniform float u_beat;    // heartbeat pulse 0..1 from the ECG clock
 uniform float u_curse;   // Malison presence 0..1: ink creeping from the edges
+uniform float u_silence; // Compline's silence 0..1 (ART-0258): grey the world and hatch it like chalk on slate
 uniform vec2 u_outcome;  // x: flatline 0..1 (desaturate, burn, fade), y: victory 0..1 (warm swell)
 uniform float u_hdr;     // 1 when the scene target is floating point
 uniform vec4 u_prefs;    // player display options (UIX-0105): x grain, y vignette, z brightness gamma, w reduced motion
@@ -234,6 +235,16 @@ void main() {
   c = mix(c, vec3(lumD), danger * 0.45);
   float beatK = mix(0.5, 0.25 + 0.75 * u_beat, u_flash);
   c = mix(c, vec3(0.5, 0.0, 0.02), (1.0 - vig) * danger * beatK);
+  // Compline's silence: the colour drains to a cold grey and chalk hatching fills the shadows.
+  float silence = u_silence * P_DAMAGE;
+  if (silence > 0.0) {
+    float lumS = dot(c, vec3(0.299, 0.587, 0.114));
+    c = mix(c, vec3(lumS) * vec3(0.94, 0.96, 1.0), silence * 0.92);
+    vec2 hq = gl_FragCoord.xy;
+    float hatch = rsmooth(0.09, 0.0, abs(fract((hq.x - hq.y) / 7.0) - 0.5) - 0.41);
+    float cross = rsmooth(0.09, 0.0, abs(fract((hq.x + hq.y) / 9.0) - 0.5) - 0.41) * step(lumS, 0.18);
+    c = mix(c, vec3(0.82, 0.82, 0.8), max(hatch, cross) * rsmooth(0.45, 0.05, lumS) * 0.3 * silence);
+  }
   // A Malison's presence: ink tendrils creep in from the frame edges.
   float curse = u_curse * P_CURSE;
   if (curse > 0.0) {

@@ -12,9 +12,9 @@ const SCENES = [
   { name: 'title', query: '' },
   { name: 'story (hospice)', query: 'story=hospice&who=ilse' },
   { name: 'story (camp)', query: 'story=camp&who=kreuzer' },
-  { name: 'operation (op1-1)', query: 'op=op1-1', op: true },
-  { name: 'operation (showcase)', query: 'op=showcase', op: true },
-  { name: 'operation (Matins boss)', query: 'op=showcase-boss', op: true },
+  { name: 'operation (op1-2)', query: '', op: 'op1-2' },
+  { name: 'operation (Matins boss)', query: '', op: 'op1-5', boss: true },
+  { name: 'operation (Lauds boss)', query: '', op: 'op2-5', boss: true },
 ];
 
 const server = await preview({ preview: { port: 0, strictPort: false, open: false }, logLevel: 'silent' });
@@ -60,28 +60,19 @@ for (const sc of SCENES.filter((x) => x.name.includes(only))) {
   await page.goto(`${url}?${sc.query}`, { timeout: 240000, waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => window.__game?.clock.frames > 2 && !window.__game.transition?.busy, null, { timeout: 120000 });
   if (sc.op) {
-    // Wait for the briefing, then Scrub In (a case that introduces an instrument shows its card first).
-    await page.waitForFunction(() => window.__game?.scene && typeof window.__game.scene.onBegin === 'function' && !window.__game.transition?.busy, null, {
-      timeout: 240000,
-    });
-    for (let tries = 0; tries < 6; tries++) {
-      await page.keyboard.press('Enter');
-      if (
-        await page
-          .waitForFunction(() => !!window.__game?.scene?.op, null, { timeout: 10000 })
-          .then(
-            () => true,
-            () => false,
-          )
-      )
-        break;
-    }
-    await page.waitForFunction(() => !!window.__game?.scene?.op, null, { timeout: 240000 });
-    await page.evaluate(() => {
-      const op = window.__game.scene.op;
+    // Start the operation through the automation API, then advance past the title card (and to the boss).
+    await page.waitForFunction(() => !!window.__game?.debug, null, { timeout: 240000 });
+    await page.evaluate((id) => window.__game.debug.operation(id, true), sc.op);
+    await page.waitForFunction(() => !!window.__game.debug.op() && !window.__game.transition?.busy, null, { timeout: 240000 });
+    await page.evaluate((boss) => {
+      const d = window.__game.debug;
+      const op = d.op();
       op.dialogue.length = 0;
-      for (let t = 0; t < 4; t += 1 / 60) op.update(1 / 60);
-    });
+      d.skipPhase();
+      for (let i = 0; boss && i < 8 && !op.entities.some((e) => e.alive && e.boss); i++) d.skipPhase();
+      d.simulate(3);
+      op.dialogue.length = 0;
+    }, !!sc.boss);
   }
   await frames(6);
   rows.push({ scene: sc.name, state: 'steady', ...(await sample()) });
@@ -89,7 +80,7 @@ for (const sc of SCENES.filter((x) => x.name.includes(only))) {
   if (sc.op) {
     // Peak VFX: Litany running, particle caps filled, curse motes and sparks in the hot area.
     await page.evaluate(() => {
-      const op = window.__game.scene.op;
+      const op = window.__game.debug.op();
       op.litanyAllowed = Math.max(op.litanyAllowed, op.litanyUses + 1);
       op.invokeLitany();
       const c = { x: 660, y: 410 };

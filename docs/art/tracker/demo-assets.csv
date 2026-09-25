@@ -234,7 +234,7 @@ ART-0345,"Asset tracker sheet (asset ID, vendor, stage, due, cost, approved-by) 
 ART-0346,"Feedback protocol: paintover-based notes, max 2 revision rounds per stage, 48 h review SLA from our side",Outsourcing pipeline,P1,S,TBD,done,,0,
 ART-0347,Shared delivery folder with automated naming/format validation (the CI script from ART-C run on upload),Outsourcing pipeline,P1,S,TBD,not started,,,
 ART-0350,"Demo art budget and schedule: cost and weeks per asset class (portraits, backgrounds, flesh sets, ailments, bosses, UI, store) with a 15% contingency",Outsourcing pipeline,P0,M,TBD,done,,0,
-ART-0352,"Credits list for all art contributors maintained in docs/art/credits.md, feeding the in-game credits",Outsourcing pipeline,P1,S,TBD,not started,,,
+ART-0352,"Credits list for all art contributors maintained in docs/art/credits.md, feeding the in-game credits",Outsourcing pipeline,P1,S,TBD,done,,0,
 ART-0353,"Art QA checklist per asset class (resolution, naming, alpha edges, palette, IP check, readability, scale) — every Demo asset gets a ticked checklist",Art QA,P0,S,TBD,not started,,,
 ART-0354,"Automated asset lint in CI: dimensions match the spec, power-of-two for textures, no non-premultiplied alpha, file size within budget, no orphaned manifest entries",Art QA,P0,M,TBD,not started,,,
 ART-0355,"Screenshot-diff regression suite: 20 canonical scenes (each backdrop, the op HUD, each demo boss phase) rendered headless and diffed against approved goldens",Art QA,P0,M,TBD,not started,,,
