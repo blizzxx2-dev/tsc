@@ -9,7 +9,7 @@ import { isTeaching } from '../../src/content/teach';
 import { describe, expect, it } from 'vitest';
 import { FULL_CAMPAIGN, nextOpenStep, stepId, type Chapter } from '../../src/content/campaign';
 import { resolveStory } from '../../src/content/conditions';
-import { FlagStore } from '../../src/content/flags';
+import { evalCondition, FlagStore } from '../../src/content/flags';
 import { LATER_CHAPTERS } from '../../src/content/later';
 import { stateHash } from '../../src/debug/state';
 import { BOSS_OPS } from '../../src/surgery/bosses/codex';
@@ -111,23 +111,26 @@ for (const [ci, ch] of LATER_CHAPTERS.map((c, i) => [i + 2, c] as const)) {
         for (const value of [true, false]) {
           const f = new FlagStore();
           f.set(flag, value);
-          for (let i = 0; i < ch.steps.length; i++) expect(nextOpenStep(ch, i, f), `${ch.id} step ${i} with ${flag}=${value}`).toBe(i);
+          for (let i = 0; i < ch.steps.length; i++)
+            if (!ENDING_IDS.includes(stepId(ch.steps[i]))) expect(nextOpenStep(ch, i, f), `${ch.id} step ${i} with ${flag}=${value}`).toBe(i);
         }
       }
     });
   });
 }
 
+/** The three alternative endings (NAR-0158): exactly one of them opens. */
+const ENDING_IDS = ['s5-end', 's5-end-pyre', 's5-end-exile'];
+
 describe('QAT-0154: Chapter V ending and credits', () => {
   const five = FULL_CAMPAIGN[4];
 
-  it('the chapter ends on the finale scene, after the Office', () => {
+  it('the chapter ends on one of three endings after the Office, then the epilogue and the journal (NAR-0157)', () => {
     const ids = five.steps.map(stepId);
-    expect(ids[ids.length - 1]).toBe('s5-end');
-    expect(ids[ids.length - 2]).toBe('op5-9');
+    expect(ids.slice(-6)).toEqual(['op5-9', ...ENDING_IDS, 's5-epilogue', 's5-journal']);
     expect(BOSS_OPS['op5-9']).toBe('office');
-    const end = five.steps[five.steps.length - 1];
-    expect(end.kind === 'story' && end.story.lines[end.story.lines.length - 1].text).toMatch(/THE END/);
+    for (const s of five.steps.filter((x) => ENDING_IDS.includes(stepId(x))))
+      expect(s.kind === 'story' && s.story.lines[s.story.lines.length - 1].text).toMatch(/THE END/);
   });
 
   it('walking Chapter V through the step model reaches the ending, then the campaign is complete (credits)', () => {
@@ -141,7 +144,8 @@ describe('QAT-0154: Chapter V ending and credits', () => {
       visited.push(stepId(s));
       step = open + 1;
     }
-    expect(visited).toEqual(five.steps.map(stepId));
+    // A fresh save with no choices takes the exile (NAR-0158).
+    expect(visited).toEqual(five.steps.map(stepId).filter((id) => id !== 's5-end' && id !== 's5-end-pyre'));
     // Past the last step of the last chapter there is no chapter 6: the campaign is complete.
     expect(FULL_CAMPAIGN[5]).toBeUndefined();
     expect(step).toBe(five.steps.length);
@@ -153,8 +157,11 @@ describe('QAT-0154: Chapter V ending and credits', () => {
     for (let mask = 0; mask < 1 << reads.length; mask++) {
       const f = new FlagStore();
       reads.forEach((r, i) => f.set(r, !!(mask & (1 << i))));
-      for (let i = 0; i < five.steps.length; i++) expect(nextOpenStep(five, i, f)).toBe(i);
-      const end = five.steps[five.steps.length - 1];
+      for (let i = 0; i < five.steps.length; i++) if (!ENDING_IDS.includes(stepId(five.steps[i]))) expect(nextOpenStep(five, i, f)).toBe(i);
+      // Exactly one ending opens for any flags.
+      const open = five.steps.filter((x) => ENDING_IDS.includes(stepId(x)) && (!x.if || evalCondition(x.if, f)));
+      expect(open).toHaveLength(1);
+      const end = open[0];
       if (end.kind === 'story') expect(resolveStory(end.story, {}).lines.length).toBeGreaterThan(0);
     }
   });
