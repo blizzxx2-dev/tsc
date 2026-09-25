@@ -36,10 +36,10 @@ for (const locale of ['tr-TR', 'de-DE', 'pl-PL', 'pt-BR']) {
 
     it('keeps dot decimals in settings and saves, and hotkeys work by key code', async () => {
       const g = game();
-      let s = await g.boot('?preset=mid-ch1');
+      await g.boot('?preset=mid-ch1');
       expect(await g.page.evaluate(() => navigator.language)).toBe(locale);
       // Title with a campaign in progress: Continue, Take the Oath Anew, Operating Theatre, Options.
-      s = await g.click(640, 390 + 60 * 3);
+      let s = await g.click(640, 390 + 60 * 3);
       expect(s.scene).toBe('options');
       s = await g.click(500, 170 + 25); // Volume: step down
       const vol = s.settings.volume as number;

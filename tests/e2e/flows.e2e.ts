@@ -85,7 +85,7 @@ describe('continue / resume', () => {
     let s = await g.click(640, 390);
     expect(s.scene).toBe('story');
     const story = s.story?.id;
-    s = await g.reload();
+    await g.reload();
     s = await g.click(640, 390);
     expect(s.scene).toBe('story');
     expect(s.story?.id).toBe(story);
@@ -103,7 +103,7 @@ describe('continue / resume', () => {
     expect(s.paused).toBe(true);
     s = await g.click(640, 490); // Abandon the Patient
     expect(s.scene).toBe('title');
-    s = await g.reload();
+    await g.reload();
     s = await g.click(640, 390); // Continue
     expect(s.scene).toBe('briefing');
     s = await g.key('Enter');
@@ -123,9 +123,9 @@ describe('retry and quit', () => {
     await g.api('skipPhase');
     const first = await g.api<string>('hash');
     await g.api('lose');
-    let s = await g.until('results', (st) => st.scene === 'results', 400);
+    await g.until('results', (st) => st.scene === 'results', 400);
     await g.step(70);
-    s = await g.click(RESULTS.retry(false).x, RESULTS.retry(false).y); // Try Again → straight back into the operation
+    const s = await g.click(RESULTS.retry(false).x, RESULTS.retry(false).y); // Try Again → straight back into the operation
     expect(s.scene).toBe('operation');
     expect(s.op?.id).toBe('op1-4');
     expect(s.op?.status).toBe('intro');
@@ -170,7 +170,7 @@ describe('options persistence', () => {
     for (let row = 0; row < 6; row++) s = await g.click(900, 170 + row * 58 + 25);
     const changed = s.settings;
     for (const k of ['volume', 'muted', 'shake', 'reduceFlashing', 'timerAssist', 'litanyKey']) expect(changed[k], k).not.toEqual(before[k]);
-    s = await g.key('Escape');
+    await g.key('Escape');
     s = await g.reload();
     expect(s.settings).toEqual(changed);
     const audio = await g.page.evaluate(() => {
