@@ -11,9 +11,18 @@ import { uiEvents } from '../ui/events';
 import { reticle } from '../ui/widgets';
 import { palette } from '../ui/theme';
 
+export interface ChoiceLayout {
+  /** `dropdown` (default) opens under the right half of the anchor row; `box` fills the anchor rect itself. */
+  layout?: 'dropdown' | 'box';
+  /** A choice that must be answered: Esc / B / clicking outside do not dismiss it (story choices, CON-0010). */
+  required?: boolean;
+  rowH?: number;
+}
+
 /**
  * Dropdown popup (UIX-0006): a list of choices opened under an anchor row. Pushed
  * as a modal; Enter / click picks, Esc / B / clicking outside closes without change.
+ * With `layout: 'box'` it is a free-standing list of replies (story choices, CON-0010).
  */
 export class ChoiceScene implements Scene {
   readonly overlay = true;
@@ -21,17 +30,23 @@ export class ChoiceScene implements Scene {
   private t = 0;
   private list: ScrollList;
   private closed = false;
+  private readonly required: boolean;
 
   constructor(
     anchor: Rect,
     private options: readonly string[],
     private selected: number,
     private onPick: (index: number) => void,
+    opts: ChoiceLayout = {},
   ) {
-    const rowH = 40;
+    const rowH = opts.rowH ?? 40;
+    this.required = !!opts.required;
     const h = Math.min(options.length, 8) * (rowH + 2);
-    const y = anchor.y + anchor.h + h + 16 > 700 ? anchor.y - h - 8 : anchor.y + anchor.h + 4;
-    this.list = new ScrollList({ x: anchor.x + anchor.w * 0.5, y, w: anchor.w * 0.5 - 12, h }, rowH, 2);
+    if (opts.layout === 'box') this.list = new ScrollList({ x: anchor.x, y: anchor.y, w: anchor.w, h }, rowH, 2);
+    else {
+      const y = anchor.y + anchor.h + h + 16 > 700 ? anchor.y - h - 8 : anchor.y + anchor.h + 4;
+      this.list = new ScrollList({ x: anchor.x + anchor.w * 0.5, y, w: anchor.w * 0.5 - 12, h }, rowH, 2);
+    }
     this.list.reveal(selected);
   }
 
@@ -56,7 +71,7 @@ export class ChoiceScene implements Scene {
     this.list.follow(this.ui, 'opt');
     const v = this.list.view;
     const outside = input.pressed && !(input.pos.x >= v.x && input.pos.x <= v.x + v.w && input.pos.y >= v.y && input.pos.y <= v.y + v.h);
-    if (input.actPressed('ui.back') || outside) {
+    if (!this.required && (input.actPressed('ui.back') || outside)) {
       uiEvents.emit('ui.back', { id: 'choice' });
       this.close(game, null);
     }

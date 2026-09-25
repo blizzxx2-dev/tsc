@@ -5,7 +5,7 @@
  */
 import type { ContentEntry } from '../i18n/extract';
 import { CAST } from './characters';
-import { conditionOf, describeWhen } from './conditions';
+import { describeLine } from './conditions';
 import { AFTERMATH, FAILURE } from './aftermath';
 import { LATER_AFTERMATH } from './aftermath-later';
 import type { StoryDef } from './story';
@@ -21,8 +21,22 @@ export const chapterOf = (id: string): string => {
 
 /** Line context shared with campaign scenes: speaker, position, and any variant condition. */
 export function lineContext(s: StoryDef, i: number, what: string): string {
-  const cond = conditionOf(s.lines[i]);
-  return `${what} "${s.id}" (${s.place}), line ${i + 1} of ${s.lines.length}.${cond ? ` ${describeWhen(cond)}` : ''}`;
+  const cond = describeLine(s.lines[i]);
+  return `${what} "${s.id}" (${s.place}), line ${i + 1} of ${s.lines.length}.${cond ? ` ${cond}` : ''}`;
+}
+
+/** Reply options of a choice line (CON-0010): `<storyId>.<NNN>.o<k>`, spoken by Kreuzer. */
+export function choiceEntries(s: StoryDef, i: number, chapter: string): ContentEntry[] {
+  const line = s.lines[i];
+  const id = `${s.id}.${pad3(i + 1)}`;
+  return (line.choice ?? []).map((o, k) => ({
+    id: `${id}.o${k + 1}`,
+    text: o.text,
+    scope: 'story',
+    chapter,
+    speaker: CAST.kreuzer.name,
+    context: `Reply ${k + 1} of ${line.choice!.length} to the choice at ${id}; shown as a menu option, then in the backlog as Kreuzer's line.${o.set ? ` Sets ${Object.entries(o.set).map(([f, v]) => `\`${f}\` = ${JSON.stringify(v)}`).join(', ')}.` : ''}`,
+  }));
 }
 
 export function storyEntries(s: StoryDef, chapter: string, what: string): ContentEntry[] {
@@ -32,6 +46,7 @@ export function storyEntries(s: StoryDef, chapter: string, what: string): Conten
     const speaker = line.who === 'narrator' ? 'Narrator' : (line.as ?? CAST[line.who].name);
     out.push({ id, text: line.text, scope: 'story', chapter, speaker, context: lineContext(s, i, what) });
     if (line.as) out.push({ id: `${id}.as`, text: line.as, scope: 'names', chapter, context: `Speaker name shown for ${id}.` });
+    out.push(...choiceEntries(s, i, chapter));
   });
   return out;
 }

@@ -16,8 +16,8 @@
  */
 import { CAMPAIGN } from '../content/campaign';
 import { CAST, type CharacterId } from '../content/characters';
-import { conditionOf, describeWhen } from '../content/conditions';
-import { narrativeEntries } from '../content/export';
+import { describeLine } from '../content/conditions';
+import { choiceEntries, narrativeEntries } from '../content/export';
 
 export type Scope = 'story' | 'callouts' | 'ops' | 'names' | 'barks';
 
@@ -50,9 +50,10 @@ export function contentEntries(): ContentEntry[] {
           const id = `${s.id}.${pad3(i + 1)}`;
           const who = CAST[line.who];
           const speaker = line.who === 'narrator' ? 'Narrator' : (line.as ?? who.name);
-          const cond = conditionOf(line);
-          out.push({ id, text: line.text, scope: 'story', chapter: ch.id, speaker, context: `Story scene "${s.id}" (${s.place}), line ${i + 1} of ${s.lines.length}.${cond ? ` ${describeWhen(cond)}` : ''}` });
+          const cond = describeLine(line);
+          out.push({ id, text: line.text, scope: 'story', chapter: ch.id, speaker, context: `Story scene "${s.id}" (${s.place}), line ${i + 1} of ${s.lines.length}.${cond ? ` ${cond}` : ''}` });
           if (line.as) out.push({ id: `${id}.as`, text: line.as, scope: 'names', chapter: ch.id, context: `Speaker name shown for ${id}.` });
+          out.push(...choiceEntries(s, i, ch.id));
         });
       } else {
         const op = step.op;
