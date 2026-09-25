@@ -55,10 +55,11 @@ import { litanyMode, OperationInput } from '../input/opinput';
 import { formatSplit, ghostAt, GHOST_STEP, recordTimeAttack, TimeAttackClock, timeAttackBest, type TimeAttackRun } from '../surgery/timeAttack';
 import { anaemia, coldTint, drawBreathFog, frostArea, paleFlesh, paleRough } from '../render/fleshMood';
 import { fitText } from '../ui/text';
-import { speciesOf, tintBlood } from '../surgery/species';
+import { bloodOf, speciesOf, tintBlood } from '../surgery/species';
 import { setVfxBlood } from '../art/vfx';
 import { SalveFilm } from '../render/salveFilm';
 import { RuneScars } from '../render/runeScars';
+import { Closures } from '../render/closure';
 import { drawInterpolated } from '../render/interp';
 import { addTray, HudLayer, inRect, trayFrame, traySide, traySlot } from '../input/hud';
 import { drawGraspOutline } from '../input/hover';
@@ -215,6 +216,8 @@ export class OperationScene implements Scene {
   private film = new SalveFilm();
   /** Rune scars under curse sigils (ENG-0266). */
   private runes = new RuneScars();
+  /** Stitched cuts drawing shut (ENG-0112). */
+  private closures = new Closures();
   /** Frost still standing, 0..1 of the peak frozen area (GAM-0103). */
   private frost = 0;
   private frostPeak = 0;
@@ -250,6 +253,7 @@ export class OperationScene implements Scene {
     op.events.on('death', ({ entity }) => {
       this.film.set(entity, op.elapsed);
       this.runes.dispelled(entity, op.elapsed);
+      this.closures.closed(entity, op.elapsed);
     });
     op.events.on('popup', (p) => {
       if (!this.dmg.absorb(p.text, p.pos, p.color)) this.addPopup({ ...p, t: 0 });
@@ -413,6 +417,7 @@ export class OperationScene implements Scene {
     this.gloss.length = 0;
     this.film.clear();
     this.runes.clear();
+    this.closures.clear();
     this.frost = this.frostPeak = 0;
     this.listen(this.op);
     this.camera.reset();
@@ -738,6 +743,7 @@ export class OperationScene implements Scene {
     this.drawGloss(g, op);
     this.film.draw(g, op.entities, op.elapsed);
     this.runes.draw(g, op.entities, op.elapsed, settings.reduceFlashing);
+    this.closures.draw(g, op.elapsed, bloodOf(op.def.race, '#5a0a10'));
     this.tray.update(op.entities, op.elapsed);
     this.tray.draw(g, op.elapsed, { tray: op.def.tools.includes('tongs'), lead: op.entities.some((e) => e instanceof Embedded && e.kind === 'hexstone') });
     // Closed wounds: the sutured scar (ART-0188) over the carved channel; it also appears on the results card.

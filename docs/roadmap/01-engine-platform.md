@@ -165,7 +165,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 
 ### Cut masks
 - [x] ENG-0111 · Demo · P0 · M · Cut mask map (R8) — `Incision`/`Laceration` stamp open width along their path; flesh shader renders parted tissue with inner-wall shading and depth darkening
-- [ ] ENG-0112 · Demo · P1 · M · Suture closure — completing a `StitchLine` erodes the cut mask along the thread over 0.4 s and leaves stitch-mark decals
+- [x] ENG-0112 · Demo · P1 · M · Suture closure — completing a `StitchLine` erodes the cut mask along the thread over 0.4 s and leaves stitch-mark decals
 - [x] ENG-0113 · Demo · P1 · S · Cut edge bleed — mask edges feed the blood decal map so fresh cuts weep along their length until sutured
 
 ### Blood & wound decal maps
