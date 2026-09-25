@@ -37,7 +37,12 @@ export interface BossAssists {
 
 export const assistsOf = (op: Operation): BossAssists => (op.def as BossOpDef).assists ?? {};
 
-export const difficultyOf = (op: Operation): Difficulty => (op.def as BossOpDef).difficulty ?? 'surgeon';
+/**
+ * The difficulty a boss fights at: the op's explicit boss difficulty, else the player's setting —
+ * except that Master keeps Surgeon patterns (Master's faster drain still applies) until the Master
+ * boss variants have had their balance pass (docs/handoff/BOS/README.md).
+ */
+export const difficultyOf = (op: Operation): Difficulty => (op.def as BossOpDef).difficulty ?? (op.difficulty === 'novice' ? 'novice' : 'surgeon');
 
 /** Boss-specific sounds (synthesised by src/scenes/bossAudio.ts). */
 export type BossSound =

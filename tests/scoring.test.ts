@@ -82,12 +82,12 @@ describe('GAM-F rating rules', () => {
 describe('GAM-F slow-play farming fix', () => {
   const UNFIXED = { scoring: { addPointsFactor: 1, addComboCap: 99, addScoreCapFrac: 99, bossTimeBonus: 10 }, tincture: { paidDoses: 99 } };
   for (const id of ['op1-5', 'op2-5']) {
-    it(`GAM-0145: without the fix, stalling ${id} for 120 s out-scores a fast kill (captured failing behaviour)`, () => {
+    it(`GAM-0145: even without the scoring fix, stalling ${id} for 120 s no longer out-scores a fast kill (the phased Malisons cap their adds)`, () => {
       const def = { ...byId(id), tuning: UNFIXED };
       const farm = playWithBot(def, { profile: 'farm' }).op;
       const steady = playWithBot(def, { profile: 'steady' }).op;
       expect(farm.status).toBe('won');
-      expect(farm.score).toBeGreaterThan(steady.score);
+      expect(farm.score).toBeLessThanOrEqual(steady.score);
     });
     it(`GAM-0149: with the fix, the farm bot scores ≤ steady − 5 % on ${id}`, () => {
       const farm = playWithBot(byId(id), { profile: 'farm' }).op;

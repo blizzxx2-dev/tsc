@@ -6367,9 +6367,10 @@
     "scene": "codex",
     "font": "body",
     "size": 20,
-    "maxPx": 900,
+    "maxPx": 550,
     "context": "Codex entry body for the Malison of Matins.",
-    "screenshot": "docs/loc/screens/codex.png"
+    "screenshot": "docs/loc/screens/codex.png",
+    "maxLines": 12
   },
   "debrief.matins.high": {
     "scene": "results",
@@ -6407,9 +6408,10 @@
     "scene": "codex",
     "font": "body",
     "size": 20,
-    "maxPx": 900,
+    "maxPx": 550,
     "context": "Codex entry body for the Malison of Lauds.",
-    "screenshot": "docs/loc/screens/codex.png"
+    "screenshot": "docs/loc/screens/codex.png",
+    "maxLines": 12
   },
   "debrief.lauds.high": {
     "scene": "results",
@@ -6447,9 +6449,10 @@
     "scene": "codex",
     "font": "body",
     "size": 20,
-    "maxPx": 900,
+    "maxPx": 550,
     "context": "Codex entry body for the Malison of Prime.",
-    "screenshot": "docs/loc/screens/codex.png"
+    "screenshot": "docs/loc/screens/codex.png",
+    "maxLines": 12
   },
   "debrief.prime.high": {
     "scene": "results",
@@ -6487,9 +6490,10 @@
     "scene": "codex",
     "font": "body",
     "size": 20,
-    "maxPx": 900,
+    "maxPx": 550,
     "context": "Codex entry body for the Malison of Terce.",
-    "screenshot": "docs/loc/screens/codex.png"
+    "screenshot": "docs/loc/screens/codex.png",
+    "maxLines": 12
   },
   "debrief.terce.high": {
     "scene": "results",
@@ -6527,9 +6531,10 @@
     "scene": "codex",
     "font": "body",
     "size": 20,
-    "maxPx": 900,
+    "maxPx": 550,
     "context": "Codex entry body for the Malison of Sext.",
-    "screenshot": "docs/loc/screens/codex.png"
+    "screenshot": "docs/loc/screens/codex.png",
+    "maxLines": 12
   },
   "debrief.sext.high": {
     "scene": "results",
@@ -6567,9 +6572,10 @@
     "scene": "codex",
     "font": "body",
     "size": 20,
-    "maxPx": 900,
+    "maxPx": 550,
     "context": "Codex entry body for the Malison of None.",
-    "screenshot": "docs/loc/screens/codex.png"
+    "screenshot": "docs/loc/screens/codex.png",
+    "maxLines": 12
   },
   "debrief.none.high": {
     "scene": "results",
@@ -6607,9 +6613,10 @@
     "scene": "codex",
     "font": "body",
     "size": 20,
-    "maxPx": 900,
+    "maxPx": 550,
     "context": "Codex entry body for the Malison of Vespers.",
-    "screenshot": "docs/loc/screens/codex.png"
+    "screenshot": "docs/loc/screens/codex.png",
+    "maxLines": 12
   },
   "debrief.vespers.high": {
     "scene": "results",
@@ -6647,9 +6654,10 @@
     "scene": "codex",
     "font": "body",
     "size": 20,
-    "maxPx": 900,
+    "maxPx": 550,
     "context": "Codex entry body for the Malison of Compline.",
-    "screenshot": "docs/loc/screens/codex.png"
+    "screenshot": "docs/loc/screens/codex.png",
+    "maxLines": 12
   },
   "debrief.compline.high": {
     "scene": "results",
@@ -6687,9 +6695,10 @@
     "scene": "codex",
     "font": "body",
     "size": 20,
-    "maxPx": 900,
+    "maxPx": 550,
     "context": "Codex entry body for the Office.",
-    "screenshot": "docs/loc/screens/codex.png"
+    "screenshot": "docs/loc/screens/codex.png",
+    "maxLines": 12
   },
   "debrief.office.high": {
     "scene": "results",
@@ -6850,5 +6859,37 @@
     "maxPx": 160,
     "context": "Elite phase name (fang-nest).",
     "screenshot": "docs/loc/screens/operation.png"
+  },
+  "ui.codex.title": {
+    "scene": "codex",
+    "font": "display",
+    "size": 30,
+    "maxPx": 280,
+    "context": "Codex heading: the book of Malison Hours met so far.",
+    "screenshot": "docs/loc/screens/codex.png"
+  },
+  "ui.codex.open": {
+    "scene": "codex",
+    "font": "display",
+    "size": 24,
+    "maxPx": 260,
+    "context": "Operating Theatre button opening the codex of Hours.",
+    "screenshot": "docs/loc/screens/codex.png"
+  },
+  "ui.codex.sealed": {
+    "scene": "codex",
+    "font": "display",
+    "size": 14,
+    "maxPx": 240,
+    "context": "Codex list entry for an Hour not yet met.",
+    "screenshot": "docs/loc/screens/codex.png"
+  },
+  "ui.codex.locked": {
+    "scene": "codex",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 560,
+    "context": "Codex page text for an Hour not yet met.",
+    "screenshot": "docs/loc/screens/codex.png"
   }
 }

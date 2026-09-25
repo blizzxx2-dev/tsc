@@ -36,6 +36,9 @@ import { litanyMode, OperationInput } from '../input/opinput';
 import { dragGlyphFor, glyphFor, toolKeyLabel } from '../input/glyphs';
 import { calmWave, drawBossHud, drawLitanyTheft, drawTorpor, ecgCalm, toolBlinded } from '../surgery/bosses/hud';
 import { BossAudio, withBossAssists } from './bossAudio';
+import { watchEncounters } from '../surgery/bosses/codex';
+import { loadProgress, storeProgress } from '../surgery/progress';
+import { codexId } from './codex';
 import { operationOptions } from '../surgery/session';
 import type { OperationOptions } from '../surgery/operation';
 import { drawDebug, drawDialogue, drawDrainArrow, drawFieldOverlays, drawLitanyPractice, drawSecondaryVitals, drawTrayState, drawTutorial } from './gameplayHud';
@@ -135,6 +138,13 @@ export class OperationScene implements Scene {
       if (this.calloutLog.length > 20) this.calloutLog.splice(0, this.calloutLog.length - 20);
     });
     this.bossAudio.listen(op);
+    // The first meeting with an Hour opens its codex page.
+    watchEncounters(op, (boss) => {
+      const p = loadProgress();
+      if (p.codex.includes(codexId(boss))) return;
+      p.codex.push(codexId(boss));
+      storeProgress(p);
+    });
   }
 
   /** Open the "Respite" overlay (UIX-0100). The operation stops updating until it closes. */

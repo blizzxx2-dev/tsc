@@ -88,6 +88,12 @@ export const SCORING: readonly ScoringRule[] = [
   // Consequences
   { label: 'Festered', action: 'Pus left in an open wound for 5 s', tools: ['leech'], criteria: { bad: 'the wound turns to rot' } },
   { label: 'It rejoined', action: 'Malison shards left on the body', tools: ['tongs'], criteria: { miss: 'a shard outlived its 9 s' } },
+  { label: 'Veiled', action: 'Brand the Matins while its shroud is closed', tools: ['brand'], criteria: { miss: 'once, then silent for 5 s' } },
+  { label: 'Off the beat', action: 'Brand the Eye off its third beat', tools: ['brand'], criteria: { miss: 'the eye lashes back with a wound' } },
+  { label: 'It fed', action: 'A crawling Matins shard reaches a wound', tools: ['tongs', 'brand'], criteria: { miss: 'not cast out or seared in time' } },
+  { label: 'Herald burned', action: 'Sear the Matins herald before it slips away', tools: ['brand'], criteria: { cool: '0.5 s held; pays a 300 bonus' } },
+  { label: 'Membrane cut', action: 'Cut the membrane round the brood-cluster', tools: ['lancet'], criteria: { cool: 'a lancet drawn right around it before touching a sac' } },
+  { label: 'Severed', action: 'Cut the Lauds light-thread on its dim beat', tools: ['lancet'], criteria: { cool: 'the bodies unlink for 8 s' } },
   { label: 'Hatched', action: 'An egg sac hatched on its own', tools: ['lancet'], criteria: { miss: 'not lanced in time' } },
   // ---------------------------------------------------------------- Alpha ailments (src/surgery/ailments)
   // Fractures

@@ -120,7 +120,13 @@ export class LaudsMalison extends MalisonBase {
 
   constructor(pos: Vec, op: Operation, tune: Partial<LaudsTuning> = {}) {
     const t = { ...LAUDS_DEFAULT, ...tune };
-    if (tune.hymnPerVerse === undefined && difficultyOf(op) === 'master') t.hymnPerVerse = 2;
+    if (tune.hymnPerVerse === undefined && difficultyOf(op) === 'master') {
+      // Master: two tears per verse, the verses spaced to match.
+      t.hymnPerVerse = 2;
+      if (tune.hymnEvery === undefined) t.hymnEvery *= 1.4;
+    }
+    // Novice: the choir draws breath longer between verses.
+    if (tune.hymnEvery === undefined && difficultyOf(op) === 'novice') t.hymnEvery *= 1.3;
     super(pos, op, t.hp);
     this.tune = t;
     this.phases = t.phased ? LAUDS_PHASES : SINGLE_PHASE;

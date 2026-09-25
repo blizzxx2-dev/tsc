@@ -815,5 +815,9 @@
   "boss.cantor.name": "The Cantor’s Knot",
   "boss.cantor.phase.main": "Knot",
   "boss.gravehound.name": "The Fang-Nest",
-  "boss.gravehound.phase.main": "Nest"
+  "boss.gravehound.phase.main": "Nest",
+  "ui.codex.title": "The Hours",
+  "ui.codex.open": "The Hours",
+  "ui.codex.sealed": "Sealed",
+  "ui.codex.locked": "This page is sealed until you meet the Hour."
 }

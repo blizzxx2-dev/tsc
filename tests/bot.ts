@@ -236,14 +236,18 @@ function plan(ctx: BotContext): Action | null {
   // The Hours on MalisonBase (Matins, Lauds): their own strategies, unless wounds are piling up
   // (a farming bot only dodges while it stalls).
   const lacs = vis.filter((e): e is Laceration => e instanceof Laceration);
-  if (hoursUrgent(op) || (!stalling && !(lacs.length >= 3 || (lacs.length && op.vitals < 45) || find(BloodPool, (p) => p.r > 34)))) {
+  if (!stalling && (hoursUrgent(op) || !(lacs.length >= 3 || (lacs.length && op.vitals < 45) || find(BloodPool, (p) => p.r > 34)))) {
     const hours = planHours(op, kit);
     if (hours) return hours;
   } else if (lacs.length && ents.some((e) => e instanceof MalisonBase)) {
     // In a boss fight, close the bleeding wound before mopping up what it bleeds.
     const big = find(BloodPool, (p) => p.r > 40);
     if (big) return hold('leech', alive(big), 3);
-    return tendLaceration(lacs.sort((a, b) => b.drain(op) - a.drain(op))[0], has('salve'));
+    const worst = lacs.sort((a, b) => b.drain(op) - a.drain(op))[0];
+    // A flooded wound cannot be stitched: draw off the pool that covers it first.
+    const over = find(BloodPool, (p) => dist(p.pos, worst.pos) < p.r + 12);
+    if (over) return hold('leech', alive(over), 2.5);
+    return tendLaceration(worst, has('salve'));
   }
   const venom = find(Venom);
   if (venom) return hold('tincture', alive(venom), 1.1);

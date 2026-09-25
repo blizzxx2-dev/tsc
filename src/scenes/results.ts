@@ -1,5 +1,9 @@
 import { assisted } from '../core/settings';
 import { t, tSource } from '../i18n';
+import { BOSS_OPS, debriefBand } from '../surgery/bosses/codex';
+
+/** The Stroh-ally ending variant of the Office debrief needs the campaign flag store (CON-0008); off until then. */
+const STROH_ALLY = false;
 import { formatNumber } from '../i18n/format';
 import type { Game, Scene } from '../core/scene';
 import { hex } from '../render/color';
@@ -112,6 +116,13 @@ export class ResultsScene implements Scene {
       if (this.summary?.fee) notes.push(`Fee paid: ${this.summary.fee} crowns`);
       for (const a2 of this.summary?.achievements ?? []) notes.push(`✦ ${ACHIEVEMENTS[a2]}`);
       g.textBlock(notes.join('  ·  '), r.x + 420, r.y + 480, 230, { size: 16, font: 'italic', color: hex(INK.dim), shadow: false }, 1.2);
+      // After a Malison: Sister Ilse's debrief, by how cleanly it was unmade.
+      const boss = BOSS_OPS[op.def.id];
+      if (this.won && boss) {
+        const band = debriefBand(op.rank());
+        const line = boss === 'office' && STROH_ALLY ? t(`debrief.office.${band}.stroh`) : t(`debrief.${boss}.${band}`);
+        g.textBlock(t('ui.results.ilse_tip', { tip: line }), r.x + 420, r.y + 400, 230, { size: 16, font: 'italic', color: hex(INK.gold), shadow: false }, 1.2);
+      }
       if (this.summary?.tip) g.textBlock(t('ui.results.ilse_tip', { tip: this.summary.tip }), r.x + 420, r.y + 420, 230, { size: 16, font: 'italic', color: hex(INK.gold), shadow: false }, 1.2);
     }
 
