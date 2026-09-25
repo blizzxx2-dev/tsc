@@ -1,0 +1,62 @@
+# One-command release (PLT-0149): bump version → tag → build matrix (signed, notarised, symbols) →
+# SteamPipe upload to `beta` → per-OS smoke checklist issue. Promotion to `default` stays manual
+# (docs/release.md). Run from `release/demo-1.x` for demo hotfixes.
+name: release
+on:
+  workflow_dispatch:
+    inputs:
+      edition: { description: 'demo or full', default: demo }
+      bump: { description: 'patch, minor, major or an explicit x.y.z', default: patch }
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  tag:
+    runs-on: ubuntu-22.04
+    outputs:
+      tag: ${{ steps.bump.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc }
+      - id: bump
+        run: |
+          TAG=$(node scripts/version-bump.mjs "${{ inputs.edition }}" "${{ inputs.bump }}")
+          git config user.name 'release-bot'
+          git config user.email 'release-bot@users.noreply.github.com'
+          git commit -am "chore(release): ${TAG}"
+          git tag -a "$TAG" -m "$TAG"
+          git push origin HEAD "$TAG"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: tag
+    uses: ./.github/workflows/build.yml
+    with:
+      editions: '["${{ inputs.edition }}"]'
+      release: true
+    secrets: inherit
+
+  steam-beta:
+    needs: build
+    uses: ./.github/workflows/steam-upload.yml
+    with:
+      branch: beta
+      editions: '["${{ inputs.edition }}"]'
+    secrets: inherit
+
+  smoke-checklist:
+    needs: [tag, steam-beta]
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: '${{ needs.tag.outputs.tag }}', fetch-depth: 0 }
+      - name: Patch notes draft + smoke checklist issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          NOTES=$(node scripts/changelog.mjs "" HEAD --edition=${{ inputs.edition }})
+          BODY=$(printf '%s\n\n%s\n' "$(sed -n '/## Smoke on each OS/,/## Promote/p' docs/release.md)" "### Patch notes draft\n\`\`\`\n${NOTES}\n\`\`\`")
+          gh issue create --title "Release ${{ needs.tag.outputs.tag }} — beta smoke" --body "$BODY" --label release

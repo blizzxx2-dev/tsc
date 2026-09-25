@@ -1,0 +1,39 @@
+# Nightly (PLT-0142): build every flavour, upload to the Steam `qa` branch, post build id + changelog.
+name: nightly
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+    with:
+      editions: '["demo","full"]'
+      release: true
+    secrets: inherit
+
+  steam-qa:
+    needs: build
+    uses: ./.github/workflows/steam-upload.yml
+    with:
+      branch: qa
+      editions: '["demo","full"]'
+    secrets: inherit
+
+  announce:
+    needs: steam-qa
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 50 }
+      - name: Post build id and changelog to the team channel
+        env:
+          WEBHOOK: ${{ secrets.TEAM_WEBHOOK_URL }}
+        if: env.WEBHOOK != ''
+        run: |
+          SHA=$(git rev-parse --short=8 HEAD)
+          DEMO=$(node -p "require('./versions.json').demo")
+          FULL=$(node -p "require('./versions.json').full")
+          LOG=$(git log --since='26 hours ago' --no-merges --format='• %s' | head -40)
+          jq -n --arg t "Nightly on Steam \`qa\`: demo ${DEMO}+${SHA} · full ${FULL}+${SHA}" --arg l "$LOG" '{content: ($t + "\n" + $l)}' | curl -sSf -H 'Content-Type: application/json' -d @- "$WEBHOOK"

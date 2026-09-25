@@ -1,0 +1,19 @@
+# Dependency hygiene (PLT-0144). Electron majors are held back: the runtime version policy allows
+# security/patch bumps any time (within 2 weeks) but major upgrades only between milestones
+# (docs/platform/adr-001-desktop-runtime.md).
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule: { interval: weekly }
+    open-pull-requests-limit: 10
+    groups:
+      tooling:
+        dependency-type: development
+        exclude-patterns: ['electron', 'electron-builder', '@electron/*']
+    ignore:
+      - dependency-name: electron
+        update-types: ['version-update:semver-major']
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: monthly }
