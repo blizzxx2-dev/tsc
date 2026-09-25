@@ -679,7 +679,10 @@ export class ChoirVoice extends Entity {
     this.place();
   }
 
-  override onSweep(op: Operation, ptr: Pointer, tool: ToolId): void {
+  /** Seconds the brand has rested on the Voice without tracing anything new. */
+  private idleBrandT = 0;
+
+  override onSweep(op: Operation, ptr: Pointer, tool: ToolId, dt: number): void {
     if (tool !== 'brand' || dist(ptr.pos, this.pos) > 34) return;
     this.branded = true;
     const a = { x: ptr.prev.x - this.pos.x, y: ptr.prev.y - this.pos.y };
@@ -692,6 +695,9 @@ export class ChoirVoice extends Entity {
         fresh = true;
       }
     }
+    // A brand simply held on a Voice does nothing: teach the trace.
+    this.idleBrandT = fresh ? 0 : this.idleBrandT + dt;
+    if (this.idleBrandT > 0.5) op.sayOnce('lauds-voice-trace', 'Holding it there won’t quiet it — trace the Voice’s sigil with the brand, line by line.');
     if (fresh && op.rng.next() < 0.3) op.cues.push('burn');
     if (fresh && Math.random() < 0.5) op.emit('spark', ptr.pos, 2);
     if (this.traced >= 0.8) {

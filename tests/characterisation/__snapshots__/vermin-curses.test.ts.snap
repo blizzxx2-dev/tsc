@@ -1,14 +1,14 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`EggSac > hatching rates MISS "Hatched", costs 6 vitals, releases brood + 2 spiderlings; the 5 s warning is said once per sac 1`] = `
+exports[`EggSac > hatching rates MISS "Hatched", costs 6 vitals, releases brood + 2 spiderlings up to the cap of 6; the 3 s swell warning is said once per sac 1`] = `
 "2.02 initial EggSac brood=3 @(560,410)
 2.02 initial EggSac brood=2 @(760,410)
-9.02 flag eggsac-1
-9.02 say "That sac is moving… it’s about to hatch!"
-9.02 say "instruction"
-11.02 flag eggsac-2
-11.02 say "That sac is moving… it’s about to hatch!"
+11.02 flag eggsac-1
+11.02 say "That sac is swelling… it’s about to hatch!"
 11.02 say "instruction"
+13.02 flag eggsac-2
+13.02 say "That sac is swelling… it’s about to hatch!"
+13.02 say "instruction"
 14.02 spawn SpiderlingGrub @(574,410)
 14.02 spawn SpiderlingGrub @(564,423)
 14.02 spawn SpiderlingGrub @(549,418)
@@ -19,14 +19,11 @@ exports[`EggSac > hatching rates MISS "Hatched", costs 6 vitals, releases brood 
 14.02 hurt 6
 14.02 popup "-6"
 16.02 spawn SpiderlingGrub @(774,410)
-16.02 spawn SpiderlingGrub @(760,424)
-16.02 spawn SpiderlingGrub @(746,410)
-16.02 spawn SpiderlingGrub @(760,396)
 16.02 spawn Laceration source=blade length=38 bleed=0.6 @(760,410)
 16.02 rate MISS "Hatched" +0 combo=0
 16.02 hurt 6
 16.02 popup "-6"
-17.02 -- hatched: status=running vitals=75 score=0 combo=0 counts=0/0/0/2 live=[SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,Laceration,SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,Laceration]
+17.02 -- hatched: status=running vitals=75.9 score=0 combo=0 counts=0/0/0/2 live=[SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,Laceration,SpiderlingGrub,Laceration]
 "
 `;
 

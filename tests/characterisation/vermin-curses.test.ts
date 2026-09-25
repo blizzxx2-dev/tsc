@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { at } from '../../src/content/chapter1';
 import { OP_2_4 } from '../../src/content/chapter2';
 import { Grub, Laceration, Sigil, SIGILS } from '../../src/surgery/entities';
-import { EggSac, SpiderlingGrub } from '../../src/surgery/lauds';
+import { EggSac, SpiderlingGrub, SPIDERLING_CAP } from '../../src/surgery/lauds';
 import { DT, FIELD_OFF, holdAt, holdOn, live, step, strokePath, tap } from '../helpers/sim';
 import { onBody, type Operation } from '../../src/surgery/operation';
 import { scenario } from '../helpers/trace';
@@ -114,14 +114,15 @@ describe('EggSac', () => {
     expect(trace.text()).toMatchSnapshot();
   });
 
-  it('hatching rates MISS "Hatched", costs 6 vitals, releases brood + 2 spiderlings; the 5 s warning is said once per sac', () => {
+  it('hatching rates MISS "Hatched", costs 6 vitals, releases brood + 2 spiderlings up to the cap of 6; the 3 s swell warning is said once per sac', () => {
     const { op, trace } = scenario(() => [new EggSac(at(-100, 0), 3, 12), new EggSac(at(100, 0), 2, 14)]);
     step(op, 15);
     trace.note('hatched');
     expect(op.counts.miss).toBe(2);
-    expect(live(op, SpiderlingGrub)).toHaveLength(5 + 4);
+    // 5 + 4 would hatch, but never more than SPIDERLING_CAP live at once (BOS-0147).
+    expect(live(op, SpiderlingGrub)).toHaveLength(SPIDERLING_CAP);
     expect(trace.lines.filter((l) => l.includes('hurt 6'))).toHaveLength(2);
-    expect(trace.lines.filter((l) => l.includes('say "That sac is moving'))).toHaveLength(2);
+    expect(trace.lines.filter((l) => l.includes('say "That sac is swelling'))).toHaveLength(2);
     expect(trace.text()).toMatchSnapshot();
   });
 });

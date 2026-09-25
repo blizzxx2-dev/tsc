@@ -24,8 +24,8 @@ the same op left alone: **acts** (rating or state change), **hint(flag)** (a cal
 | SpiderlingGrub | · | · | · | · | · | hint(inject-waste) penalty(BAD) | acts hint(brand-flesh) penalty(BAD) | · |
 | Sigil | hint(wrong-lancet-Sigil) penalty(MISS) | hint(wrong-tongs-Sigil) penalty(MISS) | hint(wrong-leech-Sigil) | hint(wrong-thread-Sigil) | hint(wrong-salve-Sigil) | hint(wrong-tincture-Sigil,inject-waste) penalty(BAD) | acts hint(brand-flesh) penalty(BAD) | hint(wrong-lens-Sigil) |
 | EggSac | acts hint(eggsac-lanced) | penalty(MISS) | · | · | · | hint(inject-waste) penalty(BAD) | hint(brand-flesh) penalty(BAD) | · |
-| Malison (veiled) | · | · | · | · | · | hint(inject-waste) penalty(BAD) | hint(malison-veiled) | · |
+| Malison (veiled) | · | · | · | · | · | hint(inject-waste) penalty(BAD) | acts penalty(MISS) | · |
 | Malison (open) | · | · | · | · | · | hint(inject-waste) penalty(BAD) | acts | · |
 | MalisonShard | · | acts | · | · | · | hint(inject-waste) penalty(BAD) | hint(brand-flesh) penalty(BAD) | · |
 | LaudsMalison (shielded) | · | · | · | · | · | hint(inject-waste) penalty(BAD) | hint(lauds-shielded) | · |
-| ChoirVoice | · | · | · | · | · | hint(inject-waste) penalty(BAD) | acts hint(brand-flesh) | · |
+| ChoirVoice | · | · | · | · | · | hint(inject-waste) penalty(BAD) | acts hint(lauds-voice-trace) | · |
