@@ -243,18 +243,18 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ### Atlas & shader
 - [ ] ENG-0166 · Demo · P0 · M · Build-time MSDF atlas generation — msdf-atlas-gen for IM Fell English regular/italic and UnifrakturMaguntia with JSON metrics and kerning, cached by font hash
 - [ ] ENG-0167 · Demo · P0 · M · MSDF text shader (median-of-RGB, screen-px range from derivatives) integrated into the batcher — headings crisp from 12 px to 160 px and under 2.5× camera zoom
-- [ ] ENG-0168 · Demo · P1 · S · Kerning pairs applied in layout (currently per-glyph advance only) — "AV", "To", "Wa" measured narrower than unkerned
+- [x] ENG-0168 · Demo · P1 · S · Kerning pairs applied in layout (currently per-glyph advance only) — "AV", "To", "Wa" measured narrower than unkerned
 - [ ] ENG-0169 · Demo · P1 · M · Shader text effects: outline, soft drop shadow, outer glow, embossed display style — replaces drawing a second shadow copy in `Gfx.text()`
 - [ ] ENG-0170 · Demo · P1 · M · Dynamic fallback for glyphs outside the prebuilt set (player-entered text, rare punctuation) via the existing canvas rasteriser on a separate page — mixed-string render test
 - [x] ENG-0171 · Demo · P1 · S · Fix upload hitch: `GlyphAtlas.upload()` re-uploads the full 2048² canvas and regenerates mips per new glyph — switch to `texSubImage2D` of dirty rects (no frame >4 ms when new glyphs appear)
 - [ ] ENG-0172 · Demo · P2 · S · Multi-page dynamic glyph atlas — LRU eviction instead of clearing every glyph when the page fills
 
 ### Layout
-- [ ] ENG-0173 · Demo · P0 · M · Text layout engine — wrap with cached measurements, alignment, line height, max lines with ellipsis, returns glyph runs reusable across frames
-- [ ] ENG-0174 · Demo · P1 · M · Rich-text markup — `[b]`, `[i]`, `[color=blood]`, `[font=display]`, inline icons (`[icon=lancet]`, `[key=Litany]`) resolved to current input glyphs
-- [ ] ENG-0175 · Demo · P1 · S · Typewriter reveal for the story VN — per-glyph timing with punctuation pauses, skip-to-end, layout computed once
-- [ ] ENG-0176 · Demo · P1 · S · Grapheme-cluster iteration (`Intl.Segmenter`) and precomposed/combining diacritics for German, French, Polish, Spanish — render test string passes visual check
-- [ ] ENG-0177 · Demo · P2 · S · Static text cache: unchanged labels reuse baked vertex runs (no per-frame layout) — CPU text cost on the results screen drops ≥50%
+- [x] ENG-0173 · Demo · P0 · M · Text layout engine — wrap with cached measurements, alignment, line height, max lines with ellipsis, returns glyph runs reusable across frames
+- [x] ENG-0174 · Demo · P1 · M · Rich-text markup — `[b]`, `[i]`, `[color=blood]`, `[font=display]`, inline icons (`[icon=lancet]`, `[key=Litany]`) resolved to current input glyphs
+- [x] ENG-0175 · Demo · P1 · S · Typewriter reveal for the story VN — per-glyph timing with punctuation pauses, skip-to-end, layout computed once
+- [x] ENG-0176 · Demo · P1 · S · Grapheme-cluster iteration (`Intl.Segmenter`) and precomposed/combining diacritics for German, French, Polish, Spanish — render test string passes visual check
+- [x] ENG-0177 · Demo · P2 · S · Static text cache: unchanged labels reuse baked vertex runs (no per-frame layout) — CPU text cost on the results screen drops ≥50%
 - [ ] ENG-0178 · Beta · P1 · M · Script fallback fonts — subset Noto Serif MSDF pages for Cyrillic and CJK loaded per language when Fell/Fraktur lack the glyphs
 - [ ] ENG-0179 · Beta · P2 · M · CJK dynamic MSDF generation or pre-baked frequency subsets (≤4k glyphs) with on-demand extra glyphs — memory ≤32 MB per CJK language
 

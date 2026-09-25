@@ -17,6 +17,7 @@ import { tooltip } from '../ui/controls';
 import { settings } from '../core/settings';
 import { canSkip, readLog, ReadLog } from '../ui/readLog';
 import { drawRich, stripMarkup } from '../ui/text';
+import { Typewriter } from '../render/textLayout';
 import { PortraitStage } from '../art/portraitStage';
 import { drawBackdrop, drawPortrait } from './backdrop';
 import { BacklogScene, StoryMenuScene, type BacklogLine } from './storyMenu';
@@ -148,6 +149,18 @@ export class StoryScene implements Scene {
 
   private get line() {
     return this.story.lines[Math.min(this.i, this.story.lines.length - 1)];
+  }
+
+  /**
+   * Characters of the current line revealed so far (ENG-0175): per-character timing from a
+   * Typewriter built once per line, so sentence stops and commas hold the text back a beat.
+   * `shown` is the typing clock in characters-at-CPS; skip-to-end sets it past every pause.
+   */
+  private typer: { text: string; tw: Typewriter } | null = null;
+  private revealed(): number {
+    const plain = this.plain;
+    if (this.typer?.text !== plain) this.typer = { text: plain, tw: new Typewriter({ glyphs: Array.from(plain, (ch) => ({ ch })) }, CPS) };
+    return this.shown <= 0 ? 0 : this.typer.tw.visibleAt(this.shown / CPS);
   }
 
   /** Plain (marker-free) text of the current line, the string the typewriter reveals. */
@@ -289,7 +302,7 @@ export class StoryScene implements Scene {
     if (fast) this.age = Math.max(this.age, CARD_HOLD_S + CARD_FADE_S); // fast-forward drops the location card
     this.shown += dt * CPS * settings.textSpeed * (fast ? 8 : 1);
     const plain = this.plain;
-    const full = this.shown >= plain.length;
+    const full = this.revealed() >= plain.length;
     this.tick(dt, this.shown > 0 && !full);
     if (full) readLog.mark(id);
     // The control strip consumes its own clicks.
@@ -321,7 +334,7 @@ export class StoryScene implements Scene {
     if (!advance) return;
     this.t = 0;
     if (!full) {
-      this.shown = plain.length;
+      this.shown = Number.MAX_SAFE_INTEGER;
       return;
     }
     this.next(game);
@@ -356,7 +369,7 @@ export class StoryScene implements Scene {
     const line = this.line;
     const who = CAST[line.who];
     const plain = this.plain;
-    const shownN = Math.max(0, Math.floor(this.shown));
+    const shownN = this.revealed();
     const pointer = settings.reduceMotion ? undefined : game.input.pos;
     g.beginWorld();
     if (this.cg) {
@@ -449,7 +462,7 @@ export class StoryScene implements Scene {
       1.42,
       shownBody,
     );
-    const full = this.shown >= plain.length;
+    const full = shownN >= plain.length;
     if (line.stamp && full) inkStamp(g, t(`ui.stamp.${line.stamp}`), tx + tw - 90, top + 60, 24, line.stamp === 'suspect' ? '#e04040' : '#7fc4a4', Math.min(1, this.t * 3), false, line.stamp === 'suspect' ? -0.12 : 0.08);
     if (full && !(line.choice && !this.picks.has(this.i))) {
       const pulse = settings.reduceMotion ? 1 : 0.6 + 0.4 * Math.sin(g.time * 4);

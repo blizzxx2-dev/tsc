@@ -1,7 +1,8 @@
 import type { Vec } from '../core/math';
 import { alphaOf, hex, withAlpha, type RGBA } from './color';
 import { bakeLut, GRADES, LUT_SIZE } from './lut';
-import { fallbackHighlight, GlyphAtlas, type FontId } from './text';
+import { fallbackHighlight, GlyphAtlas, readableFont, type FontId, type Glyph } from './text';
+import { graphemes, TextLayouter, type LayoutOptions, type LaidGlyph, type TextLayout, type TextMeasurer } from './textLayout';
 import { BRIGHT_FS, CREATURE_FS, DOWN_FS, FLUID_FS, FULL_VS, IMAGE_FS, IMAGE_VS, PORTRAIT_FS, POST_FS, RECT_VS, SCENE_FS, UP_FS } from './shaders';
 import { BATCH_FS, BATCH_UNITS, BATCH_VS, FALLBACK_VS, FXAA_FS } from './batch-shaders';
 import { fallbackPlan, FULL_CAPS, probeCaps, toMediump, type FallbackPlan, type GpuCaps } from './caps';
@@ -171,6 +172,32 @@ export interface GfxOptions {
   plan?: Partial<FallbackPlan>;
 }
 
+/**
+ * A baked text run (ENG-0177): the glyphs of one string in one face and raster tier with their pen
+ * positions (layout units, kerning applied), reused while the atlas page is unchanged so labels
+ * drawn every frame skip segmentation, glyph lookups and kerning.
+ */
+interface TextRun {
+  gen: number;
+  base: Glyph[];
+  tiered: Glyph[];
+  pens: Float32Array;
+  width: number;
+}
+const MAX_RUNS = 4096;
+
+/** Options for drawing a laid-out text block (`Gfx.drawLayout`). */
+export interface DrawLayoutOpts {
+  /** Default glyph colour (spans with `[color]` override it). */
+  color?: RGBA;
+  color2?: RGBA;
+  shadow?: RGBA | false;
+  /** Glyphs revealed (typewriter, ENG-0175); all when omitted. */
+  reveal?: number;
+  /** Draws inline icons and key caps (`[icon=…]`, `[key=…]`) at the pen position; x/y are the glyph box's left and baseline. */
+  icon?: (g: Gfx, icon: NonNullable<LaidGlyph['icon']>, x: number, baseline: number, size: number, w: number) => void;
+}
+
 /** Unit-circle cos/sin tables per segment count (ENG-0023). */
 const trigTables = new Map<number, Float32Array>();
 function trig(n: number): Float32Array {
@@ -269,6 +296,11 @@ export class Gfx {
   private pw = 0;
   private ph = 0;
   readonly atlas: GlyphAtlas;
+  /** Static text cache (ENG-0177); `textCache = false` bypasses it (A/B timing). */
+  private runs = new Map<string, TextRun>();
+  textCache = true;
+  /** Cached text layouts (ENG-0173) measured with the glyph atlas. */
+  readonly layouter: TextLayouter;
   private uniforms = new Map<WebGLProgram, Map<string, WebGLUniformLocation | null>>();
   time = 0;
   /** Current output target size in device pixels. */
@@ -292,6 +324,16 @@ export class Gfx {
     this.targets = new RenderTargetPool(this.registry, this.floatTargets);
     this.gpuTimer = new GpuTimer(this.registry);
     this.atlas = new GlyphAtlas(gl, this.registry);
+    const atlas = this.atlas;
+    const measurer: TextMeasurer = {
+      baseSize: atlas.baseSize,
+      advance: (c, f) => atlas.glyph(c, f).adv,
+      kern: (a, b, f) => atlas.kern(a, b, f),
+      get generation() {
+        return atlas.generation * 2 + (readableFont() ? 1 : 0);
+      },
+    };
+    this.layouter = new TextLayouter(measurer);
     this.init();
     // Restore order: our programs/buffers first, then textures (order 10), then everything else.
     this.registry.onRestore(() => this.init(), 0);
@@ -1674,8 +1716,96 @@ export class Gfx {
   // ------------------------------------------------------------ text
 
   measure(str: string, size = 20, font: FontId = 'body', tracking = 0): number {
-    const n = [...str].length;
-    return this.atlas.measure(str, font) * (size / this.atlas.baseSize) + (n > 1 ? (n - 1) * tracking * size : 0);
+    const r = this.run(str, font, this.atlas.baseSize);
+    const n = r.base.length;
+    return r.width * (size / this.atlas.baseSize) + (n > 1 ? (n - 1) * tracking * size : 0);
+  }
+
+  /** The baked run for `str` in `font` at raster tier `tier` (ENG-0177), built on a miss. */
+  private run(str: string, font: FontId, tier: number): TextRun {
+    const atlas = this.atlas;
+    const key = `${font}${readableFont() ? '~r' : ''}@${tier}|${str}`;
+    let r = this.textCache ? this.runs.get(key) : undefined;
+    if (r && r.gen === atlas.generation) return r;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const gen = atlas.generation;
+      const cl = graphemes(str);
+      const base: Glyph[] = new Array(cl.length);
+      const tiered: Glyph[] = new Array(cl.length);
+      const pens = new Float32Array(cl.length);
+      let pen = 0;
+      for (let i = 0; i < cl.length; i++) {
+        const b = atlas.glyph(cl[i], font);
+        base[i] = b;
+        tiered[i] = tier === atlas.baseSize ? b : atlas.glyph(cl[i], font, tier);
+        pens[i] = pen;
+        pen += b.adv + (i + 1 < cl.length ? atlas.kern(cl[i], cl[i + 1], font) : 0);
+      }
+      r = { gen, base, tiered, pens, width: pen };
+      // The page wrapped while rasterising this run: the early glyphs are stale, rebuild once.
+      if (atlas.generation === gen) break;
+    }
+    if (this.textCache) {
+      if (this.runs.size >= MAX_RUNS) this.runs.clear();
+      this.runs.set(key, r!);
+    }
+    return r!;
+  }
+
+  /** Lay out text once and reuse it across frames (ENG-0173): wrap, align, line height, max lines with ellipsis, rich markup. */
+  layout(str: string, o: LayoutOptions = {}): TextLayout {
+    return this.layouter.layout(str, o);
+  }
+
+  /**
+   * Draw a layout with its anchor at (x, baseline y of the first line). Glyphs come from the raster
+   * tier for the on-screen size; `reveal` limits how many are shown (typewriter).
+   */
+  drawLayout(l: TextLayout, x: number, y: number, o: DrawLayoutOpts = {}): void {
+    const color = o.color ?? 0xffc0dce8;
+    if (o.shadow !== false) {
+      const sc = o.shadow ?? (0xb0000000 >>> 0);
+      this.layoutPass(l, x + l.size * 0.06, y + l.size * 0.08, sc, sc, o.reveal, true, undefined);
+    }
+    this.layoutPass(l, x, y, color, o.color2 ?? color, o.reveal, false, o.icon);
+  }
+
+  private layoutPass(l: TextLayout, x: number, y: number, c: RGBA, c2: RGBA, reveal = Infinity, shadow: boolean, icon: DrawLayoutOpts['icon']): void {
+    const atlas = this.atlas;
+    const size = l.size;
+    const tier = atlas.tier(size * this.pixelScale());
+    const ts = size / tier;
+    const n = Math.min(l.glyphs.length, reveal);
+    for (let i = 0; i < n; i++) {
+      const lg = l.glyphs[i];
+      const by = y + lg.line * l.lineStep;
+      if (lg.icon) {
+        if (!shadow && icon) icon(this, lg.icon, x + lg.x, by, size, lg.adv);
+        continue;
+      }
+      if (!lg.ch || lg.ch === ' ') continue;
+      const g = atlas.glyph(lg.ch, lg.font, tier);
+      if (g.w <= 0) continue;
+      const top = by - atlas.ascent(lg.font, tier) * ts;
+      const col = shadow ? c : (lg.color ?? c);
+      const col2 = shadow ? c2 : (lg.color ?? c2);
+      // Faux bold: a second pass nudged right by 3% of the size.
+      for (let pass = 0; pass < (lg.bold ? 2 : 1); pass++) this.glyphQuad(g, x + lg.x + pass * size * 0.03, top, ts, col, col2);
+    }
+  }
+
+  private glyphQuad(g: Glyph, px: number, top: number, ts: number, c: RGBA, c2: RGBA): void {
+    this.room(6);
+    const x0 = px + g.ox * ts;
+    const y0 = top + g.oy * ts;
+    const x1 = x0 + g.w * ts;
+    const y1 = y0 + g.h * ts;
+    this.vert(x0, y0, g.u0, g.v0, c);
+    this.vert(x1, y0, g.u1, g.v0, c);
+    this.vert(x1, y1, g.u1, g.v1, c2);
+    this.vert(x0, y0, g.u0, g.v0, c);
+    this.vert(x1, y1, g.u1, g.v1, c2);
+    this.vert(x0, y1, g.u0, g.v1, c2);
   }
 
   text(str: string, x: number, y: number, o: TextOpts = {}): void {
@@ -1737,28 +1867,17 @@ export class Gfx {
     const s = size / this.atlas.baseSize;
     const tier = this.atlas.tier(size * this.pixelScale());
     const ts = size / tier;
-    const w = this.measure(str, size, font, tracking);
-    let cx = align === 'center' ? x - w / 2 : align === 'right' ? x - w : x;
+    const r = this.run(str, font, tier);
+    const n = r.base.length;
+    const w = r.width * s + (n > 1 ? (n - 1) * tracking * size : 0);
+    const x0 = align === 'center' ? x - w / 2 : align === 'right' ? x - w : x;
     const top = y - this.atlas.ascent(font, tier) * ts;
     const lqa = fallbackHighlight();
-    for (const ch of str) {
-      const base = this.atlas.glyph(ch, font);
-      const g = tier === this.atlas.baseSize ? base : this.atlas.glyph(ch, font, tier);
-      if (g.w > 0) {
-        if (lqa && g.fallback) c = c2 = MAGENTA;
-        this.room(6);
-        const x0 = cx + g.ox * ts;
-        const y0 = top + g.oy * ts;
-        const x1 = x0 + g.w * ts;
-        const y1 = y0 + g.h * ts;
-        this.vert(x0, y0, g.u0, g.v0, c);
-        this.vert(x1, y0, g.u1, g.v0, c);
-        this.vert(x1, y1, g.u1, g.v1, c2);
-        this.vert(x0, y0, g.u0, g.v0, c);
-        this.vert(x1, y1, g.u1, g.v1, c2);
-        this.vert(x0, y1, g.u0, g.v1, c2);
-      }
-      cx += base.adv * s + tracking * size;
+    for (let i = 0; i < n; i++) {
+      const g = r.tiered[i];
+      if (g.w <= 0) continue;
+      if (lqa && g.fallback) c = c2 = MAGENTA;
+      this.glyphQuad(g, x0 + r.pens[i] * s + i * tracking * size, top, ts, c, c2);
     }
   }
 }

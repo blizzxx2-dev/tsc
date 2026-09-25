@@ -40,6 +40,7 @@ export interface Glyph {
 }
 
 import type { GlRegistry } from './registry';
+import { graphemes } from './textLayout';
 
 const SIZE = 2048;
 const PAD = 6;
@@ -66,6 +67,13 @@ export class GlyphAtlas {
   private dirtyRect = { x0: SIZE, y0: SIZE, x1: 0, y1: 0 };
   private full = true;
   private metrics = new Map<string, { ascent: number; descent: number }>();
+  /** Kerning per face and pair (ENG-0168), measured from the canvas rasteriser's own shaping. */
+  private kerns = new Map<string, number>();
+  /**
+   * Bumped whenever cached glyph UVs become invalid (the page wrapped), so callers holding glyph
+   * runs (Gfx's static text cache, ENG-0177) know to rebuild them.
+   */
+  generation = 0;
 
   constructor(
     private gl: WebGL2RenderingContext,
@@ -161,6 +169,7 @@ export class GlyphAtlas {
       ctx.fillStyle = '#fff';
       ctx.fillRect(0, 0, 4, 4);
       this.glyphs.clear();
+      this.generation++;
       this.penX = 8;
       this.penY = 8;
       this.rowH = 0;
@@ -207,9 +216,33 @@ export class GlyphAtlas {
     return w(`${primary}, monospace`) === w(generic('monospace')) && w(`${primary}, cursive`) === w(generic('cursive'));
   }
 
+  /**
+   * Kerning between two adjacent clusters at the layout size (ENG-0168): how much narrower the
+   * browser sets the pair than the sum of the two advances. Cached per face; spaces never kern.
+   */
+  kern(a: string, b: string, f: FontId): number {
+    if (a === ' ' || b === ' ') return 0;
+    const key = `${this.face(f)}${a}\u0000${b}`;
+    let k = this.kerns.get(key);
+    if (k === undefined) {
+      const ctx = this.ctx;
+      ctx.font = this.font(f);
+      k = ctx.measureText(a + b).width - ctx.measureText(a).width - ctx.measureText(b).width;
+      if (!Number.isFinite(k) || Math.abs(k) < 0.01) k = 0;
+      if (this.kerns.size > 20000) this.kerns.clear();
+      this.kerns.set(key, k);
+    }
+    return k;
+  }
+
+  /** Advance of `str` at the layout size: grapheme clusters (ENG-0176) plus pair kerning (ENG-0168). */
   measure(str: string, f: FontId): number {
+    const cl = graphemes(str);
     let w = 0;
-    for (const ch of str) w += this.glyph(ch, f).adv;
+    for (let i = 0; i < cl.length; i++) {
+      w += this.glyph(cl[i], f).adv;
+      if (i + 1 < cl.length) w += this.kern(cl[i], cl[i + 1], f);
+    }
     this.upload();
     return w;
   }

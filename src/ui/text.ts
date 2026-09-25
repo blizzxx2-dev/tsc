@@ -185,6 +185,8 @@ export interface RichOpts extends TextOpts {
   italicFont?: FontId;
 }
 
+const richCache = new Map<string, RichRun[][]>();
+
 /** INK.gold (#e6c77a) as packed ABGR, the default term colour. */
 const TERM_GOLD: RGBA = hex('#e6c77a');
 
@@ -198,7 +200,14 @@ export function drawRich(g: Gfx, str: string, x: number, y: number, width: numbe
   const base: FontId = o.font ?? 'body';
   const italic: FontId = base === 'italic' ? 'body' : (o.italicFont ?? 'italic');
   const fontOf = (style: number) => (style & STYLE_ITALIC ? italic : base);
-  const lines = wrapRich((s, st) => g.measure(s, size, fontOf(st)), str, width);
+  // The wrap is computed once per string and style and reused while it types out (ENG-0175).
+  const key = `${size}|${base}|${italic}|${width}|${str}`;
+  let lines = richCache.get(key);
+  if (!lines) {
+    lines = wrapRich((s, st) => g.measure(s, size, fontOf(st)), str, width);
+    if (richCache.size > 128) richCache.delete(richCache.keys().next().value!);
+    richCache.set(key, lines);
+  }
   const gold = o.termColor ?? TERM_GOLD;
   let left = shown;
   lines.forEach((runs, i) => {
