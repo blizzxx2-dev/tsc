@@ -44,17 +44,18 @@ export function toolIcon3d(g: Gfx, id: ToolId): WebGLTexture | null {
   const c: V3 = [(b.min[0] + b.max[0]) / 2, (b.min[1] + b.max[1]) / 2, (b.min[2] + b.max[2]) / 2];
   const r = Math.hypot(b.max[0] - b.min[0], b.max[1] - b.min[1], b.max[2] - b.min[2]) / 2 || 0.1;
   // Centre the tool at the origin and turn it to a diagonal so long instruments fill the square.
-  const place = multiply(fromTRS([0, 0, 0], [0, Math.sin(-0.35), 0, Math.cos(-0.35)]), fromTRS([-c[0], -c[1], -c[2]]));
-  const dist = r / Math.tan((28 * Math.PI) / 360) * 1.02;
+  // A 45° turn lays long instruments along the square's diagonal, where they have the most room.
+  const place = multiply(fromTRS([0, 0, 0], [0, Math.sin(-Math.PI / 8), 0, Math.cos(-Math.PI / 8)]), fromTRS([-c[0], -c[1], -c[2]]));
+  const dist = (r / Math.tan((28 * Math.PI) / 360)) * 0.78;
   const tex = g.render3DToTexture(`tool-icon-${id}`, SIZE, SIZE, {
-    camera: { pos: [0, dist * 0.82, dist * 0.57], target: [0, 0, 0], fovY: (28 * Math.PI) / 180, near: dist * 0.1, far: dist * 4 },
-    key: { pos: [-r * 2, r * 4, r * 2.5], target: [0, 0, 0], color: [5.5, 4.2, 3.0], cone: 1.4, range: r * 20, shadow: false },
+    camera: { pos: [0, dist * 0.96, dist * 0.28], target: [0, 0, 0], fovY: (28 * Math.PI) / 180, near: dist * 0.1, far: dist * 4 },
+    key: { pos: [-r * 2, r * 4, r * 2.5], target: [0, 0, 0], color: [11, 8.4, 6.0], cone: 1.6, range: r * 20, shadow: false },
     lights: [
-      { pos: [r * 3, r * 1.5, -r * 2.5], color: [0.9, 1.1, 1.6], range: r * 20 },
+      { pos: [r * 3, r * 1.5, -r * 2.5], color: [2.0, 2.4, 3.4], range: r * 20 },
       { pos: [0, -r * 2, r * 3], color: [0.6, 0.45, 0.35], range: r * 20 },
     ],
-    ambient: { sky: [0.16, 0.16, 0.18], ground: [0.08, 0.06, 0.05] },
-    exposure: 1,
+    ambient: { sky: [0.28, 0.27, 0.3], ground: [0.12, 0.09, 0.07] },
+    exposure: 1.35,
     items: [{ model: m, matrix: place }],
   });
   icons.set(id, tex);

@@ -66,8 +66,8 @@ export function toolIcon(g: Gfx, tool: ToolId, x: number, y: number, s = 1, _t =
   // The 3D-rendered instrument when its model is built and loaded; the shader icon otherwise.
   const tex = toolIcon3d(g, tool);
   if (!tex) return toolArt(g, tool, x, y, 50 * s, state, cooldown);
-  const size = 62 * s;
-  const tint = state === 'disabled' ? 0xc0707070 : state === 'selected' ? 0xffffffff : 0xffe0e0e0;
+  const size = 64 * s;
+  const tint = state === 'disabled' ? 0xc0707070 : 0xffffffff;
   g.texQuad(tex, x - size / 2, y - size / 2, size, size, tint >>> 0, true);
   if (state === 'cooldown' && cooldown > 0) g.rect(x - size / 2, y - size / 2, size, size * Math.min(1, cooldown), hex('#000000', 0.55));
 }
