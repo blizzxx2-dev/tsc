@@ -223,7 +223,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0153 · Demo · P1 · S · Chapter 1–2 LUTs — per-location grades (hospice, theatre, street, chapel, night) selected by story backdrop and operation def
 - [x] ENG-0154 · Demo · P1 · S · Aspect-aware vignette — parameters derived from aspect ratio so 21:9/32:9 edges are not over-darkened and 16:10 not under-darkened
 - [x] ENG-0155 · Demo · P2 · S · Blue-noise film grain — tiled texture animated by offset replaces `hash(v_uv*900)`; grain size in virtual units so 720p and 4K match
-- [ ] ENG-0156 · Demo · P2 · S · Candle flicker on the light rig — luminance amplitude ≤3%, disabled by the reduce-flashing setting
+- [x] ENG-0156 · Demo · P2 · S · Candle flicker on the light rig — luminance amplitude ≤3%, disabled by the reduce-flashing setting
 
 ### Gameplay feedback effects
 - [x] ENG-0157 · Demo · P0 · M · Litany v2 — star-shaped ripple radiating from the gesture centroid, sepia with gold highlight retention, radial "clock-hand" blur on onset, smooth ramp driven by the `litanyTime` curve

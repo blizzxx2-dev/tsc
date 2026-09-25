@@ -14,6 +14,7 @@ import { Particles } from '../render/particles';
 import { OperationVfx } from './opVfx';
 import { drawOrder } from '../render/layers';
 import { DecalMaps } from '../render/decals';
+import { candleFlicker } from '../render/flicker';
 import { contentHash } from '../core/replayCodec';
 import { rememberReplay, setLiveReplay } from '../platform/lastReplay';
 import { BUILD } from '../platform/build';
@@ -551,8 +552,8 @@ export class OperationScene implements Scene {
       species: pal.species,
       lights: [
         { x: light.x, y: light.y, h: 1.1, i: 1.1, col: [0.95, 0.9, 0.82] },
-        { x: FIELD.cx - FIELD.rx - 60, y: FIELD.cy + 120, h: 0.35, i: 0.45 * (0.85 + 0.15 * Math.sin(t * 9.3) * Math.sin(t * 4.1)), col: [1.0, 0.6, 0.3] },
-        { x: FIELD.cx + FIELD.rx + 60, y: FIELD.cy - 60, h: 0.35, i: 0.4 * (0.85 + 0.15 * Math.sin(t * 8.1 + 2.0) * Math.sin(t * 3.3)), col: [1.0, 0.62, 0.32] },
+        { x: FIELD.cx - FIELD.rx - 60, y: FIELD.cy + 120, h: 0.35, i: 0.45 * candleFlicker(t, 0, g.displayPrefs.flicker), col: [1.0, 0.6, 0.3] },
+        { x: FIELD.cx + FIELD.rx + 60, y: FIELD.cy - 60, h: 0.35, i: 0.4 * candleFlicker(t, 2, g.displayPrefs.flicker), col: [1.0, 0.62, 0.32] },
       ],
     });
     const colours = palette();
