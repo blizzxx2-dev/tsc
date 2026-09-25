@@ -74,6 +74,18 @@ export interface ImageHandle {
   w: number;
   h: number;
   ready: boolean;
+  /** Tile (REPEAT wrap) instead of clamping — surface detail maps. */
+  repeat?: boolean;
+}
+
+/** Real-surface detail maps for the flesh pass (CC0 scans, assets/textures/README.md). */
+export interface SurfaceMaps {
+  /** R,G normal xy, B roughness: skin pores and micro-wrinkles. */
+  skin: ImageHandle;
+  /** R,G normal xy, B weave shading: the linen drape. */
+  linen: ImageHandle;
+  /** Colour: the table's wood. */
+  wood: ImageHandle;
 }
 
 export interface PlateOpts {
@@ -141,6 +153,8 @@ export interface FleshParams {
   fiber?: number;
   /** Fever flush and sweat 0..1 (ART-0212). */
   fever?: number;
+  /** Real-surface detail maps; the pass falls back to procedural detail until all are loaded. */
+  maps?: SurfaceMaps;
   /** The Hour's corruption palette (src/art/curse.ts): vein glow and secondary (necrosis/scar) colour. */
   curse?: { vein: readonly [number, number, number]; accent: readonly [number, number, number] };
 }
@@ -924,11 +938,13 @@ export class Gfx {
   // ------------------------------------------------------------ images
 
   /** Load (once) and return an image handle; draws are skipped until it is ready. */
-  image(url: string): ImageHandle {
+  image(url: string, opts: { repeat?: boolean } = {}): ImageHandle {
     const h = this.images.get(url);
     if (h) return h;
-    const handle: ImageHandle = { tex: null, w: 0, h: 0, ready: false };
+    const handle: ImageHandle = { tex: null, w: 0, h: 0, ready: false, repeat: opts.repeat };
     this.images.set(url, handle);
+    // Headless (tests, workers): no image decoder, so the handle simply never becomes ready.
+    if (typeof Image === 'undefined') return handle;
     const img = new Image();
     img.onload = () => {
       this.imageSources.set(handle, img);
@@ -947,8 +963,9 @@ export class Gfx {
     gl.generateMipmap(gl.TEXTURE_2D);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    const wrap = handle.repeat ? gl.REPEAT : gl.CLAMP_TO_EDGE;
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wrap);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrap);
     const el = img as HTMLImageElement;
     const w = el.naturalWidth ?? (img as ImageBitmap).width;
     const h = el.naturalHeight ?? (img as ImageBitmap).height;
@@ -1480,6 +1497,18 @@ export class Gfx {
     gl.uniform1i(this.u(pr, 'u_venue'), f.venue ?? 0);
     gl.uniform2f(this.u(pr, 'u_fiber'), Math.cos(f.fiber ?? 0), Math.sin(f.fiber ?? 0));
     gl.uniform1f(this.u(pr, 'u_fever'), f.fever ?? 0);
+    const mp = f.maps;
+    const mapsOn = !!mp && mp.skin.ready && mp.linen.ready && mp.wood.ready;
+    if (mapsOn) {
+      this.bindTex(mp.skin.tex!, 5);
+      this.bindTex(mp.linen.tex!, 6);
+      this.bindTex(mp.wood.tex!, 7);
+    }
+    // Unbound map samplers point at the surface layer (unit 1) and are ignored.
+    gl.uniform1i(this.u(pr, 'u_skinMap'), mapsOn ? 5 : 1);
+    gl.uniform1i(this.u(pr, 'u_linenMap'), mapsOn ? 6 : 1);
+    gl.uniform1i(this.u(pr, 'u_woodMap'), mapsOn ? 7 : 1);
+    gl.uniform1f(this.u(pr, 'u_maps'), mapsOn ? 1 : 0);
     gl.uniform3fv(this.u(pr, 'u_base'), f.base);
     gl.uniform3fv(this.u(pr, 'u_deep'), f.deep);
     gl.uniform3fv(this.u(pr, 'u_vein'), f.vein);

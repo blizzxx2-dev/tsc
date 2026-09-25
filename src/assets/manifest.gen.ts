@@ -10,7 +10,11 @@ export type AssetId =
   | 'fonts/eb-garamond-latin-500-normal'
   | 'fonts/eb-garamond-latin-ext-500-italic'
   | 'fonts/eb-garamond-latin-ext-500-normal'
-  | 'sprites/fx';
+  | 'sprites/fx'
+  | 'textures/linen-detail'
+  | 'textures/skin-detail'
+  | 'textures/suture-rope'
+  | 'textures/wood-table';
 
 export type BundleId = 'boot' | 'title' | 'story-common' | 'ops-common' | 'chapter1' | 'chapter2' | 'chapter3' | 'chapter4' | 'chapter5';
 
@@ -135,6 +139,38 @@ export const MANIFEST: Record<AssetId, AssetEntry> = {
       "assets/sprites_fx-0.12ffa0751d.png"
     ],
     "status": "final"
+  },
+  "textures/linen-detail": {
+    "type": "image",
+    "url": "assets/textures_linen-detail.babec6e2f2.jpg",
+    "bytes": 49469,
+    "bundle": "ops-common",
+    "hash": "babec6e2f2",
+    "status": "final"
+  },
+  "textures/skin-detail": {
+    "type": "image",
+    "url": "assets/textures_skin-detail.ae52a87522.jpg",
+    "bytes": 78584,
+    "bundle": "ops-common",
+    "hash": "ae52a87522",
+    "status": "final"
+  },
+  "textures/suture-rope": {
+    "type": "image",
+    "url": "assets/textures_suture-rope.a96472dc0c.jpg",
+    "bytes": 21668,
+    "bundle": "ops-common",
+    "hash": "a96472dc0c",
+    "status": "final"
+  },
+  "textures/wood-table": {
+    "type": "image",
+    "url": "assets/textures_wood-table.e48af6e2f2.jpg",
+    "bytes": 55854,
+    "bundle": "ops-common",
+    "hash": "e48af6e2f2",
+    "status": "final"
   }
 };
 
@@ -152,7 +188,11 @@ export const BUNDLES: Record<BundleId, readonly AssetId[]> = {
   "title": [],
   "story-common": [],
   "ops-common": [
-    "sprites/fx"
+    "sprites/fx",
+    "textures/linen-detail",
+    "textures/skin-detail",
+    "textures/suture-rope",
+    "textures/wood-table"
   ],
   "chapter1": [],
   "chapter2": [],

@@ -2,6 +2,10 @@
   "$comment": "Per-asset art metadata (ART-0041/0045/0047/0048), merged in order onto every manifest id the regex matches. status: placeholder|wip|final (placeholder fails the build in demo bundles). nine: 9-slice margins [l,t,r,b] px. pivot: [x,y] 0..1. angle0: embed angle the sprite is drawn at (radians). layer + parallax: backdrop layer grouping and scroll factor. See docs/assets.md.",
   "rules": [
     {
+      "match": "^textures/",
+      "status": "final"
+    },
+    {
       "match": "^models/",
       "status": "wip"
     },
@@ -55,11 +59,21 @@
     },
     {
       "match": "^ui/panel-oak$",
-      "nine": [48, 48, 48, 48]
+      "nine": [
+        48,
+        48,
+        48,
+        48
+      ]
     },
     {
       "match": "^ui/parchment-frame$",
-      "nine": [64, 56, 64, 56]
+      "nine": [
+        64,
+        56,
+        64,
+        56
+      ]
     }
   ]
 }

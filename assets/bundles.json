@@ -13,6 +13,10 @@
   ],
   "rules": [
     {
+      "match": "^textures/",
+      "bundle": "ops-common"
+    },
+    {
       "match": "^models/set-",
       "bundle": "story-common"
     },

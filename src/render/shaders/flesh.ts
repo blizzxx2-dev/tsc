@@ -95,6 +95,11 @@ uniform int u_venue;
 uniform vec2 u_fiber;
 // Fever flush and sweat (ART-0212), 0..1.
 uniform float u_fever;
+// Real-surface detail maps (CC0 scans, assets/textures/README.md); u_maps 0 until they load.
+uniform sampler2D u_skinMap;  // R,G normal xy, B roughness
+uniform sampler2D u_linenMap; // R,G normal xy, B weave
+uniform sampler2D u_woodMap;  // colour
+uniform float u_maps;
 uniform vec3 u_base;
 uniform vec3 u_deep;
 uniform vec3 u_vein;
@@ -162,12 +167,16 @@ void main() {
   float slack = fbm(px * 0.008 + vec2(3.0, 1.0));
   float fh = folds * 0.6 + slack * 0.8;
   vec2 fd = vec2(dFdx(fh), dFdy(fh)) * 40.0;
+  // The linen's real weave, from the scanned map.
+  vec3 linenM = u_maps > 0.5 ? texture(u_linenMap, px / 240.0).rgb : vec3(0.5);
+  if (u_maps > 0.5) fd += (linenM.rg * 2.0 - 1.0) * 0.9;
   vec3 fn = normalize(vec3(-fd, 1.0));
   vec3 fl = normalize(vec3((u_light - px) / 600.0, 0.7));
   float fdiff = max(dot(fn, fl), 0.0);
   // Linen weave.
   vec2 w = px * 0.9;
   float weave = 0.5 + 0.18 * sin(w.x * 2.2) * sin(w.y * 2.2) + 0.2 * noise(px * 0.35);
+  if (u_maps > 0.5) weave = mix(weave, linenM.b, 0.8);
   vec3 linen = mix(vec3(0.42, 0.40, 0.34), vec3(0.62, 0.59, 0.5), weave);
   vec3 drape = linen * (0.18 + 0.85 * fdiff);
   drape *= 0.45 + 0.65 * rsmooth(950.0, 150.0, length(px - u_light));
@@ -178,6 +187,7 @@ void main() {
   // Oak table at the frame edges.
   float tableMask = smoothstep(2.05, 2.25, rad + 0.1 * fbm(fq * 3.0));
   vec3 oak = vec3(0.14, 0.08, 0.045) * (0.6 + 0.5 * noise(vec2(px.x * 0.02, px.y * 0.6))) * (0.4 + 0.6 * rsmooth(1100.0, 200.0, length(px - u_light)));
+  if (u_maps > 0.5) oak = texture(u_woodMap, px / 320.0).rgb * 0.5 * (0.4 + 0.6 * rsmooth(1100.0, 200.0, length(px - u_light)));
   drape = mix(drape, oak, tableMask);
   if (u_venue == 1) {
     // Field triage (ENG-0272): coarse olive tent canvas, mud-spattered, over trampled earth and straw.
@@ -302,6 +312,14 @@ void main() {
   vec2 st = u_surfTexel * 1.5;
   vec2 sg = vec2(surfH(v_uv + vec2(st.x, 0.0)) - surfH(v_uv - vec2(st.x, 0.0)), surfH(v_uv - vec2(0.0, st.y)) - surfH(v_uv + vec2(0.0, st.y)));
   grad += sg * 14.0;
+  // Skin pores and micro-wrinkles from the scanned map: full on skin fields, faint on organ tissue.
+  vec3 skinMap = vec3(0.5);
+  float skinK = 0.0;
+  if (u_maps > 0.5) {
+    skinMap = texture(u_skinMap, px / 170.0).rgb;
+    skinK = (u_kind == 0 || u_kind == 8) ? 1.0 : 0.25;
+    grad += (skinMap.rg * 2.0 - 1.0) * 1.6 * skinK;
+  }
   vec3 nrm = normalize(vec3(-grad * 0.35, 1.0));
   vec3 L = normalize(vec3((u_light - px) / 700.0, 0.9));
   // Wetness: glistening near wounds and blood, matte where the skin has dried.
@@ -314,6 +332,7 @@ void main() {
   float nVar = 0.0;
 #endif
   float rough = clamp(mix(u_rough + u_sheen + 0.25, u_rough + u_sheen - 0.15, wet) + nVar * 0.3, 0.12, 0.9);
+  rough = clamp(mix(rough, rough * (0.6 + 0.8 * skinMap.b), skinK * 0.7), 0.12, 0.9);
   float specPow = 2.0 / (rough * rough) - 2.0;
   float norm = (specPow + 8.0) / 25.13; // energy-normalised Blinn-Phong
   float diff = 0.0;
@@ -464,6 +483,8 @@ void main() {
   skinCol = mix(skinCol, mix(u_skin, vec3(0.9, 0.78, 0.72), 0.5) * 1.05, scar * 0.6);
   // Light the collar like the drape (it curls away from the opening), with a thin sheen.
   float skinLit = 0.3 + 0.8 * fdiff + 0.25 * pow(max(fdiff, 0.0), 12.0) * (1.0 - u_sheen * 3.0);
+  // The collar's pores catch the lamp too.
+  if (u_maps > 0.5) skinLit *= 1.0 + 0.35 * dot(skinMap.rg * 2.0 - 1.0, normalize(u_light - px));
   // The skin's scatter glow: strong in the fine-skinned, faint in thick hides.
   skinCol = skinCol * skinLit + u_skin * u_sssCol.rgb * 0.06 * u_sssCol.a;
   // The collar's inner lip: dermis in section, as wide as the hide is thick.

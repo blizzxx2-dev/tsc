@@ -16,6 +16,8 @@ import type { Gfx } from '../render/gfx';
 import { organPalette } from '../render/organs';
 import { underSkinBulges } from '../render/underSkin';
 import { hourCard } from '../art/hourMiniatures';
+import { MANIFEST, type AssetId } from '../assets/manifest.gen';
+import type { SurfaceMaps } from '../render/gfx';
 import { clawRakeArt, rakeGroups } from '../art/clawRake';
 import { drawGrime, drawRain, VENUE_ID, venueLights } from '../render/venues';
 import { BloodPool, Bubo, Burn, Embedded, Incision, Laceration, Sigil, surfDisc, surfLine } from '../surgery/entities';
@@ -802,6 +804,7 @@ export class OperationScene implements Scene {
       venue: VENUE_ID[venue],
       fiber: op.def.fiber,
       fever: fever(op),
+      maps: this.surfaceMaps(g),
       warp,
       light: vc(light),
       corrupt: this.fleshCurse,
@@ -1325,6 +1328,17 @@ export class OperationScene implements Scene {
     live.push({ x: X(ta.time), y: Y(op.vitals / op.maxVitals) });
     if (live.length > 1) g.polyline(live, 2, hex('#e04040', 0.95));
     if (this.taBest) caps(g, tr('hud.timeattack.new_best'), r.x + r.w / 2, r.y + r.h + 20, 14, hex(INK.goldHi), 'center');
+  }
+
+  /** Real-surface detail maps (CC0 scans): loaded once, tiled; the flesh pass waits until they are ready. */
+  private maps: SurfaceMaps | null = null;
+  private surfaceMaps(g: Gfx): SurfaceMaps {
+    const url = (id: AssetId) => import.meta.env.BASE_URL + MANIFEST[id].url;
+    return (this.maps ??= {
+      skin: g.image(url('textures/skin-detail'), { repeat: true }),
+      linen: g.image(url('textures/linen-detail'), { repeat: true }),
+      wood: g.image(url('textures/wood-table'), { repeat: true }),
+    });
   }
 
   /** Heat shimmer over hot dragon-breath burns (ENG-0263), fading as they cool. */
