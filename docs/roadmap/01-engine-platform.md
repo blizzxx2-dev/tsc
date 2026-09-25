@@ -204,7 +204,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0140 · Demo · P1 · S · Grub extraction gore — squish burst and twitching segment particles on extraction
 - [x] ENG-0141 · Demo · P2 · S · Tincture and Salve VFX — injection shimmer at the needle, droplets along the salve stroke
 - [x] ENG-0142 · Demo · P1 · S · Litany dust — gold motes along the star trail, suspended "held time" motes drifting at 0.15× until the Litany ends
-- [ ] ENG-0143 · Demo · P2 · S · Ambient backdrop particles — candle flames, dust in light shafts, chapel incense (story scenes)
+- [x] ENG-0143 · Demo · P2 · S · Ambient backdrop particles — candle flames, dust in light shafts, chapel incense (story scenes)
 - [x] ENG-0144 · Demo · P2 · S · UI particles — COOL rating sparkle, rank-reveal ink splash, chain-milestone flare
 - [ ] ENG-0145 · Demo · P1 · S · Particle quality setting scales emission and max count — Low reduces particle GPU time ≥50% on the Malison fight (profiler capture)
 
