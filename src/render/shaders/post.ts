@@ -199,12 +199,34 @@ void main() {
 
   if (lensMask > 0.0) {
     float lr = length(lensD) / u_lens.z;
-    // Blue scry-tint, fringe at the rim, a rotating scan sweep.
+    // X-ray (GAM-0054): desaturated and contrast-lifted like a plate held to the light, the blue
+    // scry-tint over it, a map of the veins beneath, a rotating scan sweep and a fringe at the rim.
     float lum = dot(c, vec3(0.299, 0.587, 0.114));
-    vec3 scry = vec3(lum * 0.75, lum * 0.95, lum * 1.25) + vec3(0.02, 0.04, 0.08);
+    float xr = smoothstep(0.02, 0.75, pow(lum, 0.85));
+    vec3 scry = vec3(xr * 0.72, xr * 0.93, xr * 1.22) + vec3(0.02, 0.04, 0.08);
+    // Vein map: ridged value noise in field space (anchored to the lens centre's screen, so the
+    // veins hold still under a moving lens), thin branching lines that throb with the heartbeat.
+    vec2 vp = uv * vec2(aspect, 1.0) * 9.0;
+    float vn = 0.0;
+    float amp = 0.6;
+    for (int k = 0; k < 3; k++) {
+      vec2 ip = floor(vp);
+      vec2 fp = fract(vp);
+      fp = fp * fp * (3.0 - 2.0 * fp);
+      float h00 = fract(sin(dot(ip, vec2(127.1, 311.7))) * 43758.5453);
+      float h10 = fract(sin(dot(ip + vec2(1.0, 0.0), vec2(127.1, 311.7))) * 43758.5453);
+      float h01 = fract(sin(dot(ip + vec2(0.0, 1.0), vec2(127.1, 311.7))) * 43758.5453);
+      float h11 = fract(sin(dot(ip + vec2(1.0, 1.0), vec2(127.1, 311.7))) * 43758.5453);
+      float v = mix(mix(h00, h10, fp.x), mix(h01, h11, fp.x), fp.y);
+      vn += amp * (1.0 - abs(v * 2.0 - 1.0));
+      vp = vp * 2.03 + vec2(1.7, 9.2);
+      amp *= 0.5;
+    }
+    float vein = smoothstep(0.86, 0.97, vn / 1.05) * (1.0 - smoothstep(0.7, 1.0, lr));
+    scry += vec3(0.55, 0.85, 1.0) * vein * (0.32 + 0.14 * u_beat * u_flash);
     float ang = atan(lensD.y, lensD.x);
     float sweep = pow(max(0.0, cos(ang - u_time * 2.5)), 24.0) * (1.0 - lr) * 0.35;
-    c = mix(c, scry + vec3(0.5, 0.75, 1.0) * sweep, lensMask * 0.75);
+    c = mix(c, scry + vec3(0.5, 0.75, 1.0) * sweep, lensMask * 0.8);
     float rim = smoothstep(0.86, 0.97, lr) * (1.0 - smoothstep(0.97, 1.02, lr));
     c += vec3(0.9, 0.7, 0.35) * rim * lensW * 0.8;
     c.r += smoothstep(0.8, 1.0, lr) * lensMask * 0.12;

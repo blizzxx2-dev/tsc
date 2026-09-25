@@ -93,7 +93,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 ### Scrying Lens
 - [x] GAM-0052 · Demo · P0 · S · Lens reveal radius 90 px — hidden entities become "found" after 0.4 s hover and stay visible (test)
 - [x] GAM-0053 · Demo · P1 · S · Hidden-entity drain continues while unfound so skipping the Lens is punished — op briefings hint when the Lens is needed
-- [ ] GAM-0054 · Demo · P2 · S · Lens shader — desaturated x-ray view with vein map inside circle, subtle hum loop
+- [x] GAM-0054 · Demo · P2 · S · Lens shader — desaturated x-ray view with vein map inside circle, subtle hum loop
 
 ### Tool switching
 - [x] GAM-0055 · Demo · P0 · S · Tool switch latency: hotkeys 1–8 immediate, mouse wheel 80 ms step debounce — switching mid-drag cancels the drag without rating

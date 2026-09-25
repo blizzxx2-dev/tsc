@@ -95,6 +95,8 @@ const roman = (n: number): string => ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 
 
 /** Seconds a Salve stroke stays glossy after it is laid (GAM-0043). */
 export const SALVE_GLOSS_S = 4;
+/** Tray tips stay above this line, clear of the callout plate (UIX-0051). */
+const TIP_FLOOR = 612;
 
 export class OperationScene implements Scene {
   op: Operation;
@@ -1225,10 +1227,13 @@ export class OperationScene implements Scene {
     const w = Math.round(290 * ts);
     const lines = g.wrap(hint, w - 32, hs);
     // The tip sits beside the tray, on the field side (left of a mirrored tray).
-    const tip = { x: mirrored ? r.x - 20 - w : r.x + r.w + 20, y: r.y - 4, w, h: Math.round(40 * ts + lines.length * hs * 1.25 + 12) };
+    const th = Math.round(40 * ts + lines.length * hs * 1.25 + 12);
+    // Low slots lift their tip clear of the callout plate at the bottom of the screen.
+    const tip = { x: mirrored ? r.x - 20 - w : r.x + r.w + 20, y: Math.min(r.y - 4, TIP_FLOOR - th), w, h: th };
     glass(g, tip, { alpha: a });
-    if (mirrored) g.tri(tip.x + tip.w, r.y + r.h / 2 - 7, tip.x + tip.w, r.y + r.h / 2 + 7, tip.x + tip.w + 8, r.y + r.h / 2, hex(INK.gilt, 0.75 * a));
-    else g.tri(tip.x, r.y + r.h / 2 - 7, tip.x, r.y + r.h / 2 + 7, tip.x - 8, r.y + r.h / 2, hex(INK.gilt, 0.75 * a));
+    const ay = Math.min(r.y + r.h / 2, tip.y + tip.h - 12);
+    if (mirrored) g.tri(tip.x + tip.w, ay - 7, tip.x + tip.w, ay + 7, tip.x + tip.w + 8, ay, hex(INK.gilt, 0.75 * a));
+    else g.tri(tip.x, ay - 7, tip.x, ay + 7, tip.x - 8, ay, hex(INK.gilt, 0.75 * a));
     caps(g, tr(`tool.${id}.name`), tip.x + 16, tip.y + 24 * ts, Math.round(13 * ts), hex(INK.gold, a));
     if (a > 0.3) keycap(g, glyphFor(`tool.select.${TOOL_INFO.findIndex((ti) => ti.id === id) + 1}` as ActionId), tip.x + tip.w - 40, tip.y + 20 * ts, 11, a);
     g.textBlock(hint, tip.x + 16, tip.y + 34 * ts + hs * 0.75, tip.w - 32, { size: hs, color: hex(INK.text, a), shadow: false }, 1.25);
