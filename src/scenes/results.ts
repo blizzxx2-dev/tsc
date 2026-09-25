@@ -37,7 +37,7 @@ export class ResultsScene implements Scene {
   render(g: Gfx, game: Game): void {
     const op = this.op;
     g.beginWorld();
-    drawBackdrop(g, 'chapel', g.time);
+    drawBackdrop(g, 'results', g.time);
     g.endWorld({ litany: 0, danger: this.won ? 0 : 0.4, shake: { x: 0, y: 0 }, bloom: 1 });
 
     const r = { x: 300, y: 40, w: 680, h: 560 };

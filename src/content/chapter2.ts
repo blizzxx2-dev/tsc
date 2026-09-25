@@ -5,7 +5,7 @@ import { at, closeIncision } from './chapter1';
 import type { Chapter } from './campaign';
 import { n, say, type StoryDef } from './story';
 
-const hiddenShard = (x: number, y: number, a: number, kind: 'warpshard' | 'glass' | 'shard' = 'warpshard') => {
+const hiddenShard = (x: number, y: number, a: number, kind: 'hexstone' | 'glass' | 'shard' = 'hexstone') => {
   const e = new Embedded(at(x, y), kind, a, false);
   e.hidden = true;
   return e;
@@ -41,7 +41,7 @@ export const STORY_2_2: StoryDef = {
     n('The scout will limp, but he will limp home.'),
     say('patient', 'Put me down, you long-legged oafs! I can walk! I can… mostly walk.', 'Orsa Flintvein'),
     say('mauer', 'Dwarf prospector. Her crew was working a seam in the hills when it caved in.'),
-    say('patient', 'The rock went green, Doctor. Green and wrong. It sang when we struck it. Then it burst.', 'Orsa Flintvein'),
+    say('patient', 'The rock went black, Doctor. Black and wrong, like a bruise in the stone. It sang when we struck it. Then it burst.', 'Orsa Flintvein'),
     say('ilse', 'There are shards under her skin that I can’t see — but the flesh around them is spoiling.'),
     say('ilse', 'Master Haller sent this with me. His old Scrying Lens. Pass it slowly over the flesh and it shows what hides beneath.'),
     say('patient', 'Dwarf hide’s thicker than yours, lad. You’ll want a strong arm on that thread.', 'Orsa Flintvein'),
@@ -96,7 +96,7 @@ export const STORY_2_END: StoryDef = {
   lines: [
     n('The singing stops. The standard-bearer breathes. In the flesh over his heart, a single word: LAUDS.'),
     say('mauer', 'Two of them now. Matins in the city, Lauds in my own camp. Someone is keeping time, Doctor.'),
-    say('ilse', 'Seven more hours to the full Office. Prime. Terce. Sext. None. Vespers. Compline.'),
+    say('ilse', 'Six more hours to the full Office. Prime. Terce. Sext. None. Vespers. Compline.'),
     say('stroh', 'Doctor Kreuzer.'),
     say('stroh', 'When that thing screamed, every candle in this tent stopped flickering. The flames stood still. For eight heartbeats.'),
     say('stroh', 'I counted.'),
@@ -139,7 +139,7 @@ export const OP_2_1: OperationDef = {
 
 export const OP_2_2: OperationDef = {
   id: 'op2-2',
-  title: 'The Green Seam',
+  title: 'The Black Seam',
   patient: 'Orsa Flintvein, dwarf prospector',
   race: 'dwarf',
   diagnosis: 'Cave-in at a hexstone seam. Shards driven beneath the skin, invisible to the eye. Surrounding flesh spoiling.',

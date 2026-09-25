@@ -344,7 +344,7 @@ export class Laceration extends Entity {
 
 // ============================================================ embedded objects
 
-export type EmbeddedKind = 'arrow' | 'bolt' | 'shot' | 'tooth' | 'shard' | 'glass' | 'warpshard';
+export type EmbeddedKind = 'arrow' | 'bolt' | 'shot' | 'tooth' | 'shard' | 'glass' | 'hexstone';
 
 const EMBED_SPEC: Record<EmbeddedKind, { len: number; wound: number; drain: number; label: string }> = {
   arrow: { len: 90, wound: 56, drain: 0.45, label: 'Arrow' },
@@ -353,7 +353,7 @@ const EMBED_SPEC: Record<EmbeddedKind, { len: number; wound: number; drain: numb
   tooth: { len: 26, wound: 36, drain: 0.35, label: 'Fang' },
   shard: { len: 30, wound: 34, drain: 0.3, label: 'Shard' },
   glass: { len: 24, wound: 28, drain: 0.25, label: 'Glass' },
-  warpshard: { len: 30, wound: 40, drain: 0.45, label: 'Hexstone' },
+  hexstone: { len: 30, wound: 40, drain: 0.45, label: 'Hexstone' },
 };
 
 /**
@@ -395,7 +395,7 @@ export class Embedded extends Entity {
   }
 
   override update(op: Operation, dt: number): void {
-    if (this.kind !== 'warpshard' || this.grabbed) return;
+    if (this.kind !== 'hexstone' || this.grabbed) return;
     // Hexstone corrupts the flesh around it while it stays lodged.
     this.corruptT += dt;
     // Corruption spreads, but never faster than a steady hand can salve it.
@@ -461,8 +461,8 @@ export class Embedded extends Entity {
 
   override drawSurface(g: Gfx): void {
     surfDisc(g, this.origin, 11, 1, 0.5);
-    surfDisc(g, this.origin, 38, 0, 0.25, 0, this.kind === 'warpshard' ? 0.2 : 0.35);
-    if (this.kind === 'warpshard') surfDisc(g, this.origin, 50, 0, 0, 0.35);
+    surfDisc(g, this.origin, 38, 0, 0.25, 0, this.kind === 'hexstone' ? 0.2 : 0.35);
+    if (this.kind === 'hexstone') surfDisc(g, this.origin, 50, 0, 0, 0.35);
   }
 
   draw(g: Gfx, op: Operation): void {
@@ -501,8 +501,8 @@ export class Embedded extends Entity {
         break;
       case 'shard':
       case 'glass':
-      case 'warpshard': {
-        const warp = this.kind === 'warpshard';
+      case 'hexstone': {
+        const warp = this.kind === 'hexstone';
         const c = warp ? hex('#e8a838', 0.75 + 0.25 * Math.sin(op.elapsed * 5)) : this.kind === 'glass' ? hex('#c8e6f0', 0.75) : hex('#8a8f96');
         if (warp) g.glow(x, y, 40, hex('#ff6a20', 0.35));
         g.poly(

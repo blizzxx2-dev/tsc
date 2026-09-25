@@ -31,7 +31,7 @@ export const SHOWCASE: OperationDef = {
           new Burn(at(-110, -130), 34, op, 'hexfire'),
           new Bubo(at(40, -150), 26),
           new Embedded(at(90, 30), 'arrow', -0.6),
-          new Embedded(at(300, -40), 'warpshard', 2.2, false),
+          new Embedded(at(300, -40), 'hexstone', 2.2, false),
           new Embedded(at(-30, -40), 'shot'),
           new Venom(at(200, 130), op, 0),
           new Sigil(at(60, 150), SIGILS.eye, 48, 999),

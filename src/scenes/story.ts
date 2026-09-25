@@ -6,7 +6,7 @@ import type { StoryDef } from '../content/story';
 import { PALETTE, VIEW_H, VIEW_W } from '../ui/layout';
 import { reticle } from '../ui/widgets';
 import { banner, divider, leatherPanel, UI } from '../ui/ornaments';
-import { drawBackdrop, drawPortrait } from './backdrop';
+import { drawBackdrop, drawFramedPortrait, drawPortrait } from './backdrop';
 
 const CPS = 48; // characters per second
 
@@ -54,7 +54,7 @@ export class StoryScene implements Scene {
     const who = CAST[line.who];
     g.beginWorld();
     drawBackdrop(g, this.story.backdrop, g.time);
-    if (who.silhouette !== 'none') drawPortrait(g, who, 330, 470, g.time, true);
+    if (who.silhouette !== 'none' && !drawFramedPortrait(g, line.who, who, 300, 470, g.time)) drawPortrait(g, who, 330, 470, g.time, true);
     g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 1 });
 
     if (this.fadeIn < 1) g.rect(0, 0, VIEW_W, VIEW_H, hex('#000000', 1 - this.fadeIn));

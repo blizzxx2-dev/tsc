@@ -1,7 +1,7 @@
 import type { Vec } from '../core/math';
 import { alphaOf, type RGBA } from './color';
 import { GlyphAtlas, type FontId } from './text';
-import { BLUR_FS, BRIGHT_FS, FLESH_FS, FLUID_FS, FULL_VS, POST_FS, PRIM_FS, PRIM_VS } from './shaders';
+import { BLUR_FS, BRIGHT_FS, FLESH_FS, FLUID_FS, FULL_VS, IMAGE_FS, IMAGE_VS, POST_FS, PRIM_FS, PRIM_VS } from './shaders';
 
 const TAU = Math.PI * 2;
 const MAX_VERTS = 60000;
@@ -19,6 +19,28 @@ export interface TextOpts {
   font?: FontId;
   shadow?: RGBA | false;
   maxWidth?: number;
+}
+
+export interface ImageHandle {
+  tex: WebGLTexture | null;
+  w: number;
+  h: number;
+  ready: boolean;
+}
+
+export interface ImageOpts {
+  alpha?: number;
+  /** 0 = original colours, 1 = fully toned to the ink/paper ramp. */
+  sepia?: number;
+  ink?: [number, number, number];
+  paper?: [number, number, number];
+  contrast?: number;
+  /** Strength of candle pooling/vignette (0 = flat). */
+  vignette?: number;
+  /** Candle position in 0..1 screen space. */
+  light?: [number, number];
+  /** Source crop in 0..1 UV space. */
+  crop?: { u0: number; v0: number; u1: number; v1: number };
 }
 
 export interface FleshParams {
@@ -101,6 +123,8 @@ export class Gfx {
   private samples = 0;
   private floatTargets = false;
   private fluidProg: WebGLProgram;
+  private imageProg: WebGLProgram;
+  private images = new Map<string, ImageHandle>();
   private pw = 0;
   private ph = 0;
   readonly atlas: GlyphAtlas;
@@ -124,6 +148,7 @@ export class Gfx {
     this.blur = compile(gl, FULL_VS, BLUR_FS);
     this.post = compile(gl, FULL_VS, POST_FS);
     this.fluidProg = compile(gl, FULL_VS, FLUID_FS);
+    this.imageProg = compile(gl, IMAGE_VS, IMAGE_FS);
     this.floatTargets = !!gl.getExtension('EXT_color_buffer_float');
     this.samples = Math.min(4, gl.getParameter(gl.MAX_SAMPLES) as number);
 
@@ -309,6 +334,82 @@ export class Gfx {
   private bindTex(t: WebGLTexture, unit: number): void {
     this.gl.activeTexture(this.gl.TEXTURE0 + unit);
     this.gl.bindTexture(this.gl.TEXTURE_2D, t);
+  }
+
+  // ------------------------------------------------------------ images
+
+  /** Load (once) and return an image handle; draws are skipped until it is ready. */
+  image(url: string): ImageHandle {
+    let h = this.images.get(url);
+    if (h) return h;
+    const handle: ImageHandle = { tex: null, w: 0, h: 0, ready: false };
+    this.images.set(url, handle);
+    const img = new Image();
+    img.onload = () => {
+      const gl = this.gl;
+      const tex = gl.createTexture()!;
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+      gl.generateMipmap(gl.TEXTURE_2D);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      Object.assign(handle, { tex, w: img.naturalWidth, h: img.naturalHeight, ready: true });
+    };
+    img.src = url;
+    return handle;
+  }
+
+  /** Draw an image into a rect (virtual coords) with period grading. */
+  drawImage(h: ImageHandle, x: number, y: number, w: number, hgt: number, o: ImageOpts = {}): void {
+    if (!h.ready || !h.tex) return;
+    this.flush();
+    const gl = this.gl;
+    const pr = this.imageProg;
+    gl.useProgram(pr);
+    gl.bindVertexArray(this.vao);
+    const c = o.crop ?? { u0: 0, v0: 0, u1: 1, v1: 1 };
+    const quad = [x, y, c.u0, c.v0, x + w, y, c.u1, c.v0, x + w, y + hgt, c.u1, c.v1, x, y, c.u0, c.v0, x + w, y + hgt, c.u1, c.v1, x, y + hgt, c.u0, c.v1];
+    for (let i = 0; i < 6; i++) {
+      const b = i * STRIDE;
+      this.f32[b] = quad[i * 4];
+      this.f32[b + 1] = quad[i * 4 + 1];
+      this.f32[b + 2] = quad[i * 4 + 2];
+      this.f32[b + 3] = quad[i * 4 + 3];
+      this.u32[b + 4] = 0xffffffff;
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.f32, 0, 6 * STRIDE);
+    this.bindTex(h.tex, 0);
+    gl.uniform1i(this.u(pr, 'u_img'), 0);
+    gl.uniform2f(this.u(pr, 'u_view'), this.vw, this.vh);
+    gl.uniform1f(this.u(pr, 'u_alpha'), o.alpha ?? 1);
+    gl.uniform1f(this.u(pr, 'u_sepia'), o.sepia ?? 0);
+    gl.uniform3fv(this.u(pr, 'u_ink'), o.ink ?? [0.08, 0.05, 0.04]);
+    gl.uniform3fv(this.u(pr, 'u_paper'), o.paper ?? [0.86, 0.76, 0.58]);
+    gl.uniform1f(this.u(pr, 'u_contrast'), o.contrast ?? 1);
+    gl.uniform1f(this.u(pr, 'u_vignette'), o.vignette ?? 0);
+    gl.uniform1f(this.u(pr, 'u_time'), this.time);
+    gl.uniform2fv(this.u(pr, 'u_light'), o.light ?? [0.5, 0.45]);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+  }
+
+  /** Cover a rect with an image, cropping to preserve aspect; `pan` 0..1 slides the crop window. */
+  drawImageCover(h: ImageHandle, x: number, y: number, w: number, hgt: number, o: ImageOpts & { pan?: [number, number]; zoom?: number } = {}): void {
+    if (!h.ready) return;
+    const ia = h.w / h.h;
+    const ra = w / hgt;
+    const z = o.zoom ?? 1;
+    let cw = 1 / z;
+    let ch = 1 / z;
+    if (ia > ra) cw *= ra / ia;
+    else ch *= ia / ra;
+    const [px, py] = o.pan ?? [0.5, 0.5];
+    const u0 = (1 - cw) * px;
+    const v0 = (1 - ch) * py;
+    this.drawImage(h, x, y, w, hgt, { ...o, crop: { u0, v0, u1: u0 + cw, v1: v0 + ch } });
   }
 
   // ------------------------------------------------------------ layers

@@ -3,9 +3,45 @@ import type { Gfx } from '../render/gfx';
 import type { Backdrop } from '../content/story';
 import type { Character } from '../content/characters';
 import { VIEW_H, VIEW_W } from '../ui/layout';
+import { artUrl, BACKDROP_ART, PORTRAIT_ART } from '../content/art';
+import type { CharacterId } from '../content/characters';
+import { brassBorder, UI } from '../ui/ornaments';
 
-/** Procedural placeholder scenery for story scenes, drawn in the world (post-processed) layer. */
-export function drawBackdrop(g: Gfx, kind: Backdrop, t: number): void {
+/**
+ * Story scenery. Uses period artwork when available (slow Ken Burns drift, candle-lit
+ * grading), otherwise procedural placeholder scenery. Drawn in the world layer.
+ */
+export function drawBackdrop(g: Gfx, kind: Backdrop | 'title' | 'results', t: number): void {
+  const art = BACKDROP_ART[kind];
+  if (art) {
+    const h = g.image(artUrl(art));
+    if (h.ready) {
+      const [fx, fy] = art.focus ?? [0.5, 0.5];
+      const drift = Math.sin(t * 0.03) * 0.5 + 0.5;
+      g.drawImageCover(h, 0, 0, VIEW_W, VIEW_H, {
+        pan: [Math.min(1, Math.max(0, fx + (drift - 0.5) * 0.2)), fy],
+        zoom: 1.06 + 0.03 * Math.sin(t * 0.05),
+        sepia: art.sepia ?? 0.35,
+        contrast: 1.1,
+        vignette: 0.75,
+        light: [0.3 + Math.sin(t * 0.4) * 0.03, 0.55],
+      });
+      // Drifting embers over the art.
+      g.setBlend('add');
+      for (let i = 0; i < 24; i++) {
+        const ex = (i * 97 + Math.sin(t * 0.5 + i) * 40) % VIEW_W;
+        const ey = VIEW_H - ((t * (20 + (i % 5) * 8) + i * 53) % VIEW_H);
+        g.circle(ex, ey, 1.5, hex('#ffa050', 0.45));
+      }
+      g.setBlend('alpha');
+      return;
+    }
+  }
+  if (kind === 'title' || kind === 'results') kind = kind === 'title' ? 'night' : 'chapel';
+  drawProceduralBackdrop(g, kind, t);
+}
+
+function drawProceduralBackdrop(g: Gfx, kind: Backdrop, t: number): void {
   const sky: Record<Backdrop, [string, string]> = {
     hospice: ['#2a1c14', '#0c0806'],
     street: ['#1a1e2a', '#080808'],
@@ -130,4 +166,27 @@ export function drawPortrait(g: Gfx, c: Character, x: number, y: number, t: numb
   g.circle(x + 20, y - 112 + bob, 3, hex(c.color, 0.5 * a));
   // Rim light.
   g.arc(x, y - 110 + bob, 63, 2, hex(c.color, 0.35 * a), 0.35, -Math.PI * 0.95);
+}
+
+/**
+ * A VN portrait: period artwork in a gilt oval frame when available, else the silhouette.
+ * Returns true if artwork was drawn.
+ */
+export function drawFramedPortrait(g: Gfx, id: CharacterId, c: Character, x: number, y: number, t: number): boolean {
+  const art = PORTRAIT_ART[id];
+  if (!art) return false;
+  const h = g.image(artUrl(art));
+  if (!h.ready) return false;
+  const w = 300;
+  const hh = 380;
+  const bob = Math.sin(t * 1.2) * 1.5;
+  const r = { x: x - w / 2, y: y - hh + bob, w, h: hh };
+  g.rect(r.x + 8, r.y + 10, w, hh, hex('#000000', 0.5));
+  g.glow(x, y - hh / 2, 300, hex(c.color, 0.18));
+  const [fx, fy] = art.focus ?? [0.5, 0.3];
+  g.drawImageCover(h, r.x, r.y, w, hh, { pan: [fx, fy], sepia: art.sepia ?? 0.25, contrast: 1.08, vignette: 0.55, light: [0.25, 0.3] });
+  brassBorder(g, r, 10);
+  g.rectLine(r.x - 10, r.y - 10, w + 20, hh + 20, 2, hex(UI.giltLo));
+  g.rectLine(r.x + 3, r.y + 3, w - 6, hh - 6, 1, hex(UI.brassHi, 0.5));
+  return true;
 }

@@ -175,7 +175,7 @@ export class LaudsMalison extends Entity {
       for (let i = 0; i < 3; i++) {
         const a = (i / 3) * TAU + 0.4;
         const p = { x: this.pos.x + Math.cos(a) * 70, y: this.pos.y + Math.sin(a) * 55 };
-        op.spawn(new Embedded(onBody(p) ? p : { ...this.pos }, 'warpshard', a, false));
+        op.spawn(new Embedded(onBody(p) ? p : { ...this.pos }, 'hexstone', a, false));
       }
     }
   }

@@ -126,40 +126,42 @@ Tasks below add the QA, localisation and production/legal work around them.
 - [ ] OPS-0049 · Demo · P0 · M · *Trauma Center* expression & trade-dress review — HUD layout, vitals meter, tool tray, COOL/GOOD/BAD/MISS words, "XS" rank label, star-gesture presentation, assistant-portrait framing and story beats compared side by side with the Atlus DS/Wii games; counsel memo lists required changes as tickets
 - [ ] OPS-0050 · Demo · P0 · S · Rating & rank wording decision — keep or replace COOL/GOOD/BAD/MISS and "XS" per the counsel memo; decision logged and pushed to the GAM scoring spec, the UIX HUD and the LOC termbase
 - [ ] OPS-0051 · Demo · P0 · S · Marketing-reference rules — counsel-approved guidance: never "Warhammer" or GW names, logos or art; no Atlus footage, screenshots or logos; whether "for fans of surgery-action games" copy may name *Trauma Center* in press only; checklist attached to every store/press/trailer review
-- [ ] OPS-0052 · Demo · P0 · S · Resolve the `warpshard` rename conflict — GAM proposes id `hexstone`, NAR proposes `hexshard`; one id and display name chosen, both tasks updated, save/replay migration owner named
-- [ ] OPS-0053 · Demo · P1 · S · Independent-creation archive — dated design docs, `docs/research/`, sketches, story drafts and commit history snapshotted at each milestone into write-once storage, to rebut copying claims
-- [ ] OPS-0054 · Demo · P1 · S · IP-claim response procedure — who receives notices, counsel contact, response SLA, takedown handling; DMCA designated agent registered before any user-generated content ships
-- [ ] OPS-0055 · Demo · P2 · S · Errors-and-omissions insurance — quotes for IP-infringement cover obtained and a buy/no-buy decision logged before the announce
+- [ ] OPS-0052 · Demo · P0 · S · Counsel review of the NAR name register — every character, faction, place, saint and boss name in the NAR register and blocklist reviewed by counsel against GW and Atlus/SEGA marks; written sign-off before the announce
+- [ ] OPS-0053 · Demo · P0 · S · Character-likeness sign-off — final portraits of Kreuzer, Ilse, Stroh, Haller, Mauer and the Choir compared with the *Trauma Center* cast (e.g. Derek Stiles, Angie Thompson) and GW characters; producer and counsel sign-off recorded before the portraits ship
+- [ ] OPS-0054 · Demo · P0 · S · Resolve the `warpshard` rename conflict — GAM proposes id `hexstone`, NAR proposes `hexshard`; one id and display name chosen, both tasks updated, save/replay migration owner named
+- [ ] OPS-0055 · Demo · P1 · S · Independent-creation archive — dated design docs, `docs/research/`, sketches, story drafts and commit history snapshotted at each milestone into write-once storage, to rebut copying claims
+- [ ] OPS-0056 · Demo · P1 · S · IP-claim response procedure — who receives notices, counsel contact, response SLA, takedown handling; DMCA designated agent registered before any user-generated content ships
+- [ ] OPS-0057 · Demo · P2 · S · Errors-and-omissions insurance — quotes for IP-infringement cover obtained and a buy/no-buy decision logged before the announce
 
 ### Title & brand
-- [ ] OPS-0056 · Demo · P0 · M · Counsel trademark clearance — "Suture & Steel", "Suture and Steel" and "The Malison Hours" searched in USPTO Trademark Search, EUIPO eSearch, UKIPO, WIPO Global Brand Database, J-PlatPat and KIPRIS (Nice classes 9, 28, 41) plus Steam, itch.io and console stores; written clearance opinion on file (the NAR title search is the first pass)
-- [ ] OPS-0057 · Demo · P1 · S · Fallback title shortlist — 3 alternates pre-screened with the same knock-out search so a late conflict does not stall the announce
-- [ ] OPS-0058 · Demo · P1 · M · Trademark filings — "Suture & Steel" word mark (and the ART logo if distinctive) filed with EUIPO and USPTO in classes 9 and 41 before the public announce; receipts in `docs/legal/`
-- [ ] OPS-0059 · Demo · P1 · S · Domains & handles — suture-and-steel domains (.com plus chosen ccTLDs), Steam developer/publisher names, X, Bluesky, YouTube, TikTok, Reddit and a Discord vanity URL registered to the company account
-- [ ] OPS-0060 · Demo · P0 · S · Rebrand audit outside code — documents, store drafts, press assets, social bios and the Steamworks app name all read "Suture & Steel — The Malison Hours"; no "Grim Apothecary" or "grim-surgeon" in public material (code identifiers are PLT's task)
+- [ ] OPS-0058 · Demo · P0 · M · Counsel trademark clearance — "Suture & Steel", "Suture and Steel" and "The Malison Hours" searched in USPTO Trademark Search, EUIPO eSearch, UKIPO, WIPO Global Brand Database, J-PlatPat and KIPRIS (Nice classes 9, 28, 41) plus Steam, itch.io and console stores; written clearance opinion on file (the NAR title search is the first pass)
+- [ ] OPS-0059 · Demo · P1 · S · Fallback title shortlist — 3 alternates pre-screened with the same knock-out search so a late conflict does not stall the announce
+- [ ] OPS-0060 · Demo · P1 · M · Trademark filings — "Suture & Steel" word mark (and the ART logo if distinctive) filed with EUIPO and USPTO in classes 9 and 41 before the public announce; receipts in `docs/legal/`
+- [ ] OPS-0061 · Demo · P1 · S · Domains & handles — suture-and-steel domains (.com plus chosen ccTLDs), Steam developer/publisher names, X, Bluesky, YouTube, TikTok, Reddit and a Discord vanity URL registered to the company account
+- [ ] OPS-0062 · Demo · P0 · S · Rebrand audit outside code — documents, store drafts, press assets, social bios and the Steamworks app name all read "Suture & Steel — The Malison Hours"; no "Grim Apothecary" or "grim-surgeon" in public material (code identifiers are PLT's task)
 
 ### Licences, disclosures & company
-- [ ] OPS-0061 · Demo · P0 · S · Steam AI-content disclosure — Steamworks content survey answered from the ART and AUD provenance logs (pre-generated and live-generated content); re-checked at every milestone gate
-- [ ] OPS-0062 · Demo · P1 · S · Open-source & font notices legal review — the PLT-generated third-party notices (runtime, npm, OFL fonts) checked by counsel before the demo RC; gaps filed to PLT
-- [ ] OPS-0063 · Demo · P0 · S · Legal entity & Steamworks onboarding — company entity confirmed, Steamworks partner agreement signed, tax interview and bank verified, Steam Direct fee paid for the full-game app; all IP assigned to the entity
-- [ ] OPS-0064 · Demo · P1 · S · NDA template — mutual NDA for playtesters, contractors and press previews with e-signature; signed copies stored per person
-- [ ] OPS-0065 · Demo · P0 · M · EULA decision — Steam Subscriber Agreement only vs custom EULA (telemetry, conduct, future mods); if custom, drafted by counsel, shown on first launch and linked on the store page
-- [ ] OPS-0066 · Demo · P0 · M · Privacy policy — GDPR/UK GDPR/CCPA: opt-in telemetry, crash reports, newsletter and Discord; controller identity, processors, 90-day raw-event retention, deletion by install id, contact address; hosted at a stable URL that PLT links in-game
-- [ ] OPS-0067 · Demo · P1 · S · Data processing agreements — DPAs signed with the telemetry, crash-reporting and newsletter processors; record of processing activities kept in `docs/legal/`
-- [ ] OPS-0068 · Demo · P1 · S · Website consent — no analytics or tracking cookies without consent; Steam wishlist widget and newsletter form checked against the privacy policy
-- [ ] OPS-0069 · Demo · P1 · S · Streaming & monetisation policy — public statement that creators may stream and monetise videos; composer and SFX-library licences confirmed to allow it (no Content ID claims on gameplay music)
-- [ ] OPS-0070 · Alpha · P1 · S · Trade-dress re-review for new UI — challenge mode, discipline screens and the Ch3–5 HUD additions checked against the counsel memo before Beta art lock
-- [ ] OPS-0071 · Release · P0 · S · Counsel sign-off letter for 1.0 — title, trade dress, EULA/privacy and store copy; filed with the NAR name-register sign-off and the ART asset IP audit before the RC gate
+- [ ] OPS-0063 · Demo · P0 · S · Steam AI-content disclosure — Steamworks content survey answered from the ART and AUD provenance logs (pre-generated and live-generated content); re-checked at every milestone gate
+- [ ] OPS-0064 · Demo · P1 · S · Open-source & font notices legal review — the PLT-generated third-party notices (runtime, npm, OFL fonts) checked by counsel before the demo RC; gaps filed to PLT
+- [ ] OPS-0065 · Demo · P0 · S · Legal entity & Steamworks onboarding — company entity confirmed, Steamworks partner agreement signed, tax interview and bank verified, Steam Direct fee paid for the full-game app; all IP assigned to the entity
+- [ ] OPS-0066 · Demo · P1 · S · NDA template — mutual NDA for playtesters, contractors and press previews with e-signature; signed copies stored per person
+- [ ] OPS-0067 · Demo · P0 · M · EULA decision — Steam Subscriber Agreement only vs custom EULA (telemetry, conduct, future mods); if custom, drafted by counsel, shown on first launch and linked on the store page
+- [ ] OPS-0068 · Demo · P0 · M · Privacy policy — GDPR/UK GDPR/CCPA: opt-in telemetry, crash reports, newsletter and Discord; controller identity, processors, 90-day raw-event retention, deletion by install id, contact address; hosted at a stable URL that PLT links in-game
+- [ ] OPS-0069 · Demo · P1 · S · Data processing agreements — DPAs signed with the telemetry, crash-reporting and newsletter processors; record of processing activities kept in `docs/legal/`
+- [ ] OPS-0070 · Demo · P1 · S · Website consent — no analytics or tracking cookies without consent; Steam wishlist widget and newsletter form checked against the privacy policy
+- [ ] OPS-0071 · Demo · P1 · S · Streaming & monetisation policy — public statement that creators may stream and monetise videos; composer and SFX-library licences confirmed to allow it (no Content ID claims on gameplay music)
+- [ ] OPS-0072 · Alpha · P1 · S · Trade-dress re-review for new UI — challenge mode, discipline screens and the Ch3–5 HUD additions checked against the counsel memo before Beta art lock
+- [ ] OPS-0073 · Release · P0 · S · Counsel sign-off letter for 1.0 — title, trade dress, EULA/privacy and store copy; filed with the NAR name-register sign-off and the ART asset IP audit before the RC gate
 
 ## OPS-F · Age ratings & content compliance (Demo → Beta)
 
-- [ ] OPS-0072 · Demo · P0 · S · Rating dry run — IARC questionnaire answered in draft for Ch1–2 content to preview PEGI/USK/ESRB-equivalent outcomes; result fed to the ART gore-tone target and UIX gore-level defaults
-- [ ] OPS-0073 · Demo · P0 · S · Steamworks mature-content survey — completed for the demo and full-game apps (surgical gore, frequent violence, occult themes, no sexual content) using the NAR descriptor text; matches what the demo shows
-- [ ] OPS-0074 · Demo · P1 · S · Territory rating table — whether Germany (USK), Australia, Brazil (ClassInd) and South Korea (GRAC) require or display a rating for a Steam release; path and cost per territory recorded
-- [ ] OPS-0075 · Demo · P1 · S · Germany rating path — USK/IARC rating obtained if required for store visibility in Germany before the demo goes public; occult and violence content checked against indexing risk
-- [ ] OPS-0076 · Demo · P2 · S · Occult-imagery market check — pentagram gesture, curse sigils and witch-hunt themes reviewed for storefront/territory sensitivities; mitigations (e.g. alternate icon art) logged
-- [ ] OPS-0077 · Beta · P1 · S · Korea rating — GRAC path completed before Korean-language release or Korean store visibility
-- [ ] OPS-0078 · Beta · P0 · S · Full-game rating update — questionnaires re-answered with Ch3–5 content (inquisition trial, obstetric operation, later Malison forms) and certificates updated before release
+- [ ] OPS-0074 · Demo · P0 · S · Rating dry run — IARC questionnaire answered in draft for Ch1–2 content to preview PEGI/USK/ESRB-equivalent outcomes; result fed to the ART gore-tone target and UIX gore-level defaults
+- [ ] OPS-0075 · Demo · P0 · S · Steamworks mature-content survey — completed for the demo and full-game apps (surgical gore, frequent violence, occult themes, no sexual content) using the NAR descriptor text; matches what the demo shows
+- [ ] OPS-0076 · Demo · P1 · S · Territory rating table — whether Germany (USK), Australia, Brazil (ClassInd) and South Korea (GRAC) require or display a rating for a Steam release; path and cost per territory recorded
+- [ ] OPS-0077 · Demo · P1 · S · Germany rating path — USK/IARC rating obtained if required for store visibility in Germany before the demo goes public; occult and violence content checked against indexing risk
+- [ ] OPS-0078 · Demo · P2 · S · Occult-imagery market check — pentagram gesture, curse sigils and witch-hunt themes reviewed for storefront/territory sensitivities; mitigations (e.g. alternate icon art) logged
+- [ ] OPS-0079 · Beta · P1 · S · Korea rating — GRAC path completed before Korean-language release or Korean store visibility
+- [ ] OPS-0080 · Beta · P0 · S · Full-game rating update — questionnaires re-answered with Ch3–5 content (inquisition trial, obstetric operation, later Malison forms) and certificates updated before release
 
 ## LOC-A · Demo language scope & i18n runtime (Demo)
 
@@ -420,62 +422,62 @@ Tasks below add the QA, localisation and production/legal work around them.
 
 ## OPS-G · Steam store & demo pages (Demo)
 
-- [ ] OPS-0079 · Demo · P0 · M · Store copy — short description ≤ 300 characters, About This Game using the ART section banners and GIFs, 5 feature bullets; checked against the marketing-reference rules before submission
-- [ ] OPS-0080 · Demo · P0 · S · Tags & genre — 20 tags chosen from 10 comparable titles (surgery, dark fantasy, medieval, gore, story rich, visual novel…); revisited after the first 1,000 wishlists
-- [ ] OPS-0081 · Demo · P0 · S · Coming-soon page live ≥ 3 months before Next Fest — release window "2027", UTM-tagged links used in every channel from day one
-- [ ] OPS-0082 · Demo · P0 · S · Demo system requirements — minimum/recommended OS, CPU, GPU (WebGL2/D3D11 class), RAM and disk from the ENG perf targets and the QAT lab sweep; Windows and Linux (macOS only if shipped)
-- [ ] OPS-0083 · Demo · P0 · S · Store settings — supported languages (LOC matrix), content descriptors (OPS survey), controller support and Deck status fields set for both apps
-- [ ] OPS-0084 · Demo · P0 · S · Demo page publishing — demo description and screenshots uploaded, "Download Demo" button visible on the main page, demo release date set, both pages pass Valve store review
-- [ ] OPS-0085 · Demo · P1 · S · Capsule people test — 30 people shown the ART small capsule for 3 s among 8 competitor capsules; ≥ 70 % name "surgery" or "dark fantasy"; iterate with ART otherwise
-- [ ] OPS-0086 · Demo · P1 · S · Weekly store-traffic review — Steamworks impressions → visits → wishlists; if visit rate stays below the genre median for 3 weeks, test a new capsule or short description
-- [ ] OPS-0087 · Demo · P2 · S · Curator Connect — ~50 curators (horror, indie, medical sim, dark fantasy) sent demo access and later full-game keys; coverage tracked
-- [ ] OPS-0088 · Release · P0 · S · 1.0 page update — price, release date, launch trailer, refreshed ART screenshots, achievements count, Deck status; submitted for review ≥ 2 weeks before launch
+- [ ] OPS-0081 · Demo · P0 · M · Store copy — short description ≤ 300 characters, About This Game using the ART section banners and GIFs, 5 feature bullets; checked against the marketing-reference rules before submission
+- [ ] OPS-0082 · Demo · P0 · S · Tags & genre — 20 tags chosen from 10 comparable titles (surgery, dark fantasy, medieval, gore, story rich, visual novel…); revisited after the first 1,000 wishlists
+- [ ] OPS-0083 · Demo · P0 · S · Coming-soon page live ≥ 3 months before Next Fest — release window "2027", UTM-tagged links used in every channel from day one
+- [ ] OPS-0084 · Demo · P0 · S · Demo system requirements — minimum/recommended OS, CPU, GPU (WebGL2/D3D11 class), RAM and disk from the ENG perf targets and the QAT lab sweep; Windows and Linux (macOS only if shipped)
+- [ ] OPS-0085 · Demo · P0 · S · Store settings — supported languages (LOC matrix), content descriptors (OPS survey), controller support and Deck status fields set for both apps
+- [ ] OPS-0086 · Demo · P0 · S · Demo page publishing — demo description and screenshots uploaded, "Download Demo" button visible on the main page, demo release date set, both pages pass Valve store review
+- [ ] OPS-0087 · Demo · P1 · S · Capsule people test — 30 people shown the ART small capsule for 3 s among 8 competitor capsules; ≥ 70 % name "surgery" or "dark fantasy"; iterate with ART otherwise
+- [ ] OPS-0088 · Demo · P1 · S · Weekly store-traffic review — Steamworks impressions → visits → wishlists; if visit rate stays below the genre median for 3 weeks, test a new capsule or short description
+- [ ] OPS-0089 · Demo · P2 · S · Curator Connect — ~50 curators (horror, indie, medical sim, dark fantasy) sent demo access and later full-game keys; coverage tracked
+- [ ] OPS-0090 · Release · P0 · S · 1.0 page update — price, release date, launch trailer, refreshed ART screenshots, achievements count, Deck status; submitted for review ≥ 2 weeks before launch
 
 ## OPS-H · Trailers, press kit & marketing (Demo → Release)
 
-- [ ] OPS-0089 · Demo · P0 · M · Announce trailer (60–75 s) — edited from the ART storyboard and deterministic replay captures, cleared music, 1080p60 and 4K masters, uploaded to YouTube and the Steam page
-- [ ] OPS-0090 · Demo · P0 · M · Next Fest demo trailer (45–60 s) — Ch1–2 highlights, Lauds reveal, "Play the free demo" end slate; subtitles from LOC; live on the page before the press preview
-- [ ] OPS-0091 · Demo · P0 · M · Press kit page — presskit()-style: fact sheet, description, features, trailers, ART press folder, team, contact, one-click zip; linked from Steam, website and Discord
-- [ ] OPS-0092 · Demo · P1 · S · Website — landing page with Steam wishlist widget, trailer, newsletter signup, press kit and privacy policy; Lighthouse performance and accessibility ≥ 90
-- [ ] OPS-0093 · Demo · P1 · S · Newsletter — provider with double opt-in; welcome email; sends at announce, Next Fest and launch; subscriber count in the weekly note
-- [ ] OPS-0094 · Demo · P1 · S · Social cadence — 3 posts a week (operation GIF, lore snippet, dev note) using the ART social kit; #screenshotsaturday weekly; scheduled 2 weeks ahead
-- [ ] OPS-0095 · Demo · P1 · S · Announce day — trailer premiere, press release, store page public, Discord open and social posts on one date, run from a checklist
-- [ ] OPS-0096 · Demo · P1 · S · Wishlist targets — monthly wishlist targets to Next Fest and launch derived from the revenue forecast; tracked weekly with the actions taken when below target
-- [ ] OPS-0097 · Demo · P2 · S · Showcase applications — ≥ 5 digital showcases/festivals fitting dark fantasy, horror or indie; deadlines in the master schedule, outcomes logged
-- [ ] OPS-0098 · Demo · P2 · S · Steam themed events — join fitting Steam events (e.g. horror-themed festivals) with the demo when dates allow; participation rules checked per event
-- [ ] OPS-0099 · Demo · P1 · S · Press preview builds — watermarked PLT press build distributed by key with an embargo date; recipients tracked
-- [ ] OPS-0100 · Release · P0 · M · Launch trailer (≈90 s) — edited from the ART launch storyboard with final art and VO, release-date card, LOC subtitles
-- [ ] OPS-0101 · Release · P1 · S · Launch press release & embargo — review embargo date set, release translated by LOC, sent with keys two weeks before launch
+- [ ] OPS-0091 · Demo · P0 · M · Announce trailer (60–75 s) — edited from the ART storyboard and deterministic replay captures, cleared music, 1080p60 and 4K masters, uploaded to YouTube and the Steam page
+- [ ] OPS-0092 · Demo · P0 · M · Next Fest demo trailer (45–60 s) — Ch1–2 highlights, Lauds reveal, "Play the free demo" end slate; subtitles from LOC; live on the page before the press preview
+- [ ] OPS-0093 · Demo · P0 · M · Press kit page — presskit()-style: fact sheet, description, features, trailers, ART press folder, team, contact, one-click zip; linked from Steam, website and Discord
+- [ ] OPS-0094 · Demo · P1 · S · Website — landing page with Steam wishlist widget, trailer, newsletter signup, press kit and privacy policy; Lighthouse performance and accessibility ≥ 90
+- [ ] OPS-0095 · Demo · P1 · S · Newsletter — provider with double opt-in; welcome email; sends at announce, Next Fest and launch; subscriber count in the weekly note
+- [ ] OPS-0096 · Demo · P1 · S · Social cadence — 3 posts a week (operation GIF, lore snippet, dev note) using the ART social kit; #screenshotsaturday weekly; scheduled 2 weeks ahead
+- [ ] OPS-0097 · Demo · P1 · S · Announce day — trailer premiere, press release, store page public, Discord open and social posts on one date, run from a checklist
+- [ ] OPS-0098 · Demo · P1 · S · Wishlist targets — monthly wishlist targets to Next Fest and launch derived from the revenue forecast; tracked weekly with the actions taken when below target
+- [ ] OPS-0099 · Demo · P2 · S · Showcase applications — ≥ 5 digital showcases/festivals fitting dark fantasy, horror or indie; deadlines in the master schedule, outcomes logged
+- [ ] OPS-0100 · Demo · P2 · S · Steam themed events — join fitting Steam events (e.g. horror-themed festivals) with the demo when dates allow; participation rules checked per event
+- [ ] OPS-0101 · Demo · P1 · S · Press preview builds — watermarked PLT press build distributed by key with an embargo date; recipients tracked
+- [ ] OPS-0102 · Release · P0 · M · Launch trailer (≈90 s) — edited from the ART launch storyboard with final art and VO, release-date card, LOC subtitles
+- [ ] OPS-0103 · Release · P1 · S · Launch press release — written and counsel-checked, translated by LOC, embargoed to launch hour and sent from the press CRM at launch
 
 ## OPS-I · Steam Next Fest (Demo)
 
-- [ ] OPS-0102 · Demo · P0 · S · Choose the edition — target Next Fest picked from Valve's published dates against the master schedule (with the following edition as fallback); registration deadline and press-preview date added
-- [ ] OPS-0103 · Demo · P0 · S · Confirm current rules — eligibility (unreleased game, one Next Fest per game, public store page, demo availability) read from Steamworks docs and recorded
-- [ ] OPS-0104 · Demo · P0 · S · Next Fest registration — completed in Steamworks before the deadline; confirmation and listing stored in `docs/production/`
-- [ ] OPS-0105 · Demo · P0 · S · Marketing calendar — T-10 weeks store assets final, T-8 string freeze/loc handoff, T-6 demo RC, T-4 Valve demo review (PLT checklist), T-2 press preview, T-0 festival; owners per line
-- [ ] OPS-0106 · Demo · P0 · S · Press & creator preview — outreach sent 10 days before the press preview with access to the demo; follow-ups on day 3
-- [ ] OPS-0107 · Demo · P1 · S · Demo public-release timing — release the demo publicly before the festival (early wishlists and reviews) or at its start; decision logged with the reasoning
-- [ ] OPS-0108 · Demo · P1 · M · Festival livestreams — a pre-recorded 20–30 min dev playthrough plus 2 live sessions scheduled via Steam broadcasting; moderators assigned
-- [ ] OPS-0109 · Demo · P0 · S · Festival-week operations — daily funnel dashboard review, Steam discussions and Discord sweep, known-issues update, daily summary posted
-- [ ] OPS-0110 · Demo · P1 · S · Festival event posts — demo-live, livestream and thank-you events scheduled in Steamworks in every demo language
-- [ ] OPS-0111 · Demo · P1 · S · Post-fest retrospective — wishlist delta, demo players, median playtime, funnel conversion and top feedback; decisions for Ch3–5 and a demo update within 2 weeks
-- [ ] OPS-0112 · Demo · P2 · S · Post-fest demo update — patch addressing the top 5 feedback items plus a thank-you announcement
+- [ ] OPS-0104 · Demo · P0 · S · Choose the edition — target Next Fest picked from Valve's published dates against the master schedule (with the following edition as fallback); registration deadline and press-preview date added
+- [ ] OPS-0105 · Demo · P0 · S · Confirm current rules — eligibility (unreleased game, one Next Fest per game, public store page, demo availability) read from Steamworks docs and recorded
+- [ ] OPS-0106 · Demo · P0 · S · Next Fest registration — completed in Steamworks before the deadline; confirmation and listing stored in `docs/production/`
+- [ ] OPS-0107 · Demo · P0 · S · Marketing calendar — T-10 weeks store assets final, T-8 string freeze/loc handoff, T-6 demo RC, T-4 Valve demo review (PLT checklist), T-2 press preview, T-0 festival; owners per line
+- [ ] OPS-0108 · Demo · P0 · S · Press & creator preview — outreach sent 10 days before the press preview with access to the demo; follow-ups on day 3
+- [ ] OPS-0109 · Demo · P1 · S · Demo public-release timing — release the demo publicly before the festival (early wishlists and reviews) or at its start; decision logged with the reasoning
+- [ ] OPS-0110 · Demo · P1 · M · Festival livestreams — a pre-recorded 20–30 min dev playthrough plus 2 live sessions scheduled via Steam broadcasting; moderators assigned
+- [ ] OPS-0111 · Demo · P0 · S · Festival-week operations — daily funnel dashboard review, Steam discussions and Discord sweep, known-issues update, daily summary posted
+- [ ] OPS-0112 · Demo · P1 · S · Festival event posts — demo-live, livestream and thank-you events scheduled in Steamworks in every demo language
+- [ ] OPS-0113 · Demo · P1 · S · Post-fest retrospective — wishlist delta, demo players, median playtime, funnel conversion and top feedback; decisions for Ch3–5 and a demo update within 2 weeks
+- [ ] OPS-0114 · Demo · P2 · S · Post-fest demo update — patch addressing the top 5 feedback items plus a thank-you announcement
 
 ## OPS-J · Community, press & creators (Demo → Post)
 
-- [ ] OPS-0113 · Demo · P0 · M · Discord server — #announcements, #demo-feedback, #bug-reports, #screenshots, #lore, #loc-feedback; roles, AutoMod and spam bot, verification gate, rules; linked from game, website and Steam
-- [ ] OPS-0114 · Demo · P1 · S · Moderation policy & team — community guidelines, escalation for harassment and NSFW posts, 2 volunteer moderators with documented permissions and a weekly sync
-- [ ] OPS-0115 · Demo · P1 · S · Steam discussions — pinned FAQ, bug-report template, known-issues thread and moderators assigned for both apps
-- [ ] OPS-0116 · Demo · P1 · S · Community FAQ — platforms, Deck, languages, release window, demo carry-over, accessibility, content warnings; kept on the website and Steam
-- [ ] OPS-0117 · Demo · P0 · M · Press list — 120 outlets and journalists covering PC indie, horror and dark fantasy in EN, DE, FR, ES, PL and PT-BR; CRM sheet with contact status
-- [ ] OPS-0118 · Demo · P0 · M · Creator list — 200 YouTube/Twitch/TikTok creators (horror, indie showcases, handheld-era nostalgia, medical sim) segmented by size and language
-- [ ] OPS-0119 · Demo · P1 · S · Key platform — Keymailer, Lurkit or Woovit campaign that verifies creators; demo and full-game access tracked per recipient
-- [ ] OPS-0120 · Demo · P1 · S · Key policy — every Steamworks key request logged (purpose, recipient, batch); leaked or unused keys revoked; no keys to unverified requesters
-- [ ] OPS-0121 · Demo · P1 · S · Outreach templates — pitch, follow-up and embargo notice, localised for the demo languages
-- [ ] OPS-0122 · Demo · P2 · S · Community events — screenshot and fan-art contests with written rules, prize terms and IP licence for submissions
-- [ ] OPS-0123 · Release · P0 · M · Review-copy wave — full-game keys to press 2 weeks before launch and to creators 1 week before, under embargo
-- [ ] OPS-0124 · Release · P1 · S · Launch-week community plan — Discord launch event, dev AMA, and a Steam review-response rule (reply to bug-related negative reviews within 48 h with the fix status)
-- [ ] OPS-0125 · Post · P1 · S · Public roadmap — post-launch roadmap (patches, free updates, DLC) published within 2 weeks of launch and updated quarterly
+- [ ] OPS-0115 · Demo · P0 · M · Discord server — #announcements, #demo-feedback, #bug-reports, #screenshots, #lore, #loc-feedback; roles, AutoMod and spam bot, verification gate, rules; linked from game, website and Steam
+- [ ] OPS-0116 · Demo · P1 · S · Moderation policy & team — community guidelines, escalation for harassment and NSFW posts, 2 volunteer moderators with documented permissions and a weekly sync
+- [ ] OPS-0117 · Demo · P1 · S · Steam discussions — pinned FAQ, bug-report template, known-issues thread and moderators assigned for both apps
+- [ ] OPS-0118 · Demo · P1 · S · Community FAQ — platforms, Deck, languages, release window, demo carry-over, accessibility, content warnings; kept on the website and Steam
+- [ ] OPS-0119 · Demo · P0 · M · Press list — 120 outlets and journalists covering PC indie, horror and dark fantasy in EN, DE, FR, ES, PL and PT-BR; CRM sheet with contact status
+- [ ] OPS-0120 · Demo · P0 · M · Creator list — 200 YouTube/Twitch/TikTok creators (horror, indie showcases, handheld-era nostalgia, medical sim) segmented by size and language
+- [ ] OPS-0121 · Demo · P1 · S · Key platform — Keymailer, Lurkit or Woovit campaign that verifies creators; demo and full-game access tracked per recipient
+- [ ] OPS-0122 · Demo · P1 · S · Key policy — every Steamworks key request logged (purpose, recipient, batch); leaked or unused keys revoked; no keys to unverified requesters
+- [ ] OPS-0123 · Demo · P1 · S · Outreach templates — pitch, follow-up and embargo notice, localised for the demo languages
+- [ ] OPS-0124 · Demo · P2 · S · Community events — screenshot and fan-art contests with written rules, prize terms and IP licence for submissions
+- [ ] OPS-0125 · Release · P0 · M · Review-copy wave — full-game keys to press 2 weeks before launch and to creators 1 week before, under embargo
+- [ ] OPS-0126 · Release · P1 · S · Launch-week community plan — Discord launch event, dev AMA, and a Steam review-response rule (reply to bug-related negative reviews within 48 h with the fix status)
+- [ ] OPS-0127 · Post · P1 · S · Public roadmap — post-launch roadmap (patches, free updates, DLC) published within 2 weeks of launch and updated quarterly
 
 ## QAT-L · Demo test plan, test suites & certification (Demo)
 
@@ -512,11 +514,11 @@ Tasks below add the QA, localisation and production/legal work around them.
 
 ## OPS-K · Demo release (Demo)
 
-- [ ] OPS-0126 · Demo · P0 · S · Demo launch comms checklist — build live, "Download Demo" visible, localised descriptions, announcement posted in all demo languages, Discord ping, press and creator emails, dashboards watched; ticked and archived
-- [ ] OPS-0127 · Demo · P1 · S · Demo hotfix policy — S1 fixed within 24 h and S2 within 72 h for the first two weeks after release and during Next Fest; patch notes posted on Steam for each update
-- [ ] OPS-0128 · Demo · P1 · S · Two-week demo review — players, median playtime, completion, wishlist conversion and demo reviews compared to targets; actions recorded in the decision log
-- [ ] OPS-0129 · Demo · P1 · S · Demo lifecycle decision — the demo stays available after 1.0 (with carry-over messaging) or is retired; logged with the reasoning
-- [ ] OPS-0130 · Demo · P2 · S · Steam Playtest vs demo — decide whether Beta testing uses a Steam Playtest app separate from the demo; access waves configured if yes
+- [ ] OPS-0128 · Demo · P0 · S · Demo launch comms checklist — build live, "Download Demo" visible, localised descriptions, announcement posted in all demo languages, Discord ping, press and creator emails, dashboards watched; ticked and archived
+- [ ] OPS-0129 · Demo · P1 · S · Demo hotfix policy — S1 fixed within 24 h and S2 within 72 h for the first two weeks after release and during Next Fest; patch notes posted on Steam for each update
+- [ ] OPS-0130 · Demo · P1 · S · Two-week demo review — players, median playtime, completion, wishlist conversion and demo reviews compared to targets; actions recorded in the decision log
+- [ ] OPS-0131 · Demo · P1 · S · Demo lifecycle decision — the demo stays available after 1.0 (with carry-over messaging) or is retired; logged with the reasoning
+- [ ] OPS-0132 · Demo · P2 · S · Steam Playtest vs demo — decide whether Beta testing uses a Steam Playtest app separate from the demo; access waves configured if yes
 
 ## QAT-M · Full-game QA: Alpha → Release → Post
 
@@ -548,7 +550,7 @@ Tasks below add the QA, localisation and production/legal work around them.
 - [ ] QAT-0169 · Post · P1 · M · Update and DLC test plans — per release: new content suites, saves with and without the DLC, DLC ownership checks online and offline, leaderboards unaffected
 - [ ] QAT-0170 · Post · P2 · S · Player-reported crash review — top 10 crash signatures reviewed every two weeks for the first three months; each fixed or explained in the known-issues list
 
-## LOC-H · Full-game localisation (Alpha → Post)
+## LOC-H · Full-game localisation (Beta → Post)
 
 ### Demo languages, Chapters 3–5
 - [ ] LOC-0078 · Beta · P0 · L · French, Chapters 3–5 — Ch3–5 story, callouts, barks, codex, challenge mode and discipline UI translated
@@ -590,26 +592,26 @@ Tasks below add the QA, localisation and production/legal work around them.
 
 ## OPS-L · Full-game release (Beta → Release)
 
-- [ ] OPS-0131 · Beta · P0 · S · Release date — chosen to avoid major genre launches and Steam sale conflicts; set in Steamworks with the page live as "coming soon" for at least the 2 weeks Valve requires (target ≥ 8 weeks)
-- [ ] OPS-0132 · Beta · P0 · S · Pricing — comparables research (surgery-action and dark-fantasy indies), base USD price, regional prices from Valve's recommended table, launch-discount (10–20 %) decision
-- [ ] OPS-0133 · Beta · P1 · S · Launch marketing plan — dated beats (release-date reveal, launch trailer, preview coverage, review embargo, launch streams) tied to wishlist targets
-- [ ] OPS-0134 · Release · P0 · M · Commercial & comms launch checklist — price and discount live, page approved, press embargo scheduled, social posts queued, Discord event, creator keys sent, dashboards open (technical launch items stay in the PLT release checklist)
-- [ ] OPS-0135 · Release · P0 · S · Day-one patch plan — patch branch cut from the RC, contents frozen 5 days before launch, notes drafted and translated, QA verification scheduled before launch hour
-- [ ] OPS-0136 · Release · P1 · S · Launch-week analytics review — daily sales, refunds, review score, wishlist conversion and top issues; a day-7 report with actions
-- [ ] OPS-0137 · Release · P2 · S · Launch streams — co-stream schedule with creators and two dev streams in launch week
-- [ ] OPS-0138 · Release · P1 · S · Final credits check — in-game credits compared line by line with the credit obligations register and every contract
-- [ ] OPS-0139 · Release · P2 · S · First payout reconciliation — first Steam payout matched against sales reports and the revenue forecast; variances explained in the monthly review
+- [ ] OPS-0133 · Beta · P0 · S · Release date — chosen to avoid major genre launches and Steam sale conflicts; set in Steamworks with the page live as "coming soon" for at least the 2 weeks Valve requires (target ≥ 8 weeks)
+- [ ] OPS-0134 · Beta · P0 · S · Pricing — comparables research (surgery-action and dark-fantasy indies), base USD price, regional prices from Valve's recommended table, launch-discount (10–20 %) decision
+- [ ] OPS-0135 · Beta · P1 · S · Launch marketing plan — dated beats (release-date reveal, launch trailer, preview coverage, review embargo, launch streams) tied to wishlist targets
+- [ ] OPS-0136 · Release · P0 · M · Commercial & comms launch checklist — price and discount live, page approved, press embargo scheduled, social posts queued, Discord event, review-copy wave confirmed, dashboards open (technical launch items stay in the PLT release checklist)
+- [ ] OPS-0137 · Release · P0 · S · Day-one patch plan — patch branch cut from the RC, contents frozen 5 days before launch, notes drafted and translated, QA verification scheduled before launch hour
+- [ ] OPS-0138 · Release · P1 · S · Launch-week analytics review — daily sales, refunds, review score, wishlist conversion and top issues; a day-7 report with actions
+- [ ] OPS-0139 · Release · P2 · S · Launch streams — co-stream schedule with creators and two dev streams in launch week
+- [ ] OPS-0140 · Release · P1 · S · Final credits check — in-game credits compared line by line with the credit obligations register and every contract
+- [ ] OPS-0141 · Release · P2 · S · First payout reconciliation — first Steam payout matched against sales reports and the revenue forecast; variances explained in the monthly review
 
 ## OPS-M · Post-launch (Post)
 
-- [ ] OPS-0140 · Post · P0 · S · Patch cadence — hotfixes within 72 h in week 1, patch 1.1 at about 4 weeks with QoL and balance, then monthly until stable; each patch's scope set in triage
-- [ ] OPS-0141 · Post · P1 · M · Free update 1 — challenge pack built around the NAR/ART "Unsung Hour" secret operation plus remixed Ch1–5 challenges with leaderboards; scoped, scheduled and announced
-- [ ] OPS-0142 · Post · P1 · M · Free update 2 — "Office of Hours" boss rush of all eight Malison hours with its own leaderboard; go/no-go on month-2 engagement data
-- [ ] OPS-0143 · Post · P1 · M · Paid DLC business case — the NAR "Ninth Office" chapter outline costed (ART DLC template, loc, VO), with price, attach-rate assumption and a go/no-go after 3 months of sales
-- [ ] OPS-0144 · Post · P1 · S · Mod policy — content rules (no third-party IP, no hateful content), takedown handling via the IP-claim procedure, EULA mod clause, moderation owner for Workshop items (tech per PLT)
-- [ ] OPS-0145 · Post · P1 · S · Sales calendar — Steam seasonal sales and Daily Deal requests; discount ladder (e.g. 20 → 30 → 40 %) tied to months since launch; ART sale capsules scheduled
-- [ ] OPS-0146 · Post · P1 · S · Monthly business review — revenue, wishlists, conversion, refunds, review trend, playtime and completion (Steamworks + telemetry); decisions logged
-- [ ] OPS-0147 · Post · P1 · S · Refund & review watch — refund rate and review score checked weekly for 3 months; a refund rate above 10 % or score drop of 5 points triggers an investigation ticket
-- [ ] OPS-0148 · Post · P2 · S · Bundles & cross-promotion — a Steam bundle or cross-promo with a complementary indie after 6 months; partner and terms logged
-- [ ] OPS-0149 · Post · P2 · S · End-of-support plan — when telemetry, Discord support and patches wind down; retention and shutdown notice drafted in line with the privacy policy
-- [ ] OPS-0150 · Post · P1 · S · Project post-mortem — after 3 months: schedule vs plan, budget vs actual, what to keep and change; published internally
+- [ ] OPS-0142 · Post · P0 · S · Patch cadence — hotfixes within 72 h in week 1, patch 1.1 at about 4 weeks with QoL and balance, then monthly until stable; each patch's scope set in triage
+- [ ] OPS-0143 · Post · P1 · M · Free update 1 — challenge pack built around the NAR/ART "Unsung Hour" secret operation plus remixed Ch1–5 challenges with leaderboards; scoped, scheduled and announced
+- [ ] OPS-0144 · Post · P1 · M · Free update 2 — boss rush (working title "Office of Hours") of all eight Malison hours with its own leaderboard; go/no-go on month-2 engagement data
+- [ ] OPS-0145 · Post · P1 · M · Paid DLC business case — the NAR "Ninth Office" chapter outline costed (ART DLC template, loc, VO), with price, attach-rate assumption and a go/no-go after 3 months of sales
+- [ ] OPS-0146 · Post · P1 · S · Mod policy — content rules (no third-party IP, no hateful content), takedown handling via the IP-claim procedure, EULA mod clause, moderation owner for Workshop items (tech per PLT)
+- [ ] OPS-0147 · Post · P1 · S · Sales calendar — Steam seasonal sales and Daily Deal requests; discount ladder (e.g. 20 → 30 → 40 %) tied to months since launch; ART sale capsules scheduled
+- [ ] OPS-0148 · Post · P1 · S · Monthly business review — revenue, wishlists, conversion, refunds, review trend, playtime and completion (Steamworks + telemetry); decisions logged
+- [ ] OPS-0149 · Post · P1 · S · Refund & review watch — refund rate and review score checked weekly for 3 months; a refund rate above 10 % or score drop of 5 points triggers an investigation ticket
+- [ ] OPS-0150 · Post · P2 · S · Bundles & cross-promotion — a Steam bundle or cross-promo with a complementary indie after 6 months; partner and terms logged
+- [ ] OPS-0151 · Post · P2 · S · End-of-support plan — when telemetry, Discord support and patches wind down; retention and shutdown notice drafted in line with the privacy policy
+- [ ] OPS-0152 · Post · P1 · S · Project post-mortem — after 3 months: schedule vs plan, budget vs actual, what to keep and change; published internally
