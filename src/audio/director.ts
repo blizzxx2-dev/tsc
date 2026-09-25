@@ -42,9 +42,9 @@ export interface OpFrame {
 /** Stereo position from a field x coordinate (−0.6…0.6). */
 export const panOf = (x: number): number => Math.max(-0.6, Math.min(0.6, ((x - FIELD.cx) / FIELD.rx) * 0.6));
 
-/** Patient voice type from the operation's patient line and race: 0 man, 1 woman, 2 elder, 3 deep (mountainfolk, hornfolk, giants). */
+/** Patient voice type from the operation's patient line and race: 0 man, 1 woman, 2 elder, 3 deep (dwarves, orcs, hornfolk, giants). */
 export function patientVoice(patient: string, race?: string): number {
-  if (race === 'mountainfolk' || race === 'hornfolk' || race === 'giant') return 3;
+  if (race === 'dwarf' || race === 'orc' || race === 'hornfolk' || race === 'giant') return 3;
   if (/\b(woman|girl|widow|mother|wife|maid|daughter|sister|abbess|nun|lady|goodwife|Frau|she|her)\b/i.test(patient)) return 1;
   if (/\b(old|elder|aged|grandfather|grandsire|greybeard|venerable)\b/i.test(patient)) return 2;
   return 0;

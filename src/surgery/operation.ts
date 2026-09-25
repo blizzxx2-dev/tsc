@@ -4,6 +4,7 @@ import { Entity, type Origin } from './entity';
 import type { FxKind } from '../render/particles';
 import { toolInfo, type Pointer, type Rank, type Rating, type ToolId } from './types';
 import { DEFAULT_TUNING, mergeTuning, type Tuning, type TuningOverride } from './tuning';
+import { applySpecies, type Species } from './species';
 import { AUTO_LENS_AFTER, combineMods, DIFFICULTIES, NO_ASSISTS, NO_MODS, SLOW_TELLS, assistFlags, type Assists, type Difficulty, type Modifiers } from './difficulty';
 import type { LitanyVariant } from './litany';
 import { CueSink, type JournalEvent, type SimEvents } from './events';
@@ -53,8 +54,8 @@ export interface OperationDef {
   patientGender?: 'm' | 'f' | 'unknown';
   diagnosis: string;
   organ: OrganKind;
-  /** Folk of the patient, for flesh tint (setting peoples only: see docs/content/op-checklist.md). */
-  race?: 'human' | 'mountainfolk' | 'hornfolk' | 'giant';
+  /** The patient's people: skin, flesh and depth on the table, and how their body responds (src/surgery/species.ts). */
+  race?: Species;
   timeLimit: number;
   vitals?: number;
   /** Passive vitals loss per second, independent of wounds. */
@@ -391,7 +392,7 @@ export class Operation {
     this.assists = { ...NO_ASSISTS, ...(opts.challenge ? {} : opts.assists), ...(opts.practice ? { noFail: true } : {}) };
     this.mods = combineMods(NO_MODS, opts.mods ?? {});
     this.upgrades = new Set(opts.challenge ? [] : (opts.upgrades ?? []));
-    this.tuning = mergeTuning(OP_TUNING[def.id], def.tuning, this.mods.tuning, upgradeTuning(this.upgrades));
+    this.tuning = applySpecies(mergeTuning(OP_TUNING[def.id], def.tuning, this.mods.tuning, upgradeTuning(this.upgrades)), def.race);
     // Candle-Only: the lens sees less in the gloom.
     if (opts.mutators?.includes('candle')) this.tuning.lens.radius *= 0.7;
     this.litanyVariant = opts.litanyVariant ?? 'stillness';

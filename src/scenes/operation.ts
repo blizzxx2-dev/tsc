@@ -17,6 +17,7 @@ import { button, inRect, reticle, toolIcon } from '../ui/widgets';
 import { giltText, UI } from '../ui/ornaments';
 import type { ActionId } from '../input/actions';
 import { DamageAggregator, ToolHints } from '../ui/hudPrefs';
+import { speciesBlood } from '../render/organs';
 import { band, caps, heading, ratingCallout, diamond, glass, INK, keycap, meter, numerals, titleRule, well } from '../ui/hudKit';
 import { localeInfo } from '../i18n/locales';
 import { getLocale } from '../i18n';
@@ -330,6 +331,7 @@ export class OperationScene implements Scene {
       cellSoft: pal.cellSoft,
       rough: pal.rough,
       gore: presentation.gore,
+      species: pal.species,
       lights: [
         { x: light.x, y: light.y, h: 1.1, i: 1.1, col: [0.95, 0.9, 0.82] },
         { x: FIELD.cx - FIELD.rx - 60, y: FIELD.cy + 120, h: 0.35, i: 0.45 * (0.85 + 0.15 * Math.sin(t * 9.3) * Math.sin(t * 4.1)), col: [1.0, 0.6, 0.3] },
@@ -337,7 +339,7 @@ export class OperationScene implements Scene {
       ],
     });
     const colours = palette();
-    g.fluidComposite(light, { blood: colours.blood, pus: colours.pus, bile: colours.bile, gore: presentation.gore });
+    g.fluidComposite(light, { blood: speciesBlood(colours.blood, pal.species), pus: colours.pus, bile: colours.bile, gore: presentation.gore });
     for (const e of ents) e.draw(g, op);
     // High contrast: a 2 px ring around everything that takes an instrument.
     if (highContrast()) for (const e of ents) if (e.required) g.arc(e.pos.x, e.pos.y, 28, 2, hex('#ffffff', 0.85), 1);

@@ -1,3 +1,5 @@
+import type { ToolId } from './surgery/types';
+import { registerToolModel, TOOL_MODEL } from './ui/toolIcons3d';
 import { MANIFEST } from './assets/manifest.gen';
 import { registerSet, SETS } from './scenes/sets';
 import type { Model3D } from './render/renderer3d';
@@ -356,6 +358,10 @@ async function boot(): Promise<void> {
   game.assets.prefetch('title');
   game.assets.prefetch('ops-common');
   // 3D sets: registered with the backdrop as they arrive (the procedural scene shows until then).
+  for (const [tool, id] of Object.entries(TOOL_MODEL).filter(([, id]) => id in MANIFEST))
+    void game.assets.load(id as AssetId).then((a) => {
+      if (a.value) registerToolModel(tool as ToolId, a.value as Model3D);
+    });
   // Models are generated (npm run art:models) and absent from fresh clones: skip unbuilt sets.
   for (const [key, id] of Object.entries(SETS).filter(([, id]) => id in MANIFEST))
     void game.assets.load(id as AssetId).then((a) => {

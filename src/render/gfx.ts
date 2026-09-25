@@ -13,6 +13,7 @@ import { checkerPixels, Texture } from './texture';
 import { scissorRect } from './viewport';
 import { UI_ART_FS } from '../art/uiShader';
 import { PLATE_FS } from './shaders/plate';
+import { SPECIES_PROFILES, type SpeciesLook } from '../surgery/species';
 import { Renderer3D, type Scene3D } from './renderer3d';
 
 /** Bilinear upsample of a reduced-resolution layer. */
@@ -113,6 +114,8 @@ export interface FleshParams {
   gore?: number;
   /** Up to 3 lights: position (virtual px), height, intensity, colour. */
   lights?: { x: number; y: number; h: number; i: number; col: [number, number, number] }[];
+  /** The patient's people: skin, hide depth, scattering and blood (src/surgery/species.ts). */
+  species?: SpeciesLook;
 }
 
 export interface PostParams {
@@ -968,6 +971,10 @@ export class Gfx {
     const t = this.targets.acquire(key, w, h, { depthStencil: true });
     this.renderer3d.render({ ...scene, clearColor: scene.clearColor ?? [0, 0, 0, 0] }, { fb: t.fb, w, h });
     const gl = this.gl;
+    // Mipmaps so the icon minifies cleanly to tray size.
+    gl.bindTexture(gl.TEXTURE_2D, t.tex);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     this.bindTarget(null);
     this.applyBlend();
@@ -1069,6 +1076,15 @@ export class Gfx {
     gl.uniform1f(this.u(pr, 'u_cellSoft'), f.cellSoft ?? 0.08);
     gl.uniform1f(this.u(pr, 'u_rough'), f.rough ?? 0.45);
     gl.uniform1f(this.u(pr, 'u_gore'), f.gore ?? 0);
+    const sp = f.species ?? SPECIES_PROFILES.human.look;
+    gl.uniform3fv(this.u(pr, 'u_skin'), sp.skin);
+    gl.uniform2f(this.u(pr, 'u_layers'), sp.dermis, sp.fat);
+    gl.uniform4f(this.u(pr, 'u_sssCol'), sp.sss[0], sp.sss[1], sp.sss[2], sp.sssAmount);
+    gl.uniform2f(this.u(pr, 'u_hide'), sp.coarse, sp.scars);
+    gl.uniform1f(this.u(pr, 'u_veinAmt'), sp.veinAmount);
+    gl.uniform3fv(this.u(pr, 'u_blood'), sp.blood);
+    gl.uniform3fv(this.u(pr, 'u_bloodDeep'), sp.bloodDeep);
+    gl.uniform1f(this.u(pr, 'u_sheen'), sp.sheen);
     const lights = f.lights ?? [{ x: f.light.x, y: f.light.y, h: 0.9, i: 1.4, col: [1, 0.9, 0.78] }];
     const lp = new Float32Array(12);
     const lc = new Float32Array(9);
@@ -1421,6 +1437,22 @@ export class Gfx {
     this.vert(x0, y1, u0, v1, tint);
     this.texUnit = 0;
     this.restore();
+  }
+
+  /** Draw a whole texture into a rect through the batch; `flipV` for render-target textures (GL origin bottom-left). */
+  texQuad(tex: WebGLTexture, x: number, y: number, w: number, h: number, tint: RGBA = 0xffffffff, flipV = false): void {
+    this.room(6);
+    const unit = this.unitFor(tex);
+    const v0 = flipV ? 1 : 0;
+    const v1 = flipV ? 0 : 1;
+    this.texUnit = unit;
+    this.vert(x, y, 0, v0, tint);
+    this.vert(x + w, y, 1, v0, tint);
+    this.vert(x + w, y + h, 1, v1, tint);
+    this.vert(x, y, 0, v0, tint);
+    this.vert(x + w, y + h, 1, v1, tint);
+    this.vert(x, y + h, 0, v1, tint);
+    this.texUnit = 0;
   }
 
   /**

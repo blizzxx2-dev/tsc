@@ -53,9 +53,9 @@ export const OP_2_1 = defineOp({
 export const OP_2_2 = defineOp({
   id: 'op2-2',
   title: 'The Black Seam',
-  patient: 'Orsa Flintvein, mountain-folk prospector',
+  patient: 'Orsa Flintvein, dwarf prospector',
   patientGender: 'f',
-  race: 'mountainfolk',
+  race: 'dwarf',
   diagnosis: 'Cave-in at a hexstone seam. Shards driven beneath the skin, invisible to the eye. Surrounding flesh spoiling.',
   organ: 'flesh',
   timeLimit: 270,
@@ -96,8 +96,9 @@ export const OP_2_2 = defineOp({
 export const OP_2_3 = defineOp({
   id: 'op2-3',
   title: 'Brood-Mother’s Kiss',
-  patient: 'Henning, forager',
+  patient: 'Ilvaren, elf forager',
   patientGender: 'm',
+  race: 'elf',
   diagnosis: 'Web-spinner bite. Neurotoxic venom spreading from the neck; several egg sacs laid beneath the skin.',
   organ: 'flesh',
   timeLimit: 240,

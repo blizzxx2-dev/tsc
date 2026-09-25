@@ -25,4 +25,13 @@ for (const f of scripts) {
     console.error(`✖ ${f} (${r.status})\n${tail}`);
   } else console.log(`✔ ${f} in ${((Date.now() - t0) / 1000).toFixed(1)} s${tail ? `\n${tail}` : ''}`);
 }
-process.exit(failed ? 1 : 0);
+if (failed) process.exit(1);
+// GPU texture compression of the fresh exports (KTX2 UASTC), then the asset manifest.
+for (const [cmd, args] of [
+  ['node', ['scripts/art/compress-models.mjs', ...only.flatMap((o) => (o === 'tools' ? [] : [`set-${o}`]))]],
+  ['node', ['scripts/build-assets.ts']],
+  ['node', ['scripts/art/check-models.mjs', '--stamp']],
+]) {
+  const r = spawnSync(cmd, args, { stdio: 'inherit' });
+  if (r.status !== 0) process.exit(r.status ?? 1);
+}

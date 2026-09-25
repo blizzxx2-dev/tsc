@@ -19,7 +19,7 @@ def materials():
         'steel': flat('steel', srgb('#c4c8ce'), metallic=1.0, roughness=0.24),
         'iron': flat('iron', srgb('#55524e'), metallic=1.0, roughness=0.55),
         'brass': flat('brass', srgb('#d4a656'), metallic=1.0, roughness=0.3),
-        'wood': pbr('handle-wood', 'dark_wood', tint=(1.05, 0.92, 0.8)),
+        'wood': pbr('handle-wood', 'dark_wood', tint=(0.66, 0.5, 0.4)),
         'bone': flat('bone', srgb('#dcd0b4'), roughness=0.42, sss=0.35),
         'glaze': flat('glaze', srgb('#56664a'), roughness=0.16),
         'clay': flat('clay', srgb('#8a5a3a'), roughness=0.8),
@@ -89,11 +89,35 @@ def tongs(M):
 
 
 def leech_pipe(M):
-    pipe = along_x(lathe('pipe', [(0.0, 0.0), (0.009, 0.0), (0.0085, 0.006), (0.0048, 0.014), (0.0042, 0.1), (0.0058, 0.104), (0.0058, 0.112), (0.0035, 0.114), (0.0, 0.114)], 84, M['brass']), -0.07)
-    # The leech: a banded, tapering body curling off the mouth.
-    pts = [(-0.064 + 0.028 * math.sin(t * 1.4), -0.006 - 0.03 * t, -0.004 * t) for t in [i / 10 for i in range(11)]]
-    leech = tube('leech', pts, 0.0065, M['leech'], segs=32, taper=[0.7, 0.95, 1.0, 1.05, 1.0, 0.95, 0.9, 0.8, 0.7, 0.55, 0.4])
-    return [pipe, leech]
+    """A brass leech-pipe: turned grip, long tube, flared bell; a banded leech emerging from the bell."""
+    grip = along_x(turned_handle('pipe-grip', 0.06, 0.0072, M['wood'], beads=2), -0.11)
+    ferrule = along_x(cylinder('pipe-ferrule', 0.0068, 0.008, mat=M['brass'], segs=24), -0.05)
+    tube_ = along_x(lathe('pipe', [(0.0, 0.0), (0.0042, 0.0), (0.0042, 0.08), (0.0055, 0.086), (0.0048, 0.09), (0.0075, 0.104), (0.013, 0.114), (0.0145, 0.118), (0.0125, 0.119), (0.0, 0.119)], 64, M['brass']), -0.042)
+    ring = along_x(lathe('pipe-ring', [(0.0, 0.0), (0.0058, 0.0), (0.0062, 0.002), (0.0058, 0.004), (0.0, 0.004)], 48, M['brass']), 0.0)
+    # The leech: a soft, tapering, banded body arching out of the bell and back toward the tube.
+    path = [(0.078 + 0.012 * t + 0.02 * math.sin(t * 2.4), 0.012 * math.sin(t * 3.1) - 0.004 * t, 0.006 * math.sin(t * 2.0) - 0.006 * t) for t in [i / 16 for i in range(17)]]
+    taper = [0.55, 0.8, 0.92, 1.0, 1.04, 1.06, 1.06, 1.04, 1.0, 0.95, 0.9, 0.84, 0.78, 0.7, 0.62, 0.55, 0.5]
+    body = tube('leech-body', path, 0.0058, M['leech'], segs=32, taper=taper)
+    bands = []
+    for i in range(2, 15, 2):
+        x, y, z = path[i]
+        dx, dy, dz = (path[i + 1][k] - path[i - 1][k] for k in range(3))
+        ln = math.sqrt(dx * dx + dy * dy + dz * dz) or 1
+        r = 0.0058 * taper[i] * 1.06
+        pts = []
+        ax = (dx / ln, dy / ln, dz / ln)
+        # A ring around the body axis at this station.
+        up = (0.0, 0.0, 1.0)
+        u = (ax[1] * up[2] - ax[2] * up[1], ax[2] * up[0] - ax[0] * up[2], ax[0] * up[1] - ax[1] * up[0])
+        ul = math.sqrt(sum(c * c for c in u)) or 1
+        u = tuple(c / ul for c in u)
+        v = (ax[1] * u[2] - ax[2] * u[1], ax[2] * u[0] - ax[0] * u[2], ax[0] * u[1] - ax[1] * u[0])
+        for k in range(25):
+            a = k * 2 * math.pi / 24
+            pts.append(tuple(p + r * (math.cos(a) * u[j] + math.sin(a) * v[j]) for j, p in enumerate((x, y, z))))
+        bands.append(tube('leech-band', pts, 0.00055, M['leech']))
+    sucker = along_x(lathe('leech-sucker', [(0.0, 0.0), (0.0034, 0.0), (0.0042, 0.0016), (0.003, 0.0026), (0.0, 0.002)], 32, M['leech']), path[0][0] - 0.002, path[0][1], path[0][2])
+    return [grip, ferrule, tube_, ring, body, *bands, sucker]
 
 
 def gut_thread(M):

@@ -164,7 +164,7 @@ export function parseGlb(buf: ArrayBuffer): GltfModel {
   const images: GltfImage[] = (json.images ?? []).map((im: any) => ({ mime: im.mimeType ?? 'image/png', bytes: typeof im.bufferView === 'number' ? view(im.bufferView).slice() : new Uint8Array(0) }));
   const textures: GltfTexture[] = (json.textures ?? []).map((t: any) => {
     const s = typeof t.sampler === 'number' ? json.samplers[t.sampler] : {};
-    return { image: t.source ?? 0, repeat: (s.wrapS ?? 10497) === 10497 };
+    return { image: t.extensions?.KHR_texture_basisu?.source ?? t.source ?? 0, repeat: (s.wrapS ?? 10497) === 10497 };
   });
 
   const meshes: GltfPrimitive[][] = (json.meshes ?? []).map((m: any) =>

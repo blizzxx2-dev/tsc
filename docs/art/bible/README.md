@@ -53,8 +53,10 @@ asset contains none of these:
 - [ ] rat-men, horned rats or a horned-rat sigil; bird-headed or daemonic "chaos" heralds
 - [ ] a hammer-and-comet, a warrior-god with a twin-tailed comet, or a "Sigmarite" priest look
       (bald, hammer, scripture-chained)
-- [ ] green-skinned orcs or goblins, pointed-eared elves, bearded "dwarf" miners in horned helms
-      (our peoples are human, mountainfolk, hornfolk and giants, drawn from folk costume)
+- [ ] Games Workshop's own takes on the fantasy peoples: bright-green "greenskin" orcs with
+      glyph-daubed crude armour, rune-covered "Dawi" dwarf throngs, High/Dark/Wood-elf heraldry,
+      armour shapes or iconography. Dwarves, elves and orcs themselves are generic fantasy and
+      welcome; ours are designed from scratch (§14)
 - [ ] names, heraldry or place names from any Games Workshop setting
 
 Banned silhouettes also include the big-pauldron power-armour shape and the Nurgle-style bloated
@@ -159,7 +161,7 @@ Target rating: PEGI 16 / ESRB M.
 | Chapter | Region | Key light and palette | Factions |
 | --- | --- | --- | --- |
 | III | The Kiln Rows (glassworks and forges) | Furnace orange, soot, green glass | Glaziers' guild, the Pyre |
-| IV | The Vennmark (marsh villages, salt mines) | Grey-green fog, lantern amber | Marsh folk, mountainfolk miners |
+| IV | The Vennmark (marsh villages, salt mines) | Grey-green fog, lantern amber | Marsh folk, dwarf miners, orc sellswords |
 | V | Hollow Night (the Choir's abbey) | Moonlit blue with curse-violet accents | The Hollow Choir, the Office |
 
 The remaining Hours (Prime, Terce, Sext, None, Vespers, Compline, the Office) each get one
@@ -167,3 +169,18 @@ signature shape. Prime is written names, Terce a flame-front, Sext a sun-dial, N
 worm, Vespers candle wicks, Compline silence-nodes, and the Office the eight Hours at once. The
 Hours share curse-violet as a secondary colour, and each has its own primary (Terce furnace red,
 Sext bleached noon white, Vespers tallow gold).
+
+## 14. The peoples on the table
+
+Patients are mostly human, with dwarves and elves in every chapter and, rarely, an orc. Each has
+its own skin, flesh and depth, and their bodies play differently (`src/surgery/species.ts`; the
+flesh shader draws the skin collar around the opening and the tissue layers at every cut's lips).
+
+| People | Look | On the table |
+| --- | --- | --- |
+| Human | The baseline. | The baseline. |
+| Dwarf | Short, broad, dense. Ruddy weathered skin, coarse pores and stubble, a thick dermis over hard-packed muscle; dark, rich blood. Miners' leather, felt and iron, braided beards bound with copper wire. No rune-covered armour. | Slow, firm lancet strokes (tough hide); bleeds little; hardy. |
+| Elf | Tall and fine-boned. Pale, fine-grained skin so thin it glows with the light behind it, blue-silver veins, bright scarlet blood; a paper-thin dermis. Undyed wool and forest leather, bone and horn toggles. No high-elf heraldry or winged helms. | Cuts easily and bleeds fast; stray cuts hurt twice over; answers tinctures quickly. |
+| Orc | Rare. Heavy and scarred, a grey-olive hide (never bright green) as thick as boot leather, a heavy brow and lower tusks; dark near-black blood. Sellsword kit from human armouries, patched and re-riveted. No glyph-daubed crude armour. | The hide fights the blade; blood clots fast; tinctures take poorly; endures wounds that kill men. |
+| Hornfolk | Dun, weathered, horn-buds at the brow. | Tough skin, otherwise near human. |
+| Giant | Sallow, coarse and vast. | Very thick hide, slow to bleed out and slow to heal. |

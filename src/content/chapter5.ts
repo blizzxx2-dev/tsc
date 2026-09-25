@@ -59,7 +59,7 @@ export const STORY_5_3: StoryDef = {
   lines: [
     say('patient', 'The court finds Doctor Kreuzer guilty. He will burn at the east gate on the morning after Hollow Night.', 'The Presiding Judge'),
     n('He is taken below, to a cell cut into the rock under the Tribunal court. The rock is very old. The wall is very thin.'),
-    n('At midnight the wall knocks. Twice, then once, then twice: mountain-folk courtesy.'),
+    n('At midnight the wall knocks. Twice, then once, then twice: dwarf courtesy.'),
     say('patient', 'Doctor! I have named this one the Kreuzer Tunnel. It is a very good tunnel. Mind your head.', 'Orsa Flintvein'),
     say('mauer', 'Thirty-five of mine at the other end, and not one of them saw a thing. Move, Doctor.'),
     say('kreuzer', 'Captain — you’ll hang for this.'),

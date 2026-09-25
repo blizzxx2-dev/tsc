@@ -23,8 +23,11 @@ export const STORY_4_1: StoryDef = {
     say('mauer', 'Forty-one of mine. Forty-one. Sixty crossbowmen from Ostrau. Nine deserters we’ve caught and four we haven’t. Forty-one.'),
     say('ilse', 'He counts them every morning. He counted them twice while you were asleep.'),
     say('mauer', 'Someone has to. Doctor, your field kit is in the second wagon. Rain gets in the tent. Mud gets in everything.'),
-    say('patient', 'Ruprecht, crossbowman. Took one of our own quarrels at the practice butts, sir. Right beside the big vein.', 'Ruprecht'),
-    say('ilse', 'Clamp the artery with the tongs before you pull that bolt, Doctor. If it comes out first, he empties like a cask.'),
+    n('The men nobody asks about sit apart. One is an orc, grey as slate, holding his own neck shut with two fingers.'),
+    say('patient', 'Ushkar. Crossbow. Took one of our own quarrels at the butts. Pulled at it. It pulled back.', 'Ushkar'),
+    say('mauer', 'Ostrau pays him double. He is worth triple. Do not let him die in my tent, Doctor.'),
+    say('ilse', 'Orc hide is thick as a saddle. Slow, firm strokes, or the lancet skates. Tinctures barely touch them.'),
+    say('ilse', 'Clamp the artery with the tongs before you pull that bolt. Even an orc empties like a cask.'),
   ],
 };
 
@@ -199,7 +202,8 @@ export const STORY_4_END: StoryDef = {
 export const OP_4_1: OperationDef = {
   id: 'op4-1',
   title: 'Quarrel at the Gorget',
-  patient: 'Ruprecht, crossbowman',
+  patient: 'Ushkar Split-Tusk, orc crossbowman of the Ostrau company',
+  race: 'orc',
   diagnosis: 'Crossbow bolt lodged beside the great artery of the neck. Rain through the tent roof.',
   organ: 'flesh',
   timeLimit: 270,
@@ -266,7 +270,7 @@ export const OP_4_3: OperationDef = {
   id: 'op4-3',
   title: 'Delver’s Lung',
   patient: 'Brakka, of Orsa Flintvein’s crew',
-  race: 'mountainfolk',
+  race: 'dwarf',
   diagnosis: 'Crystal nodules through the lung from the deep seams, stage I to III and growing. Do not cut the beard.',
   organ: 'lung',
   timeLimit: 300,

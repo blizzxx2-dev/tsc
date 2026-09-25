@@ -28,7 +28,21 @@ const skipNeedsIssue = {
 };
 
 export default tseslint.config(
-  { ignores: ['dist/**', 'dist-*/**', 'node_modules/**', 'reports/**', 'coverage/**', 'test-results/**', '.stryker-tmp/**', 'docs/**', 'scripts/.*'] },
+  {
+    ignores: [
+      'dist/**',
+      'dist-*/**',
+      'node_modules/**',
+      'reports/**',
+      'coverage/**',
+      'test-results/**',
+      '.stryker-tmp/**',
+      'docs/**',
+      'scripts/.*',
+      'public/vendor/**',
+      'art-src/.cache/**',
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

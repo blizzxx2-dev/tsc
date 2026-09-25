@@ -1,5 +1,6 @@
 import type { OperationDef, OrganKind } from '../surgery/operation';
 import { vec3 } from './color';
+import { SPECIES_PROFILES, speciesOf, type SpeciesLook } from '../surgery/species';
 
 type RGB = [number, number, number];
 
@@ -15,22 +16,30 @@ const ORGAN: Record<OrganKind, { base: string; deep: string; vein: string }> = {
   bone: { base: '#c89880', deep: '#6a3a30', vein: '#5a1a20' },
 };
 
-/** Folk shift the flesh: mountain-folk ruddy and dense, horn-folk dun and weathered, giants sallow and coarse. */
-const RACE_TINT: Record<NonNullable<OperationDef['race']>, RGB> = {
-  human: [1, 1, 1],
-  mountainfolk: [1.08, 0.92, 0.85],
-  hornfolk: [0.96, 0.9, 0.8],
-  giant: [1.02, 0.97, 0.88],
-};
-
 /** Membrane edge softness per organ: crisp alveoli, softer fat lobules. */
 const CELL_SOFT: Record<OrganKind, number> = { flesh: 0.1, heart: 0.08, lung: 0.05, gut: 0.09, liver: 0.07, brain: 0.08, bone: 0.12 };
 /** Base roughness per organ: glossy serosa and heart, matte skin and bone. */
 const ROUGH: Record<OrganKind, number> = { flesh: 0.55, heart: 0.38, lung: 0.45, gut: 0.35, liver: 0.4, brain: 0.5, bone: 0.6 };
 
-export function organPalette(def: OperationDef): { kind: number; base: RGB; deep: RGB; vein: RGB; cellSoft: number; rough: number } {
+/** Organ colours shifted by the patient's people, and that people's full look for the shader. */
+export function organPalette(def: Pick<OperationDef, 'organ' | 'race'>): { kind: number; base: RGB; deep: RGB; vein: RGB; cellSoft: number; rough: number; species: SpeciesLook } {
   const o = ORGAN[def.organ];
-  const t = RACE_TINT[def.race ?? 'human'];
+  const look = speciesOf(def.race).look;
+  const t = look.fleshTint;
   const tint = (c: RGB): RGB => [Math.min(1, c[0] * t[0]), Math.min(1, c[1] * t[1]), Math.min(1, c[2] * t[2])];
-  return { kind: KIND_INDEX[def.organ], base: tint(vec3(o.base)), deep: tint(vec3(o.deep)), vein: vec3(o.vein), cellSoft: CELL_SOFT[def.organ], rough: ROUGH[def.organ] };
+  const ov = vec3(o.vein);
+  // Species veins pull the organ's own vein colour toward theirs (blue-silver in elves).
+  const vein: RGB = [ov[0] * 0.5 + look.vein[0] * 0.5, ov[1] * 0.5 + look.vein[1] * 0.5, ov[2] * 0.5 + look.vein[2] * 0.5];
+  return { kind: KIND_INDEX[def.organ], base: tint(vec3(o.base)), deep: tint(vec3(o.deep)), vein, cellSoft: CELL_SOFT[def.organ], rough: ROUGH[def.organ], species: look };
+}
+
+/**
+ * Pooled blood for a people: the palette's blood colour (which colour filters may replace) shifted
+ * by the ratio of the species' blood to human blood — elves brighter, dwarves darker, orcs near black.
+ */
+export function speciesBlood(paletteBlood: string, look: SpeciesLook): string {
+  const human = SPECIES_PROFILES.human.look.blood;
+  const c = vec3(paletteBlood);
+  const out = c.map((v, i) => Math.max(0, Math.min(1, v * (look.blood[i] / Math.max(0.01, human[i])))));
+  return `#${out.map((v) => Math.round(v * 255).toString(16).padStart(2, '0')).join('')}`;
 }

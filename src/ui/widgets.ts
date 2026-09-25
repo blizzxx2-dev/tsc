@@ -1,4 +1,5 @@
 import { cursorColour } from './hudPrefs';
+import { toolIcon3d } from './toolIcons3d';
 import { glass, menuItem } from './hudKit';
 import { nineSlice } from './nineSlice';
 import { settings } from '../core/settings';
@@ -62,7 +63,13 @@ export function button(g: Gfx, input: Input, label: string, x: number, y: number
  * cooldown shutter with `cooldown` 0..1).
  */
 export function toolIcon(g: Gfx, tool: ToolId, x: number, y: number, s = 1, _t = 0, state: ToolState = 'idle', cooldown = 0): void {
-  toolArt(g, tool, x, y, 50 * s, state, cooldown);
+  // The 3D-rendered instrument when its model is built and loaded; the shader icon otherwise.
+  const tex = toolIcon3d(g, tool);
+  if (!tex) return toolArt(g, tool, x, y, 50 * s, state, cooldown);
+  const size = 62 * s;
+  const tint = state === 'disabled' ? 0xc0707070 : state === 'selected' ? 0xffffffff : 0xffe0e0e0;
+  g.texQuad(tex, x - size / 2, y - size / 2, size, size, tint >>> 0, true);
+  if (state === 'cooldown' && cooldown > 0) g.rect(x - size / 2, y - size / 2, size, size * Math.min(1, cooldown), hex('#000000', 0.55));
 }
 
 /** A simple five-pointed star, used for the Litany indicator. */

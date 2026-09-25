@@ -16,3 +16,5 @@ scripts/shoot.mjs
 tests/bot.ts
 tests/balance.test.ts
 tests/gesture.test.ts
+public/vendor/
+art-src/.cache/

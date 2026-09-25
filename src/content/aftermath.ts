@@ -54,7 +54,7 @@ export const AFTERMATH: Readonly<Record<string, StoryDef>> = {
     ...when({ rank: 'high' }, say('patient', 'Here. One knot, untied. You owe me nothing, and I owe you one.', 'Orsa Flintvein')),
   ]),
   'op2-3': aftermath('a2-3', 'The muster camp — after midnight', 'night', [
-    n('Henning wakes asking after his snares. The web-trees are left to the foresters, and to the fire.'),
+    n('Ilvaren wakes asking after his snares. The web-trees are left to the foresters, and to the fire.'),
     say('mauer', 'Forty, and a forager who will never set a snare again. My lads are calling you the spider-cutter.'),
     say('kreuzer', 'Tell them I have been called worse by better men.'),
   ]),

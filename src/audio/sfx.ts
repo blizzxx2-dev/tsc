@@ -112,7 +112,7 @@ function metalScrape(s: Synth, at: number, dur: number, gain: number, f = 5200, 
   return s.burst({ at, dur: dur * 0.8, type: 'highpass', f: 3500, gain: gain * 0.4 });
 }
 
-/** A formant-synth patient vocal. Voice type: 0 man, 1 woman, 2 elder, 3 deep (mountainfolk, hornfolk, giants). */
+/** A formant-synth patient vocal. Voice type: 0 man, 1 woman, 2 elder, 3 deep (dwarves, orcs, hornfolk, giants). */
 const VOICE_F0 = [118, 215, 100, 88];
 const VOICE_SHIFT = [1, 1.17, 0.97, 0.9];
 function patientVox(s: Synth, type: number, vowel: Vowel, dur: number, contour: readonly (readonly [number, number])[], gain: number, rough = 0, breath = 0.2): number {

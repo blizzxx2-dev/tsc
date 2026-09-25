@@ -17,7 +17,7 @@ import { brassSlider, inRect, reticle } from '../ui/widgets';
 
 const ORGANS: OrganKind[] = ['flesh', 'heart', 'lung', 'gut', 'liver', 'brain', 'bone'];
 type Species = NonNullable<OperationDef['race']>;
-const SPECIES: Species[] = ['human', 'mountainfolk', 'hornfolk', 'giant'];
+const SPECIES: Species[] = ['human', 'dwarf', 'elf', 'orc', 'hornfolk', 'giant'];
 const GRADES = ['candle', 'dawn', 'curse', 'failing', 'neutral'];
 
 export class FleshLabScene implements Scene {
@@ -41,6 +41,7 @@ export class FleshLabScene implements Scene {
     const s = q.get('species') as Species | null;
     if (s && SPECIES.includes(s)) this.species = s;
     if (q.get('compare')) this.compare = true;
+    if (q.get('marks')) this.marks = true;
     if (q.get('corrupt')) this.corrupt = Number(q.get('corrupt'));
     this.soft = organPalette({ organ: this.organ, race: this.species } as OperationDef).cellSoft;
   }
@@ -68,6 +69,7 @@ export class FleshLabScene implements Scene {
       light: { x: FIELD.cx + Math.cos(a) * 420, y: FIELD.cy + Math.sin(a) * 260 },
       corrupt,
       cellSoft: soft,
+      species: pal.species,
     });
   }
 
@@ -77,6 +79,8 @@ export class FleshLabScene implements Scene {
       surfLine(g, [{ x: 520, y: 300 }, { x: 600, y: 330 }, { x: 700, y: 320 }, { x: 780, y: 360 }], 7, 0.18, 0.15, 0, 0.1);
       surfLine(g, [{ x: 560, y: 470 }, { x: 760, y: 500 }], 12, 0, 0, 0, 0.2);
       surfDisc(g, { x: 900, y: 420 }, 60, 0, 0.3);
+      // A deep incision: its lips show skin, dermis and fat in section, sized by the people's hide.
+      surfLine(g, [{ x: 430, y: 380 }, { x: 520, y: 405 }, { x: 610, y: 400 }], 14, 1, 0, 0, 0);
     }
     g.endLayer();
     g.beginLayer('fluid');

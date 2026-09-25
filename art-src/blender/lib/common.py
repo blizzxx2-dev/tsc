@@ -26,7 +26,8 @@ from mathutils import Matrix, Vector
 
 ROOT = Path(__file__).resolve().parents[3]
 CACHE = ROOT / 'art-src' / '.cache' / 'textures'
-OUT = ROOT / 'assets' / 'models'
+# Raw exports; scripts/art/compress-models.mjs writes the shipped KTX2 versions to assets/models.
+OUT = ROOT / 'art-src' / '.cache' / 'models'
 RENDERS = ROOT / 'docs' / 'art' / 'renders'
 TEXTURES = json.loads((ROOT / 'art-src' / 'textures.json').read_text())
 
@@ -241,7 +242,8 @@ def processed(src: Path, tag: str, tint=(1.0, 1.0, 1.0), gain: float = 1.0) -> P
 
     if tint == (1.0, 1.0, 1.0) and gain == 1.0:
         return src
-    dest = src.with_name(f'{src.stem}.{tag}.jpg')
+    grade = '-'.join(f'{v:.3f}' for v in (*tint, gain))
+    dest = src.with_name(f'{src.stem}.{tag}.{grade}.jpg')
     if dest.exists():
         return dest
     im = Image.open(src).convert('RGB')

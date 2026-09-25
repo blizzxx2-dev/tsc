@@ -12,6 +12,7 @@
 import type { GltfMaterial, GltfModel } from './gltf';
 import { lookAt, multiply, normalMatrix, perspective, type Mat4, type V3 } from './mat4';
 import type { GlRegistry } from './registry';
+import { uploadKtx2 } from './ktx2';
 
 const MAX_LIGHTS = 6;
 const SHADOW_SIZE = 4096;
@@ -263,6 +264,8 @@ export class Model3D {
   private bitmaps: (ImageBitmap | null)[] = [];
   private ready = false;
   private offRestore: () => void;
+  /** Texture bytes on the GPU (compressed where the device allows). */
+  gpuBytes = 0;
 
   private constructor(
     private gl: WebGL2RenderingContext,
@@ -273,21 +276,22 @@ export class Model3D {
     this.offRestore = reg.onRestore(() => {
       this.prims = [];
       this.textures = [];
-      this.upload();
+      this.ready = false;
+      void this.upload();
     }, 30);
   }
 
-  /** Decode the embedded images and upload everything. */
+  /** Decode (PNG/JPEG) or transcode (KTX2) the embedded images and upload everything. */
   static async create(gl: WebGL2RenderingContext, reg: GlRegistry, data: GltfModel, anisotropy = 1): Promise<Model3D> {
     const m = new Model3D(gl, reg, data, anisotropy);
     m.bitmaps = await Promise.all(
       data.images.map((im) =>
-        typeof createImageBitmap === 'function' && im.bytes.length
+        im.mime !== 'image/ktx2' && typeof createImageBitmap === 'function' && im.bytes.length
           ? createImageBitmap(new Blob([im.bytes as Uint8Array<ArrayBuffer>], { type: im.mime }), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }).catch(() => null)
           : Promise.resolve(null),
       ),
     );
-    m.upload();
+    await m.upload();
     return m;
   }
 
@@ -305,27 +309,43 @@ export class Model3D {
     return [...this.data.anchors].filter(([n]) => n.startsWith(prefix)).map(([name, a]) => ({ name, ...a }));
   }
 
-  private upload(): void {
+  private uploadBitmap(bmp: ImageBitmap, repeat: boolean): WebGLTexture {
     const gl = this.gl;
-    this.textures = this.data.textures.map((tx) => {
-      const bmp = this.bitmaps[tx.image];
-      if (!bmp) return null;
-      const t = this.reg.createTexture('model-tex');
-      gl.bindTexture(gl.TEXTURE_2D, t);
-      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
-      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, gl.RGBA, gl.UNSIGNED_BYTE, bmp);
-      gl.generateMipmap(gl.TEXTURE_2D);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-      const wrap = tx.repeat ? gl.REPEAT : gl.CLAMP_TO_EDGE;
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wrap);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrap);
-      const ext = gl.getExtension('EXT_texture_filter_anisotropic');
-      if (ext && this.anisotropy > 1) gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, this.anisotropy);
-      this.reg.setBytes(t, Math.round(bmp.width * bmp.height * 4 * (4 / 3)));
-      return t;
-    });
+    const t = this.reg.createTexture('model-tex');
+    gl.bindTexture(gl.TEXTURE_2D, t);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, gl.RGBA, gl.UNSIGNED_BYTE, bmp);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    const wrap = repeat ? gl.REPEAT : gl.CLAMP_TO_EDGE;
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wrap);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrap);
+    const ext = gl.getExtension('EXT_texture_filter_anisotropic');
+    if (ext && this.anisotropy > 1) gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, this.anisotropy);
+    const bytes = Math.round(bmp.width * bmp.height * 4 * (4 / 3));
+    this.reg.setBytes(t, bytes);
+    this.gpuBytes += bytes;
+    return t;
+  }
+
+  private async upload(): Promise<void> {
+    const gl = this.gl;
+    this.gpuBytes = 0;
+    // One GPU texture per image; textures sharing an image share it.
+    const byImage = new Map<number, Promise<WebGLTexture | null>>();
+    const imageTex = (i: number, repeat: boolean): Promise<WebGLTexture | null> => {
+      let p = byImage.get(i);
+      if (!p) {
+        const im = this.data.images[i];
+        const bmp = this.bitmaps[i];
+        p = im?.mime === 'image/ktx2' ? uploadKtx2(gl, this.reg, im.bytes, repeat, this.anisotropy).then((u) => (u ? ((this.gpuBytes += u.bytes), u.tex) : null)) : Promise.resolve(bmp ? this.uploadBitmap(bmp, repeat) : null);
+        byImage.set(i, p);
+      }
+      return p;
+    };
+    this.textures = await Promise.all(this.data.textures.map((tx) => imageTex(tx.image, tx.repeat)));
     this.prims = this.data.meshes.map((mesh) =>
       mesh.map((p) => {
         const vao = this.reg.createVertexArray('model-vao');
@@ -378,7 +398,7 @@ export class Model3D {
         this.reg.release(p.vao);
         for (const b of p.buffers) this.reg.release(b);
       }
-    for (const t of this.textures) this.reg.release(t);
+    for (const t of new Set(this.textures)) this.reg.release(t);
     for (const b of this.bitmaps) b?.close();
     this.prims = [];
     this.textures = [];

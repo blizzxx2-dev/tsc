@@ -1,3 +1,4 @@
+import { SPECIES } from '../src/surgery/species';
 import { describe, expect, it } from 'vitest';
 import { allCampaignOperations, FULL_CAMPAIGN } from '../src/content/campaign';
 import { ENTITY_REGISTRY, makeEntity, opData, spawnAll, validateOp, validateSpec, type EntitySpec, type OperationData } from '../src/content/schema';
@@ -179,6 +180,6 @@ describe('tool requirements (CON-0004)', () => {
 
 describe('setting-only patient folk (CON-0005)', () => {
   it('no operation uses a non-setting race', () => {
-    for (const def of allCampaignOperations()) expect(['human', 'mountainfolk', 'hornfolk', 'giant', undefined], def.id).toContain(def.race);
+    for (const def of allCampaignOperations()) expect([...SPECIES, undefined], def.id).toContain(def.race);
   });
 });

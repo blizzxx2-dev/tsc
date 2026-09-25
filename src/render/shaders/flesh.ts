@@ -62,6 +62,15 @@ uniform vec3 u_lightCol[3];
 uniform float u_rough;
 /** Gore level: 0 full, 1 reduced (browned wounds), 2 minimal (ink-black, matte wounds). */
 uniform float u_gore;
+// The patient's people (src/surgery/species.ts): skin, depth of the hide, scattering, blood.
+uniform vec3 u_skin;
+uniform vec2 u_layers;   // x dermis thickness, y fat thickness (relative to human = 1)
+uniform vec4 u_sssCol;   // rgb scatter tint, a strength
+uniform vec2 u_hide;     // x coarseness (pores, stubble), y old scarring
+uniform float u_veinAmt;
+uniform vec3 u_blood;
+uniform vec3 u_bloodDeep;
+uniform float u_sheen;
 out vec4 o;
 // smoothstep with edge0 > edge1 is undefined in GLSL; this is the portable falling edge.
 float rsmooth(float hi, float lo, float x) { return 1.0 - smoothstep(lo, hi, x); }
@@ -164,7 +173,7 @@ void main() {
   // Veins: ridged noise.
   float v = 1.0 - abs(fbm(uv * 0.7 + 10.0) * 2.0 - 1.0);
   v = pow(v, 14.0);
-  col = mix(col, u_vein, v * 0.45);
+  col = mix(col, u_vein, v * u_veinAmt);
 
   // Wet specular from a smooth, low-frequency height field (finite differences, not dFdx,
   // so the highlight rolls over broad swells instead of sparkling on every noise texel).
@@ -186,7 +195,7 @@ void main() {
   // Specular anti-aliasing (Toksvig-style): widen the lobe where the normal varies within a pixel.
   // fwidth is evaluated per 2x2 quad; keep its influence gentle so it never reads as blocks.
   float nVar = smoothstep(0.0, 1.0, clamp(length(fwidth(nrm)) * 2.0, 0.0, 0.5));
-  float rough = clamp(mix(u_rough + 0.25, u_rough - 0.15, wet) + nVar * 0.3, 0.12, 0.9);
+  float rough = clamp(mix(u_rough + u_sheen + 0.25, u_rough + u_sheen - 0.15, wet) + nVar * 0.3, 0.12, 0.9);
   float specPow = 2.0 / (rough * rough) - 2.0;
   float norm = (specPow + 8.0) / 25.13; // energy-normalised Blinn-Phong
   float diff = 0.0;
@@ -210,12 +219,12 @@ void main() {
   diff = clamp(diff, 0.0, 1.5);
   float cut = smoothstep(0.05, 0.7, sf.r);
   // Subsurface scattering: light bleeds red through flesh on the shadowed side.
-  vec3 sss = u_base * vec3(1.25, 0.35, 0.28) * pow(1.0 - diff, 2.0) * 0.32;
+  vec3 sss = u_base * u_sssCol.rgb * pow(1.0 - diff, 2.0) * 0.32 * u_sssCol.a;
   float fres = pow(1.0 - clamp(nrm.z, 0.0, 1.0), 3.0);
   col = col * (vec3(0.28, 0.27, 0.3) + 0.52 * lit) + sss + specCol * (0.08 + 0.22 * wet) + vec3(1.0, 0.75, 0.7) * fres * 0.12;
 
   // Wound interior: deep, wet, glistening maroon with a dark rim.
-  vec3 woundCol = mix(vec3(0.42, 0.03, 0.05), vec3(0.16, 0.0, 0.02), smoothstep(0.3, 1.0, sf.r));
+  vec3 woundCol = mix(u_blood, u_bloodDeep, smoothstep(0.3, 1.0, sf.r));
   float wspec = pow(max(dot(reflect(-L, nrm), vec3(0, 0, 1)), 0.0), 50.0);
   woundCol = mix(woundCol, vec3(0.3, 0.17, 0.08) * mix(1.0, 0.45, smoothstep(0.3, 1.0, sf.r)), step(0.5, u_gore));
   woundCol = mix(woundCol, vec3(0.04, 0.035, 0.035), step(1.5, u_gore));
@@ -223,6 +232,23 @@ void main() {
   float rim = smoothstep(0.02, 0.15, sf.r) * (1.0 - smoothstep(0.15, 0.45, sf.r));
   col = mix(col, woundCol, cut);
   col *= 1.0 - rim * 0.35;
+  // The cut's lips show the tissue in section, so the depth of the hide reads: a line of skin,
+  // the pale dermis (a hair on an elf, a thick leathery band on an orc), yellow fat, then the wound.
+  if (u_gore < 1.5 && sf.r > 0.02) {
+    float e1 = 0.05;
+    float e2 = e1 + 0.055 * u_layers.x;
+    float e3 = e2 + 0.05 * u_layers.y;
+    float lit = 0.45 + 0.6 * diff;
+    vec3 dermisCol = mix(vec3(0.86, 0.72, 0.64), u_skin, 0.25) * lit;
+    vec3 fatCol = vec3(0.86, 0.72, 0.38) * lit;
+    float sSkin = smoothstep(0.02, 0.03, sf.r) * (1.0 - smoothstep(e1 - 0.008, e1, sf.r));
+    float sDerm = smoothstep(e1 - 0.008, e1, sf.r) * (1.0 - smoothstep(e2 - 0.01, e2, sf.r));
+    float sFat = smoothstep(e2 - 0.01, e2, sf.r) * (1.0 - smoothstep(e3 - 0.012, e3, sf.r));
+    float goreK = u_gore > 0.5 ? 0.5 : 1.0;
+    col = mix(col, u_skin * lit, sSkin * 0.9 * goreK);
+    col = mix(col, dermisCol, sDerm * 0.85 * goreK);
+    col = mix(col, fatCol + vec3(0.1) * wspec, sFat * 0.75 * goreK);
+  }
   // Blood staining and bruising.
   col = mix(col, vec3(0.26, 0.015, 0.04) * (0.7 + 0.5 * diff), clamp(sf.g * 1.3, 0.0, 1.0) * 0.85);
   // Scorch: blackened, cracked eschar with ember-red fissures.
@@ -251,6 +277,25 @@ void main() {
   col += vec3(1.0, 0.8, 0.75) * smoothstep(0.82, 0.97, edge) * (1.0 - smoothstep(0.97, 1.0, edge)) * spec * 0.25;
   col *= rsmooth(1.02, 0.78, edge) * 0.6 + 0.4;
   float inside = rsmooth(1.0, 0.985, edge);
+  // The skin collar around the opening: the patient's own hide, retracted, with its cut edge
+  // showing the dermis in section. Its width follows the thickness of the hide.
+  float collar = 0.055 + 0.03 * u_layers.x;
+  float inCollar = rsmooth(1.0 + collar, 1.0 + collar - 0.012, edge) * smoothstep(0.985, 1.0, edge);
+  vec2 sp = px * 0.25;
+  float pores = noise(sp * 3.0);
+  float stubble = step(0.93 - 0.1 * u_hide.x, hash(floor(px * 0.9))) * u_hide.x;
+  float scar = smoothstep(0.72, 0.78, fbm(vec2(px.x * 0.004 + px.y * 0.01, px.y * 0.003) * 4.0)) * u_hide.y;
+  vec3 skinCol = u_skin * (0.86 + 0.18 * pores * u_hide.x);
+  skinCol = mix(skinCol, skinCol * 0.55, stubble * 0.5);
+  skinCol = mix(skinCol, mix(u_skin, vec3(0.9, 0.78, 0.72), 0.5) * 1.05, scar * 0.6);
+  // Light the collar like the drape (it curls away from the opening), with a thin sheen.
+  float skinLit = 0.3 + 0.8 * fdiff + 0.25 * pow(max(fdiff, 0.0), 12.0) * (1.0 - u_sheen * 3.0);
+  // The skin's scatter glow: strong in the fine-skinned, faint in thick hides.
+  skinCol = skinCol * skinLit + u_skin * u_sssCol.rgb * 0.06 * u_sssCol.a;
+  // The collar's inner lip: dermis in section, as wide as the hide is thick.
+  float lip = rsmooth(1.0 + 0.004 + 0.012 * u_layers.x, 1.0, edge) * smoothstep(0.985, 0.995, edge);
+  skinCol = mix(skinCol, mix(vec3(0.86, 0.72, 0.64), u_skin, 0.3) * (0.4 + 0.5 * fdiff), lip);
   vec3 outc = mix(drape, col * 0.3, rsmooth(1.06, 1.0, edge) * 0.6);
+  outc = mix(outc, skinCol, inCollar);
   o = vec4(mix(outc, col, inside), 1.0);
 }`;

@@ -46,8 +46,9 @@ export const STORY_2_3: StoryDef = {
   backdrop: 'night',
   lines: [
     n('Orsa sleeps in the supply wagon, snoring like a bellows. The sentries swear it keeps the wolves off.'),
-    say('mauer', 'Forager. Went to check his snares near the old web-trees. We found him wrapped up like a midwinter ham.'),
-    say('patient', '…the brood-mother… she kissed me… she was so gentle about it…', 'Henning'),
+    say('mauer', 'Elf forager. Went to check his snares by the old web-trees. We found him wrapped up like a midwinter ham.'),
+    say('patient', '…the brood-mother… she kissed me… she was so gentle about it…', 'Ilvaren'),
+    say('ilse', 'Elf skin, Doctor — thin as vellum. It cuts at a breath and bleeds like a spring.'),
     say('ilse', 'The foresters call the great web-spinners brood-mothers. Venom, spreading fast. And these lumps… Saints. She laid in him.'),
     say('mauer', 'My lads won’t fetch water past the web-trees now. They say a brood-mother remembers every face that has seen her.'),
     say('kreuzer', 'Then fetch my water from somewhere she hasn’t looked, Captain. And more light.'),

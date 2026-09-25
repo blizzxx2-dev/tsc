@@ -225,7 +225,8 @@ describe('captions and subtitles', () => {
 
 describe('helpers', () => {
   it('patient voice types', () => {
-    expect(patientVoice('Grenn, a mountainfolk miner', 'mountainfolk')).toBe(3);
+    expect(patientVoice('Grenn, a dwarf miner', 'dwarf')).toBe(3);
+    expect(patientVoice('Ushkar, an orc sellsword', 'orc')).toBe(3);
     expect(patientVoice('Mother Agathe, a widow')).toBe(1);
     expect(patientVoice('Old Tomas, a ferryman')).toBe(2);
     expect(patientVoice('Jost, a pikeman')).toBe(0);

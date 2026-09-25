@@ -111,7 +111,7 @@ export const STORY_3_6B: StoryDef = {
   place: 'The quarantine ward — the Penny Stair, night',
   backdrop: 'night',
   lines: [
-    n('The plague ward fills. Mother Agathe of the Grey Beguines is carried in with six buboes and a voice like a bell.'),
+    n('The plague ward fills. Mother Agathe of the Grey Beguines, elf-born and older than the ward, is carried in with six buboes.'),
     say('patient', 'Clean lancet, boy. And don’t let the pus touch your cuts, or you’ll be on this table after me.', 'Mother Agathe'),
     n('Past midnight, a brotherhood of flagellants marches by the Penny Stair, scourging each other bloody for the city’s sins.'),
     say('mauer', 'One of them fell in the gutter. Brother Ansgar. His back is a field of nails, and he won’t lie still.'),
@@ -378,7 +378,8 @@ export const OP_3_6: OperationDef = {
 export const OP_3_7: OperationDef = {
   id: 'op3-7',
   title: 'Lance the Buboes',
-  patient: 'Mother Agathe, Grey Beguine',
+  patient: 'Mother Agathe, elf of the Grey Beguines',
+  race: 'elf',
   diagnosis: 'Plague of the quarantine: six buboes, spreading rot. Candle-light only in the requisitioned ward.',
   organ: 'flesh',
   timeLimit: 330,

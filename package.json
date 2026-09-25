@@ -60,7 +60,8 @@
     "test:mutation": "stryker run",
     "balance": "vitest run tests/sweep.test.ts",
     "art:palette": "node scripts/art/palette-export.mjs",
-    "art:models": "node scripts/art/build-models.mjs"
+    "art:models": "node scripts/art/build-models.mjs",
+    "predev": "node scripts/art/check-models.mjs"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.3",
@@ -69,6 +70,9 @@
     "@eslint/js": "^10.0.1",
     "@fontsource/cinzel": "^5.3.0",
     "@fontsource/eb-garamond": "^5.3.0",
+    "@gltf-transform/core": "^4.5.0",
+    "@gltf-transform/extensions": "^4.5.0",
+    "@gltf-transform/functions": "^4.5.0",
     "@stryker-mutator/core": "^10.0.0",
     "@stryker-mutator/vitest-runner": "^10.0.0",
     "@types/node": "^22.20.4",
@@ -84,6 +88,8 @@
     "eslint": "^10.11.0",
     "fast-check": "^4.10.2",
     "ffmpeg-static": "^5.3.0",
+    "jpeg-js": "^0.4.4",
+    "ktx2-encoder": "^0.4.2",
     "lint-staged": "^17.5.1",
     "node-web-audio-api": "^2.2.0",
     "pixelmatch": "^7.2.0",
@@ -91,6 +97,7 @@
     "pngjs": "^7.0.0",
     "prettier": "^3.9.9",
     "simple-git-hooks": "^2.14.0",
+    "three": "^0.186.1",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.70.1",
     "vite": "^6.4.3",
