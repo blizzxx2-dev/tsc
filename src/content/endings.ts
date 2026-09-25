@@ -17,6 +17,15 @@ import type { FlagReader } from './flags';
 import { n, say, type StoryDef } from './story';
 import { whisperBand, whisperScore, type WhisperBand } from './whisper';
 
+/** Kreuzer's journal page for the Perfect End (NAR-0094; the won endings' pages are in journal.ts). */
+export const PERFECT_JOURNAL: readonly string[] = [
+  'Written in the silence, Hollow Night.',
+  'Every candle in Kessendorf is out. Every breath is slow and even and wrong.',
+  'Ilse is asleep on the ward floor with her hands folded, and she will not wake.',
+  'Aurel calls it a perfect end. He is mistaken. I have seen a great many ends. Not one of them was perfect, and not one of them was the last.',
+  'The Litany keeps me awake. So I will do what I have always done with it: hold on, and go again, from the first Hour.',
+];
+
 export type Ending = 'pardon' | 'pyre' | 'exile' | 'perfect';
 export const ENDINGS: readonly Ending[] = ['pardon', 'pyre', 'exile', 'perfect'];
 
@@ -182,6 +191,8 @@ export const ENDING_PERFECT: StoryDef = {
     say('kreuzer', 'It is the end. It is not perfect. There is no such thing as a perfect end. There is only the next patient.'),
     n('He picks up the lancet. His hands are the only moving thing in the city.'),
     say('kreuzer', 'Again. From the first Hour.'),
+    // His journal page (NAR-0094), written in the silence.
+    ...PERFECT_JOURNAL.map((l) => say('kreuzer', l)),
     n('THE PERFECT END — the Office is complete. Try the operation again.'),
   ],
 };

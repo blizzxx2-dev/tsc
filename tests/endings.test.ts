@@ -93,3 +93,18 @@ describe('epilogue cards (NAR-0159)', () => {
     expect(epilogueFor('pardon', reader({ hallerFate: 'lost' })).find((c) => c.id === 'haller')?.fate).toBe('dies');
   });
 });
+
+describe('Kreuzer’s journal (NAR-0094)', () => {
+  it('one page per ending in his voice; exactly one won page shows, and the Perfect End carries its own', async () => {
+    const { JOURNAL, JOURNAL_STORY } = await import('../src/content/journal');
+    for (const e of ENDINGS) expect(JOURNAL[e].length, e).toBeGreaterThanOrEqual(4);
+    for (const vals of [{}, { cantorMercy: false, hornchildCertificate: 'turned', strohTooth: true }, { litanySeenCount: 2, mauerFate: 'hale' }]) {
+      const f = new FlagStore();
+      for (const [k, v] of Object.entries(vals)) f.set(k, v as never);
+      const shown = JOURNAL_STORY.lines.filter((l) => !l.if || evalCondition(l.if, f));
+      expect(shown.every((l) => l.who === 'kreuzer')).toBe(true);
+      expect(Object.values(JOURNAL).filter((p) => p[0] === shown[0].text)).toHaveLength(1);
+    }
+    for (const l of JOURNAL.perfect) expect(ENDING_STORIES.perfect.lines.some((x) => x.text === l)).toBe(true);
+  });
+});

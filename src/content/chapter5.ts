@@ -1,3 +1,4 @@
+import { JOURNAL_STORY } from './journal';
 import { EPILOGUE_STORY } from './epilogue';
 import { ENDING_EXILE, ENDING_PARDON, ENDING_PYRE, endingIs } from './endings';
 import { whisperThought } from './whisper';
@@ -489,5 +490,7 @@ export const CHAPTER_5: Chapter = {
     { kind: 'story', story: ENDING_EXILE, if: endingIs('exile') },
     // Epilogue cards (NAR-0159): twelve people, each in the fate the ending and the flags earned.
     { kind: 'story', story: EPILOGUE_STORY },
+    // Kreuzer's journal (NAR-0094): one page for the ending that played.
+    { kind: 'story', story: JOURNAL_STORY },
   ],
 };
