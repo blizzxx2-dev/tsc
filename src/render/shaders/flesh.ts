@@ -111,12 +111,50 @@ void main() {
   float n = fbm(uv + vec2(0.0, u_time * 0.02));
   vec3 col = mix(u_deep, u_base, smoothstep(0.2, 0.85, n));
   float c = 0.0;
-  if (u_kind == 2) { c = cells(uv * 2.5); col *= 0.75 + 0.35 * smoothstep(0.0, 0.25, c); }
-  else if (u_kind == 3) { c = sin((q.x + fbm(uv) * 0.5) * 22.0); col *= 0.8 + 0.2 * c; }
-  else if (u_kind == 4) { c = cells(uv * 1.3); col *= 0.85 + 0.2 * smoothstep(0.0, 0.1, c); }
-  else if (u_kind == 5) { c = abs(sin(fbm(uv * 0.8) * 18.0)); col *= 0.75 + 0.3 * c; }
-  else if (u_kind == 6) { c = fbm(uv * 3.0); col = mix(col, vec3(0.86, 0.82, 0.7), 0.5) * (0.8 + 0.3 * c); }
-  else if (u_kind == 1) { c = fbm(uv * 1.5 + u_pulse * 0.3); col *= 0.85 + 0.25 * c; }
+  if (u_kind == 2) {
+    // Lung: alveolar lobules that inflate with each breath; anthracotic speckle.
+    float breath = 0.5 + 0.5 * sin(u_time * 1.6);
+    vec2 luv = uv * (2.6 - breath * 0.12);
+    c = cells(luv);
+    col *= 0.72 + 0.35 * smoothstep(0.0, 0.3, c) + breath * 0.05;
+    col = mix(col, vec3(0.9, 0.7, 0.75), smoothstep(0.2, 0.45, c) * 0.25);
+    col = mix(col, vec3(0.15, 0.12, 0.14), step(0.985, noise(uv * 30.0)) * 0.6);
+  } else if (u_kind == 3) {
+    // Gut: loops with a travelling peristaltic wave, mesenteric fat and serosa sheen.
+    vec2 w = q + vec2(fbm(uv * 0.7), fbm(uv * 0.7 + 5.0)) * 0.45;
+    float loops = sin(w.x * 14.0 + sin(w.y * 3.0) * 2.0);
+    float wave = 0.5 + 0.5 * sin(w.x * 6.0 - u_time * 1.8);
+    c = loops;
+    col *= 0.72 + 0.22 * loops + 0.08 * wave;
+    col = mix(col, vec3(0.92, 0.82, 0.5), smoothstep(0.75, 0.95, fbm(uv * 1.1 + 3.0)) * 0.55);
+  } else if (u_kind == 4) {
+    // Liver: glossy capsule over hexagonal lobules.
+    c = cells(uv * 1.6);
+    col *= 0.82 + 0.22 * smoothstep(0.0, 0.12, c);
+    col = mix(col, col * vec3(0.9, 1.0, 0.7), smoothstep(0.6, 0.9, fbm(uv * 0.5)) * 0.3);
+  } else if (u_kind == 5) {
+    // Brain: gyri and sulci from warped ridged noise under a translucent meningeal veil.
+    vec2 w = uv * 0.9 + vec2(fbm(uv * 0.6), fbm(uv * 0.6 + 7.0)) * 2.2;
+    float ridge = 1.0 - abs(sin(fbm(w) * 16.0));
+    c = ridge;
+    col *= 0.6 + 0.45 * smoothstep(0.1, 0.8, ridge);
+    col = mix(col, vec3(0.85, 0.8, 0.82), 0.12 + 0.05 * sin(u_time * 1.1));
+  } else if (u_kind == 6) {
+    // Bone: cortical grain with cancellous pits and a thin periosteum film.
+    c = fbm(vec2(uv.x * 1.2, uv.y * 6.0));
+    col = mix(col, vec3(0.86, 0.82, 0.7), 0.6) * (0.78 + 0.3 * c);
+    col *= 1.0 - (1.0 - smoothstep(0.0, 0.12, cells(uv * 9.0))) * 0.25;
+    col = mix(col, vec3(0.8, 0.45, 0.4), 0.12);
+  } else if (u_kind == 1) {
+    // Heart: coronary vessels along warped ridges, epicardial fat streaks, darker in diastole.
+    vec2 w = uv * 0.8 + vec2(fbm(uv * 0.5), fbm(uv * 0.5 + 3.0)) * 1.8;
+    float vessel = pow(1.0 - abs(fbm(w * 1.2) * 2.0 - 1.0), 18.0);
+    c = fbm(uv * 1.5 + u_pulse * 0.3);
+    col *= 0.8 + 0.25 * c;
+    col = mix(col, vec3(0.95, 0.85, 0.55), smoothstep(0.62, 0.8, fbm(uv * 0.9 + 11.0)) * 0.45);
+    col = mix(col, vec3(0.35, 0.02, 0.1), vessel * 0.7);
+    col *= 0.9 + 0.1 * u_pulse;
+  }
   else { c = cells(uv * 2.2); col *= 0.92 + 0.08 * smoothstep(0.0, 0.18, c); }
 
   // Veins: ridged noise.
@@ -142,7 +180,8 @@ void main() {
   // Wetness: glistening near wounds and blood, matte where the skin has dried.
   float wet = clamp(0.35 + 0.35 * fbm(q * 1.3 + 7.0) + sf.r * 0.8 + sf.g * 0.6 + sf.a * 0.3, 0.0, 1.0);
   // Specular anti-aliasing (Toksvig-style): widen the lobe where the normal varies within a pixel.
-  float nVar = clamp(length(fwidth(nrm)) * 6.0, 0.0, 1.0);
+  // fwidth is evaluated per 2x2 quad; keep its influence gentle so it never reads as blocks.
+  float nVar = smoothstep(0.0, 1.0, clamp(length(fwidth(nrm)) * 2.0, 0.0, 0.5));
   float rough = clamp(mix(u_rough + 0.25, u_rough - 0.15, wet) + nVar * 0.3, 0.12, 0.9);
   float specPow = 2.0 / (rough * rough) - 2.0;
   float norm = (specPow + 8.0) / 25.13; // energy-normalised Blinn-Phong
@@ -187,8 +226,14 @@ void main() {
   // Swelling: inflamed, taut and shiny.
   col = mix(col, col * vec3(1.25, 0.88, 0.78) + spec * 0.25, clamp(sf.a * 1.2, 0.0, 1.0) * 0.75);
   // Fine wet glints, sparse and soft.
-  float glintFoot = 1.0 - smoothstep(0.02, 0.12, fwidth(uv.x * 6.0));
-  col += vec3(1.0, 0.95, 0.9) * smoothstep(0.82, 0.95, noise(uv * 6.0 + 3.0)) * spec * 0.25 * glintFoot;
+  // Wet glints: tiny round sparkles at jittered points, only on wet tissue, fading with footprint.
+  vec2 gp = uv * 7.0;
+  vec2 gi = floor(gp), gf = fract(gp);
+  vec2 gc = vec2(hash(gi + 3.1), hash(gi + 8.7)) * 0.6 + 0.2;
+  float gd = length(gf - gc);
+  float glint = (1.0 - smoothstep(0.0, 0.06, gd)) * step(0.55, hash(gi + 1.3));
+  float glintFoot = 1.0 - smoothstep(0.02, 0.12, fwidth(uv.x * 7.0));
+  col += vec3(1.0, 0.96, 0.92) * glint * spec * wet * 0.5 * glintFoot;
 
   // Curse corruption: purple-black bruising that creeps in from the rim.
   float cor = u_corrupt * smoothstep(0.3, 1.0, r + fbm(uv * 1.7 + u_time * 0.1) * 0.4);

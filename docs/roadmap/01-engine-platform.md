@@ -117,7 +117,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0073 · Demo · P0 · M · Specular anti-aliasing — fade noise octaves by pixel footprint (`fwidth`) and widen roughness from normal variance (Toksvig) so sparkle does not return at 4K, 2.5× zoom or 0.5× render scale
 - [x] ENG-0074 · Demo · P0 · M · Smooth voronoi — replace `cells()` hard `d2 - d1` edges with a smooth-minimum voronoi (k uniform) plus per-kind edge-softness uniform; lung, liver and flesh edges signed off as membranes, not cracks
 - [ ] ENG-0075 · Demo · P1 · S · Irregular voronoi cells — domain-warp input with low-frequency fbm and randomised jitter so the grid regularity disappears (shader lab A/B)
-- [ ] ENG-0076 · Demo · P1 · S · Wetness-masked glints — replace the sparse "wet glint" noise term so glints appear only on wet tissue and never shimmer when the light rig flickers
+- [x] ENG-0076 · Demo · P1 · S · Wetness-masked glints — replace the sparse "wet glint" noise term so glints appear only on wet tissue and never shimmer when the light rig flickers
 
 ### Surface model & performance tiers
 - [ ] ENG-0077 · Demo · P1 · M · Split `FLESH_FS` into composable GLSL chunks (noise, lighting, per-organ surface, corruption, drape) assembled with defines per variant — variants compiled and cached at load
@@ -132,12 +132,12 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ### Organs, species & anatomy variants
 - [x] ENG-0085 · Demo · P0 · M · Heartbeat deformation — heart surface contracts 4–6% in systole with ease-in/ease-out driven by an ECG phase uniform from the sim (replaces uniform `u_pulse` swell); flesh around it pulses subtly
 - [ ] ENG-0086 · Demo · P1 · S · Heartbeat sync: shader phase, ECG trace and heartbeat audio cue share one sim-driven beat clock — measured offset ≤1 frame
-- [ ] ENG-0087 · Demo · P1 · M · Heart surface — coronary vessel pattern following warped ridges, epicardial fat streaks, darker myocardium in diastole
-- [ ] ENG-0088 · Demo · P1 · M · Lung surface — alveolar lobules with a breathing cycle (`u_breath`) at the patient's respiration rate, inflating lobule scale ±3%
-- [ ] ENG-0089 · Demo · P1 · M · Gut surface — peristaltic wave travelling along warped loop coordinates, mesenteric fat and serosa sheen
-- [ ] ENG-0090 · Demo · P2 · S · Liver surface — glossy capsule, lobular pattern, optional bile-stain tint uniform
-- [ ] ENG-0091 · Demo · P2 · S · Brain surface — gyri/sulci from warped ridged noise, translucent meningeal veil layer, faint pulse
-- [ ] ENG-0092 · Demo · P2 · S · Bone surface — cortical/cancellous texture, periosteum film, dry low specular
+- [x] ENG-0087 · Demo · P1 · M · Heart surface — coronary vessel pattern following warped ridges, epicardial fat streaks, darker myocardium in diastole
+- [x] ENG-0088 · Demo · P1 · M · Lung surface — alveolar lobules with a breathing cycle (`u_breath`) at the patient's respiration rate, inflating lobule scale ±3%
+- [x] ENG-0089 · Demo · P1 · M · Gut surface — peristaltic wave travelling along warped loop coordinates, mesenteric fat and serosa sheen
+- [x] ENG-0090 · Demo · P2 · S · Liver surface — glossy capsule, lobular pattern, optional bile-stain tint uniform
+- [x] ENG-0091 · Demo · P2 · S · Brain surface — gyri/sulci from warped ridged noise, translucent meningeal veil layer, faint pulse
+- [x] ENG-0092 · Demo · P2 · S · Bone surface — cortical/cancellous texture, periosteum film, dry low specular
 - [ ] ENG-0093 · Demo · P1 · M · New organ kinds for Ch1–2 briefs — `muscle` (striated fibres along a direction uniform) and `skin` (pores, fine hair, sweat sheen) wired through `OrganKind`/`organPalette`
 - [ ] ENG-0094 · Demo · P1 · M · Data-driven `SpeciesProfile` (human, dwarf, elf, halfling, orc): base/deep/vein tints, fat ratio, surface scale, spec gain — replaces `RACE_TINT`, which currently never tints veins
 - [ ] ENG-0095 · Demo · P2 · M · Species details: orc thick green-grey dermis and dark blood, dwarf dense fibrous tissue with higher gloss, elf pale translucent vessels — art sign-off in shader lab

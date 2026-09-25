@@ -7,7 +7,8 @@ import { Input } from './core/input';
 import type { Game, Scene } from './core/scene';
 import { Gfx } from './render/gfx';
 import { allOperations } from './content/campaign';
-import { SHOWCASE, SHOWCASE_BOSS } from './content/dev';
+import { SHOWCASE, SHOWCASE_BOSS, showcaseOrgan } from './content/dev';
+import type { OperationDef } from './surgery/operation';
 import { playOperation } from './scenes/flow';
 import { TitleScene } from './scenes/title';
 import { StoryScene } from './scenes/story';
@@ -104,7 +105,7 @@ async function boot(): Promise<void> {
   // Dev/QA hooks: ?op=<id> jumps straight into an operation; window.__game exposes the game for automation.
   (window as unknown as { __game: Main }).__game = game;
   const opId = new URLSearchParams(location.search).get('op');
-  const def = opId ? [...allOperations(), ...(import.meta.env.DEV || opId?.startsWith('showcase') ? [SHOWCASE, SHOWCASE_BOSS] : [])].find((o) => o.id === opId) : undefined;
+  const def = opId ? [...allOperations(), ...(import.meta.env.DEV || opId?.startsWith('showcase') ? [SHOWCASE, SHOWCASE_BOSS, showcaseOrgan((new URLSearchParams(location.search).get('organ') ?? 'heart') as OperationDef['organ'])] : [])].find((o) => o.id === opId) : undefined;
   if (def) {
     const back = () => game.go(new TitleScene());
     playOperation(game, def, back, back);

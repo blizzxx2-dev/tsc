@@ -62,3 +62,6 @@ export const SHOWCASE_BOSS: OperationDef = {
     },
   ],
 };
+
+/** Dev-only: an organ with nothing on it, for surface review (?op=showcase-organ&organ=heart). */
+export const showcaseOrgan = (organ: OperationDef['organ']): OperationDef => ({ ...SHOWCASE, id: 'showcase-organ', title: `Organ: ${organ}`, organ, phases: [{ spawn: () => [] }, { spawn: () => [] }] });

@@ -27,7 +27,8 @@ try {
       await page.goto(`${url}?story=${a ?? 'hospice'}${b ? `&who=${b}` : ''}`);
       await page.waitForTimeout(2500);
     } else if (kind === 'op') {
-      await page.goto(`${url}?op=${a}`);
+      const [opId, query] = a.split('?');
+      await page.goto(`${url}?op=${opId}${query ? '&' + query : ''}`);
       await page.waitForFunction(() => window.__game?.scene && typeof window.__game.scene.onBegin === 'function', null, { timeout: 30000 });
       await page.keyboard.press('Enter');
       await page.waitForFunction(() => !!window.__game?.scene?.op, null, { timeout: 30000 });
