@@ -105,6 +105,8 @@ const roman = (n: number): string => ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 
 
 /** Seconds a Salve stroke stays glossy after it is laid (GAM-0043). */
 export const SALVE_GLOSS_S = 4;
+/** Seconds a frost patch takes to rime over (ENG-0262). */
+export const FROST_GROW_S = 1.5;
 /** Tray tips stay above this line, clear of the callout plate (UIX-0051). */
 const TIP_FLOOR = 612;
 
@@ -658,7 +660,7 @@ export class OperationScene implements Scene {
   /** Seconds to the next stain stamp; stone, frost and necrosis are laid at 10 Hz. */
   private stainT = 0;
   /** Frost patches already rimed, with the thaw last seen. */
-  private rimed = new Map<object, number>();
+  private rimed = new Map<object, { thaw: number; grown: number }>();
   /** Petrify plates already chiselled out of the stone. */
   private chiselled = new WeakSet<object>();
 
@@ -681,14 +683,19 @@ export class OperationScene implements Scene {
             d.stamp({ map: 'stain', brush: 'splat', x: p.pos.x, y: p.pos.y, r: 28, value: [0.85, 0, 0], mode: 'erase', t, seed: this.presRng.next() });
           }
       } else if (e instanceof FrostPatch) {
-        const seen = this.rimed.get(e);
-        if (seen === undefined) {
-          this.rimed.set(e, e.thaw);
-          d.stamp({ map: 'stain', brush: 'splat', x: e.pos.x, y: e.pos.y, r: e.radius * 1.15, value: [0, 1, 0], mode: 'add', t, seed: this.presRng.next() });
-        } else if (e.thaw > seen || !e.alive) {
-          this.rimed.set(e, e.thaw);
-          const lift = e.alive ? Math.min(1, (e.thaw - seen) / Math.max(0.05, 1 - seen)) : 1;
+        // Rime grows out from the centre over FROST_GROW_S in dendritic splats (ENG-0262)…
+        const rec = this.rimed.get(e) ?? { thaw: e.thaw, grown: 0 };
+        if (!this.rimed.has(e)) this.rimed.set(e, rec);
+        if (e.alive && rec.grown < 1) {
+          rec.grown = Math.min(1, rec.grown + 0.1 / FROST_GROW_S);
+          d.stamp({ map: 'stain', brush: 'splat', x: e.pos.x, y: e.pos.y, r: e.radius * (0.35 + 0.8 * rec.grown), rot: rec.grown * 5, value: [0, 0.3, 0], mode: 'add', t, seed: this.presRng.next() });
+        }
+        // …and each touch of the Brand lifts some of it, leaving meltwater behind.
+        if (e.thaw > rec.thaw || !e.alive) {
+          const lift = e.alive ? Math.min(1, (e.thaw - rec.thaw) / Math.max(0.05, 1 - rec.thaw)) : 1;
+          rec.thaw = e.thaw;
           d.stamp({ map: 'stain', brush: 'soft', x: e.pos.x, y: e.pos.y, r: e.radius * 1.25, value: [0, lift, 0], mode: 'erase', t });
+          d.stamp({ map: 'stain', brush: 'soft', x: e.pos.x, y: e.pos.y, r: e.radius * 1.2, value: [0, 0, 0], mode: 'add', t });
         }
       } else if (e instanceof Gangrene && e.alive) {
         const f = e.frontPos;
@@ -785,7 +792,7 @@ export class OperationScene implements Scene {
     });
     const colours = palette();
     this.decals.drawScorch(t);
-    this.decals.drawStain(t);
+    this.decals.drawStain(op.elapsed);
     this.decals.drawBlood(op.elapsed, { fresh: vec3(speciesBlood(colours.blood, pal.species)), light: { x: (light.x - FIELD.cx) / FIELD.rx, y: -(light.y - FIELD.cy) / FIELD.ry } });
     g.fluidComposite(light, { blood: speciesBlood(colours.blood, pal.species), pus: colours.pus, bile: colours.bile, gore: presentation.gore });
     // Entities, particles and world FX go through the world camera (ENG-0045); endWorld resets it.
@@ -1272,6 +1279,12 @@ export class OperationScene implements Scene {
       if (out.length >= 6 || !e.alive || e.hidden || !(e instanceof Embedded) || e.kind !== 'hexstone') continue;
       const v = cam ? cam.toView(e.pos, { x: 0, y: 0 }) : e.pos;
       out.push([v.x, v.y, e.spec.len * 0.9 * (cam ? cam.zoom : 1), e.calmed ? 0.25 : 0.55]);
+    }
+    // Ice bends the flesh a little too (ENG-0262), less as it thaws.
+    for (const e of this.op.entities) {
+      if (out.length >= 6 || !e.alive || !(e instanceof FrostPatch)) continue;
+      const v = cam ? cam.toView(e.pos, { x: 0, y: 0 }) : e.pos;
+      out.push([v.x, v.y, e.radius * (cam ? cam.zoom : 1), 0.18 * (1 - e.thaw)]);
     }
     return out;
   }

@@ -448,7 +448,7 @@ export class DecalMaps {
     gl.uniform4f(this.u(p, 'u_rect'), FIELD_MAP_RECT.x, FIELD_MAP_RECT.y, FIELD_MAP_RECT.w, FIELD_MAP_RECT.h);
     gl.uniform2f(this.u(p, 'u_view'), g.vw, g.vh);
     gl.uniformMatrix3fv(this.u(p, 'u_xf'), false, g.viewTransform());
-    gl.uniform1f(this.u(p, 'u_time'), time);
+    gl.uniform1f(this.u(p, 'u_time'), time / this.timeScale);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);

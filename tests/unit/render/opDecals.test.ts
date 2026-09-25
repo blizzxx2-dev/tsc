@@ -4,7 +4,7 @@ import { Input } from '../../../src/core/input';
 import type { Game } from '../../../src/core/scene';
 import { Bindings } from '../../../src/input/bindings';
 import type { DecalMaps, Stamp } from '../../../src/render/decals';
-import { OperationScene, SALVE_GLOSS_S } from '../../../src/scenes/operation';
+import { FROST_GROW_S, OperationScene, SALVE_GLOSS_S } from '../../../src/scenes/operation';
 import { Burn, Laceration } from '../../../src/surgery/entities';
 import { FIELD } from '../../../src/surgery/operation';
 import { fakeCanvas, fakeGl, installFakeDom } from '../../fakegl';
@@ -127,8 +127,10 @@ describe('stain map: stone, frost and necrosis (ENG-0261, ENG-0262, ENG-0264)', 
     );
     const stain = stamps.filter((s) => s.map === 'stain');
     expect(stain.filter((s) => s.value[0] > 0 && s.mode === 'add').length).toBeGreaterThan(5);
+    // Rime grows out over FROST_GROW_S in widening stamps (ENG-0262).
     const rime = stain.filter((s) => s.value[1] > 0 && s.mode === 'add');
-    expect(rime).toHaveLength(1);
+    expect(rime.length).toBeGreaterThanOrEqual(Math.floor(FROST_GROW_S / 0.1) - 1);
     expect(rime[0].x).toBeCloseTo(frost.pos.x);
+    expect(rime[rime.length - 1].r).toBeGreaterThan(rime[0].r);
   });
 });

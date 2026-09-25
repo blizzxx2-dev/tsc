@@ -269,6 +269,13 @@ void main() {
     col = col * (1.0 - rime) + ice * rime * 0.8;
     a = max(a, rime * 0.8);
   }
+  // Meltwater: a wet film where frost has just thawed, drying over ~4 s (m.a is the last stamp time).
+  if (stone < 0.02 && frost < 0.1 && nec < 0.02 && m.a > 0.0) {
+    float wet = exp(-max(0.0, u_time - m.a) / 4.0);
+    float sheen = pow(abs(sin(px.x * 0.05 + px.y * 0.03)), 12.0);
+    col += vec3(0.75, 0.85, 1.0) * wet * (0.08 + 0.25 * sheen);
+    a = max(a, wet * 0.18);
+  }
   // Stone: granite over everything, cracked.
   if (stone > 0.02) {
     float cracks = 1.0 - smoothstep(0.0, 0.06, fissure(px * 0.05));
