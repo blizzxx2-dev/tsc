@@ -238,9 +238,13 @@ export class Operation {
     this.injectT = 0;
   }
 
+  /** Optional distortion of the surgeon's input (a boss's torpor or heat-haze); null = none. */
+  inputFilter: ((ptr: Pointer, dt: number) => Pointer) | null = null;
+
   /** Player input: uses real time so the Litany does not slow the surgeon. */
   handlePointer(ptr: Pointer, dt: number): void {
     if (this.status !== 'running') return;
+    if (this.inputFilter) ptr = this.inputFilter(ptr, dt);
     const tool = this.tool;
     // Top layer first; a stable insertion sort into a reused buffer (no allocation per pointer event).
     const live = this.liveBuf;
@@ -321,6 +325,7 @@ export class Operation {
   }
 
   update(dt: number): void {
+    this.cues.endFrame();
     // Presentation timers run in real time.
     this.shake = Math.max(0, this.shake - dt * 30);
     if (this.callouts.length) {

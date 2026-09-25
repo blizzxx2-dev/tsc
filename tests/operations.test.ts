@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { allOperations } from '../src/content/campaign';
+import { allCampaignOperations as allOperations } from '../src/content/campaign';
 import { playWithBot } from './bot';
 
 describe('every campaign operation is completable by the bot surgeon', () => {

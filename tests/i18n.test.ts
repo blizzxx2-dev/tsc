@@ -123,7 +123,8 @@ describe('simulation text', () => {
   /** Every English literal the simulation hands to rate()/popup()/lose(). */
   function simLiterals(): string[] {
     const out: string[] = [];
-    for (const f of readdirSync(join(ROOT, 'src/surgery'))) {
+    const files = (readdirSync(join(ROOT, 'src/surgery'), { recursive: true }) as string[]).filter((f) => f.endsWith('.ts'));
+    for (const f of files) {
       const src = readFileSync(join(ROOT, 'src/surgery', f), 'utf8');
       for (const m of src.matchAll(/\b(?:rate\('[a-z]+', [^,]+, |popup\(|lose\()'([^']+)'/g)) out.push(m[1]);
       for (const m of src.matchAll(/label: '([^']+)'/g)) out.push(m[1]);

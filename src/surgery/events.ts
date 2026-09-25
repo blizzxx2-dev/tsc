@@ -50,14 +50,40 @@ export type SimBus = EventBus<SimEvents>;
  * now publishes on the bus instead of storing strings for the scene to drain.
  */
 export class CueSink {
+  /** Frames of silence remaining: while > 0, cues are swallowed (Compline, vocal-fold verses). */
+  muteFrames = 0;
+  /** Cues published since the counter was last reset (`length = 0`), for tests and tools. */
+  private published = 0;
+
   constructor(private bus: SimBus) {}
 
   push(...cues: Cue[]): number {
+    if (this.muteFrames > 0) return this.published;
     for (const c of cues) {
+      this.published++;
       this.bus.emit('cue', c);
       const ev = CUE_EVENTS[c];
       if (ev) this.bus.emit(ev, { cue: c });
     }
-    return 0;
+    return this.published;
+  }
+
+  /** Silence cues for the rest of this frame and the next. */
+  muteFrame(): void {
+    this.muteFrames = 2;
+    this.published = 0;
+  }
+
+  /** Called once at the end of each simulation step. */
+  endFrame(): void {
+    if (this.muteFrames > 0) this.muteFrames--;
+  }
+
+  get length(): number {
+    return this.published;
+  }
+  /** Assigning 0 resets the published counter (compatibility with the old array queue). */
+  set length(n: number) {
+    this.published = n;
   }
 }

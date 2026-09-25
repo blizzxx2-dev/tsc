@@ -1334,5 +1334,939 @@
     "maxPx": 420,
     "context": "Title screen button in the demo: opens the full game store page.",
     "screenshot": "docs/loc/screens/title.png"
+  },
+  "label.it_sang_through_the_blade": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.fold_excised": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.remnant_seared": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.ruptured": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.tearing": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.cut_free": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.removed_whole": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "loss.the_child_could_not_be_saved": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 24,
+    "maxPx": 600,
+    "context": "Reason shown under \"The Patient Is Lost\".",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.too_tight": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.unsure_grip": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.too_fast": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.delivered": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.the_stone_whispers": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "popup.into_the_lead": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.rooted": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.rooted_fast": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.bud_cut": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.seared_out": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.bud_excised": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.overheated": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.bone_cut": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.bone_lifted": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.wadding_out": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.fever_broken": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "popup.one_more_draught": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.wadding_left_in": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.ligated": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.seared_shut": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.limb_off": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.drawn_out_whole": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.calmed": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "popup.calm": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.loose": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.drawn_clean": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.root_snapped": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.bitten": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.arterial_spray": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.clamped": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.burrowed": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.tick_plucked": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.irrigated": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "popup.cracked": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.blade_turned": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.nodule_out": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.pin_set": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.slipped": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.strongbox_out": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.retracted": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.caught_the_beat": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.between_beats": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.the_bond_burned_away": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.the_bond_left_be": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "loss.the_stone_reached_her_heart": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 24,
+    "maxPx": 600,
+    "context": "Reason shown under \"The Patient Is Lost\".",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.wrong_plate": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.plate_cracked": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.the_stone_halts": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.silence_broken": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.echo_silenced": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "popup.the_litany_is_taken": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.the_litany_returns": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.silence": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.stillness_against_you": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.opened": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.lancet_and_brand": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.compline_unmade": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "loss.a_burrower_reached_the_heart": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 24,
+    "maxPx": 600,
+    "context": "Reason shown under \"The Patient Is Lost\".",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.it_reached_the_heart": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.segment_seared": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.it_regrew": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "loss.the_burrower_reached_the_heart": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 24,
+    "maxPx": 600,
+    "context": "Reason shown under \"The Patient Is Lost\".",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "popup.tracked": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.intercepted": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.it_divides": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.none_unmade": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.the_office_is_unsung": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.the_name_is_written": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.wrong_stroke": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "popup.struck_out": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.name_unwritten": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "popup.ink_on_the_instrument": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.prime_unmade": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.chipped": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.dial_broken": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "popup.the_torpor_lifts": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.stillness_against_stillness": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.languor_broken": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.false_noon_ends": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.sext_unmade": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.doused": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.flame_front_out": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.into_the_fire": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.root_excised": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.fed_the_fire": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.rekindled": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.pentecost_quenched": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.smoke_drawn": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.encircled": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.terce_unmade": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.relit": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "popup.trimmed": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.wick_severed": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "popup.softened": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Floating popup over the operating field.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "label.scorched": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.tallow_drawn": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.wick_traced": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.vespers_unmade": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
   }
 }

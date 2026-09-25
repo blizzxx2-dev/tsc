@@ -145,39 +145,39 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### Dr. Kreuzer
 - [ ] NAR-0090 · Alpha · P0 · M · Kreuzer arc doc — from sworn craftsman hiding the Litany to open defiance at trial; 5 chapter-by-chapter turning points with the scene id carrying each
-- [ ] NAR-0091 · Alpha · P1 · S · Backstory reveal — why he left Weissburg (a patient he lost to a guild rule); revealed in Ch3 to Haller during licence vote
+- [x] NAR-0091 · Alpha · P1 · S · Backstory reveal — why he left Weissburg (a patient he lost to a guild rule); revealed in Ch3 to Haller during licence vote
 - [ ] NAR-0092 · Alpha · P1 · S · Litany origin — Kreuzer learns in Ch4 that the Litany is itself a sung office fragment, linking his gift to the Choir; codex "The Litany, Reconsidered"
 - [ ] NAR-0093 · Alpha · P1 · S · Whisper-meter narrative states — 4 bands (Unremarked, Noted, Suspected, Accused) each with 3 unique Kreuzer interior lines
 - [ ] NAR-0094 · Beta · P2 · S · Kreuzer journal epilogue — one page per ending written in his voice
 
 ### Sister Ilse
 - [ ] NAR-0095 · Alpha · P0 · M · Ilse arc doc — faith vs. what she sees; she lies to Stroh for Kreuzer in Ch3, is taken as Vespers host in Ch5
-- [ ] NAR-0096 · Alpha · P1 · S · Ilse's order politics — the Merciful Order has no political weight; Ch3 scene where the Mother Superior orders her to leave the hospice and she refuses
+- [x] NAR-0096 · Alpha · P1 · S · Ilse's order politics — the Merciful Order has no political weight; Ch3 scene where the Mother Superior orders her to leave the hospice and she refuses
 - [ ] NAR-0097 · Alpha · P1 · S · Ilse personal side-scene per chapter — Ch3–5; unlocked by high average rank, 8–12 lines each
 
 ### Master Haller
 - [ ] NAR-0098 · Alpha · P0 · M · Haller arc doc — mentor who once struck the Precentor from the guild rolls; guilt; licence vote in Ch3; hexfire host in Terce; survives or dies by player rank
-- [ ] NAR-0099 · Alpha · P1 · S · Haller confession scene (Ch3) — reveals he knew the Precentor as his pupil, Aurel Vennholt; 12–16 lines
+- [x] NAR-0099 · Alpha · P1 · S · Haller confession scene (Ch3) — reveals he knew the Precentor as his pupil, Aurel Vennholt; 12–16 lines
 - [ ] NAR-0100 · Alpha · P1 · S · Haller fate branch — Terce op rank ≥ A: he lives, retires with burned hands and becomes Ch4–5 advisor by letter; < A: he survives maimed and bitter (no death to keep op fail distinct)
 
 ### Inquisitor Stroh
 - [ ] NAR-0101 · Alpha · P0 · M · Stroh arc doc — chartered agent of the council; his charter has lapsed (Ch4 reveal); trust meter drives whether he defends or prosecutes Kreuzer in Ch5
 - [ ] NAR-0102 · Alpha · P1 · S · Stroh dental op scene "The Most Hated Avocation" (Ch3) — interrogation between groans; trust +1 on S rank
-- [ ] NAR-0103 · Alpha · P1 · S · Charter-lapse reveal scene (Ch4) — Mauer produces the council roll; Stroh's authority is now void; 14 lines
+- [x] NAR-0103 · Alpha · P1 · S · Charter-lapse reveal scene (Ch4) — Mauer produces the council roll; Stroh's authority is now void; 14 lines
 - [ ] NAR-0104 · Alpha · P1 · S · Stroh trust flags list — every choice that moves it (cantorMercy, certificate signing, Stroh's tooth rank, Litany seen count) with deltas
 
 ### Captain Mauer
 - [ ] NAR-0105 · Alpha · P1 · M · Mauer arc doc — loyal to his men over the council; Sext host in Ch4; leads the Watch against the Tribunal on Hollow Night if saved at rank ≥ B
-- [ ] NAR-0106 · Alpha · P2 · S · Mauer's roll-call motif — he counts his men in every scene; count falls across Ch4; payoff line in Ch5
+- [x] NAR-0106 · Alpha · P2 · S · Mauer's roll-call motif — he counts his men in every scene; count falls across Ch4; payoff line in Ch5
 
 ### Orsa Flintvein
 - [ ] NAR-0107 · Alpha · P1 · M · Orsa arc doc — returns in Ch4 with her miners (Delver's Lung), then in Ch5 digs the tunnel under the Tribunal court
-- [ ] NAR-0108 · Alpha · P2 · S · Orsa's mine-name running gag — names a bad mine after Kreuzer (Ch2), reports its collapse (Ch4), names a better one (epilogue)
+- [x] NAR-0108 · Alpha · P2 · S · Orsa's mine-name running gag — names a bad mine after Kreuzer (Ch2), reports its collapse (Ch4), names a better one (epilogue)
 
 ### The Precentor
 - [ ] NAR-0109 · Alpha · P0 · M · Precentor arc doc — Aurel Vennholt, struck-off surgeon; motive: end all suffering with a perfect Compline; appears only as voice until Ch4, in person in Ch5
 - [ ] NAR-0110 · Alpha · P1 · S · Precentor's letters — 5 intercepted letters (one per chapter, Ch1–2 letters added to demo codex as locked stubs) building his case in his own voice
-- [ ] NAR-0111 · Alpha · P1 · S · Precentor/Kreuzer mirror scene (Ch5) — both claim to stop pain; 20 lines; no villain monologue beyond 4 consecutive lines
+- [x] NAR-0111 · Alpha · P1 · S · Precentor/Kreuzer mirror scene (Ch5) — both claim to stop pain; 20 lines; no villain monologue beyond 4 consecutive lines
 - [ ] NAR-0112 · Alpha · P2 · S · Hollow Choir hierarchy — Precentor, cantors, lay-cantors, acolytes; the hospice patron (Widow Aldegund Reiss) as secret acolyte; bible entry
 
 ### Supporting cast
@@ -189,20 +189,20 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ### Outline
 - [ ] NAR-0115 · Alpha · P0 · M · Ch3 outline — 10 ops, 12 scenes; acts: Hornchild inspection → foundry explosions → plague and raised bridges → Prime (roll of the dead) → guild licence vote → Terce (guildhall fire, Haller host)
 - [ ] NAR-0116 · Alpha · P0 · S · Ch3 flag inputs — reads `cantorMercy`, demo Litany-seen count, demo total rank; writes `hornchildCertificate`, `strohTooth`, `hallerFate`
-- [ ] NAR-0117 · Alpha · P1 · S · Ch3 title card and opening narration — "Prime: the first work of the day. The roll of the dead is read aloud."
+- [x] NAR-0117 · Alpha · P1 · S · Ch3 title card and opening narration — "Prime: the first work of the day. The roll of the dead is read aloud."
 
 ### Scenes (first draft)
-- [ ] NAR-0118 · Alpha · P0 · M · s3-1 "After Prime" — Stroh's promised conversation; the inspection decree invoked on a hornchild (Liesl, 7); Kreuzer must examine her
+- [x] NAR-0118 · Alpha · P0 · M · s3-1 "After Prime" — Stroh's promised conversation; the inspection decree invoked on a hornchild (Liesl, 7); Kreuzer must examine her
 - [ ] NAR-0119 · Alpha · P0 · M · s3-2 Certificate choice — sign "natural growth" (false, Whisper +2, Liesl lives free) or "late-turned" (true, Liesl taken by the Tribunal); both lead to op3-1
-- [ ] NAR-0120 · Alpha · P1 · M · s3-3 Kilnrows powder-mill explosion — mass casualties; introduces field triage mode in-fiction via Ilse
-- [ ] NAR-0121 · Alpha · P1 · S · s3-4 Founder's colic — lead poisoning patient; guild fee humour (the founders' guild bills the hospice for the lead removed)
-- [ ] NAR-0122 · Alpha · P1 · M · s3-5 The bridges are raised — council quarantine; vapour-wardens hang beef on poles; flagellant brotherhood marches past the hospice
-- [ ] NAR-0123 · Alpha · P1 · S · s3-6 Penny-pie outbreak — black-humour scene with a pie vendor denying everything
-- [ ] NAR-0124 · Alpha · P0 · M · s3-7 Prime — Registrar Oswin Tallert collapses reading the roll of plague dead; names writing themselves across his skin
-- [ ] NAR-0125 · Alpha · P1 · S · s3-8 Stroh's toothache — he arrives at night, jaw swollen, and must be treated by the man he suspects
+- [x] NAR-0120 · Alpha · P1 · M · s3-3 Kilnrows powder-mill explosion — mass casualties; introduces field triage mode in-fiction via Ilse
+- [x] NAR-0121 · Alpha · P1 · S · s3-4 Founder's colic — lead poisoning patient; guild fee humour (the founders' guild bills the hospice for the lead removed)
+- [x] NAR-0122 · Alpha · P1 · M · s3-5 The bridges are raised — council quarantine; vapour-wardens hang beef on poles; flagellant brotherhood marches past the hospice
+- [x] NAR-0123 · Alpha · P1 · S · s3-6 Penny-pie outbreak — black-humour scene with a pie vendor denying everything
+- [x] NAR-0124 · Alpha · P0 · M · s3-7 Prime — Registrar Oswin Tallert collapses reading the roll of plague dead; names writing themselves across his skin
+- [x] NAR-0125 · Alpha · P1 · S · s3-8 Stroh's toothache — he arrives at night, jaw swollen, and must be treated by the man he suspects
 - [ ] NAR-0126 · Alpha · P0 · M · s3-9 Licence vote at the Barber-Surgeons' Guildhall — Haller defends Kreuzer; Kreuzer's backstory surfaces; vote outcome depends on Ch1–3 average rank
-- [ ] NAR-0127 · Alpha · P0 · M · s3-10 Terce — the guildhall catches hexfire mid-vote; Haller is the host
-- [ ] NAR-0128 · Alpha · P0 · M · s3-end — Haller's confession about Aurel Vennholt; the Precentor's name spoken for the first time; the council orders the companies east
+- [x] NAR-0127 · Alpha · P0 · M · s3-10 Terce — the guildhall catches hexfire mid-vote; Haller is the host
+- [x] NAR-0128 · Alpha · P0 · M · s3-end — Haller's confession about Aurel Vennholt; the Precentor's name spoken for the first time; the council orders the companies east
 - [ ] NAR-0129 · Alpha · P1 · S · Ch3 aftermath micro-scenes for all 10 ops — 2–4 lines each
 
 ## NAR · Epic 7 — Chapter IV "Sext and None" (the Vennmark field)
@@ -212,17 +212,17 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] NAR-0131 · Alpha · P0 · S · Ch4 flag inputs/outputs — reads `hallerFate`, `hornchildCertificate`, `strohTrust`; writes `mauerFate`, `charterRevealed`, `deadManVerdict`, `thirstChoice`
 
 ### Scenes (first draft)
-- [ ] NAR-0132 · Alpha · P1 · M · s4-1 The march — hired companies, crossbow specialists, deserters; Kreuzer's field kit introduced (environment modifiers in fiction)
-- [ ] NAR-0133 · Alpha · P1 · S · s4-2 Rain in the tents — Ilse and Kreuzer on the Litany's nature; first hint it is a hymn fragment
-- [ ] NAR-0134 · Alpha · P1 · M · s4-3 Orsa returns — her crew poisoned by crystal dust; mountain-folk customs (don't shave the beard) as a plot constraint
-- [ ] NAR-0135 · Alpha · P1 · S · s4-4 The giant mercenary — a tithe-eater swallowed stolen council documents; comic interrogation by Mauer
+- [x] NAR-0132 · Alpha · P1 · M · s4-1 The march — hired companies, crossbow specialists, deserters; Kreuzer's field kit introduced (environment modifiers in fiction)
+- [x] NAR-0133 · Alpha · P1 · S · s4-2 Rain in the tents — Ilse and Kreuzer on the Litany's nature; first hint it is a hymn fragment
+- [x] NAR-0134 · Alpha · P1 · M · s4-3 Orsa returns — her crew poisoned by crystal dust; mountain-folk customs (don't shave the beard) as a plot constraint
+- [x] NAR-0135 · Alpha · P1 · S · s4-4 The giant mercenary — a tithe-eater swallowed stolen council documents; comic interrogation by Mauer
 - [ ] NAR-0136 · Alpha · P0 · M · s4-5 The dead man's pulse — a noble's "corpse" with one heartbeat a minute; Stroh demands a verdict; branch into forensic op or save-op
 - [ ] NAR-0137 · Alpha · P1 · M · s4-6 The thirsted courtesan — Margit, bitten repeatedly; she begs Kreuzer not to end the bond; player choice `thirstChoice`
-- [ ] NAR-0138 · Alpha · P0 · M · s4-7 Sext — noon lethargy sweeps the camp; Mauer collapses reporting calm while dying (fake-calm vitals foreshadowed)
+- [x] NAR-0138 · Alpha · P0 · M · s4-7 Sext — noon lethargy sweeps the camp; Mauer collapses reporting calm while dying (fake-calm vitals foreshadowed)
 - [ ] NAR-0139 · Alpha · P0 · M · s4-8 Charter lapse — the council roll shows Stroh's mandate expired at the new year; Stroh's reaction varies by `strohTrust`
-- [ ] NAR-0140 · Alpha · P1 · S · s4-9 The stone bride — a camp-follower's wedding interrupted by petrification
-- [ ] NAR-0141 · Alpha · P0 · M · s4-10 Patron betrayal — Widow Aldegund Reiss, the hospice's benefactor, revealed as Choir acolyte; the crestless carriage (Ch1 plant) was hers
-- [ ] NAR-0142 · Alpha · P0 · M · s4-11 None — Pieter (Ch1 militiaman) carries the burrower toward his heart; the Precentor speaks through him for the first time
+- [x] NAR-0140 · Alpha · P1 · S · s4-9 The stone bride — a camp-follower's wedding interrupted by petrification
+- [x] NAR-0141 · Alpha · P0 · M · s4-10 Patron betrayal — Widow Aldegund Reiss, the hospice's benefactor, revealed as Choir acolyte; the crestless carriage (Ch1 plant) was hers
+- [x] NAR-0142 · Alpha · P0 · M · s4-11 None — Pieter (Ch1 militiaman) carries the burrower toward his heart; the Precentor speaks through him for the first time
 - [ ] NAR-0143 · Alpha · P0 · S · s4-end — return to Kessendorf; Hollow Night is three days off; Stroh (or the council, if trust is low) issues a warrant for Kreuzer
 
 ## NAR · Epic 8 — Chapter V "Vespers and Compline" (Hollow Night)
@@ -232,17 +232,17 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] NAR-0145 · Alpha · P0 · S · Ch5 flag inputs — all prior flags plus final Whisper band; outputs `ending` enum
 
 ### Scenes (first draft)
-- [ ] NAR-0146 · Alpha · P0 · M · s5-1 Arrest — Kreuzer taken from the hospice mid-shift; Ilse keeps working the ward alone
+- [x] NAR-0146 · Alpha · P0 · M · s5-1 Arrest — Kreuzer taken from the hospice mid-shift; Ilse keeps working the ward alone
 - [ ] NAR-0147 · Alpha · P0 · L · s5-2 The trial — fair-trial rule; each false certificate or witnessed Litany is entered as evidence; interview-mode questioning (see CON disciplines); witnesses: Mauer, Orsa, Haller (letter), Liesl's mother
 - [ ] NAR-0148 · Alpha · P1 · M · s5-3 Verdict — outcome from evidence tally and Stroh's stance; acquittal, conviction with escape (Orsa's tunnel), or conviction with Mauer's rescue
-- [ ] NAR-0149 · Alpha · P1 · M · s5-4 Hollow Night — the streets empty, charms hung, the Choir sings openly; hymn lyrics for Vespers (original)
-- [ ] NAR-0150 · Alpha · P1 · S · s5-5 Choir-throat — a chorister of the cathedral hums the hymn; field op on the street
-- [ ] NAR-0151 · Alpha · P1 · S · s5-6 The mouth beneath — a cyst that talks and threatens to tell Stroh Kreuzer's secret
-- [ ] NAR-0152 · Alpha · P1 · S · s5-7 The chandler's daughter — blood setting like wax; leads into Vespers
-- [ ] NAR-0153 · Alpha · P1 · M · s5-8 Under the Hollow Moon — midwives delay a birth for superstition; Kreuzer overrules; hope-giving scene before the finale
-- [ ] NAR-0154 · Alpha · P0 · M · s5-9 Vespers — Ilse is the host; the lamps of the ward go out one by one
+- [x] NAR-0149 · Alpha · P1 · M · s5-4 Hollow Night — the streets empty, charms hung, the Choir sings openly; hymn lyrics for Vespers (original)
+- [x] NAR-0150 · Alpha · P1 · S · s5-5 Choir-throat — a chorister of the cathedral hums the hymn; field op on the street
+- [x] NAR-0151 · Alpha · P1 · S · s5-6 The mouth beneath — a cyst that talks and threatens to tell Stroh Kreuzer's secret
+- [x] NAR-0152 · Alpha · P1 · S · s5-7 The chandler's daughter — blood setting like wax; leads into Vespers
+- [x] NAR-0153 · Alpha · P1 · M · s5-8 Under the Hollow Moon — midwives delay a birth for superstition; Kreuzer overrules; hope-giving scene before the finale
+- [x] NAR-0154 · Alpha · P0 · M · s5-9 Vespers — Ilse is the host; the lamps of the ward go out one by one
 - [ ] NAR-0155 · Alpha · P0 · M · s5-10 The Precentor — meeting under the Tribunal court; mirror scene; he sings Compline into Stroh (or into the Burgomaster if Stroh was lost)
-- [ ] NAR-0156 · Alpha · P0 · M · s5-11 Compline — the Litany stolen; last lines before the final op
+- [x] NAR-0156 · Alpha · P0 · M · s5-11 Compline — the Litany stolen; last lines before the final op
 - [ ] NAR-0157 · Alpha · P0 · L · Endings — 4 endings (The Quiet Night averted with Stroh's pardon; Exile with Ilse; The Pyre Refused; The Perfect End — failure-state bad ending) each 20–40 lines plus epilogue cards per surviving character
 
 ### Endgame and branching
@@ -255,7 +255,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### Barks
 - [ ] NAR-0162 · Alpha · P1 · M · Ch3–5 speaker bark sets — Ilse (continues), Orsa (Ch4 field ops), Haller-by-letter (Ch4 briefings), Stroh (Ch3 tooth op, Ch5) ≥ 3 variants per trigger
-- [ ] NAR-0163 · Alpha · P1 · M · Malison voice lines — Prime (reading names), Terce (tongues of fire), Sext (false calm), None (death-count), Vespers (lamp-hymn), Compline (silence-verses): 10–14 lines each
+- [x] NAR-0163 · Alpha · P1 · M · Malison voice lines — Prime (reading names), Terce (tongues of fire), Sext (false calm), None (death-count), Vespers (lamp-hymn), Compline (silence-verses): 10–14 lines each
 - [ ] NAR-0164 · Alpha · P1 · S · Environment barks — rain in field tent, moving-cart table, candle-only light: 6 lines each warning of the modifier at op start
 - [ ] NAR-0165 · Alpha · P1 · M · Patient barks for Ch3–5 — 4–6 per named patient (27 patients)
 - [ ] NAR-0166 · Alpha · P2 · S · Whisper-band barks — Ilse/Stroh remarks after a Litany cast when Whisper is Suspected or Accused (8 lines)
@@ -336,7 +336,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] CON-0024 · Demo · P1 · S · Tool-introduction ledger — table of which op first requires each tool and the Litany; demo introduces each at most once per op, lens last (op2-2)
 - [ ] CON-0025 · Demo · P1 · S · Playtest survey form for ops — per op: clarity 1–5, fairness 1–5, fun 1–5, "what killed you"; results stored per build
 - [ ] CON-0026 · Demo · P1 · M · Two external playtest rounds on Ch1–2 — ≥ 8 players each; every op scoring < 3.5 fairness gets a fix ticket
-- [ ] CON-0027 · Alpha · P1 · S · Apply checklist — softlock and determinism tests to every Ch3–5 op (CI gate for the content folder)
+- [x] CON-0027 · Alpha · P1 · S · Apply checklist — softlock and determinism tests to every Ch3–5 op (CI gate for the content folder)
 - [ ] CON-0028 · Beta · P1 · M · Full-campaign balance pass — per-op thresholds retuned from telemetry of ≥ 30 playtesters
 - [ ] CON-0029 · Beta · P1 · S · Difficulty modes content — Easy (+40% time, −30% drain) and Hard (−20% time, stricter COOL window) values set per op and validated by sim
 
@@ -448,61 +448,61 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ## CON · Epic 6 — Chapter III operations (Prime and Terce)
 
 ### op3-1 "The Hornchild" (Liesl, 7) — trepanation-style bud excision
-- [ ] CON-0101 · Alpha · P0 · S · Design spec — 2 horn-buds on skull; new Drill entity (hold lancet in circle 1.5 s), lift bone disc with tongs, excise bud, salve; Choir sigil under each bud
-- [ ] CON-0102 · Alpha · P0 · M · Implement Drill/BoneDisc entities — with unit tests (drill overheats if held > 3 s → BAD)
+- [x] CON-0101 · Alpha · P0 · S · Design spec — 2 horn-buds on skull; new Drill entity (hold lancet in circle 1.5 s), lift bone disc with tongs, excise bud, salve; Choir sigil under each bud
+- [x] CON-0102 · Alpha · P0 · M · Implement Drill/BoneDisc entities — with unit tests (drill overheats if held > 3 s → BAD)
 - [ ] CON-0103 · Alpha · P1 · S · Branch — `hornchildCertificate = natural` skips excision of the second bud and scores the op on care only
-- [ ] CON-0104 · Alpha · P1 · S · Author `op3-1` data file — callouts, thresholds, checklist pass
+- [x] CON-0104 · Alpha · P1 · S · Author `op3-1` data file — callouts, thresholds, checklist pass
 
 ### op3-2 "Ball and Wadding" (Kaspar, powder-mill guard) — lead shot with cloth fragments
-- [ ] CON-0105 · Alpha · P0 · S · Design spec — ball carries 2–4 doublet-cloth fragments found only with the lens; any fragment left triggers a delayed wound-fever phase (vitals drain ×2)
-- [ ] CON-0106 · Alpha · P0 · M · Implement ClothFragment entity + WoundFever delayed phase — unit test: fragment left → fever phase spawns after close
-- [ ] CON-0107 · Alpha · P1 · S · Author `op3-2` data file — callouts, thresholds, checklist pass
+- [x] CON-0105 · Alpha · P0 · S · Design spec — ball carries 2–4 doublet-cloth fragments found only with the lens; any fragment left triggers a delayed wound-fever phase (vitals drain ×2)
+- [x] CON-0106 · Alpha · P0 · M · Implement ClothFragment entity + WoundFever delayed phase — unit test: fragment left → fever phase spawns after close
+- [x] CON-0107 · Alpha · P1 · S · Author `op3-2` data file — callouts, thresholds, checklist pass
 
 ### op3-3 "Founder's Colic" (Ute Brandt, bell-founder) — lead poisoning
 - [ ] CON-0108 · Alpha · P0 · S · Design spec — lead deposits visible under lens as grey veins; chelating tincture (new tincture colour) dissolves them; drain the grey bile with leech-pipe
 - [ ] CON-0109 · Alpha · P0 · M · Implement LeadDeposit entity and tincture-variant selection — wheel on tincture picks colour; with tests
-- [ ] CON-0110 · Alpha · P1 · S · Author `op3-3` data file — callouts, thresholds, checklist pass
+- [x] CON-0110 · Alpha · P1 · S · Author `op3-3` data file — callouts, thresholds, checklist pass
 
 ### op3-4 "Kilnrows Blast" (three powder-mill hands) — triage handoff op
 - [ ] CON-0111 · Alpha · P0 · S · Design spec — three patients in sequence on one timer; switch between them with Tab; each has burns, shrapnel and one lacerated artery
 - [ ] CON-0112 · Alpha · P0 · M · Implement multi-patient operation support — per-patient vitals, shared timer, switch cost 1 s; with tests
-- [ ] CON-0113 · Alpha · P1 · S · Author `op3-4` data file — callouts, thresholds, checklist pass
+- [x] CON-0113 · Alpha · P1 · S · Author `op3-4` data file — callouts, thresholds, checklist pass
 
 ### op3-5 "The Crow's Beak" (Berthold, carter) — amputation choice
-- [ ] CON-0114 · Alpha · P0 · S · Design spec — shattered shin; saw with lancet strokes; seal with cautery (fast, −15 vitals) or ligate each vessel with thread (slower, +score); historical ligature codex entry
-- [ ] CON-0115 · Alpha · P0 · M · Implement Saw/Stump entities and ligature-vs-cautery scoring — with tests
-- [ ] CON-0116 · Alpha · P1 · S · Author `op3-5` data file — callouts, thresholds, checklist pass
+- [x] CON-0114 · Alpha · P0 · S · Design spec — shattered shin; saw with lancet strokes; seal with cautery (fast, −15 vitals) or ligate each vessel with thread (slower, +score); historical ligature codex entry
+- [x] CON-0115 · Alpha · P0 · M · Implement Saw/Stump entities and ligature-vs-cautery scoring — with tests
+- [x] CON-0116 · Alpha · P1 · S · Author `op3-5` data file — callouts, thresholds, checklist pass
 
 ### op3-6 "The Pieman's Revenge" (Frieda, laundress) — gut worms
-- [ ] CON-0117 · Alpha · P0 · S · Design spec — drain flux, pull worm heads whole with tongs (slow pull; torn worm regrows in 8 s), antiparasitic tincture
-- [ ] CON-0118 · Alpha · P0 · M · Implement Worm entity — with tension meter and regrow rule (unit tests)
-- [ ] CON-0119 · Alpha · P1 · S · Author `op3-6` data file — callouts, thresholds, checklist pass
+- [x] CON-0117 · Alpha · P0 · S · Design spec — drain flux, pull worm heads whole with tongs (slow pull; torn worm regrows in 8 s), antiparasitic tincture
+- [x] CON-0118 · Alpha · P0 · M · Implement Worm entity — with tension meter and regrow rule (unit tests)
+- [x] CON-0119 · Alpha · P1 · S · Author `op3-6` data file — callouts, thresholds, checklist pass
 
 ### op3-7 "Lance the Buboes" (quarantine ward, Mother Agathe) — plague
 - [ ] CON-0120 · Alpha · P0 · S · Design spec — 6 buboes; clean lance only; pus must not touch open cuts; plague-rot regrows faster than op1-4; candle-only light modifier
 - [ ] CON-0121 · Alpha · P0 · M · Implement candle-light environment modifier — vignette radius follows cursor; data flag
-- [ ] CON-0122 · Alpha · P1 · S · Author `op3-7` data file — callouts, thresholds, checklist pass
+- [x] CON-0122 · Alpha · P1 · S · Author `op3-7` data file — callouts, thresholds, checklist pass
 
 ### op3-8 "The Flagellant's Back" (Brother Ansgar) — scourge wounds on a thrashing penitent
-- [ ] CON-0123 · Alpha · P0 · S · Design spec — nail fragments in festering welts; patient thrashes (field shake) unless calmed with tincture before each extraction
-- [ ] CON-0124 · Alpha · P0 · M · Implement Agitation meter driving field shake amplitude — tincture resets it (tests)
-- [ ] CON-0125 · Alpha · P1 · S · Author `op3-8` data file — callouts, thresholds, checklist pass
+- [x] CON-0123 · Alpha · P0 · S · Design spec — nail fragments in festering welts; patient thrashes (field shake) unless calmed with tincture before each extraction
+- [x] CON-0124 · Alpha · P0 · M · Implement Agitation meter driving field shake amplitude — tincture resets it (tests)
+- [x] CON-0125 · Alpha · P1 · S · Author `op3-8` data file — callouts, thresholds, checklist pass
 
 ### op3-9 "The Most Hated Avocation" (Inquisitor Stroh) — dentistry
-- [ ] CON-0126 · Alpha · P0 · S · Design spec — mouth field; abscess drain, rocking the rotten molar with tongs (root breaks if pulled too fast), VN interruption lines between phases; patient bites if lancet lingers
-- [ ] CON-0127 · Alpha · P0 · M · Implement Tooth/Root entity — with rock-and-pull input and bite hazard (tests)
+- [x] CON-0126 · Alpha · P0 · S · Design spec — mouth field; abscess drain, rocking the rotten molar with tongs (root breaks if pulled too fast), VN interruption lines between phases; patient bites if lancet lingers
+- [x] CON-0127 · Alpha · P0 · M · Implement Tooth/Root entity — with rock-and-pull input and bite hazard (tests)
 - [ ] CON-0128 · Alpha · P1 · S · Mid-op VN interjection support (op pauses for 2–3 lines between phases) — used here and in op5-2
 - [ ] CON-0129 · Alpha · P1 · S · Author `op3-9` data file — callouts, thresholds, `strohTooth` flag write, checklist pass
 
 ### op3-10 "The Hour of Prime" (Registrar Oswin Tallert) — boss
 - [ ] CON-0130 · Alpha · P0 · M · Prime design spec — writes name-sigils across tissue stroke by stroke; each completed name = −12 vitals; trace-erase with brand in reverse stroke order; up to 3 names writing at once in phase 2
-- [ ] CON-0131 · Alpha · P0 · L · Implement PrimeMalison + NameSigil entities — phases, write speed curve, erase rules; with unit tests
-- [ ] CON-0132 · Alpha · P1 · S · Name list content — 40 original Kessendorf names used by the name-sigils (IP-checked)
+- [x] CON-0131 · Alpha · P0 · L · Implement PrimeMalison + NameSigil entities — phases, write speed curve, erase rules; with unit tests
+- [x] CON-0132 · Alpha · P1 · S · Name list content — 40 original Kessendorf names used by the name-sigils (IP-checked)
 - [ ] CON-0133 · Alpha · P1 · S · Author `op3-10` data file — callouts, boss-fail tips, thresholds, checklist pass
 
 ### op3-11 "The Hour of Terce" (Master Haller) — boss
-- [ ] CON-0134 · Alpha · P0 · M · Terce design spec — hexfire tongues leap between 3 organ zones; salve the flame-front, then excise the root with lancet; brand feeds the fire (+size)
-- [ ] CON-0135 · Alpha · P0 · L · Implement TerceMalison + FlameTongue entities — spread graph between zones; with unit tests
+- [x] CON-0134 · Alpha · P0 · M · Terce design spec — hexfire tongues leap between 3 organ zones; salve the flame-front, then excise the root with lancet; brand feeds the fire (+size)
+- [x] CON-0135 · Alpha · P0 · L · Implement TerceMalison + FlameTongue entities — spread graph between zones; with unit tests
 - [ ] CON-0136 · Alpha · P1 · S · Burned-hands aftermath phase — Haller's hands require salve + thread; rank feeds `hallerFate`
 - [ ] CON-0137 · Alpha · P1 · S · Author `op3-11` data file — callouts, boss-fail tips, thresholds, checklist pass
 
@@ -514,97 +514,97 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] CON-0140 · Alpha · P1 · S · Limited supplies rule — per-op consumable counts for thread/salve/tincture shown on HUD; running out is a soft fail state (scored, not lost)
 
 ### op4-1 "Quarrel at the Gorget" (Ruprecht, crossbowman)
-- [ ] CON-0141 · Alpha · P0 · S · Design spec — bolt beside the carotid; clamp artery with tongs before extraction or arterial spray adds −1 vitals/s until ligated
-- [ ] CON-0142 · Alpha · P0 · M · Implement Artery/Clamp entity and arterial-spray bleed rule — tests
-- [ ] CON-0143 · Alpha · P1 · S · Author `op4-1` data file — callouts, thresholds, checklist pass (rain modifier on)
+- [x] CON-0141 · Alpha · P0 · S · Design spec — bolt beside the carotid; clamp artery with tongs before extraction or arterial spray adds −1 vitals/s until ligated
+- [x] CON-0142 · Alpha · P0 · M · Implement Artery/Clamp entity and arterial-spray bleed rule — tests
+- [x] CON-0143 · Alpha · P1 · S · Author `op4-1` data file — callouts, thresholds, checklist pass (rain modifier on)
 
 ### op4-2 "Tusk and Hoof" (Wendel, convoy guard) — horned-folk goring
-- [ ] CON-0144 · Alpha · P0 · S · Design spec — horn tip broken inside (lens); ticks crawl from the wound and burrow if not plucked within 6 s; dung contamination drains vitals until irrigated with leech-pipe
-- [ ] CON-0145 · Alpha · P0 · M · Implement Tick entity — crawl, burrow → sub-surface; and Contamination zone (tests)
-- [ ] CON-0146 · Alpha · P1 · S · Author `op4-2` data file — callouts, thresholds, checklist pass
+- [x] CON-0144 · Alpha · P0 · S · Design spec — horn tip broken inside (lens); ticks crawl from the wound and burrow if not plucked within 6 s; dung contamination drains vitals until irrigated with leech-pipe
+- [x] CON-0145 · Alpha · P0 · M · Implement Tick entity — crawl, burrow → sub-surface; and Contamination zone (tests)
+- [x] CON-0146 · Alpha · P1 · S · Author `op4-2` data file — callouts, thresholds, checklist pass
 
 ### op4-3 "Delver's Lung" (Orsa's crew-mate Brakka) — crystal nodules, 3-stage sickness
-- [ ] CON-0147 · Alpha · P0 · S · Design spec — lung field; crystal nodules grow through stages I–III; false-recovery stage shows vitals rising while nodules grow; beard region is a no-cut zone (−score)
-- [ ] CON-0148 · Alpha · P0 · M · Implement Nodule staged growth and no-cut zone penalty — tests
-- [ ] CON-0149 · Alpha · P1 · S · Author `op4-3` data file — callouts, thresholds, checklist pass
+- [x] CON-0147 · Alpha · P0 · S · Design spec — lung field; crystal nodules grow through stages I–III; false-recovery stage shows vitals rising while nodules grow; beard region is a no-cut zone (−score)
+- [x] CON-0148 · Alpha · P0 · M · Implement Nodule staged growth and no-cut zone penalty — tests
+- [x] CON-0149 · Alpha · P1 · S · Author `op4-3` data file — callouts, thresholds, checklist pass
 
 ### op4-4 "The Swallowed Strongbox" (Gutram, giant mercenary)
 - [ ] CON-0150 · Alpha · P0 · S · Design spec — 3 incision layers (thick hide), low organ layout needing lens, heavy retraction held with tongs, lock-pick minigame inside the stomach (rotate wheel to align 3 pins)
 - [ ] CON-0151 · Alpha · P0 · M · Implement layered Incision and Retractor-hold — tongs held reduces field obstruction; (tests)
 - [ ] CON-0152 · Alpha · P1 · M · Implement Lock minigame entity — 3 pins, wheel-driven, time penalty on slip
-- [ ] CON-0153 · Alpha · P1 · S · Author `op4-4` data file — callouts, thresholds, checklist pass
+- [x] CON-0153 · Alpha · P1 · S · Author `op4-4` data file — callouts, thresholds, checklist pass
 
 ### op4-5 "The Dead Man's Pulse" (Lord Eckbert von Salm) — forensic/save branch
 - [ ] CON-0154 · Alpha · P0 · S · Design spec — lens shows one heartbeat per minute; branch A (save): extract bite-trance fang fragments and restart pulse with tincture; branch B (forensic): documented in forensic discipline
 - [ ] CON-0155 · Alpha · P0 · M · Implement slow-pulse vitals mode — vitals only tick on heartbeat; and branch routing via `deadManVerdict`
-- [ ] CON-0156 · Alpha · P1 · S · Author `op4-5` data file — callouts, thresholds, checklist pass for branch A
+- [x] CON-0156 · Alpha · P1 · S · Author `op4-5` data file — callouts, thresholds, checklist pass for branch A
 
 ### op4-6 "The Thirsted Neck" (Margit, courtesan)
-- [ ] CON-0157 · Alpha · P0 · S · Design spec — repeated bite wounds with lodged tooth fragments, anaemia (baseDrain), bite channel choice at end: brand it (ends the thrall) or salve it (leaves it)
-- [ ] CON-0158 · Alpha · P0 · S · End-choice prompt entity and `thirstChoice` flag write — test
-- [ ] CON-0159 · Alpha · P1 · S · Author `op4-6` data file — callouts, thresholds, checklist pass
+- [x] CON-0157 · Alpha · P0 · S · Design spec — repeated bite wounds with lodged tooth fragments, anaemia (baseDrain), bite channel choice at end: brand it (ends the thrall) or salve it (leaves it)
+- [x] CON-0158 · Alpha · P0 · S · End-choice prompt entity and `thirstChoice` flag write — test
+- [x] CON-0159 · Alpha · P1 · S · Author `op4-6` data file — callouts, thresholds, checklist pass
 
 ### op4-7 "The Hour of Sext" (Captain Mauer) — boss
-- [ ] CON-0160 · Alpha · P0 · M · Sext design spec — torpor: tool response delay up to 0.6 s, fake calm vitals shown on HUD (true vitals under lens), stone crust over organs cracked with lancet taps; stimulant tincture removes delay for 10 s
-- [ ] CON-0161 · Alpha · P0 · L · Implement SextMalison — InputTorpor effect, FalseVitals HUD override, StoneCrust entity (tests incl. input-delay determinism)
+- [x] CON-0160 · Alpha · P0 · M · Sext design spec — torpor: tool response delay up to 0.6 s, fake calm vitals shown on HUD (true vitals under lens), stone crust over organs cracked with lancet taps; stimulant tincture removes delay for 10 s
+- [x] CON-0161 · Alpha · P0 · L · Implement SextMalison — InputTorpor effect, FalseVitals HUD override, StoneCrust entity (tests incl. input-delay determinism)
 - [ ] CON-0162 · Alpha · P1 · S · Accessibility check — torpor delay capped at 0.3 s in Assist mode
 - [ ] CON-0163 · Alpha · P1 · S · Author `op4-7` data file — callouts, boss-fail tips, thresholds, `mauerFate` write, checklist pass
 
 ### op4-8 "The Stone Bride" (Hanne, camp-follower)
-- [ ] CON-0164 · Alpha · P0 · S · Design spec — petrification front advancing from fingertips toward the heart; crack plates with lancet taps in the shown pattern, salve the living margin; Litany freezes spread; lens shows the front
-- [ ] CON-0165 · Alpha · P0 · M · Implement PetrifyFront — advancing polygon; and Plate tap-pattern entity (tests)
-- [ ] CON-0166 · Alpha · P1 · S · Author `op4-8` data file — callouts, thresholds, checklist pass
+- [x] CON-0164 · Alpha · P0 · S · Design spec — petrification front advancing from fingertips toward the heart; crack plates with lancet taps in the shown pattern, salve the living margin; Litany freezes spread; lens shows the front
+- [x] CON-0165 · Alpha · P0 · M · Implement PetrifyFront — advancing polygon; and Plate tap-pattern entity (tests)
+- [x] CON-0166 · Alpha · P1 · S · Author `op4-8` data file — callouts, thresholds, checklist pass
 
 ### op4-9 "The Hour of None" (Pieter, militiaman) — boss
-- [ ] CON-0167 · Alpha · P0 · M · None design spec — heart-seeking burrower tunnels through 4 organs; instant fail on reaching the heart; cut down in stages (3 sizes) until small enough to extract with tongs; Litany intercept window
-- [ ] CON-0168 · Alpha · P0 · L · Implement NoneMalison burrower pathing — seeded organ graph; stage splits and heart-fail condition (tests)
-- [ ] CON-0169 · Alpha · P1 · S · Precentor voice-through overlay during phase 3 — VN lines over op
+- [x] CON-0167 · Alpha · P0 · M · None design spec — heart-seeking burrower tunnels through 4 organs; instant fail on reaching the heart; cut down in stages (3 sizes) until small enough to extract with tongs; Litany intercept window
+- [x] CON-0168 · Alpha · P0 · L · Implement NoneMalison burrower pathing — seeded organ graph; stage splits and heart-fail condition (tests)
+- [x] CON-0169 · Alpha · P1 · S · Precentor voice-through overlay during phase 3 — VN lines over op
 - [ ] CON-0170 · Alpha · P1 · S · Author `op4-9` data file — callouts, boss-fail tips, thresholds, checklist pass
 
 ## CON · Epic 8 — Chapter V operations (Vespers and Compline, Hollow Night)
 
 ### op5-1 "Choir-Throat" (Jakob, cathedral chorister)
-- [ ] CON-0171 · Alpha · P0 · S · Design spec — larynx grows extra vocal folds that hum; hum spreads motes to the field and mutes audio cues; excise folds only in the silence between verses (visual metronome)
-- [ ] CON-0172 · Alpha · P0 · M · Implement VocalFold entity — with verse/rest cycle and audio-cue mute effect (tests; subtitles still show cues)
-- [ ] CON-0173 · Alpha · P1 · S · Author `op5-1` data file — callouts, thresholds, checklist pass
+- [x] CON-0171 · Alpha · P0 · S · Design spec — larynx grows extra vocal folds that hum; hum spreads motes to the field and mutes audio cues; excise folds only in the silence between verses (visual metronome)
+- [x] CON-0172 · Alpha · P0 · M · Implement VocalFold entity — with verse/rest cycle and audio-cue mute effect (tests; subtitles still show cues)
+- [x] CON-0173 · Alpha · P1 · S · Author `op5-1` data file — callouts, thresholds, checklist pass
 
 ### op5-2 "The Mouth Beneath" (Dietmar, tanner)
-- [ ] CON-0174 · Alpha · P0 · S · Design spec — talking abdominal cyst bargains mid-op (VN interjections), must be removed whole; rupture spawns a crawling remnant mini-boss
-- [ ] CON-0175 · Alpha · P0 · M · Implement Cyst — integrity meter; and Remnant mini-boss entities (tests)
+- [x] CON-0174 · Alpha · P0 · S · Design spec — talking abdominal cyst bargains mid-op (VN interjections), must be removed whole; rupture spawns a crawling remnant mini-boss
+- [x] CON-0175 · Alpha · P0 · M · Implement Cyst — integrity meter; and Remnant mini-boss entities (tests)
 - [ ] CON-0176 · Alpha · P1 · S · Cyst dialogue lines keyed to Whisper band — threatens to tell Stroh specific evidence
-- [ ] CON-0177 · Alpha · P1 · S · Author `op5-2` data file — callouts, thresholds, checklist pass
+- [x] CON-0177 · Alpha · P1 · S · Author `op5-2` data file — callouts, thresholds, checklist pass
 
 ### op5-3 "Blood of Tallow" (Greta, chandler's daughter)
-- [ ] CON-0178 · Alpha · P0 · S · Design spec — waxy clots in vessels; drain clots, re-warm vessels with brand on low heat (hold < 1 s taps), tincture to thin
-- [ ] CON-0179 · Alpha · P0 · M · Implement WaxClot and brand low-heat tap mode — tests
-- [ ] CON-0180 · Alpha · P1 · S · Author `op5-3` data file — callouts, thresholds, checklist pass
+- [x] CON-0178 · Alpha · P0 · S · Design spec — waxy clots in vessels; drain clots, re-warm vessels with brand on low heat (hold < 1 s taps), tincture to thin
+- [x] CON-0179 · Alpha · P0 · M · Implement WaxClot and brand low-heat tap mode — tests
+- [x] CON-0180 · Alpha · P1 · S · Author `op5-3` data file — callouts, thresholds, checklist pass
 
 ### op5-4 "Under the Hollow Moon" (Rosina, labouring mother) — field obstetrics
-- [ ] CON-0181 · Alpha · P0 · S · Design spec — caesarean on a living mother (historical Nufer account in codex); layered incision, lift the child with tongs (gentle-hold meter), ligate, close; no gore escalation, hope-giving tone
-- [ ] CON-0182 · Alpha · P0 · M · Implement gentle-hold tongs mode — grip pressure from hold duration; and dual-vitals (mother + child) (tests)
+- [x] CON-0181 · Alpha · P0 · S · Design spec — caesarean on a living mother (historical Nufer account in codex); layered incision, lift the child with tongs (gentle-hold meter), ligate, close; no gore escalation, hope-giving tone
+- [x] CON-0182 · Alpha · P0 · M · Implement gentle-hold tongs mode — grip pressure from hold duration; and dual-vitals (mother + child) (tests)
 - [ ] CON-0183 · Alpha · P0 · S · Obstetric sensitivity sign-off — consultant approves op5-4 visuals and text before Beta
-- [ ] CON-0184 · Alpha · P1 · S · Author `op5-4` data file — callouts, thresholds, checklist pass
+- [x] CON-0184 · Alpha · P1 · S · Author `op5-4` data file — callouts, thresholds, checklist pass
 
 ### op5-5 "Hexstone Shot" (Sergeant Lotte Harrach, Watch)
-- [ ] CON-0185 · Alpha · P0 · S · Design spec — mutagenic ball; surrounding tissue buds teeth, fingers and eyes on a root timer; excise buds before they root; lift stone only with tongs into the lead dish; touching it with other tools adds Whisper
-- [ ] CON-0186 · Alpha · P0 · M · Implement Bud entity — with root timer and Whisper-on-contact rule (tests)
-- [ ] CON-0187 · Alpha · P1 · S · Author `op5-5` data file — callouts, thresholds, checklist pass
+- [x] CON-0185 · Alpha · P0 · S · Design spec — mutagenic ball; surrounding tissue buds teeth, fingers and eyes on a root timer; excise buds before they root; lift stone only with tongs into the lead dish; touching it with other tools adds Whisper
+- [x] CON-0186 · Alpha · P0 · M · Implement Bud entity — with root timer and Whisper-on-contact rule (tests)
+- [x] CON-0187 · Alpha · P1 · S · Author `op5-5` data file — callouts, thresholds, checklist pass
 
 ### op5-6 "The Hour of Vespers" (Sister Ilse) — boss
-- [ ] CON-0188 · Alpha · P0 · M · Vespers design spec — wick-filaments turn blood to tallow; field dims over time; keep 4 lamp nodes lit with brand; curse hides in shadow (only visible within lamp radius); drain tallow clots
-- [ ] CON-0189 · Alpha · P0 · L · Implement VespersMalison — LampNode lighting mask and shadow-hide rule (tests)
+- [x] CON-0188 · Alpha · P0 · M · Vespers design spec — wick-filaments turn blood to tallow; field dims over time; keep 4 lamp nodes lit with brand; curse hides in shadow (only visible within lamp radius); drain tallow clots
+- [x] CON-0189 · Alpha · P0 · L · Implement VespersMalison — LampNode lighting mask and shadow-hide rule (tests)
 - [ ] CON-0190 · Alpha · P1 · S · Assistant swap — Haller (letter barks) or Orsa voices callouts since Ilse is the patient; data-driven assistant per op
 - [ ] CON-0191 · Alpha · P1 · S · Author `op5-6` data file — callouts, boss-fail tips, thresholds, checklist pass
 
 ### op5-7 "The Precentor's Remnants" (the Burgomaster's guard) — gauntlet
-- [ ] CON-0192 · Alpha · P1 · S · Design spec — escalation gauntlet: short phases of Prime names, Terce tongues and None burrower on one patient, 300 s
-- [ ] CON-0193 · Alpha · P1 · M · Implement reuse of Ch3–4 boss entities at reduced HP in one op — data only; no new code beyond HP scaling param
-- [ ] CON-0194 · Alpha · P1 · S · Author `op5-7` data file — callouts, thresholds, checklist pass
+- [x] CON-0192 · Alpha · P1 · S · Design spec — escalation gauntlet: short phases of Prime names, Terce tongues and None burrower on one patient, 300 s
+- [x] CON-0193 · Alpha · P1 · M · Implement reuse of Ch3–4 boss entities at reduced HP in one op — data only; no new code beyond HP scaling param
+- [x] CON-0194 · Alpha · P1 · S · Author `op5-7` data file — callouts, thresholds, checklist pass
 
 ### op5-8 "The Hour of Compline" (Inquisitor Stroh) — final boss
 - [ ] CON-0195 · Alpha · P0 · M · Compline design spec — mixes all hours; mutes audio; steals the Litany (a star gesture now slows the player's own time); vitals drift toward a "peaceful" 0; break 5 silence nodes to recover the Litany; final phase needs a two-hand combo (hold tongs on core, brand with keyboard-bound second action)
-- [ ] CON-0196 · Alpha · P0 · L · Implement ComplineMalison phases 1–2 — mixed-hour attacks, audio mute, Litany inversion; with tests
-- [ ] CON-0197 · Alpha · P0 · L · Implement ComplineMalison phases 3–4 — silence nodes, Litany recovery, two-hand combo finale; with tests
+- [x] CON-0196 · Alpha · P0 · L · Implement ComplineMalison phases 1–2 — mixed-hour attacks, audio mute, Litany inversion; with tests
+- [x] CON-0197 · Alpha · P0 · L · Implement ComplineMalison phases 3–4 — silence nodes, Litany recovery, two-hand combo finale; with tests
 - [ ] CON-0198 · Alpha · P0 · S · Two-hand combo accessibility — toggle mode (tap to hold) and controller mapping verified
 - [ ] CON-0199 · Alpha · P1 · S · Host swap — if Stroh was lost, host is the Burgomaster (patient string and barks only)
 - [ ] CON-0200 · Alpha · P1 · S · Author `op5-8` data file — callouts, boss-fail tips, thresholds, checklist pass; phase checkpoints after phase 2 and 3

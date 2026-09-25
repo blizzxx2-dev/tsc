@@ -10,6 +10,7 @@ import { ChoirVoice, EggSac, LaudsMalison, SpiderlingGrub } from '../src/surgery
 import { Malison, MalisonShard } from '../src/surgery/malison';
 import { FIELD, Operation, type OperationDef } from '../src/surgery/operation';
 import type { Pointer, ToolId } from '../src/surgery/types';
+import { planLater } from './bot-later';
 
 const DT = 1 / 60;
 
@@ -110,6 +111,10 @@ function plan(op: Operation): Action | null {
     vis.find((e): e is T => e instanceof cls && pred(e as T));
 
   if (op.vitals < 40 && op.injectCooldown === 0 && has('tincture')) return hold('tincture', () => ({ x: FIELD.cx + 330, y: FIELD.cy + 20 }), 0.8);
+
+  // Chapters III–V: bosses and ailments with their own counterplay.
+  const later = planLater(op, { hold, tap, drag, grabTo, chain, pause, zigzag, raster, OFF_BODY });
+  if (later) return later;
 
   const venom = find(Venom);
   if (venom) return hold('tincture', alive(venom), 1.0);
