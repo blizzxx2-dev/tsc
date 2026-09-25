@@ -548,7 +548,7 @@ describe('GAM-P operation flow', () => {
     const def = testDef(() => [], {
       events: [
         { at: { phase: 0, t: 1 }, say: ['One second in.'] },
-        { when: { cleared: 'Laceration' }, spawn: () => [new Rot(at(0, 0), 20, 0)] },
+        { when: { cleared: Laceration }, spawn: () => [new Rot(at(0, 0), 20, 0)] },
       ],
     }, [{ spawn: () => [new Laceration(at(0, 0), 0, 44, 0.1), new Anchor()] }]);
     const op = new Operation(def);

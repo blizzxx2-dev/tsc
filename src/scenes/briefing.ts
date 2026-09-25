@@ -6,9 +6,11 @@ import { toolInfo } from '../surgery/types';
 import { VIEW_W } from '../ui/layout';
 import { button, parchment, reticle, toolIcon } from '../ui/widgets';
 import { drawBackdrop } from './backdrop';
+import { briefingNotes } from '../surgery/session';
 
 /** The patient chart shown before an operation. */
 export class BriefingScene implements Scene {
+  private notes: string[] | null = null;
   constructor(
     private def: OperationDef,
     private best: { rank: string; score: number } | undefined,
@@ -53,6 +55,8 @@ export class BriefingScene implements Scene {
       toolIcon(g, t, x, r.y + 445, 0.9, g.time);
       g.text(toolInfo(t).key, x, r.y + 492, { size: 16, color: faded, align: 'center', shadow: false });
     });
+    this.notes ??= briefingNotes(d);
+    this.notes.forEach((n, i) => g.text(n, r.x + 60, r.y + 512 + i * 18, { size: 15, font: 'italic', color: faded, shadow: false }));
     if (button(g, game.input, 'Scrub In', VIEW_W / 2 + 120, r.y + 560, 34, true, true)) this.onBegin();
     if (button(g, game.input, 'Back', VIEW_W / 2 - 160, r.y + 560, 26, true, true)) this.onBack();
     reticle(g, game.input.pos);

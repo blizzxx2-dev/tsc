@@ -5,6 +5,7 @@ import type { Gfx } from '../render/gfx';
 import { PALETTE, VIEW_W } from '../ui/layout';
 import { button, inRect, panel, reticle } from '../ui/widgets';
 import { drawBackdrop } from './backdrop';
+import { GameplayOptionsScene } from './gameplayOptions';
 
 interface Row {
   label: string;
@@ -57,6 +58,12 @@ export class OptionsScene implements Scene {
       value: () => (settings.litanyKey ? 'On' : 'Off'),
       change: () => (settings.litanyKey = !settings.litanyKey),
       note: 'Press Space instead of drawing the five-pointed star.',
+    },
+    {
+      label: 'Gameplay & assists',
+      value: () => 'difficulty, assists, kit ›',
+      change: (_d, g) => g.go(new GameplayOptionsScene(() => g.go(this))),
+      note: 'Difficulty, assist toggles, Litany rite, tincture kit and instrument upgrades.',
     },
     {
       label: 'Fullscreen',

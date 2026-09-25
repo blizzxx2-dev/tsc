@@ -4,7 +4,7 @@ import type { Game, Scene } from '../core/scene';
 import { hex, withAlpha } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { organPalette } from '../render/organs';
-import { Sigil, surfDisc, surfLine } from '../surgery/entities';
+import { Grub, Sigil, surfDisc, surfLine } from '../surgery/entities';
 import { Particles } from '../render/particles';
 import { isStar } from '../surgery/gesture';
 import { Malison, MalisonShard } from '../surgery/malison';
@@ -19,6 +19,9 @@ import { ASSISTANT_NAME } from '../content/characters';
 import type { RGBA } from '../render/color';
 import { settings } from '../core/settings';
 import { OptionsScene } from './options';
+import { operationOptions } from '../surgery/session';
+import type { OperationOptions } from '../surgery/operation';
+import { drawDebug, drawDialogue, drawDrainArrow, drawFieldOverlays, drawLitanyPractice, drawSecondaryVitals, drawTrayState, drawTutorial } from './gameplayHud';
 
 export interface OperationOutcome {
   op: Operation;
@@ -44,18 +47,23 @@ export class OperationScene implements Scene {
   private particles = new Particles();
   private comboT = 0;
   private lastCombo = 0;
+  private debug = false;
+  private litanyHold = 0;
 
   constructor(
     private def: OperationDef,
     private onEnd: (o: OperationOutcome) => void,
     private onQuit: () => void,
+    /** Per-run overrides (retry at Novice, checkpoint, challenge rules). */
+    private runOpts: OperationOptions = {},
   ) {
-    this.op = OperationScene.create(def);
+    this.op = OperationScene.create(def, runOpts);
   }
 
-  /** Apply player assists to the operation definition. */
-  private static create(def: OperationDef): Operation {
-    return new Operation(settings.timerAssist === 1 ? def : { ...def, timeLimit: Math.round(def.timeLimit * settings.timerAssist) });
+  /** Apply player assists, difficulty and kit to the operation definition. */
+  private static create(def: OperationDef, runOpts: OperationOptions = {}): Operation {
+    const d = settings.timerAssist === 1 || runOpts.challenge ? def : { ...def, timeLimit: Math.round(def.timeLimit * settings.timerAssist) };
+    return new Operation(d, operationOptions(def, runOpts));
   }
 
   enter(): void {
@@ -65,7 +73,7 @@ export class OperationScene implements Scene {
   }
 
   private restart(): void {
-    this.op = OperationScene.create(this.def);
+    this.op = OperationScene.create(this.def, this.runOpts);
     this.particles = new Particles();
     this.paused = false;
     this.endT = 0;
@@ -76,11 +84,27 @@ export class OperationScene implements Scene {
     const op = this.op;
 
     if (input.keyPressed('Escape') && op.status !== 'won' && op.status !== 'lost') this.paused = !this.paused;
+    op.paused = this.paused;
     if (this.paused) return;
+    if (input.keyPressed('F3')) this.debug = !this.debug;
+    if (import.meta.env.DEV && this.debug) this.cheats(input);
 
-    // Tool selection: hotkeys, wheel, or clicking the tray.
-    for (const t of TOOL_INFO) if (input.keyPressed(t.code)) op.setTool(t.id);
-    if (input.wheel) op.cycleTool(input.wheel);
+    // A mid-operation dialogue insert holds everything until read.
+    if (op.dialogue.length) {
+      if (input.pressed || input.keyPressed('Enter') || input.keyPressed('Space')) op.advanceDialogue();
+      op.update(dt);
+      return;
+    }
+
+    // Tool selection: hotkeys (6 again cycles the tincture colour), wheel, or clicking the tray.
+    for (const t of TOOL_INFO)
+      if (input.keyPressed(t.code)) {
+        if (t.id === 'tincture' && op.tool === 'tincture') op.cycleTincture();
+        else op.setTool(t.id);
+      }
+    if (input.wheel) op.wheel(input.wheel);
+    if (input.keyPressed('KeyH')) op.ilseAssist();
+    if (input.keyPressed('KeyR')) op.toggleLeechReverse();
     if (input.keyPressed('KeyQ')) op.cycleTool(-1);
     if (input.keyPressed('KeyE')) op.cycleTool(1);
     if (input.keyPressed('Tab')) op.quickSwap();
@@ -108,18 +132,32 @@ export class OperationScene implements Scene {
     if (settings.litanyKey && input.keyPressed('Space')) {
       if (!op.invokeLitany() && op.def.litany !== false) op.popup(op.litanyUsed ? 'The Litany is spent.' : 'Not now.', input.pos, PALETTE.inkDim);
     }
+    // Accessibility: hold L for 1.5 s to speak the Litany without the gesture.
+    if ((settings.litanyKey || op.assists.simpleGestures) && input.key('KeyL')) {
+      this.litanyHold += dt;
+      if (this.litanyHold >= 1.5) {
+        this.litanyHold = 0;
+        if (op.litanyPractice) op.practiceStar(true);
+        else op.invokeLitany();
+      }
+    } else this.litanyHold = 0;
     if (input.rightDown) this.starTrail.push({ ...input.pos });
     else if (this.starTrail.length) {
-      if (isStar(this.starTrail)) {
+      const ok = isStar(this.starTrail);
+      if (op.litanyPractice) op.practiceStar(ok);
+      else if (ok) {
         if (!op.invokeLitany()) op.popup(op.litanyUsed ? 'The Litany is spent.' : 'Not now.', input.pos, PALETTE.inkDim);
-      } else if (this.starTrail.length > 8) op.popup('The sign falters…', input.pos, PALETTE.inkDim);
+      } else if (this.starTrail.length > 8) op.popup('The words falter.', input.pos, PALETTE.inkDim);
       this.starTrail = [];
     }
 
     // Replay every pointer sample since last frame so fast zig-zags aren't lost at low frame rates.
-    const path = input.path;
+    // Moving Cart: the field sways under the hand; map the pointer back onto it.
+    const sway = op.sway();
+    const unsway = (p: Vec): Vec => ({ x: p.x - sway.x, y: p.y - sway.y });
+    const path = input.path.map(unsway);
     const down = input.down && !trayClick && !input.rightDown;
-    let prev = input.prev;
+    let prev = unsway(input.prev);
     path.forEach((pos, i) => {
       const ptr: Pointer = {
         pos,
@@ -144,7 +182,8 @@ export class OperationScene implements Scene {
     const samples = Math.max(1, Math.round(dt * 120));
     for (let i = 0; i < samples; i++) {
       this.ecg.shift();
-      this.ecg.push(bpm === 0 ? 0 : ecgWave(this.beatPhase) * (op.vitals < 25 ? 0.6 + Math.random() * 0.4 : 1));
+      // A failing heart flutters (deterministically: a slow beat-to-beat wobble, no randomness).
+      this.ecg.push(bpm === 0 ? 0 : ecgWave(this.beatPhase) * (op.vitals < 25 ? 0.8 + 0.2 * Math.sin(op.elapsed * 7.3) : 1));
     }
 
     const cursed = op.entities.some((e) => e instanceof Malison || e instanceof MalisonShard) ? 0.7 : op.entities.some((e) => e instanceof Sigil) ? 0.25 : 0;
@@ -171,6 +210,15 @@ export class OperationScene implements Scene {
     }
   }
 
+  /** Dev-only cheats (F3 overlay on): F5 skip phase, F6 full vitals, F7 freeze drain, F8 grub at cursor. */
+  private cheats(input: Game['input']): void {
+    const op = this.op;
+    if (input.keyPressed('F5')) for (const e of op.entities) if (e.required) e.kill();
+    if (input.keyPressed('F6')) op.vitals = op.vitalsCap;
+    if (input.keyPressed('F7')) op.graceTime(9999);
+    if (input.keyPressed('F8')) op.spawn(new Grub({ ...input.pos }, op, 40));
+  }
+
   private slot(i: number) {
     return { x: TRAY.x, y: TRAY.y + i * (TRAY.h + TRAY.gap), w: TRAY.w, h: TRAY.h };
   }
@@ -180,7 +228,8 @@ export class OperationScene implements Scene {
     const pal = organPalette(op.def);
     const t = g.time;
     const sk = op.shake * settings.shake;
-    const shake = sk > 0 ? { x: (Math.random() - 0.5) * sk, y: (Math.random() - 0.5) * sk } : { x: 0, y: 0 };
+    const sway = op.sway();
+    const shake = sk > 0 ? { x: (Math.random() - 0.5) * sk + sway.x, y: (Math.random() - 0.5) * sk + sway.y } : sway;
 
     // ---------------------------------------------------------------- data layers
     const ents = op.visibleEntities().sort((a, b) => a.layer - b.layer);
@@ -247,10 +296,16 @@ export class OperationScene implements Scene {
     });
 
     // ---------------------------------------------------------------- UI
+    drawFieldOverlays(g, op);
+    drawTutorial(g, op);
     this.drawPopups(g);
     this.drawHud(g);
     this.drawTray(g);
+    drawTrayState(g, op, (i) => this.slot(i), game.input);
     this.drawCallout(g, t);
+    if (this.debug) drawDebug(g, op);
+    if (drawLitanyPractice(g, op, game.input)) op.skipPractice();
+    drawDialogue(g, op, game.input);
 
     if (op.status === 'intro') {
       const a = Math.min(1, op.elapsed * 3);
@@ -290,7 +345,9 @@ export class OperationScene implements Scene {
     heart(g, 52, 48, 14 * beat, hex(op.vitals > 30 ? '#c0182a' : '#ff3030'));
     g.glow(52, 48, 30 * beat, hex('#ff2030', 0.15 + this.pulse * 0.25));
     g.text('VITALS', 92, 30, { size: 13, color: hex(UI.brass), shadow: false });
-    g.text(String(Math.ceil(op.vitals)).padStart(2, '0'), 92, 64, { size: 38, font: 'body', color: hex('#ffffff'), color2: hex(vcol), shadow: hex('#000000', 0.9) });
+    g.text(String(Math.ceil(op.displayVitals())).padStart(2, '0'), 92, 64, { size: 38, font: 'body', color: hex('#ffffff'), color2: hex(vcol), shadow: hex('#000000', 0.9) });
+    drawDrainArrow(g, op, 146, 50);
+    drawSecondaryVitals(g, op, 160, 80);
     // Blood tube.
     const tube = { x: 92, y: 71, w: 52, h: 5 };
     g.rect(tube.x, tube.y, tube.w, tube.h, hex('#000000', 0.7));
@@ -318,7 +375,7 @@ export class OperationScene implements Scene {
     hourglass(g, pl.x + 26, pl.y + 20, 26, op.timeLeft / op.def.timeLimit, t);
     const mm = Math.floor(op.timeLeft / 60);
     const ss = Math.floor(op.timeLeft % 60);
-    const low = op.timeLeft < 20 && op.status === 'running';
+    const low = op.timeLeft < op.tuning.flow.timerWarn && op.status === 'running';
     const tcol = op.litanyTime > 0 ? UI.gilt : low ? (Math.sin(t * 8) > 0 ? '#ff5040' : '#a02018') : UI.parch;
     g.text(`${mm}:${String(ss).padStart(2, '0')}`, pl.x + 98, pl.y + 31, { size: 28, color: hex(tcol), align: 'center' });
     for (let i = 0; i < op.phaseCount; i++) {

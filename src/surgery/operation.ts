@@ -37,8 +37,8 @@ export interface PhaseDef {
 /** Scripted events: callouts or spawns keyed to a phase time or to something being cleared. */
 export interface ScriptedEvent {
   at?: { phase: number; t: number };
-  /** Fires once no entity whose class name matches is left alive (after one has been seen). */
-  when?: { cleared: string };
+  /** Fires once no entity of this class is left alive (after one has been seen). */
+  when?: { cleared: abstract new (...a: never[]) => Entity };
   say?: string[];
   spawn?: (op: Operation) => Entity[];
 }
@@ -782,7 +782,7 @@ export class Operation {
   ilseAssist(): boolean {
     this.log?.push(['h']);
     if (this.ilseUsed || this.status !== 'running') return false;
-    const pools = this.entities.filter((e) => e.alive && !e.hidden && e.constructor.name === 'BloodPool') as (Entity & { r: number })[];
+    const pools = this.entities.filter((e) => e.alive && !e.hidden && 'ichor' in e && 'r' in e) as (Entity & { r: number })[];
     if (!pools.length) {
       this.popup('Nothing for me to hold, Doctor.', this.cursor, '#e8dcc0');
       return false;
@@ -1314,7 +1314,8 @@ export class Operation {
       let go = false;
       if (ev.at) go = this.phase === ev.at.phase && this.phaseT >= ev.at.t;
       if (ev.when) {
-        const any = this.entities.some((e) => e.alive && e.constructor.name === ev.when!.cleared);
+        const cls = ev.when.cleared;
+        const any = this.entities.some((e) => e.alive && e instanceof cls);
         if (any) s.seen = true;
         else if (s.seen) go = true;
       }
@@ -1388,6 +1389,11 @@ export class Operation {
   /** Pause the simulation for a mid-operation dialogue insert. */
   interrupt(lines: string[]): void {
     this.dialogue.push(...lines);
+  }
+
+  /** Freeze all drain for a while (resume grace; dev cheat). */
+  graceTime(seconds: number): void {
+    this.graceT = Math.max(this.graceT, seconds);
   }
 
   /** Advance the dialogue insert; resumes with a short drain-free grace. */
