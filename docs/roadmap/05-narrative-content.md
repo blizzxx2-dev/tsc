@@ -102,7 +102,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] NAR-0059 · Demo · P1 · S · s2-1 rewrite — Mauer/Ilse banter; the "requisitioned surgeon" writ; Stroh's influence on the Burgomaster made explicit in one line
 - [x] NAR-0060 · Demo · P1 · M · s2-2 rewrite — Orsa Flintvein intro with original mountain-folk culture detail (debt-knots), hexstone description (black, pulsing), Scrying Lens handover
 - [x] NAR-0061 · Demo · P1 · S · s2-3 rewrite — Orsa snoring gag kept; web-spinner "brood-mother" folk name and one camp superstition line
-- [ ] NAR-0062 · Demo · P0 · M · s2-4 rewrite — first moral pressure scene: Stroh demands the cantor live for interrogation; Kreuzer's reply choice (2 options) sets flag `cantorMercy` for Ch3
+- [x] NAR-0062 · Demo · P0 · M · s2-4 rewrite — first moral pressure scene: Stroh demands the cantor live for interrogation; Kreuzer's reply choice (2 options) sets flag `cantorMercy` for Ch3
 - [x] NAR-0063 · Demo · P1 · S · s2-5 rewrite — the dawn hymn: lyrics of the Lauds antiphon (original 4-line verse, two voices) shown as the hymn falters
 - [x] NAR-0064 · Demo · P0 · M · s2-end rewrite — demo cliffhanger: the hymn is heard in the ward at dawn and Jorg's LAUDS sigil matches the Ch1 sigil shape from Emmerich; Stroh's "After Prime" line ends the demo
 - [x] NAR-0065 · Demo · P1 · S · Stroh's candle beat in s2-end conditional on Litany use in op2-5 — alternate: he notes the Doctor's hands "shook, for once"
@@ -188,12 +188,12 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### Outline
 - [x] NAR-0115 · Alpha · P0 · M · Ch3 outline — 10 ops, 12 scenes; acts: Hornchild inspection → foundry explosions → plague and raised bridges → Prime (roll of the dead) → guild licence vote → Terce (guildhall fire, Haller host)
-- [ ] NAR-0116 · Alpha · P0 · S · Ch3 flag inputs — reads `cantorMercy`, demo Litany-seen count, demo total rank; writes `hornchildCertificate`, `strohTooth`, `hallerFate`
+- [x] NAR-0116 · Alpha · P0 · S · Ch3 flag inputs — reads `cantorMercy`, demo Litany-seen count, demo total rank; writes `hornchildCertificate`, `strohTooth`, `hallerFate`
 - [x] NAR-0117 · Alpha · P1 · S · Ch3 title card and opening narration — "Prime: the first work of the day. The roll of the dead is read aloud."
 
 ### Scenes (first draft)
 - [x] NAR-0118 · Alpha · P0 · M · s3-1 "After Prime" — Stroh's promised conversation; the inspection decree invoked on a hornchild (Liesl, 7); Kreuzer must examine her
-- [ ] NAR-0119 · Alpha · P0 · M · s3-2 Certificate choice — sign "natural growth" (false, Whisper +2, Liesl lives free) or "late-turned" (true, Liesl taken by the Tribunal); both lead to op3-1
+- [x] NAR-0119 · Alpha · P0 · M · s3-2 Certificate choice — sign "natural growth" (false, Whisper +2, Liesl lives free) or "late-turned" (true, Liesl taken by the Tribunal); both lead to op3-1
 - [x] NAR-0120 · Alpha · P1 · M · s3-3 Kilnrows powder-mill explosion — mass casualties; introduces field triage mode in-fiction via Ilse
 - [x] NAR-0121 · Alpha · P1 · S · s3-4 Founder's colic — lead poisoning patient; guild fee humour (the founders' guild bills the hospice for the lead removed)
 - [x] NAR-0122 · Alpha · P1 · M · s3-5 The bridges are raised — council quarantine; vapour-wardens hang beef on poles; flagellant brotherhood marches past the hospice
@@ -209,7 +209,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### Outline
 - [x] NAR-0130 · Alpha · P0 · M · Ch4 outline — 9 ops, 11 scenes; acts: march east → field hospital in rain → Orsa's miners → the dead man's pulse → Sext at noon (Mauer host) → charter-lapse reveal → patron betrayal → None
-- [ ] NAR-0131 · Alpha · P0 · S · Ch4 flag inputs/outputs — reads `hallerFate`, `hornchildCertificate`, `strohTrust`; writes `mauerFate`, `charterRevealed`, `deadManVerdict`, `thirstChoice`
+- [x] NAR-0131 · Alpha · P0 · S · Ch4 flag inputs/outputs — reads `hallerFate`, `hornchildCertificate`, `strohTrust`; writes `mauerFate`, `charterRevealed`, `deadManVerdict`, `thirstChoice`
 
 ### Scenes (first draft)
 - [x] NAR-0132 · Alpha · P1 · M · s4-1 The march — hired companies, crossbow specialists, deserters; Kreuzer's field kit introduced (environment modifiers in fiction)
@@ -217,7 +217,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] NAR-0134 · Alpha · P1 · M · s4-3 Orsa returns — her crew poisoned by crystal dust; mountain-folk customs (don't shave the beard) as a plot constraint
 - [x] NAR-0135 · Alpha · P1 · S · s4-4 The giant mercenary — a tithe-eater swallowed stolen council documents; comic interrogation by Mauer
 - [ ] NAR-0136 · Alpha · P0 · M · s4-5 The dead man's pulse — a noble's "corpse" with one heartbeat a minute; Stroh demands a verdict; branch into forensic op or save-op
-- [ ] NAR-0137 · Alpha · P1 · M · s4-6 The thirsted courtesan — Margit, bitten repeatedly; she begs Kreuzer not to end the bond; player choice `thirstChoice`
+- [x] NAR-0137 · Alpha · P1 · M · s4-6 The thirsted courtesan — Margit, bitten repeatedly; she begs Kreuzer not to end the bond; player choice `thirstChoice`
 - [x] NAR-0138 · Alpha · P0 · M · s4-7 Sext — noon lethargy sweeps the camp; Mauer collapses reporting calm while dying (fake-calm vitals foreshadowed)
 - [ ] NAR-0139 · Alpha · P0 · M · s4-8 Charter lapse — the council roll shows Stroh's mandate expired at the new year; Stroh's reaction varies by `strohTrust`
 - [x] NAR-0140 · Alpha · P1 · S · s4-9 The stone bride — a camp-follower's wedding interrupted by petrification
@@ -229,7 +229,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### Outline
 - [x] NAR-0144 · Alpha · P0 · M · Ch5 outline — 8 ops, 12 scenes; acts: warrant and arrest → trial (witch-pricking evidence) → Hollow Night processions → Vespers (Ilse) → descent under the Tribunal court → Compline (Stroh) → endings
-- [ ] NAR-0145 · Alpha · P0 · S · Ch5 flag inputs — all prior flags plus final Whisper band; outputs `ending` enum
+- [x] NAR-0145 · Alpha · P0 · S · Ch5 flag inputs — all prior flags plus final Whisper band; outputs `ending` enum
 
 ### Scenes (first draft)
 - [x] NAR-0146 · Alpha · P0 · M · s5-1 Arrest — Kreuzer taken from the hospice mid-shift; Ilse keeps working the ward alone
@@ -312,10 +312,10 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0004 · Demo · P1 · S · Tool-requirement check — test asserts every spawned entity is resolvable with the op's `tools` list (e.g. Embedded needs tongs, Grub needs brand)
 - [x] CON-0005 · Demo · P1 · S · Remove non-setting `race` values `'elf' | 'halfling' | 'orc'` from OperationDef — replace with `'human' | 'mountainfolk' | 'hornfolk' | 'giant'` flesh tints
 - [ ] CON-0006 · Demo · P1 · S · Callout text moved to string keys — `callout` arrays reference loc keys; missing-key test
-- [ ] CON-0007 · Demo · P1 · M · Campaign graph data — chapters as ordered step lists with optional branch nodes (`if flag`), replacing the hard-coded `CAMPAIGN` array; demo graph = Ch1+Ch2 only
-- [ ] CON-0008 · Demo · P1 · S · Flag store — named boolean/int campaign flags (cantorMercy, litanySeenCount) persisted in save; unit tests for set/get/serialise
-- [ ] CON-0009 · Demo · P1 · S · Story script conditionals — `Line` gains optional `if` (flag expression) so s1-end/s2-end Litany-conditional lines work; parser tested
-- [ ] CON-0010 · Demo · P1 · S · Choice nodes in StoryDef — 2–3 option choices writing flags; used by s2-4
+- [x] CON-0007 · Demo · P1 · M · Campaign graph data — chapters as ordered step lists with optional branch nodes (`if flag`), replacing the hard-coded `CAMPAIGN` array; demo graph = Ch1+Ch2 only
+- [x] CON-0008 · Demo · P1 · S · Flag store — named boolean/int campaign flags (cantorMercy, litanySeenCount) persisted in save; unit tests for set/get/serialise
+- [x] CON-0009 · Demo · P1 · S · Story script conditionals — `Line` gains optional `if` (flag expression) so s1-end/s2-end Litany-conditional lines work; parser tested
+- [x] CON-0010 · Demo · P1 · S · Choice nodes in StoryDef — 2–3 option choices writing flags; used by s2-4
 - [ ] CON-0011 · Demo · P2 · S · Op hot-reload in dev — editing an op data file restarts the running operation with same seed within 1 s
 
 ### Authoring tools
@@ -434,7 +434,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] CON-0090 · Demo · P0 · M · Demo results summary content — total score, ranks per op (10 rows), best combo, Litany uses, patients saved; "Your ledger carries into the full game" line
 - [ ] CON-0091 · Demo · P0 · S · Wishlist screen content — key art, 3 bullet promises (5 chapters, 8 Hours, other disciplines), Steam overlay wishlist button, "Follow development" link
 - [ ] CON-0092 · Demo · P1 · S · Ch3 teaser content — 4 woodcut stills (Kilnrows smoke, raised bridges, hornchild, Guildhall) with teaser VN lines
-- [ ] CON-0093 · Demo · P1 · S · Demo save carry-over contract — flags and ranks saved in a documented format the full game imports (cantorMercy, litanySeenCount, per-op best rank)
+- [x] CON-0093 · Demo · P1 · S · Demo save carry-over contract — flags and ranks saved in a documented format the full game imports (cantorMercy, litanySeenCount, per-op best rank)
 - [ ] CON-0094 · Demo · P1 · S · Main-menu "Wishlist" entry and post-demo title screen variant — Lauds sigil burned into the title woodcut
 - [ ] CON-0095 · Demo · P2 · S · Idle attract mode — after 60 s on title, replays a recorded op1-5 boss input log (Next Fest booth use)
 
@@ -492,7 +492,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0126 · Alpha · P0 · S · Design spec — mouth field; abscess drain, rocking the rotten molar with tongs (root breaks if pulled too fast), VN interruption lines between phases; patient bites if lancet lingers
 - [x] CON-0127 · Alpha · P0 · M · Implement Tooth/Root entity — with rock-and-pull input and bite hazard (tests)
 - [ ] CON-0128 · Alpha · P1 · S · Mid-op VN interjection support (op pauses for 2–3 lines between phases) — used here and in op5-2
-- [ ] CON-0129 · Alpha · P1 · S · Author `op3-9` data file — callouts, thresholds, `strohTooth` flag write, checklist pass
+- [x] CON-0129 · Alpha · P1 · S · Author `op3-9` data file — callouts, thresholds, `strohTooth` flag write, checklist pass
 
 ### op3-10 "The Hour of Prime" (Registrar Oswin Tallert) — boss
 - [x] CON-0130 · Alpha · P0 · M · Prime design spec — writes name-sigils across tissue stroke by stroke; each completed name = −12 vitals; trace-erase with brand in reverse stroke order; up to 3 names writing at once in phase 2
@@ -503,7 +503,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ### op3-11 "The Hour of Terce" (Master Haller) — boss
 - [x] CON-0134 · Alpha · P0 · M · Terce design spec — hexfire tongues leap between 3 organ zones; salve the flame-front, then excise the root with lancet; brand feeds the fire (+size)
 - [x] CON-0135 · Alpha · P0 · L · Implement TerceMalison + FlameTongue entities — spread graph between zones; with unit tests
-- [ ] CON-0136 · Alpha · P1 · S · Burned-hands aftermath phase — Haller's hands require salve + thread; rank feeds `hallerFate`
+- [x] CON-0136 · Alpha · P1 · S · Burned-hands aftermath phase — Haller's hands require salve + thread; rank feeds `hallerFate`
 - [ ] CON-0137 · Alpha · P1 · S · Author `op3-11` data file — callouts, boss-fail tips, thresholds, checklist pass
 
 ## CON · Epic 7 — Chapter IV operations (Sext and None, field hospital)

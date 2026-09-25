@@ -273,7 +273,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0167 · Demo · P0 · S · Litany does not slow the player's cursor or tool timers (hold durations use real time) — only entity time; unit test
 - [x] GAM-0168 · Demo · P1 · S · Litany drawn anywhere including off-body — right mouse draws in gold ink with fade trail; failed star shows "The words falter" and does not consume use
 - [x] GAM-0169 · Demo · P1 · S · Litany extended by COOL chain — each COOL during Litany adds 0.25 s up to +3 s
-- [ ] GAM-0170 · Demo · P1 · S · Litany availability tell — HUD star glyph lit/unlit; op briefing notes if the Litany is sealed for story reasons
+- [x] GAM-0170 · Demo · P1 · S · Litany availability tell — HUD star glyph lit/unlit; op briefing notes if the Litany is sealed for story reasons
 - [x] GAM-0171 · Demo · P1 · S · Keyboard/controller alternative — hold L then trace star with stick/mouse OR hold key for 1.5 s in Accessibility mode
 - [x] GAM-0172 · Alpha · P1 · M · Litany variants (unlocked by chapter): Stillness (slow), Vigil (reveal all hidden for 6 s), Mercy (freeze drain 6 s, no slow), Wrath (brand damage ×2 for 6 s) — one selected per op in briefing
 - [x] GAM-0173 · Alpha · P1 · S · Variant gestures — each variant uses the same star; selection is pre-op to keep a single gesture
