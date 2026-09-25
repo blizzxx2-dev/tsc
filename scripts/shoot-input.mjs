@@ -17,7 +17,7 @@ const errors = [];
 page.on('pageerror', (e) => errors.push(String(e)));
 try {
   await page.goto(`${url}?op=op1-1`);
-  await page.waitForFunction(() => window.__game?.scene && typeof window.__game.scene.onBegin === 'function', null, { timeout: 30000 });
+  await page.waitForFunction(() => window.__game?.scene && typeof window.__game.scene.onBegin === 'function' && !window.__game.transition?.busy, null, { timeout: 30000 });
   await page.keyboard.press('Enter');
   await page.waitForFunction(() => window.__game?.scene?.op?.status === 'running', null, { timeout: 120000 });
   await page.mouse.move(700, 400);

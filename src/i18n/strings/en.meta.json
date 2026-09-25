@@ -199,10 +199,9 @@
     "scene": "options",
     "font": "italic",
     "size": 18,
-    "maxPx": 720,
-    "context": "Explanation shown under the options list while the row is hovered.",
-    "screenshot": "docs/loc/screens/options.png",
-    "maxLines": 1
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
   },
   "ui.options.timer_assist": {
     "scene": "options",
@@ -240,10 +239,9 @@
     "scene": "options",
     "font": "italic",
     "size": 18,
-    "maxPx": 720,
-    "context": "Explanation shown under the options list while the row is hovered.",
-    "screenshot": "docs/loc/screens/options.png",
-    "maxLines": 1
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
   },
   "ui.options.fullscreen": {
     "scene": "options",
@@ -265,10 +263,9 @@
     "scene": "options",
     "font": "italic",
     "size": 18,
-    "maxPx": 720,
-    "context": "Explanation shown under the options list while the row is hovered.",
-    "screenshot": "docs/loc/screens/options.png",
-    "maxLines": 1
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
   },
   "ui.briefing.title": {
     "scene": "briefing",
@@ -1271,10 +1268,9 @@
     "scene": "options",
     "font": "italic",
     "size": 18,
-    "maxPx": 720,
-    "context": "Explanation shown under the options list while the row is hovered.",
-    "screenshot": "docs/loc/screens/options.png",
-    "maxLines": 1
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
   },
   "ui.title.owns_full": {
     "scene": "title",
@@ -2262,10 +2258,9 @@
     "scene": "options",
     "font": "italic",
     "size": 18,
-    "maxPx": 720,
-    "context": "Explanation shown under the options list while the row is hovered.",
-    "screenshot": "docs/loc/screens/options.png",
-    "maxLines": 1
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
   },
   "ui.options.controls": {
     "scene": "options",
@@ -2290,5 +2285,921 @@
     "maxPx": 700,
     "context": "Story footer; placeholders are key labels.",
     "screenshot": "docs/loc/screens/story.png"
+  },
+  "ui.common.yes": {
+    "scene": "common",
+    "font": "body",
+    "size": 26,
+    "maxPx": 170,
+    "context": "Confirm-dialog affirmative button.",
+    "screenshot": "docs/loc/screens/common.png"
+  },
+  "ui.common.no": {
+    "scene": "common",
+    "font": "body",
+    "size": 26,
+    "maxPx": 170,
+    "context": "Confirm-dialog negative button.",
+    "screenshot": "docs/loc/screens/common.png"
+  },
+  "ui.gallery.title": {
+    "scene": "gallery",
+    "font": "display",
+    "size": 30,
+    "maxPx": 400,
+    "context": "Developer widget gallery heading (dev builds only).",
+    "screenshot": "docs/loc/screens/gallery.png"
+  },
+  "ui.options.tab.gameplay": {
+    "scene": "options",
+    "font": "body",
+    "size": 22,
+    "maxPx": 130,
+    "context": "Options tab.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.tab.controls": {
+    "scene": "options",
+    "font": "body",
+    "size": 22,
+    "maxPx": 130,
+    "context": "Options tab.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.tab.display": {
+    "scene": "options",
+    "font": "body",
+    "size": 22,
+    "maxPx": 130,
+    "context": "Options tab.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.tab.audio": {
+    "scene": "options",
+    "font": "body",
+    "size": 22,
+    "maxPx": 130,
+    "context": "Options tab.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.tab.access": {
+    "scene": "options",
+    "font": "body",
+    "size": 22,
+    "maxPx": 130,
+    "context": "Options tab: Accessibility (short form; the tab is narrow).",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.tab.language": {
+    "scene": "options",
+    "font": "body",
+    "size": 22,
+    "maxPx": 130,
+    "context": "Options tab.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.card.title": {
+    "scene": "controls_card",
+    "font": "display",
+    "size": 42,
+    "maxPx": 700,
+    "context": "Heading of the controls reference card.",
+    "screenshot": "docs/loc/screens/controls_card.png"
+  },
+  "ui.card.litany": {
+    "scene": "controls_card",
+    "font": "body",
+    "size": 24,
+    "maxPx": 500,
+    "context": "Controls card: the time-slowing rite.",
+    "screenshot": "docs/loc/screens/controls_card.png"
+  },
+  "ui.card.litany_how": {
+    "scene": "controls_card",
+    "font": "body",
+    "size": 17,
+    "maxPx": 1000,
+    "context": "Controls card: how to invoke the Litany; {draw} and {key} are input names.",
+    "screenshot": "docs/loc/screens/controls_card.png",
+    "maxLines": 2
+  },
+  "ui.pause.confirm_restart": {
+    "scene": "pause",
+    "font": "body",
+    "size": 24,
+    "maxPx": 520,
+    "context": "Confirm dialog before restarting an operation.",
+    "screenshot": "docs/loc/screens/pause.png",
+    "maxLines": 3
+  },
+  "ui.pause.controls": {
+    "scene": "pause",
+    "font": "body",
+    "size": 26,
+    "maxPx": 340,
+    "context": "Pause menu entry opening the controls card.",
+    "screenshot": "docs/loc/screens/pause.png"
+  },
+  "ui.pause.case_notes": {
+    "scene": "pause",
+    "font": "display",
+    "size": 36,
+    "maxPx": 460,
+    "context": "Pause: heading of the operation info sheet; also menu entry returning to it.",
+    "screenshot": "docs/loc/screens/pause.png"
+  },
+  "ui.pause.callout_log": {
+    "scene": "pause",
+    "font": "display",
+    "size": 34,
+    "maxPx": 460,
+    "context": "Pause: heading/menu entry for the log of the assistant's recent callouts.",
+    "screenshot": "docs/loc/screens/pause.png"
+  },
+  "ui.pause.confirm_abandon": {
+    "scene": "pause",
+    "font": "body",
+    "size": 24,
+    "maxPx": 520,
+    "context": "Confirm dialog before abandoning an operation.",
+    "screenshot": "docs/loc/screens/pause.png",
+    "maxLines": 3
+  },
+  "ui.pause.quit_desktop": {
+    "scene": "pause",
+    "font": "body",
+    "size": 26,
+    "maxPx": 340,
+    "context": "Pause menu entry (desktop builds).",
+    "screenshot": "docs/loc/screens/pause.png"
+  },
+  "ui.pause.confirm_quit": {
+    "scene": "pause",
+    "font": "body",
+    "size": 24,
+    "maxPx": 520,
+    "context": "Confirm dialog before quitting to desktop.",
+    "screenshot": "docs/loc/screens/pause.png",
+    "maxLines": 3
+  },
+  "ui.pause.time_left": {
+    "scene": "pause",
+    "font": "body",
+    "size": 22,
+    "maxPx": 260,
+    "context": "Pause case notes row label.",
+    "screenshot": "docs/loc/screens/pause.png"
+  },
+  "ui.pause.vitals": {
+    "scene": "pause",
+    "font": "body",
+    "size": 22,
+    "maxPx": 260,
+    "context": "Pause case notes row label.",
+    "screenshot": "docs/loc/screens/pause.png"
+  },
+  "ui.pause.rank_pace": {
+    "scene": "pause",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 180,
+    "context": "Pause case notes: label above the current-rank seal.",
+    "screenshot": "docs/loc/screens/pause.png"
+  },
+  "ui.pause.tally": {
+    "scene": "pause",
+    "font": "body",
+    "size": 18,
+    "maxPx": 500,
+    "context": "Pause case notes: rating counts so far.",
+    "screenshot": "docs/loc/screens/pause.png"
+  },
+  "ui.pause.log_empty": {
+    "scene": "pause",
+    "font": "italic",
+    "size": 20,
+    "maxPx": 480,
+    "context": "Pause: callout log is empty.",
+    "screenshot": "docs/loc/screens/pause.png"
+  },
+  "ui.options.defaults": {
+    "scene": "options",
+    "font": "body",
+    "size": 22,
+    "maxPx": 200,
+    "context": "Options: restore this tab's defaults.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.tool_hints": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.tool_hints_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.hints_always": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Tool-hint mode.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.hints_first": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Tool-hint mode.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.hints_off": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Tool-hint mode.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.damage_numbers": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.damage_numbers_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.minimal_hud": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.minimal_hud_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.confirm_abandon": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.confirm_abandon_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.skip_seen_tutorials": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.skip_seen_tutorials_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.invert_wheel": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.invert_wheel_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.wrap_wheel": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.wrap_wheel_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.pause_on_focus_loss": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.pause_on_focus_loss_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.rebind": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 560,
+    "context": "Options action row: opens the rebinding screen.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.rebind_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.card": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 560,
+    "context": "Options action row: opens the controls reference card.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.card_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.cursor_speed": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.cursor_speed_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.hold_mode": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.hold_mode_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.hold_hold": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Hold-mode value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.hold_toggle": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Hold-mode value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.target_size": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.target_size_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.aim_assist": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.aim_assist_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.display_mode": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.display_mode_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.mode_windowed": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Window mode value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.mode_borderless": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Window mode value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.mode_fullscreen": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Window mode value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.vsync": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.vsync_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.frame_limit_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.brightness": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.brightness_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.bloom": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.bloom_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.grain": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.grain_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.vignette": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.vignette_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.flicker": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.flicker_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.chroma": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.chroma_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.shake_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.volume_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.sound_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.mute_unfocused": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.mute_unfocused_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.text_scale": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.text_scale_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.text_speed": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.text_speed_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.speed_slow": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Text speed value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.speed_normal": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Text speed value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.speed_fast": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Text speed value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.speed_instant": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Text speed value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.box_opacity": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.box_opacity_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.reduce_motion": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.reduce_motion_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.colour_filter": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.colour_filter_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 560,
+    "context": "Options row description (beside the swatches).",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.filter_none": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Colour filter value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.filter_deuteranopia": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Colour filter value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.filter_protanopia": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Colour filter value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.filter_tritanopia": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Colour filter value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.filter_highContrast": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Colour filter value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.cursor_size": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.cursor_size_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.cursor_colour": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.cursor_colour_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.cursor_brass": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Reticle colour value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.cursor_white": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Reticle colour value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.cursor_cyan": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Reticle colour value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.cursor_magenta": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 300,
+    "context": "Reticle colour value.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.resume_countdown": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.resume_countdown_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.skip_unread": {
+    "scene": "options",
+    "font": "body",
+    "size": 23,
+    "maxPx": 400,
+    "context": "Options row label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.skip_unread_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
   }
 }
