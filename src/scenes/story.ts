@@ -3,6 +3,8 @@ import { t } from '../i18n';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { CAST } from '../content/characters';
+import { lineShownNow } from '../content/conditions';
+import { flags } from '../content/flags';
 import type { StoryDef } from '../content/story';
 import { VIEW_H, VIEW_W } from '../ui/layout';
 import { reticle } from '../ui/widgets';
@@ -16,6 +18,7 @@ import { settings } from '../core/settings';
 import { canSkip, readLog, ReadLog } from '../ui/readLog';
 import { drawBackdrop, drawPortrait } from './backdrop';
 import { BacklogScene, StoryMenuScene, type BacklogLine } from './storyMenu';
+import { ChoiceScene } from './choice';
 import { TitleScene } from './title';
 
 const CPS = 48; // characters per second
@@ -48,19 +51,88 @@ export class StoryScene implements Scene {
   private hidden = false;
   /** Skip mode toggled from the control strip: fast-forward as if the key were held. */
   private skipMode = false;
+  /** Indices of the lines shown so far — flag-conditional lines that failed are not among them (CON-0009). */
+  private seen: number[] = [];
+  /** Option picked at each choice line (CON-0010). */
+  private picks = new Map<number, number>();
+  /** A choice list is open over the scene. */
+  private choosing = false;
 
   constructor(
     private story: StoryDef,
     private onDone: () => void,
-  ) {}
-
-  private get line() {
-    return this.story.lines[this.i];
+  ) {
+    this.i = this.seek(0);
+    if (this.i < story.lines.length) this.seen.push(this.i);
   }
 
-  /** Every line shown so far in this scene, for the backlog (UIX-0121). */
+  private get line() {
+    return this.story.lines[Math.min(this.i, this.story.lines.length - 1)];
+  }
+
+  /** First line at or after `from` whose flag condition holds now; `lines.length` when none does. */
+  private seek(from: number): number {
+    const lines = this.story.lines;
+    let j = from;
+    while (j < lines.length && !lineShownNow(lines[j])) j++;
+    return j;
+  }
+
+  /** Every line shown so far in this scene, with the replies chosen, for the backlog (UIX-0121). */
   private backlog(): BacklogLine[] {
-    return this.story.lines.slice(0, this.i + 1).map((l) => ({ who: l.who === 'narrator' ? '' : (l.as ?? CAST[l.who].name ?? ''), text: l.text, narration: l.who === 'narrator' }));
+    const out: BacklogLine[] = [];
+    for (const i of this.seen) {
+      const l = this.story.lines[i];
+      out.push({ who: l.who === 'narrator' ? '' : (l.as ?? CAST[l.who].name ?? ''), text: l.text, narration: l.who === 'narrator' });
+      const k = this.picks.get(i);
+      const opt = k === undefined ? undefined : l.choice?.[k];
+      if (opt) out.push({ who: CAST.kreuzer.name ?? '', text: opt.text, narration: false });
+    }
+    return out;
+  }
+
+  /** Move to the next line on this player's path, or end the scene. */
+  private next(game?: Game): void {
+    this.t = 0;
+    this.shown = 0;
+    const j = this.seek(this.i + 1);
+    if (j >= this.story.lines.length) {
+      this.i = this.story.lines.length - 1;
+      return this.finish();
+    }
+    this.i = j;
+    this.seen.push(j);
+    game?.audio.play('select');
+  }
+
+  /** Flag key that records the pick: `choice.<scene>`, numbered when a scene has several choices. */
+  private choiceKey(): string {
+    const ordinal = this.story.lines.slice(0, this.i).filter((l) => l.choice).length + 1;
+    return ordinal === 1 ? `choice.${this.story.id}` : `choice.${this.story.id}.${ordinal}`;
+  }
+
+  /** Answer the current choice line: write its flags, record the pick and move on (CON-0010). */
+  choose(k: number, game?: Game): void {
+    const opt = this.line.choice?.[k];
+    if (!opt || this.picks.has(this.i)) return;
+    this.choosing = false;
+    this.picks.set(this.i, k);
+    if (opt.set) flags.setAll(opt.set);
+    flags.set(this.choiceKey(), opt.id ?? k);
+    this.next(game);
+  }
+
+  /** Offer the replies of the current choice line above the text box. Without a scene stack, the first reply is taken. */
+  private openChoice(game: Game): void {
+    const options = this.line.choice ?? [];
+    if (!game.push) return this.choose(0, game);
+    this.choosing = true;
+    const rowH = 46;
+    const h = options.length * (rowH + 2);
+    const top = VIEW_H - Math.round(230 + (settings.textScale - 1) * 170);
+    game.push(
+      new ChoiceScene({ x: 200, y: top - 28 - h, w: VIEW_W - 400, h }, options.map((o) => o.text), 0, (k) => this.choose(k, game), { layout: 'box', required: true, rowH }),
+    );
   }
 
   private finish(): void {
@@ -84,6 +156,7 @@ export class StoryScene implements Scene {
 
   update(dt: number, game: Game): void {
     const { input } = game;
+    if (this.i >= this.story.lines.length) return this.finish(); // every line was conditional and none held
     this.t += dt;
     this.fadeIn = Math.min(1, this.fadeIn + dt * 1.5);
     // Fast-forward passes only lines already read, unless "Skip unread text" is on (UIX-0124).
@@ -109,6 +182,11 @@ export class StoryScene implements Scene {
       return;
     }
     if (hit) return;
+    // A choice line waits for its answer once the prompt has been read (CON-0010).
+    if (full && this.line.choice && !this.picks.has(this.i)) {
+      if (!this.choosing) this.openChoice(game);
+      return;
+    }
     const click = input.pressed || input.actPressed('vn.advance');
     // Manual input pauses auto mode (UIX-0123).
     if (click && this.auto && full) this.auto = false;
@@ -120,12 +198,7 @@ export class StoryScene implements Scene {
       this.shown = this.line.text.length;
       return;
     }
-    this.i++;
-    this.shown = 0;
-    if (this.i >= this.story.lines.length) {
-      this.i = this.story.lines.length - 1;
-      this.finish();
-    } else game.audio.play('select');
+    this.next(game);
   }
 
   render(g: Gfx, game: Game): void {
@@ -183,7 +256,7 @@ export class StoryScene implements Scene {
       soft: true,
     }, 1.42);
     if (line.stamp && this.shown >= line.text.length) inkStamp(g, t(`ui.stamp.${line.stamp}`), tx + tw - 90, top + 60, 24, line.stamp === 'suspect' ? '#e04040' : '#7fc4a4', Math.min(1, this.t * 3), false, line.stamp === 'suspect' ? -0.12 : 0.08);
-    if (this.shown >= line.text.length) {
+    if (this.shown >= line.text.length && !(line.choice && !this.picks.has(this.i))) {
       const pulse = settings.reduceMotion ? 1 : 0.6 + 0.4 * Math.sin(g.time * 4);
       diamond(g, tx + tw + 24, vr.y + vr.h - 46 + (settings.reduceMotion ? 0 : Math.sin(g.time * 4) * 2), 5, hex(INK.gold, pulse), hex('#000000', 0.6));
     }

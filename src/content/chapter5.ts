@@ -469,6 +469,8 @@ export const CHAPTER_5: Chapter = {
   id: 'ch5',
   numeral: 'V',
   title: 'Vespers and Compline',
+  // NAR-0145: the finale reads every prior flag; the `ending` enum is written when the branching endings are authored.
+  flags: { reads: ['cantorMercy', 'litanySeenCount', 'hornchildCertificate', 'strohTooth', 'hallerFate', 'thirstChoice'], writes: [] },
   steps: [
     { kind: 'story', story: STORY_5_1 },
     { kind: 'story', story: STORY_5_2 },

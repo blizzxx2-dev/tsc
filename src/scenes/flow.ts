@@ -2,7 +2,8 @@ import type { BundleId } from '../assets/manifest.gen';
 import { LoadingScene } from './loading';
 import type { Game } from '../core/scene';
 import { advance, load, recordBest, store, type SaveData } from '../core/save';
-import { CAMPAIGN } from '../content/campaign';
+import { CAMPAIGN, nextOpenStep } from '../content/campaign';
+import { applyOpFlags, flags } from '../content/flags';
 import type { OperationDef } from '../surgery/operation';
 import { BriefingScene } from './briefing';
 import { OperationScene } from './operation';
@@ -18,6 +19,9 @@ import { lastOutcome, noteOutcome, resolveStory } from '../content/conditions';
 import { aftermathFor, failureFor } from '../content/narrative';
 
 export const save: SaveData = load();
+// Campaign flags live on the profile (CON-0008): New Game replaces the profile, so bind through a getter.
+flags.bind(() => save.flags);
+flags.listener = () => store(save);
 
 /**
  * Briefing → operation → results for one operation, then hand control back. In the campaign
@@ -30,6 +34,11 @@ export function playOperation(game: Game, def: OperationDef, onWin: () => void, 
         def,
         ({ op, won }) => {
           const legacyBest = won && !op.opts.challenge ? recordBest(save, def.id, op.rank(), op.score) : false;
+          if (story && won) {
+            applyOpFlags(def.id, op.rank());
+            // How often the Inquisitor may have seen the star drawn (CON-0093).
+            if (op.litanyUsed) flags.count('litanySeenCount');
+          }
           store(save);
           emitGameEvent({ type: 'operation-end', opId: def.id, won, rank: won ? op.rank() : null, score: op.score, assisted: assisted(), litanyUsed: op.litanyUsed });
           const summary = finishOperation(op);
@@ -76,6 +85,9 @@ export function playStep(game: Game, chapter: number, step: number, loaded = fal
   // A chapter whose art isn't resident yet shows the loading vignette first (ART-0061).
   const bundle = `chapter${chapter + 1}` as BundleId;
   if (!loaded && game.assets && game.assets.bundleSize(bundle) > 0 && !game.assets.isResident(bundle)) return game.go(new LoadingScene(bundle, chapter, () => playStep(game, chapter, step, true)));
+  // Branch nodes (CON-0007): steps whose condition fails are skipped, keeping their index.
+  const open = nextOpenStep(ch, step, flags);
+  if (open !== step) return playStep(game, chapter, open, loaded);
   syncChapterBundles(game, chapter, step);
   const s = ch.steps[step];
   if (!s) {

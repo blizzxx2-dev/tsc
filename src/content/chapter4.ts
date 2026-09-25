@@ -6,7 +6,7 @@ import { SextMalison } from '../surgery/bosses/sext';
 import type { Operation, OperationDef } from '../surgery/operation';
 import { at, closeIncision } from './chapter1';
 import type { Chapter } from './campaign';
-import { n, say, type StoryDef } from './story';
+import { choose, n, say, type StoryDef } from './story';
 
 const ALL = ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture', 'brand', 'lens'] as const;
 
@@ -101,6 +101,11 @@ export const STORY_4_6: StoryDef = {
     say('patient', 'Close the bites. Take out his teeth if they broke off. But the channel — leave it, if I ask you to. Please.', 'Margit'),
     say('kreuzer', 'It is killing you slowly.'),
     say('patient', 'Everything in this camp is killing someone slowly. This, at least, I chose. Brand it or salve it, Doctor. I ask for salve.', 'Margit'),
+    // NAR-0137: the bond is hers to keep or the surgeon's to sever. Writes `thirstChoice`.
+    choose('narrator', 'The bite-channel pulses under the lamp, slow as a new moon. Ilse holds the brand in one hand and the salve in the other.', [
+      { id: 'salve', text: 'Salve. It is her neck, Sister, and her choosing. We close the bites and leave the channel.', set: { thirstChoice: 'salve' } },
+      { id: 'brand', text: 'The brand. Forgive me, Margit. I will not stitch you shut and leave him a way back in.', set: { thirstChoice: 'brand' } },
+    ]),
   ],
 };
 
@@ -497,6 +502,9 @@ export const CHAPTER_4: Chapter = {
   id: 'ch4',
   numeral: 'IV',
   title: 'Sext and None',
+  // NAR-0131: reads Chapter III's outcomes; writes `thirstChoice` (s4-6). `mauerFate`, `charterRevealed`,
+  // `deadManVerdict` and `strohTrust` are not authored yet — see docs/narrative/flags.md.
+  flags: { reads: ['hallerFate', 'hornchildCertificate'], writes: ['thirstChoice'] },
   steps: [
     { kind: 'story', story: STORY_4_1 },
     { kind: 'op', op: OP_4_1 },
