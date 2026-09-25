@@ -31,8 +31,14 @@ export class ShaderError extends Error {
     readonly log: string,
     source?: string,
   ) {
-    super(`[${label}] ${stage} shader failed:\n${formatShaderLog(log, source)}`);
+    const defs = source ? shaderDefines(source) : [];
+    super(`[${label}${defs.length ? ` · ${defs.join(' ')}` : ''}] ${stage} shader failed:\n${formatShaderLog(log, source)}`);
   }
+}
+
+/** The `#define`s of a shader variant as `NAME=value` (ENG-0202), so an error names the variant. */
+export function shaderDefines(source: string): string[] {
+  return [...source.matchAll(/^\s*#define\s+(\w+)(?:[ \t]+([^\n]*))?$/gm)].map((m) => (m[2] ? `${m[1]}=${m[2].trim()}` : m[1]));
 }
 
 /** Annotate a GLSL info log with the offending source lines ("ERROR: 0:42: …" → line 42 quoted). */

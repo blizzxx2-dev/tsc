@@ -288,7 +288,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0199 · Demo · P0 · S · `webglcontextlost` — `preventDefault()`, pause sim and audio, show a "Restoring the lamps…" overlay drawn without GL (DOM)
 - [x] ENG-0200 · Demo · P0 · M · `webglcontextrestored`: recreate programs, VAOs, buffers, textures (from retained `ImageBitmap`s/URLs), glyph/MSDF atlases, render targets and decal maps from the stamp log, then resume — Playwright test with `WEBGL_lose_context` mid-operation continues correctly
 - [x] ENG-0201 · Demo · P1 · S · Repeated context loss — 3 losses within 60 s drop to Low tier and log a GPU-instability event for crash reporting
-- [ ] ENG-0202 · Demo · P1 · M · Parallel shader compilation via `KHR_parallel_shader_compile` during the boot screen — readable compile errors with variant defines and source line numbers
+- [x] ENG-0202 · Demo · P1 · M · Parallel shader compilation via `KHR_parallel_shader_compile` during the boot screen — readable compile errors with variant defines and source line numbers
 - [x] ENG-0203 · Demo · P1 · S · Shader pre-warm — every program/variant drawn once off-screen during loading so first use in an operation causes no hitch (no frame >25 ms on first Malison appearance)
 
 ## ENG-K · Asset pipeline & preloading (Demo)

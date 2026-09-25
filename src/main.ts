@@ -26,6 +26,7 @@ import { bindUiAudio } from './audio/ui-hooks';
 import { Input } from './core/input';
 import { FIXED_DT, FixedStep, FrameLimiter, RefreshEstimator, stepEndTimes } from './core/loop';
 import { DevTime } from './core/devTime';
+import { precompileCatalog, shaderCatalog } from './render/shaderCatalog';
 import { effectiveCap, idleCap } from './core/idle';
 import { OverlayHost } from './ui/overlayHost';
 import { SceneStack, sceneName, type Game, type Scene } from './core/scene';
@@ -429,6 +430,12 @@ async function boot(): Promise<void> {
     6000,
   );
   if (ok === false) console.warn('boot bundle timed out; continuing with fallback fonts');
+  // Parallel shader compile (ENG-0202): every variant compiles while the boot screen animates, warming
+  // the driver's program cache for the lazily built programs. Automation skips it to keep boots short.
+  if (game.gfx.caps.parallelCompile && !navigator.webdriver) {
+    const fails = await precompileCatalog(game.gfx.gl, shaderCatalog(), (n, total) => splashProgress(0.7 + (0.05 * n) / total, 'Mixing the tinctures…'));
+    for (const f of fails) console.error(`[shader] ${f.name} (${f.stage}):\n${f.log}`);
+  }
   splashProgress(0.75, 'Warming the instruments…');
   game.gfx.atlas.warm();
   game.gfx.prewarm();
