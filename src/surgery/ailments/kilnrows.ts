@@ -3,6 +3,7 @@
  * horn-buds, doublet wadding and wound-fever, lead in the blood, the saw,
  * gut-worms, a thrashing penitent and an Inquisitor's rotten molar.
  */
+import { wormArt } from '../../art/wormArt';
 import { dist, pointSegment, type Vec } from '../../core/math';
 import { hex } from '../../render/color';
 import type { Gfx } from '../../render/gfx';
@@ -481,17 +482,9 @@ export class Worm extends Entity {
   draw(g: Gfx, op: Operation): void {
     const o = this.origin;
     const head = this.pos;
-    const body: Vec[] = [];
-    for (let i = 0; i <= 10; i++) {
-      const t = i / 10;
-      const w = Math.sin(op.elapsed * 6 + i) * 3;
-      body.push({ x: head.x + (o.x - head.x) * t - this.dir.y * w, y: head.y + (o.y - head.y) * t + this.dir.x * w });
-    }
-    if (!this.torn) {
-      g.polyline(body, 7, hex('#e8d0c0'));
-      g.circle(head.x, head.y, 6, hex('#f0dcd0'));
-      g.circle(head.x, head.y, 2, hex('#402020'));
-    } else g.arc(o.x, o.y, 12, 2, hex('#e8d0c0', 0.6), 1 - this.regrowT / this.regrow);
+    // The painted parasite worm (ART-0218), shared with the gut worm.
+    wormArt(g, { origin: o, head, t: op.elapsed, torn: this.torn, held: this.tension > 0.05, seed: this.id, width: 7 });
+    if (this.torn) g.arc(o.x, o.y, 12, 2, hex('#e8d0c0', 0.6), 1 - this.regrowT / this.regrow);
     if (this.tension > 0.05) g.arc(head.x, head.y, 16, 3, hex(this.tension > 0.75 ? '#ff4030' : '#f5d76e'), Math.min(1, this.tension));
   }
 }

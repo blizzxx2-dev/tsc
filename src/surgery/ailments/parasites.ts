@@ -1,3 +1,4 @@
+import { wormArt } from '../../art/wormArt';
 import { dist, type Vec } from '../../core/math';
 import { hex } from '../../render/color';
 import type { Gfx } from '../../render/gfx';
@@ -93,17 +94,11 @@ export class GutWorm extends Entity {
   }
 
   draw(g: Gfx, op: Operation): void {
-    const pts: Vec[] = [];
-    const n = 10;
-    for (let i = 0; i <= n; i++) {
-      const t = i / n;
-      pts.push({ x: this.origin.x + (this.pos.x - this.origin.x) * t + Math.sin(op.elapsed * 6 + i) * 3, y: this.origin.y + (this.pos.y - this.origin.y) * t + Math.cos(op.elapsed * 5 + i) * 3 });
-    }
-    if (this.headless) pts.splice(1);
-    g.polyline(pts.length > 1 ? pts : [this.origin, { x: this.origin.x + 8, y: this.origin.y }], 6, hex('#e0c8a0'));
-    if (!this.headless) g.circle(this.pos.x, this.pos.y, 6, hex('#a06a50'));
-    else g.arc(this.origin.x, this.origin.y, 12, 2, hex('#c8c050'), this.regrowT / PARASITE.wormRegrow);
+    // The painted parasite worm (ART-0218): banded body, travelling ripple, hooked head; a torn one is a stump.
+    wormArt(g, { origin: this.origin, head: this.pos, t: op.elapsed, torn: this.headless, held: this.grabbed, seed: this.id, width: 6.5 });
+    if (this.headless) g.arc(this.origin.x, this.origin.y, 12, 2, hex('#c8c050'), this.regrowT / PARASITE.wormRegrow);
   }
+
 }
 
 /**
