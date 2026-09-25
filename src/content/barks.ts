@@ -46,7 +46,8 @@ export const BARK_TRIGGERS: readonly BarkTrigger[] = [
   'time-30',
 ];
 
-export type BarkSpeaker = 'ilse' | 'haller' | 'mauer' | 'stroh';
+/** `examiner`: the neutral voice of challenge mode (NAR-0167) — no names, no story. */
+export type BarkSpeaker = 'ilse' | 'haller' | 'mauer' | 'stroh' | 'examiner';
 
 /** Seconds between any two barks in one operation (sim clock). */
 export const BARK_COOLDOWN = 6;
@@ -383,7 +384,26 @@ const STROH: Partial<Record<BarkTrigger, readonly string[]>> = {
   fail: ['A pity. The Tribunal does not grudge a man his dead. Only his miracles.', 'He is gone. I will need a statement, Doctor. Tomorrow will do.', 'Note the hour. That is all.'],
 };
 
-export const BARKS: Record<BarkSpeaker, Partial<Record<BarkTrigger, readonly string[]>>> = { ilse: ILSE, haller: HALLER, mauer: MAUER, stroh: STROH };
+/** The examiner (NAR-0167): X-operations' neutral proctor — no spoilers, no names; four per trigger for the anti-repeat rule. */
+const EXAMINER: Partial<Record<BarkTrigger, readonly string[]>> = {
+  'op-start': ['The examination begins. The clock is running.', 'Your instruments are laid out. Begin when ready.', 'This is a set case. It will be marked.', 'Candidate, the table is yours.'],
+  cool: ['Exemplary.', 'Noted: textbook.', 'That is the standard.', 'Precisely so.'],
+  good: ['Acceptable.', 'Sound. Continue.', 'Adequate work.', 'Within tolerance.'],
+  bad: ['That will cost marks.', 'Imprecise. Noted.', 'The examiner saw that.', 'Careless.'],
+  miss: ['Nothing there.', 'Wasted motion.', 'No target.', 'That touched nothing.'],
+  'combo-5': ['A clean run. Keep it.', 'Five without fault.', 'Consistent. Continue.', 'The run holds.'],
+  'combo-10': ['Ten without fault. Rare.', 'Ten. The marks are climbing.', 'An unbroken ten.', 'Ten clean strokes.'],
+  'combo-20': ['Twenty. The examiner has stopped writing.', 'Twenty without fault.', 'An exceptional run.', 'Twenty. Remarkable.'],
+  'vitals-30': ['The patient is failing. Prioritise.', 'Vitals are low. Stabilise first.', 'Blood loss is marked against you.', 'Attend to the bleeding.'],
+  'vitals-15': ['Critical. One more error ends the case.', 'The patient is nearly lost.', 'Stabilise now or fail.', 'Last chance to save the case.'],
+  phase: ['Next stage.', 'The case changes. Adapt.', 'Proceed.', 'New findings. Continue.'],
+  idle: ['The clock does not wait.', 'Hesitation is marked as time.', 'Candidate?', 'Continue the procedure.'],
+  'time-30': ['Thirty seconds remain.', 'Time is nearly out.', 'Finish the case.', 'The clock is against you.'],
+  success: ['Case closed. Your mark will follow.', 'Complete. The examiner is satisfied.', 'Examination passed.', 'The case is closed.'],
+  fail: ['The case is failed. Review and retry.', 'The patient is lost. The examination ends.', 'Failed. The table will be reset.', 'The examination is over.'],
+};
+
+export const BARKS: Record<BarkSpeaker, Partial<Record<BarkTrigger, readonly string[]>>> = { ilse: ILSE, haller: HALLER, mauer: MAUER, stroh: STROH, examiner: EXAMINER };
 
 /** Operations where Inquisitor Stroh is present and adds his lines. */
 export const STROH_PRESENT: readonly string[] = ['op1-4', 'op1-5', 'op2-4', 'op2-5'];
@@ -517,6 +537,13 @@ export const RANK_QUIPS: Record<BarkSpeaker, Record<Rank, readonly string[]>> = 
     A: ['He will march. That is the mark I wanted.', 'Good enough for the Grauwald.', 'Whole and closed. Forty men.', 'Well done. Next.'],
     B: ['He will limp. Limping marches.', 'Rough, but he is on the roll, not the letter.', 'It held. The council pays for held.', 'Alive. The rest is a week’s rest.'],
     C: ['He lives. I shall not write how.', 'That was close, Doctor. Too close for the roll.', 'Alive. Barely fit to be carried.', 'We keep him. We nearly did not.'],
+  },
+  examiner: {
+    XS: ['Beyond the marking scheme.', 'Flawless. Recorded.', 'No marks deducted.', 'A model answer.'],
+    S: ['Distinction.', 'Excellent. Recorded.', 'First class.', 'Very few marks lost.'],
+    A: ['Merit.', 'A good pass.', 'Upper second.', 'Solid work.'],
+    B: ['Pass.', 'Adequate. Recorded.', 'Lower second.', 'Passed, with remarks.'],
+    C: ['Bare pass.', 'Survived. Only just.', 'Third class.', 'Passed on appeal.'],
   },
   stroh: {
     XS: ['Remarkable. I have written “remarkable” twice.', 'Faultless. I note the hour.', 'A perfect recovery. I shall want to know how.', 'Nobody moved. Not even you.'],

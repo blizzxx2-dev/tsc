@@ -60,7 +60,8 @@ export class BarkDirector {
     private readonly op: Operation,
     opts: BarkDirectorOptions = {},
   ) {
-    this.speaker = opts.speaker ?? speakerFor(op.def.id);
+    // Challenge mode speaks in the examiner's neutral voice (NAR-0167).
+    this.speaker = opts.speaker ?? (op.opts.challenge ? 'examiner' : speakerFor(op.def.id));
     // eslint-disable-next-line no-restricted-properties -- presentation-only choice; the simulation never reads it
     this.rng = opts.rng ?? Math.random;
     this.cooldown = opts.cooldown ?? BARK_COOLDOWN;

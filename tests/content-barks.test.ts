@@ -265,3 +265,29 @@ describe('environment barks (NAR-0164)', () => {
     expect(plain.spoken.some((s) => s.trigger.startsWith('env:'))).toBe(false);
   });
 });
+
+describe('challenge-mode examiner (NAR-0167)', () => {
+  it('at least thirty neutral lines with no names, spoken in X-operations', async () => {
+    const { BARKS } = await import('../src/content/barks');
+    const { CAST } = await import('../src/content/characters');
+    const { Operation } = await import('../src/surgery/operation');
+    const lines = Object.values(BARKS.examiner).flat();
+    expect(lines.length).toBeGreaterThanOrEqual(30);
+    expect(new Set(lines).size).toBe(lines.length);
+    const names = [
+      'Kreuzer',
+      'Ilse',
+      'Haller',
+      'Stroh',
+      'Mauer',
+      'Malison',
+      'Choir',
+      'Litany',
+      ...Object.values(CAST).map((c) => c.name.split(' ').pop() ?? ''),
+    ].filter((n) => n.length > 2);
+    for (const l of lines) for (const n of names) expect(l.includes(n), `${l} names ${n}`).toBe(false);
+    const def = allCampaignOperations().find((o) => o.id === 'op1-1')!;
+    expect(new BarkDirector(new Operation(def, { challenge: {} as never }), { rng: () => 0 }).speaker).toBe('examiner');
+    expect(new BarkDirector(new Operation(def), { rng: () => 0 }).speaker).not.toBe('examiner');
+  });
+});
