@@ -172,7 +172,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0100 · Alpha · P0 · M · Frost patch — Brand in low-heat mode (tap rather than hold) thaws; holding > 0.4 s scalds (Burn). Thaw progress ring per patch
 - [x] GAM-0101 · Alpha · P1 · S · Frozen tissue rejects Lancet/Thread — (tools skid, no rating) until thawed
 - [x] GAM-0102 · Alpha · P1 · S · Ice crystals in vessels: Leech-Pipe draws them out only after thaw — frozen vessel blocks blood flow causing slow drain 0.3/s
-- [ ] GAM-0103 · Alpha · P2 · S · Frost presentation — breath-fog overlay and cold-blue grade intensity tied to remaining frost area %
+- [x] GAM-0103 · Alpha · P2 · S · Frost presentation — breath-fog overlay and cold-blue grade intensity tied to remaining frost area %
 
 ### Tumours & growths
 - [x] GAM-0104 · Alpha · P0 · M · Growth entity — pulsing tumour; encircle-excise with Lancet, then Tongs lift; lifting before full loop rips it (BAD + blood)
@@ -198,7 +198,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0116 · Alpha · P0 · M · Bite channel — two puncture wounds linked by a thrall-thread; lodged tooth fragments (Lens); vitals ceiling reduced to 70 until channel is cauterised
 - [x] GAM-0117 · Alpha · P1 · S · Blood-drain meter — separate "blood volume" bar that drains; Tincture restores vitals but not volume, transfusion step (Leech-Pipe reversed on a donor bowl) restores volume
 - [x] GAM-0118 · Alpha · P1 · S · Thrall choice hook — leaving the channel open ends op with flag `thrallKept`; scoring unaffected, story branch recorded
-- [ ] GAM-0119 · Alpha · P2 · S · Anaemic flesh shader — (pale, reduced wet specular) tied to blood volume
+- [x] GAM-0119 · Alpha · P2 · S · Anaemic flesh shader — (pale, reduced wet specular) tied to blood volume
 
 ### Alchemical acid & poisons
 - [x] GAM-0120 · Alpha · P1 · M · Alchemical acid pool — corrodes any tool that touches it for > 1 s (tool disabled 6 s); neutralise first with Tincture(amber) dropped into pool

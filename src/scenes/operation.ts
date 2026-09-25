@@ -53,6 +53,7 @@ import { settings } from '../core/settings';
 import { OptionsScene } from './options';
 import { litanyMode, OperationInput } from '../input/opinput';
 import { formatSplit, ghostAt, GHOST_STEP, recordTimeAttack, TimeAttackClock, timeAttackBest, type TimeAttackRun } from '../surgery/timeAttack';
+import { anaemia, coldTint, drawBreathFog, frostArea, paleFlesh, paleRough } from '../render/fleshMood';
 import { addTray, HudLayer, inRect, trayFrame, traySide, traySlot } from '../input/hud';
 import { drawGraspOutline } from '../input/hover';
 import { HoldToRetry } from '../input/retry';
@@ -200,6 +201,9 @@ export class OperationScene implements Scene {
   private pauseHover = 0;
   /** Salve gloss (GAM-0043): where the Salve was spread and when; each spot stays wet for SALVE_GLOSS_S. */
   private gloss: { x: number; y: number; t: number }[] = [];
+  /** Frost still standing, 0..1 of the peak frozen area (GAM-0103). */
+  private frost = 0;
+  private frostPeak = 0;
   /** Time attack (GAM-0217): the live clock, the personal best it races and whether this run beat it. */
   private ta: TimeAttackClock | null = null;
   private ghost: TimeAttackRun | null = null;
@@ -373,6 +377,7 @@ export class OperationScene implements Scene {
     this.presRng = new Rng(this.def.seed ?? 1);
     this.popups.length = 0;
     this.gloss.length = 0;
+    this.frost = this.frostPeak = 0;
     this.listen(this.op);
     this.camera.reset();
     this.particles = new Particles(undefined, this.runOpts.seed ?? this.def.seed ?? 1);
@@ -489,6 +494,10 @@ export class OperationScene implements Scene {
 
     op.update(dt);
     this.tickGloss(op, input.down);
+    // Frost presentation (GAM-0103): the share of the op's peak frost area still frozen.
+    const fa = frostArea(op);
+    this.frostPeak = Math.max(this.frostPeak, fa);
+    this.frost = this.frostPeak > 0 ? fa / this.frostPeak : 0;
     if (this.ta) {
       this.ta.tick(op, dt);
       if (op.status === 'won' && this.taBest === null) this.taBest = recordTimeAttack(op.def.id, this.ta.run(op));
@@ -650,13 +659,15 @@ export class OperationScene implements Scene {
 
     // ---------------------------------------------------------------- world
     g.beginWorld();
+    const pallor = anaemia(op);
     const curse = curseSource(op.entities);
     g.fleshField({
       center: { x: FIELD.cx, y: FIELD.cy },
       radii: { x: FIELD.rx, y: FIELD.ry },
       kind: pal.kind,
-      base: pal.base,
-      deep: pal.deep,
+      // Anaemia (GAM-0119): the flesh pales and dulls as blood volume drains.
+      base: paleFlesh(pal.base, pallor),
+      deep: paleFlesh(pal.deep, pallor * 0.8),
       vein: pal.vein,
       pulse: this.pulse,
       warp,
@@ -665,7 +676,7 @@ export class OperationScene implements Scene {
       corruptAt: curse?.at,
       curse: curse?.look,
       cellSoft: pal.cellSoft,
-      rough: pal.rough,
+      rough: paleRough(pal.rough, pallor),
       gore: presentation.gore,
       species: pal.species,
       lights: [
@@ -738,7 +749,7 @@ export class OperationScene implements Scene {
         const k = this.flashLimit.filter(Math.max(0, 1 - age / 0.45) * Math.min(1, op.lastHurt.amount / 6) * soften, 1 / 60);
         return [op.lastHurt.x - VIEW_W / 2, -(op.lastHurt.y - 360), k] as [number, number, number];
       })(),
-      tint: ch2 ? [0.95, 0.98, 1.05] : [1.03, 0.99, 0.94],
+      tint: coldTint(ch2 ? [0.95, 0.98, 1.05] : [1.03, 0.99, 0.94], this.frost),
       lift: ch2 ? [0.0, 0.004, 0.012] : [0.012, 0.004, 0.0],
     });
 
@@ -762,6 +773,7 @@ export class OperationScene implements Scene {
     // HUD bars anchor to the visible top/bottom edges on 16:10 and 4:3 (ENG-0184).
     g.save();
     g.translate(0, anchorShift('top'));
+    drawBreathFog(g, this.frost, t, viewRect(), settings.reduceMotion);
     this.drawHud(g);
     g.restore();
     this.drawTray(g);
