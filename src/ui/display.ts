@@ -17,9 +17,10 @@ export interface DisplayPrefs {
   still: number;
 }
 
-export function displayPrefs(s: Pick<Settings, 'bloom' | 'grain' | 'vignette' | 'brightness' | 'flicker' | 'chromaticAberration' | 'reduceMotion' | 'reduceFlashing'>): DisplayPrefs {
+export function displayPrefs(s: Pick<Settings, 'bloom' | 'grain' | 'vignette' | 'brightness' | 'flicker' | 'chromaticAberration' | 'reduceMotion' | 'reduceFlashing'> & Partial<Pick<Settings, 'bloomAmount'>>): DisplayPrefs {
   return {
-    bloom: s.bloom ? 1 : 0,
+    // Bloom intensity (UIX-0105) scales the pass; the toggle still switches it off entirely.
+    bloom: s.bloom ? Math.max(0, Math.min(1, s.bloomAmount ?? 1)) : 0,
     grain: s.grain ? 1 : 0,
     vignette: s.vignette ? 1 : 0,
     gamma: s.brightness,
