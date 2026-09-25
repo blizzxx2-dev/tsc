@@ -383,7 +383,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0268 · Alpha · P0 · L · Malison of Prime and Terce render sets per boss design doc — body shader, hit flash, phase-change effect, defeat dissolve, arena LUT
 - [ ] ENG-0269 · Alpha · P0 · L · Malison of Sext and None render sets per boss design doc — body shader, hit flash, phase-change effect, defeat dissolve, arena LUT
 - [ ] ENG-0270 · Alpha · P0 · L · Malison of Vespers and Compline render sets — per boss design doc, including Compline's finale-only full-screen corruption sequence
-- [ ] ENG-0271 · Alpha · P1 · S · Shared Malison shader chunk — ink flow, sigil glints and dissolve, so each variant is a parameter set plus at most one bespoke function
+- [x] ENG-0271 · Alpha · P1 · S · Shared Malison shader chunk — ink flow, sigil glints and dissolve, so each variant is a parameter set plus at most one bespoke function
 
 ### Other disciplines
 - [x] ENG-0272 · Alpha · P1 · M · Field-triage rendering — tent-canvas/mud drape variant, rain streaks on the view and grime overlay, torch-lit light rig preset

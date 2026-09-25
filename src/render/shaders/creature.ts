@@ -1,6 +1,36 @@
 /** GLSL ES 3.00 sources: creature. */
 
 /**
+ * Shared Malison chunk (ENG-0271): the living ink that flows inside every Malison, its sigil glints,
+ * the hit flash and the defeat dissolve to embered ash. A Malison variant is a parameter set for
+ * these plus at most one bespoke function for its body. Needs rsmooth, noise and fbm.
+ */
+export const MALISON_CHUNK = /* glsl */ `
+// Advected ink: two fbm layers stirred by the time, from deep to hue.
+vec3 malInk(vec2 q, float t, vec3 deep, vec3 hue) {
+  vec2 iq = vec2(fbm(q * 3.0 + t * 0.3), fbm(q * 3.0 - t * 0.25 + 4.0));
+  return mix(deep, hue, fbm(q * 4.0 + iq * 2.0));
+}
+// Sigil glints: sparse sparks that drift through the ink.
+float malGlints(vec2 q, float t) {
+  vec2 iq = vec2(fbm(q * 3.0 + t * 0.3), fbm(q * 3.0 - t * 0.25 + 4.0));
+  return smoothstep(0.9, 0.98, noise(q * 16.0 + iq * 3.0 + t * 0.5));
+}
+// Hit flash toward the variant's flash colour.
+vec3 malFlash(vec3 c, vec3 flashCol, float flash) {
+  return mix(c, flashCol, flash * 0.6);
+}
+// Defeat: burn from the edge inward to ash, an ember line at the front. Returns premultiplied colour.
+vec4 malDissolve(vec3 c, float mask, vec2 p, float rad, float dissolve) {
+  float ash = fbm(p * 6.0 + 3.0) + (1.0 - rad) * 0.4;
+  mask *= step(dissolve * 1.3, ash);
+  float ember = dissolve > 0.0 ? rsmooth(0.08, 0.0, abs(ash - dissolve * 1.3)) : 0.0;
+  float a = max(mask, ember);
+  return vec4((c + vec3(1.0, 0.5, 0.15) * ember * 3.0) * a, a);
+}
+`;
+
+/**
  * Creature/effect shader drawn into a rect around an entity. v_uv 0..1 over the rect.
  * u_mode: 0 Malison of Matins (living ink + eye), 1 Malison of Lauds (singing core),
  * 2 hexfire flames, 3 hexstone crystal glow.
@@ -23,6 +53,7 @@ float noise(vec2 p) { vec2 i = floor(p), f = fract(p); vec2 u = f * f * (3.0 - 2
   return mix(mix(hash(i), hash(i + vec2(1, 0)), u.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), u.x), u.y); }
 const mat2 OCT = mat2(1.6, 1.2, -1.2, 1.6);
 float fbm(vec2 p) { float v = 0.0, a = 0.5; for (int i = 0; i < 5; i++) { v += a * noise(p); p = OCT * p + 17.1; a *= 0.5; } return v; }
+${MALISON_CHUNK}
 
 // Matins (ART-0230–0232): a shrouded vigil-mass of candle-wax cloth with one great lidded eye.
 // Flipbooks: idle breathing 12 frames (2.4 s), eye open/close 10 frames (u_open quantised).
@@ -86,9 +117,7 @@ vec4 matins(vec2 p) {
   cloth += vec3(0.5, 0.18, 0.75) * seam * 0.35 * (0.6 + 0.4 * sin(t * 2.0));
   // Torn state: holes in the shroud onto the living ink within.
   float holes = stage > 0.5 ? smoothstep(0.66 - 0.1 * stage, 0.7 - 0.1 * stage, fbm(q * 6.0 + 17.0)) : 0.0;
-  vec2 iq = vec2(fbm(q * 3.0 + t * 0.3), fbm(q * 3.0 - t * 0.25 + 4.0));
-  vec3 ink = mix(vec3(0.03, 0.01, 0.05), vec3(0.3, 0.08, 0.42), fbm(q * 4.0 + iq * 2.0));
-  ink += vec3(1.0, 0.78, 0.3) * smoothstep(0.9, 0.98, noise(q * 16.0 + iq * 3.0 + t * 0.5)) * 0.7;
+  vec3 ink = malInk(q, t, vec3(0.03, 0.01, 0.05), vec3(0.3, 0.08, 0.42)) + vec3(1.0, 0.78, 0.3) * malGlints(q, t) * 0.7;
   float holeRim = holes * (1.0 - smoothstep(0.7 - 0.1 * stage, 0.74 - 0.1 * stage, fbm(q * 6.0 + 17.0)));
   cloth = mix(cloth, ink, holes);
   cloth = mix(cloth, vec3(0.25, 0.1, 0.05), holeRim * 0.8);
@@ -132,14 +161,8 @@ vec4 matins(vec2 p) {
     eyeCol += vec3(1.0) * rsmooth(0.014, 0.0, length(ep - look - vec2(-0.025, 0.025))) * 0.8;
     cloth = mix(cloth, eyeCol, eyeIn);
   }
-  cloth = mix(cloth, vec3(1.0, 0.7, 0.4), u_flash * 0.6);
-  // Dissolve to ash from the edge inward.
-  float ash = fbm(p * 6.0 + 3.0);
-  mask *= step(u_dissolve * 1.3, ash + (1.0 - rad) * 0.4);
-  float ember = u_dissolve > 0.0 ? rsmooth(0.08, 0.0, abs(ash + (1.0 - rad) * 0.4 - u_dissolve * 1.3)) : 0.0;
-  vec3 colr = cloth + vec3(1.0, 0.5, 0.15) * ember * 3.0;
-  float a = max(mask, ember);
-  vec4 res = vec4(colr * a, a);
+  cloth = malFlash(cloth, vec3(1.0, 0.7, 0.4), u_flash);
+  vec4 res = malDissolve(cloth, mask, p, rad, u_dissolve);
   // Threads beneath, then the shadow halo cast on the flesh.
   res = res + vec4(vec3(0.45, 0.2, 0.6) * thr, thr) * (1.0 - res.a) * (1.0 - u_dissolve);
   float halo = rsmooth(body + 0.16, body - 0.05, rad) * 0.45;
@@ -159,15 +182,19 @@ vec4 lauds(vec2 p) {
   float mouth = rsmooth(0.1 + 0.05 * sing, 0.06, length(p * vec2(1.0, 2.2 - sing)));
   c = mix(c, vec3(0.05, 0.0, 0.03), mouth);
   c = mix(c, vec3(1.0, 0.6, 0.3), u_open * 0.35 * (0.5 + 0.5 * sin(t * 12.0)));
-  c = mix(c, vec3(1.0, 0.8, 0.5), u_flash * 0.6);
+  // The shared ink shows through the pipes' gaps, glinting (ENG-0271).
+  c = mix(c, malInk(p * 1.5, t, vec3(0.1, 0.03, 0.14), vec3(0.62, 0.3, 0.95)), (1.0 - ribs) * 0.25);
+  c += vec3(1.0, 0.85, 0.6) * malGlints(p * 1.5, t) * 0.4 * mask;
+  c = malFlash(c, vec3(1.0, 0.8, 0.5), u_flash);
   // Halo rings of sound.
   float rings = 0.0;
   for (int i = 0; i < 3; i++) {
     float rr = fract(t * 0.35 + float(i) / 3.0) * 0.5 + body;
     rings += rsmooth(0.012, 0.0, abs(rad - rr)) * (1.0 - fract(t * 0.35 + float(i) / 3.0));
   }
-  vec3 col = c * mask + vec3(0.85, 0.7, 1.0) * rings * 0.8;
-  return vec4(col, max(mask, rings * 0.8));
+  vec4 body4 = malDissolve(c, mask, p, rad / max(body, 0.01) * 0.5, u_dissolve);
+  vec3 col = body4.rgb + vec3(0.85, 0.7, 1.0) * rings * 0.8 * (1.0 - u_dissolve);
+  return vec4(col, max(body4.a, rings * 0.8 * (1.0 - u_dissolve)));
 }
 
 vec4 hexfire(vec2 p) {
