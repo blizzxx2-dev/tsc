@@ -334,7 +334,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 ### Rules & structure
 - [x] GAM-0213 · Demo · P1 · M · Demo X-op: "X1 — Matins, Unveiled" unlocks on Ch2 clear; Matins with 1.5× HP, 3 s veil / 2 s open rhythm, no checkpoint, Master-only drain
 - [x] GAM-0214 · Demo · P1 · S · X-op rules: no Assist toggles, no retry-at-Novice, Litany allowed once — results show rank and a global demo best time
-- [ ] GAM-0215 · Alpha · P1 · L · Full X-op ladder — X1–X8, one per Malison Hour, each a remixed escalated boss unlocked by clearing its story chapter at A rank or better
+- [x] GAM-0215 · Alpha · P1 · L · Full X-op ladder — X1–X8, one per Malison Hour, each a remixed escalated boss unlocked by clearing its story chapter at A rank or better
 - [x] GAM-0216 · Alpha · P1 · S · X-op modifiers table (data): drain×, time×, HP×, tell speed×, add cadence× — each X-op declares its modifiers
 - [ ] GAM-0217 · Alpha · P2 · M · Time-attack mode — any cleared op replayable against the clock; ghost vitals graph of personal best overlaid on HUD
 - [x] GAM-0218 · Beta · P1 · M · Symptom Loom — procedural challenge ops built from 3 adjacent "verses" out of 12 symptom modules; seed shown and shareable
@@ -631,14 +631,14 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 
 ## BOS-L · Boss X-op remixes (challenge mode)
 
-- [ ] BOS-0164 · Demo · P1 · S · X1 Matins remix — 1.5× HP, 3 s/2 s rhythm, eye phase from start alongside shroud; bot expert clears on 20 seeds
-- [ ] BOS-0165 · Alpha · P1 · S · X2 Lauds remix — 6 Voices, response window 1.0 s, dawn flare every 8 s
-- [ ] BOS-0166 · Alpha · P1 · S · X3 Prime remix — writes 4 names in parallel from start; ink blots become strokes after 5 s
-- [ ] BOS-0167 · Alpha · P1 · S · X4 Terce remix — Salve capacity back to 46; tongues leap every 3.5 s
-- [ ] BOS-0168 · Beta · P1 · S · X5 Sext remix — torpor starts at 150 ms; false vitals permanent
-- [ ] BOS-0169 · Beta · P1 · S · X6 None remix — 5 split segments; heart contact always instant loss
-- [ ] BOS-0170 · Beta · P1 · S · X7 Vespers remix — only 3 lamps, dim over 9 s
-- [ ] BOS-0171 · Beta · P1 · S · X8 Compline remix — no silence nodes; Litany permanently stolen; two-tool combo window 0.4 s
+- [x] BOS-0164 · Demo · P1 · S · X1 Matins remix — 1.5× HP, 3 s/2 s rhythm, eye phase from start alongside shroud; bot expert clears on 20 seeds
+- [x] BOS-0165 · Alpha · P1 · S · X2 Lauds remix — 6 Voices, response window 1.0 s, dawn flare every 8 s
+- [x] BOS-0166 · Alpha · P1 · S · X3 Prime remix — writes 4 names in parallel from start; ink blots become strokes after 5 s
+- [x] BOS-0167 · Alpha · P1 · S · X4 Terce remix — Salve capacity back to 46; tongues leap every 3.5 s
+- [x] BOS-0168 · Beta · P1 · S · X5 Sext remix — torpor starts at 150 ms; false vitals permanent
+- [x] BOS-0169 · Beta · P1 · S · X6 None remix — 5 split segments; heart contact always instant loss
+- [x] BOS-0170 · Beta · P1 · S · X7 Vespers remix — only 3 lamps, dim over 9 s
+- [x] BOS-0171 · Beta · P1 · S · X8 Compline remix — no silence nodes; Litany permanently stolen; two-tool combo window 0.4 s
 - [ ] BOS-0172 · Beta · P1 · S · X-op remix validation — each remix cleared by expert bot on ≥ 18/20 seeds and by a designer by hand (recorded replay committed)
 
 ## BOS-M · Boss release polish & post-launch

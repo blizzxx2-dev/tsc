@@ -21,9 +21,19 @@ import { FrostPatch, IceCrystal } from '../surgery/ailments/frost';
 import { Growth } from '../surgery/ailments/growth';
 import { GutWorm, Tick } from '../surgery/ailments/parasites';
 import { trollWound } from '../surgery/ailments/regen';
-import { EggSac } from '../surgery/lauds';
+import { EggSac, LaudsMalison } from '../surgery/lauds';
+import { PrimeMalison, PRIME_DEFAULT } from '../surgery/bosses/prime';
+import { TerceMalison, TERCE_DEFAULT } from '../surgery/bosses/terce';
+import { SextMalison, SEXT_DEFAULT } from '../surgery/bosses/sext';
+import { NoneMalison, NONE_DEFAULT } from '../surgery/bosses/none';
+import { VespersMalison, VESPERS_DEFAULT } from '../surgery/bosses/vespers';
+import { ComplineMalison, COMPLINE_DEFAULT } from '../surgery/bosses/compline';
+import { BOSS_OPS, type CodexBoss } from '../surgery/bosses/codex';
+import type { TuningOverride } from '../surgery/tuning';
+import { EDITION } from '../platform/build';
 import { OP_1_5 } from './chapter1';
 import { OP_2_5 } from './chapter2';
+import { LATER_X_BASES } from './challengeLater';
 
 const at = (dx: number, dy: number): Vec => ({ x: FIELD.cx + dx, y: FIELD.cy + dy });
 const ALL_TOOLS = ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture', 'brand', 'lens'] as const;
@@ -45,7 +55,17 @@ export interface XOp {
   base: OperationDef | null;
   /** Adjust the boss as it spawns (rhythms and the like). */
   tuneBoss?: (e: Entity) => void;
+  /** The remixed boss (BOS-0164..0171): replaces the spawn of the base op's boss phase. */
+  boss?: { phase: number; make: (op: Parameters<PhaseDef['spawn']>[0]) => Entity[] };
+  /** Tuning the remix sets on the whole operation. */
+  tuning?: TuningOverride;
 }
+
+/** The story op whose boss an Hour's X-op remixes (the Alpha unlock rule: clear it at A or better). */
+const bossOpOf = (hour: CodexBoss): string | undefined => Object.keys(BOSS_OPS).find((id) => BOSS_OPS[id] === hour);
+
+/** Later-chapter bases exist only in the full edition (demo bundles tree-shake them out). */
+const later = (id: keyof typeof LATER_X_BASES): OperationDef | null => (EDITION === 'full' ? LATER_X_BASES[id] : null);
 
 /** The X-op ladder: one per Malison hour. X1 ships with the demo. */
 export const X_OPS: readonly XOp[] = [
@@ -57,10 +77,12 @@ export const X_OPS: readonly XOp[] = [
     mods: { drain: 1, time: 1, hp: 1.5, tellSpeed: 1, addCadence: 1 },
     unlock: { chapter: 2 },
     base: OP_1_5,
+    // BOS-0164: 1.5× HP, a 3 s veil / 2 s open rhythm, and the Eye out from the start alongside the shroud.
     tuneBoss: (e) => {
       if (e instanceof Malison) {
         e.veilTime = 3;
         e.openTime = 2;
+        e.tune.eyeFromStart = true;
       }
     },
   },
@@ -72,13 +94,76 @@ export const X_OPS: readonly XOp[] = [
     mods: { drain: 0.85, time: 1, hp: 1.15, tellSpeed: 1.2, addCadence: 1.25 },
     unlock: { chapter: 2, bossOp: 'op2-5', rank: 'A' },
     base: OP_2_5,
+    // BOS-0165: six Voices, a 1.0 s response window, a dawn flare every 8 s.
+    boss: { phase: 1, make: (op) => [new LaudsMalison(at(0, 30), op, { voices: 6, response: 1.0, flareEvery: 8 })] },
   },
-  { id: 'x3', hour: 'prime', title: 'X3 — Prime, Recounted', blurb: 'After Chapter III.', mods: { drain: 1.1, time: 0.9, hp: 1.4, tellSpeed: 1.2, addCadence: 1.2 }, unlock: { chapter: 3, rank: 'A' }, base: null },
-  { id: 'x4', hour: 'terce', title: 'X4 — Terce, Rekindled', blurb: 'After Chapter III.', mods: { drain: 1.1, time: 0.9, hp: 1.4, tellSpeed: 1.25, addCadence: 1.2 }, unlock: { chapter: 3, rank: 'A' }, base: null },
-  { id: 'x5', hour: 'sext', title: 'X5 — Sext at Noon', blurb: 'After Chapter IV.', mods: { drain: 1.15, time: 0.9, hp: 1.5, tellSpeed: 1.25, addCadence: 1.25 }, unlock: { chapter: 4, rank: 'A' }, base: null },
-  { id: 'x6', hour: 'none', title: 'X6 — None, Unending', blurb: 'After Chapter IV.', mods: { drain: 1.15, time: 0.85, hp: 1.5, tellSpeed: 1.3, addCadence: 1.25 }, unlock: { chapter: 4, rank: 'A' }, base: null },
-  { id: 'x7', hour: 'vespers', title: 'X7 — Vespers Relit', blurb: 'After Chapter V.', mods: { drain: 1.2, time: 0.85, hp: 1.6, tellSpeed: 1.3, addCadence: 1.3 }, unlock: { chapter: 5, rank: 'A' }, base: null },
-  { id: 'x8', hour: 'compline', title: 'X8 — Compline, Unsilenced', blurb: 'After Chapter V.', mods: { drain: 1.2, time: 0.85, hp: 1.75, tellSpeed: 1.35, addCadence: 1.35 }, unlock: { chapter: 5, rank: 'A' }, base: null },
+  {
+    id: 'x3',
+    hour: 'prime',
+    title: 'X3 — Prime, Recounted',
+    blurb: 'The roll is read four names at a time from the first stroke, and spilt ink starts writing within five seconds.',
+    mods: { drain: 1.1, time: 0.9, hp: 1.4, tellSpeed: 1.2, addCadence: 1.2 },
+    unlock: { chapter: 3, bossOp: bossOpOf('prime'), rank: 'A' },
+    base: later('x3'),
+    // BOS-0166: four names in parallel from the start; ink blots become strokes after 5 s.
+    boss: { phase: 0, make: (op) => [new PrimeMalison(at(0, 20), op, { ...PRIME_DEFAULT, parallelFromStart: 4, inkWrites: 5 })] },
+  },
+  {
+    id: 'x4',
+    hour: 'terce',
+    title: 'X4 — Terce, Rekindled',
+    blurb: 'The salve pot is back to its old size, and the tongues leap every three and a half seconds.',
+    mods: { drain: 1.1, time: 0.9, hp: 1.4, tellSpeed: 1.25, addCadence: 1.2 },
+    unlock: { chapter: 3, bossOp: bossOpOf('terce'), rank: 'A' },
+    base: later('x4'),
+    // BOS-0167: salve capacity back to 46 (the Terce op's 70 does not apply); tongues leap every 3.5 s.
+    boss: { phase: 0, make: (op) => [new TerceMalison(op, { ...TERCE_DEFAULT, leapEvery: 3.5 })] },
+    tuning: { salve: { capacity: 46, refillIdle: 3 } },
+  },
+  {
+    id: 'x5',
+    hour: 'sext',
+    title: 'X5 — Sext at Noon',
+    blurb: 'The torpor never lifts below 150 ms, and the monitors lie from first to last.',
+    mods: { drain: 1.15, time: 0.9, hp: 1.5, tellSpeed: 1.25, addCadence: 1.25 },
+    unlock: { chapter: 4, bossOp: bossOpOf('sext'), rank: 'A' },
+    base: later('x5'),
+    // BOS-0168: torpor starts at 150 ms; the false vitals are permanent.
+    boss: { phase: 0, make: (op) => [new SextMalison(at(30, 30), op, { ...SEXT_DEFAULT, lagFloor: 0.15, permanentFalse: true })] },
+  },
+  {
+    id: 'x6',
+    hour: 'none',
+    title: 'X6 — None, Unending',
+    blurb: 'It splits five ways, and any piece that reaches the heart ends it.',
+    mods: { drain: 1.15, time: 0.85, hp: 1.5, tellSpeed: 1.3, addCadence: 1.25 },
+    unlock: { chapter: 4, bossOp: bossOpOf('none'), rank: 'A' },
+    base: later('x6'),
+    // BOS-0169: five split segments; heart contact is always instant loss.
+    boss: { phase: 0, make: (op) => [new NoneMalison(op, { ...NONE_DEFAULT, segments: 5, segmentsLethal: true })] },
+  },
+  {
+    id: 'x7',
+    hour: 'vespers',
+    title: 'X7 — Vespers Relit',
+    blurb: 'Only three lamps, and they gutter out in nine seconds.',
+    mods: { drain: 1.2, time: 0.85, hp: 1.6, tellSpeed: 1.3, addCadence: 1.3 },
+    unlock: { chapter: 5, bossOp: bossOpOf('vespers'), rank: 'A' },
+    base: later('x7'),
+    // BOS-0170: only 3 lamps, each dimming over 9 s.
+    boss: { phase: 0, make: (op) => [new VespersMalison(at(0, 0), op, { ...VESPERS_DEFAULT, lamps: 3, dimTime: 9 })] },
+  },
+  {
+    id: 'x8',
+    hour: 'compline',
+    title: 'X8 — Compline, Unsilenced',
+    blurb: 'No silence-nodes: the Litany stays stolen, and the lancet and brand must strike within 0.4 s.',
+    mods: { drain: 1.2, time: 0.85, hp: 1.75, tellSpeed: 1.35, addCadence: 1.35 },
+    unlock: { chapter: 5, bossOp: bossOpOf('compline'), rank: 'A' },
+    base: later('x8'),
+    // BOS-0171: no silence nodes; the Litany permanently stolen; two-tool combo window 0.4 s.
+    boss: { phase: 0, make: (op) => [new ComplineMalison(at(0, 0), op, { ...COMPLINE_DEFAULT, noNodes: true, comboWindow: 0.4 })] },
+  },
 ];
 
 export const xOp = (id: string): XOp | undefined => X_OPS.find((x) => x.id === id);
@@ -95,18 +180,18 @@ export function xUnlocked(p: Progress, x: XOp): boolean {
 }
 
 /** The operation definition for an X-op (the story op with its boss retuned). */
-export function xOpDef(x: XOp): OperationDef {
-  if (!x.base) throw new Error(`${x.id} is not built yet`);
-  const base = x.base;
-  const phases: PhaseDef[] = base.phases.map((p) => ({
+export function xOpDef(x: XOp, base: OperationDef | null = x.base): OperationDef {
+  if (!base) throw new Error(`${x.id} is not built yet`);
+  const phases: PhaseDef[] = base.phases.map((p, i) => ({
     callout: p.callout,
     spawn: (op) => {
-      const es = p.spawn(op);
+      const es = x.boss && x.boss.phase === i ? x.boss.make(op) : p.spawn(op);
       if (x.tuneBoss) for (const e of es) x.tuneBoss(e);
       return es;
     },
   }));
-  return { ...base, id: `${base.id}-${x.id}`, title: x.title, phases, litany: true, litanyUses: 1 };
+  const tuning = x.tuning ? { ...base.tuning, ...x.tuning } : base.tuning;
+  return { ...base, id: `${base.id}-${x.id}`, title: x.title, phases, litany: true, litanyUses: 1, ...(tuning ? { tuning } : {}) };
 }
 
 /**

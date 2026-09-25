@@ -51,10 +51,13 @@ describe('GAM-L X-operations', () => {
     expect(op.checkpointPhase()).toBeNull();
   });
 
-  it('GAM-0213: the steady bot can clear X1 (and X2)', () => {
-    for (const id of ['x1', 'x2']) {
+  it('GAM-0213: the bot can clear X1 (expert: the Eye is out from the start, BOS-0164) and X2 (steady)', () => {
+    for (const [id, profile] of [
+      ['x1', 'expert'],
+      ['x2', 'steady'],
+    ] as const) {
       const x = xOp(id)!;
-      const op = playWithBot(xOpDef(x), { profile: 'steady', ...xOpOptions(x) }).op;
+      const op = playWithBot(xOpDef(x), { profile, ...xOpOptions(x) }).op;
       expect(op.status, id).toBe('won');
     }
   });

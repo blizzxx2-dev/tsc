@@ -282,14 +282,16 @@ export class InkBlot extends BloodPool {
   override update(op: Operation, dt: number): void {
     if (op.litanyTime > 0) return;
     this.age += dt;
-    if (this.age >= 8 && this.prime.alive) {
+    const writes = this.prime.tune.inkWrites ?? 8;
+    if (this.age >= writes && this.prime.alive) {
       this.kill();
       op.say('The ink is writing by itself!');
       this.prime.adopt(op, new NameSigil({ ...this.pos }, op.rng.pick(primeRoll(op)), op, 1.6, 3, 12));
     }
   }
   override draw(g?: Gfx, op?: Operation): void {
-    if (g && op && this.age > 5) g.arc(this.pos.x, this.pos.y, this.r + 6, 2, hex('#b478ff', 0.4 + 0.3 * Math.sin(op.elapsed * 10)), 1 - (this.age - 5) / 3);
+    const writes = this.prime.tune.inkWrites ?? 8;
+    if (g && op && this.age > writes - 3) g.arc(this.pos.x, this.pos.y, this.r + 6, 2, hex('#b478ff', 0.4 + 0.3 * Math.sin(op.elapsed * 10)), 1 - (this.age - (writes - 3)) / 3);
   }
 }
 
@@ -304,6 +306,10 @@ export interface PrimeTuning {
   stroke2: number;
   /** Names written in parallel in phase 2 (grows by one below 45 % hp). */
   parallel: number;
+  /** X3 remix: this many names are written in parallel from the very start. */
+  parallelFromStart?: number;
+  /** Seconds before a spilt ink blot starts writing a name of its own (default 8; X3 remix 5). */
+  inkWrites?: number;
 }
 
 export const PRIME_DEFAULT: PrimeTuning = { hp: 100, dps: 7, exposure: 3, stroke1: 1.2, stroke2: 2.4, parallel: 2 };
@@ -434,14 +440,14 @@ export class PrimeMalison extends Entity {
     if (live.length && live.every((n) => n.paused)) live[0].paused = false;
     this.spawnT -= dt;
     if (phase === 1) {
-      if (live.length === 0 && !this.exposed && this.spawnT <= 0) {
+      if (live.length < (this.tune.parallelFromStart ?? 1) && !this.exposed && this.spawnT <= 0) {
         this.spawnT = 1;
         this.adopt(op, new NameSigil(this.spot(op), this.nextName(), op, this.tune.stroke1));
         op.sayOnce('prime-writes', 'It’s writing a name into him! Trace the strokes out with the lancet — newest first!');
       }
     } else if (phase === 2) {
       // Two names, and a third (slower) one late in the Ledger.
-      const want = this.tune.parallel + (this.hp / this.maxHp < 0.4 ? 1 : 0);
+      const want = Math.max(this.tune.parallel + (this.hp / this.maxHp < 0.4 ? 1 : 0), this.tune.parallelFromStart ?? 0);
       if (live.length < want && this.spawnT <= 0) {
         this.spawnT = 3;
         const p = this.spot(op);
