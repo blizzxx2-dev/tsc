@@ -5,6 +5,7 @@ import type { Gfx } from '../render/gfx';
 import type { ToolId } from '../surgery/types';
 import { PALETTE } from './layout';
 import { leatherPanel, parchmentSheet, UI } from './ornaments';
+import { uiButton } from '../audio/ui-hooks';
 
 const TAU = Math.PI * 2;
 
@@ -47,6 +48,7 @@ export function button(g: Gfx, input: Input, label: string, x: number, y: number
   else if (!enabled) g.text(label, x, y, { size, color: hex('#5a5040'), align: 'center' });
   else if (hover) g.text(label, x, y, { size, color: hex('#fff0c0'), color2: hex(UI.gilt), align: 'center' });
   else g.text(label, x, y, { size, color: hex(PALETTE.ink), color2: hex('#b8a888'), align: 'center' });
+  uiButton(label, hover, hover && input.pressed);
   return hover && input.pressed;
 }
 

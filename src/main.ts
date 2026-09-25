@@ -2,6 +2,8 @@ import '@fontsource/im-fell-english/400.css';
 import '@fontsource/im-fell-english/400-italic.css';
 import '@fontsource/unifrakturmaguntia/400.css';
 import { Audio } from './core/audio';
+import { SceneAudio } from './audio/scenes';
+import { bindUiAudio } from './audio/ui-hooks';
 import { settings } from './core/settings';
 import { Input } from './core/input';
 import type { Game, Scene } from './core/scene';
@@ -17,6 +19,7 @@ import { VIEW_H, VIEW_W } from './ui/layout';
 class Main implements Game {
   input: Input;
   audio = new Audio();
+  private sceneAudio = new SceneAudio(this.audio);
   gfx: Gfx;
   scene: Scene | null = null;
   private last = performance.now();
@@ -24,6 +27,7 @@ class Main implements Game {
   constructor(private canvas: HTMLCanvasElement) {
     this.audio.volume = settings.volume;
     this.audio.muted = settings.muted;
+    bindUiAudio(this.audio);
     this.gfx = new Gfx(canvas, VIEW_W, VIEW_H);
     this.input = new Input(canvas, VIEW_W, VIEW_H);
     window.addEventListener('resize', () => this.resize());
@@ -68,7 +72,9 @@ class Main implements Game {
       this.gfx.time += dt;
       this.input.beginFrame();
       this.scene?.update(dt, this);
+      this.sceneAudio.frame(this.scene, dt, this.input);
       this.scene?.render(this.gfx, this);
+      this.sceneAudio.overlay(this.gfx);
       this.input.endFrame();
       requestAnimationFrame(frame);
     };

@@ -5,6 +5,7 @@ import type { Gfx } from '../render/gfx';
 import { PALETTE, VIEW_W } from '../ui/layout';
 import { button, inRect, panel, reticle } from '../ui/widgets';
 import { drawBackdrop } from './backdrop';
+import { AudioOptionsScene } from '../audio/options-scene';
 
 interface Row {
   label: string;
@@ -19,21 +20,10 @@ const cycle = <T,>(list: readonly T[], cur: T, dir: number): T => list[(list.ind
 export class OptionsScene implements Scene {
   private rows: Row[] = [
     {
-      label: 'Volume',
-      value: () => `${Math.round(settings.volume * 100)}%`,
-      change: (d, g) => {
-        settings.volume = Math.max(0, Math.min(1, Math.round((settings.volume + d * 0.1) * 10) / 10));
-        g.audio.volume = settings.volume;
-        g.audio.play('select');
-      },
-    },
-    {
       label: 'Sound',
-      value: () => (settings.muted ? 'Off' : 'On'),
-      change: (_d, g) => {
-        settings.muted = !settings.muted;
-        g.audio.muted = settings.muted;
-      },
+      value: () => (settings.muted ? 'Muted' : `${Math.round(settings.volume * 100)}%  …`),
+      change: (_d, g) => g.go(new AudioOptionsScene(() => g.go(this), this.overWorld)),
+      note: 'Volumes, mix, heartbeat and comfort options, captions and subtitles.',
     },
     {
       label: 'Screen shake',
