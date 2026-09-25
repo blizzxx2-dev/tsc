@@ -20,16 +20,20 @@ import {
   type BarkSpeaker,
   type BarkTrigger,
   type PatientTrigger,
+  WHISPER_BAND_BARKS,
 } from './barks';
+import type { WhisperBand } from './whisper';
 
 export interface BarkDirectorOptions {
   /** Override the observer (default: `speakerFor(op.def.id)`). */
   speaker?: BarkSpeaker;
-  // eslint-disable-next-line no-restricted-properties -- presentation-only choice; the simulation never reads it
+   
   /** Unit-interval source for cosmetic choices (default Math.random). */
   rng?: () => number;
   /** Seconds between barks (default BARK_COOLDOWN). */
   cooldown?: number;
+  /** The Whisper band going in (NAR-0166): Suspected and Accused draw remarks after the star. */
+  whisper?: WhisperBand;
 }
 
 /** Seconds without a rated action before `idle` may fire. */
@@ -46,6 +50,7 @@ export class BarkDirector {
   private armed15 = true;
   private ended = false;
   private readonly hour: keyof typeof MALISON_WHISPERS | null;
+  private readonly band: WhisperBand;
   private unsubscribe: (() => void)[] = [];
   /** Every line spoken, for tests. */
   readonly spoken: { trigger: string; line: string }[] = [];
@@ -58,6 +63,7 @@ export class BarkDirector {
     // eslint-disable-next-line no-restricted-properties -- presentation-only choice; the simulation never reads it
     this.rng = opts.rng ?? Math.random;
     this.cooldown = opts.cooldown ?? BARK_COOLDOWN;
+    this.band = opts.whisper ?? 'unremarked';
     this.hour = op.def.id === 'op1-5' ? 'matins' : op.def.id === 'op2-5' ? 'lauds' : null;
     resetBarkHistory();
     this.listen();
@@ -92,6 +98,7 @@ export class BarkDirector {
       ev.on('litany', () => {
         this.fire('litany');
         this.stroh('litany');
+        this.whisperBand();
       }),
       ev.on('phase', ({ index }) => {
         if (index <= 0) return;
@@ -153,6 +160,15 @@ export class BarkDirector {
   private whisper(): void {
     if (!this.hour || this.ended || !this.ready(true, 'whisper', 6)) return;
     this.say('whisper', pickWhisper(this.hour, this.rng));
+  }
+
+  /** What the witnesses will make of the star, once the city already suspects (NAR-0166). */
+  private whisperBand(): void {
+    if (this.band !== 'suspected' && this.band !== 'accused') return;
+    if (this.ended || !this.ready(true, 'whisper-band', 2)) return;
+    const who = this.speaker === 'stroh' || STROH_PRESENT.includes(this.op.def.id) ? 'stroh' : 'ilse';
+    const lines = WHISPER_BAND_BARKS[this.band][who];
+    this.say('whisper-band', lines[Math.floor(this.rng() * lines.length) % lines.length]);
   }
 
   /** Fire a trigger for the observer (or Stroh). Returns the line spoken, if any. */

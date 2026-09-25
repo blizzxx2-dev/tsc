@@ -580,3 +580,18 @@ export function rankQuip(opId: string, rank: Rank, rng: () => number = Math.rand
   const speaker = speakerFor(opId);
   return pickLine(`quip:${speaker}:${rank}`, RANK_QUIPS[speaker][rank], rng)!;
 }
+
+/**
+ * Whisper-band barks (NAR-0166): after the star is drawn when the city already Suspects or Accuses
+ * Kreuzer, Ilse (or Stroh, where he watches) remarks on what the witnesses will make of it.
+ */
+export const WHISPER_BAND_BARKS: Record<'suspected' | 'accused', Record<'ilse' | 'stroh', readonly [string, string]>> = {
+  suspected: {
+    ilse: ['Again, Doctor? There are people at the door who count.', 'Close the shutter first, next time. Please.'],
+    stroh: ['Another candle that forgot itself. I will note the hour.', 'You do it so easily now. That is what troubles me.'],
+  },
+  accused: {
+    ilse: ['They will say this in court, Doctor. Every word of it.', 'I did not see that. Do you hear me? I saw nothing.'],
+    stroh: ['That is not a thing a man can explain to a jury, Doctor.', 'I had hoped to be wrong about you. I am so rarely wrong.'],
+  },
+};

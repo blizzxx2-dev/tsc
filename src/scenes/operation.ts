@@ -9,6 +9,8 @@ import { bindHitstop } from '../core/clock';
 import { Camera2D } from '../render/camera';
 import type { Game, Scene } from '../core/scene';
 import { attachBarkDirector } from '../content/barkDirector';
+import { flags } from '../content/flags';
+import { whisperBand, whisperScore } from '../content/whisper';
 import { hex, withAlpha } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { organPalette } from '../render/organs';
@@ -316,7 +318,7 @@ export class OperationScene implements Scene {
       p.codex.push(id);
       storeProgress(p);
     });
-    if (!this.runOpts.practice) attachBarkDirector(op);
+    if (!this.runOpts.practice) attachBarkDirector(op, { whisper: whisperBand(whisperScore(flags)) });
     this.vfx = new OperationVfx(() => this.particles);
     this.vfx.listen(op, () => bloodScale(presentation.gore));
     // Burns leave scars on the scorch map; hexfire keeps a violet rim (ENG-0117).

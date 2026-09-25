@@ -229,3 +229,25 @@ describe('bark director', () => {
     }
   });
 });
+
+describe('Whisper-band barks (NAR-0166)', () => {
+  it('after the star, a Suspected or Accused Kreuzer draws a remark; an Unremarked one does not', async () => {
+    const { WHISPER_BAND_BARKS } = await import('../src/content/barks');
+    const { start } = await import('./harness');
+    const all = Object.values(WHISPER_BAND_BARKS).flatMap((b) => [...b.ilse, ...b.stroh]);
+    expect(new Set(all).size).toBe(8);
+    for (const [band, expectLine] of [
+      ['unremarked', false],
+      ['suspected', true],
+      ['accused', true],
+    ] as const) {
+      const op = start();
+      const d = new BarkDirector(op, { rng: () => 0, whisper: band });
+      (op.events.emit as (k: string, p: unknown) => void)('litany', {});
+      expect(
+        d.spoken.some((s) => s.trigger === 'whisper-band' && all.includes(s.line)),
+        band,
+      ).toBe(expectLine);
+    }
+  });
+});
