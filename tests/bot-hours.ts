@@ -5,7 +5,7 @@
  */
 import { dist, type Vec } from '../src/core/math';
 import { activeBoss, bossesOf, type MalisonBase } from '../src/surgery/bosses/base';
-import { FIELD, onBody, type Operation } from '../src/surgery/operation';
+import { FIELD, onBody, TRAY_DISH, type Operation } from '../src/surgery/operation';
 import type { ToolId } from '../src/surgery/types';
 import { Malison, MalisonShard } from '../src/surgery/malison';
 import { ChoirVoice, LaudsMalison, VOICE_SIGIL } from '../src/surgery/lauds';
@@ -169,7 +169,8 @@ export const laudsStrategy: BotStrategy = (op, k, boss) => {
   if (key === 'response') return antiphon(l, 20);
   // Dawn: hunt its ripples between flares, brand it while surfaced.
   if (l.submerged) {
-    if (l.blinded || l.flareTelling) return k.pause(op.pointer, 'lens', 0.3);
+    // Blinded by the flare: tend the rot and the bleeding instead of waiting.
+    if (l.blinded || l.flareTelling) return null;
     return k.hold('lens', () => (l.alive && l.submerged && !l.blinded ? l.pos : null), 1.5);
   }
   return k.hold('brand', () => (l.alive && !l.submerged ? l.pos : null), 5);
@@ -195,7 +196,8 @@ export const fangStrategy: BotStrategy = (_op, k, boss) => {
   const grip = { x: f.origin.x + (f.handle.x - f.origin.x) * 0.7, y: f.origin.y + (f.handle.y - f.origin.y) * 0.7 };
   const dir = { x: f.handle.x - f.origin.x, y: f.handle.y - f.origin.y };
   const l = Math.hypot(dir.x, dir.y) || 1;
-  return k.drag('tongs', [grip, { x: grip.x + (dir.x / l) * 110, y: grip.y + (dir.y / l) * 110 }], 500);
+  // Out along the axis, then carried off the body into the instrument dish.
+  return k.drag('tongs', [grip, { x: grip.x + (dir.x / l) * 40, y: grip.y + (dir.y / l) * 40 }, TRAY_DISH], 480);
 };
 
 /** Cantor's Knot: the generic sigil-tracing between hums is enough. */

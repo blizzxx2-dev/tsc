@@ -69,7 +69,7 @@ export const X_OPS: readonly XOp[] = [
     hour: 'lauds',
     title: 'X2 — Lauds, Rekindled',
     blurb: 'The choir returns hoarse and hungry: tougher, quicker to sing, quicker to rekindle.',
-    mods: { drain: 1, time: 1, hp: 1.3, tellSpeed: 1.2, addCadence: 1.25 },
+    mods: { drain: 0.85, time: 1, hp: 1.15, tellSpeed: 1.2, addCadence: 1.25 },
     unlock: { chapter: 2, bossOp: 'op2-5', rank: 'A' },
     base: OP_2_5,
   },
