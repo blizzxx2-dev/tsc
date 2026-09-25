@@ -13,6 +13,7 @@ import { fleshVariantKey, isQuality, SHADER_TIERS, type Quality } from './qualit
 import { fleshShaderSource } from './shaders/flesh';
 import { shakeOffset } from './shake';
 import { GlRegistry } from './registry';
+import { GlStateCache } from './stateCache';
 import { SpriteBank, type SpriteOpts } from './sprites';
 import { RenderTargetPool, type Target } from './targets';
 import { checkerPixels, Texture } from './texture';
@@ -224,6 +225,7 @@ function trig(n: number): Float32Array {
  */
 export class Gfx {
   readonly gl: WebGL2RenderingContext;
+  readonly stateCache: GlStateCache;
   /** Every GL object, for leak counts, VRAM budget and context restore (ENG-0198). */
   readonly registry: GlRegistry;
   /** Player display options as renderer multipliers (UIX-0105); the shell refreshes it every frame. */
@@ -318,9 +320,11 @@ export class Gfx {
     public vh: number,
     opts: GfxOptions = {},
   ) {
-    const gl = canvas.getContext('webgl2', { antialias: false, alpha: false, premultipliedAlpha: false, powerPreference: 'high-performance' });
-    if (!gl) throw new Error('WebGL2 is not available on this system.');
-    this.gl = gl;
+    const raw = canvas.getContext('webgl2', { antialias: false, alpha: false, premultipliedAlpha: false, powerPreference: 'high-performance' });
+    if (!raw) throw new Error('WebGL2 is not available on this system.');
+    // Every GL call goes through the state cache (ENG-0029): redundant binds and state sets are dropped.
+    this.stateCache = new GlStateCache(raw);
+    const gl = (this.gl = this.stateCache.gl);
     this.registry = new GlRegistry(gl);
     this.caps = opts.caps ?? (gl.isContextLost() ? FULL_CAPS : probeCaps(gl));
     this.plan = { ...fallbackPlan(this.caps), ...opts.plan };
@@ -524,6 +528,7 @@ export class Gfx {
 
   /** Call on `webglcontextlost`: every handle is dead. */
   contextLost(): void {
+    this.stateCache.reset();
     this.registry.contextLost();
     this.targets.forget();
     this.gpuTimer.reset();
@@ -533,6 +538,7 @@ export class Gfx {
 
   /** Call on `webglcontextrestored`: recreate programs, buffers, textures, targets and images (ENG-0200). */
   contextRestored(): void {
+    this.stateCache.reset();
     this.registry.contextRestored();
     this.gpuTimer.rebind();
     for (const [h, src] of this.imageSources) this.uploadImage(h, src);

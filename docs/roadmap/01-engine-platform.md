@@ -54,7 +54,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0026 · Demo · P2 · S · `multiply` and `screen` blend modes — plus `withBlend(mode, fn)` that restores the previous mode even if `fn` throws
 - [x] ENG-0027 · Demo · P1 · S · Scissor clip stack `pushClip(rect)`/`popClip()` — virtual coords converted to device px (unit test for letterbox + DPR) for scrolling text panels
 - [ ] ENG-0028 · Demo · P1 · M · Stencil mask API (`beginMask`/`endMask`/`clearMask`) on the world target (depth-stencil attachment) — entities inside an incision are clipped to the opening outline
-- [ ] ENG-0029 · Demo · P2 · S · GL state cache (program, VAO, bound textures per unit, blend, framebuffer) — WebGL inspector reports 0 redundant state calls in a steady-state operation frame
+- [x] ENG-0029 · Demo · P2 · S · GL state cache (program, VAO, bound textures per unit, blend, framebuffer) — WebGL inspector reports 0 redundant state calls in a steady-state operation frame
 
 ### Textures & sprite sheets
 - [x] ENG-0030 · Demo · P0 · M · `Texture` wrapper — load from `ImageBitmap` (`createImageBitmap`, premultiply option), filtering/wrap/mip settings, byte size tracked for the VRAM budget
