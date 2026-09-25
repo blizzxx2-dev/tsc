@@ -970,5 +970,12 @@
   "hud.intro.skip": "Press to begin",
   "ui.options.ui_scale": "Interface scale",
   "ui.options.ui_scale_note": "HUD and menu size. Under 100 % shows more theatre.",
-  "ui.options.ui_scale_value": "{value, number, percent} ({shown, number, percent})"
+  "ui.options.ui_scale_value": "{value, number, percent} ({shown, number, percent})",
+  "steam.timeline.patient_lost": "Patient lost",
+  "steam.timeline.rank_xs": "XS rank",
+  "steam.timeline.op_won": "{title} — saved",
+  "steam.timeline.op_lost": "{title} — lost",
+  "steam.timeline.malison": "The Malison stirs",
+  "steam.timeline.state_operating": "Operating: {patient}",
+  "steam.timeline.state_menu": "Between operations"
 }

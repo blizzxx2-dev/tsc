@@ -7990,5 +7990,54 @@
     "maxPx": 280,
     "context": "Value of the interface-scale row when the window cannot show the chosen scale: the setting, then in brackets the scale in force.",
     "screenshot": "docs/loc/screens/options.png"
+  },
+  "steam.timeline.patient_lost": {
+    "scene": "steam",
+    "font": "body",
+    "size": 20,
+    "maxPx": 600,
+    "context": "Steam Timeline marker title (Game Recording clip label): the patient died."
+  },
+  "steam.timeline.rank_xs": {
+    "scene": "steam",
+    "font": "body",
+    "size": 20,
+    "maxPx": 600,
+    "context": "Steam Timeline marker title: an XS rank was earned."
+  },
+  "steam.timeline.op_won": {
+    "scene": "steam",
+    "font": "body",
+    "size": 20,
+    "maxPx": 600,
+    "context": "Steam Timeline marker closing an operation that was won; {title} is the operation title."
+  },
+  "steam.timeline.op_lost": {
+    "scene": "steam",
+    "font": "body",
+    "size": 20,
+    "maxPx": 600,
+    "context": "Steam Timeline marker closing an operation that was lost; {title} is the operation title."
+  },
+  "steam.timeline.malison": {
+    "scene": "steam",
+    "font": "body",
+    "size": 20,
+    "maxPx": 600,
+    "context": "Steam Timeline marker title: the Malison boss appeared in the patient."
+  },
+  "steam.timeline.state_operating": {
+    "scene": "steam",
+    "font": "body",
+    "size": 20,
+    "maxPx": 600,
+    "context": "Steam Timeline tooltip while operating; {patient} is the patient's name."
+  },
+  "steam.timeline.state_menu": {
+    "scene": "steam",
+    "font": "body",
+    "size": 20,
+    "maxPx": 600,
+    "context": "Steam Timeline tooltip outside operations."
   }
 }

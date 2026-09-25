@@ -4,10 +4,32 @@
  * call is a no-op and the game runs as a plain desktop build.
  */
 import { createRequire } from 'node:module';
-import type { SteamBoot } from '../../src/platform/bridge';
+import type { SteamBoot, TimelineMarker } from '../../src/platform/bridge';
 
 type Client = typeof import('steamworks.js/client');
 type Api = Omit<Client, 'init' | 'runCallbacks'>;
+
+/**
+ * Bindings steamworks.js 0.4 does not ship, probed at runtime so a newer build of the module lights
+ * them up without a code change (PLT-0042 overlay callback, PLT-0050 Timeline):
+ * - `callback.SteamCallback.GameOverlayActivated` → `register(id, ({ active }) => …)`
+ * - `timeline.setTimelineGameMode/setTimelineTooltip/addInstantaneousTimelineEvent/startRangeTimelineEvent/endRangeTimelineEvent`
+ *   (ISteamTimeline, Steamworks SDK ≥ 1.60).
+ */
+interface OptionalApi {
+  callback?: { SteamCallback?: Record<string, number>; register?: (id: number, handler: (value: { active?: boolean }) => void) => unknown };
+  timeline?: {
+    setTimelineTooltip?: (description: string, timeDelta: number) => void;
+    setTimelineGameMode?: (mode: number) => void;
+    addInstantaneousTimelineEvent?: (title: string, description: string, icon: string, priority: number, startOffsetSeconds: number, possibleClip: number) => unknown;
+    startRangeTimelineEvent?: (title: string, description: string, icon: string, priority: number, startOffsetSeconds: number, possibleClip: number) => number | bigint;
+    endRangeTimelineEvent?: (handle: number | bigint, endOffsetSeconds: number) => void;
+  };
+}
+/** Steam's `ETimelineEventClipPriority`: 0 invalid, 1 none, 2 standard, 3 featured. */
+const CLIP = { none: 1, standard: 2, featured: 3 } as const;
+/** `ETimelineGameMode`: 1 playing, 2 staging, 3 menus, 4 loading. */
+const GAME_MODE = { playing: 1, menus: 3 } as const;
 interface SteamworksModule {
   init(appId?: number): Api;
   restartAppIfNecessary(appId: number): boolean;
@@ -138,6 +160,55 @@ export class SteamService {
       } else this.api.overlay.activateToWebPage(target);
       return true;
     } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Overlay opened/closed (PLT-0042). steamworks.js 0.4 has no `GameOverlayActivated` id; when the
+   * module exposes one the callback is registered, otherwise this returns false and the log says so.
+   */
+  onOverlay(cb: (active: boolean) => void): boolean {
+    const api = this.api as unknown as OptionalApi | null;
+    const id = api?.callback?.SteamCallback?.GameOverlayActivated;
+    if (!api || typeof id !== 'number' || !api.callback?.register) {
+      if (this.api) this.log('GameOverlayActivated is not bound in this steamworks.js; overlay auto-pause relies on focus loss');
+      return false;
+    }
+    try {
+      api.callback.register(id, (v) => cb(!!v?.active));
+      return true;
+    } catch (e) {
+      this.log(`GameOverlayActivated register failed: ${(e as Error).message}`);
+      return false;
+    }
+  }
+
+  private rangeHandle: number | bigint | null = null;
+  private timelineWarned = false;
+
+  /** Timeline marker (PLT-0050); false when the module has no `timeline` binding. */
+  timeline(m: TimelineMarker): boolean {
+    const t = (this.api as unknown as OptionalApi | null)?.timeline;
+    if (!this.api) return false;
+    if (!t?.addInstantaneousTimelineEvent) {
+      if (!this.timelineWarned) this.log('Steam Timeline is not bound in this steamworks.js; markers are dropped');
+      this.timelineWarned = true;
+      return false;
+    }
+    try {
+      if (m.state !== undefined) {
+        t.setTimelineTooltip?.(m.state, 0);
+        t.setTimelineGameMode?.(m.kind === 'op-end' ? GAME_MODE.menus : GAME_MODE.playing);
+      }
+      if (m.kind === 'op-start' && t.startRangeTimelineEvent) this.rangeHandle = t.startRangeTimelineEvent(m.title, m.description ?? '', m.icon, m.priority, 0, CLIP.standard);
+      else if (m.kind === 'op-end' && this.rangeHandle !== null && t.endRangeTimelineEvent) {
+        t.endRangeTimelineEvent(this.rangeHandle, 0);
+        this.rangeHandle = null;
+      } else t.addInstantaneousTimelineEvent(m.title, m.description ?? '', m.icon, m.priority, 0, m.kind === 'rank-xs' ? CLIP.featured : CLIP.standard);
+      return true;
+    } catch (e) {
+      this.log(`timeline marker failed: ${(e as Error).message}`);
       return false;
     }
   }

@@ -94,6 +94,14 @@ integrity validation **on** (enforced on Windows/macOS), cookie encryption on, f
 - **Display sleep** is blocked during operations (unless paused) and story scenes.
 - **Focus loss** pauses an operation (setting), mutes if "mute when unfocused" is on, and releases held mouse
   buttons. OS suspend (Deck sleep) pauses the operation.
+- **Steam overlay** (PLT-0042): `GameOverlayActivated` → `ss:overlay` → the operation pauses (independently of
+  the focus-loss setting) and input is silenced while the overlay is up: held keys/buttons are released as
+  cancels and the input facade is fed empty frames, so nothing reaches the scenes; closing the overlay restores
+  live input, the pause stays until the player resumes. steamworks.js 0.4 lacks the callback (probed at runtime,
+  see `docs/handoff/PLT/README.md` PLT-0042), so today the overlay pauses through focus loss only.
+- **Steam Timeline** (PLT-0050): `platform.steam.timeline()` marks operation start/end, the Malison's
+  appearance, a lost patient and an XS rank for Game Recording clips; dropped with one log line until
+  steamworks.js binds ISteamTimeline (handoff README).
 - **Crash handling:** renderer crash → reload straight back to the last autosave; second crash within ten minutes →
   "Suture & Steel has stopped" dialog (Restart / Restart in safe mode / Open log folder / Quit). Renderer silent for
   >10 s → "not responding" dialog; Restart forces a renderer crash so Crashpad captures it, then recovers.

@@ -323,6 +323,9 @@ function registerIpc(): void {
     }
   });
   on('ss:rich-presence', (_e, v) => steam.setRichPresence(v ?? {}));
+  on('ss:steam-timeline', (_e, m) => {
+    if (m && typeof m === 'object' && typeof m.kind === 'string' && typeof m.title === 'string') steam.timeline(m);
+  });
   on('ss:open', (_e, t) => {
     if (t === 'saves') void shell.openPath(paths.saves);
     else if (t === 'logs') void shell.openPath(paths.logs);
@@ -593,6 +596,10 @@ function createWindow(): void {
     }, HEALTHY_AFTER_MS);
   });
   watchRenderer(w);
+  // Steam overlay (PLT-0042): the game pauses and drops input while it is up.
+  steam.onOverlay((active) => {
+    if (!w.isDestroyed()) w.webContents.send('ss:overlay', active);
+  });
   void w.loadURL('app://game/index.html');
   if (SMOKE_OUT) runSmoke(w);
 }

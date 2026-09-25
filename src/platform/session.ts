@@ -19,17 +19,19 @@ import { ResultsScene } from '../scenes/results';
 import { TitleScene } from '../scenes/title';
 import { playStep, save } from '../scenes/flow';
 import { VIEW_H, VIEW_W } from '../ui/layout';
+import { t } from '../i18n';
 import { platform } from './index';
 import { Achievements, type AchievementState } from './achievements';
 import { BUILD, EDITION, buildLabel } from './build';
 import { IMPORT_DIALOG, importDemoProfile, indexCampaign, readDemoProfile } from './carryover';
 import { installErrorCapture, markFrame, parseDsn } from './crash';
 import { DisplayChangeGuard, type DisplayConfig } from './display';
-import { onGameEvent } from './events';
+import { onGameEvent, type GameEvent } from './events';
 import { flag } from './flags';
 import { GamepadController } from './gamepad';
 import { addScrubSecret, log } from './log';
 import { attachPresenter, notify, setBusyHandler } from './notify';
+import { OverlayGate } from './overlay';
 import { presenceFor, type Activity } from './richpresence';
 import { prompt, SaveIndicator, showNotice, showWatermark } from './ui';
 
@@ -51,6 +53,10 @@ let heartbeatT = 0;
 let started = false;
 let achievements: Achievements | null = null;
 let gamepad: GamepadController | null = null;
+let overlay: OverlayGate | null = null;
+/** Steam Timeline (PLT-0050): the operation whose start marker was sent, and whether its Malison marker was. */
+let timelineOp: OperationScene | null = null;
+let timelineBoss = false;
 let lastActivityKey = '';
 let lastPresence = '';
 const refreshSamples: number[] = [];
@@ -195,6 +201,35 @@ function installFocus(): void {
     if (s) pauseOperation();
     log.info('platform', s ? 'suspended' : 'resumed');
   });
+  // Steam overlay (PLT-0042): pause and silence input while it is up, whatever the display mode.
+  platform.window.onOverlay((active) => {
+    overlay?.set(active);
+    log.info('platform', active ? 'steam overlay opened' : 'steam overlay closed');
+  });
+}
+
+/** Steam Timeline markers (PLT-0050): operation start/end, the Malison's appearance, a lost patient, an XS rank. */
+function timelineOperationEnd(e: Extract<GameEvent, { type: 'operation-end' }>): void {
+  const op = timelineOp?.op;
+  if (!op || op.def.id !== e.opId) return;
+  const patient = op.def.patient;
+  if (!e.won) platform.steam.timeline({ kind: 'patient-lost', title: t('steam.timeline.patient_lost'), description: patient, icon: 'steam_death', priority: 800 });
+  else if (e.rank === 'XS') platform.steam.timeline({ kind: 'rank-xs', title: t('steam.timeline.rank_xs'), description: patient, icon: 'steam_star', priority: 900 });
+  platform.steam.timeline({ kind: 'op-end', title: t(e.won ? 'steam.timeline.op_won' : 'steam.timeline.op_lost', { title: op.def.title }), description: patient, icon: e.won ? 'steam_checkmark' : 'steam_x', priority: 600, state: t('steam.timeline.state_menu') });
+  timelineOp = null;
+}
+
+function timelineFrame(): void {
+  if (!(scene instanceof OperationScene)) return;
+  if (scene !== timelineOp) {
+    timelineOp = scene;
+    timelineBoss = false;
+    platform.steam.timeline({ kind: 'op-start', title: scene.op.def.title, description: scene.op.def.patient, icon: 'steam_marker', priority: 500, state: t('steam.timeline.state_operating', { patient: scene.op.def.patient }) });
+  }
+  if (!timelineBoss && scene.op.bossOp) {
+    timelineBoss = true;
+    platform.steam.timeline({ kind: 'malison', title: t('steam.timeline.malison'), description: scene.op.def.title, icon: 'steam_bolt', priority: 700 });
+  }
 }
 
 async function firstRunPrompts(): Promise<void> {
@@ -297,6 +332,10 @@ export function installPlatform(g: Game): void {
     onGameEvent((e) => achievements?.handle(e));
     void achievements.flush();
   }
+  onGameEvent((e) => {
+    if (e.type === 'operation-end') timelineOperationEnd(e);
+  });
+  overlay = new OverlayGate(g.input, pauseOperation);
   if (platform.args.kiosk) {
     // Show-floor build: every demo operation selectable, nothing persisted.
     save.progress = { chapter: CAMPAIGN.length - 1, step: CAMPAIGN[CAMPAIGN.length - 1].steps.length - 1 };
@@ -331,6 +370,7 @@ export function platformFrame(dt: number): void {
   markFrame();
   log.frame++;
   maybeCaptureThumbnail(dt);
+  timelineFrame();
   gamepad?.poll(game.input, dt, settings.gamepadCursorSpeed, settings.gamepadCursorAccel);
   if (gamepad?.lastDevice === 'gamepad' && (game.input.down || game.input.pressed || game.input.wheel)) idle = 0;
   idle += dt;
