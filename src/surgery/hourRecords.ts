@@ -6,7 +6,7 @@
 import type { Operation, OperationDef } from './operation';
 import { replay, serialiseLog, takeLog } from './replay';
 
-const KEY = 'suture-and-steel.hours.v1';
+const STORAGE_NAME = 'suture-and-steel.hours.v1';
 
 export interface HourRecord {
   opId: string;
@@ -22,7 +22,7 @@ type Store = Record<string, HourRecord>;
 
 function load(): Store {
   try {
-    const raw = localStorage.getItem(KEY);
+    const raw = localStorage.getItem(STORAGE_NAME);
     const s = raw ? (JSON.parse(raw) as unknown) : null;
     return s && typeof s === 'object' ? (s as Store) : {};
   } catch {
@@ -32,7 +32,7 @@ function load(): Store {
 
 function save(s: Store): void {
   try {
-    localStorage.setItem(KEY, JSON.stringify(s));
+    localStorage.setItem(STORAGE_NAME, JSON.stringify(s));
   } catch {
     // no storage: the record lasts for this session
   }
