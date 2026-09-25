@@ -16,6 +16,8 @@ const ALLOWED = [
   /render[\\/]shaders[\\/]creature\.ts$/,
   /content[\\/]characters\.ts$/,
   /render[\\/]palette\.ts$/,
+  // The Hours' Book-of-Hours miniatures are Malison content (ART-0234…0262).
+  /art[\\/]hourMiniatures\.ts$/,
 ];
 
 /** Hue 255–295°, saturated, mid-to-light: the curse-violet family. */
