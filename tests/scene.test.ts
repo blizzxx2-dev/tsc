@@ -6,11 +6,14 @@ import { GlRegistry } from '../src/render/registry';
 import { RenderTargetPool } from '../src/render/targets';
 import { OperationScene } from '../src/scenes/operation';
 import { fakeGl } from './fakegl';
+import { Input } from '../src/core/input';
+import { Bindings } from '../src/input/bindings';
 
 function fakeGame(): Game & { log: string[] } {
   const log: string[] = [];
-  const pos = { x: 640, y: 400 };
-  const input = { suppress: (fn: () => void) => fn(), keyPressed: () => false, key: () => false, pos, prev: pos, path: [pos], down: false, pressed: false, released: false, rightDown: false, wheel: 0 } as unknown as Game['input'];
+  // A real, DOM-free Input with no devices attached: idle pointer, no presses.
+  const input = new Input(null, 1280, 720, new Bindings(null));
+  input.warp({ x: 640, y: 400 });
   const g = { log, input, audio: { play: () => undefined } as unknown as Game['audio'], gfx: {} as Game['gfx'], go: () => undefined };
   return g;
 }

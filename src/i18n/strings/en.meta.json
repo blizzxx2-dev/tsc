@@ -245,23 +245,6 @@
     "screenshot": "docs/loc/screens/options.png",
     "maxLines": 1
   },
-  "ui.options.litany_key": {
-    "scene": "options",
-    "font": "body",
-    "size": 24,
-    "maxPx": 360,
-    "context": "Options row label, left-aligned.",
-    "screenshot": "docs/loc/screens/options.png"
-  },
-  "ui.options.litany_key_note": {
-    "scene": "options",
-    "font": "italic",
-    "size": 18,
-    "maxPx": 720,
-    "context": "Explanation shown under the options list while the row is hovered.",
-    "screenshot": "docs/loc/screens/options.png",
-    "maxLines": 1
-  },
   "ui.options.fullscreen": {
     "scene": "options",
     "font": "body",
@@ -544,14 +527,6 @@
     "context": "Operation replay list.",
     "screenshot": "docs/loc/screens/theatre.png"
   },
-  "ui.story.controls": {
-    "scene": "story",
-    "font": "body",
-    "size": 13,
-    "maxPx": 700,
-    "context": "Control hint in the story-scene corner.",
-    "screenshot": "docs/loc/screens/story.png"
-  },
   "hud.vitals": {
     "scene": "operation",
     "font": "body",
@@ -601,24 +576,6 @@
     "maxPx": 560,
     "context": "Banner at the end of an operation.",
     "screenshot": "docs/loc/screens/operation.png"
-  },
-  "hud.litany.ready_key": {
-    "scene": "operation",
-    "font": "italic",
-    "size": 14,
-    "maxPx": 150,
-    "context": "Label beside the Litany medallion.",
-    "screenshot": "docs/loc/screens/operation.png",
-    "note": "The Litany of Stillness is a termbase term."
-  },
-  "hud.litany.ready_gesture": {
-    "scene": "operation",
-    "font": "italic",
-    "size": 14,
-    "maxPx": 150,
-    "context": "Label beside the Litany medallion.",
-    "screenshot": "docs/loc/screens/operation.png",
-    "note": "The Litany of Stillness is a termbase term."
   },
   "hud.litany.active": {
     "scene": "operation",
@@ -2268,5 +2225,70 @@
     "context": "Small caption above a rating popup naming what was done.",
     "screenshot": "docs/loc/screens/operation.png",
     "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "ui.options.litany_input": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.litany_draw": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 260,
+    "context": "Options value: Litany invoked by drawing the star.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.litany_keyname": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 260,
+    "context": "Options value: Litany invoked by a key; {key} is the bound key label.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.litany_either": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 260,
+    "context": "Options value: star or key.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.litany_input_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 720,
+    "context": "Explanation shown under the options list while the row is hovered.",
+    "screenshot": "docs/loc/screens/options.png",
+    "maxLines": 1
+  },
+  "ui.options.controls": {
+    "scene": "options",
+    "font": "body",
+    "size": 28,
+    "maxPx": 260,
+    "context": "Button on the options screen that opens key bindings.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.story.click_prefix": {
+    "scene": "story",
+    "font": "body",
+    "size": 13,
+    "maxPx": 700,
+    "context": "Prefix before the advance key in the story footer (mouse users only).",
+    "screenshot": "docs/loc/screens/story.png"
+  },
+  "ui.story.controls_fmt": {
+    "scene": "story",
+    "font": "body",
+    "size": 13,
+    "maxPx": 700,
+    "context": "Story footer; placeholders are key labels.",
+    "screenshot": "docs/loc/screens/story.png"
   }
 }

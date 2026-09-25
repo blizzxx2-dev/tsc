@@ -24,7 +24,7 @@ export class OperationsScene implements Scene {
   }
 
   update(_dt: number, game: Game): void {
-    if (game.input.keyPressed('Escape')) game.go(new TitleScene());
+    if (game.input.actPressed('ui.back')) game.go(new TitleScene());
   }
 
   render(g: Gfx, game: Game): void {

@@ -1,0 +1,152 @@
+"In Game Actions"
+{
+	"actions"
+	{
+		"Operation"
+		{
+			"title"		"#Set_Operation"
+			"StickPadGyro"
+			{
+				"cursor"
+				{
+					"title"		"#Action_Cursor"
+					"input_mode"		"absolute_mouse"
+				}
+				"cursor_stick"
+				{
+					"title"		"#Action_CursorStick"
+					"input_mode"		"joystick_move"
+				}
+				"precision_nudge"
+				{
+					"title"		"#Action_PrecisionNudge"
+					"input_mode"		"joystick_move"
+				}
+				"tool_wheel_pick"
+				{
+					"title"		"#Action_ToolWheelPick"
+					"input_mode"		"joystick_move"
+				}
+			}
+			"AnalogTrigger"
+			{
+				"use_instrument"		"#Action_UseInstrument"
+				"draw_star"		"#Action_DrawStar"
+			}
+			"Button"
+			{
+				"use_instrument_click"		"#Action_UseInstrumentClick"
+				"hold_instrument"		"#Action_HoldInstrument"
+				"tool_next"		"#Action_ToolNext"
+				"tool_prev"		"#Action_ToolPrev"
+				"tool_quick_swap"		"#Action_ToolQuickSwap"
+				"tool_wheel"		"#Action_ToolWheel"
+				"tool_1"		"#Action_Tool1"
+				"tool_2"		"#Action_Tool2"
+				"tool_3"		"#Action_Tool3"
+				"tool_4"		"#Action_Tool4"
+				"tool_5"		"#Action_Tool5"
+				"tool_6"		"#Action_Tool6"
+				"tool_7"		"#Action_Tool7"
+				"tool_8"		"#Action_Tool8"
+				"litany_key"		"#Action_LitanyKey"
+				"pause"		"#Action_Pause"
+			}
+		}
+		"Story"
+		{
+			"title"		"#Set_Story"
+			"StickPadGyro"
+			{
+				"story_cursor"
+				{
+					"title"		"#Action_Cursor"
+					"input_mode"		"absolute_mouse"
+				}
+			}
+			"AnalogTrigger"
+			{
+			}
+			"Button"
+			{
+				"vn_advance"		"#Action_VnAdvance"
+				"vn_fast"		"#Action_VnFast"
+				"vn_auto"		"#Action_VnAuto"
+				"vn_log"		"#Action_VnLog"
+				"vn_hide"		"#Action_VnHide"
+				"vn_skip"		"#Action_VnSkip"
+			}
+		}
+		"Menu"
+		{
+			"title"		"#Set_Menu"
+			"StickPadGyro"
+			{
+				"menu_cursor"
+				{
+					"title"		"#Action_Cursor"
+					"input_mode"		"absolute_mouse"
+				}
+			}
+			"AnalogTrigger"
+			{
+			}
+			"Button"
+			{
+				"menu_up"		"#Action_MenuUp"
+				"menu_down"		"#Action_MenuDown"
+				"menu_left"		"#Action_MenuLeft"
+				"menu_right"		"#Action_MenuRight"
+				"menu_confirm"		"#Action_MenuConfirm"
+				"menu_back"		"#Action_MenuBack"
+				"menu_tab_prev"		"#Action_MenuTabPrev"
+				"menu_tab_next"		"#Action_MenuTabNext"
+			}
+		}
+	}
+	"localization"
+	{
+		"english"
+		{
+			"Set_Operation"		"Operation"
+			"Set_Story"		"Story"
+			"Set_Menu"		"Menus"
+			"Action_Cursor"		"Cursor"
+			"Action_CursorStick"		"Cursor (stick)"
+			"Action_PrecisionNudge"		"Precision nudge"
+			"Action_ToolWheelPick"		"Instrument wheel: point"
+			"Action_UseInstrument"		"Use instrument (hold)"
+			"Action_UseInstrumentClick"		"Use instrument (click)"
+			"Action_DrawStar"		"Draw the star (hold and trace)"
+			"Action_HoldInstrument"		"Hold instrument (hand rest)"
+			"Action_ToolNext"		"Next instrument"
+			"Action_ToolPrev"		"Previous instrument"
+			"Action_ToolQuickSwap"		"Swap to last instrument"
+			"Action_ToolWheel"		"Instrument wheel"
+			"Action_Tool1"		"Lancet"
+			"Action_Tool2"		"Tongs"
+			"Action_Tool3"		"Leech-Pipe"
+			"Action_Tool4"		"Gut Thread"
+			"Action_Tool5"		"Saint's Salve"
+			"Action_Tool6"		"Tincture"
+			"Action_Tool7"		"Cautery Brand"
+			"Action_Tool8"		"Scrying Lens"
+			"Action_LitanyKey"		"Speak the Litany"
+			"Action_Pause"		"Pause"
+			"Action_VnAdvance"		"Advance"
+			"Action_VnFast"		"Fast-forward (hold)"
+			"Action_VnAuto"		"Auto-advance"
+			"Action_VnLog"		"Dialogue log"
+			"Action_VnHide"		"Hide text box"
+			"Action_VnSkip"		"Skip scene"
+			"Action_MenuUp"		"Up"
+			"Action_MenuDown"		"Down"
+			"Action_MenuLeft"		"Left"
+			"Action_MenuRight"		"Right"
+			"Action_MenuConfirm"		"Confirm"
+			"Action_MenuBack"		"Back"
+			"Action_MenuTabPrev"		"Previous tab"
+			"Action_MenuTabNext"		"Next tab"
+		}
+	}
+}

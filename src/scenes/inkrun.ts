@@ -21,7 +21,7 @@ export class InkRunScene implements Scene {
 
   update(dt: number, game: Game): void {
     this.t += dt;
-    if (game.input.keyPressed('Escape') || game.input.keyPressed('Enter')) this.onTitle();
+    if (game.input.actPressed('ui.back') || game.input.actPressed('ui.confirm')) this.onTitle();
   }
 
   render(g: Gfx, game: Game): void {

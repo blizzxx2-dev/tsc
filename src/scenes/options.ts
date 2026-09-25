@@ -8,6 +8,10 @@ import { drawBackdrop } from './backdrop';
 import { getLocale, t } from '../i18n';
 import { cycleLanguage } from '../i18n/boot';
 import { localeInfo } from '../i18n/locales';
+import { bindings } from '../input/bindings';
+import { ControlsScene } from '../input/controlsScene';
+import { glyphFor } from '../input/glyphs';
+import { litanyMode } from '../input/opinput';
 
 interface Row {
   /** String-table key of the row label (see src/i18n/strings/en.json). */
@@ -60,10 +64,14 @@ export class OptionsScene implements Scene {
       note: 'ui.options.timer_assist_note',
     },
     {
-      label: 'ui.options.litany_key',
-      value: () => onOff(settings.litanyKey),
-      change: () => (settings.litanyKey = !settings.litanyKey),
-      note: 'ui.options.litany_key_note',
+      label: 'ui.options.litany_input',
+      value: () => ({ draw: t('ui.options.litany_draw'), key: t('ui.options.litany_keyname', { key: glyphFor('litany.key', 'kbm') }), both: t('ui.options.litany_either') })[litanyMode()],
+      change: (d) => {
+        bindings.prefs.litanyInput = cycle(['draw', 'key', 'both'] as const, litanyMode(), d);
+        settings.litanyKey = bindings.prefs.litanyInput !== 'draw';
+        bindings.save();
+      },
+      note: 'ui.options.litany_input_note',
     },
     {
       label: 'ui.options.render_scale',
@@ -115,7 +123,7 @@ export class OptionsScene implements Scene {
       this.rows[this.hover].change(input.pos.x < r.x + r.w * 0.55 ? -1 : 1, game);
       saveSettings();
     }
-    if (input.keyPressed('Escape')) this.back();
+    if (input.actPressed('ui.back')) this.back();
   }
 
   private back(): void {
@@ -144,6 +152,10 @@ export class OptionsScene implements Scene {
     const note = this.hover >= 0 ? this.rows[this.hover].note : undefined;
     if (note) g.text(t(note), VIEW_W / 2, 612, { size: 18, font: 'italic', color: hex(PALETTE.inkDim), align: 'center' });
     if (button(g, game.input, t('ui.common.back'), VIEW_W / 2, 660, 28)) this.back();
+    if (button(g, game.input, t('ui.options.controls'), VIEW_W / 2 - 230, 660, 28)) {
+      if (game.push && game.pop) game.push(new ControlsScene(() => game.pop!(), 'overlay'));
+      else game.go(new ControlsScene(() => game.go(this), this.overWorld));
+    }
     reticle(g, game.input.pos);
     g.endFrame();
   }

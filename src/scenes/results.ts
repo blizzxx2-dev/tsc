@@ -33,7 +33,7 @@ export class ResultsScene implements Scene {
       this.stamped = true;
       game.audio.play('squelch');
     }
-    if (game.input.keyPressed('Enter') && this.t > 0.5) (this.actions.next ?? this.actions.retry)();
+    if (game.input.actPressed('ui.confirm') && this.t > 0.5) (this.actions.next ?? this.actions.retry)();
   }
 
   render(g: Gfx, game: Game): void {

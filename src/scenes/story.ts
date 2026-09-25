@@ -7,6 +7,7 @@ import type { StoryDef } from '../content/story';
 import { PALETTE, VIEW_H, VIEW_W } from '../ui/layout';
 import { reticle } from '../ui/widgets';
 import { banner, divider, leatherPanel, UI } from '../ui/ornaments';
+import { glyphContext, glyphFor } from '../input/glyphs';
 import { drawBackdrop, drawPortrait } from './backdrop';
 
 const CPS = 48; // characters per second
@@ -31,11 +32,11 @@ export class StoryScene implements Scene {
     const { input } = game;
     this.t += dt;
     this.fadeIn = Math.min(1, this.fadeIn + dt * 1.5);
-    const fast = input.key('ControlLeft') || input.key('ControlRight');
+    const fast = input.act('vn.fast');
     this.shown += dt * CPS * (fast ? 8 : 1);
     const full = this.shown >= this.line.text.length;
-    const advance = input.pressed || input.keyPressed('Space') || input.keyPressed('Enter') || (fast && full && this.t > 0.08);
-    if (input.keyPressed('Escape')) return this.onDone();
+    const advance = input.pressed || input.actPressed('vn.advance') || (fast && full && this.t > 0.08);
+    if (input.actPressed('ui.back')) return this.onDone();
     if (!advance) return;
     this.t = 0;
     if (!full) {
@@ -84,7 +85,8 @@ export class StoryScene implements Scene {
       const ay = box.y + box.h - 30 + Math.sin(g.time * 5) * 3;
       g.tri(ax - 6, ay - 5, ax + 6, ay - 5, ax, ay + 5, hex(PALETTE.gold));
     }
-    g.text(t('ui.story.controls'), VIEW_W - 30, VIEW_H - 8, { size: 13, color: hex(PALETTE.inkDim, 0.6), align: 'right', shadow: false });
+    const click = glyphContext().device === 'pad' ? '' : t('ui.story.click_prefix');
+    g.text(t('ui.story.controls_fmt', { click, advance: glyphFor('vn.advance'), fast: glyphFor('vn.fast'), skip: glyphFor('ui.back') }), VIEW_W - 30, VIEW_H - 8, { size: 13, color: hex(PALETTE.inkDim, 0.6), align: 'right', shadow: false });
     reticle(g, game.input.pos);
     g.endFrame();
   }

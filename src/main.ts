@@ -20,11 +20,16 @@ import type { OperationDef } from './surgery/operation';
 import { playOperation } from './scenes/flow';
 import { InkRunScene } from './scenes/inkrun';
 import { TitleScene } from './scenes/title';
+import { OptionsScene } from './scenes/options';
 import { StoryScene } from './scenes/story';
 import type { Backdrop } from './content/story';
 import type { CharacterId } from './content/characters';
 import { VIEW, VIEW_H, VIEW_W } from './ui/layout';
 import { initLocale } from './i18n/boot';
+import { OperationScene } from './scenes/operation';
+import { bindings } from './input/bindings';
+import { loadLayoutLabels } from './input/glyphs';
+import { downloadRecording, parseRecording, Recorder, Replayer } from './input/record';
 
 /** Dev/QA tooling ships in dev and QA builds; `vite build --mode release` strips it (ENG-0237). */
 const DEV_TOOLS = import.meta.env.DEV || import.meta.env.MODE !== 'release';
@@ -140,7 +145,24 @@ class Main implements Game {
     return this.scenes.top;
   }
 
+  /** `?record=1`: each operation's input stream is saved as JSON when it ends. */
+  recorder: Recorder | null = null;
+  private recording: OperationScene | null = null;
+
   go(scene: Scene): void {
+    if (this.recorder) {
+      const leaving = this.recording && scene !== this.recording && !(scene instanceof OptionsScene);
+      if (leaving && this.recording) {
+        const op = this.recording.op;
+        const rec = this.recorder.finish({ status: op.status, score: op.score, vitals: op.vitals, timeLeft: op.timeLeft });
+        this.recording = null;
+        if (rec) downloadRecording(rec);
+      }
+      if (scene instanceof OperationScene && scene !== this.recording) {
+        this.recording = scene;
+        this.recorder.begin(scene.op.def.id, scene.op.def.seed ?? 1, settings.timerAssist, bindings.prefs);
+      }
+    }
     this.scenes.go(scene);
     sceneChanged(scene);
   }
@@ -279,6 +301,7 @@ async function boot(): Promise<void> {
   game.assets.prefetch('title');
   game.assets.prefetch('ops-common');
   splashProgress(1, 'Ready');
+  void loadLayoutLabels();
   game.start(new TitleScene());
   splashDone();
   console.info(`boot to title: ${Math.round(performance.now() - t0)} ms`);
@@ -293,6 +316,29 @@ async function boot(): Promise<void> {
   if (def) {
     const back = () => game.go(new TitleScene());
     playOperation(game, def, back, back);
+  }
+  // ?record=1 saves each operation's input stream as JSON when it ends; ?replay=<url> plays one back (INP-0016).
+  if (params.get('record') === '1') {
+    const recorder = new Recorder();
+    game.recorder = recorder;
+    game.input.recorder = (f) => {
+      if (game.scene instanceof OperationScene) recorder.push(f);
+    };
+  }
+  const replayUrl = params.get('replay');
+  if (replayUrl) {
+    try {
+      const rec = parseRecording(await (await fetch(replayUrl)).text());
+      const rdef = allOperations().find((o) => o.id === rec.opId);
+      if (!rdef) throw new Error(`unknown operation ${rec.opId}`);
+      settings.timerAssist = rec.timerAssist as typeof settings.timerAssist;
+      Object.assign(bindings.prefs, JSON.parse(JSON.stringify(rec.prefs)));
+      game.input.replay = new Replayer(rec);
+      const back = () => game.go(new TitleScene());
+      game.go(new OperationScene(rdef, back, back));
+    } catch (err) {
+      console.error('Replay failed', err);
+    }
   }
   // ?story=<backdrop> previews a story environment.
   const storyBg = params.get('story');
