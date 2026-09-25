@@ -12,6 +12,7 @@ import { Bubo, Sigil, surfDisc, surfLine } from '../surgery/entities';
 import { EggSac } from '../surgery/lauds';
 import { Particles } from '../render/particles';
 import { brandMaterial, BrandSmoke } from '../render/brandSmoke';
+import { BladeFeedback } from '../render/bladeFeedback';
 import { FlashLimiter } from '../render/flashLimiter';
 import { Malison, MalisonShard } from '../surgery/malison';
 import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOWN, TINCTURE_TIME, type OperationDef, type Popup } from '../surgery/operation';
@@ -171,6 +172,8 @@ export class OperationScene implements Scene {
     });
     this.lagV = this.prevV = op.vitals;
     this.lagHold = this.healT = this.digitShakeT = 0;
+    // A BAD lancet stroke jolts the view for 40 ms (GAM-0026).
+    op.events.on('rate', ({ rating }) => rating === 'bad' && op.tool === 'lancet' && this.blade.bad());
     op.events.on('hurt', ({ amount, pos }) => {
       this.lagHold = 0.5;
       if (amount >= 5) this.digitShakeT = 0.35;
@@ -220,6 +223,8 @@ export class OperationScene implements Scene {
   private bossAudio = new BossAudio();
   /** Cautery smoke and its veil (GAM-0051). */
   private smoke = new BrandSmoke();
+  /** Lancet trail, wet parting and the BAD micro-shake (GAM-0026). */
+  private blade = new BladeFeedback();
 
   private closePause(r: PauseResult): void {
     if (r === 'restart') return this.restart();
@@ -395,6 +400,9 @@ export class OperationScene implements Scene {
     this.particles.update(dt * op.timeScale, (p, kind, size) => {
       if (kind === 'blood' && onBody(p)) op.stain(p, size * 2.6, 0.3);
     });
+    // The lancet's trail and wet parting follow the tip while it is pressed (GAM-0026).
+    const cutting = op.status === 'running' && op.tool === 'lancet' && game.input.down;
+    this.blade.update(dt, cutting ? op.cursor : null, onBody(op.cursor));
     // Cautery smoke by what is being seared, and the veil it leaves (GAM-0051, cosmetic).
     const searing = op.status === 'running' && op.tool === 'brand' && op.holdingBrand && onBody(op.cursor) ? brandMaterial(op, op.cursor) : null;
     const puffs = this.smoke.update(dt, searing);
@@ -431,7 +439,9 @@ export class OperationScene implements Scene {
     const sk = settings.reduceMotion ? 0 : op.shake * settings.shake;
     const sway = op.sway();
     // Trauma shake (ENG-0051): deterministic smooth noise in the post pass; the patient's sway stays as an offset.
-    const shake = sway;
+    // A BAD lancet stroke adds a 40 ms micro-shake (GAM-0026).
+    const micro = this.blade.shakeOffset(settings.reduceMotion ? 0 : settings.shake);
+    const shake = { x: sway.x + micro.x, y: sway.y + micro.y };
     const trauma = sk > 0 ? Math.min(1, sk / 12) : undefined;
 
     // ---------------------------------------------------------------- data layers
@@ -481,6 +491,7 @@ export class OperationScene implements Scene {
     // Tongs in hand: outline the graspable the next press would seize (INP-0042).
     if (!this.paused) drawGraspOutline(g, op, this.ctl.toWorld(game.input.pos), bindings.prefs.hitScale, t);
     this.particles.draw(g);
+    this.blade.draw(g);
 
     // Scrying lens: shimmer where something hides.
     if (op.tool === 'lens') {

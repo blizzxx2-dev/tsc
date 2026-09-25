@@ -51,7 +51,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0023 · Demo · P1 · S · Dotted guide line fades in 0.3 s and shows start/end nubs — hidden on Hard/Master (see difficulty)
 - [x] GAM-0024 · Demo · P1 · S · Encircle-excise gesture — closed loop around a growth (gap ≤ 18 px) excises; loop cutting into healthy tissue > 25 % of its length rates BAD
 - [x] GAM-0025 · Demo · P1 · S · Cutting across an existing stitched line reopens it (test) — prevents accidental score farming via re-stitching
-- [ ] GAM-0026 · Demo · P2 · S · Lancet haptic/visual feedback — blade trail, wet parting shader on flesh, 40 ms micro-shake on BAD
+- [x] GAM-0026 · Demo · P2 · S · Lancet haptic/visual feedback — blade trail, wet parting shader on flesh, 40 ms micro-shake on BAD
 
 ### Tongs
 - [x] GAM-0027 · Demo · P0 · S · Grab tolerance radius 22 px (+6 px Assist mode) — grabbing empty flesh is a MISS only if held > 0.25 s (prevents mis-click penalties)
