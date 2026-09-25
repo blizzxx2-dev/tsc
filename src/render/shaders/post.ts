@@ -91,6 +91,8 @@ uniform vec2 u_outcome;  // x: flatline 0..1 (desaturate, burn, fade), y: victor
 uniform float u_hdr;     // 1 when the scene target is floating point
 uniform vec4 u_prefs;    // player display options (UIX-0105): x grain, y vignette, z brightness gamma, w reduced motion
 uniform float u_defocus; // menu depth of field: disc blur radius in px (0 = sharp)
+uniform vec4 u_spot;     // operating lamp: xy centre (0..1, y up), zw radii (0..1); off when z = 0
+uniform float u_spotK;   // how dark the surround falls
 out vec4 o;
 // Soft shoulder: identity below the knee, gently compresses HDR highlights above it.
 vec3 shoulder(vec3 c) {
@@ -169,6 +171,13 @@ void main() {
   }
   c += texture(u_bloom, uv).rgb * u_bloomAmt * (1.0 + u_outcome.y * 1.2);
   if (u_hdr > 0.5) c = shoulder(c);
+  // Operating lamp: a soft pool of light on the field; the drape and table fall into shadow.
+  if (u_spot.z > 0.0) {
+    vec2 q = (v_uv - u_spot.xy) / u_spot.zw;
+    float r = length(q);
+    float lit = 1.0 - smoothstep(0.92, 1.55, r);
+    c *= mix(1.0 - u_spotK, 1.06, lit);
+  }
   // Per-chapter grade.
   c = c * u_tint + u_lift;
 

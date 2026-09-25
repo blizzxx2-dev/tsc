@@ -145,6 +145,8 @@ export interface PostParams {
   hurt?: [number, number, number];
   /** Depth-of-field blur for menu backdrops, in virtual px (0 = sharp). */
   defocus?: number;
+  /** Operating lamp: ellipse centre and radii in virtual px, and how dark the surround falls (0..1). */
+  spot?: { cx: number; cy: number; rx: number; ry: number; k: number };
 }
 
 export interface GfxOptions {
@@ -601,6 +603,9 @@ export class Gfx {
     gl.uniform1f(this.u(this.post, 'u_litanyAge'), p.litanyAge ?? 10);
     gl.uniform3fv(this.u(this.post, 'u_hurt'), p.hurt ?? [0, 0, 0]);
     gl.uniform1f(this.u(this.post, 'u_defocus'), (p.defocus ?? 0) * (this.canvas.width / this.vw));
+    const sp = p.spot;
+    gl.uniform4f(this.u(this.post, 'u_spot'), sp ? sp.cx / this.vw : 0, sp ? 1 - sp.cy / this.vh : 0, sp ? sp.rx / this.vw : 0, sp ? sp.ry / this.vh : 0);
+    gl.uniform1f(this.u(this.post, 'u_spotK'), sp?.k ?? 0);
     const ln = p.lens ?? [0, 0, 0, 0];
     gl.uniform4f(this.u(this.post, 'u_lens'), ln[0] / this.vw, 1 - ln[1] / this.vh, ln[2] / this.vh, ln[3]);
     gl.drawArrays(gl.TRIANGLES, 0, 3);

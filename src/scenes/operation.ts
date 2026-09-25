@@ -364,6 +364,7 @@ export class OperationScene implements Scene {
     const litany = op.litanyTime > 0 ? Math.min(1, op.litanyTime, (LITANY_DURATION - op.litanyTime) * 3) * soften : 0;
     const ch2 = op.def.id.startsWith('op2');
     g.endWorld({
+      spot: { cx: FIELD.cx, cy: FIELD.cy, rx: FIELD.rx, ry: FIELD.ry, k: 0.62 },
       litany,
       danger,
       shake,
