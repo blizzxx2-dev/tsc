@@ -731,9 +731,9 @@
   "ui.story.strip.key": "Key: {key}",
   "ui.notice.heading": "Before You Begin",
   "ui.notice.photo.title": "Photosensitivity",
-  "ui.notice.photo.body": "A very small number of people may have a seizure when exposed to flashing lights or patterns. This game has lightning, pulsing light and bright flashes. If you or anyone in your family has epilepsy, speak to a doctor before playing, and stop at once if you feel dizzy, see altered vision or twitch. Options → Accessibility can reduce flashing and motion.",
+  "ui.notice.photo.body": "A very small number of people may have a seizure when exposed to flashing lights or patterns. This game has lightning, pulsing light and bright flashes. If you or anyone in your family has epilepsy, speak to a doctor before playing, and stop at once if you feel dizzy, see altered vision or twitch. Options, under Accessibility, can reduce flashing and motion.",
   "ui.notice.content.title": "Content Warning",
-  "ui.notice.content.body": "Suture & Steel depicts graphic surgery and wounds, blood and gore, plague and disease, body horror, and violence done in the name of faith. Gore and creature detail can be softened in Options → Accessibility.",
+  "ui.notice.content.body": "Suture & Steel depicts graphic surgery and wounds, blood and gore, plague and disease, body horror, and violence done in the name of faith. Gore and creature detail can be softened in Options, under Accessibility,.",
   "ui.notice.footer": "This notice appears on first launch only.",
   "ui.notice.continue": "Continue",
   "ui.notice.comfort": "Comfort Options"
