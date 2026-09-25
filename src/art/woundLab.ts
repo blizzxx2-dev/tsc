@@ -1,7 +1,7 @@
 /**
  * Wound and ailment look-dev board (`?scene=woundlab`): every AILMENT_FS piece and state painted on
  * live flesh, four pages (1 lodged objects, 2 burns and disease, 3 vermin, wounds and closure, 4 the Matins
- * callout sheet).
+ * callout sheet, 5 the Book-of-Hours card template).
  * `?page=2&t=1.5` opens a page with time frozen, for screenshots; ←/→ step one frame at 12 fps,
  * Space toggles playback. A QA tool: each ailment should be checked here before it ships.
  */
@@ -13,6 +13,8 @@ import { organPalette } from '../render/organs';
 import type { OperationDef } from '../surgery/operation';
 import { VIEW_H, VIEW_W } from '../ui/layout';
 import { giltText, UI } from '../ui/ornaments';
+import type { Hour } from './curse';
+import { bookOfHoursCard } from './hoursCard';
 import {
   acidBurnArt,
   buboArt,
@@ -32,8 +34,10 @@ import {
   scarArt,
   shotArt,
   silkArt,
+  spoolArt,
   spurtArt,
   stitchArt,
+  threadKnotArt,
   venomArt,
   woundArt,
 } from './ailmentArt';
@@ -43,7 +47,7 @@ type Cell = [label: string, draw: (g: Gfx, c: Vec, t: number) => void];
 const off = (c: Vec, dx: number, dy: number): Vec => ({ x: c.x + dx, y: c.y + dy });
 const loop = (t: number, period: number): number => (t % period) / period;
 
-const PAGES: { title: string; cells: Cell[] }[] = [
+const PAGES: { title: string; cells: Cell[]; custom?: (g: Gfx, t: number) => void }[] = [
   {
     title: 'Lodged objects',
     cells: [
@@ -129,7 +133,29 @@ const PAGES: { title: string; cells: Cell[] }[] = [
       ['Phase I: intact', (g, c) => g.creature(0, c.x, c.y, 200, { seed: 5, open: 0.8, health: 0.9 })],
       ['Phase II: torn', (g, c) => g.creature(0, c.x, c.y, 200, { seed: 5, open: 0.8, health: 0.5 })],
       ['Phase III: shredded', (g, c) => g.creature(0, c.x, c.y, 200, { seed: 5, open: 0.8, health: 0.2 })],
+      ['Shard knots (3 shapes)', (g, c) => [0, 1, 2].forEach((k) => threadKnotArt(g, off(c, -60 + k * 60, 0), 16, { shape: k, seed: k }))],
+      ['Shard burst (8 f)', (g, c, t) => threadKnotArt(g, c, 16, { shape: 0, burst: loop(t, 0.8), seed: 4 })],
+      ['Crawler shard', (g, c) => threadKnotArt(g, c, 16, { shape: 2, crawler: true, seed: 5 })],
+      ['Thread spool: full → spent', (g, c) => [1, 0.55, 0.15].forEach((f, i) => spoolArt(g, c.x - 60 + i * 60, c.y, 52, f, 0, (1 - f) * 6))],
     ],
+  },
+  {
+    // Book-of-Hours card template (ART-0227), one card per Hour with the default miniature.
+    title: 'Book-of-Hours cards',
+    cells: [],
+    custom: (g) => {
+      const names: [Hour, string, string][] = [
+        ['matins', 'Matins', 'Ad Matutinum'],
+        ['lauds', 'Lauds', 'Ad Laudes'],
+        ['prime', 'Prime', 'Ad Primam'],
+        ['terce', 'Terce', 'Ad Tertiam'],
+        ['sext', 'Sext', 'Ad Sextam'],
+        ['none', 'None', 'Ad Nonam'],
+        ['vespers', 'Vespers', 'Ad Vesperas'],
+        ['compline', 'Compline', 'Ad Completorium'],
+      ];
+      names.forEach(([hour, title, sub], i) => bookOfHoursCard(g, { x: 30 + (i % 4) * 310, y: 62 + Math.floor(i / 4) * 330, w: 214, h: 320 }, hour, { title, sub }));
+    },
   },
 ];
 
@@ -176,6 +202,15 @@ export class WoundLabScene implements Scene {
       ],
     });
     const page = PAGES[this.page];
+    if (page.custom) {
+      g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 0.2, lutA: 'neutral', lutB: 'neutral', lutMix: 0, litanyCenter: [0.5, 0.5], litanyAge: 3 });
+      g.rect(0, 0, VIEW_W, VIEW_H, hex('#1a120c'));
+      page.custom(g, this.t);
+      g.rect(0, 0, VIEW_W, 52, hex('#0c0806', 0.78));
+      giltText(g, `Wound Lab — ${page.title}`, 20, 38, { size: 28 });
+      g.endFrame();
+      return;
+    }
     const cols = 6;
     const cw = VIEW_W / cols;
     const ch = (VIEW_H - 70) / 3;

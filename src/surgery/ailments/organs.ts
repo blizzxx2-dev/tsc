@@ -1,3 +1,5 @@
+import { spurtArt } from '../../art/ailmentArt';
+import { presentation } from '../../render/presentation';
 import { dist, pointSegment, type Vec } from '../../core/math';
 import { hex } from '../../render/color';
 import type { Gfx } from '../../render/gfx';
@@ -517,6 +519,10 @@ export class Artery extends Entity {
   draw(g: Gfx, op: Operation): void {
     g.circle(this.pos.x, this.pos.y, 9, hex(this.clamped ? '#6a3030' : '#d02030'));
     if (this.clamped) g.rect(this.pos.x - 12, this.pos.y - 2, 24, 4, hex('#9aa0a6'));
-    else g.arc(this.pos.x, this.pos.y, 14, 2, hex('#ff5050', 0.5 + 0.4 * Math.sin(op.elapsed * 8)));
+    else {
+      g.arc(this.pos.x, this.pos.y, 14, 2, hex('#ff5050', 0.5 + 0.4 * Math.sin(op.elapsed * 8)));
+      // The severed vessel spurts on every heartbeat (ART-0192): 6 frames, one of three directions.
+      if (presentation.gore < 2) spurtArt(g, this.pos, -Math.PI / 2 + ((this.id % 3) - 1) * 0.75, 70, op.beatPhase, this.id);
+    }
   }
 }

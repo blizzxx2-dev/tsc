@@ -905,8 +905,6 @@ export class Embedded extends Entity {
     }
     if (off) {
       this.kill();
-      // Hexstone crumbles to curse-ash in the lead dish (ART-0201 dissolve).
-      if (this.kind === 'hexstone') op.spawn(new HexstoneAsh({ ...this.pos }, this.angle, this.spec.len));
       const pull = Math.atan2(this.pos.y - this.origin.y, this.pos.x - this.origin.x);
       op.emit('blood', this.origin, 18, pull, 0.6, 220);
       op.stain(this.origin, 26, 0.4);
@@ -1017,29 +1015,6 @@ export class Embedded extends Entity {
         break;
       }
     }
-  }
-}
-
-/** Cosmetic: a removed hexstone dissolving to ash (0.8 s), then gone. */
-export class HexstoneAsh extends Entity {
-  private t = 0;
-  constructor(
-    pos: Vec,
-    private angle: number,
-    private len: number,
-  ) {
-    super(pos);
-    this.required = false;
-    this.layer = 3;
-  }
-
-  override update(_op: Operation, dt: number): void {
-    this.t += dt;
-    if (this.t > 0.8) this.kill();
-  }
-
-  draw(g: Gfx): void {
-    hexstoneArt(g, this.pos, this.angle, this.len, { dissolve: Math.min(1, this.t / 0.8), stilled: 1, seed: this.id });
   }
 }
 
@@ -2245,6 +2220,24 @@ export const SIGILS = {
 
 // ============================================================ drawing helpers
 
+/** When each salved cell was first painted (renderer seconds): the paste soaks in from there. */
+const SALVED_AT = new WeakMap<object, number>();
+/** Seconds Saint's Salve takes to soak in (ART-0193). */
+export const SALVE_ABSORB_S = 1.5;
+
+/**
+ * Saint's Salve on the covered cells (ART-0193): a pale-gold paste with a glisten where it was just
+ * laid, soaking in over 1.5 s to a faint sheen.
+ */
 export function drawCoverage(g: Gfx, cov: Coverage, within = Infinity): void {
-  for (const c of cov.cells) if (c.done && c.x * c.x + c.y * c.y <= within * within) g.circleGrad(cov.center.x + c.x, cov.center.y + c.y, 10, hex('#bff0c8', 0.35), hex('#bff0c8', 0));
+  for (const c of cov.cells) {
+    if (!c.done || c.x * c.x + c.y * c.y > within * within) continue;
+    let t0 = SALVED_AT.get(c);
+    if (t0 === undefined || t0 > g.time) SALVED_AT.set(c, (t0 = g.time));
+    const wet = 1 - Math.min(1, (g.time - t0) / SALVE_ABSORB_S);
+    const x = cov.center.x + c.x;
+    const y = cov.center.y + c.y;
+    g.circleGrad(x, y, 10 + 2 * wet, hex('#f0dc98', 0.14 + 0.46 * wet), hex('#f0dc98', 0));
+    if (wet > 0.05) g.ellipse(x - 3, y - 3, 3.2, 1.5, -0.5, hex('#fffbe8', 0.7 * wet), hex('#fffbe8', 0));
+  }
 }

@@ -34,6 +34,9 @@ export const AIL = {
   spurt: 19,
   silk: 20,
   pool: 21,
+  knot: 22,
+  spool: 23,
+  dish: 24,
 } as const;
 
 export type MissileKind = 'arrow' | 'barbed' | 'bolt' | 'bolt-leather';
@@ -210,4 +213,21 @@ export function silkArt(g: Gfx, a: Vec, b: Vec, cut: number, seed = 0): void {
 export function poolArt(g: Gfx, pos: Vec, radius: number, kind: 0 | 1 | 2, seed = 0): void {
   const s = radius * 2.6;
   g.ailment(AIL.pool, pos.x, pos.y, s, s, { seed, a: [radius, kind, 0, 0] });
+}
+
+/** A Malison shard as a knot of curse-thread: 3 shapes, a drift loop and an 8-frame burst (`burst` 0..1). */
+export function threadKnotArt(g: Gfx, pos: Vec, radius: number, o: { shape?: number; burst?: number; crawler?: boolean; seed?: number } = {}): void {
+  const s = radius * 5;
+  g.ailment(AIL.knot, pos.x, pos.y, s, s, { seed: o.seed, a: [radius, (o.shape ?? 0) % 3, o.burst ?? 0, o.crawler ? 1 : 0] });
+}
+
+/** The boss-health thread spool (HUD): `left` 0..1 of the thread still wound; `spin` scrolls the turns as it unwinds. */
+export function spoolArt(g: Gfx, x: number, y: number, size: number, left: number, flash: number, spin: number): void {
+  g.ailment(AIL.spool, x, y, size, size, { a: [left, flash, spin, 0] });
+}
+
+/** The pewter kidney dish for extracted debris, or the round lead-lined dish for hexstone. */
+export function dishArt(g: Gfx, pos: Vec, radius: number, lead: boolean, seed = 0): void {
+  const s = radius * 2 + 30;
+  g.ailment(AIL.dish, pos.x, pos.y, s, s, { seed, a: [radius, 0, 0, lead ? 1 : 0] });
 }

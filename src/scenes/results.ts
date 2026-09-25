@@ -12,6 +12,7 @@ import type { Operation } from '../surgery/operation';
 import { VIEW_W } from '../ui/layout';
 import { caps, glass, heading, INK, numerals, tallyMarks } from '../ui/hudKit';
 import { failSeal, rankSeal } from '../art/kit';
+import { sutureVignette } from '../art/sutures';
 import { button, reticle } from '../ui/widgets';
 import { drawBackdrop } from './backdrop';
 import type { RunSummary } from '../surgery/session';
@@ -81,6 +82,8 @@ export class ResultsScene implements Scene {
 
     const r = { x: 300, y: 36, w: 680, h: 580 };
     const a = Math.min(1, this.t * 3);
+    // The patient's sutures (ART-0188): every closed wound's scar, carried over from the table.
+    if (op.scars.length) sutureVignette(g, op, 150, 330, a);
     glass(g, r, { alpha: a, strength: 1.12 });
     heading(g, t('ui.results.title'), VIEW_W / 2, r.y + 60, 420, a, 30);
     g.text(t('ui.results.subtitle', { title: op.def.title, patient: op.def.patient }), VIEW_W / 2, r.y + 108, { size: 19, font: 'italic', color: hex(INK.dim, a), align: 'center', shadow: false });

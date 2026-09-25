@@ -1,4 +1,7 @@
 import { curseSource } from '../art/curse';
+import { VanishFx } from '../art/vanishFx';
+import { ExtractionTray } from '../art/extractionTray';
+import { scarArt } from '../art/ailmentArt';
 import { t as tr, tSource } from '../i18n';
 import { formatClock, formatNumber, formatVitals } from '../i18n/format';
 import { dist, Rng } from '../core/math';
@@ -9,7 +12,7 @@ import { attachBarkDirector } from '../content/barkDirector';
 import { hex, withAlpha } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { organPalette } from '../render/organs';
-import { Bubo, Sigil, surfDisc, surfLine } from '../surgery/entities';
+import { Bubo, Embedded, Sigil, surfDisc, surfLine } from '../surgery/entities';
 import { EggSac } from '../surgery/lauds';
 import { Particles } from '../render/particles';
 import { FlashLimiter } from '../render/flashLimiter';
@@ -72,6 +75,10 @@ export class OperationScene implements Scene {
   private corrupt = 0;
   /** Flesh corruption under any Hour's Malison (ART-0183), smoothed like `corrupt`. */
   private fleshCurse = 0;
+  /** Exit flipbooks for shards and hexstone (presentation only). */
+  private vanish = new VanishFx();
+  /** The kidney dish and lead dish with what has been extracted (presentation only). */
+  private tray = new ExtractionTray();
   private toolFlash = 0;
   private lastTool: ToolId | null = null;
   private entered = false;
@@ -456,11 +463,17 @@ export class OperationScene implements Scene {
     });
     const colours = palette();
     g.fluidComposite(light, { blood: speciesBlood(colours.blood, pal.species), pus: colours.pus, bile: colours.bile, gore: presentation.gore });
+    this.tray.update(op.entities, op.elapsed);
+    this.tray.draw(g, op.elapsed, { tray: op.def.tools.includes('tongs'), lead: op.entities.some((e) => e instanceof Embedded && e.kind === 'hexstone') });
+    // Closed wounds: the sutured scar (ART-0188) over the carved channel; it also appears on the results card.
+    for (const sc of op.scars) scarArt(g, sc, 4, 0, presentation.gore === 2 ? 0.5 : 1);
     for (const e of ents) e.draw(g, op);
     // High contrast: a 2 px ring around everything that takes an instrument.
     if (highContrast()) for (const e of ents) if (e.required) g.arc(e.pos.x, e.pos.y, 28, 2, hex('#ffffff', 0.85), 1);
     // Tongs in hand: outline the graspable the next press would seize (INP-0042).
     if (!this.paused) drawGraspOutline(g, op, this.ctl.toWorld(game.input.pos), bindings.prefs.hitScale, t);
+    this.vanish.update(op.entities, op.elapsed);
+    this.vanish.draw(g, op.elapsed);
     this.particles.draw(g);
 
     // Scrying lens: shimmer where something hides.

@@ -30,6 +30,9 @@
  * 19 arterial spurt              (a.x length px, a.y 0..1 spurt phase)
  * 20 brood silk                   (a.x length px, a.y cut 0..1)
  * 21 blood pool (for kidney dish / lab) (a.x radius px, a.y kind 0 blood 1 pus 2 black bile)
+ * 22 Malison thread knot           (a.x radius px, a.y shape 0 trefoil 1 figure-of-eight 2 tangle, a.z burst 0..1 (8 f), a.w crawler)
+ * 23 boss thread spool (HUD)       (a.x thread left 0..1, a.y hurt flash, a.z unwinding spin)
+ * 24 extraction dish               (a.x radius px, a.w 0 pewter kidney dish, 1 round lead dish)
  *
  * Colour filters and gore levels are applied by the callers through `u_col` / `u_alpha`.
  */
@@ -755,6 +758,109 @@ vec4 silk(vec2 q) {
   return acc;
 }
 
+
+// ---------------------------------------------------------------- the Malison's thread
+
+/** A point on one of the three thread-knot curves (t in 0..2π), in units of the knot radius. */
+vec2 knotAt(float shape, float t) {
+  if (shape < 0.5) return vec2(sin(t) + 2.0 * sin(2.0 * t), cos(t) - 2.0 * cos(2.0 * t)) / 3.0; // trefoil
+  if (shape < 1.5) return vec2(sin(t) * 0.9, sin(2.0 * t) * 0.55) + vec2(0.0, 0.15 * cos(t)); // figure-of-eight
+  return vec2(sin(3.0 * t + 1.0), sin(4.0 * t)) * 0.85; // tangle
+}
+
+vec4 threadKnot(vec2 q) {
+  float R = u_a.x, shape = floor(u_a.y + 0.5), burst = clamp(u_a.z, 0.0, 1.0), crawler = u_a.w;
+  // Drift loop: a slow turn and bob.
+  q = rot2(sin(u_time * 0.6 + u_seed) * 0.35) * (q - vec2(0.0, sin(u_time * 1.3 + u_seed) * 1.5));
+  // Burst on kill: 8 frames; the thread snaps into pieces that fly outward and fade.
+  float bf = floor(burst * 7.99) / 7.0;
+  float d = 1e9;
+  float along = 0.0;
+  const int N = 36;
+  vec2 prev = knotAt(shape, 0.0) * R;
+  for (int i = 1; i <= N; i++) {
+    float t = float(i) / float(N) * 6.2831853;
+    vec2 cur = knotAt(shape, t) * R;
+    vec2 mid = (prev + cur) * 0.5;
+    vec2 off = normalize(mid + 0.001) * bf * R * 1.6 * (0.6 + 0.8 * hash(vec2(float(i), u_seed)));
+    float sd = sdSeg(q, prev + off, cur + off);
+    if (sd < d) { d = sd; along = t; }
+    prev = cur;
+  }
+  float w = mix(2.4, 1.2, bf);
+  float m = fill(d - w);
+  // Twisted violet thread: a two-ply sheen along its length, gold motes caught in the weave.
+  float ply = 0.5 + 0.5 * sin(along * 30.0 + d * 2.0);
+  vec3 thread = mix(vec3(0.35, 0.1, 0.55), vec3(0.8, 0.55, 1.0), ply * rsmooth(w, 0.0, d));
+  thread = mix(thread, vec3(0.85, 0.25, 0.3), crawler * 0.6);
+  thread += vec3(1.0, 0.8, 0.35) * step(0.93, hash(vec2(floor(along * 6.0), u_seed))) * 0.6;
+  float glow = rsmooth(R * 0.6, 0.0, d) * 0.25 * (1.0 - bf);
+  vec4 acc = paint(thread, m * (1.0 - bf * bf));
+  return over(acc, paint(mix(vec3(0.5, 0.2, 0.8), vec3(0.9, 0.3, 0.3), crawler), glow));
+}
+
+vec4 spool(vec2 q) {
+  // The boss's life as thread on a bobbin (side view, axis along x): the winding thins as it is hurt.
+  float frac = clamp(u_a.x, 0.0, 1.0), flash = u_a.y, spin = u_a.z;
+  float W = u_size.x * 0.34, H = u_size.y * 0.4;
+  float core = H * 0.28;
+  float wind = core + (H * 0.86 - core) * frac;
+  vec4 acc = vec4(0.0);
+  // Core (turned oak).
+  float coreD = max(abs(q.x) - W, abs(q.y) - core);
+  acc = paint(lit(vec3(0.42, 0.27, 0.14), cylN(q.y, core), 0.3, 20.0), fill(coreD));
+  // Wound thread: fine helical turns that scroll while it unwinds.
+  float windD = max(abs(q.x) - W + 1.0, abs(q.y) - wind);
+  float turns = 0.5 + 0.5 * sin((q.x * 1.6 + q.y * 0.35 + spin * 18.0) * 2.2);
+  vec3 th = mix(vec3(0.32, 0.1, 0.5), vec3(0.78, 0.52, 1.0), turns);
+  th = mix(th, vec3(1.0, 0.85, 0.7), flash * 0.7);
+  acc = over(paint(lit(th, cylN(q.y, max(wind, 0.5)), 0.6, 30.0), fill(windD) * step(0.001, frac)), acc);
+  // Flanges: two oak discs seen edge-on, brass-capped.
+  for (int i = 0; i < 2; i++) {
+    float sx = i == 0 ? -1.0 : 1.0;
+    vec2 fq = q - vec2(sx * (W + 1.5), 0.0);
+    float fd = sdBox(fq, vec2(2.5, H));
+    vec3 fc = lit(vec3(0.3, 0.18, 0.09), normalize(vec3(sx * 0.2, fq.y / H * 0.8, 1.0)), 0.4, 20.0);
+    fc = mix(fc, vec3(0.8, 0.62, 0.3), rsmooth(1.5, 0.0, H - abs(fq.y)) * 0.8);
+    acc = over(paint(fc, fill(fd)), acc);
+  }
+  // The loose end runs off the top of the winding toward the bar.
+  float endD = sdSeg(q, vec2(W * 0.6, -wind), vec2(u_size.x * 0.5, -wind - 1.0)) - 0.8;
+  acc = over(acc, paint(vec3(0.7, 0.45, 0.95), fill(endD) * step(0.001, frac)));
+  return acc;
+}
+
+vec4 dish(vec2 q) {
+  // A pewter kidney dish (a.w 0) or a round lead-lined dish (a.w 1), seen from above, lit from the lamp.
+  float R = u_a.x;
+  bool lead = u_a.w > 0.5;
+  float d;
+  if (lead) d = length(q) - R;
+  else {
+    // Kidney: two lobes joined, with the inner curve bitten out.
+    vec2 k = q / vec2(R, R * 0.62);
+    float lobes = min(length(k - vec2(-0.45, 0.0)) - 0.55, length(k - vec2(0.45, 0.0)) - 0.55);
+    float body = sdBox(k, vec2(0.5, 0.52)) - 0.02;
+    float bite = length(k - vec2(0.0, 1.05)) - 0.62;
+    d = max(min(lobes, body), -bite) * R * 0.62;
+  }
+  float rim = 7.0;
+  // Rim: a rolled lip, bright on the lamp side; the well darker and satin.
+  float inRim = smoothstep(-rim, -rim + 2.0, d);
+  vec2 g2 = normalize(vec2(dFdx(d), dFdy(d)) + 1e-5);
+  vec3 n = normalize(vec3(g2 * (inRim > 0.5 ? (d + rim * 0.5) / (rim * 0.5) : 0.0) * 0.9, 1.0));
+  vec3 metal = lead ? vec3(0.44, 0.45, 0.48) : vec3(0.78, 0.77, 0.74);
+  metal *= 0.85 + 0.15 * noise(q * 0.3 + u_seed);
+  vec3 well = lit(metal * 0.62, vec3(-g2 * 0.15 * rsmooth(0.0, -R * 0.4, d), 1.0), 0.35, 12.0);
+  vec3 lipC = lit(metal, n, 1.1, 40.0);
+  vec3 c = mix(well, lipC, inRim);
+  // Old scratches and a bloom of oxide on the lead.
+  c *= 1.0 - 0.12 * rsmooth(0.6, 0.0, abs(sin(q.x * 0.7 + q.y * 1.3 + u_seed * 3.0))) * step(0.72, noise(q * 0.2));
+  vec4 acc = paint(c, fill(d));
+  float sh = rsmooth(10.0, -2.0, d - 3.0) * 0.45 * (1.0 - fill(d));
+  return over(acc, vec4(0.0, 0.0, 0.0, sh));
+}
+
 vec4 pool(vec2 q) {
   float R = u_a.x;
   float r = length(q) + (fbm(q * 0.08 + u_seed) - 0.5) * R * 0.3;
@@ -792,7 +898,10 @@ void main() {
   else if (u_mode == 18) r = salvePaste(q);
   else if (u_mode == 19) r = spurt(q);
   else if (u_mode == 20) r = silk(q);
-  else r = pool(q);
+  else if (u_mode == 21) r = pool(q);
+  else if (u_mode == 22) r = threadKnot(q);
+  else if (u_mode == 23) r = spool(q);
+  else r = dish(q);
   // Nothing may touch the quad's border, so no rectangle edge ever shows.
   vec2 e = abs(v_uv - 0.5);
   r *= rsmooth(0.5, 0.47, max(e.x, e.y));

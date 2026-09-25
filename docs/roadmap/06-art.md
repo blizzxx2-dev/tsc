@@ -299,14 +299,14 @@ Ailment standard: painted sprite(s) in the woodcut-over-paint style at 2× virtu
 - [x] ART-0185 · Demo · P0 · M · Laceration set: 3 widths × 2 edge types (clean blade, ragged claw), tileable along the path, with a pulse-bleed overlay
 - [x] ART-0186 · Demo · P0 · S · Gut Thread suture art: stitch sprite per crossing (gut-coloured, knotted) plus a tightening pull frame for `StitchLine`
 - [ ] ART-0187 · Demo · P1 · S · Claw-rake variant: 3–4 parallel lacerations as one grouped decal for monster ops (op2-1)
-- [ ] ART-0188 · Demo · P1 · S · Closed-wound state: a sutured scar sprite that persists to the results screen
+- [x] ART-0188 · Demo · P1 · S · Closed-wound state: a sutured scar sprite that persists to the results screen
 - [ ] ART-0189 · Alpha · P2 · S · Surgical-flap art (retracted skin with a pin clamp) for deep-organ ops in Chapters 3–5
 
 ### Fluids
 - [ ] ART-0190 · Demo · P0 · M · Blood pool sprites: 4 shapes × 3 sizes with a wet-map channel, a spreading flipbook (8 frames) and a Leech-Pipe draining shrink
 - [ ] ART-0191 · Demo · P0 · S · Pus and black-bile variants of the pool set (colour, opacity, viscosity highlight) for `BloodPool` kinds
-- [ ] ART-0192 · Demo · P1 · S · Arterial spurt flipbook (6 frames, 3 directions) for severed-vessel events
-- [ ] ART-0193 · Demo · P1 · S · Salve (Saint's Salve) coverage decal: pale-gold paste with a glisten, fading over 1.5 s once absorbed
+- [x] ART-0192 · Demo · P1 · S · Arterial spurt flipbook (6 frames, 3 directions) for severed-vessel events
+- [x] ART-0193 · Demo · P1 · S · Salve (Saint's Salve) coverage decal: pale-gold paste with a glisten, fading over 1.5 s once absorbed
 - [ ] ART-0194 · Alpha · P2 · S · Tallow-clot sprites (for Vespers) with a melt animation under the Brand
 
 ### Embedded objects
@@ -317,7 +317,7 @@ Ailment standard: painted sprite(s) in the woodcut-over-paint style at 2× virtu
 - [x] ART-0199 · Demo · P0 · S · Lodged fang/tooth: gravehound canine and brood-spider fang, with a venom-stained root
 - [x] ART-0200 · Demo · P1 · S · Glass shards: 5 shapes with a refraction highlight (rim-lit via the additive pass)
 - [x] ART-0201 · Demo · P0 · M · Hexstone shard: black-violet crystal with pulsing inner light (6-frame loop), a crackle on grab and a dissolve on removal
-- [ ] ART-0202 · Demo · P1 · S · Extraction-tray art: removed objects dropped into a pewter kidney dish at screen edge (one sprite per object type)
+- [x] ART-0202 · Demo · P1 · S · Extraction-tray art: removed objects dropped into a pewter kidney dish at screen edge (one sprite per object type)
 - [ ] ART-0203 · Alpha · P2 · S · Splinter and shrapnel set (wood, iron nail, gun-barrel fragment) for Chapter 3 siege ops
 
 ### Burns
@@ -360,9 +360,9 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 
 ### Shared Malison language
 - [ ] ART-0226 · Demo · P0 · M · Malison design language sheet: common anatomy (woven-thread body, liturgical fragments, an eye motif), shared violet and per-Hour secondary colours, with 8 silhouettes side by side for distinctness
-- [ ] ART-0227 · Demo · P0 · S · Book-of-Hours card template: an illuminated miniature frame with the Hour's name in blackletter and a clock-face marginal border
-- [ ] ART-0228 · Demo · P1 · M · Malison shard (`MalisonShard`) art: 3 thread-knot shapes, a drift loop and a burst-on-kill flipbook
-- [ ] ART-0229 · Demo · P1 · S · Boss health "thread spool" HUD art that unwinds as the Malison is damaged
+- [x] ART-0227 · Demo · P0 · S · Book-of-Hours card template: an illuminated miniature frame with the Hour's name in blackletter and a clock-face marginal border
+- [x] ART-0228 · Demo · P1 · M · Malison shard (`MalisonShard`) art: 3 thread-knot shapes, a drift loop and a burst-on-kill flipbook
+- [x] ART-0229 · Demo · P1 · S · Boss health "thread spool" HUD art that unwinds as the Malison is damaged
 
 ### Matins (Chapter 1 — demo)
 - [x] ART-0230 · Demo · P0 · M · Matins concept: a shrouded vigil-mass of candle-wax cloth with one great lidded eye — callout sheet with closed/opening/open states
