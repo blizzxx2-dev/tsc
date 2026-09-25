@@ -1,3 +1,4 @@
+import { drawAmbience } from '../render/ambient';
 import { hex, vec3 } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import type { Backdrop } from '../content/story';
@@ -112,6 +113,8 @@ export function drawBackdrop(g: Gfx, kind: Backdrop | 'title' | 'results', t: nu
       g.drawImage(img, -pad - parallax[0] * 24 * k, -pad + parallax[1] * 12 * k, VIEW_W + pad * 2, VIEW_H + pad * 2);
     }
   } else g.sceneField(SCENE_KIND[key] ?? 0, { light: LIGHT[lighting], parallax, variant: PREVIEW_VARIANT || opts.variant || 0, scale: PREVIEW_SCALE || tier.sceneScale });
+  // Candle flames, dust in light shafts, incense (ENG-0143).
+  drawAmbience(g, key, t, tier.embers / QUALITY.high.embers);
   if (!EMBERS.has(key)) return;
   g.setBlend('add');
   for (let i = 0; i < tier.embers; i++) {

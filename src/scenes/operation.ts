@@ -843,13 +843,13 @@ export class OperationScene implements Scene {
         if (!e.alive || !e.hidden || dist(e.pos, game.input.pos) > 110) continue;
         g.arc(e.pos.x, e.pos.y, 16 + Math.sin(t * 6) * 4, 2, hex('#b9d7ff', 0.6));
       }
-      // Forensic slab (ENG-0274): under the lens the evidence fluoresces, a cold violet over everything unresolved.
+      // Forensic slab (ENG-0274): under the lens the evidence fluoresces a cold teal over everything unresolved.
       if (op.def.venue === 'forensic') {
         g.setBlend('add');
-        g.glow(game.input.pos.x, game.input.pos.y, 95, hex('#7a5cff', 0.14));
+        g.glow(game.input.pos.x, game.input.pos.y, 95, hex('#3fc8b8', 0.14));
         for (const e of op.entities) {
           if (!e.alive || !e.required || dist(e.pos, game.input.pos) > 110) continue;
-          g.glow(e.pos.x, e.pos.y, 34, hex('#b8a0ff', 0.5 + 0.2 * Math.sin(t * 4)));
+          g.glow(e.pos.x, e.pos.y, 34, hex('#a8f0e4', 0.5 + 0.2 * Math.sin(t * 4)));
         }
         g.setBlend('alpha');
       }
