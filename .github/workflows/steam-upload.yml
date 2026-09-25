@@ -27,7 +27,7 @@ jobs:
         with: { node-version-file: .nvmrc, cache: npm }
       - run: npm ci
         env: { ELECTRON_SKIP_BINARY_DOWNLOAD: '1' }
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with: { pattern: '${{ matrix.edition }}-*', path: artifacts, merge-multiple: true }
       - name: Unpack depots (tar keeps executable bits)
         run: |
