@@ -63,7 +63,7 @@ export const STORY_5_3: StoryDef = {
     say('patient', 'Doctor! I have named this one the Kreuzer Tunnel. It is a very good tunnel. Mind your head.', 'Orsa Flintvein'),
     say('mauer', 'Thirty-five of mine at the other end, and not one of them saw a thing. Move, Doctor.'),
     say('kreuzer', 'Captain — you’ll hang for this.'),
-    say('mauer', 'Then I’ll hang with thirty-five witnesses. Hollow Night starts tomorrow. The Choir means to finish its Office, and you’re the only surgeon they fear.'),
+    say('mauer', 'Then I’ll hang with thirty-five witnesses. Hollow Night is tomorrow; the Choir will finish its Office, and you’re the surgeon they fear.'),
   ],
 };
 
@@ -139,6 +139,7 @@ export const STORY_5_9: StoryDef = {
   lines: [
     n('They come back to Saint Ildra’s at the lamp-lighting. Every candle in the ward is burning with a pale, sweet smoke.'),
     n('Sister Ilse stands in the middle of the ward with a taper in her hand. She is singing.'),
+    n('One by one, as she sings, the lamps of the ward begin to go out.'),
     say('ilse', 'Light the lamp, and let it fail… Doctor. Doctor, I can’t stop. The lamps are in me. Every one of them.'),
     say('patient', 'Vespers! She’s the host — the Widow’s candles did it! Doctor, I’ll call the work. Tell me what you need.', 'Orsa Flintvein'),
     say('kreuzer', 'Keep the lamps lit, Orsa. Whatever happens. In the dark it hides.'),

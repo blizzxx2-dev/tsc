@@ -77,7 +77,7 @@ export function hourTrial(op: Operation, hour: HourId, at: Vec, heart: Vec): Hou
     case 'matins':
       return simple([new MatinsEcho(at, op, 'matins', 25)]);
     case 'lauds':
-      return simple([new LaudsEcho(at, op, 20, 0)]);
+      return simple([new LaudsEcho(at, op, 20, 0, true)]);
     case 'prime': {
       let erased = false;
       let ix = op.rng.int(0, PRIME_NAMES.length - 1);

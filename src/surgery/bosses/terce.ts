@@ -23,7 +23,7 @@ export interface TerceTuning {
   haze: number;
 }
 
-export const TERCE_DEFAULT: TerceTuning = { hp: 100, leapEvery: 5, leapTell: 1, douseWindow: 2, maxBurns: 3, haze: 10 };
+export const TERCE_DEFAULT: TerceTuning = { hp: 100, leapEvery: 5, leapTell: 1, douseWindow: 2, maxBurns: 2, haze: 10 };
 
 /** Default organ zones for the fire to leap between: left lung, gut, right lung. */
 export const TERCE_ZONES: readonly Vec[] = [
@@ -54,7 +54,7 @@ export class FlameTongue extends Entity {
   }
 
   override drain(): number {
-    return this.state === 'flame' ? 0.35 : 0.15;
+    return this.state === 'flame' ? 0.2 : 0.1;
   }
 
   override update(op: Operation, dt: number): void {
@@ -196,7 +196,7 @@ export class TerceMalison extends Entity {
   }
 
   override drain(): number {
-    return this.stage === 3 ? 0.5 : 0.25;
+    return this.stage === 3 ? 0.5 : 0.15;
   }
 
   private addTongue(op: Operation, zone: number, pentecost = false): void {

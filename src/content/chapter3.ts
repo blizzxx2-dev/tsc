@@ -83,6 +83,7 @@ export const STORY_3_5: StoryDef = {
     n('Overnight the council raises the bridges. The Kilnrows are quarantined: the fever that came with the smoke has a name now.'),
     say('mauer', 'Plague on the Saltpetre side. Nobody crosses. Council’s orders, and my lads have to enforce them on their own cousins.'),
     n('Vapour-wardens in beaked masks hang sides of beef from poles to draw the bad air. The beef is stolen by noon.'),
+    n('A brotherhood of flagellants marches past the hospice, scourging each other bloody for the sins that brought the fever.'),
     say('ilse', 'A carter tried to cross as the chains went up. The bridge came down on his leg. There is not enough of it left to save.'),
     say('haller', 'Then take it off. Saw below the knee, then the vessels: thread if he can bear the time, the brand if he can’t.'),
     say('kreuzer', 'Berthold. Look at me, not at the saw. You’ll drive a cart again, with a peg and a cushion.'),
@@ -204,7 +205,7 @@ export const STORY_3_END: StoryDef = {
 export const OP_3_1: OperationDef = {
   id: 'op3-1',
   title: 'The Hornchild',
-  patient: 'Liesl, 7, a founder’s daughter',
+  patient: 'Liesl, a founder’s daughter, aged seven',
   diagnosis: 'Two horn-buds pressing through the scalp. A Choir sigil beneath each. Certified “a natural growth”.',
   organ: 'flesh',
   timeLimit: 300,

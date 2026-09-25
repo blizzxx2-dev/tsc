@@ -80,6 +80,9 @@ function planBosses(op: Operation, k: BotKit, ents: Entity[], vis: Entity[], lag
       const t = tendWound(k, ents, lacs[0], op.def.tools.includes('salve'));
       if (t) return t;
     }
+    // Many small pools add up: draw off the largest.
+    const pools = vis.filter((e): e is BloodPool => e instanceof BloodPool).sort((a, b) => b.r - a.r);
+    if (pools.length >= 5) return k.hold('leech', () => (pools[0].alive ? pools[0].pos : null), 1.5);
   }
 
   // ------------------------------------------------------------ Sext

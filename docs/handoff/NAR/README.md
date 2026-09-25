@@ -1,0 +1,3 @@
+- NAR-0031 — a sensitivity reader must review Chapter III (flagellants, plague, the child examination); brief in docs/handoff/NAR/sensitivity-ch3-5.md
+- NAR-0032 — a sensitivity reader must review Chapter IV (war violence, Margit's consent and agency); brief in docs/handoff/NAR/sensitivity-ch3-5.md
+- NAR-0033 — a sensitivity reader (with the obstetric consultant) must review Chapter V (obstetrics, the trial, assisted death); brief in docs/handoff/NAR/sensitivity-ch3-5.md

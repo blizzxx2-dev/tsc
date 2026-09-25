@@ -66,7 +66,7 @@ export class MatinsEcho extends Malison {
   }
 }
 
-/** Lauds as Compline remembers it: a thinner choir (two Voices), shattering into a single hexstone. */
+/** Lauds as Compline remembers it: a thinner choir (two Voices), shattering into at most one hexstone. */
 export class LaudsEcho extends LaudsMalison {
   private shards = 0;
   constructor(
@@ -74,10 +74,18 @@ export class LaudsEcho extends LaudsMalison {
     op: Operation,
     hp = 30,
     private maxShards = 1,
+    /** A hushed echo never raises its Hymn (the Office's Lauds trial is about the Voices). */
+    private hushed = false,
   ) {
     super(pos, op);
     this.hp = hp;
     for (const v of this.voices.slice(2)) v.kill();
+  }
+  override update(op: Operation, dt: number): void {
+    super.update(op, dt);
+    if (this.hushed) this.hymnR = -1;
+    // Never more than two Voices, however often it calls them back.
+    for (const v of this.livingVoices.slice(2)) v.kill();
   }
   override onSweep(op: Operation, ptr: Pointer, tool: ToolId, dt: number): void {
     const before = op.entities.length;
