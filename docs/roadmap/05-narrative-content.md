@@ -139,7 +139,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ### Patient case notes
 - [x] NAR-0087 · Demo · P1 · S · Case-note template — Kreuzer's hand: patient, presenting complaint, procedure, outcome, one personal observation; outcome line varies by rank
 - [x] NAR-0088 · Demo · P1 · M · Write 10 demo case notes — op1-1…op2-5; each ≤ 120 words with rank-variant outcome sentence
-- [ ] NAR-0089 · Demo · P2 · S · "Where are they now" footnotes — one-line follow-up per demo patient shown after chapter completion (Jost breaks his promise by Friday, etc.)
+- [x] NAR-0089 · Demo · P2 · S · "Where are they now" footnotes — one-line follow-up per demo patient shown after chapter completion (Jost breaks his promise by Friday, etc.)
 
 ## NAR · Epic 5 — Character arcs (full game)
 

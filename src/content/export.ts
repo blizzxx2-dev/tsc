@@ -9,6 +9,7 @@ import { describeLine } from './conditions';
 import { AFTERMATH, FAILURE } from './aftermath';
 import { LATER_AFTERMATH } from './aftermath-later';
 import type { StoryDef } from './story';
+import { FOOTNOTES } from './footnotes';
 import { RECAPS } from './recaps';
 import { TUTORIALS } from './tutorials';
 
@@ -58,6 +59,7 @@ export function narrativeEntries(): ContentEntry[] {
   for (const [op, s] of Object.entries(FAILURE)) out.push(...storyEntries(s, chapterOf(op), `Failure scene when the patient of ${op} dies, before the retry prompt`));
   for (const t of TUTORIALS)
     out.push({ id: `tutorial.${t.id}`, text: t.prompt, scope: 'callouts', chapter: chapterOf(t.firstOp), context: `Tutorial prompt, first shown in ${t.firstOp}. Keep {TOKENS} verbatim: they become key/button glyphs. Imperative, one instruction.` });
+  for (const [op, text] of Object.entries(FOOTNOTES)) out.push({ id: `footnote.${op}`, text, scope: 'story', chapter: chapterOf(op), context: `"Where are they now" line for the patient of ${op}, read after the chapter ends. Narration; wry, not cruel.` });
   for (const [ch, lines] of Object.entries(RECAPS))
     lines.forEach((text, k) => out.push({ id: `recap.${ch}.${pad3(k + 1)}`, text, scope: 'story', chapter: ch, context: `Chapter-select recap before ${ch} ("previously"), sentence ${k + 1} of 3. Narration.` }));
   return out;

@@ -1,3 +1,4 @@
+import { footnoteStory } from '../content/footnotes';
 import { BOSS_OPS } from '../surgery/bosses/codex';
 import { submitHourClear } from '../surgery/hourRecords';
 import type { BundleId } from '../assets/manifest.gen';
@@ -100,6 +101,9 @@ export function playStep(game: Game, chapter: number, step: number, loaded = fal
   if (!s) {
     emitGameEvent({ type: 'chapter-complete', chapter });
     finishChapter(chapter + 1);
+    // Where are they now (NAR-0089): one line per patient of the chapter, then the next chapter.
+    const notes = footnoteStory(ch.id, ch.numeral, ch.steps.flatMap((x) => (x.kind === 'op' ? [x.op.id] : [])));
+    if (notes) return game.go(new StoryScene(notes, () => playStep(game, chapter + 1, 0)));
     return playStep(game, chapter + 1, 0);
   }
   advance(save, chapter, step);
