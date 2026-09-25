@@ -12,11 +12,14 @@ import { button, reticle } from '../ui/widgets';
 import { drawBackdrop } from './backdrop';
 import type { RunSummary } from '../surgery/session';
 import { ACHIEVEMENTS } from '../surgery/achievements';
+import { rankQuip } from '../content/barks';
 
 /** The case record: a parchment ledger page, stamped with the rank in wax. */
 export class ResultsScene implements Scene {
   private t = 0;
   private stamped = false;
+  /** The observer's one-line verdict under the rank (NAR-0078); chosen once per card. */
+  private quip = '';
   constructor(
     private op: Operation,
     private won: boolean,
@@ -52,6 +55,7 @@ export class ResultsScene implements Scene {
     caps(g, this.won ? t('ui.results.won') : t('ui.results.lost'), VIEW_W / 2, r.y + 146, 15, hex(this.won ? '#9fd8a8' : '#ff8a80', a), 'center');
     // The cause of death, for vitals and time-out losses alike (UIX-0116).
     if (!this.won && op.lostReason) g.text(tSource(op.lostReason), VIEW_W / 2, r.y + 170, { size: 17, font: 'italic', color: hex('#e8b0a8', a), align: 'center', shadow: false });
+    if (this.won && this.stamped) g.text((this.quip ||= rankQuip(op.def.id, op.rank())), VIEW_W / 2, r.y + 170, { size: 17, font: 'italic', color: hex(INK.gold, a), align: 'center', shadow: false });
 
     const rows: [string, string][] = [
       [t('rating.cool'), formatNumber(op.counts.cool)],
