@@ -1,0 +1,109 @@
+# OPS — tasks that need a human
+
+Everything software could prepare is done and linked; each line says what a person must do. Paths are
+relative to the repository root. Index of prepared material: `docs/production/README.md`.
+
+- OPS-0008 — Create the GitHub Projects (v2) board and its six saved views exactly as specified in `docs/production/tracking.md` (needs a GitHub org admin); run `GITHUB_TOKEN=… node scripts/ops/roadmap-sync.mjs --repo <owner>/<repo> --apply` first to create the issues/labels; link the views from the README.
+- OPS-0011 — Ask PLT, UIX, GAM, CON, ENG and NAR owners to re-tag/add the tasks listed as open conflicts C-1…C-7, C-11, C-12 in `docs/production/dependencies.md`, then mark them agreed there.
+- OPS-0013 — Turn on 2FA, add the second admin and store recovery codes for every account in `docs/production/account-security.md`; tick the table.
+- OPS-0015 — Hold the M0 gate meeting and prototype retro on 9 Oct 2026 using the evidence pre-read in `docs/production/gates.md#m0`; record go/no-go and the carry-over list (smoke script fix is carried to QAT).
+- OPS-0019 — Hold the demo go/no-go on 18 Jan 2027 with the criteria table in `docs/production/gates.md`; record the outcome and edition.
+- OPS-0020 — Hold the Alpha gate (2 Jul 2027) against `docs/production/definition-of-done.md#alpha-ops-0020`; record it in `gates.md`.
+- OPS-0021 — Hold the Beta gate (27 Aug 2027) against `definition-of-done.md#beta-ops-0021`; record it.
+- OPS-0022 — Run the RC gate (24 Sep 2027) with the criteria in `gates.md` and record the RC build SHA.
+- OPS-0023 — Run the gold-master go/no-go (8 Oct 2027); Owner and QA lead sign in `gates.md`.
+- OPS-0025 — Publish `docs/production/moscow.md` to the team and apply the `moscow:*` labels to the matching issues on the board after the first roadmap sync.
+- OPS-0027 — Owner approves the fallback plan in `docs/production/nextfest/plan.md#fallback-plan-ops-0027` before the go/no-go.
+- OPS-0028 — At Alpha kickoff (1 Mar 2027) Owner + NAR/GAM/BOS leads confirm or amend the proposal in `docs/production/scope-ch3-5.md` and sign the lock record; owners re-phase deferred ops.
+- OPS-0029 — After Next Fest, re-estimate Ch3–5 with demo telemetry/wishlists/playtests; re-baseline `docs/production/schedule.md`, `gates.json` and the budget model; reset the burn-up.
+- OPS-0033 — At Beta start (5 Jul 2027) run the cut-line review in `docs/production/change-control.md`; record cuts in `cut-list.md` and update the public roadmap.
+- OPS-0035 — Owner approves the localisation budget in `docs/production/budget/localisation.md` (replace estimate rates with RFP quotes) before vendor contracts.
+- OPS-0037 — Buy the devices listed in `docs/production/budget/hardware.md` (USD 2,538 budgeted) and fill in serials, owner and location.
+- OPS-0038 — Owner decides the funding route (recommendation and pitch-deck outline in `docs/production/budget/funding.md`, decision D-0017); list fund deadlines for the company's country.
+- OPS-0039 — Counsel drafts the company-wide contractor agreement from `docs/production/legal/contractor-agreement-outline.md` with schedules A–E.
+- OPS-0042 — Shortlist 5 composers, pay the 60 s test cues and select one using the brief and scoring table in `docs/production/hiring/briefs.md`; record in the decision log.
+- OPS-0043 — Contract the narrative editor after the paid Prologue sample edit (`hiring/briefs.md`); agree Ch3–5 availability.
+- OPS-0044 — Review trailer-editor portfolios and quotes; contract by 23 Oct 2026 (`hiring/briefs.md`, `marketing/trailers.md`).
+- OPS-0045 — Decide self-run vs freelance PR (cost table in `hiring/briefs.md`); if hired, contract with the stated scope.
+- OPS-0046 — Request QA compatibility-lab/freelance quotes and book them by 23 Nov 2026 (`hiring/briefs.md`).
+- OPS-0047 — At Alpha kickoff book writing, music, loc and QA capacity for Alpha→Beta; log gaps in `risks.md`.
+- OPS-0048 — Engage games-IP counsel using the brief in `docs/production/legal/README.md#counsel-engagement-brief-ops-0048`; add the fee to the budget model.
+- OPS-0049 — Counsel writes the trade-dress memo from `docs/production/legal/trauma-center-comparison.md`; file required changes as UIX/GAM/ART tickets.
+- OPS-0050 — After the memo, Owner decides keep/replace COOL/GOOD/BAD/MISS and "XS" (D-0008); edit `rating.*` strings in `src/i18n/strings/en.json`, the GAM scoring spec and the termbase.
+- OPS-0051 — Counsel approves or amends `docs/production/legal/marketing-reference-rules.md`, including the nominative-reference question.
+- OPS-0052 — Counsel reviews `docs/production/legal/ip-name-review.md` (with `node scripts/ops/ip-scan.mjs` output) and gives written sign-off before 17 Nov 2026; decide the optional renames (Gilded Goose, Hollow Choir fallback).
+- OPS-0053 — Producer + counsel compare final portraits with the listed casts and sign off before the portraits ship (portraits not delivered yet).
+- OPS-0054 — Decision D-0007 chose `hexstone`; GAM and NAR owners update their task wording that still says `warpshard`/`hexshard`; PLT confirms the save v2 loader owner (no shipped saves to migrate).
+- OPS-0055 — Run `node scripts/ops/archive-snapshot.mjs <gate>` at each gate and upload the folder to write-once storage; log it in `docs/production/legal/independent-creation-archive.md`.
+- OPS-0056 — Counsel reviews `docs/production/legal/ip-claim-procedure.md`; register the DMCA designated agent with the U.S. Copyright Office before any UGC ships; set up the legal@ mailbox.
+- OPS-0057 — Get two E&O/media-liability quotes (criteria in `legal/README.md`) and log buy/no-buy before the announce.
+- OPS-0058 — Run the knock-out searches in `docs/production/legal/trademark-and-brand.md` and obtain counsel's written clearance opinion.
+- OPS-0059 — Run the same knock-out searches on the three fallback titles in `trademark-and-brand.md` and record results.
+- OPS-0060 — File the "Suture & Steel" word mark with EUIPO and USPTO (classes 9, 41) before 17 Nov 2026; store receipts in `docs/legal/`.
+- OPS-0061 — Register the domains and handles listed in `trademark-and-brand.md` to the company account.
+- OPS-0062 — Check Steamworks app names, social bios, Discord name and newsletter sender read "Suture & Steel — The Malison Hours" (in-repo audit done in `trademark-and-brand.md`).
+- OPS-0063 — Answer the Steamworks AI-content survey from `docs/production/legal/steam-ai-disclosure-draft.md` once ART/AUD provenance logs exist; re-check at every gate.
+- OPS-0064 — Counsel reviews the PLT third-party notices against OFL/npm licences (points in `legal/README.md`), especially OFL renaming of subset fonts.
+- OPS-0065 — Confirm the entity, assign IP, sign the Steamworks partner agreement, complete tax/bank, pay the Steam Direct fee (checklist in `legal/README.md`).
+- OPS-0066 — Counsel approves `docs/production/legal/nda-template.md`; set up e-signature and store signed copies.
+- OPS-0067 — Counsel confirms the EULA decision (recommend SSA only, D-0019); supplemental text ready in `legal/eula-draft.md`.
+- OPS-0068 — Counsel reviews `docs/production/legal/privacy-policy-draft.md`; fill bracketed items; host at a stable URL for PLT.
+- OPS-0069 — Sign DPAs with the telemetry, crash-reporting and newsletter processors; complete `docs/production/legal/ropa.md`.
+- OPS-0070 — Build the website per `docs/production/marketing/channels.md#website-ops-0094` with the consent rules in `legal/README.md`; verify no cookies before consent.
+- OPS-0071 — Confirm composer and SFX licences allow monetised streaming with no Content ID (table in `legal/streaming-policy.md`); publish the statement.
+- OPS-0072 — Before Beta art lock, add Ch3–5/challenge/discipline HUD screens to the comparison table and get counsel's review.
+- OPS-0073 — Counsel issues the 1.0 sign-off letter before the RC gate (inputs listed in `legal/README.md`).
+- OPS-0075 — Enter the mature-content survey in Steamworks for both apps using `docs/production/ratings/steam-content-survey.md`.
+- OPS-0077 — Obtain the USK/IARC rating for Germany per the path in `docs/production/ratings/territories.md` (decide by 13 Nov, submit by 11 Dec 2026).
+- OPS-0079 — Complete the GRAC rating path before Korean release (Beta).
+- OPS-0080 — Re-answer the rating questionnaires with Ch3–5 content (template: `ratings/iarc-dry-run.md`) and update certificates before release.
+- OPS-0083 — Put the coming-soon page live by 16 Nov 2026 with the copy in `docs/production/store/store-page.md` and UTM links.
+- OPS-0084 — Confirm the draft system requirements in `docs/production/store/demo-page.md` with the QAT lab sweep and enter them in Steamworks.
+- OPS-0085 — Set supported languages, content descriptors, controller and Deck fields for both apps (table in `store/demo-page.md`).
+- OPS-0086 — Upload the demo description/screenshots, set the demo date, and pass Valve store review (checklist in `store/demo-page.md`).
+- OPS-0087 — Run the 30-person capsule test with the protocol in `store/demo-page.md#capsule-people-test-ops-0087`.
+- OPS-0089 — Build the ~50-curator list and send demo access via Curator Connect at the press preview (`store/demo-page.md`).
+- OPS-0090 — Submit the 1.0 page update ≥ 2 weeks before launch (checklist in `store/demo-page.md`).
+- OPS-0091 — Produce the announce trailer from the brief in `docs/production/marketing/trailers.md` and upload to YouTube and Steam.
+- OPS-0092 — Produce the Next Fest trailer (brief in `marketing/trailers.md`) and put it on the page before the press preview.
+- OPS-0093 — Publish the press-kit page from `docs/production/marketing/press-kit.md` with the zip and ART press folder; link it everywhere.
+- OPS-0094 — Build and publish the website (`marketing/channels.md`); achieve Lighthouse ≥ 90.
+- OPS-0095 — Open the newsletter account (double opt-in, DPA), load the welcome email in `marketing/channels.md`, schedule the three sends.
+- OPS-0096 — Create the social accounts and schedule posts two weeks ahead following the cadence and drafts in `marketing/channels.md`.
+- OPS-0099 — Apply to ≥ 5 showcases (tracking table in `docs/production/marketing/showcases.md`) and log outcomes.
+- OPS-0100 — Join fitting Steam themed events when Valve publishes them; record the rules (`marketing/showcases.md`).
+- OPS-0101 — Have PLT build the watermarked press build and issue keys with embargo dates (`marketing/showcases.md`).
+- OPS-0102 — Produce the launch trailer from the brief in `marketing/trailers.md`.
+- OPS-0103 — Counsel-check the launch release draft in `docs/production/marketing/press-releases.md`, have LOC translate it, send at launch hour.
+- OPS-0104 — Read the February 2027 Next Fest dates and registration deadline in Steamworks; replace the planning dates in `docs/production/nextfest/plan.md` and `schedule.md` (D-0002).
+- OPS-0105 — Confirm each eligibility rule in the table in `nextfest/plan.md` from the Steamworks documentation and date it.
+- OPS-0106 — Register for Next Fest in Steamworks before the deadline; store confirmation in `docs/production/nextfest/`.
+- OPS-0108 — Send press/creator outreach on 29 Jan 2027 with the templates in `docs/production/community/outreach-templates.md`; follow up on day 3.
+- OPS-0110 — Record the dev playthrough and host the two live sessions (schedule in `nextfest/plan.md`); assign moderators.
+- OPS-0112 — Schedule the three festival event posts in Steamworks in every demo language (`nextfest/plan.md`).
+- OPS-0113 — Hold the post-fest retrospective on 8 Mar 2027 with the template in `nextfest/plan.md`.
+- OPS-0114 — Ship the post-fest demo update with the top-5 fixes and the thank-you announcement.
+- OPS-0115 — Create the Discord server per `docs/production/community/discord.md` (channels, roles, AutoMod, spam bot, verification) and link it.
+- OPS-0116 — Recruit and onboard two volunteer moderators under the policy in `community/discord.md`; start the weekly sync.
+- OPS-0117 — Set up Steam discussions for both apps: pinned FAQ, bug template, known-issues thread, moderators (`community/discord.md`).
+- OPS-0118 — Publish the FAQ in `docs/production/community/faq.md` on the website and as a pinned Steam thread.
+- OPS-0119 — Research journalists and contacts for 120 outlets starting from the seed in `docs/production/community/press-and-creators.md`; keep the CRM private.
+- OPS-0120 — Build the 200-creator list with the segments and columns in `community/press-and-creators.md`.
+- OPS-0121 — Sign up to one key platform (Keymailer/Lurkit/Woovit) and set up demo and full-game campaigns.
+- OPS-0123 — Have LOC translate the outreach templates in `community/outreach-templates.md` into DE, FR, ES, PL, PT-BR.
+- OPS-0124 — Counsel reviews the first contest's rules/prize terms/IP licence drafted in `community/discord.md`.
+- OPS-0125 — Send full-game keys to press 2 weeks and creators 1 week before launch under embargo.
+- OPS-0127 — Publish the post-launch roadmap within 2 weeks of launch (content source `docs/production/release/post-launch.md`); update quarterly.
+- OPS-0130 — Run the two-week demo review on 1 Mar 2027 with the targets table in `docs/production/release/demo-release.md`.
+- OPS-0132 — At Beta, create the Steam Playtest app and configure the access waves in `release/demo-release.md` (D-0011).
+- OPS-0133 — Choose and set the release date in Steamworks after the checks in `docs/production/release/pricing.md`.
+- OPS-0134 — Decide the price (recommendation USD 19.99, D-0018) after re-checking comparables in `release/pricing.md`; set regional prices and launch discount.
+- OPS-0138 — Run the launch-week daily analytics and write the day-7 report (`release/launch-checklist.md`).
+- OPS-0139 — Book creator co-streams and run the two dev streams in launch week.
+- OPS-0140 — Compare in-game credits with `docs/production/budget/credit-obligations.csv` and every contract before the RC gate.
+- OPS-0141 — Reconcile the first Steam payout against sales reports and the forecast.
+- OPS-0143 — Scope, schedule and announce free update 1 (`release/post-launch.md`).
+- OPS-0144 — Make the month-2 go/no-go on the boss rush using the criteria in `release/post-launch.md`.
+- OPS-0145 — Cost the "Ninth Office" DLC and make the 3-month go/no-go (`release/post-launch.md`).
+- OPS-0150 — Find a bundle/cross-promotion partner after 6 months and log terms.
+- OPS-0152 — Write the project post-mortem 3 months after launch (`release/post-launch.md`).

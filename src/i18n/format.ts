@@ -20,5 +20,12 @@ export function formatClock(seconds: number, locale: string = intlLocale()): str
   return `${numberFormat(locale, 'integer').format(Math.floor(s / 60))}:${f.format(s % 60)}`;
 }
 
+/** HUD vitals 0–99: rounded up, always two digits ("07"), locale digits. */
+export function formatVitals(v: number, locale: string = intlLocale()): string {
+  let f = pad2.get(locale);
+  if (!f) pad2.set(locale, (f = new Intl.NumberFormat(locale, { minimumIntegerDigits: 2, useGrouping: false })));
+  return f.format(Math.max(0, Math.ceil(v)));
+}
+
 /** Space characters locale number formats can produce; glyph lists must include them. */
 export const FORMAT_SPACES = [' ', ' '] as const;

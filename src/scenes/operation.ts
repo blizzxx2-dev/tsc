@@ -1,6 +1,6 @@
 import type { Cue } from '../core/audio';
 import { t as tr, tSource } from '../i18n';
-import { formatClock, formatNumber } from '../i18n/format';
+import { formatClock, formatNumber, formatVitals } from '../i18n/format';
 import { dist, type Vec } from '../core/math';
 import type { Game, Scene } from '../core/scene';
 import { hex, withAlpha } from '../render/color';
@@ -292,7 +292,7 @@ export class OperationScene implements Scene {
     heart(g, 52, 48, 14 * beat, hex(op.vitals > 30 ? '#c0182a' : '#ff3030'));
     g.glow(52, 48, 30 * beat, hex('#ff2030', 0.15 + this.pulse * 0.25));
     g.text(tr('hud.vitals'), 92, 30, { size: 13, color: hex(UI.brass), shadow: false });
-    g.text(String(Math.ceil(op.vitals)).padStart(2, '0'), 92, 64, { size: 38, font: 'body', color: hex('#ffffff'), color2: hex(vcol), shadow: hex('#000000', 0.9) });
+    g.text(formatVitals(op.vitals), 92, 64, { size: 38, font: 'body', color: hex('#ffffff'), color2: hex(vcol), shadow: hex('#000000', 0.9) });
     // Blood tube.
     const tube = { x: 92, y: 71, w: 52, h: 5 };
     g.rect(tube.x, tube.y, tube.w, tube.h, hex('#000000', 0.7));

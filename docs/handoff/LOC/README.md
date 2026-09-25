@@ -1,0 +1,74 @@
+# LOC — tasks that need a human
+
+The i18n framework, checks and export/import pipeline are implemented (`src/i18n`, `scripts/i18n`,
+`docs/loc/keys.md`). These tasks need translators, reviewers, vendors, account owners or other
+workstream owners. Paths are relative to the repository root.
+
+- LOC-0002 — PLT, UIX owners re-tag PLT-0172, UIX-0200, UIX-0203 (and UIX string extraction) to Demo and sign off on the board; rationale and conflict rows C-1…C-3 in `docs/production/dependencies.md` and `docs/loc/languages.md`.
+- LOC-0003 — On 15 Jan 2027 read Steamworks traffic by country for the coming-soon page and confirm or switch the Spanish variant (D-0004 in `docs/production/decisions.md`).
+- LOC-0004 — Tick exactly the languages of the matrix in `docs/loc/languages.md` in Steamworks for the demo and full-game apps, only after each sign-off.
+- LOC-0034 — Create the multilingual termbase in the TMS by importing `docs/loc/termbase.csv` (≈ 50 seeded terms with gender/notes) plus the NAR translator glossary; lead translators fill part of speech, gender and plurals per language.
+- LOC-0035 — Lead translators supply/approve the canonical-hour names (DE/FR/ES/PL/PT-BR/IT proposed in `docs/loc/termbase.csv`; RU/JA/KO empty).
+- LOC-0036 — Lead translators approve instrument names within the tooltip/tray width (proposals in `docs/loc/termbase.csv`; check with `npm run i18n:widths -- --locale <code>` after import).
+- LOC-0037 — After the OPS rating-word decision (D-0008/OPS-0050), lead translators approve rating words (≤ 6 characters) and the `×{combo}` pattern (`rating.*`, `hud.combo`).
+- LOC-0038 — Lead translators for DE, FR, ES, PT-BR correct/approve the 15 draft sample lines and register targets in `docs/loc/style-guide.md`; the PL lead writes the Polish column.
+- LOC-0039 — Lead translators for RU/ZH/JA/KO approve the proposed name transliterations in `docs/loc/termbase.csv` (status → approved).
+- LOC-0044 — At Beta, RU/ZH-Hans/JA/KO/IT leads write their register sections with 15 approved sample lines each in `docs/loc/style-guide.md`.
+- LOC-0045 — Send the RFP in `docs/loc/vendors-and-tms.md` to three LSPs, pay the 500-word tests, organise blind native scoring, contract the winner (NDA, IP, TM ownership, LQA scope).
+- LOC-0046 — Open the Crowdin/Lokalise project, connect GitHub with the config in `docs/loc/vendors-and-tms.md`, attach termbase/style guide, set reviewer roles.
+- LOC-0047 — Upload QAT localised captures to the TMS and link keys (mapping via `scene`/`screenshot` in `src/i18n/strings/en.meta.json`).
+- LOC-0050 — Enable the query workflow in the TMS with the 48 h SLA and note-promotion rule in `docs/loc/process.md`.
+- LOC-0051 — Set up the nightly TMS→PR sync and the password-protected Steam `loc` branch (checks already run in CI via `npm run i18n`).
+- LOC-0053 — Time 10 random keys (≤ 30 s each) once the ENG dev console has `lang/story/op/phase`; today `?lang=`, `?op=` and Options → Language work (`docs/loc/process.md`).
+- LOC-0054 — Each lead reviewer signs `docs/loc/signoff/<code>-demo.md` from `docs/loc/signoff/TEMPLATE.md`; then set `shipped: true` in `src/i18n/locales.ts` (enforced by `tests/i18n.test.ts`).
+- LOC-0055 — Export TMX/TBX monthly from the TMS into `loc/tm/<yyyy-mm>/`.
+- LOC-0056 — Translate Ch1–2 into French from `npm run i18n:export -- --lang fr` (UI + `loc/export/content.fr.xliff`); import with `npm run i18n:import`. The French spacing post-processor in the renderer is an ENG/UIX follow-up.
+- LOC-0057 — French native LQA on the `loc` build with `docs/loc/process.md` checklist; 0 open S1/S2; termbase 100 %.
+- LOC-0058 — Translate Ch1–2 into German (soft hyphens in long compounds); verify ß/ẞ in all font roles with `npm run i18n:glyphs`.
+- LOC-0059 — German native LQA (Ihr/Sie register per style guide); 0 open S1/S2.
+- LOC-0060 — Translate Ch1–2 into Spanish (Spain) with ¿ ¡ and patient gender agreement.
+- LOC-0061 — Spanish native LQA; 0 open S1/S2.
+- LOC-0062 — Translate Ch1–2 into Polish with one/few/many/other plurals for every counted string.
+- LOC-0063 — Polish native LQA including the Latin-extended display-font fallback (font gap flagged by `npm run i18n:glyphs`).
+- LOC-0064 — Translate Ch1–2 into Brazilian Portuguese per register/gender guidance.
+- LOC-0065 — Brazilian Portuguese native LQA; 0 open S1/S2.
+- LOC-0066 — (Stretch, on a "go") Translate Ch1–2 into Russian; Cyrillic faces must be bundled first (`src/i18n/fonts.ts`).
+- LOC-0067 — (Stretch) Russian native LQA at 1280×800.
+- LOC-0068 — (Stretch) Translate Ch1–2 into Simplified Chinese; regenerate glyph lists with `npm run i18n:glyphs -- --emit`.
+- LOC-0069 — (Stretch) Simplified Chinese native LQA.
+- LOC-0070 — Translate and review the full-game store page from `docs/production/store/store-page.md` (text between `loc` markers) in every demo language.
+- LOC-0071 — Translate the demo page text in `docs/production/store/demo-page.md`.
+- LOC-0072 — Translate "FREE DEMO" (≤ 12 characters) per language and deliver to ART.
+- LOC-0073 — Create SRT subtitles for the announce and Next Fest trailers once cut (`docs/production/marketing/trailers.md`), and upload per language.
+- LOC-0074 — Translate the announce and Next Fest press releases in `docs/production/marketing/press-releases.md`.
+- LOC-0075 — Legal translator translates the privacy notice, consent text and content warnings (`docs/production/legal/*-draft.md`, `ratings/steam-content-survey.md`) after counsel approval.
+- LOC-0076 — Translate the PLT rich-presence token file (PLT-0045) once it exists; check in a friends list per language.
+- LOC-0077 — Publish Next Fest/demo-live/patch posts in every demo language from one template (`docs/production/nextfest/plan.md`).
+- LOC-0078 — Translate Ch3–5 into French (Beta).
+- LOC-0079 — French full-game LQA.
+- LOC-0080 — Translate Ch3–5 into German.
+- LOC-0081 — German full-game LQA.
+- LOC-0082 — Translate Ch3–5 into Spanish (Spain).
+- LOC-0083 — Spanish full-game LQA.
+- LOC-0084 — Translate Ch3–5 into Polish.
+- LOC-0085 — Polish full-game LQA.
+- LOC-0086 — Translate Ch3–5 into Brazilian Portuguese.
+- LOC-0087 — Brazilian Portuguese full-game LQA.
+- LOC-0088 — Translate the full game into Italian.
+- LOC-0089 — Italian full-game LQA.
+- LOC-0090 — Translate the full game into Russian.
+- LOC-0091 — Russian full-game LQA.
+- LOC-0092 — Translate the full game into Simplified Chinese.
+- LOC-0093 — Simplified Chinese full-game LQA.
+- LOC-0094 — Translate the full game into Japanese (katakana names from the termbase).
+- LOC-0095 — Japanese full-game LQA.
+- LOC-0096 — Translate the full game into Korean — write `{name}은(는)` style combined particles; `src/i18n/korean.ts` resolves them at runtime.
+- LOC-0097 — Korean full-game LQA (eojeol wrapping, particles).
+- LOC-0099 — Translate achievement names/descriptions and enter them in Steamworks; check length in the overlay.
+- LOC-0100 — Translate credits role headings; add translator/LSP credits to `docs/production/budget/credit-obligations.csv`.
+- LOC-0101 — Translate rich-presence tokens for IT, RU, ZH-Hans, JA, KO and check in a friends list.
+- LOC-0102 — Localise the 1.0 store page in every shipped language; ART supplies localised screenshots for DE, FR, RU, ZH-Hans, JA.
+- LOC-0103 — Translate the launch press release and launch-trailer subtitles.
+- LOC-0107 — Open a public TMS project with a contributor licence agreement (counsel) for community languages.
+- LOC-0108 — Three months after launch, review sales/wishlists by language and decide new languages.
+- LOC-0109 — Budget and schedule localisation for each DLC/free update so it ships in all 1.0 languages on day one.

@@ -2,7 +2,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { EN, getLocale, i18nStats, menuLocales, onMissingKey, setLocale, sourceKey, t, tSource } from '../src/i18n';
-import { formatClock, formatNumber } from '../src/i18n/format';
+import { formatClock, formatNumber, formatVitals } from '../src/i18n/format';
 import { argNames, format, IcuSyntaxError, mapText, parse, plainText } from '../src/i18n/icu';
 import { FACES, fontRoles } from '../src/i18n/fonts';
 import { finalSound, particle, resolveParticles } from '../src/i18n/korean';
@@ -185,6 +185,8 @@ describe('formatting', () => {
     expect(formatClock(0, 'en')).toBe('0:00');
     expect(formatClock(95.9, 'fr')).toBe('1:35');
     expect(formatClock(-3, 'en')).toBe('0:00');
+    expect(formatVitals(6.2, 'en')).toBe('07');
+    expect(formatVitals(99, 'de')).toBe('99');
   });
 });
 
