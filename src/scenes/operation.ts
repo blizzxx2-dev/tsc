@@ -7,10 +7,9 @@ import { organPalette } from '../render/organs';
 import { Sigil, surfDisc, surfLine } from '../surgery/entities';
 import { Particles } from '../render/particles';
 import { FlashLimiter } from '../render/flashLimiter';
-import { isStar } from '../surgery/gesture';
 import { Malison, MalisonShard } from '../surgery/malison';
 import { FIELD, onBody, LITANY_DURATION, MAX_VITALS, Operation, TINCTURE_COOLDOWN, TINCTURE_TIME, type OperationDef } from '../surgery/operation';
-import { TOOL_INFO, toolInfo, type Pointer, type ToolId } from '../surgery/types';
+import { TOOL_INFO, toolInfo, type ToolId } from '../surgery/types';
 import { PALETTE, VIEW_W } from '../ui/layout';
 import { button, inRect, reticle, star, toolIcon } from '../ui/widgets';
 import { banner, brassBorder, divider, giltText, hourglass, leatherPanel, medallion, plaque, scroll, UI, waxSeal } from '../ui/ornaments';
@@ -19,6 +18,8 @@ import { ASSISTANT_NAME } from '../content/characters';
 import { vec3, type RGBA } from '../render/color';
 import { settings } from '../core/settings';
 import { OptionsScene } from './options';
+import { litanyMode, OperationInput } from '../input/opinput';
+import { dragGlyphFor, glyphFor, toolKeyLabel } from '../input/glyphs';
 
 export interface OperationOutcome {
   op: Operation;
@@ -32,7 +33,7 @@ export class OperationScene implements Scene {
   op: Operation;
   private paused = false;
   private endT = 0;
-  private starTrail: Vec[] = [];
+  private ctl = new OperationInput();
   private ecg: number[] = new Array(200).fill(0);
   private beatPhase = 0;
   private pulse = 0;
@@ -42,7 +43,6 @@ export class OperationScene implements Scene {
   private entered = false;
   private hintT = 0;
   private particles = new Particles();
-  private litanyCenter: [number, number] = [0.5, 0.5];
   private flashLimit = new FlashLimiter();
   private comboT = 0;
   private lastCombo = 0;
@@ -69,6 +69,7 @@ export class OperationScene implements Scene {
   private restart(): void {
     this.op = OperationScene.create(this.def);
     this.particles = new Particles();
+    this.ctl = new OperationInput();
     this.paused = false;
     this.endT = 0;
   }
@@ -77,21 +78,14 @@ export class OperationScene implements Scene {
     const { input } = game;
     const op = this.op;
 
-    if (input.keyPressed('Escape') && op.status !== 'won' && op.status !== 'lost') this.paused = !this.paused;
-    if (this.paused) return;
+    const pause = this.ctl.pauseRequest(input);
+    if (pause && op.status !== 'won' && op.status !== 'lost') this.paused = pause === 'pause' ? true : !this.paused;
+    if (this.paused) return this.ctl.suspend(op);
 
-    // Tool selection: hotkeys, wheel, or clicking the tray.
-    for (const t of TOOL_INFO) if (input.keyPressed(t.code)) op.setTool(t.id);
-    if (input.wheel) op.cycleTool(input.wheel);
-    if (input.keyPressed('KeyQ')) op.cycleTool(-1);
-    if (input.keyPressed('KeyE')) op.cycleTool(1);
-    if (input.keyPressed('Tab')) op.quickSwap();
-    let trayClick = false;
-    op.def.tools.forEach((id, i) => {
-      if (input.pressed && inRect(input.pos, this.slot(i))) {
-        op.setTool(id);
-        trayClick = true;
-      }
+    // Tool selection, the Litany and every pointer event since last frame, in the order they happened.
+    this.ctl.update(op, input, dt, (p) => {
+      const i = op.def.tools.findIndex((_, k) => inRect(p, this.slot(k)));
+      return i >= 0 ? op.def.tools[i] : p.x <= TRAY.x + TRAY.w + 10 ? 'consume' : null;
     });
     if (op.tool !== this.lastTool) {
       this.toolFlash = 1;
@@ -106,36 +100,6 @@ export class OperationScene implements Scene {
     this.lastTool = op.tool;
     this.toolFlash = Math.max(0, this.toolFlash - dt * 3);
 
-    // Litany: draw a star with the right mouse button (or press Space with the assist on).
-    if (settings.litanyKey && input.keyPressed('Space')) {
-      if (!op.invokeLitany() && op.def.litany !== false) op.popup(op.litanyUsed ? 'The Litany is spent.' : 'Not now.', input.pos, PALETTE.inkDim);
-    }
-    if (input.rightDown) this.starTrail.push({ ...input.pos });
-    else if (this.starTrail.length) {
-      if (isStar(this.starTrail)) {
-        const cx = this.starTrail.reduce((a, p) => a + p.x, 0) / this.starTrail.length;
-        const cy = this.starTrail.reduce((a, p) => a + p.y, 0) / this.starTrail.length;
-        this.litanyCenter = [cx / VIEW_W, 1 - cy / 720];
-        if (!op.invokeLitany()) op.popup(op.litanyUsed ? 'The Litany is spent.' : 'Not now.', input.pos, PALETTE.inkDim);
-      } else if (this.starTrail.length > 8) op.popup('The sign falters…', input.pos, PALETTE.inkDim);
-      this.starTrail = [];
-    }
-
-    // Replay every pointer sample since last frame so fast zig-zags aren't lost at low frame rates.
-    const path = input.path;
-    const down = input.down && !trayClick && !input.rightDown;
-    let prev = input.prev;
-    path.forEach((pos, i) => {
-      const ptr: Pointer = {
-        pos,
-        prev,
-        down: down || (input.released && i < path.length - 1),
-        pressed: input.pressed && !trayClick && i === 0,
-        released: input.released && i === path.length - 1,
-      };
-      if (pos.x > TRAY.x + TRAY.w + 10 || !ptr.pressed) op.handlePointer(ptr, dt / path.length);
-      prev = pos;
-    });
     op.update(dt);
 
     // Heartbeat drives the ECG trace, the organ swell and (when failing) an audible thump.
@@ -237,10 +201,10 @@ export class OperationScene implements Scene {
       }
     }
 
-    if (this.starTrail.length > 1) {
+    if (this.ctl.starTrail.length > 1) {
       g.setBlend('add');
-      g.polyline(this.starTrail, 8, hex('#f5d76e', 0.25));
-      g.polyline(this.starTrail, 3, hex('#fff0b0', 0.9));
+      g.polyline(this.ctl.starTrail, 8, hex('#f5d76e', 0.25));
+      g.polyline(this.ctl.starTrail, 3, hex('#fff0b0', 0.9));
       g.setBlend('alpha');
     }
 
@@ -260,7 +224,7 @@ export class OperationScene implements Scene {
       beat: this.pulse,
       curse: this.corrupt * 0.9 * soften,
       outcome: [op.status === 'lost' ? Math.min(1, this.endT / 2) : 0, op.status === 'won' ? Math.min(1, this.endT / 1.2) : 0],
-      litanyCenter: this.litanyCenter,
+      litanyCenter: this.ctl.litanyCenter,
       lens: op.tool === 'lens' ? [game.input.pos.x, game.input.pos.y, 95, 1] : undefined,
       litanyAge: op.litanyTime > 0 ? LITANY_DURATION - op.litanyTime : 10,
       hurt: (() => {
@@ -295,6 +259,7 @@ export class OperationScene implements Scene {
     }
 
     if (this.paused) this.drawPause(g, game);
+    this.ctl.draw(g, op, this.paused);
 
     // Cursor: reticle at the tip with the instrument beside it.
     const p = game.input.pos;
@@ -385,7 +350,7 @@ export class OperationScene implements Scene {
       toolIcon(g, id, r.x + r.w / 2 + 6 + ox, r.y + r.h / 2 + 1, sel ? 1.05 : 0.82, g.time);
       // Engraved key tag.
       g.circleGrad(r.x + 13, r.y + 14, 10, hex(sel ? UI.brassHi : '#c8a050'), hex(UI.brassLo));
-      g.text(toolInfo(id).key, r.x + 13, r.y + 20, { size: 17, color: hex('#140a02'), align: 'center', shadow: false });
+      g.text(toolKeyLabel(TOOL_INFO.findIndex((ti) => ti.id === id) + 1), r.x + 13, r.y + 20, { size: 17, color: hex('#140a02'), align: 'center', shadow: false });
       if (id === 'tincture' && op.injectCooldown > 0) {
         const f = op.injectCooldown / TINCTURE_COOLDOWN;
         g.rect(r.x + 2, r.y + 2 + (r.h - 4) * (1 - f), r.w - 4, (r.h - 4) * f, hex('#000000', 0.65));
@@ -417,7 +382,7 @@ export class OperationScene implements Scene {
       g.glow(lx, ly, 60, hex(UI.gilt, 0.35));
       g.arc(lx, ly, 34, 4, hex(UI.gilt), op.litanyTime / LITANY_DURATION);
     }
-    const label = ready ? (settings.litanyKey ? 'Space' : 'Right-drag ★') : op.litanyTime > 0 ? 'Stillness' : 'Spent';
+    const label = ready ? { draw: `${dragGlyphFor('litany.draw')} ★`, key: glyphFor('litany.key'), both: `${dragGlyphFor('litany.draw')} ★ / ${glyphFor('litany.key')}` }[litanyMode()] : op.litanyTime > 0 ? 'Stillness' : 'Spent';
     g.text(label, lx + 42, ly + 6, { size: 14, font: 'italic', color: hex(ready ? UI.gilt : UI.parchLo, 0.9) });
   }
 

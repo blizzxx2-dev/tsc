@@ -17,7 +17,7 @@ export class DemoEndScene implements Scene {
   private t = 0;
   update(dt: number, game: Game): void {
     this.t += dt;
-    if (game.input.keyPressed('Escape')) game.go(new TitleScene());
+    if (game.input.actPressed('ui.back')) game.go(new TitleScene());
   }
 
   render(g: Gfx, game: Game): void {

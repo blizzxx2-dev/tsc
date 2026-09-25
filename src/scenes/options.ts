@@ -5,6 +5,10 @@ import type { Gfx } from '../render/gfx';
 import { PALETTE, VIEW_W } from '../ui/layout';
 import { button, inRect, panel, reticle } from '../ui/widgets';
 import { drawBackdrop } from './backdrop';
+import { bindings } from '../input/bindings';
+import { ControlsScene } from '../input/controlsScene';
+import { glyphFor } from '../input/glyphs';
+import { litanyMode } from '../input/opinput';
 
 interface Row {
   label: string;
@@ -53,10 +57,14 @@ export class OptionsScene implements Scene {
       note: 'Assisted results are marked on the rank screen.',
     },
     {
-      label: 'Assist: Litany on Space',
-      value: () => (settings.litanyKey ? 'On' : 'Off'),
-      change: () => (settings.litanyKey = !settings.litanyKey),
-      note: 'Press Space instead of drawing the five-pointed star.',
+      label: 'Assist: Litany input',
+      value: () => ({ draw: 'Draw the star', key: `${glyphFor('litany.key', 'kbm')} key`, both: 'Either' })[litanyMode()],
+      change: (d) => {
+        bindings.prefs.litanyInput = cycle(['draw', 'key', 'both'] as const, litanyMode(), d);
+        settings.litanyKey = bindings.prefs.litanyInput !== 'draw';
+        bindings.save();
+      },
+      note: 'Speak the Litany with a key instead of drawing the five-pointed star.',
     },
     {
       label: 'Fullscreen',
@@ -86,7 +94,7 @@ export class OptionsScene implements Scene {
       this.rows[this.hover].change(input.pos.x < r.x + r.w * 0.55 ? -1 : 1, game);
       saveSettings();
     }
-    if (input.keyPressed('Escape')) this.back();
+    if (input.actPressed('ui.back')) this.back();
   }
 
   private back(): void {
@@ -112,6 +120,7 @@ export class OptionsScene implements Scene {
     const note = this.hover >= 0 ? this.rows[this.hover].note : undefined;
     if (note) g.text(note, VIEW_W / 2, 590, { size: 18, font: 'italic', color: hex(PALETTE.inkDim), align: 'center' });
     if (button(g, game.input, 'Back', VIEW_W / 2, 645, 28)) this.back();
+    if (button(g, game.input, 'Controls', VIEW_W / 2 - 230, 645, 28)) game.go(new ControlsScene(() => game.go(this), this.overWorld));
     reticle(g, game.input.pos);
     g.endFrame();
   }

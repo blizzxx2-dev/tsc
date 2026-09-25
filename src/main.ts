@@ -11,10 +11,15 @@ import { SHOWCASE, SHOWCASE_BOSS, showcaseOrgan } from './content/dev';
 import type { OperationDef } from './surgery/operation';
 import { playOperation } from './scenes/flow';
 import { TitleScene } from './scenes/title';
+import { OptionsScene } from './scenes/options';
 import { StoryScene } from './scenes/story';
 import type { Backdrop } from './content/story';
 import type { CharacterId } from './content/characters';
 import { VIEW_H, VIEW_W } from './ui/layout';
+import { OperationScene } from './scenes/operation';
+import { bindings } from './input/bindings';
+import { loadLayoutLabels } from './input/glyphs';
+import { downloadRecording, parseRecording, Recorder, Replayer } from './input/record';
 
 class Main implements Game {
   input: Input;
@@ -57,7 +62,24 @@ class Main implements Game {
     this.canvas.height = Math.floor(h * dpr);
   }
 
+  /** `?record=1`: each operation's input stream is saved as JSON when it ends. */
+  recorder: Recorder | null = null;
+  private recording: OperationScene | null = null;
+
   go(scene: Scene): void {
+    if (this.recorder) {
+      const leaving = this.recording && scene !== this.recording && !(scene instanceof OptionsScene);
+      if (leaving && this.recording) {
+        const op = this.recording.op;
+        const rec = this.recorder.finish({ status: op.status, score: op.score, vitals: op.vitals, timeLeft: op.timeLeft });
+        this.recording = null;
+        if (rec) downloadRecording(rec);
+      }
+      if (scene instanceof OperationScene && scene !== this.recording) {
+        this.recording = scene;
+        this.recorder.begin(scene.op.def.id, scene.op.def.seed ?? 1, settings.timerAssist, bindings.prefs);
+      }
+    }
     this.scene = scene;
     scene.enter?.(this);
   }
@@ -68,8 +90,9 @@ class Main implements Game {
       const dt = Math.min(0.05, (now - this.last) / 1000);
       this.last = now;
       this.gfx.time += dt;
-      this.input.beginFrame();
-      this.scene?.update(dt, this);
+      this.input.beginFrame(now, dt);
+      // Replays carry their own frame steps.
+      this.scene?.update(this.input.frame.dt, this);
       this.scene?.render(this.gfx, this);
       this.input.endFrame();
       requestAnimationFrame(frame);
@@ -101,6 +124,33 @@ async function boot(): Promise<void> {
     return;
   }
   game.gfx.atlas.warm();
+  void loadLayoutLabels();
+  const params = new URLSearchParams(location.search);
+  if (params.get('record') === '1') {
+    const recorder = new Recorder();
+    game.recorder = recorder;
+    game.input.recorder = (f) => {
+      if (game.scene instanceof OperationScene) recorder.push(f);
+    };
+  }
+  const replayUrl = params.get('replay');
+  if (replayUrl) {
+    try {
+      const rec = parseRecording(await (await fetch(replayUrl)).text());
+      const rdef = allOperations().find((o) => o.id === rec.opId);
+      if (rdef) {
+        settings.timerAssist = rec.timerAssist as typeof settings.timerAssist;
+        Object.assign(bindings.prefs, rec.prefs);
+        game.input.replay = new Replayer(rec);
+        const back = () => game.go(new TitleScene());
+        game.start(new OperationScene(rdef, back, back));
+        (window as unknown as { __game: Main }).__game = game;
+        return;
+      }
+    } catch (err) {
+      console.error('Replay failed', err);
+    }
+  }
   game.start(new TitleScene());
   // Dev/QA hooks: ?op=<id> jumps straight into an operation; window.__game exposes the game for automation.
   (window as unknown as { __game: Main }).__game = game;

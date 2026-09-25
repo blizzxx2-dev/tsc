@@ -1,0 +1,367 @@
+import type { Input } from '../core/input';
+import { settings } from '../core/settings';
+import { dist, type Vec } from '../core/math';
+import { hex } from '../render/color';
+import type { Gfx } from '../render/gfx';
+import { analyzeStar, STAR_FAILURE_HINT } from '../surgery/gesture';
+import { onBody, type Operation } from '../surgery/operation';
+import { TOOL_INFO, type Pointer, type ToolId } from '../surgery/types';
+import { PALETTE, VIEW_H, VIEW_W } from '../ui/layout';
+import type { Edge } from './actionState';
+import { TOOL_SLOTS, type ActionId } from './actions';
+import { aimSlow, brushRing, lancetSnap, magnet, StitchAssist, zonesFor, type Zone } from './assist';
+import { bindings as defaultBindings, type Bindings, type LitanyInput } from './bindings';
+import { RadialMenu } from './radial';
+import type { InputEvent } from './types';
+
+/** Tools whose action is "hold the button": the Toggle-hold option and the hold key apply to these. */
+export const HOLD_TOOLS: readonly ToolId[] = ['leech', 'salve', 'tincture', 'brand'];
+/** A pointer jump larger than this in one sample breaks the stroke instead of drawing a giant segment. */
+export const TELEPORT_PX = 200;
+const MAX_TRAIL = 4000;
+
+/** HUD hit-test: return a tool to select it, 'consume' to swallow the press, or null to let it through. */
+export type HudHit = (p: Vec) => ToolId | 'consume' | null;
+
+/** Effective Litany input mode (the older "Litany on Space" assist counts as Both). */
+export function litanyMode(b: Bindings = defaultBindings): LitanyInput {
+  return b.prefs.litanyInput === 'draw' && settings.litanyKey ? 'both' : b.prefs.litanyInput;
+}
+
+/**
+ * Turns the input timeline into `Operation` calls. It replays each frame's events
+ * in timestamp order (so a key pressed just before a click applies first, and a
+ * press+release inside one frame both register), splits the frame's dt across the
+ * events by their timestamps (hold durations are measured from event time), and
+ * applies every input option: tool selection, radial menu, Litany star/key,
+ * toggle-hold, hold key, Target Size, assisted stitching and gamepad aim assist.
+ */
+export class OperationInput {
+  starTrail: Vec[] = [];
+  litanyCenter: [number, number] = [0.5, 0.5];
+  readonly radial = new RadialMenu();
+  /** Shown over the pause menu after a controller disconnect. */
+  disconnectNotice = false;
+  /** Toggle-hold: a hold tool is running without the button held. */
+  latched = false;
+
+  private opDown = false;
+  private sent: Vec = { x: 0, y: 0 };
+  private cursor: Vec = { x: 0, y: 0 };
+  private lastT = 0;
+  private k = 0;
+  private suppressed = false;
+  private ignoreRelease = false;
+  private holdKeyActive = false;
+  private drawing = false;
+  private strokeStart: Vec = { x: 0, y: 0 };
+  private strokeOffset: Vec = { x: 0, y: 0 };
+  private strokeZone: Zone | null = null;
+  private stitch = new StitchAssist();
+  private pad = false;
+
+  constructor(private b: Bindings = defaultBindings) {}
+
+  /** Should the operation pause this frame? Focus loss and pad disconnects force it; the pause action toggles. */
+  pauseRequest(input: Input): 'toggle' | 'pause' | null {
+    if (input.padDisconnected) this.disconnectNotice = true;
+    else if (input.padConnected || (this.disconnectNotice && input.codesPressed().length)) this.disconnectNotice = false;
+    if (input.focusLost || input.padDisconnected) return 'pause';
+    if (input.actPressed('pause')) return 'toggle';
+    return null;
+  }
+
+  /** The operation is paused: end any stroke (grabs return to origin), drop the star and the radial. */
+  suspend(op: Operation): void {
+    if (this.opDown) this.cancelStroke(op);
+    this.latched = false;
+    this.holdKeyActive = false;
+    this.drawing = false;
+    this.starTrail = [];
+    this.radial.close();
+  }
+
+  update(op: Operation, input: Input, dt: number, hud?: HudHit): void {
+    this.b = input.bindings;
+    const f = input.frame;
+    const prefs = this.b.prefs;
+    this.pad = f.device === 'pad';
+    this.cursor = { ...f.start };
+    if (!this.opDown) this.sent = { ...f.start };
+    this.lastT = f.t0;
+    const span = f.t - f.t0;
+    this.k = span > 0 ? dt / span : 0;
+    // With no timing information (a zero-length frame), give the whole dt to the final flush.
+    const noSpan = span <= 0;
+
+    for (const { ev, edges } of input.timeline) {
+      if (ev.type === 'move') this.move(op, ev.t, { x: ev.x, y: ev.y });
+      for (const e of edges) this.edge(op, input, e, ev, hud);
+    }
+    for (const e of input.tailEdges) this.edge(op, input, e, null, hud);
+    this.flush(op, f.t);
+    if (noSpan) this.send(op, 'hold', this.cursor, dt);
+
+    this.radial.update(this.cursor, f.sticks, dt);
+    // Aim assist and the right-stick nudge for the next frame's virtual cursor.
+    input.nudge = !this.radial.isOpen;
+    input.cursorSlow = this.pad && prefs.aimAssist ? (p) => aimSlow(p, zonesFor(op, op.tool)) : () => 1;
+  }
+
+  // ------------------------------------------------------------------ events
+
+  private move(op: Operation, t: number, p: Vec): void {
+    if (this.drawing && this.starTrail.length < MAX_TRAIL) this.starTrail.push(p);
+    if (this.opDown && dist(this.cursor, p) > TELEPORT_PX) {
+      // Focus regained, cursor warped, pen re-entered: break the stroke where it was.
+      this.flush(op, t);
+      this.release(op);
+      this.suppressed = true;
+      this.latched = false;
+      this.cursor = p;
+      this.sent = p;
+      return;
+    }
+    const d = Math.max(0, t - this.lastT) * this.k;
+    this.lastT = Math.max(this.lastT, t);
+    this.cursor = p;
+    this.send(op, 'hold', p, d);
+  }
+
+  private edge(op: Operation, input: Input, e: Edge, ev: InputEvent | null, hud?: HudHit): void {
+    const press = e.kind === 'press';
+    const a: ActionId = e.action;
+    if (a === 'primary') return press ? this.primaryPress(op, input, e.t, hud) : this.primaryRelease(op, e.t, ev?.type === 'up' && !!ev.cancel);
+    if (a === 'tool.hold') {
+      if (press && HOLD_TOOLS.includes(op.tool) && !this.opDown && !this.drawing) {
+        this.flush(op, e.t);
+        this.holdKeyActive = true;
+        this.press(op, input);
+      } else if (!press && this.holdKeyActive) {
+        this.flush(op, e.t);
+        this.holdKeyActive = false;
+        if (!this.latched) this.release(op);
+      }
+      return;
+    }
+    if (a === 'litany.draw') return press ? this.beginStar(op, e.t) : this.endStar(op);
+    if (!press) {
+      if (a === 'tool.radial') {
+        const pick = this.radial.close();
+        if (pick) this.setTool(op, e.t, pick);
+      }
+      return;
+    }
+    if (a === 'litany.key') {
+      const mode = litanyMode(this.b);
+      // The gamepad chord is always available; the keyboard key follows the Litany input option.
+      if (mode !== 'draw' || this.pad) this.invokeLitany(op, this.cursor);
+      return;
+    }
+    if (a.startsWith('tool.select.')) {
+      const n = Number(a.slice('tool.select.'.length)) as (typeof TOOL_SLOTS)[number];
+      const tool = TOOL_INFO[n - 1]?.id;
+      if (tool) this.setTool(op, e.t, tool);
+      return;
+    }
+    if (a === 'tool.next' || a === 'tool.prev') return this.cycle(op, e.t, a === 'tool.next' ? 1 : -1);
+    if (a === 'tool.quickSwap') {
+      this.flush(op, e.t);
+      this.unlatch(op);
+      op.quickSwap();
+      return;
+    }
+    if (a === 'tool.radial') this.radial.open(this.cursor, op.def.tools, this.pad ? 'stick' : 'pointer');
+  }
+
+  private setTool(op: Operation, t: number, tool: ToolId): void {
+    this.flush(op, t);
+    if (tool !== op.tool) this.unlatch(op);
+    op.setTool(tool);
+  }
+
+  private cycle(op: Operation, t: number, dir: number): void {
+    const tools = op.def.tools;
+    const j = tools.indexOf(op.tool) + dir;
+    if (!this.b.prefs.wrapWheel && (j < 0 || j >= tools.length)) return;
+    this.setTool(op, t, tools[(j + tools.length) % tools.length]);
+  }
+
+  private unlatch(op: Operation): void {
+    if (!this.latched) return;
+    this.latched = false;
+    this.release(op);
+  }
+
+  private primaryPress(op: Operation, input: Input, t: number, hud?: HudHit): void {
+    this.flush(op, t);
+    if (this.drawing) {
+      this.suppressed = true;
+      return;
+    }
+    const hit = hud?.(this.cursor) ?? null;
+    if (hit) {
+      if (hit !== 'consume') this.setTool(op, t, hit);
+      this.suppressed = true;
+      return;
+    }
+    if (this.b.prefs.holdMode === 'toggle' && HOLD_TOOLS.includes(op.tool)) {
+      this.ignoreRelease = true;
+      if (this.latched) {
+        this.latched = false;
+        this.release(op);
+      } else if (!this.opDown) {
+        this.latched = true;
+        this.press(op, input);
+      }
+      return;
+    }
+    if (this.opDown) this.release(op);
+    this.press(op, input);
+  }
+
+  private primaryRelease(op: Operation, t: number, cancel: boolean): void {
+    if (this.suppressed) {
+      this.suppressed = false;
+      return;
+    }
+    if (this.ignoreRelease) {
+      this.ignoreRelease = false;
+      return;
+    }
+    if (!this.opDown || this.holdKeyActive) return;
+    this.flush(op, t);
+    if (cancel) this.cancelStroke(op);
+    else this.release(op);
+  }
+
+  // ------------------------------------------------------------------ strokes
+
+  private press(op: Operation, input: Input): void {
+    let raw = this.cursor;
+    const prefs = this.b.prefs;
+    if (this.pad && prefs.aimAssist && op.tool === 'lancet') {
+      const snap = lancetSnap(op, raw);
+      if (snap) {
+        raw = snap;
+        this.cursor = snap;
+        input.warp(snap);
+      }
+    }
+    const m = magnet(raw, zonesFor(op, op.tool), prefs.hitScale, ['press', 'trace']);
+    this.strokeZone = m.zone?.kind === 'trace' ? m.zone : null;
+    this.strokeOffset = this.strokeZone ? { x: 0, y: 0 } : { x: m.p.x - raw.x, y: m.p.y - raw.y };
+    this.strokeStart = raw;
+    this.stitch.reset();
+    this.opDown = true;
+    this.send(op, 'press', raw, 0);
+  }
+
+  private release(op: Operation): void {
+    if (!this.opDown) return;
+    this.opDown = false;
+    this.send(op, 'release', this.cursor, 0);
+    this.strokeZone = null;
+    this.strokeOffset = { x: 0, y: 0 };
+  }
+
+  /** Abandon the stroke without completing it: a held object is put back where it was seized. */
+  private cancelStroke(op: Operation): void {
+    if (!this.opDown) return;
+    if (op.tool === 'tongs') this.send(op, 'hold', this.strokeStart, 0);
+    this.cursor = this.strokeStart;
+    this.release(op);
+    this.latched = false;
+  }
+
+  /** Give the time since the last step to the current pointer state. */
+  private flush(op: Operation, t: number): void {
+    if (t <= this.lastT) return;
+    const d = (t - this.lastT) * this.k;
+    this.lastT = t;
+    this.send(op, 'hold', this.cursor, d);
+  }
+
+  /** Build the `Pointer` the Operation sees, with assists applied, and dispatch it. */
+  private send(op: Operation, kind: 'hold' | 'press' | 'release', raw: Vec, dt: number): void {
+    const prefs = this.b.prefs;
+    const scale = prefs.hitScale;
+    const down = kind === 'release' ? false : this.opDown;
+    let p = { x: raw.x + this.strokeOffset.x, y: raw.y + this.strokeOffset.y };
+    if (kind === 'press') p = magnet(raw, zonesFor(op, op.tool), scale, ['press', 'trace']).p;
+    else if (down && this.strokeZone) p = magnet(p, [this.strokeZone], scale, ['trace'], true).p;
+    else if (down && HOLD_TOOLS.includes(op.tool)) p = magnet(p, zonesFor(op, op.tool), scale, ['hold']).p;
+    else if (op.tool === 'lens') p = magnet(p, zonesFor(op, op.tool), scale, ['hover']).p;
+    if (this.latched && down && !onBody(raw)) {
+      // Toggle-hold stops when the cursor leaves the body.
+      this.latched = false;
+      this.opDown = false;
+      op.handlePointer({ pos: p, prev: this.sent, down: false, pressed: false, released: true }, 0);
+      this.sent = p;
+      return;
+    }
+    const ptr: Pointer = { pos: p, prev: this.sent, down, pressed: kind === 'press', released: kind === 'release' };
+    op.handlePointer(ptr, dt);
+    this.sent = p;
+    if (!down || kind !== 'hold') return;
+    if (op.tool === 'salve') for (const q of brushRing(p, scale)) op.handlePointer({ pos: q, prev: q, down: true, pressed: false, released: false }, 0);
+    if (op.tool === 'thread' && this.stitchAssistOn()) {
+      const c = this.stitch.step(op, p);
+      if (c) {
+        op.handlePointer({ pos: c.from, prev: c.from, down: true, pressed: false, released: false }, 0);
+        op.handlePointer({ pos: c.to, prev: c.from, down: true, pressed: false, released: false }, 0);
+        // Each assisted stitch is its own stroke, so assisted closures rate GOOD at best.
+        op.handlePointer({ pos: c.to, prev: c.to, down: false, pressed: false, released: true }, 0);
+        op.handlePointer({ pos: c.to, prev: c.to, down: true, pressed: true, released: false }, 0);
+      }
+    }
+  }
+
+  private stitchAssistOn(): boolean {
+    const s = this.b.prefs.assistedStitch;
+    return s === 'on' || (s === 'gamepad' && this.pad);
+  }
+
+  // ------------------------------------------------------------------ Litany
+
+  private beginStar(op: Operation, t: number): void {
+    if (litanyMode(this.b) === 'key' && !this.pad) return;
+    this.flush(op, t);
+    // Starting the sign while holding something puts it back (the star still records).
+    if (this.opDown) {
+      this.cancelStroke(op);
+      this.suppressed = true;
+    }
+    this.drawing = true;
+    this.starTrail = [{ ...this.cursor }];
+  }
+
+  private endStar(op: Operation): void {
+    if (!this.drawing) return;
+    this.drawing = false;
+    const trail = this.starTrail;
+    this.starTrail = [];
+    const res = analyzeStar(trail, { profile: this.pad ? 'gamepad' : 'pointer' });
+    if (res.ok) {
+      const cx = trail.reduce((a, p) => a + p.x, 0) / trail.length;
+      const cy = trail.reduce((a, p) => a + p.y, 0) / trail.length;
+      this.litanyCenter = [cx / VIEW_W, 1 - cy / VIEW_H];
+      this.invokeLitany(op, this.cursor);
+    } else if (trail.length > 8 && res.reason) op.popup(STAR_FAILURE_HINT[res.reason], this.cursor, PALETTE.inkDim);
+  }
+
+  private invokeLitany(op: Operation, at: Vec): void {
+    if (!op.invokeLitany() && op.def.litany !== false) op.popup(op.litanyUsed ? 'The Litany is spent.' : 'Not now.', at, PALETTE.inkDim);
+  }
+
+  // ------------------------------------------------------------------ drawing
+
+  /** Overlays owned by input: the radial menu and the controller-disconnected notice. */
+  draw(g: Gfx, op: Operation, paused: boolean): void {
+    this.radial.draw(g, op.tool);
+    if (paused && this.disconnectNotice) {
+      g.rect(VIEW_W / 2 - 330, 92, 660, 44, hex('#1a0606', 0.9));
+      g.text('Controller disconnected — reconnect or press any key', VIEW_W / 2, 121, { size: 22, color: hex('#f0c060'), align: 'center' });
+    }
+  }
+}

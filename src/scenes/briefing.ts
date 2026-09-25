@@ -2,7 +2,8 @@ import type { Game, Scene } from '../core/scene';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import type { OperationDef } from '../surgery/operation';
-import { toolInfo } from '../surgery/types';
+import { TOOL_INFO } from '../surgery/types';
+import { toolKeyLabel } from '../input/glyphs';
 import { VIEW_W } from '../ui/layout';
 import { button, parchment, reticle, toolIcon } from '../ui/widgets';
 import { drawBackdrop } from './backdrop';
@@ -17,8 +18,8 @@ export class BriefingScene implements Scene {
   ) {}
 
   update(_dt: number, game: Game): void {
-    if (game.input.keyPressed('Enter') || game.input.keyPressed('Space')) this.onBegin();
-    if (game.input.keyPressed('Escape')) this.onBack();
+    if (game.input.actPressed('ui.confirm')) this.onBegin();
+    if (game.input.actPressed('ui.back')) this.onBack();
   }
 
   render(g: Gfx, game: Game): void {
@@ -51,7 +52,7 @@ export class BriefingScene implements Scene {
       const x = r.x + 110 + i * 88;
       g.circle(x, r.y + 445, 30, hex('#1a120c', 0.85));
       toolIcon(g, t, x, r.y + 445, 0.9, g.time);
-      g.text(toolInfo(t).key, x, r.y + 492, { size: 16, color: faded, align: 'center', shadow: false });
+      g.text(toolKeyLabel(TOOL_INFO.findIndex((ti) => ti.id === t) + 1), x, r.y + 492, { size: 16, color: faded, align: 'center', shadow: false });
     });
     if (button(g, game.input, 'Scrub In', VIEW_W / 2 + 120, r.y + 560, 34, true, true)) this.onBegin();
     if (button(g, game.input, 'Back', VIEW_W / 2 - 160, r.y + 560, 26, true, true)) this.onBack();

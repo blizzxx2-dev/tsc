@@ -10,6 +10,9 @@ import { ChoirVoice, EggSac, LaudsMalison, SpiderlingGrub } from '../src/surgery
 import { Malison, MalisonShard } from '../src/surgery/malison';
 import { FIELD, Operation, type OperationDef } from '../src/surgery/operation';
 import type { Pointer, ToolId } from '../src/surgery/types';
+import type { Input } from '../src/core/input';
+import type { Game } from '../src/core/scene';
+import { OperationScene } from '../src/scenes/operation';
 
 const DT = 1 / 60;
 
@@ -240,4 +243,62 @@ export function playWithBot(def: OperationDef, opts: BotOptions = {}): BotResult
     op.cues.length = 0;
   }
   return { op, frames };
+}
+
+/**
+ * The same bot, but driving the real input pipeline: every bot frame becomes
+ * timestamped device events (tool hotkey, pointer move, button down/up) fed to a
+ * DOM-free `Input`, and the real `OperationScene.update` consumes them. Used by
+ * the record/replay regression test and to prove the input layer can still win.
+ */
+export function playWithBotThroughInput(def: OperationDef, input: Input, opts: BotOptions = {}): { scene: OperationScene; frames: number } {
+  const maxSeconds = opts.maxSeconds ?? 900;
+  const think = opts.think ?? 0;
+  const scene = new OperationScene(
+    def,
+    () => undefined,
+    () => undefined,
+  );
+  const game: Game = { input, audio: { play: () => undefined } as unknown as Game['audio'], gfx: null as unknown as Game['gfx'], go: () => undefined };
+  scene.enter();
+  const op = scene.op;
+  let t = 1000;
+  let prev: Vec = { x: FIELD.cx, y: FIELD.cy };
+  let wasDown = false;
+  let action: Action | null = null;
+  let frames = 0;
+  const TOOLS: ToolId[] = ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture', 'brand', 'lens'];
+  while ((op.status === 'intro' || op.status === 'running') && frames < maxSeconds * 60) {
+    frames++;
+    if (op.status === 'running') {
+      let f = action?.next();
+      if (!f || f.done) {
+        if (wasDown) {
+          input.push({ t: t + 1, type: 'up', code: 'mouse:0' });
+          wasDown = false;
+        }
+        const next = plan(op);
+        action = next && think > 0 ? chain(pause(prev, op.tool, think), next) : next;
+        f = action?.next();
+      }
+      if (f && !f.done) {
+        const fr = f.value;
+        if (fr.tool !== op.tool) {
+          const code = `key:Digit${TOOLS.indexOf(fr.tool) + 1}`;
+          input.push({ t: t + 2, type: 'down', code });
+          input.push({ t: t + 2.5, type: 'up', code });
+        }
+        if (fr.pos.x !== prev.x || fr.pos.y !== prev.y) input.push({ t: t + 3, type: 'move', x: fr.pos.x, y: fr.pos.y, src: 'kbm' });
+        if (fr.down && !wasDown) input.push({ t: t + 4, type: 'down', code: 'mouse:0' });
+        if (!fr.down && wasDown) input.push({ t: t + 4, type: 'up', code: 'mouse:0' });
+        wasDown = fr.down;
+        prev = fr.pos;
+      }
+    }
+    t += DT * 1000;
+    input.beginFrame(t, DT);
+    scene.update(DT, game);
+    input.endFrame();
+  }
+  return { scene, frames };
 }
