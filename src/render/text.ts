@@ -37,6 +37,8 @@ export interface Glyph {
   adv: number;
   /** Rasterised from a fallback face: the intended font lacks this character. */
   fallback?: boolean;
+  /** Atlas page it lives on (ENG-0172). */
+  page?: number;
 }
 
 import type { GlRegistry } from './registry';
@@ -44,6 +46,9 @@ import { graphemes } from './textLayout';
 
 const SIZE = 2048;
 const PAD = 6;
+/** The atlas is split into horizontal pages (ENG-0172); a full atlas evicts its least recently used page. */
+export const GLYPH_PAGES = 4;
+const PAGE_H = SIZE / GLYPH_PAGES;
 
 /**
  * Glyphs are rasterised on demand (with a 2D canvas used purely as a pixel
@@ -59,9 +64,16 @@ export class GlyphAtlas {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
   private glyphs = new Map<string, Glyph>();
+  /** The page being filled, and the pen within it (y relative to the page top). */
+  private page = 0;
   private penX = 8;
   private penY = 0;
   private rowH = 0;
+  /** Last use per page (a counter bumped on every glyph lookup); −1 while a page has never been filled. */
+  private pageUse: number[] = Array.from({ length: GLYPH_PAGES }, (_, i) => (i === 0 ? 0 : -1));
+  private uses = 0;
+  /** Pages evicted so far (debug overlay, tests). */
+  evictions = 0;
   private dirty = true;
   /** Region changed since the last upload (ENG-0171); `full` forces a whole-page upload. */
   private dirtyRect = { x0: SIZE, y0: SIZE, x1: 0, y1: 0 };
@@ -145,7 +157,10 @@ export class GlyphAtlas {
   glyph(ch: string, f: FontId, px: number = this.baseSize): Glyph {
     const key = this.face(f, px) + ch;
     let g = this.glyphs.get(key);
-    if (g) return g;
+    if (g) {
+      if (g.page !== undefined) this.pageUse[g.page] = ++this.uses;
+      return g;
+    }
     const ctx = this.ctx;
     ctx.font = this.font(f, px);
     const adv = ctx.measureText(ch).width;
@@ -168,46 +183,68 @@ export class GlyphAtlas {
       this.penY += this.rowH + 2;
       this.rowH = 0;
     }
-    if (this.penY + h > SIZE) {
-      // Atlas full: start over. Rare, and glyphs re-rasterise lazily.
-      ctx.clearRect(0, 0, SIZE, SIZE);
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(0, 0, 4, 4);
-      this.glyphs.clear();
-      this.generation++;
-      this.penX = 8;
-      this.penY = 8;
-      this.rowH = 0;
-      this.full = true;
-    }
+    if (this.penY + h > PAGE_H) this.nextPage();
+    const top = this.page * PAGE_H;
     ctx.fillStyle = '#fff';
     ctx.textBaseline = 'alphabetic';
     // Clip to the cell: nothing a glyph draws may land in a neighbour's cell.
     ctx.save();
     ctx.beginPath();
-    ctx.rect(this.penX, this.penY, w, h);
+    ctx.rect(this.penX, top + this.penY, w, h);
     ctx.clip();
-    ctx.fillText(ch, this.penX + PAD + 4, this.penY + PAD + asc);
+    ctx.fillText(ch, this.penX + PAD + 4, top + this.penY + PAD + asc);
     ctx.restore();
     const fallback = this.isFallback(ch, f);
     ctx.font = this.font(f, px);
     g = {
       u0: this.penX / SIZE,
-      v0: this.penY / SIZE,
+      v0: (top + this.penY) / SIZE,
       u1: (this.penX + w) / SIZE,
-      v1: (this.penY + h) / SIZE,
+      v1: (top + this.penY + h) / SIZE,
       w,
       h,
       ox: -PAD - 4,
       oy: -PAD - (asc - m.ascent),
       adv,
       fallback,
+      page: this.page,
     };
-    this.markDirty(this.penX, this.penY, w, h);
+    this.pageUse[this.page] = ++this.uses;
+    this.markDirty(this.penX, top + this.penY, w, h);
     this.penX += w + 2;
     this.rowH = Math.max(this.rowH, h);
     this.glyphs.set(key, g);
     return g;
+  }
+
+  /**
+   * The current page is full: move to a never-used page, or else evict the least recently used one
+   * (ENG-0172) — clear its band and forget only its glyphs, so text in use elsewhere keeps its cells.
+   */
+  private nextPage(): void {
+    let pick = -1;
+    for (let i = 0; i < GLYPH_PAGES; i++) {
+      if (i === this.page) continue;
+      if (pick < 0 || this.pageUse[i] < this.pageUse[pick]) pick = i;
+    }
+    if (this.pageUse[pick] >= 0) {
+      // Evict: cached glyph runs pointing into this band are stale.
+      for (const [k, g] of this.glyphs) if (g.page === pick) this.glyphs.delete(k);
+      this.evictions++;
+      this.generation++;
+    }
+    const ctx = this.ctx;
+    ctx.clearRect(0, pick * PAGE_H, SIZE, PAGE_H);
+    if (pick === 0) {
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, 4, 4);
+    }
+    this.markDirty(0, pick * PAGE_H, SIZE, PAGE_H);
+    this.page = pick;
+    this.pageUse[pick] = ++this.uses;
+    this.penX = 8;
+    this.penY = 8;
+    this.rowH = 0;
   }
 
   /**

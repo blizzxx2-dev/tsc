@@ -247,7 +247,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] ENG-0169 · Demo · P1 · M · Shader text effects: outline, soft drop shadow, outer glow, embossed display style — replaces drawing a second shadow copy in `Gfx.text()`
 - [ ] ENG-0170 · Demo · P1 · M · Dynamic fallback for glyphs outside the prebuilt set (player-entered text, rare punctuation) via the existing canvas rasteriser on a separate page — mixed-string render test
 - [x] ENG-0171 · Demo · P1 · S · Fix upload hitch: `GlyphAtlas.upload()` re-uploads the full 2048² canvas and regenerates mips per new glyph — switch to `texSubImage2D` of dirty rects (no frame >4 ms when new glyphs appear)
-- [ ] ENG-0172 · Demo · P2 · S · Multi-page dynamic glyph atlas — LRU eviction instead of clearing every glyph when the page fills
+- [x] ENG-0172 · Demo · P2 · S · Multi-page dynamic glyph atlas — LRU eviction instead of clearing every glyph when the page fills
 
 ### Layout
 - [x] ENG-0173 · Demo · P0 · M · Text layout engine — wrap with cached measurements, alignment, line height, max lines with ellipsis, returns glyph runs reusable across frames
