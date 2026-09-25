@@ -22,6 +22,9 @@ import { settings } from '../core/settings';
 import { OptionsScene } from './options';
 import { litanyMode, OperationInput } from '../input/opinput';
 import { dragGlyphFor, glyphFor, toolKeyLabel } from '../input/glyphs';
+import { operationOptions } from '../surgery/session';
+import type { OperationOptions } from '../surgery/operation';
+import { drawDebug, drawDialogue, drawDrainArrow, drawFieldOverlays, drawLitanyPractice, drawSecondaryVitals, drawTrayState, drawTutorial } from './gameplayHud';
 
 export interface OperationOutcome {
   op: Operation;
@@ -55,13 +58,16 @@ export class OperationScene implements Scene {
   /** Floating rating/damage text, built from the operation's `popup` events (ENG-0243). */
   private popups: Popup[] = [];
   /** Sounds requested since the last tick (deduplicated). */
+  private debug = false;
 
   constructor(
     private def: OperationDef,
     private onEnd: (o: OperationOutcome) => void,
     private onQuit: () => void,
+    /** Per-run overrides (retry at Novice, checkpoint, challenge rules). */
+    private runOpts: OperationOptions = {},
   ) {
-    this.op = OperationScene.create(def);
+    this.op = OperationScene.create(def, runOpts);
     this.presRng = new Rng(def.seed ?? 1);
     this.listen(this.op);
   }
@@ -72,9 +78,10 @@ export class OperationScene implements Scene {
     op.events.on('fx', (e) => this.particles.spawn(e));
   }
 
-  /** Apply player assists to the operation definition. */
-  private static create(def: OperationDef): Operation {
-    return new Operation(settings.timerAssist === 1 ? def : { ...def, timeLimit: Math.round(def.timeLimit * settings.timerAssist) });
+  /** Apply player assists, difficulty and kit to the operation definition. */
+  private static create(def: OperationDef, runOpts: OperationOptions = {}): Operation {
+    const d = settings.timerAssist === 1 || runOpts.challenge ? def : { ...def, timeLimit: Math.round(def.timeLimit * settings.timerAssist) };
+    return new Operation(d, operationOptions(def, runOpts));
   }
 
   dispose(): void {
@@ -97,7 +104,7 @@ export class OperationScene implements Scene {
 
   private restart(): void {
     this.op.events.clear();
-    this.op = OperationScene.create(this.def);
+    this.op = OperationScene.create(this.def, this.runOpts);
     this.presRng = new Rng(this.def.seed ?? 1);
     this.popups.length = 0;
     this.listen(this.op);
@@ -114,6 +121,7 @@ export class OperationScene implements Scene {
 
     const pause = this.ctl.pauseRequest(input);
     if (pause && op.status !== 'won' && op.status !== 'lost') this.paused = pause === 'pause' ? true : !this.paused;
+    op.paused = this.paused;
     // Pause stops sim and world clocks; UI keeps animating (ENG-0057). The Litany scales world time.
     if (game.clock) {
       game.clock.paused = this.paused;
@@ -121,10 +129,25 @@ export class OperationScene implements Scene {
     }
     if (this.paused) return this.ctl.suspend(op);
     this.camera.update(dt);
+    if (input.actPressed('op.debug')) this.debug = !this.debug;
+
+    // A mid-operation dialogue insert holds everything until read.
+    if (op.dialogue.length) {
+      if (input.pressed || input.actPressed('litany.key')) op.advanceDialogue();
+      op.update(dt);
+      return;
+    }
+    if (input.actPressed('op.assist')) op.ilseAssist();
+    if (input.actPressed('op.leechReverse')) op.toggleLeechReverse();
 
     // Tool selection, the Litany and every pointer event since last frame, in the order they happened.
-    // Samples are mapped from view space into world space through the camera (ENG-0046).
-    this.ctl.toWorld = (p) => this.camera.toWorld(p, { x: 0, y: 0 });
+    // Samples are mapped from view space into world space through the camera (ENG-0046); under the
+    // Moving Cart mutator the field sways, so the pointer is mapped back onto it.
+    const sway = op.sway();
+    this.ctl.toWorld = (p) => {
+      const w = this.camera.toWorld(p, { x: 0, y: 0 });
+      return { x: w.x - sway.x, y: w.y - sway.y };
+    };
     this.ctl.update(op, input, dt, (p) => {
       const i = op.def.tools.findIndex((_, k) => inRect(p, this.slot(k)));
       return i >= 0 ? op.def.tools[i] : p.x <= TRAY.x + TRAY.w + 10 ? 'consume' : null;
@@ -189,7 +212,8 @@ export class OperationScene implements Scene {
     const pal = organPalette(op.def);
     const t = g.time;
     const sk = op.shake * settings.shake;
-    const shake = sk > 0 ? { x: (Math.random() - 0.5) * sk, y: (Math.random() - 0.5) * sk } : { x: 0, y: 0 };
+    const sway = op.sway();
+    const shake = sk > 0 ? { x: (Math.random() - 0.5) * sk + sway.x, y: (Math.random() - 0.5) * sk + sway.y } : sway;
 
     // ---------------------------------------------------------------- data layers
     const ents = op.visibleEntities().sort((a, b) => a.layer - b.layer);
@@ -277,6 +301,8 @@ export class OperationScene implements Scene {
     });
 
     // ---------------------------------------------------------------- UI
+    drawFieldOverlays(g, op);
+    drawTutorial(g, op);
     this.drawPopups(g);
     // HUD bars anchor to the visible top/bottom edges on 16:10 and 4:3 (ENG-0184).
     g.save();
@@ -288,6 +314,10 @@ export class OperationScene implements Scene {
     g.translate(0, anchorShift('bottom'));
     this.drawCallout(g, t);
     g.restore();
+    drawTrayState(g, op, (i) => this.slot(i), game.input);
+    if (this.debug) drawDebug(g, op);
+    if (drawLitanyPractice(g, op, game.input)) op.skipPractice();
+    drawDialogue(g, op, game.input);
 
     if (op.status === 'intro') {
       const a = Math.min(1, op.elapsed * 3);
@@ -328,7 +358,9 @@ export class OperationScene implements Scene {
     heart(g, 52, 48, 14 * beat, hex(op.vitals > 30 ? '#c0182a' : '#ff3030'));
     g.glow(52, 48, 30 * beat, hex('#ff2030', 0.15 + this.pulse * 0.25));
     g.text(tr('hud.vitals'), 92, 30, { size: 13, color: hex(UI.brass), shadow: false });
-    g.text(formatVitals(op.vitals), 92, 64, { size: 38, font: 'body', color: hex('#ffffff'), color2: hex(vcol), shadow: hex('#000000', 0.9) });
+    g.text(formatVitals(op.displayVitals()), 92, 64, { size: 38, font: 'body', color: hex('#ffffff'), color2: hex(vcol), shadow: hex('#000000', 0.9) });
+    drawDrainArrow(g, op, 146, 50);
+    drawSecondaryVitals(g, op, 160, 80);
     // Blood tube.
     const tube = { x: 92, y: 71, w: 52, h: 5 };
     g.rect(tube.x, tube.y, tube.w, tube.h, hex('#000000', 0.7));
@@ -354,7 +386,7 @@ export class OperationScene implements Scene {
     const pl = { x: VIEW_W / 2 - 78, y: 40, w: 156, h: 40 };
     plaque(g, pl);
     hourglass(g, pl.x + 26, pl.y + 20, 26, op.timeLeft / op.def.timeLimit, t);
-    const low = op.timeLeft < 20 && op.status === 'running';
+    const low = op.timeLeft < op.tuning.flow.timerWarn && op.status === 'running';
     const tcol = op.litanyTime > 0 ? UI.gilt : low ? (Math.sin(t * 8) > 0 ? '#ff5040' : '#a02018') : UI.parch;
     g.text(formatClock(op.timeLeft), pl.x + 98, pl.y + 31, { size: 28, color: hex(tcol), align: 'center' });
     for (let i = 0; i < op.phaseCount; i++) {

@@ -91,7 +91,7 @@ describe('QAT-0019 rank boundaries', () => {
   it.each(allOperations().map((d) => [d.id, d] as const))('%s follows the rank table', (_id, def) => {
     for (const c of RANK_TABLE) {
       const op = tapeOp(new Operation(def));
-      op.score = c.score(def.ranks);
+      op.score = c.score(op.ranks);
       op.counts = { cool: 10, good: 3, bad: c.bad, miss: c.miss };
       expect(op.rank(), `${def.id}: ${c.label}`).toBe(c.expected);
     }
@@ -99,7 +99,7 @@ describe('QAT-0019 rank boundaries', () => {
 });
 
 describe('QAT-0020 victory bonus', () => {
-  it('adds round(vitals)×20 + round(timeLeft)×10 exactly once', () => {
+  it('adds round(average vitals) × vitalsBonus + round(timeLeft) × timeBonus exactly once', () => {
     const { op, ents } = isolate(() => [new Probe(at(0, 0))], { timeLimit: 120 });
     step(op, 10.3);
     op.vitals = 71.6;
@@ -108,9 +108,11 @@ describe('QAT-0020 victory bonus', () => {
     let frames = 0;
     while (op.status === 'running' && frames++ < 600) op.update(DT);
     expect(op.status).toBe('won');
-    const expected = Math.round(op.vitals) * 20 + Math.round(op.timeLeft) * 10;
-    expect(op.bonus).toEqual({ vitals: Math.round(op.vitals) * 20, time: Math.round(op.timeLeft) * 10 });
-    expect(op.score).toBe(score + expected);
+    // The vitals bonus pays for the average over the run, so a last-second tincture buys nothing.
+    const T = op.tuning.scoring;
+    const bonus = { vitals: Math.round(Math.round(op.averageVitals) * T.vitalsBonus), time: Math.round(op.timeLeft) * T.timeBonus, closure: 0 };
+    expect(op.bonus).toEqual(bonus);
+    expect(op.score).toBe(score + bonus.vitals + bonus.time);
     const frozen = { score: op.score, vitals: op.vitals, timeLeft: op.timeLeft };
     step(op, 5);
     op.handlePointer(press(C), DT);
@@ -242,13 +244,19 @@ describe('QAT-0024 tincture', () => {
 });
 
 describe('QAT-0025 empty lancet press', () => {
-  it('on bare body with work on the table: MISS, -3 vitals, cut cue', () => {
+  it('a plain click on bare body is never a miss', () => {
+    const { op } = runningOp();
+    tap(op, 'lancet', at(-200, -100), false);
+    expect(op.counts.miss).toBe(0);
+  });
+
+  it('held on bare body with work on the table: MISS "Stray cut", strayCutHurt vitals, cut cue', () => {
     const { op } = runningOp();
     tape(op).cues.length = 0;
     const v = op.vitals;
-    tap(op, 'lancet', at(-200, -100), false);
+    holdAt(op, 'lancet', at(-200, -100), op.tuning.miss.emptyHold + 0.05, false);
     expect(op.counts.miss).toBe(1);
-    expect(op.vitals).toBe(v - 3);
+    expect(op.vitals).toBeCloseTo(v - op.tuning.miss.strayCutHurt, 6);
     expect(tape(op).cues.filter((c) => c !== 'select')).toEqual(['miss', 'cut']);
   });
 
@@ -339,9 +347,9 @@ describe('QAT-0026 brand on healthy flesh', () => {
 });
 
 describe('QAT-0027 phase flow', () => {
-  it('waits 1.2 s in the intro, then spawns phase 0', () => {
+  it('waits flow.intro seconds in the intro, then spawns phase 0', () => {
     const op = makeOp(defWith(() => [new Probe(C)]));
-    step(op, 1.15);
+    step(op, op.tuning.flow.intro - 0.05);
     expect(op.status).toBe('intro');
     expect(op.phase).toBe(-1);
     step(op, 0.1);
@@ -349,7 +357,7 @@ describe('QAT-0027 phase flow', () => {
     expect(op.phase).toBe(0);
   });
 
-  it('spawns the next phase 0.8 s after the last required entity dies; non-required never block; clearing the last phase wins', () => {
+  it('spawns the next phase a breather after the last required entity dies; non-required never block; clearing the last phase wins 0.8 s later', () => {
     const blocker = new Probe(at(-100, 0));
     const def = defWith(() => [blocker, new Probe(at(100, 0), { required: false })], {
       phases: [{ spawn: () => [blocker, new Probe(at(100, 0), { required: false })] }, { spawn: () => [new Probe(at(0, 100))] }],
@@ -358,7 +366,7 @@ describe('QAT-0027 phase flow', () => {
     step(op, 3);
     expect(op.phase).toBe(0);
     blocker.kill();
-    step(op, 0.75);
+    step(op, op.tuning.flow.breather - 0.05);
     expect(op.phase).toBe(0);
     step(op, 0.1);
     expect(op.phase).toBe(1);
@@ -392,13 +400,13 @@ describe('QAT-0028 damage feedback', () => {
 });
 
 describe('QAT-0029 callout queue', () => {
-  it('shows each line for max(2.4 s, 0.055 s × length)', () => {
+  it('shows each line for max(2.5 s, 0.055 s × length)', () => {
     const { op } = runningOp();
     op.callouts.length = 0;
     const short = 'Short.';
     const long = 'x'.repeat(100);
     op.say(short, long);
-    step(op, 2.35);
+    step(op, 2.45);
     expect(op.callouts[0]).toBe(short);
     step(op, 0.1);
     expect(op.callouts[0]).toBe(long);
@@ -418,12 +426,12 @@ describe('QAT-0029 callout queue', () => {
     expect(op.callouts).toHaveLength(0);
   });
 
-  it('the low-vitals line fires once when vitals drop below 30', () => {
+  it('the low-vitals line fires once when vitals drop below the warning line', () => {
     const { op } = runningOp();
     op.callouts.length = 0;
     op.vitals = 30;
     op.update(DT);
-    expect(op.flags.has('low-vitals')).toBe(false);
+    expect(op.journal.some((e) => e.kind === 'vitalsWarn')).toBe(false);
     op.vitals = 29.9;
     op.update(DT);
     op.vitals = 20;
@@ -441,13 +449,18 @@ describe('QAT-0030 tool selection', () => {
 
   it('cycleTool wraps both ways', () => {
     const { op } = runningOp({ tools: ['thread', 'leech', 'salve'] });
-    op.cycleTool(-1);
+    // Steps closer together than tools.wheelDebounce count once (one wheel notch), so pace them.
+    const cycle = (d: number) => {
+      op.cycleTool(d);
+      step(op, 0.1);
+    };
+    cycle(-1);
     expect(op.tool).toBe('salve');
-    op.cycleTool(1);
+    cycle(1);
     expect(op.tool).toBe('thread');
-    op.cycleTool(1);
-    op.cycleTool(1);
-    op.cycleTool(1);
+    cycle(1);
+    cycle(1);
+    cycle(1);
     expect(op.tool).toBe('thread');
   });
 
@@ -536,12 +549,13 @@ describe('QAT-0052 mutation-testing gaps', () => {
     op.vitals = 40;
     holdAt(op, 'tincture', C, 0.8, false);
     expect(op.vitals).toBe(65);
-    op.vitals = 40;
     step(op, TINCTURE_COOLDOWN - 0.2);
+    op.vitals = 40;
     holdAt(op, 'tincture', C, 0.8, false);
     expect(op.vitals).toBe(40);
     step(op, 0.3);
     expect(op.injectCooldown).toBe(0);
+    op.vitals = 40;
     holdAt(op, 'tincture', C, 0.8, false);
     expect(op.vitals).toBe(65);
   });
@@ -601,13 +615,13 @@ describe('QAT-0052 mutation-testing gaps', () => {
     expect(op.tool).toBe('salve');
   });
 
-  it('hurt shakes by 1.5 × the damage; the low-vitals flag is set', () => {
+  it('hurt shakes by 1.5 × the damage; low vitals raise a warning', () => {
     const { op } = runningOp();
     op.hurt(2);
     expect(op.shake).toBe(3);
     op.vitals = 20;
     op.update(DT);
-    expect(op.flags.has('low-vitals')).toBe(true);
+    expect(op.journal.some((e) => e.kind === 'vitalsWarn' && e.level === 'warn')).toBe(true);
   });
 
   it('keeps at most 160 lasting stains, dropping the oldest', () => {

@@ -4,16 +4,17 @@ import { at } from '../../src/content/chapter1';
 import { OP_2_1 } from '../../src/content/chapter2';
 import { BloodPool, Laceration, SALVE_MAX } from '../../src/surgery/entities';
 import type { Operation } from '../../src/surgery/operation';
+import { DEFAULT_TUNING } from '../../src/surgery/tuning';
 import { holdAt, live, raster, step, strokePath, zigzag } from '../helpers/sim';
 import { scenario } from '../helpers/trace';
 
 describe('BloodPool', () => {
-  it.each(['blood', 'pus', 'blackbile'] as const)('the leech drains %s and rates GOOD "Drained" for a pool that started at r ≥ 20', (ichor) => {
+  it.each(['blood', 'pus', 'blackbile'] as const)('the leech drains %s and rates COOL "Drained" (within 1.5 s) for a pool that started at r ≥ 20', (ichor) => {
     const { op, ents, trace } = scenario(() => [new BloodPool(at(0, 0), 30, ichor)]);
-    holdAt(op, 'leech', at(0, 0), 1);
+    holdAt(op, 'leech', at(0, 0), 1.4);
     trace.note('after leech', { stains: op.stains.length });
     expect(ents[0].alive).toBe(false);
-    expect(op.counts.good).toBe(1);
+    expect(op.counts.cool).toBe(1);
     expect(op.stains.length).toBe(ichor === 'blood' ? 1 : 0);
     expect(trace.text()).toMatchSnapshot();
   });
@@ -30,14 +31,14 @@ describe('BloodPool', () => {
   it('a pool that grew past 20 counts as big', () => {
     const { op, ents, trace } = scenario(() => [new BloodPool(at(0, 0), 10)]);
     ents[0].grow(15);
-    holdAt(op, 'leech', at(0, 0), 1);
-    expect(op.counts.good).toBe(1);
+    holdAt(op, 'leech', at(0, 0), 1.4);
+    expect(op.counts.cool).toBe(1);
     expect(trace.text()).toMatchSnapshot();
   });
 });
 
 describe('Laceration', () => {
-  const stitch = (op: Operation, lac: Laceration, crossings = lac.stitch.needed * 2) =>
+  const stitch = (op: Operation, lac: Laceration, crossings = lac.stitch.needed) =>
     strokePath(op, 'thread', zigzag(lac.a, lac.b, 26, crossings), { speed: 380 });
 
   it('stitching while flooded says "flooded" and makes no progress', () => {
@@ -52,7 +53,7 @@ describe('Laceration', () => {
   it('a one-stroke stitch rates COOL "Stitched" and leaves a scar', () => {
     const { op, ents, trace } = scenario(() => [new Laceration(at(0, 0), 0.3, 120, 0)]);
     const lac = ents[0];
-    expect(lac.stitch.needed).toBe(Math.max(2, Math.round(120 / 22)));
+    expect(lac.stitch.needed).toBe(Math.max(2, Math.ceil(120 / DEFAULT_TUNING.stitch.pxPerStitch)));
     stitch(op, lac);
     trace.note('after stitching');
     expect(lac.alive).toBe(false);

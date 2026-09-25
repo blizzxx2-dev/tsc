@@ -37,10 +37,10 @@ function observe(def = OP_1_1, opts: { quitAfter?: number; loseBy?: 'timer' } = 
   obs.storyLine(4);
   const op = new Operation(opts.loseBy === 'timer' ? { ...def, timeLimit: 5 } : def);
   obs.onScene({ name: 'operation', op } satisfies SceneInfo);
-  const bot = new BotDriver();
+  const bot = new BotDriver(op);
   for (let f2 = 0; f2 < 60 * 900 && (op.status === 'intro' || op.status === 'running'); f2++) {
     if (opts.quitAfter && f2 === opts.quitAfter) break;
-    if (op.status === 'running' && !opts.loseBy) applyBotEvents(op, bot.tick(op));
+    if (op.status === 'running' && !opts.loseBy) applyBotEvents(op, bot.tick());
     op.update(DT);
     obs.tick();
   }
@@ -126,11 +126,11 @@ describe('observer events validate against the schema', () => {
     );
     const op = new Operation(OP_1_1);
     obs.onScene({ name: 'operation', op });
-    const bot = new BotDriver();
+    const bot = new BotDriver(op);
     let observed = 0;
     let frames = 0;
     while ((op.status === 'intro' || op.status === 'running') && frames < 60 * 300) {
-      if (op.status === 'running') applyBotEvents(op, bot.tick(op));
+      if (op.status === 'running') applyBotEvents(op, bot.tick());
       op.update(DT);
       const t = performance.now();
       obs.tick();

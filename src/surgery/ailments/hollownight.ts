@@ -8,7 +8,7 @@ import { hex } from '../../render/color';
 import type { Gfx } from '../../render/gfx';
 import { Entity } from '../entity';
 import { BloodPool, Embedded, Laceration, surfDisc } from '../entities';
-import { FIELD, onBody, type Operation } from '../operation';
+import { LEAD_DISH, onBody, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
 import { Muffler } from '../bosses/common';
 
@@ -371,8 +371,8 @@ export class Infant extends Entity {
 
 // ============================================================ hexstone shot
 
-/** The lead-lined dish at the table's edge: the only safe place for hexstone. */
-export const LEAD_DISH: Vec = { x: FIELD.cx + FIELD.rx + 80, y: FIELD.cy - 120 };
+/** The lead-lined dish at the table's edge: the only safe place for hexstone (shared with embedded hexstone). */
+export { LEAD_DISH };
 
 /** Whisper marks: each time an instrument other than the tongs touches hexstone, the stone "whispers" (evidence). */
 const whispers = new WeakMap<Operation, number>();

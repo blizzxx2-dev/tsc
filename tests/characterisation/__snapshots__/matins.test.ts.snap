@@ -1,116 +1,127 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Malison of Matins > a shard dragged off the body is cast out (COOL); the rest rejoin after 9 s: MISS "It rejoined", 10 vitals, a weakened Malison 1`] = `
-"1.20 initial Malison hour=matins radius=50 hp=100 @(660,450)
-5.22 flag malison-open
-5.22 say "Its shroud has parted — sear it with the brand, now!"
-5.65 cue burn
-5.77 spawn Grub speed=70 @(517,327)
-5.77 spawn Grub speed=70 @(489,351)
-5.77 rate GOOD "Wounded" +63 combo=1
-5.77 say "It’s shedding hexlings! Burn them before they feed!"
-5.87 cue burn
-5.97 cue burn
-6.05 cue burn
-6.30 cue burn
-6.32 spawn Grub speed=70 @(513,380)
-6.32 spawn Grub speed=70 @(471,345)
-6.32 rate GOOD "Wounded" +66 combo=2
-6.32 say "It’s shedding hexlings! Burn them before they feed!"
-6.48 cue burn
-6.67 cue burn
-6.70 cue burn
-6.80 cue burn
-6.83 cue burn
-6.88 spawn Grub speed=70 @(456,372)
-6.88 spawn Grub speed=70 @(462,334)
-6.88 rate GOOD "Wounded" +69 combo=3
-6.88 say "It’s shedding hexlings! Burn them before they feed!"
-7.02 cue burn
-7.15 cue burn
-7.25 cue burn
-7.32 cue burn
-7.43 rate COOL "Malison unmade" +120 combo=4
-7.43 spawn MalisonAsh r=33.9 optional @(476,342)
-7.43 spawn MalisonShard @(526,342)
-7.43 spawn MalisonShard @(451,377)
-7.43 spawn MalisonShard @(451,308)
-7.43 say "It’s splitting apart! Seize every shard with the tongs and cast it out — before they rejoin!"
-7.43 flag brand-flesh
-7.43 say "Careful! The brand is searing healthy flesh!"
-7.47 cue pluck
-7.95 cue burn
-7.95 rate COOL "Cast out" +125 combo=5
-7.97 -- one cast out: status=running vitals=90.9 score=443 combo=5 counts=2/3/0/0 live=[Grub,Grub,Grub,Grub,Grub,Grub,MalisonAsh,MalisonShard,MalisonShard]
-16.43 spawn Malison hour=matins radius=50 hp=50 @(522,331)
-16.43 rate MISS "It rejoined" +0 combo=0
-16.43 hurt 10
-16.43 popup "-10"
-16.43 -- rejoined: status=running vitals=54.7 score=443 combo=0 counts=2/3/0/1 live=[Grub,Grub,Grub,Grub,Grub,Grub,Malison]
+"2.02 initial Malison hour=matins radius=50 hp=100 @(660,450)
+6.03 flag malison-open
+6.03 say "Its shroud has parted — sear it with the brand, now!"
+6.03 say "instruction"
+6.47 cue burn
+6.58 spawn Grub speed=70 @(517,327)
+6.58 spawn Grub speed=70 @(489,351)
+6.58 rate GOOD "Wounded" +63 combo=1
+6.58 say "It’s shedding hexlings! Burn them before they feed!"
+6.68 cue burn
+6.78 cue burn
+6.87 cue burn
+7.12 cue burn
+7.13 spawn Grub speed=70 @(513,380)
+7.13 spawn Grub speed=70 @(471,345)
+7.13 rate GOOD "Wounded" +66 combo=2
+7.13 say "It’s shedding hexlings! Burn them before they feed!"
+7.30 cue burn
+7.48 cue burn
+7.52 cue burn
+7.62 cue burn
+7.65 cue burn
+7.70 spawn Grub speed=70 @(456,372)
+7.70 spawn Grub speed=70 @(462,334)
+7.70 rate GOOD "Wounded" +69 combo=3
+7.70 say "It’s shedding hexlings! Burn them before they feed!"
+7.83 cue burn
+7.97 cue burn
+8.07 cue burn
+8.13 cue burn
+8.25 rate COOL "Malison unmade" +120 combo=4
+8.25 spawn MalisonAsh r=33.9 optional @(476,342)
+8.25 spawn MalisonShard @(526,342)
+8.25 spawn MalisonShard @(451,377)
+8.25 spawn MalisonShard @(451,308)
+8.25 say "It’s splitting apart! Seize every shard with the tongs and cast it out — before they rejoin!"
+8.25 flag brand-flesh
+8.25 say "Careful! The brand is searing healthy flesh!"
+8.25 say "instruction"
+8.28 cue pluck
+8.77 cue burn
+8.77 rate COOL "Cast out" +31 combo=5
+8.78 -- one cast out: status=running vitals=90.9 score=349 combo=5 counts=2/3/0/0 live=[Grub,Grub,Grub,Grub,Grub,Grub,MalisonAsh,MalisonShard,MalisonShard]
+12.60 flag grub-burrow
+12.60 say "One’s burrowed in! Find it with the lens."
+12.60 say "instruction"
+17.25 spawn Malison hour=matins radius=50 hp=50 @(522,331)
+17.25 rate MISS "It rejoined" +0 combo=0
+17.25 hurt 10
+17.25 popup "-10"
+17.25 -- rejoined: status=running vitals=58.4 score=349 combo=0 counts=2/3/0/1 live=[Grub,Grub,Grub,Grub,Grub,Grub,Malison]
 "
 `;
 
 exports[`Malison of Matins > branding it open: "Wounded" at 75/50/25 % sheds two hexlings each; at 0 "Malison unmade" splits into three shards 1`] = `
-"1.20 initial Malison hour=matins radius=50 hp=100 @(660,450)
-5.22 flag malison-open
-5.22 say "Its shroud has parted — sear it with the brand, now!"
-5.65 cue burn
-5.77 spawn Grub speed=70 @(517,327)
-5.77 spawn Grub speed=70 @(489,351)
-5.77 rate GOOD "Wounded" +63 combo=1
-5.77 say "It’s shedding hexlings! Burn them before they feed!"
-5.87 cue burn
-5.97 cue burn
-6.05 cue burn
-6.30 cue burn
-6.32 spawn Grub speed=70 @(513,380)
-6.32 spawn Grub speed=70 @(471,345)
-6.32 rate GOOD "Wounded" +66 combo=2
-6.32 say "It’s shedding hexlings! Burn them before they feed!"
-6.48 cue burn
-6.67 cue burn
-6.70 cue burn
-6.80 cue burn
-6.83 cue burn
-6.88 spawn Grub speed=70 @(456,372)
-6.88 spawn Grub speed=70 @(462,334)
-6.88 rate GOOD "Wounded" +69 combo=3
-6.88 say "It’s shedding hexlings! Burn them before they feed!"
-7.02 cue burn
-7.15 cue burn
-7.25 cue burn
-7.32 cue burn
-7.43 rate COOL "Malison unmade" +120 combo=4
-7.43 spawn MalisonAsh r=33.9 optional @(476,342)
-7.43 spawn MalisonShard @(526,342)
-7.43 spawn MalisonShard @(451,377)
-7.43 spawn MalisonShard @(451,308)
-7.43 say "It’s splitting apart! Seize every shard with the tongs and cast it out — before they rejoin!"
-7.43 flag brand-flesh
-7.43 say "Careful! The brand is searing healthy flesh!"
-7.47 -- after one open window: status=running vitals=92.7 score=318 combo=4 counts=1/3/0/0 live=[Grub,Grub,Grub,Grub,Grub,Grub,MalisonAsh,MalisonShard,MalisonShard,MalisonShard] hp=-0.5
+"2.02 initial Malison hour=matins radius=50 hp=100 @(660,450)
+6.03 flag malison-open
+6.03 say "Its shroud has parted — sear it with the brand, now!"
+6.03 say "instruction"
+6.47 cue burn
+6.58 spawn Grub speed=70 @(517,327)
+6.58 spawn Grub speed=70 @(489,351)
+6.58 rate GOOD "Wounded" +63 combo=1
+6.58 say "It’s shedding hexlings! Burn them before they feed!"
+6.68 cue burn
+6.78 cue burn
+6.87 cue burn
+7.12 cue burn
+7.13 spawn Grub speed=70 @(513,380)
+7.13 spawn Grub speed=70 @(471,345)
+7.13 rate GOOD "Wounded" +66 combo=2
+7.13 say "It’s shedding hexlings! Burn them before they feed!"
+7.30 cue burn
+7.48 cue burn
+7.52 cue burn
+7.62 cue burn
+7.65 cue burn
+7.70 spawn Grub speed=70 @(456,372)
+7.70 spawn Grub speed=70 @(462,334)
+7.70 rate GOOD "Wounded" +69 combo=3
+7.70 say "It’s shedding hexlings! Burn them before they feed!"
+7.83 cue burn
+7.97 cue burn
+8.07 cue burn
+8.13 cue burn
+8.25 rate COOL "Malison unmade" +120 combo=4
+8.25 spawn MalisonAsh r=33.9 optional @(476,342)
+8.25 spawn MalisonShard @(526,342)
+8.25 spawn MalisonShard @(451,377)
+8.25 spawn MalisonShard @(451,308)
+8.25 say "It’s splitting apart! Seize every shard with the tongs and cast it out — before they rejoin!"
+8.25 flag brand-flesh
+8.25 say "Careful! The brand is searing healthy flesh!"
+8.25 say "instruction"
+8.28 -- after one open window: status=running vitals=92.7 score=318 combo=4 counts=1/3/0/0 live=[Grub,Grub,Grub,Grub,Grub,Grub,MalisonAsh,MalisonShard,MalisonShard,MalisonShard] hp=-0.5
 "
 `;
 
 exports[`Malison of Matins > branding it while veiled says malison-veiled and does no damage (and no brand-flesh penalty) 1`] = `
-"1.20 initial Malison hour=matins radius=50 hp=100 @(660,450)
-1.20 flag malison-veiled
-1.20 say "The brand can’t touch it while it’s veiled. Wait for the shroud to part!"
-2.22 -- branded while veiled: status=running vitals=98.4 score=0 combo=0 counts=0/0/0/0 live=[Malison] hp=100
+"2.02 initial Malison hour=matins radius=50 hp=100 @(660,450)
+2.02 flag malison-veiled
+2.02 say "The brand can’t touch it while it’s veiled. Wait for the shroud to part!"
+2.02 say "instruction"
+3.03 -- branded while veiled: status=running vitals=98.4 score=0 combo=0 counts=0/0/0/0 live=[Malison] hp=100
 "
 `;
 
 exports[`Malison of Matins > shroud rhythm: 4 s veiled, 2.5 s open; rends lacerations every 4.5 s of veiled time 1`] = `
-"1.20 initial Malison hour=matins radius=50 hp=100 @(660,450)
-5.22 flag malison-open
-5.22 say "Its shroud has parted — sear it with the brand, now!"
-8.23 spawn Laceration length=61 bleed=0.8 @(452,329)
-8.23 cue cut
-8.23 flag malison-rend
-8.23 say "It’s tearing the flesh as it moves! Stitch those wounds!"
-9.45 spawn BloodPool ichor=blood r=8 optional @(452,327)
-15.27 spawn Laceration length=62 bleed=0.8 @(524,293)
-15.27 cue cut
-21.20 -- 20 s of rhythm: status=running vitals=77.2 score=0 combo=0 counts=0/0/0/0 live=[Malison,Laceration,BloodPool,Laceration] toggles=["open@4.02","veiled@6.53","open@10.55","veiled@13.07","open@17.08","veiled@19.60"]
+"2.02 initial Malison hour=matins radius=50 hp=100 @(660,450)
+6.03 flag malison-open
+6.03 say "Its shroud has parted — sear it with the brand, now!"
+6.03 say "instruction"
+9.05 spawn Laceration source=blade length=61 bleed=0.8 @(452,329)
+9.05 cue cut
+9.05 flag malison-rend
+9.05 say "It’s tearing the flesh as it moves! Stitch those wounds!"
+9.05 say "instruction"
+13.05 spawn BloodPool ichor=blood r=8 optional @(451,325)
+16.08 spawn Laceration source=blade length=61.9 bleed=0.8 @(517,330)
+16.08 cue cut
+20.08 spawn BloodPool ichor=blood r=8 optional @(514,326)
+22.02 -- 20 s of rhythm: status=running vitals=76.3 score=0 combo=0 counts=0/0/0/0 live=[Malison,Laceration,BloodPool,Laceration,BloodPool] toggles=["open@4.03","veiled@6.55","open@10.57","veiled@13.08","open@17.10","veiled@19.62"]
 "
 `;

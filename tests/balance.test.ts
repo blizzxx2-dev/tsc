@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { allCampaignOperations as allOperations } from '../src/content/campaign';
 import { playWithBot } from './bot';
 import { simReport, simRow } from './helpers/sim-report';
+import { X_OPS, xOpDef, xOpOptions } from '../src/content/challenge';
 
 /**
  * Balance guard-rails, using the bot surgeon at two paces:
@@ -25,13 +26,23 @@ describe('demo balance', () => {
   }
 });
 
-/** Prints suggested rank thresholds. Run with CALIBRATE=1 npx vitest run tests/balance.test.ts */
+/**
+ * Prints rank thresholds for src/surgery/ranks.ts. Run with CALIBRATE=1 npx vitest run tests/balance.test.ts
+ * S = 96 % of the steady bot (so steady ranks S but never a free XS: XS needs 1.05 × S ≈ 1.008 × steady),
+ * A = 80 % of S, B = 60 % of S.
+ */
+// eslint-disable-next-line vitest/expect-expect -- a calibration printout, not a check
 it.runIf(process.env.CALIBRATE)('calibrate rank thresholds', () => {
-  const round = (n: number) => Math.round(n / 50) * 50;
+  const round = (n: number) => Math.round(n / 10) * 10;
   for (const def of allOperations()) {
-    const fast = playWithBot(def, { think: 0.9 }).op;
-    expect(fast.status, `${def.id} must be won to calibrate`).toBe('won');
-    const S = round(fast.score * 0.97);
-    console.log(`${def.id}: ranks: { S: ${S}, A: ${round(S * 0.8)}, B: ${round(S * 0.6)} }  (fast bot ${fast.status} ${fast.score})`);
+    const steady = playWithBot(def, { profile: 'steady' }).op;
+    const S = round(steady.score * 0.96);
+    console.log(`  '${def.id}': { S: ${S}, A: ${round(S * 0.8)}, B: ${round(S * 0.6)} }, // steady ${steady.status} ${steady.score}`);
+  }
+  for (const x of X_OPS.filter((xx) => xx.base)) {
+    const def = xOpDef(x);
+    const steady = playWithBot(def, { profile: 'steady', ...xOpOptions(x) }).op;
+    const S = round(steady.score * 0.96);
+    console.log(`  '${def.id}': { S: ${S}, A: ${round(S * 0.8)}, B: ${round(S * 0.6)} }, // steady ${steady.status} ${steady.score}`);
   }
 });

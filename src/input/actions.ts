@@ -16,6 +16,9 @@ export type ActionId =
   | 'tool.radial'
   | 'litany.draw'
   | 'litany.key'
+  | 'op.assist'
+  | 'op.leechReverse'
+  | 'op.debug'
   | 'pause'
   | 'ui.confirm'
   | 'ui.back'
@@ -72,6 +75,9 @@ export const ACTIONS: readonly ActionDef[] = [
   { id: 'tool.radial', group: 'tools', label: 'Instrument wheel', contexts: op },
   { id: 'litany.draw', group: 'litany', label: 'Draw the star', contexts: op },
   { id: 'litany.key', group: 'litany', label: 'Speak the Litany', contexts: op, chordHold: 0.6 },
+  { id: 'op.assist', group: 'tools', label: 'Call Sister Ilse (once per operation)', contexts: op },
+  { id: 'op.leechReverse', group: 'tools', label: 'Reverse the leech', contexts: op },
+  { id: 'op.debug', group: 'tools', label: 'Gameplay debug overlay', contexts: op },
   { id: 'pause', group: 'menus', label: 'Pause', contexts: op },
   { id: 'ui.confirm', group: 'menus', label: 'Confirm', contexts: menu },
   { id: 'ui.back', group: 'menus', label: 'Back', contexts: ['menu', 'story'] },
@@ -112,6 +118,9 @@ export const DEFAULT_BINDINGS: Readonly<Record<ActionId, BindingSet>> = {
   'tool.radial': b(['mouse:1'], ['pad:3']),
   'litany.draw': b(['mouse:2'], ['pad:6']),
   'litany.key': b(['key:Space'], ['pad:4+pad:5']),
+  'op.assist': b(['key:KeyH']),
+  'op.leechReverse': b(['key:KeyR']),
+  'op.debug': b(['key:F7']),
   pause: b(['key:Escape'], ['pad:9']),
   'ui.confirm': b(['key:Enter', 'key:Space'], ['pad:0']),
   'ui.back': b(['key:Escape', 'key:Backspace'], ['pad:1']),

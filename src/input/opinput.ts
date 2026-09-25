@@ -159,13 +159,15 @@ export class OperationInput {
     if (a === 'litany.key') {
       const mode = litanyMode(this.b);
       // The gamepad chord is always available; the keyboard key follows the Litany input option.
-      if (mode !== 'draw' || this.pad) this.invokeLitany(op, this.cursor);
+      if (mode !== 'draw' || this.pad || op.assists.simpleGestures) this.invokeLitany(op, this.cursor);
       return;
     }
     if (a.startsWith('tool.select.')) {
       const n = Number(a.slice('tool.select.'.length)) as (typeof TOOL_SLOTS)[number];
       const tool = TOOL_INFO[n - 1]?.id;
-      if (tool) this.setTool(op, e.t, tool);
+      // Pressing the tincture's slot again cycles the tincture colour.
+      if (tool === 'tincture' && op.tool === 'tincture') op.cycleTincture();
+      else if (tool) this.setTool(op, e.t, tool);
       return;
     }
     if (a === 'tool.next' || a === 'tool.prev') return this.cycle(op, e.t, a === 'tool.next' ? 1 : -1);
@@ -348,6 +350,10 @@ export class OperationInput {
     const trail = this.starTrail;
     this.starTrail = [];
     const res = analyzeStar(trail, { profile: this.pad ? 'gamepad' : 'pointer' });
+    if (op.litanyPractice) {
+      if (res.ok || trail.length > 8) op.practiceStar(res.ok);
+      return;
+    }
     if (res.ok) {
       const cx = trail.reduce((a, p) => a + p.x, 0) / trail.length;
       const cy = trail.reduce((a, p) => a + p.y, 0) / trail.length;
@@ -357,6 +363,7 @@ export class OperationInput {
   }
 
   private invokeLitany(op: Operation, at: Vec): void {
+    if (op.litanyPractice) return op.practiceStar(true);
     if (!op.invokeLitany() && op.def.litany !== false) op.popup(op.litanyUsed ? t('popup.litany_spent') : t('popup.not_now'), at, PALETTE.inkDim);
   }
 

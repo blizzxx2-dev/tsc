@@ -11,25 +11,45 @@ import { TitleScene } from './title';
 import { DemoEndScene } from './demoend';
 import { emitGameEvent } from '../platform/events';
 import { assisted } from '../core/settings';
+import { finishChapter, finishOperation } from '../surgery/session';
+import type { OperationOptions } from '../surgery/operation';
 
 export const save: SaveData = load();
 
 /** Briefing → operation → results for one operation, then hand control back. */
-export function playOperation(game: Game, def: OperationDef, onWin: () => void, onLeave: () => void): void {
-  const begin = () =>
+export function playOperation(game: Game, def: OperationDef, onWin: () => void, onLeave: () => void, runOpts: OperationOptions = {}): void {
+  const begin = (over: OperationOptions = runOpts) =>
     game.go(
       new OperationScene(
         def,
         ({ op, won }) => {
-          const best = won ? recordBest(save, def.id, op.rank(), op.score) : false;
+          const legacyBest = won && !op.opts.challenge ? recordBest(save, def.id, op.rank(), op.score) : false;
           store(save);
           emitGameEvent({ type: 'operation-end', opId: def.id, won, rank: won ? op.rank() : null, score: op.score, assisted: assisted(), litanyUsed: op.litanyUsed });
-          game.go(new ResultsScene(op, won, best, { next: won ? onWin : undefined, retry: begin, quit: onLeave }));
+          const summary = finishOperation(op);
+          const cp = op.checkpointPhase();
+          game.go(
+            new ResultsScene(
+              op,
+              won,
+              summary.newBest || legacyBest,
+              {
+                next: won ? onWin : undefined,
+                retry: () => begin(runOpts),
+                quit: onLeave,
+                // Retry at Novice for this op only; boss ops can resume at the Malison.
+                retryNovice: op.opts.challenge || op.difficulty === 'novice' ? undefined : () => begin({ ...runOpts, difficulty: 'novice' }),
+                retryCheckpoint: cp !== null ? () => begin({ ...runOpts, checkpoint: cp }) : undefined,
+              },
+              summary,
+            ),
+          );
         },
         onLeave,
+        over,
       ),
     );
-  game.go(new BriefingScene(def, save.best[def.id], begin, onLeave));
+  game.go(new BriefingScene(def, save.best[def.id], () => begin(), onLeave));
 }
 
 /** Play the campaign from a given chapter/step, saving progress as it goes. */
@@ -44,6 +64,7 @@ export function playStep(game: Game, chapter: number, step: number): void {
   const s = ch.steps[step];
   if (!s) {
     emitGameEvent({ type: 'chapter-complete', chapter });
+    finishChapter(chapter + 1);
     return playStep(game, chapter + 1, 0);
   }
   advance(save, chapter, step);

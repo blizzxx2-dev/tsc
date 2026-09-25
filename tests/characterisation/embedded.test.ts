@@ -3,20 +3,24 @@ import { describe, expect, it } from 'vitest';
 import { at } from '../../src/content/chapter1';
 import { OP_2_2 } from '../../src/content/chapter2';
 import { Embedded, Laceration, Rot, type EmbeddedKind } from '../../src/surgery/entities';
-import type { Operation } from '../../src/surgery/operation';
+import { LEAD_DISH, TRAY_DISH, type Operation } from '../../src/surgery/operation';
 import { DT, hoverAt, live, press, step, strokePath, tap } from '../helpers/sim';
 import { scenario } from '../helpers/trace';
 
-/** Where a player grips the object with the tongs, and the direction to pull it out. */
-function pullPath(e: Embedded, distance = 110) {
+/**
+ * Where a player grips the object with the tongs, the pull out along its axis, and the carry off the
+ * body into the dish (anything released on the body sinks back in; hexstone only goes in the lead dish).
+ */
+function pullPath(e: Embedded, distance = 40, toDish = true) {
   const grip = e.spec.len > 0 ? { x: e.origin.x + (e.handle.x - e.origin.x) * 0.7, y: e.origin.y + (e.handle.y - e.origin.y) * 0.7 } : { ...e.pos };
   const dir = e.spec.len > 0 ? { x: e.handle.x - e.origin.x, y: e.handle.y - e.origin.y } : { x: 0, y: -1 };
   const l = Math.hypot(dir.x, dir.y) || 1;
-  return [grip, { x: grip.x + (dir.x / l) * distance, y: grip.y + (dir.y / l) * distance }];
+  const out = { x: grip.x + (dir.x / l) * distance, y: grip.y + (dir.y / l) * distance };
+  return toDish ? [grip, out, e.kind === 'hexstone' ? LEAD_DISH : TRAY_DISH] : [grip, out];
 }
 
-const pull = (op: Operation, e: Embedded, opts: { speed?: number; dwell?: number; distance?: number } = {}) =>
-  strokePath(op, 'tongs', pullPath(e, opts.distance), { speed: opts.speed ?? 500, dwell: opts.dwell });
+const pull = (op: Operation, e: Embedded, opts: { speed?: number; dwell?: number; distance?: number; toDish?: boolean } = {}) =>
+  strokePath(op, 'tongs', pullPath(e, opts.distance, opts.toDish), { speed: opts.speed ?? 400, dwell: opts.dwell });
 
 describe('barbed arrow', () => {
   it('two lancet nicks rate "Nick" then "Barbs freed"; the freed arrow pulls clean', () => {
@@ -59,9 +63,9 @@ describe('barbed arrow', () => {
     expect(trace.text()).toMatchSnapshot();
   });
 
-  it('an arrow released before it is clear (≤ 70 px) sinks back to its origin', () => {
+  it('an object released while still on the body sinks back to its origin', () => {
     const { op, ents, trace } = scenario(() => [new Embedded(at(0, 0), 'bolt', 0.4, false)]);
-    pull(op, ents[0], { distance: 50 });
+    pull(op, ents[0], { distance: 50, toDish: false });
     trace.note('after a short pull', { back: ents[0].pos.x === ents[0].origin.x && ents[0].pos.y === ents[0].origin.y });
     expect(ents[0].alive).toBe(true);
     expect(ents[0].pos).toEqual(ents[0].origin);
@@ -70,25 +74,22 @@ describe('barbed arrow', () => {
 });
 
 describe('clean extractions', () => {
+  // Bolts need the pull-pause-draw staging and glass a slow hand: see GAM-0184 (tests/demo-ops.test.ts).
   const KINDS: [EmbeddedKind, string][] = [
-    ['bolt', 'Bolt'],
     ['shot', 'Lead shot'],
     ['tooth', 'Fang'],
     ['shard', 'Shard'],
-    ['glass', 'Glass'],
   ];
 
-  it.each(KINDS)('%s pulled clear in under 0.9 s rates COOL "%s"; slower rates GOOD', (kind, label) => {
-    const { op, ents, trace } = scenario(() => [new Embedded(at(-100, 0), kind, 0.4, false), new Embedded(at(150, 0), kind, 0.4, false)]);
-    const [fast, slow] = ents;
-    expect(fast.spec.label).toBe(label);
-    pull(op, fast);
-    trace.note('fast pull');
-    pull(op, slow, { dwell: 0.9 });
-    trace.note('slow pull');
+  it.each(KINDS)('%s drawn out along its axis and into the tray rates COOL "%s" and leaves its entry wound', (kind, label) => {
+    const { op, ents, trace } = scenario(() => [new Embedded(at(-100, 0), kind, 0.4, false)]);
+    const [e] = ents;
+    expect(e.spec.label).toBe(label);
+    pull(op, e);
+    trace.note('pulled');
+    expect(e.alive).toBe(false);
     expect(op.counts.cool).toBe(1);
-    expect(op.counts.good).toBe(1);
-    expect(live(op, Laceration).map((l) => l.length)).toEqual([fast.spec.wound, slow.spec.wound]);
+    expect(live(op, Laceration).map((l) => l.length)).toEqual([e.spec.wound]);
     expect(trace.text()).toMatchSnapshot();
   });
 });

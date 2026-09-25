@@ -544,7 +544,7 @@ export class OperationAudio {
     }
     // Bleeding trickle: one bed for all open lacerations.
     let bleed = 0;
-    for (const e of live) if (e instanceof Laceration && !e.hidden) bleed += e.drain();
+    for (const e of live) if (e instanceof Laceration && !e.hidden) bleed += e.drain(op);
     this.loop('bleed', 'loop.bleed.trickle', running && bleed > 0, { severity: Math.min(1, bleed / 2) }, 0, 400);
 
     const burns = new Set<number>();

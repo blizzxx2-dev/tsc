@@ -55,7 +55,7 @@ export function zonesFor(op: Operation, tool: ToolId): Zone[] {
   for (const e of op.entities) {
     if (!e.alive) continue;
     if (e.hidden) {
-      if (tool === 'lens') out.push({ entity: e, kind: 'hover', r: e instanceof LaudsMalison ? 70 : 60, closest: point(() => e.pos) });
+      if (tool === 'lens') out.push({ entity: e, kind: 'hover', r: op.tuning.lens.radius + (e instanceof LaudsMalison ? 10 : 0), closest: point(() => e.pos) });
       continue;
     }
     if (e instanceof Incision && tool === 'lancet' && e.state === 'mark') {

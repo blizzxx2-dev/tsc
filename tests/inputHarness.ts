@@ -9,7 +9,7 @@ import { Bindings } from '../src/input/bindings';
 import { OperationInput, type HudHit } from '../src/input/opinput';
 import type { InputEvent, InputEventBody } from '../src/input/types';
 import type { Entity } from '../src/surgery/entity';
-import { Operation, type OperationDef } from '../src/surgery/operation';
+import { Operation, type OperationDef, type OperationOptions } from '../src/surgery/operation';
 import type { ToolId } from '../src/surgery/types';
 
 export const ALL_TOOLS: ToolId[] = ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture', 'brand', 'lens'];
@@ -41,10 +41,10 @@ export class Harness {
   hud: HudHit | undefined;
   private pads: unknown[] = [];
 
-  constructor(def: OperationDef) {
-    this.op = new Operation(def);
+  constructor(def: OperationDef, opts: OperationOptions = {}) {
+    this.op = new Operation(def, opts);
     this.op.events.on('cue', (c) => this.cues.push(c));
-    this.op.update(1.25); // intro → running, first phase spawned
+    while (this.op.status === 'intro') this.op.update(0.25); // intro → running, first phase spawned
     this.input.setGamepadSource(() => this.pads as never);
     this.tick(); // establish frame timing
   }
@@ -109,5 +109,12 @@ export function fakePad(opts: { id?: string; index?: number; buttons?: Record<nu
     const v = opts.buttons?.[i] ?? 0;
     return { pressed: v > 0.5, value: v };
   });
-  return { id: opts.id ?? 'Xbox Wireless Controller (STANDARD GAMEPAD Vendor: 045e)', index: opts.index ?? 0, connected: true, mapping: 'standard', buttons, axes: opts.axes ?? [0, 0, 0, 0] };
+  return {
+    id: opts.id ?? 'Xbox Wireless Controller (STANDARD GAMEPAD Vendor: 045e)',
+    index: opts.index ?? 0,
+    connected: true,
+    mapping: 'standard',
+    buttons,
+    axes: opts.axes ?? [0, 0, 0, 0],
+  };
 }

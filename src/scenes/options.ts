@@ -13,6 +13,7 @@ import { ControlsScene } from '../input/controlsScene';
 import { glyphFor } from '../input/glyphs';
 import { litanyMode } from '../input/opinput';
 import { AudioOptionsScene } from '../audio/options-scene';
+import { GameplayOptionsScene } from './gameplayOptions';
 
 interface Row {
   /** String-table key of the row label (see src/i18n/strings/en.json). */
@@ -66,6 +67,12 @@ export class OptionsScene implements Scene {
         bindings.save();
       },
       note: 'ui.options.litany_input_note',
+    },
+    {
+      label: 'ui.options.gameplay',
+      value: () => t('ui.options.gameplay_value'),
+      change: (_d, g) => g.go(new GameplayOptionsScene(() => g.go(this))),
+      note: 'ui.options.gameplay_note',
     },
     {
       label: 'ui.options.render_scale',

@@ -1,0 +1,247 @@
+import type { Rating, ToolId } from './types';
+import { DEFAULT_TUNING } from './tuning';
+
+/**
+ * The scoring spec, in code: every rateable action, the label its popup shows,
+ * and what earns each rating. Tests assert every label the simulation emits is
+ * listed here; the results screen and the Surgeon's Manual read it.
+ *
+ * Points: COOL 100 / GOOD 60 / BAD 15 / MISS 0, × (1 + min(combo, 20) × 0.05).
+ * Boss adds pay 25 % (combo capped at ×5, total capped at 15 % of S); entities
+ * created by the surgeon's own mistakes pay nothing.
+ *
+ * End bonuses: 20 × the patient's *average* vitals over the operation (a
+ * last-second tincture buys nothing), and 10 per second left (8 on boss
+ * operations; nothing under 10 s).
+ */
+export interface ScoringRule {
+  label: string;
+  action: string;
+  tools: readonly ToolId[];
+  criteria: Partial<Record<Rating, string>>;
+}
+
+const S = DEFAULT_TUNING;
+
+export const SCORING: readonly ScoringRule[] = [
+  // Lancet
+  { label: 'Incision', action: 'Trace an incision guide', tools: ['lancet'], criteria: { cool: `mean path error ≤ ${S.incision.coolDev} px`, good: `≤ ${S.incision.goodDev} px (or a stroke slower than ${S.incision.slowSpeed} px/s)`, bad: `> ${S.incision.goodDev} px` } },
+  { label: 'Skin', action: 'Open the skin layer of a deep incision', tools: ['lancet'], criteria: { cool: 'as Incision', good: 'as Incision', bad: 'as Incision' } },
+  { label: 'Fascia', action: 'Open the layer beneath', tools: ['lancet'], criteria: { cool: 'as Incision', good: 'as Incision', bad: 'as Incision' } },
+  { label: 'Rushed', action: 'Incision stroke too fast', tools: ['lancet'], criteria: { bad: `faster than ${S.incision.rushedSpeed} px/s` } },
+  { label: 'Off the line', action: 'Slip off an incision guide', tools: ['lancet'], criteria: { bad: `more than ${S.incision.slipDist} px from the guide` } },
+  { label: 'Stray cut', action: 'Lancet held on empty flesh', tools: ['lancet'], criteria: { miss: `held > ${S.miss.emptyHold} s on nothing while work remains` } },
+  { label: 'Reopened', action: 'Cut across your own stitches', tools: ['lancet'], criteria: { bad: 'always; the reopened wound pays nothing' } },
+  { label: 'Nick', action: 'First nick to free a barbed head', tools: ['lancet'], criteria: { good: 'within 30 px of the entry' } },
+  { label: 'Barbs freed', action: 'Second nick', tools: ['lancet'], criteria: { good: 'within 30 px of the entry' } },
+  { label: 'Char excised', action: 'Cut the dead core from a grade-3 burn', tools: ['lancet'], criteria: { good: 'cut length ≥ 0.8 × burn radius inside it' } },
+  { label: 'Lanced', action: 'Lance a bubo (or an egg sac)', tools: ['lancet'], criteria: { cool: 'before it is 75 % ripe', good: 'ripe' } },
+  { label: 'Overcut', action: 'Lance a bubo with a cut longer than it is wide', tools: ['lancet'], criteria: { bad: 'cut > bubo diameter; it spills' } },
+  // Tongs
+  { label: 'Arrow', action: 'Extract an arrow', tools: ['tongs'], criteria: { cool: `pulled within ±${S.tongs.coolAngle}° of its axis`, good: `within ±${S.tongs.goodAngle}°` } },
+  { label: 'Bolt', action: 'Extract a crossbow bolt (two-stage pull)', tools: ['tongs'], criteria: { cool: 'on axis, paused at 40 %', good: `within ±${S.tongs.goodAngle}°` } },
+  { label: 'Lead shot', action: 'Extract lead shot', tools: ['tongs'], criteria: { cool: 'dragged off the body' } },
+  { label: 'Fang', action: 'Extract a lodged fang', tools: ['tongs'], criteria: { cool: `on its (lens-revealed) axis ±${S.tongs.coolAngle}°`, good: `±${S.tongs.goodAngle}°` } },
+  { label: 'Shard', action: 'Extract a shard', tools: ['tongs'], criteria: { cool: `±${S.tongs.coolAngle}°`, good: `±${S.tongs.goodAngle}°` } },
+  { label: 'Glass', action: 'Extract glass', tools: ['tongs'], criteria: { cool: `±${S.tongs.coolAngle}° and slower than ${S.tongs.glassSpeed} px/s`, good: `±${S.tongs.goodAngle}°` } },
+  { label: 'Hexstone', action: 'Extract hexstone into the lead dish', tools: ['tongs'], criteria: { cool: `±${S.tongs.coolAngle}°`, good: `±${S.tongs.goodAngle}°` } },
+  { label: 'Wadding', action: 'Remove cloth wadding', tools: ['tongs'], criteria: { good: 'dragged off the body' } },
+  { label: 'Torn', action: 'Pull a barbed head without nicking', tools: ['tongs'], criteria: { bad: 'always; 1.6× bleed laceration' } },
+  { label: 'Wrenched', action: 'Pull against the axis', tools: ['tongs'], criteria: { bad: `more than ${S.tongs.goodAngle}° off axis` } },
+  { label: 'Snapped', action: 'Pull a bolt through without pausing', tools: ['tongs'], criteria: { bad: 'past 70 % without the 0.3 s pause; head left inside' } },
+  { label: 'Sliced', action: 'Drag glass too fast', tools: ['tongs'], criteria: { bad: `faster than ${S.tongs.glassSpeed} px/s` } },
+  { label: 'Debrided', action: 'Pluck burn eschar, or cut gangrene away below its line', tools: ['tongs', 'lancet'], criteria: { good: 'each flake; 80 px of cutting for gangrene' } },
+  { label: 'Plucked', action: 'Drag a grub off the body', tools: ['tongs'], criteria: { good: 'released off the body' } },
+  { label: 'Cast out', action: 'Drag a Malison shard off the body', tools: ['tongs'], criteria: { cool: 'before it rejoins' } },
+  // Leech-Pipe
+  { label: 'Drained', action: 'Draw off a pool (≥ 20 px; blood from a wound left bleeding pays nothing)', tools: ['leech'], criteria: { cool: `cleared within ${S.blood.coolTime} s of first contact`, good: `within ${S.blood.goodTime} s` } },
+  { label: 'Neutralised', action: 'Draw off live acid (burn) or dose an alchemical pool with amber tincture', tools: ['leech', 'tincture'], criteria: { good: `${S.burn.acidNeutralise} s of suction; or one amber dose in the pool` } },
+  // Gut Thread
+  { label: 'Stitched', action: 'Stitch a laceration', tools: ['thread'], criteria: { cool: `one stroke, spacing ${S.stitch.coolMin}–${S.stitch.coolMax} px`, good: `any closure without a gap > ${S.stitch.goodMax} px` } },
+  { label: 'Closed', action: 'Close the initial incision', tools: ['thread'], criteria: { cool: `as Stitched; +${S.scoring.closureBonus} bonus`, good: 'as Stitched' } },
+  { label: 'Restitched', action: 'Close a reopened wound', tools: ['thread'], criteria: { good: 'pays nothing (penalty entity)' } },
+  { label: 'Ligature', action: 'Tie off a venom vein', tools: ['thread'], criteria: { good: 'a stitch across the vein' } },
+  // Salve
+  { label: 'Sealed', action: 'Salve a small nick', tools: ['salve'], criteria: { good: `≥ ${S.laceration.salveCoverage * 100} % coverage` } },
+  { label: 'Burn dressed', action: 'Salve a burn', tools: ['salve'], criteria: { cool: `≥ ${S.burn.coverage * 100} % in one stroke`, good: 'several strokes' } },
+  { label: 'Cleansed', action: 'Salve a lanced bubo', tools: ['salve'], criteria: { good: 'after the pus is drained' } },
+  { label: 'Rot purged', action: 'Salve rot away', tools: ['salve'], criteria: { cool: `≥ ${S.rot.coverage * 100} % in one stroke`, good: 'several strokes' } },
+  { label: 'Soothed', action: 'Salve a scorch mark', tools: ['salve'], criteria: { good: 'always' } },
+  { label: 'Salve on acid', action: 'Salve before the acid is drawn off', tools: ['salve'], criteria: { bad: 'once per stroke' } },
+  // Tincture
+  { label: 'Stabilised', action: 'Inject the red tincture', tools: ['tincture'], criteria: { cool: `vitals < ${S.tincture.coolBelow} (counts for the combo; rescue pays no points)`, good: `vitals < ${S.tincture.goodBelow}` } },
+  { label: 'Wasteful', action: 'Inject when not needed', tools: ['tincture'], criteria: { bad: `vitals > ${S.tincture.badAbove}` } },
+  { label: 'Into the wound', action: 'Inject into or beside an open wound', tools: ['tincture'], criteria: { miss: `< ${S.tincture.woundClearance} px from a wound` } },
+  { label: 'Roused', action: 'Blue stimulant given to a patient in torpor', tools: ['tincture'], criteria: { good: 'torpor lifted' } },
+  { label: 'Antidote', action: 'Hold the tincture on a bite', tools: ['tincture'], criteria: { cool: 'before the venom spreads 50 px', good: 'later' } },
+  // Brand
+  { label: 'Seared', action: 'Sear a grub or spiderling', tools: ['brand'], criteria: { cool: `${S.brand.grubHold} s held` } },
+  { label: 'Split', action: 'Let go of a grub mid-searing', tools: ['brand'], criteria: { bad: `released between ${S.brand.grubSplitMin} and ${S.brand.grubSplitMax} s` } },
+  { label: 'Scorched', action: 'Brand held on healthy flesh', tools: ['brand'], criteria: { bad: `> ${S.brand.fleshBurnAfter} s` } },
+  { label: 'Stilled', action: 'Brand hexstone still', tools: ['brand'], criteria: { good: `${S.tongs.hexCalm} s held` } },
+  { label: 'Ember out', action: 'Brand out a hexfire ember', tools: ['brand'], criteria: { good: `${S.brand.hexfireEmber} s held` } },
+  { label: 'Curse broken', action: 'Sear every stroke of a curse-sigil in order', tools: ['brand'], criteria: { cool: 'no wrong stroke and within par time', good: 'otherwise' } },
+  { label: 'Wrong stroke', action: 'Brand a later sigil stroke first', tools: ['brand'], criteria: { bad: 'once per stroke attempt' } },
+  { label: 'Silenced', action: 'Silence a Lauds Voice', tools: ['brand'], criteria: { cool: 'always' } },
+  { label: 'Wounded', action: 'Wound a Malison past a threshold', tools: ['brand'], criteria: { good: 'each threshold' } },
+  { label: 'Malison unmade', action: 'Destroy a Malison', tools: ['brand'], criteria: { cool: 'always' } },
+  // Consequences
+  { label: 'Festered', action: 'Pus left in an open wound for 5 s', tools: ['leech'], criteria: { bad: 'the wound turns to rot' } },
+  { label: 'It rejoined', action: 'Malison shards left on the body', tools: ['tongs'], criteria: { miss: 'a shard outlived its 9 s' } },
+  { label: 'Hatched', action: 'An egg sac hatched on its own', tools: ['lancet'], criteria: { miss: 'not lanced in time' } },
+  // ---------------------------------------------------------------- Alpha ailments (src/surgery/ailments)
+  // Fractures
+  { label: 'Set', action: 'Seat a bone fragment', tools: ['tongs'], criteria: { cool: '≤ 4 px and 3° from home', good: '≤ 8 px and 6°' } },
+  { label: 'Pinned', action: 'Pin a set fracture', tools: ['lancet'], criteria: { good: 'both pins in order, every fragment seated' } },
+  { label: 'Pin order', action: 'Tap the second pin first', tools: ['lancet'], criteria: { bad: 'always' } },
+  { label: 'Misaligned', action: 'Pin a fragment that never seated', tools: ['lancet'], criteria: { bad: 'and −150 end bonus per fragment' } },
+  { label: 'Splinter', action: 'Remove a bone or wood splinter', tools: ['tongs'], criteria: { cool: 'wood, with the grain', good: 'bone splinter off the body' } },
+  { label: 'Snapped splinter', action: 'Pull wood against the grain', tools: ['tongs'], criteria: { bad: 'more than 90° from the grain' } },
+  // Petrification
+  { label: 'Chipped', action: 'Chip a stone plate free', tools: ['lancet'], criteria: { cool: 'every crack node in order' } },
+  { label: 'Off the crack', action: 'Tap a stone plate off its crack nodes', tools: ['lancet'], criteria: { bad: 'the stone spreads 10 px' } },
+  { label: 'Margin salved', action: 'Salve the raw flesh under a lifted plate', tools: ['salve'], criteria: { good: '≥ 80 % within 5 s' } },
+  { label: 'Unstoned', action: 'Clear a petrified patch', tools: ['salve'], criteria: { good: 'every margin healed' } },
+  // Frost
+  { label: 'Thawed', action: 'Thaw a frost patch', tools: ['brand'], criteria: { good: 'quick taps (≤ 0.4 s each)' } },
+  { label: 'Scalded', action: 'Hold the brand on frost', tools: ['brand'], criteria: { bad: 'held > 0.4 s' } },
+  { label: 'Crystals drawn', action: 'Draw ice crystals from a thawed vessel', tools: ['leech'], criteria: { good: '1 s of suction' } },
+  // Growths
+  { label: 'Excised', action: 'Cut a closed loop around a growth', tools: ['lancet'], criteria: { cool: '< 8 % through healthy tissue', good: '≤ 25 %', bad: '> 25 %' } },
+  { label: 'Ripped', action: 'Lift a growth before the loop is closed', tools: ['tongs'], criteria: { bad: 'always' } },
+  { label: 'Growth lifted', action: 'Lift an excised growth off the body', tools: ['tongs'], criteria: { good: 'always' } },
+  { label: 'Tied off', action: 'Ligate a feeder vessel', tools: ['thread'], criteria: { good: 'a stitch across it' } },
+  { label: 'Bud cut', action: 'Loop a mutation bud', tools: ['lancet'], criteria: { cool: 'as Excised (unrooted)', good: 'rooted', bad: 'sloppy loop' } },
+  { label: 'Root seared', action: 'Brand a rooted bud after looping', tools: ['brand'], criteria: { good: '0.6 s held' } },
+  { label: 'Glass cleared', action: 'Carry lens-found glass off the body', tools: ['tongs'], criteria: { cool: 'three slivers in one grab', good: 'fewer' } },
+  // Ulcers
+  { label: 'Ulcer closed', action: 'Salve every ring outside-in', tools: ['salve'], criteria: { cool: 'always' } },
+  { label: 'Perforated', action: 'Salve an inner ring first', tools: ['salve'], criteria: { bad: 'a perforation and a spill' } },
+  { label: 'Spill drained', action: 'Drain a perforation spill', tools: ['leech'], criteria: { good: 'within 6 s' } },
+  // Troll wounds
+  { label: 'Rim seared', action: 'Sear a regenerating rim all the way round', tools: ['brand'], criteria: { cool: 'every bin before it knits' } },
+  { label: 'Reopened lump', action: 'Cut open a wound that knitted over its shard', tools: ['lancet'], criteria: { good: 'a 40 px cut' } },
+  // Bites
+  { label: 'Channel seared', action: 'Cauterise both punctures of a bite', tools: ['brand'], criteria: { good: '0.8 s each' } },
+  { label: 'Transfused', action: 'Empty the donor bowl into the patient', tools: ['leech'], criteria: { good: 'pipe reversed' } },
+  // Alchemy
+  { label: 'Corroded', action: 'Leave an instrument in alchemical acid', tools: ['leech', 'tongs', 'lancet', 'thread', 'salve', 'brand', 'lens'], criteria: { bad: '> 1 s; the tool is useless 6 s' } },
+  { label: 'Acid drawn', action: 'Draw off neutralised acid', tools: ['leech'], criteria: { good: '1 s' } },
+  { label: 'Matched', action: 'Tap a poison mote with its own colour', tools: ['tincture'], criteria: { cool: 'colours match' } },
+  { label: 'Wrong antidote', action: 'Tap a poison mote with the wrong colour', tools: ['tincture'], criteria: { bad: 'the mote speeds up 30 %' } },
+  { label: 'Poison spent', action: 'Outlast a compound poison', tools: ['tincture'], criteria: { good: 'every mote dealt with' } },
+  { label: 'Vented', action: 'Vent a gas pocket', tools: ['leech'], criteria: { good: '1 s of suction' } },
+  { label: 'Pocket opened', action: 'Lance a vented gas pocket', tools: ['lancet'], criteria: { cool: 'after venting' } },
+  { label: 'Gassed', action: 'Lance an unvented gas pocket', tools: ['lancet'], criteria: { bad: 'haze for 4 s' } },
+  // Gangrene & amputation
+  { label: 'Limb saved', action: 'Debride and salve gangrene below the line', tools: ['salve'], criteria: { good: '≥ 85 % coverage' } },
+  { label: 'Sawn through', action: 'Eight saw strokes in rhythm', tools: ['lancet'], criteria: { good: 'each 0.3–0.7 s' } },
+  { label: 'Stump seared', action: 'Seal a stump with the brand', tools: ['brand'], criteria: { good: 'fast; −15 vitals' } },
+  { label: 'Ligatures', action: 'Tie three stump vessels', tools: ['thread'], criteria: { cool: 'within 20 s; +400 bonus' } },
+  // Parasites & infection
+  { label: 'Worm drawn', action: 'Draw a gut worm out whole', tools: ['tongs'], criteria: { cool: 'slower than 300 px/s' } },
+  { label: 'Torn worm', action: 'Yank a gut worm', tools: ['tongs'], criteria: { bad: 'it regrows a head in 6 s' } },
+  { label: 'Tick plucked', action: 'Pluck a tick', tools: ['tongs'], criteria: { cool: 'before it burrows', good: 'after' } },
+  { label: 'Antiparasitic', action: 'Green tincture for unseen larvae', tools: ['tincture'], criteria: { good: 'otherwise −10 % end bonus' } },
+  { label: 'Node treated', action: 'Leech then tincture an infection node', tools: ['leech', 'tincture'], criteria: { cool: 'ahead of the line' } },
+  { label: 'Line halted', action: 'The infection line stops at a treated node', tools: ['tincture'], criteria: { good: 'always' } },
+  { label: 'Crust excised', action: 'Encircle spore crust', tools: ['lancet'], criteria: { cool: 'as Excised', good: 'as Excised', bad: 'as Excised' } },
+  { label: 'Spores scattered', action: 'Cut through spore crust', tools: ['lancet'], criteria: { bad: 'new crust seeds within 60 px' } },
+  { label: 'Irrigated', action: 'Flush a dung-fouled patch', tools: ['leech'], criteria: { good: '1.5 s with the pipe reversed' } },
+  // Organs
+  { label: 'Air drawn', action: 'Draw air from a collapsed lung', tools: ['leech'], criteria: { good: '1.5 s' } },
+  { label: 'Lung sealed', action: 'Stitch a lung tear', tools: ['thread'], criteria: { cool: 'three stitches after the air is drawn' } },
+  { label: 'Disc cut', action: 'Three trepanning circles', tools: ['lancet'], criteria: { cool: 'never faster than 2.5 turns/s', good: 'after a nick' } },
+  { label: 'Dura nicked', action: 'Trepanning circles too fast', tools: ['lancet'], criteria: { bad: '> 2.5 turns/s' } },
+  { label: 'Disc lifted', action: 'Lift the bone disc off', tools: ['tongs'], criteria: { good: 'always' } },
+  { label: 'Fold cut', action: 'Cut a Choir-throat fold in the silence', tools: ['lancet'], criteria: { cool: 'between verses' } },
+  { label: 'Mid-verse', action: 'Cut a fold while it hums', tools: ['lancet'], criteria: { bad: 'always' } },
+  { label: 'Tumbler set', action: 'Turn a stomach-lock tumbler to its mark', tools: ['tongs'], criteria: { good: 'within 7.5°' } },
+  { label: 'Clot drawn', action: 'Draw off a softened wax clot', tools: ['leech'], criteria: { good: 'three brand taps first' } },
+  { label: 'Clogged', action: 'Leech an unsoftened wax clot', tools: ['leech'], criteria: { bad: 'the pipe clogs for 2 s' } },
+  { label: 'Clamped', action: 'Clamp an artery', tools: ['tongs'], criteria: { good: '0.5 s held' } },
+  { label: 'Artery torn', action: 'Extract beside an unclamped artery', tools: ['tongs'], criteria: { bad: '−10 vitals' } },
+  // Chapters III–V (later ailments and the Hours)
+  { label: 'It sang through the blade', action: 'Touch hexstone with anything but the tongs', tools: ['lancet', 'brand', 'leech', 'thread', 'salve'], criteria: { bad: 'always; it whispers' } },
+  { label: 'Fold excised', action: 'Excise a vocal fold in the rest between verses', tools: ['lancet'], criteria: { cool: 'with more than 40 % of the rest left', good: 'later in the rest' } },
+  { label: 'Remnant seared', action: 'Sear out a curse remnant', tools: ['brand'], criteria: { good: 'always' } },
+  { label: 'Ruptured', action: 'Tear a cyst while lifting it', tools: ['tongs'], criteria: { bad: 'pulled before it is freed' } },
+  { label: 'Tearing', action: 'Pull a tethered growth against its tether', tools: ['tongs'], criteria: { bad: 'always' } },
+  { label: 'Cut free', action: 'Cut the last tether of a growth', tools: ['lancet'], criteria: { cool: 'always' } },
+  { label: 'Removed whole', action: 'Lift a freed cyst out intact', tools: ['tongs'], criteria: { cool: 'always' } },
+  { label: 'Too tight', action: 'Grip an infant-growth too hard', tools: ['tongs'], criteria: { bad: 'always' } },
+  { label: 'Unsure grip', action: 'Let the grip slip during delivery', tools: ['tongs'], criteria: { bad: 'always' } },
+  { label: 'Too fast', action: 'Draw a delivery out too quickly', tools: ['tongs'], criteria: { bad: 'always' } },
+  { label: 'Delivered', action: 'Deliver the growth out', tools: ['tongs'], criteria: { cool: 'smoothly', good: 'roughly' } },
+  { label: 'The stone whispers', action: 'Drop hexstone anywhere but the lead dish', tools: ['tongs'], criteria: { bad: 'always' } },
+  { label: 'Rooted', action: 'A bud roots before it is cut', tools: [], criteria: { miss: 'left too long' } },
+  { label: 'Rooted fast', action: 'Cut a bud as it roots', tools: ['lancet'], criteria: { bad: 'always; the brand is needed now' } },
+  { label: 'Seared out', action: 'Sear out a rooted bud', tools: ['brand'], criteria: { good: 'always' } },
+  { label: 'Bud excised', action: 'Excise a bud before it roots', tools: ['lancet'], criteria: { cool: 'always' } },
+  { label: 'Overheated', action: 'Hold the brand on too long', tools: ['brand'], criteria: { bad: 'always' } },
+  { label: 'Bone cut', action: 'Saw through the bone cleanly', tools: ['lancet'], criteria: { cool: 'always' } },
+  { label: 'Bone lifted', action: 'Lift the cut bone away', tools: ['tongs'], criteria: { good: 'always' } },
+  { label: 'Wadding out', action: 'Pull the wadding out after the ball', tools: ['tongs'], criteria: { cool: 'always' } },
+  { label: 'Fever broken', action: 'Break the wound fever', tools: ['tincture'], criteria: { good: 'always' } },
+  { label: 'Wadding left in', action: 'Wadding left in the wound', tools: [], criteria: { miss: 'when the operation closes' } },
+  { label: 'Ligated', action: 'Tie off a vessel', tools: ['thread'], criteria: { cool: 'clamped first', good: 'unclamped' } },
+  { label: 'Seared shut', action: 'Sear a vessel shut', tools: ['brand'], criteria: { good: 'always' } },
+  { label: 'Limb off', action: 'Complete an amputation', tools: ['lancet'], criteria: { good: 'always' } },
+  { label: 'Drawn out whole', action: 'Draw a worm out unbroken', tools: ['tongs'], criteria: { cool: 'always' } },
+  { label: 'Calmed', action: 'Calm a parasite with the tincture first', tools: ['tincture'], criteria: { good: 'always' } },
+  { label: 'Drawn clean', action: 'Draw a root clean', tools: ['tongs'], criteria: { cool: 'always' } },
+  { label: 'Root snapped', action: 'Snap a root by pulling too hard', tools: ['tongs'], criteria: { bad: 'always' } },
+  { label: 'Bitten', action: 'A parasite bites the instrument', tools: [], criteria: { bad: 'always' } },
+  { label: 'Arterial spray', action: 'Open an artery', tools: ['lancet'], criteria: { bad: 'always' } },
+  { label: 'Burrowed', action: 'A parasite burrows out of reach', tools: [], criteria: { miss: 'left too long' } },
+  { label: 'Blade turned', action: 'The blade turns on hardened flesh', tools: ['lancet'], criteria: { bad: 'always' } },
+  { label: 'Nodule out', action: 'Take out a nodule', tools: ['tongs'], criteria: { cool: 'at the first stage', good: 'later' } },
+  { label: 'Pin set', action: 'Set a fracture pin', tools: ['tongs'], criteria: { good: 'always' } },
+  { label: 'Slipped', action: 'Let a pin or fragment slip', tools: ['tongs'], criteria: { bad: 'always' } },
+  { label: 'Strongbox out', action: 'Draw the swallowed strongbox out', tools: ['tongs'], criteria: { cool: 'always' } },
+  { label: 'Retracted', action: 'Hold the wound open', tools: ['tongs'], criteria: { good: 'always' } },
+  { label: 'Caught the beat', action: 'Work in time with the heartbeat', tools: ['lancet', 'thread'], criteria: { cool: 'always' } },
+  { label: 'Between beats', action: 'Work against the heartbeat', tools: ['lancet', 'thread'], criteria: { bad: 'always' } },
+  { label: 'The bond burned away', action: 'Burn away a blood-bond', tools: ['brand'], criteria: { good: 'always' } },
+  { label: 'The bond left be', action: 'Leave a blood-bond untouched', tools: [], criteria: { good: 'when the story allows' } },
+  { label: 'Wrong plate', action: 'Pry the wrong petrified plate', tools: ['tongs'], criteria: { bad: 'always' } },
+  { label: 'Plate cracked', action: 'Crack a petrified plate free', tools: ['tongs'], criteria: { good: 'always' } },
+  { label: 'The stone halts', action: 'Halt the spreading stone', tools: ['tincture'], criteria: { cool: 'always' } },
+  { label: 'Silence broken', action: 'Break a silence-node', tools: ['brand'], criteria: { cool: 'always' } },
+  { label: 'Echo silenced', action: 'Silence an echo', tools: ['brand'], criteria: { cool: 'always' } },
+  { label: 'Lancet and brand', action: 'Cut and sear together', tools: ['lancet', 'brand'], criteria: { cool: 'always' } },
+  { label: 'Compline unmade', action: 'Unmake the Malison of Compline', tools: [], criteria: { cool: 'always' } },
+  { label: 'It reached the heart', action: 'A curse-segment reaches the heart', tools: [], criteria: { miss: 'always' } },
+  { label: 'Segment seared', action: 'Sear a curse-segment', tools: ['brand'], criteria: { cool: 'always' } },
+  { label: 'It regrew', action: 'A segment regrows', tools: [], criteria: { miss: 'always' } },
+  { label: 'Intercepted', action: 'Intercept a travelling segment', tools: ['brand'], criteria: { good: 'always' } },
+  { label: 'It divides', action: 'Cut a segment that divides', tools: ['lancet'], criteria: { good: 'always' } },
+  { label: 'None unmade', action: 'Unmake the Malison of None', tools: [], criteria: { cool: 'always' } },
+  { label: 'The Office is unsung', action: 'Unmake the Office', tools: [], criteria: { cool: 'always' } },
+  { label: 'The name is written', action: 'Prime finishes writing a name', tools: [], criteria: { miss: 'always' } },
+  { label: 'Struck out', action: 'Strike out a written name', tools: ['lancet'], criteria: { cool: 'quickly or in the Litany', good: 'otherwise' } },
+  { label: 'Name unwritten', action: 'Unwrite a whole name', tools: ['lancet'], criteria: { cool: 'always' } },
+  { label: 'Prime unmade', action: 'Unmake the Malison of Prime', tools: [], criteria: { cool: 'always' } },
+  { label: 'Dial broken', action: 'Break a sun-dial', tools: ['brand'], criteria: { cool: 'always' } },
+  { label: 'Stillness against Stillness', action: 'Speak the Litany against Sext\'s own stillness', tools: [], criteria: { cool: 'always' } },
+  { label: 'Languor broken', action: 'Break Sext\'s languor', tools: ['tincture'], criteria: { good: 'always' } },
+  { label: 'False noon ends', action: 'End the false noon', tools: ['lens'], criteria: { good: 'always' } },
+  { label: 'Sext unmade', action: 'Unmake the Malison of Sext', tools: [], criteria: { cool: 'always' } },
+  { label: 'Doused', action: 'Douse a flame', tools: ['salve'], criteria: { good: 'always' } },
+  { label: 'Flame-front out', action: 'Put out a flame-front', tools: ['salve'], criteria: { good: 'always' } },
+  { label: 'Into the fire', action: 'Reach into the fire', tools: [], criteria: { bad: 'always' } },
+  { label: 'Root excised', action: 'Excise a fire-root', tools: ['lancet'], criteria: { cool: 'always' } },
+  { label: 'Fed the fire', action: 'Feed the fire with the brand', tools: ['brand'], criteria: { bad: 'always' } },
+  { label: 'Rekindled', action: 'A flame rekindles', tools: [], criteria: { miss: 'always' } },
+  { label: 'Pentecost quenched', action: 'Quench the Pentecost flame', tools: ['salve'], criteria: { cool: 'always' } },
+  { label: 'Smoke drawn', action: 'Draw off the smoke', tools: ['leech'], criteria: { good: 'always' } },
+  { label: 'Encircled', action: 'Encircle a flame with the lancet', tools: ['lancet'], criteria: { cool: 'clear of haze', good: 'through haze' } },
+  { label: 'Terce unmade', action: 'Unmake the Malison of Terce', tools: [], criteria: { cool: 'always' } },
+  { label: 'Relit', action: 'A candle relights', tools: [], criteria: { good: 'always' } },
+  { label: 'Wick severed', action: 'Sever a wick', tools: ['lancet'], criteria: { cool: 'always' } },
+  { label: 'Tallow drawn', action: 'Draw the tallow off', tools: ['leech'], criteria: { cool: 'unscorched', good: 'scorched' } },
+  { label: 'Wick traced', action: 'Trace a wick', tools: ['lancet'], criteria: { cool: 'always' } },
+  { label: 'Vespers unmade', action: 'Unmake the Malison of Vespers', tools: [], criteria: { cool: 'always' } },
+];
+
+export const scoringRule = (label: string): ScoringRule | undefined => SCORING.find((r) => r.label === label);

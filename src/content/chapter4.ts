@@ -205,7 +205,7 @@ export const OP_4_1: OperationDef = {
   timeLimit: 270,
   baseDrain: 0.1,
   tools: ALL,
-  ranks: { S: 4900, A: 3900, B: 2950 },
+  ranks: { S: 4840, A: 3870, B: 2900 },
   litany: true,
   seed: 41,
   phases: [
@@ -232,7 +232,7 @@ export const OP_4_2: OperationDef = {
   timeLimit: 300,
   baseDrain: 0.1,
   tools: ALL,
-  ranks: { S: 5350, A: 4300, B: 3200 },
+  ranks: { S: 5340, A: 4270, B: 3200 },
   litany: true,
   seed: 42,
   phases: [
@@ -271,7 +271,7 @@ export const OP_4_3: OperationDef = {
   timeLimit: 300,
   baseDrain: 0.15,
   tools: ALL,
-  ranks: { S: 5450, A: 4350, B: 3250 },
+  ranks: { S: 5820, A: 4660, B: 3490 },
   litany: true,
   seed: 43,
   phases: [
@@ -300,7 +300,7 @@ export const OP_4_4: OperationDef = {
   timeLimit: 360,
   baseDrain: 0.1,
   tools: ALL,
-  ranks: { S: 6000, A: 4800, B: 3600 },
+  ranks: { S: 6490, A: 5190, B: 3890 },
   litany: true,
   seed: 44,
   phases: [
@@ -350,7 +350,7 @@ export const OP_4_5: OperationDef = {
   baseDrain: 0.1,
   vitals: 60,
   tools: ALL,
-  ranks: { S: 4500, A: 3600, B: 2700 },
+  ranks: { S: 4340, A: 3470, B: 2600 },
   litany: true,
   seed: 45,
   phases: [
@@ -383,7 +383,7 @@ export const OP_4_6: OperationDef = {
   baseDrain: 0.25,
   vitals: 75,
   tools: ALL,
-  ranks: { S: 4400, A: 3500, B: 2650 },
+  ranks: { S: 4380, A: 3500, B: 2630 },
   litany: true,
   seed: 46,
   phases: [
@@ -411,7 +411,7 @@ export const OP_4_7: OperationDef = {
   timeLimit: 420,
   baseDrain: 0.05,
   tools: ALL,
-  ranks: { S: 7950, A: 6350, B: 4750 },
+  ranks: { S: 7000, A: 5600, B: 4200 },
   litany: true,
   seed: 47,
   phases: [
@@ -440,7 +440,7 @@ export const OP_4_8: OperationDef = {
   timeLimit: 330,
   baseDrain: 0.1,
   tools: ALL,
-  ranks: { S: 6400, A: 5100, B: 3850 },
+  ranks: { S: 6410, A: 5130, B: 3850 },
   litany: true,
   seed: 48,
   phases: [
@@ -472,7 +472,7 @@ export const OP_4_9: OperationDef = {
   timeLimit: 420,
   baseDrain: 0.05,
   tools: ALL,
-  ranks: { S: 6900, A: 5500, B: 4150 },
+  ranks: { S: 6920, A: 5540, B: 4150 },
   litany: true,
   seed: 49,
   phases: [

@@ -9,6 +9,8 @@ import { VIEW_W } from '../ui/layout';
 import { divider, parchmentSheet, UI, waxSeal } from '../ui/ornaments';
 import { button, reticle } from '../ui/widgets';
 import { drawBackdrop } from './backdrop';
+import type { RunSummary } from '../surgery/session';
+import { ACHIEVEMENTS } from '../surgery/achievements';
 
 const RANK_WAX: Record<string, string> = { XS: '#b8861c', S: '#8a1016', A: '#2a5a3a', B: '#2a3a6a', C: '#4a4038' };
 
@@ -20,7 +22,8 @@ export class ResultsScene implements Scene {
     private op: Operation,
     private won: boolean,
     private newBest: boolean,
-    private actions: { next?: () => void; retry: () => void; quit: () => void },
+    private actions: { next?: () => void; retry: () => void; quit: () => void; retryNovice?: () => void; retryCheckpoint?: () => void },
+    private summary?: RunSummary,
   ) {}
 
   enter(game: Game): void {
@@ -65,6 +68,9 @@ export class ResultsScene implements Scene {
       [t('ui.results.vitals_remaining'), formatNumber(op.bonus.vitals)],
       [t('ui.results.time_remaining'), formatNumber(op.bonus.time)],
     ];
+    const bd = op.breakdown();
+    if (bd.closureBonus) rows.push(['Clean closure', String(bd.closureBonus)]);
+    if (bd.penalties) rows.push(['Penalties', `-${bd.penalties}`]);
     const shown = Math.min(rows.length, Math.floor(this.t * 7));
     rows.slice(0, shown).forEach(([k, v], i) => {
       const y = r.y + 200 + i * 34;
@@ -91,13 +97,30 @@ export class ResultsScene implements Scene {
       if (k >= 1) {
         g.text(t('ui.results.rank'), sx, sy - 100, { size: 22, font: 'italic', color: faded, align: 'center', shadow: false });
         if (this.newBest) g.text(t('ui.results.new_best'), sx, sy + 118, { size: 22, color: hex('#6a0a10'), align: 'center', shadow: false });
-        if (assisted()) g.text(t('ui.results.assisted'), sx, sy + 144, { size: 16, font: 'italic', color: faded, align: 'center', shadow: false });
+        if (assisted() || op.resultFlags().length) g.text(t('ui.results.assisted'), sx, sy + 144, { size: 16, font: 'italic', color: faded, align: 'center', shadow: false });
       }
     } else if (!this.won) {
       waxSeal(g, sx, sy, 70, '#2a2420', '†', 80);
     }
 
+    // The ledger's margin: what the next rank needs, why not XS, flags, fees, tips.
+    if (this.t > 2) {
+      const notes: string[] = [];
+      if (this.won && bd.next) notes.push(`${bd.next.delta} to ${bd.next.rank}`);
+      if (this.won && bd.rank === 'S') {
+        const why = op.xsBlockers();
+        if (why.length) notes.push(`XS needs: no ${why.join(', no ')}`.replace('no a Bad', 'not a Bad'));
+      }
+      if (bd.flags.length) notes.push(`(${bd.flags.join(', ')})`);
+      if (this.summary?.fee) notes.push(`Fee paid: ${this.summary.fee} crowns`);
+      for (const a of this.summary?.achievements ?? []) notes.push(`✦ ${ACHIEVEMENTS[a]}`);
+      notes.forEach((n, i) => g.text(n, r.x + 60, r.y + 524 + i * 18, { size: 15, font: 'italic', color: faded, shadow: false }));
+      if (this.summary?.tip) g.textBlock(t('ui.results.ilse_tip', { tip: this.summary.tip }), r.x + 400, r.y + 440, 250, { size: 16, font: 'italic', color: hex('#6a0a10'), shadow: false }, 1.15);
+    }
+
     if (this.t > 1) {
+      if (!this.won && this.actions.retryCheckpoint && button(g, game.input, t('ui.results.from_malison'), VIEW_W / 2 + 150, 618, 22)) this.actions.retryCheckpoint();
+      if (!this.won && this.actions.retryNovice && button(g, game.input, t('ui.results.retry_novice'), VIEW_W / 2 - 150, 618, 22)) this.actions.retryNovice();
       if (this.actions.next && button(g, game.input, t('ui.results.continue'), VIEW_W / 2 + 200, 660)) this.actions.next();
       if (button(g, game.input, this.won ? t('ui.results.operate_again') : t('ui.results.try_again'), VIEW_W / 2 - (this.actions.next ? 0 : 110), 660)) this.actions.retry();
       if (button(g, game.input, t('ui.results.leave'), VIEW_W / 2 - 220, 660, 26)) this.actions.quit();

@@ -6,15 +6,17 @@ import { BloodPool, Bubo, Burn, Laceration, Rot, Venom } from '../../src/surgery
 import { DT, holdAt, live, raster, step, strokePath, tap } from '../helpers/sim';
 import { scenario } from '../helpers/trace';
 
+// Acid (neutralise with the leech-pipe first) and hexfire (brand out the ember) follow their own
+// rules since the GAM pass: see GAM-0072 / GAM-0073 in tests/ailments-gameplay.test.ts.
 describe('Burn', () => {
-  it.each(['fire', 'acid', 'hexfire'] as const)(
+  it.each(['fire'] as const)(
     '%s: salve first says burn-eschar; each pluck GOOD "Debrided"; last flake says burn-salve; full salve COOL "Burn dressed"',
     (source) => {
       const { op, ents, trace } = scenario((o) => [new Burn(at(0, 0), 44, o, source)]);
       const burn = ents[0];
       const flakes = burn.flakes.length;
       expect(flakes).toBe(Math.max(3, Math.round(44 / 12)));
-      expect(burn.drain()).toBeCloseTo((source === 'hexfire' ? 0.5 : 0.3) + flakes * 0.06, 9);
+      expect(burn.drain(op)).toBeCloseTo(0.3 + flakes * 0.06, 9);
       strokePath(op, 'salve', raster(burn.pos, burn.radius), { speed: 900 });
       trace.note('salve before debriding', { fraction: burn.cov.fraction });
       expect(burn.cov.fraction).toBe(0);
@@ -32,11 +34,23 @@ describe('Burn', () => {
   );
 });
 
+/** A short cut across the crown (a prick no longer opens a bubo). */
+const lance = (op: Parameters<typeof strokePath>[0], b: Bubo) =>
+  strokePath(
+    op,
+    'lancet',
+    [
+      { x: b.pos.x - 15, y: b.pos.y },
+      { x: b.pos.x + 15, y: b.pos.y },
+    ],
+    { speed: 300 },
+  );
+
 describe('Bubo', () => {
-  it('lancing below 75 % of max radius is COOL "Lanced" and spills a pus pool; salving undrained pus says "pus"; drained + salved is GOOD "Cleansed"', () => {
+  it('lancing below 75 % of max radius is COOL "Lanced" and spills a pus pool; salving undrained pus says "pus"; drained (COOL) + salved is GOOD "Cleansed"', () => {
     const { op, ents, trace } = scenario(() => [new Bubo(at(0, 0), 22)]);
     const bubo = ents[0];
-    tap(op, 'lancet', bubo.pos);
+    lance(op, bubo);
     trace.note('lanced', { r: bubo.r });
     expect(op.counts.cool).toBe(1);
     const pus = live(op, BloodPool)[0];
@@ -48,7 +62,9 @@ describe('Bubo', () => {
     strokePath(op, 'salve', raster(bubo.cov.center, bubo.cov.radius), { speed: 900 });
     trace.note('cleansed');
     expect(bubo.alive).toBe(false);
-    expect(op.counts.good).toBe(2);
+    // Lanced and a quick draw-off are COOL; the cleansing salve is GOOD.
+    expect(op.counts.cool).toBe(2);
+    expect(op.counts.good).toBe(1);
     expect(trace.text()).toMatchSnapshot();
   });
 
@@ -57,7 +73,7 @@ describe('Bubo', () => {
     const bubo = ents[0];
     while (bubo.r < bubo.maxR * 0.75) op.update(DT);
     trace.note('ripe', { r: bubo.r });
-    tap(op, 'lancet', bubo.pos);
+    lance(op, bubo);
     expect(op.counts.good).toBe(1);
     expect(trace.text()).toMatchSnapshot();
   });
@@ -113,13 +129,13 @@ describe('Rot & Coverage', () => {
     const { op, ents, trace } = scenario(() => [new Rot(at(0, 0), 50, 0.6)]);
     const rot = ents[0];
     strokePath(op, 'salve', raster(rot.pos, rot.r).slice(0, 6), { speed: 1100 });
-    const partial = rot.cov.fraction;
+    const partial = rot.fraction;
     trace.note('partial salve', { fraction: partial });
     expect(partial).toBeGreaterThan(0);
     expect(partial).toBeLessThan(0.9);
     step(op, 10);
-    trace.note('10 s later', { fraction: rot.cov.fraction });
-    expect(rot.cov.fraction).toBeLessThan(partial);
+    trace.note('10 s later', { fraction: rot.fraction });
+    expect(rot.fraction).toBeLessThan(partial);
     strokePath(op, 'salve', raster(rot.pos, rot.r), { speed: 1100 });
     trace.note('full salve');
     expect(rot.alive).toBe(false);
@@ -132,10 +148,10 @@ describe('Venom', () => {
   it('untreated drain rises monotonically at the op rate; tincture is COOL "Antidote" below spread 50, else GOOD', () => {
     const { op, ents, trace } = scenario((o) => [new Venom(at(-100, 0), o, 6), new Venom(at(100, 0), o, 6)]);
     const [early, late] = ents;
-    let last = early.drain();
+    let last = early.drain(op);
     for (let i = 0; i < 60 * 4; i++) {
       op.update(DT);
-      const d = early.drain();
+      const d = early.drain(op);
       expect(d).toBeGreaterThanOrEqual(last);
       last = d;
     }

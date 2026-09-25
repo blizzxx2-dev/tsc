@@ -1,3 +1,4 @@
+import { DEFAULT_TUNING } from '../../src/surgery/tuning';
 /** QAT-0046: the Malison of Matins. */
 import { describe, expect, it } from 'vitest';
 import { at } from '../../src/content/chapter1';
@@ -23,7 +24,7 @@ describe('Malison of Matins', () => {
     for (let i = 0; i < 60 * 20; i++) {
       op.update(DT);
       if (m.open !== was) {
-        toggles.push(`${m.open ? 'open' : 'veiled'}@${(op.elapsed - 1.2).toFixed(2)}`);
+        toggles.push(`${m.open ? 'open' : 'veiled'}@${(op.elapsed - DEFAULT_TUNING.flow.intro).toFixed(2)}`);
         was = m.open;
       }
     }

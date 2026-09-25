@@ -4,7 +4,7 @@ import { at } from '../../src/content/chapter1';
 import { OP_2_4 } from '../../src/content/chapter2';
 import { Grub, Laceration, Sigil, SIGILS } from '../../src/surgery/entities';
 import { EggSac, SpiderlingGrub } from '../../src/surgery/lauds';
-import { DT, FIELD_OFF, holdOn, live, step, strokePath, tap } from '../helpers/sim';
+import { DT, FIELD_OFF, holdAt, holdOn, live, step, strokePath, tap } from '../helpers/sim';
 import { onBody, type Operation } from '../../src/surgery/operation';
 import { scenario } from '../helpers/trace';
 
@@ -55,9 +55,12 @@ describe('Grub & SpiderlingGrub', () => {
 });
 
 describe('Sigil', () => {
-  /** Brand every stroke of a sigil, segment by segment, at the given speed. */
+  /** Break a sigil stroke by stroke, in order: hold the brand on each stroke's node to ignite it, then trace its segments. */
   function sear(op: Operation, s: Sigil, speed: number) {
-    for (const seg of s.segs) if (s.alive) strokePath(op, 'brand', [seg.a, seg.b], { speed });
+    for (let i = 0; i < s.strokeCount && s.alive; i++) {
+      holdAt(op, 'brand', s.nodes[i], op.tuning.brand.sigilNode + 0.05);
+      for (const seg of s.segs.filter((x) => x.stroke === i)) if (s.alive) strokePath(op, 'brand', [seg.a, seg.b], { speed });
+    }
   }
 
   it.each(Object.keys(SIGILS) as (keyof typeof SIGILS)[])('%s: breaking it fast is COOL "Curse broken"', (glyph) => {
@@ -69,11 +72,11 @@ describe('Sigil', () => {
     expect(trace.text()).toMatchSnapshot();
   });
 
-  it('breaking it more than 4 s after the first touch is GOOD', () => {
+  it('breaking it slower than par (strokes × (node hold + 3 s)) is GOOD', () => {
     const { op, ents, trace } = scenario(() => [new Sigil(at(0, 0), SIGILS.eye, 60, 999)]);
     const s = ents[0];
-    strokePath(op, 'brand', [s.segs[0].a, s.segs[0].b], { speed: 300 });
-    step(op, 4.5);
+    holdAt(op, 'brand', s.nodes[0], op.tuning.brand.sigilNode + 0.05);
+    step(op, s.strokeCount * (op.tuning.brand.sigilNode + 3));
     sear(op, s, 500);
     trace.note('seared late');
     expect(op.counts.good).toBe(1);

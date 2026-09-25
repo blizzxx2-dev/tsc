@@ -14,13 +14,21 @@ export interface Recording {
 /** Play `def` with the bot, logging every frame's input (empty frames included). */
 export function recordBot(def: OperationDef, opts: BotOptions = {}): Recording {
   const op = new Operation(def);
-  const bot = new BotDriver(opts);
+  const bot = new BotDriver(op, opts);
   const frames: ReplayFrame[] = [];
   const max = (opts.maxSeconds ?? 900) * 60;
   while ((op.status === 'intro' || op.status === 'running') && frames.length < max) {
-    const events = op.status === 'running' ? bot.tick(op) : [];
+    const events = op.status === 'running' ? bot.tick() : [];
     applyBotEvents(op, events);
-    frames.push(events.map((e) => (e.kind === 'litany' ? e : { ...e, ptr: { ...e.ptr, pos: { ...e.ptr.pos }, prev: { ...e.ptr.prev } } })));
+    frames.push(
+      events.flatMap((e): ReplayFrame =>
+        e.kind === 'pointer'
+          ? [{ kind: 'pointer', tool: e.tool, select: e.select, ptr: { ...e.ptr, pos: { ...e.ptr.pos }, prev: { ...e.ptr.prev } } }]
+          : e.kind === 'litany'
+            ? [e]
+            : [],
+      ),
+    );
     op.update(DT);
   }
   return { frames, op, hash: stateHash(op) };

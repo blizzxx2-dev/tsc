@@ -378,7 +378,7 @@ export class DebugApi {
     op.maxCombo = 8;
     op.vitals = won ? 72 : 0;
     op.timeLeft = won ? def.timeLimit / 3 : 0;
-    if (won) op.bonus = { vitals: Math.round(op.vitals) * 20, time: Math.round(op.timeLeft) * 10 };
+    if (won) op.bonus = { vitals: Math.round(op.vitals) * 20, time: Math.round(op.timeLeft) * 10, closure: 0 };
     else op.lostReason = 'The patient has died.';
     const back = () => this.game.go(new TitleScene());
     this.game.go(new ResultsScene(op, won, false, { next: won ? back : undefined, retry: back, quit: back }));

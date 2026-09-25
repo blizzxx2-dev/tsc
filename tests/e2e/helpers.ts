@@ -147,19 +147,20 @@ export interface MouseRun {
 export async function playWithMouse(game: Game, def: OperationDef, opts: BotOptions = {}): Promise<MouseRun> {
   const page = game.page;
   const mirror = new Operation(def);
-  const bot = new BotDriver({ ...opts, splitRelease: true });
+  const bot = new BotDriver(mirror, { ...opts, splitRelease: true });
   let browserTool: ToolId = mirror.tool;
   let last = { x: -1, y: -1 };
   let frames = 0;
   const maxFrames = (opts.maxSeconds ?? 600) * 60;
   while ((mirror.status === 'intro' || mirror.status === 'running') && frames < maxFrames) {
     if (mirror.status === 'running') {
-      const events = bot.tick(mirror);
+      const events = bot.tick();
       for (const ev of events) {
         if (ev.kind === 'litany') {
           await game.api('litany');
           continue;
         }
+        if (ev.kind === 'advance') continue;
         if (ev.select && ev.tool !== browserTool && mirror.def.tools.includes(ev.tool)) {
           await page.keyboard.press(TOOL_CODE[ev.tool]);
           browserTool = ev.tool;

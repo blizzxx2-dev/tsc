@@ -1,145 +1,113 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`barbed arrow > an arrow released before it is clear (≤ 70 px) sinks back to its origin 1`] = `
-"1.20 initial Embedded kind=bolt @(660,410)
-1.20 cue pluck
-1.33 -- after a short pull: status=running vitals=98.9 score=0 combo=0 counts=0/0/0/0 live=[Embedded] back=true
+exports[`barbed arrow > an object released while still on the body sinks back to its origin 1`] = `
+"2.02 initial Embedded kind=bolt @(660,410)
+2.02 cue pluck
+2.17 flag drop-off
+2.17 say "Right off the body, Doctor — into the tray, or it sinks back in."
+2.17 say "instruction"
+2.18 -- after a short pull: status=running vitals=98.9 score=0 combo=0 counts=0/0/0/0 live=[Embedded] back=true
 "
 `;
 
 exports[`barbed arrow > pulling more than 18 px with fewer than two nicks tears: BAD "Torn", 8 vitals, a wound + 30 px laceration bleeding at 1.6, "barbs" said once 1`] = `
-"1.20 initial Embedded kind=arrow barbed @(600,410)
-1.20 initial Embedded kind=arrow barbed @(780,450)
-1.20 cue cut
-1.20 rate GOOD "Nick" +63 combo=1
-1.23 cue pluck
-1.28 rate BAD "Torn" +15 combo=0
-1.28 hurt 8
-1.28 popup "-8"
-1.28 spawn Laceration length=86 bleed=1.6 @(600,410)
-1.28 flag barbs
-1.28 say "Barbed! Nick the flesh at the entry with the lancet before you pull."
-1.30 spawn BloodPool ichor=blood r=8 optional @(595,416)
-1.50 -- after tearing the first: status=running vitals=90.5 score=78 combo=0 counts=0/1/1/0 live=[Embedded,Laceration,BloodPool]
-1.50 cue pluck
-1.55 rate BAD "Torn" +15 combo=0
-1.55 hurt 8
-1.55 popup "-8"
-1.55 spawn Laceration length=86 bleed=1.6 @(780,450)
-1.77 -- after tearing the second: status=running vitals=81.8 score=93 combo=0 counts=0/1/2/0 live=[Laceration,BloodPool,Laceration]
+"2.02 initial Embedded kind=arrow barbed @(600,410)
+2.02 initial Embedded kind=arrow barbed @(780,450)
+2.02 cue cut
+2.02 rate GOOD "Nick" +63 combo=1
+2.05 cue pluck
+2.10 rate BAD "Torn" +15 combo=0
+2.10 hurt 8
+2.10 popup "-8"
+2.10 spawn Laceration source=blade length=86 bleed=1.6 @(600,410)
+2.10 flag barbs
+2.10 say "Barbed! Nick the flesh at the entry with the lancet before you pull."
+2.10 say "instruction"
+4.02 -- after tearing the first: status=running vitals=86.4 score=78 combo=0 counts=0/1/1/0 live=[Embedded,Laceration]
+4.02 cue pluck
+4.07 rate BAD "Torn" +15 combo=0
+4.07 hurt 8
+4.07 popup "-8"
+4.07 spawn Laceration source=blade length=86 bleed=1.6 @(780,450)
+5.55 -- after tearing the second: status=running vitals=73.3 score=93 combo=0 counts=0/1/2/0 live=[Laceration,Laceration]
 "
 `;
 
 exports[`barbed arrow > two lancet nicks rate "Nick" then "Barbs freed"; the freed arrow pulls clean 1`] = `
-"1.20 initial Embedded kind=arrow barbed @(600,410)
-1.20 cue cut
-1.20 rate GOOD "Nick" +63 combo=1
-1.23 cue cut
-1.23 rate GOOD "Barbs freed" +66 combo=2
-1.27 -- after nicks: status=running vitals=99 score=129 combo=2 counts=0/2/0/0 live=[Embedded] nicks=2
-1.27 rate MISS +0 combo=0
-1.27 hurt 3
-1.27 popup "-3"
-1.27 cue cut
-1.30 cue pluck
-1.55 rate COOL "Arrow" +105 combo=1
-1.55 spawn Laceration length=56 bleed=0.8 @(600,410)
-1.57 -- after pull: status=running vitals=95.8 score=234 combo=1 counts=1/2/0/1 live=[Laceration]
+"2.02 initial Embedded kind=arrow barbed @(600,410)
+2.02 cue cut
+2.02 rate GOOD "Nick" +63 combo=1
+2.05 cue cut
+2.05 rate GOOD "Barbs freed" +66 combo=2
+2.08 -- after nicks: status=running vitals=99 score=129 combo=2 counts=0/2/0/0 live=[Embedded] nicks=2
+2.08 popup "The Lancet won’t help with the arrow — try the Tongs."
+2.12 cue pluck
+4.07 rate COOL "Arrow" +115 combo=3
+4.07 spawn Laceration source=blade length=56 bleed=0.8 @(600,410)
+4.08 -- after pull: status=running vitals=98.1 score=244 combo=3 counts=1/2/0/0 live=[Laceration]
 "
 `;
 
-exports[`clean extractions > bolt pulled clear in under 0.9 s rates COOL "Bolt"; slower rates GOOD 1`] = `
-"1.20 initial Embedded kind=bolt @(560,410)
-1.20 initial Embedded kind=bolt @(810,410)
-1.20 cue pluck
-1.45 rate COOL "Bolt" +105 combo=1
-1.45 spawn Laceration length=50 bleed=0.8 @(560,410)
-1.47 -- fast pull: status=running vitals=98.7 score=105 combo=1 counts=1/0/0/0 live=[Embedded,Laceration]
-1.47 cue pluck
-2.62 rate GOOD "Bolt" +66 combo=2
-2.62 spawn Laceration length=50 bleed=0.8 @(810,410)
-2.63 -- slow pull: status=running vitals=97.7 score=171 combo=2 counts=1/1/0/0 live=[Laceration,Laceration]
+exports[`clean extractions > shard drawn out along its axis and into the tray rates COOL "Shard" and leaves its entry wound 1`] = `
+"2.02 initial Embedded kind=shard @(560,410)
+2.02 cue pluck
+3.97 rate COOL "Shard" +105 combo=1
+3.97 spawn Laceration source=blade length=34 bleed=0.8 @(560,410)
+3.98 -- pulled: status=running vitals=98.4 score=105 combo=1 counts=1/0/0/0 live=[Laceration]
 "
 `;
 
-exports[`clean extractions > glass pulled clear in under 0.9 s rates COOL "Glass"; slower rates GOOD 1`] = `
-"1.20 initial Embedded kind=glass @(560,410)
-1.20 initial Embedded kind=glass @(810,410)
-1.20 cue pluck
-1.45 rate COOL "Glass" +105 combo=1
-1.45 spawn Laceration length=28 bleed=0.8 @(560,410)
-1.47 -- fast pull: status=running vitals=98.9 score=105 combo=1 counts=1/0/0/0 live=[Embedded,Laceration]
-1.47 cue pluck
-2.62 rate GOOD "Glass" +66 combo=2
-2.62 spawn Laceration length=28 bleed=0.8 @(810,410)
-2.63 -- slow pull: status=running vitals=98.3 score=171 combo=2 counts=1/1/0/0 live=[Laceration,Laceration]
+exports[`clean extractions > shot drawn out along its axis and into the tray rates COOL "Lead shot" and leaves its entry wound 1`] = `
+"2.02 initial Embedded kind=shot @(560,410)
+2.02 cue pluck
+3.82 rate COOL "Lead shot" +105 combo=1
+3.82 spawn Laceration source=blade length=30 bleed=0.8 @(560,410)
+3.82 spawn Wadding hidden optional @(582,411)
+3.83 -- pulled: status=running vitals=98.3 score=105 combo=1 counts=1/0/0/0 live=[Laceration,Wadding]
 "
 `;
 
-exports[`clean extractions > shard pulled clear in under 0.9 s rates COOL "Shard"; slower rates GOOD 1`] = `
-"1.20 initial Embedded kind=shard @(560,410)
-1.20 initial Embedded kind=shard @(810,410)
-1.20 cue pluck
-1.45 rate COOL "Shard" +105 combo=1
-1.45 spawn Laceration length=34 bleed=0.8 @(560,410)
-1.47 -- fast pull: status=running vitals=98.8 score=105 combo=1 counts=1/0/0/0 live=[Embedded,Laceration]
-1.47 cue pluck
-2.62 rate GOOD "Shard" +66 combo=2
-2.62 spawn Laceration length=34 bleed=0.8 @(810,410)
-2.63 -- slow pull: status=running vitals=98.2 score=171 combo=2 counts=1/1/0/0 live=[Laceration,Laceration]
-"
-`;
-
-exports[`clean extractions > shot pulled clear in under 0.9 s rates COOL "Lead shot"; slower rates GOOD 1`] = `
-"1.20 initial Embedded kind=shot @(560,410)
-1.20 initial Embedded kind=shot @(810,410)
-1.20 cue pluck
-1.45 rate COOL "Lead shot" +105 combo=1
-1.45 spawn Laceration length=30 bleed=0.8 @(560,410)
-1.47 -- fast pull: status=running vitals=98.8 score=105 combo=1 counts=1/0/0/0 live=[Embedded,Laceration]
-1.47 cue pluck
-2.62 rate GOOD "Lead shot" +66 combo=2
-2.62 spawn Laceration length=30 bleed=0.8 @(810,410)
-2.63 -- slow pull: status=running vitals=98 score=171 combo=2 counts=1/1/0/0 live=[Laceration,Laceration]
-"
-`;
-
-exports[`clean extractions > tooth pulled clear in under 0.9 s rates COOL "Fang"; slower rates GOOD 1`] = `
-"1.20 initial Embedded kind=tooth @(560,410)
-1.20 initial Embedded kind=tooth @(810,410)
-1.20 cue pluck
-1.45 rate COOL "Fang" +105 combo=1
-1.45 spawn Laceration length=36 bleed=0.8 @(560,410)
-1.47 -- fast pull: status=running vitals=98.8 score=105 combo=1 counts=1/0/0/0 live=[Embedded,Laceration]
-1.47 cue pluck
-2.62 rate GOOD "Fang" +66 combo=2
-2.62 spawn Laceration length=36 bleed=0.8 @(810,410)
-2.63 -- slow pull: status=running vitals=98.1 score=171 combo=2 counts=1/1/0/0 live=[Laceration,Laceration]
+exports[`clean extractions > tooth drawn out along its axis and into the tray rates COOL "Fang" and leaves its entry wound 1`] = `
+"2.02 initial Embedded kind=tooth @(560,410)
+2.02 cue pluck
+3.97 rate COOL "Fang" +105 combo=1
+3.97 spawn Laceration source=blade length=36 bleed=0.8 @(560,410)
+3.98 -- pulled: status=running vitals=98.3 score=105 combo=1 counts=1/0/0/0 live=[Laceration]
 "
 `;
 
 exports[`hexstone and hidden objects > lodged hexstone drains, spawns rot every 10 s (max 4) and says "hexstone" once 1`] = `
-"1.20 initial Embedded kind=hexstone @(660,410)
-11.20 spawn Rot r=18 @(720,413)
-11.20 flag hexstone
-11.20 say "The hexstone is corrupting the flesh around it — get it out!"
-21.20 spawn Rot r=18 @(716,427)
-31.20 spawn Rot r=18 @(719,403)
-41.20 spawn Rot r=18 @(641,367)
-56.20 -- after 55 s lodged: status=running vitals=51.4 score=0 combo=0 counts=0/0/0/0 live=[Embedded,Rot,Rot,Rot,Rot] rot=4
+"2.02 initial Embedded kind=hexstone @(660,410)
+12.02 spawn Rot r=18 @(720,413)
+12.02 flag first-rot
+12.02 say "Rot must be salved almost entirely — any island left creeps back."
+12.02 say "instruction"
+12.02 flag hexstone
+12.02 say "The hexstone is corrupting the flesh around it — get it out!"
+12.02 say "instruction"
+22.02 spawn Rot r=18 @(716,427)
+32.02 spawn Rot r=18 @(719,403)
+42.02 spawn Rot r=18 @(641,367)
+57.02 -- after 55 s lodged: status=running vitals=34.9 score=0 combo=0 counts=0/0/0/0 live=[Embedded,Rot,Rot,Rot,Rot] rot=4
 "
 `;
 
 exports[`hexstone and hidden objects > op2-2 hidden shards ignore the tongs until the Scrying Lens reveals them 1`] = `
-"1.20 initial Embedded kind=hexstone hidden @(540,370)
-1.20 initial Embedded kind=hexstone hidden @(750,440)
-1.20 initial Embedded kind=hexstone hidden @(660,310)
-1.52 -- tongs on hidden shard: status=running vitals=99 score=0 combo=0 counts=0/0/0/0 live=[Embedded,Embedded,Embedded]
-1.92 popup "Found!"
-2.02 -- after lens: status=running vitals=99 score=0 combo=0 counts=0/0/0/0 live=[Embedded,Embedded,Embedded] hidden=false
-2.02 cue pluck
-2.27 rate COOL "Hexstone" +105 combo=1
-2.27 spawn Laceration length=40 bleed=0.8 @(540,370)
-2.28 -- after pull: status=running vitals=98.8 score=105 combo=1 counts=1/0/0/0 live=[Embedded,Embedded,Laceration]
+"2.02 initial Embedded kind=hexstone hidden @(540,370)
+2.02 initial Embedded kind=hexstone hidden @(750,440)
+2.02 initial Embedded kind=hexstone hidden @(660,310)
+2.28 rate MISS +0 combo=0
+3.93 -- tongs on hidden shard: status=running vitals=96.4 score=0 combo=0 counts=0/0/0/1 live=[Embedded,Embedded,Embedded]
+4.33 popup "Found!"
+4.43 -- after lens: status=running vitals=95.7 score=0 combo=0 counts=0/0/0/1 live=[Embedded,Embedded,Embedded] hidden=false
+4.43 cue pluck
+6.45 hurt 2
+6.45 popup "-2"
+6.45 flag hex-whisper
+6.45 say "It’s whispering to him through the tongs — into the lead dish, quickly!"
+6.45 say "instruction"
+6.45 rate GOOD "Hexstone" +63 combo=1
+6.45 spawn Laceration source=blade length=40 bleed=0.8 @(540,370)
+6.47 -- after pull: status=running vitals=91 score=63 combo=1 counts=0/1/0/1 live=[Embedded,Embedded,Laceration]
 "
 `;

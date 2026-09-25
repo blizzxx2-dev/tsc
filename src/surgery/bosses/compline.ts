@@ -227,7 +227,7 @@ export class ComplineMalison extends Entity {
     this.stage = 2;
     this.hp = this.maxHp * 0.7;
     this.litanyStolen = true;
-    op.litanyUsed = true;
+    op.litanyLocked = true;
     op.litanyTime = 0;
     this.stealT = this.tune.stolenEvery;
     op.popup('THE LITANY IS TAKEN', { x: FIELD.cx, y: FIELD.cy - 150 }, '#8090c0');
@@ -257,7 +257,9 @@ export class ComplineMalison extends Entity {
     if (!this.litanyStolen) return;
     this.litanyStolen = false;
     this.stolenT = 0;
-    op.litanyUsed = false;
+    op.litanyLocked = false;
+    // Usable once more even if it was already spent.
+    if (!op.canInvokeLitany()) op.grantLitany();
     op.popup('THE LITANY RETURNS', { x: FIELD.cx, y: FIELD.cy - 150 }, '#f5d76e');
     op.cues.push('litany');
   }
@@ -315,7 +317,7 @@ export class ComplineMalison extends Entity {
       }
     } else if (this.stage === 2) {
       // Hold the Litany stolen, and cast it against the surgeon.
-      if (this.litanyStolen) op.litanyUsed = true;
+      if (this.litanyStolen) op.litanyLocked = true;
       this.stealT -= dt;
       if (this.stolenT > 0) this.stolenT -= dt;
       if (this.stealT <= 0 && this.litanyStolen) {

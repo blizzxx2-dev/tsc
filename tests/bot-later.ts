@@ -75,7 +75,7 @@ function planBosses(op: Operation, k: BotKit, ents: Entity[], vis: Entity[], lag
 
   // Triage: when wounds pile up in a long fight, close them before chasing the curse.
   if (!/^op[12]-/.test(op.def.id)) {
-    const lacs = vis.filter((e): e is Laceration => e instanceof Laceration).sort((a, b) => b.drain() - a.drain());
+    const lacs = vis.filter((e): e is Laceration => e instanceof Laceration).sort((a, b) => b.drain(op) - a.drain(op));
     if (lacs.length >= 3 || (lacs.length && op.vitals < 45)) {
       const t = tendWound(k, ents, lacs[0], op.def.tools.includes('salve'));
       if (t) return t;
@@ -112,7 +112,14 @@ function planBosses(op: Operation, k: BotKit, ents: Entity[], vis: Entity[], lag
   if (wick) {
     const n = { x: -(wick.b.y - wick.a.y), y: wick.b.x - wick.a.x };
     const l = Math.hypot(n.x, n.y) || 1;
-    return k.drag('lancet', [{ x: wick.pos.x + (n.x / l) * 14, y: wick.pos.y + (n.y / l) * 14 }, { x: wick.pos.x - (n.x / l) * 24, y: wick.pos.y - (n.y / l) * 24 }], 300);
+    return k.drag(
+      'lancet',
+      [
+        { x: wick.pos.x + (n.x / l) * 14, y: wick.pos.y + (n.y / l) * 14 },
+        { x: wick.pos.x - (n.x / l) * 24, y: wick.pos.y - (n.y / l) * 24 },
+      ],
+      300,
+    );
   }
   if (ves?.stage === 2) {
     if (ves.bodyLit) return k.hold('brand', () => (ves.alive && ves.stage === 2 && ves.bodyLit ? ves.pos : null), 3);
@@ -181,7 +188,11 @@ function planBosses(op: Operation, k: BotKit, ents: Entity[], vis: Entity[], lag
       // Lancet opens, brand follows within the window; under the stolen Litany, wait for the lag first.
       return lazy(() =>
         comp.alive
-          ? k.chain(k.tap('lancet', comp.pos), k.pause(comp.pos, 'lancet', lag > 0 ? lag + 0.05 : 0), k.hold('brand', () => (comp.alive ? comp.pos : null), 0.25 + lag))
+          ? k.chain(
+              k.tap('lancet', comp.pos),
+              k.pause(comp.pos, 'lancet', lag > 0 ? lag + 0.05 : 0),
+              k.hold('brand', () => (comp.alive ? comp.pos : null), 0.25 + lag),
+            )
           : null,
       );
     }
@@ -271,7 +282,11 @@ function planAilments(op: Operation, k: BotKit, ents: Entity[], vis: Entity[]): 
   const agit = find(Agitation, (a) => a.level > 0.5 && ents.some((e) => e.alive && e.required));
   if (agit) return k.hold('tincture', () => agit.pos, 0.8);
   const infant = find(Infant);
-  if (infant) return k.chain(k.hold('tongs', () => infant.pos, 0.8), k.drag('tongs', [infant.pos, k.OFF_BODY], 200));
+  if (infant)
+    return k.chain(
+      k.hold('tongs', () => infant.pos, 0.8),
+      k.drag('tongs', [infant.pos, k.OFF_BODY], 200),
+    );
   const remnant = find(Remnant);
   if (remnant) return k.hold('brand', live(remnant), 1.3);
   const tick = find(Tick);
@@ -332,7 +347,10 @@ function planAilments(op: Operation, k: BotKit, ents: Entity[], vis: Entity[]): 
   if (heart)
     return lazy(() => {
       const wait = heart.inBeat && heart.window - heart.beatT > 0.85 ? 0 : heart.nextBeatIn || heart.every - heart.beatT;
-      return k.chain(k.pause(heart.pos, 'tincture', wait + 0.02), k.hold('tincture', () => heart.pos, 0.9));
+      return k.chain(
+        k.pause(heart.pos, 'tincture', wait + 0.02),
+        k.hold('tincture', () => heart.pos, 0.9),
+      );
     });
   const bite = find(BiteChannel);
   if (bite) return k.drag('salve', k.raster(bite.pos, 22), 900);
