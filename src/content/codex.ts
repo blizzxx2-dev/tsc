@@ -504,7 +504,7 @@ const HYMNS: readonly [string, string, string][] = [
   ['sext', 'op4-7', 'Noon is stone, and stone is still; / the heart sets hard against its will. / Stand, and do not move again; / the sun has turned the world to men.'],
   ['none', 'op4-9', 'Ninth hour, and the heart stood still; / the world went under, and it will. / Burrow down where no light goes; / what the earth keeps, no one knows.'],
   ['vespers', 'op5-6', 'Light the lamp, and let it fail; / every flame must learn to kneel. / Wax the vein and wax the eye; / the lamp is lit for those who die.'],
-  ['compline', 'op5-8', 'Hush the ward, and hush the street; / sleep is kind, and death is sweet. / Now let thy servant go in peace; / the Office ends, and all things cease.'],
+  ['compline', 'op5-8', 'Hush the ward, and hush the street; / sleep is kind, and death is sweet. / Now let your servant go in peace; / the Office ends, and all things cease.'],
 ];
 
 const HYMNAL: CodexEntry[] = HYMNS.map(
