@@ -81,8 +81,8 @@ export function drawCard(g: Gfx, id: CardId, t = 1.5): void {
     lockup(g, r.x + r.w / 2, r.y + 190, 0.85);
     const demo = id === 'slate-demo';
     // The call to action on a wax seal.
-    sealArt(g, r.x + r.w / 2, r.y + 350, 62, '#8a1016', { press: 1, gilt: true, seed: 5 });
-    g.text(demo ? 'FREE DEMO' : 'WISHLIST', r.x + r.w / 2, r.y + 358, { size: 22, font: 'display', color: hex('#ffe8c0'), align: 'center', tracking: 0.12, shadow: hex('#2a0204', 0.9) });
+    sealArt(g, r.x + r.w / 2, r.y + 350, 80, '#8a1016', { press: 1, gilt: true, seed: 5 });
+    g.text(demo ? 'FREE DEMO' : 'WISHLIST', r.x + r.w / 2, r.y + 356, { size: 17, font: 'display', color: hex('#ffe8c0'), align: 'center', tracking: 0.12, shadow: hex('#2a0204', 0.9) });
     g.text(demo ? 'Play the free demo on Steam' : 'Wishlist on Steam', r.x + r.w / 2, r.y + 470, { size: 34, font: 'display', color: hex('#fff1c4'), color2: hex('#c9a55c'), align: 'center', tracking: 0.08, shadow: hex('#000000', 0.9) });
     if (demo) g.text('and wishlist the full game', r.x + r.w / 2, r.y + 506, { size: 22, font: 'italic', color: hex(SWATCHES.linen, 0.85), align: 'center' });
     g.text('WINDOWS  ·  MACOS  ·  LINUX  ·  STEAM DECK', r.x + r.w / 2, r.y + 580, { size: 18, font: 'display', color: hex(SWATCHES.ash), align: 'center', tracking: 0.2 });
@@ -123,7 +123,16 @@ export function drawCard(g: Gfx, id: CardId, t = 1.5): void {
       { x: mx + 38, y: cy + 6 },
       { x: mx + 48, y: cy + 38 },
     ];
-    g.poly(roofs, hex('#1a1210'));
+    // Filled as convex pieces (poly() fans from the centroid): house, tower and spire, second house.
+    const fill = hex('#1a1210');
+    g.rect(mx - 48, cy + 10, 34, 28, fill);
+    g.tri(mx - 48, cy + 10, mx - 36, cy - 4, mx - 24, cy + 10, fill);
+    g.rect(mx - 14, cy - 40, 16, 78, fill);
+    g.tri(mx - 14, cy - 40, mx - 6, cy - 52, mx + 2, cy - 40, fill);
+    g.rect(mx + 2, cy + 6, 46, 32, fill);
+    g.tri(mx + 2, cy + 6, mx + 20, cy - 10, mx + 38, cy + 6, fill);
+    g.tri(mx + 38, cy + 6, mx + 48, cy + 38, mx + 38, cy + 38, fill);
+    g.rect(mx - 9, cy - 30, 6, 8, hex(SWATCHES.gilt, 0.7));
     g.polyline(roofs, 1.5, GILT);
   }
 }

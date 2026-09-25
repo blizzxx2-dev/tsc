@@ -368,7 +368,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [ ] ART-0230 · Demo · P0 · M · Matins concept: a shrouded vigil-mass of candle-wax cloth with one great lidded eye — callout sheet with closed/opening/open states
 - [ ] ART-0231 · Demo · P0 · L · Matins sprites: shroud body (idle breathing 12-frame loop), eye open/close flipbook (10 frames), hurt flash and 3 phase-degradation states, replacing the vector `Malison`
 - [ ] ART-0232 · Demo · P0 · M · Matins shader VFX spec: shroud cloth distortion (vertex wobble), eye iris glow ramp and a darkness-vignette pulse on the "watching" rhythm
-- [ ] ART-0233 · Demo · P0 · M · Matins death sequence: the shroud unravels into threads and motes (24 frames) with a final eye-close
+- [x] ART-0233 · Demo · P0 · M · Matins death sequence: the shroud unravels into threads and motes (24 frames) with a final eye-close
 - [ ] ART-0234 · Demo · P1 · S · Matins Book-of-Hours card and a boss-intro splash (night vigil miniature)
 
 ### Lauds (Chapter 2 — demo)
@@ -423,7 +423,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [x] ART-0263 · Demo · P0 · M · 8 painted tool icons (Lancet, Tongs, Leech-Pipe, Gut Thread, Saint's Salve, Tincture, Cautery Brand, Scrying Lens) at 128² with a brass-engraved style, replacing vector `toolIcon()`
 - [x] ART-0264 · Demo · P0 · S · Icon states for each tool: idle, selected (gilt rim), disabled (tarnished) and cooldown (tincture/salve refill)
 - [ ] ART-0265 · Demo · P0 · S · Silhouette test: all 8 icons distinguishable in pure black at 48 px (5-tester hallway test, ≥ 95% correct)
-- [ ] ART-0266 · Demo · P1 · S · Small 32 px icon variants for the tutorial text inline glyphs and the keybind options page
+- [x] ART-0266 · Demo · P1 · S · Small 32 px icon variants for the tutorial text inline glyphs and the keybind options page
 - [ ] ART-0267 · Demo · P1 · S · Leech-Pipe live-leech detail: a 4-frame squirm loop on the tray icon
 - [ ] ART-0268 · Alpha · P2 · S · Discipline-tool icons (splint, bone saw, triage tag, evidence tongs, magnifier) in the same style
 
@@ -504,7 +504,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 
 ### Key art
 - [ ] ART-0312 · Demo · P0 · L · Key art: Kreuzer over a Wound-Man patient, with Ilse at his side, Stroh in shadow and the Malison eye above — 6000×3375 master, layered so it can be recomposed
-- [ ] ART-0313 · Demo · P0 · S · Key-art crop map documenting safe areas for every store size (capsules, hero, library, social)
+- [x] ART-0313 · Demo · P0 · S · Key-art crop map documenting safe areas for every store size (capsules, hero, library, social)
 - [ ] ART-0314 · Demo · P1 · M · Title-screen composition derived from the key art with room for menu items (in-engine at 1920×1080)
 - [ ] ART-0315 · Beta · P2 · L · Launch key art v2 (Compline-teaser version) for 1.0
 
@@ -542,7 +542,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [x] ART-0332 · Demo · P0 · M · Announce trailer (60–75 s) beat sheet: hook (the barbed arrow), the world (Kessendorf), the tools, the Malison, the Litany, the title card and the wishlist call-to-action
 - [ ] ART-0333 · Demo · P0 · M · Announce trailer storyboard: ≥ 30 panels with shot duration, camera move and the in-engine capture setup per panel
 - [x] ART-0334 · Demo · P1 · S · Trailer capture scene list: debug seeds and states needed to reproduce each shot deterministically (with ENG's replay tool)
-- [ ] ART-0335 · Demo · P1 · S · Trailer title cards and end slate (logo, "Free Demo on Steam", platforms, rating placeholder) in the woodcut style
+- [x] ART-0335 · Demo · P1 · S · Trailer title cards and end slate (logo, "Free Demo on Steam", platforms, rating placeholder) in the woodcut style
 - [x] ART-0336 · Demo · P1 · S · Steam store autoplay cut (30 s) storyboard, readable with sound off (burned-in woodcut captions)
 - [ ] ART-0337 · Demo · P2 · S · Next Fest livestream overlay art: a frame, lower-thirds and a "Wishlist" bug
 

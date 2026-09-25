@@ -1,3 +1,4 @@
+import { toolGlyph } from '../art/toolSprites';
 import { t } from '../i18n';
 import { dragGlyphFor } from '../input/glyphs';
 /**
@@ -91,7 +92,11 @@ export function drawTutorial(g: Gfx, op: Operation): void {
   const r = { x: 640 - w / 2, y: 520, w, h: tool ? 62 : 44 };
   glass(g, r, { glow: hex(INK.gold, 0.18), glowR: 14 });
   g.text(s.say, 640, r.y + 28, { size: 18, font: 'italic', color: hex(INK.goldHi), align: 'center', shadow: hex('#000000', 0.8), soft: true });
-  if (tool) g.text(tool, 640, r.y + 50, { size: 16, color: hex(INK.dim), align: 'center', shadow: false });
+  if (tool) {
+    g.text(tool, 640, r.y + 50, { size: 16, color: hex(INK.dim), align: 'center', shadow: false });
+    // The instrument's 32 px glyph beside its name (ART-0266).
+    if (s.tool) toolGlyph(g, s.tool, 640 - g.measure(tool, 16) / 2 - 22, r.y + 45, 28);
+  }
 }
 
 /** The Litany practice frame: prompt, attempts, and a skip button. Returns true if skipped. */

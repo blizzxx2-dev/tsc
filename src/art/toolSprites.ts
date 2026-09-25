@@ -154,3 +154,24 @@ export function drawTipDebug(g: Gfx, tool: ToolId, p: Vec): void {
   const o = spriteOrigin(tool, p);
   g.rectLine(o.x, o.y, TOOL_SPRITE_SIZE, TOOL_SPRITE_SIZE, 1, hex('#40ffff', 0.35));
 }
+
+/** Small-icon size (ART-0266): tutorial inline glyphs and the keybind page. */
+export const TOOL_GLYPH_SIZE = 32;
+
+/**
+ * The 32 px instrument glyph (ART-0266): a dark brass-rimmed roundel with the in-field sprite
+ * reduced into it, so it reads at small size against any panel. Centred on (x, y).
+ */
+export function toolGlyph(g: Gfx, tool: ToolId, x: number, y: number, size = TOOL_GLYPH_SIZE, a = 1): void {
+  const r = size / 2;
+  g.circle(x, y, r, hex(SWATCHES.soot, 0.92 * a));
+  g.arc(x, y, r - 1, 1.5, hex(SWATCHES.brass, 0.9 * a));
+  const k = (size * 0.78) / TOOL_SPRITE_SIZE;
+  g.save();
+  g.translate(x, y);
+  g.scale(k);
+  // Centre the 64² frame on the roundel.
+  const tip = TOOL_TIPS[tool];
+  drawFieldTool(g, tool, { x: tip.x - 32, y: tip.y - 32 }, { heat: 0.7, closed: false });
+  g.restore();
+}

@@ -121,3 +121,56 @@ export function dawnFlare(g: Gfx, view: { x: number; y: number; w: number; h: nu
   }
   g.setBlend('alpha');
 }
+
+/** Matins' death (ART-0233): 24 woodcut frames at 12 fps. */
+export const MATINS_DEATH_FRAMES = 24;
+
+/**
+ * Eye openness over the Matins death: wide through the unravelling, then it closes over the last
+ * six frames (the final eye-close).
+ */
+export const matinsDeathEye = (frame: number): number => (frame < 18 ? 1 : Math.max(0, 1 - (frame - 17) / 6));
+
+/**
+ * The shroud unravelling (ART-0233): candle-wax threads peel off the body's rim and drift outward
+ * and up, a little longer and looser each frame, shedding motes at their free ends.
+ */
+export function matinsUnravel(g: Gfx, x: number, y: number, size: number, frame: number, seed = 1): void {
+  const k = frame / (MATINS_DEATH_FRAMES - 1);
+  const r0 = size * 0.22;
+  const fade = 1 - Math.max(0, (k - 0.7) / 0.3);
+  for (let i = 0; i < 14; i++) {
+    const a0 = (i / 14) * Math.PI * 2 + seed;
+    const len = size * (0.08 + 0.45 * k) * (0.7 + 0.3 * Math.sin(i * 2.3 + seed));
+    const pts: Vec[] = [];
+    for (let j = 0; j <= 8; j++) {
+      const u = j / 8;
+      const curl = Math.sin(u * 5 + i + k * 4) * 10 * u * (0.5 + k);
+      const r = r0 * (1 - 0.2 * k) + len * u;
+      const a = a0 + u * 0.6 * (i % 2 ? 1 : -1) * k;
+      pts.push({ x: x + Math.cos(a) * r + curl * Math.sin(a), y: y + Math.sin(a) * r * 0.8 - curl * Math.cos(a) - u * len * 0.35 * k });
+    }
+    g.polyline(pts, 2.2 * (1 - 0.5 * k), hex(SWATCHES.linen, 0.75 * fade));
+    g.polyline(pts, 0.9, hex(SWATCHES.tallowHi, 0.6 * fade));
+    const end = pts[pts.length - 1];
+    g.setBlend('add');
+    g.circleGrad(end.x, end.y, 6, hex(SWATCHES.curseViolet, 0.6 * fade), hex(SWATCHES.curseViolet, 0));
+    g.setBlend('alpha');
+  }
+  // The great eye outlives the shroud: from frame 13 it hangs alone, then the lids close over it.
+  if (frame >= 12) {
+    const open = matinsDeathEye(frame);
+    const w = size * 0.2;
+    const h = size * 0.09 * open;
+    const a = frame === MATINS_DEATH_FRAMES - 1 ? 0.5 : 1;
+    if (open > 0) {
+      g.ellipse(x, y, w, h, 0, hex(SWATCHES.bone, 0.95 * a), hex('#b8a88a', 0.95 * a));
+      g.circleGrad(x, y, Math.min(h, size * 0.05), hex('#c01020', a), hex('#4a0610', a));
+      g.ellipse(x, y, size * 0.008, Math.min(h, size * 0.045), 0, hex('#050203', a));
+    }
+    // Upper and lower lids meeting on the seam.
+    g.quadCurve({ x: x - w, y }, { x, y: y - h * 2 }, { x: x + w, y }, 3, hex('#2a1030', a), 16);
+    g.quadCurve({ x: x - w, y }, { x, y: y + h * 2 }, { x: x + w, y }, 3, hex('#2a1030', a), 16);
+    if (open === 0) g.line({ x: x - w, y }, { x: x + w, y }, 2, hex(SWATCHES.curseDeep, a));
+  }
+}
