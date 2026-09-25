@@ -24,6 +24,10 @@ import { OptionsScene } from '../scenes/options';
 import { ResultsScene } from '../scenes/results';
 import { StoryScene } from '../scenes/story';
 import { TitleScene } from '../scenes/title';
+import { SaveSlotsScene } from '../scenes/saveSlots';
+import { ChapterSelectScene } from '../scenes/chapterSelect';
+import { PauseScene } from '../scenes/pause';
+import { ConfirmScene } from '../scenes/confirm';
 import { Incision } from '../surgery/entities';
 import { MAX_VITALS, Operation, type OperationDef, type Status } from '../surgery/operation';
 import { TOOL_INFO, type Pointer, type Rank, type ToolId } from '../surgery/types';
@@ -35,7 +39,21 @@ export const DEBUG_API_VERSION = 1;
 /** The concrete game object from main.ts (Game plus the active scene). */
 export type DebugGame = Game & { scene: Scene | null; transition?: Transition };
 
-export type SceneName = 'title' | 'story' | 'briefing' | 'operation' | 'results' | 'options' | 'operations' | 'demoend' | 'loading' | 'unknown';
+export type SceneName =
+  | 'title'
+  | 'story'
+  | 'briefing'
+  | 'operation'
+  | 'results'
+  | 'options'
+  | 'operations'
+  | 'demoend'
+  | 'loading'
+  | 'slots'
+  | 'chapters'
+  | 'pause'
+  | 'confirm'
+  | 'unknown';
 
 export interface DebugState {
   version: number;
@@ -81,6 +99,11 @@ export function sceneName(s: Scene | null): SceneName {
   if (s instanceof OperationsScene) return 'operations';
   if (s instanceof DemoEndScene) return 'demoend';
   if (s instanceof LoadingScene) return 'loading';
+  // Title v2 menus and overlays (QAT E2E flows drive them through nodeRect).
+  if (s instanceof SaveSlotsScene) return 'slots';
+  if (s instanceof ChapterSelectScene) return 'chapters';
+  if (s instanceof PauseScene) return 'pause';
+  if (s instanceof ConfirmScene) return 'confirm';
   return 'unknown';
 }
 
@@ -295,7 +318,8 @@ export class DebugApi {
       version: this.version,
       scene: sceneName(s),
       frozen: this.frozen,
-      paused: s instanceof OperationScene ? (s as unknown as { paused: boolean }).paused : false,
+      // The pause overlay is pushed over the operation, so the top scene is the PauseScene itself.
+      paused: s instanceof PauseScene || (s instanceof OperationScene && (s as unknown as { paused: boolean }).paused),
       op: op ? opView(op) : null,
       story,
       save: JSON.parse(JSON.stringify({ progress: save.progress, best: save.best })) as DebugState['save'],

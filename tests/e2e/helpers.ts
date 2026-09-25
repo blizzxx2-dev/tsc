@@ -93,6 +93,36 @@ export class Game {
     return this.step(1, 'all');
   }
 
+  /**
+   * Click a node of the current scene's UI tree by id (`new`, `continue`, `slot1`, `abandon`…) at
+   * its live rect, so tests follow the layout instead of fixed coordinates. Nodes are declared on
+   * the scene's next update, so one frame is stepped first.
+   */
+  async clickNode(id: string): Promise<DebugState> {
+    await this.step(1, 'all');
+    const r = await this.api<{ x: number; y: number; w: number; h: number } | null>('nodeRect', id);
+    if (!r) throw new Error(`no UI node "${id}" in scene ${(await this.state()).scene}`);
+    return this.click(r.x + r.w / 2, r.y + r.h / 2);
+  }
+
+  /** From the title: New Game → save-slot picker → slot 1, which starts the campaign at the prologue. */
+  async newGame(slot: 1 | 2 | 3 = 1): Promise<DebugState> {
+    let s = await this.clickNode('new');
+    // A profile that has not operated is asked about the tutorials first (GAM-0208): keep them.
+    if (s.scene === 'confirm') s = await this.clickNode('no');
+    if (s.scene !== 'slots') throw new Error(`New Game did not open the slot picker (scene=${s.scene})`);
+    return this.clickNode(`slot${slot}`);
+  }
+
+  /** From an operation: Esc → Respite → Abandon the Patient → confirm; lands on the title. */
+  async abandon(): Promise<DebugState> {
+    let s = await this.key('Escape');
+    if (!s.paused) throw new Error(`Escape did not pause (scene=${s.scene})`);
+    s = await this.clickNode('abandon');
+    if (s.scene === 'confirm') s = await this.clickNode('yes');
+    return s;
+  }
+
   async key(code: string): Promise<DebugState> {
     await this.page.keyboard.press(code);
     return this.step(1, 'all');

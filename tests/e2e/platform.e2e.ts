@@ -15,6 +15,36 @@ const NO_WEBGL2 = `
   };
 })();`;
 
+/** The raw `settings.json` and `profile.json` the game wrote to IndexedDB (waits for the queued writes). */
+async function persistedFiles(g: ReturnType<ReturnType<typeof useGame>>): Promise<{ settings: string | null; profile: string | null }> {
+  const read = () =>
+    g.page.evaluate(
+      () =>
+        new Promise<Record<string, string>>((resolve, reject) => {
+          const open = indexedDB.open('suture-and-steel');
+          open.onerror = () => reject(open.error);
+          open.onsuccess = () => {
+            const store = open.result.transaction('files', 'readonly').objectStore('files');
+            const keys = store.getAllKeys();
+            const values = store.getAll();
+            values.onerror = () => reject(values.error);
+            values.onsuccess = () => {
+              const out: Record<string, string> = {};
+              keys.result.forEach((k, i) => (out[String(k)] = String(values.result[i])));
+              resolve(out);
+            };
+          };
+        }),
+    );
+  const pick = (files: Record<string, string>, name: string) => Object.entries(files).find(([k]) => k.endsWith(`/${name}`))?.[1] ?? null;
+  let files = await read();
+  for (let i = 0; i < 20 && !(pick(files, 'settings.json') && pick(files, 'profile.json')); i++) {
+    await g.page.waitForTimeout(250);
+    files = await read();
+  }
+  return { settings: pick(files, 'settings.json'), profile: pick(files, 'profile.json') };
+}
+
 describe('no WebGL2', () => {
   const game = useGame({ initScripts: [NO_WEBGL2] });
 
@@ -38,17 +68,25 @@ for (const locale of ['tr-TR', 'de-DE', 'pl-PL', 'pt-BR']) {
       const g = game();
       await g.boot('?preset=mid-ch1');
       expect(await g.page.evaluate(() => navigator.language)).toBe(locale);
-      // Title with a campaign in progress: Continue, Take the Oath Anew, Operating Theatre, Options.
-      let s = await g.click(640, 390 + 60 * 3);
+      let s = await g.clickNode('options');
       expect(s.scene).toBe('options');
-      s = await g.click(500, 170 + 25); // Volume: step down
+      // Volume (default 0.6): find its tab and row, hover the row and step it down once.
+      const where = await g.api<{ tab: string; index: number } | null>('optionLocate', 'volume');
+      expect(where).not.toBeNull();
+      await g.clickNode(`tab.${where!.tab}`);
+      await g.step(1, 'all');
+      const row = (await g.api<{ x: number; y: number; w: number; h: number } | null>('nodeRect', `row${where!.index}`))!;
+      await g.page.mouse.move(row.x + row.w / 2, row.y + row.h / 2);
+      await g.step(1, 'all');
+      s = await g.key('ArrowLeft');
       const vol = s.settings.volume as number;
       expect(vol).toBeCloseTo(0.5, 9);
       await g.key('Escape');
-      const raw = await g.page.evaluate(() => [localStorage.getItem('suture-and-steel.settings'), localStorage.getItem('suture-and-steel.save')]);
-      expect(raw[0]).toContain('"volume":0.5');
-      expect(raw[0]).not.toMatch(/\d,\d/);
-      expect(() => JSON.parse(raw[1]!)).not.toThrow();
+      // The web build persists settings.json and profile.json in IndexedDB (PLT-0079): read the raw files back.
+      const raw = await persistedFiles(g);
+      expect(raw.settings).toContain('"volume":0.5');
+      expect(raw.settings).not.toMatch(/\d,\d/);
+      expect(() => JSON.parse(raw.profile!)).not.toThrow();
       s = await g.reload();
       expect(s.settings.volume).toBe(vol);
       expect(s.save.progress.chapter).toBe(0);
