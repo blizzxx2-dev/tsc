@@ -80,6 +80,35 @@ export default tseslint.config(
     ),
   },
   {
+    // Determinism (ENG-0252): the simulation and content must replay bit-for-bit from an input log,
+    // so no wall clock, no unseeded randomness and no DOM inside them (persistence goes through
+    // localStorage wrappers only).
+    files: ['src/surgery/**/*.ts', 'src/content/**/*.ts'],
+    rules: {
+      'no-restricted-properties': [
+        'error',
+        { object: 'Math', property: 'random', message: 'Unseeded randomness breaks replays: use the operation Rng (op.rng).' },
+        { object: 'Date', property: 'now', message: 'Wall-clock time breaks replays: use op.elapsed.' },
+        { object: 'performance', property: 'now', message: 'Wall-clock time breaks replays: use op.elapsed.' },
+      ],
+      'no-restricted-globals': [
+        'error',
+        { name: 'window', message: 'No DOM in the simulation (ENG-0252).' },
+        { name: 'document', message: 'No DOM in the simulation (ENG-0252).' },
+        { name: 'navigator', message: 'No DOM in the simulation (ENG-0252).' },
+        { name: 'requestAnimationFrame', message: 'The simulation is stepped by op.update, never by frames.' },
+      ],
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'CallExpression[callee.property.name=/^toLocale(Upper|Lower)Case$/][arguments.length=0]',
+          message: 'Pass an explicit locale to toLocaleUpperCase/toLocaleLowerCase (Turkish dotted/dotless i); use toUpperCase for ids and keys.',
+        },
+        { selector: "NewExpression[callee.name='Date'][arguments.length=0]", message: 'Wall-clock time breaks replays: use op.elapsed.' },
+      ],
+    },
+  },
+  {
     files: ['**/*.js', '**/*.mjs'],
     languageOptions: {
       ecmaVersion: 2022,

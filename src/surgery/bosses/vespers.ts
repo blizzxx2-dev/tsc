@@ -1,3 +1,4 @@
+import { fxRandom } from '../fxRandom';
 import { dist, pointSegment, segmentsIntersect, type Vec } from '../../core/math';
 import { hex } from '../../render/color';
 import type { Gfx } from '../../render/gfx';
@@ -385,7 +386,7 @@ export class VespersMalison extends Entity {
     }
     this.hp -= this.tune.dps * dt;
     this.hurtFlash = 1;
-    if (Math.random() < dt * 25) op.emit('spark', ptr.pos, 3);
+    if (fxRandom() < dt * 25) op.emit('spark', ptr.pos, 3);
     if (op.rng.next() < dt * 6) op.cues.push('burn');
     if (this.hp <= this.maxHp * 0.25) this.enterLastLight(op);
   }

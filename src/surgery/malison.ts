@@ -1,3 +1,4 @@
+import { fxRandom } from './fxRandom';
 import { dist, pointSegment, type Vec } from '../core/math';
 import { Entity } from './entity';
 import { hex } from '../render/color';
@@ -12,7 +13,7 @@ import { attack, bossSound, Cadence, leadFor, panOf, tell } from './bosses/signa
 
 const TAU = Math.PI * 2;
 /** Cosmetic randomness only — never the simulation RNG, so effects can't change outcomes. */
-const fxRange = (lo: number, hi: number): number => lo + Math.random() * (hi - lo);
+const fxRange = (lo: number, hi: number): number => lo + fxRandom() * (hi - lo);
 
 /**
  * The Malison: a living curse woven by the Hollow Choir. It takes root in a
@@ -173,7 +174,7 @@ export class Malison extends MalisonBase {
   override update(op: Operation, dt: number): void {
     this.tickBase(op, dt);
     this.veiledMissT = Math.max(0, this.veiledMissT - dt);
-    if (Math.random() < dt * 12) op.emit('mote', { x: this.pos.x + fxRange(-30, 30), y: this.pos.y + fxRange(-30, 30) }, 1);
+    if (fxRandom() < dt * 12) op.emit('mote', { x: this.pos.x + fxRange(-30, 30), y: this.pos.y + fxRange(-30, 30) }, 1);
     // Ambience: the choir whisper follows the Malison across the stereo field.
     this.ambT -= dt;
     if (this.ambT <= 0) {
@@ -354,7 +355,7 @@ export class Malison extends MalisonBase {
     const mult = this.beat === 3 && this.eyeOut ? this.tune.eyeMult : 1;
     const before = this.phaseIx;
     this.damage(op, this.tune.dps * mult * dt, ptr.pos);
-    if (Math.random() < dt * 25) op.emit('spark', ptr.pos, 3);
+    if (fxRandom() < dt * 25) op.emit('spark', ptr.pos, 3);
     if (op.rng.next() < dt * 6) op.cues.push('burn');
     if (this.alive && this.phaseIx !== before) op.rate('good', this.pos, 'Wounded');
   }
@@ -539,7 +540,7 @@ export class MalisonShard extends Entity {
     if (this.mode !== 'crawler' || tool !== 'brand' || dist(ptr.pos, this.pos) > 22) return;
     this.branded = true;
     this.heat += dt;
-    if (Math.random() < dt * 20) op.emit('spark', this.pos, 2);
+    if (fxRandom() < dt * 20) op.emit('spark', this.pos, 2);
     if (this.heat >= 0.3) {
       this.kill();
       op.cues.push('burn');

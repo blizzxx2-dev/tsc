@@ -1,3 +1,4 @@
+import { fxRandom } from '../fxRandom';
 import { dist, type Vec } from '../../core/math';
 import { hex } from '../../render/color';
 import type { Gfx } from '../../render/gfx';
@@ -278,7 +279,7 @@ export class TerceMalison extends Entity {
     this.voice.tick(op, dt, this.pos);
     this.branded = false;
     this.hurtFlash = Math.max(0, this.hurtFlash - dt * 3);
-    if (Math.random() < dt * 8) op.emit('spark', { x: this.pos.x + fxRange(-15, 15), y: this.pos.y + fxRange(-15, 15) }, 1);
+    if (fxRandom() < dt * 8) op.emit('spark', { x: this.pos.x + fxRange(-15, 15), y: this.pos.y + fxRange(-15, 15) }, 1);
     if (this.stage === 1) {
       this.leapT -= dt;
       if (this.tellZone < 0 && this.leapT <= Math.max(this.tune.leapTell, leadFor(op, 'terce', 'leap'))) {
@@ -339,7 +340,7 @@ export class TerceMalison extends Entity {
       this.feed(op, dt, ptr.pos);
     } else if (tool === 'leech' && d < 70) {
       this.smokeT += dt * 1.5;
-      if (Math.random() < dt * 20) op.emit('smoke', ptr.pos, 1);
+      if (fxRandom() < dt * 20) op.emit('smoke', ptr.pos, 1);
       if (this.smokeT >= 1) {
         this.smokeT = 0;
         this.hazeClearT = 4;

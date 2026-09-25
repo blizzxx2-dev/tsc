@@ -25,6 +25,7 @@ import {
 export interface BarkDirectorOptions {
   /** Override the observer (default: `speakerFor(op.def.id)`). */
   speaker?: BarkSpeaker;
+  // eslint-disable-next-line no-restricted-properties -- presentation-only choice; the simulation never reads it
   /** Unit-interval source for cosmetic choices (default Math.random). */
   rng?: () => number;
   /** Seconds between barks (default BARK_COOLDOWN). */
@@ -54,6 +55,7 @@ export class BarkDirector {
     opts: BarkDirectorOptions = {},
   ) {
     this.speaker = opts.speaker ?? speakerFor(op.def.id);
+    // eslint-disable-next-line no-restricted-properties -- presentation-only choice; the simulation never reads it
     this.rng = opts.rng ?? Math.random;
     this.cooldown = opts.cooldown ?? BARK_COOLDOWN;
     this.hour = op.def.id === 'op1-5' ? 'matins' : op.def.id === 'op2-5' ? 'lauds' : null;

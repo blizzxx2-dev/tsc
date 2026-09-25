@@ -1,3 +1,4 @@
+import { fxRandom } from './fxRandom';
 import { dist, pointSegment, segmentsIntersect, type Vec } from '../core/math';
 import { eggSacArt } from '../art/ailmentArt';
 import { drawBlotch, presentation } from '../render/presentation';
@@ -13,7 +14,7 @@ import { attack, bossSound, Cadence, difficultyOf, leadFor, tell } from './bosse
 
 const TAU = Math.PI * 2;
 /** Cosmetic randomness only — never the simulation RNG, so effects can't change outcomes. */
-const fxRange = (lo: number, hi: number): number => lo + Math.random() * (hi - lo);
+const fxRange = (lo: number, hi: number): number => lo + fxRandom() * (hi - lo);
 
 export interface LaudsTuning {
   hp: number;
@@ -180,7 +181,7 @@ export class LaudsMalison extends MalisonBase {
 
   override update(op: Operation, dt: number): void {
     this.tickBase(op, dt);
-    if (!this.submerged && Math.random() < dt * 10) op.emit('mote', { x: this.pos.x + fxRange(-30, 30), y: this.pos.y + fxRange(-30, 30) }, 1);
+    if (!this.submerged && fxRandom() < dt * 10) op.emit('mote', { x: this.pos.x + fxRange(-30, 30), y: this.pos.y + fxRange(-30, 30) }, 1);
     this.ambT -= dt;
     if (this.ambT <= 0) {
       this.ambT = 0.25;
@@ -399,7 +400,7 @@ export class LaudsMalison extends MalisonBase {
       op.sayOnce('lauds-shielded', 'The Voices shield it. Silence them first — trace each one’s sigil with the brand.');
       return;
     }
-    if (Math.random() < dt * 20) op.emit('spark', ptr.pos, 2);
+    if (fxRandom() < dt * 20) op.emit('spark', ptr.pos, 2);
     if (op.rng.next() < dt * 6) op.cues.push('burn');
     const before = this.phaseIx;
     if (key === 'response') this.strike(op, 'core', this.tune.dpsResponse * dt, ptr.pos);
@@ -536,7 +537,7 @@ export class LaudsBody extends Entity {
   override onSweep(op: Operation, ptr: Pointer, tool: ToolId, dt: number): void {
     if (tool !== 'brand' || dist(ptr.pos, this.pos) > this.radius) return;
     this.branded = true;
-    if (Math.random() < dt * 20) op.emit('spark', ptr.pos, 2);
+    if (fxRandom() < dt * 20) op.emit('spark', ptr.pos, 2);
     this.core.strike(op, 'partner', this.core.tune.dpsResponse * dt, ptr.pos);
   }
   draw(g: Gfx, op: Operation): void {
@@ -724,7 +725,7 @@ export class ChoirVoice extends Entity {
     this.idleBrandT = fresh ? 0 : this.idleBrandT + dt;
     if (this.idleBrandT > 0.5) op.sayOnce('lauds-voice-trace', 'Holding it there won’t quiet it — trace the Voice’s sigil with the brand, line by line.');
     if (fresh && op.rng.next() < 0.3) op.cues.push('burn');
-    if (fresh && Math.random() < 0.5) op.emit('spark', ptr.pos, 2);
+    if (fresh && fxRandom() < 0.5) op.emit('spark', ptr.pos, 2);
     if (this.traced >= 0.8) {
       this.kill();
       op.emit('mote', this.pos, 16, undefined, undefined, 90);

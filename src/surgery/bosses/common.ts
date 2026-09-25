@@ -1,3 +1,4 @@
+import { fxRandom } from '../fxRandom';
 import { dist, type Vec } from '../../core/math';
 import { hex } from '../../render/color';
 import type { Gfx } from '../../render/gfx';
@@ -8,7 +9,7 @@ import type { Pointer } from '../types';
 export const TAU = Math.PI * 2;
 
 /** Cosmetic randomness only — never the simulation RNG, so effects can't change outcomes. */
-export const fxRange = (lo: number, hi: number): number => lo + Math.random() * (hi - lo);
+export const fxRange = (lo: number, hi: number): number => lo + fxRandom() * (hi - lo);
 
 /** Step `pos` toward `target` at `speed` px/s; returns the new position. */
 export function stepToward(pos: Vec, target: Vec, speed: number, dt: number): Vec {
@@ -199,7 +200,7 @@ export abstract class BrandNode extends Entity {
     if (tool !== 'brand' || dist(ptr.pos, this.pos) > this.radius) return;
     this.branded = true;
     this.heat += dt;
-    if (Math.random() < dt * 20) op.emit('spark', this.pos, 2);
+    if (fxRandom() < dt * 20) op.emit('spark', this.pos, 2);
     if (op.rng.next() < dt * 6) op.cues.push('burn');
     if (this.heat >= this.holdTime) {
       this.kill();

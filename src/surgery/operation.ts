@@ -1,3 +1,4 @@
+import { seedFx } from './fxRandom';
 import { clamp, dist, pointSegment, Rng, side, type Vec } from '../core/math';
 import { EventBus } from '../core/events';
 import { Entity, type Origin } from './entity';
@@ -420,6 +421,8 @@ export class Operation {
     this.litanyVariant = opts.litanyVariant ?? 'stillness';
     this.maxVitals = Math.round(this.tuning.vitals.max * (def.constitution === 'frail' ? 0.8 : 1));
     this.vitalsCap = this.maxVitals;
+    // Cosmetic draws replay with the run (ENG-0252).
+    seedFx(opts.seed ?? def.seed ?? 1);
     this.vitals = Math.min(this.maxVitals, def.vitals ?? this.maxVitals);
     if (def.second && (def.regions?.length ?? 0) >= 2) this.vitals2 = this.minVitals2 = Math.min(this.maxVitals, def.second.vitals ?? this.maxVitals);
     this.shownVitals = this.vitals;

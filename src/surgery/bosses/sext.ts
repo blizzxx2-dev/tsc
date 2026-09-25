@@ -1,3 +1,4 @@
+import { fxRandom } from '../fxRandom';
 import { clamp, dist, type Vec } from '../../core/math';
 import { hex } from '../../render/color';
 import type { Gfx } from '../../render/gfx';
@@ -372,7 +373,7 @@ export class SextMalison extends Entity {
     }
     this.hp -= this.tune.dps * (this.stunT > 0 ? 1.5 : 1) * dt;
     this.hurtFlash = 1;
-    if (Math.random() < dt * 25) op.emit('spark', ptr.pos, 3);
+    if (fxRandom() < dt * 25) op.emit('spark', ptr.pos, 3);
     if (op.rng.next() < dt * 6) op.cues.push('burn');
     const f = this.hp / this.maxHp;
     if (f <= 0) return this.die(op);

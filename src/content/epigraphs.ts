@@ -21,7 +21,9 @@ export const EPIGRAPHS: readonly Epigraph[] = [
   { text: 'Still your heart, and the world waits.', source: 'The old offices, as Master Haller remembers them' },
 ];
 
+// eslint-disable-next-line no-restricted-properties -- presentation-only choice; the simulation never reads it
 /** One epigraph per boot; `rng` is a unit-interval source (Math.random by default). */
+// eslint-disable-next-line no-restricted-properties -- presentation-only choice; the simulation never reads it
 export const pickEpigraph = (rng: () => number = Math.random): Epigraph => EPIGRAPHS[Math.min(EPIGRAPHS.length - 1, Math.floor(rng() * EPIGRAPHS.length))];
 
 export interface Teaching {

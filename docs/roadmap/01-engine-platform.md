@@ -359,7 +359,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 
 ## ENG-O · Determinism & replays (Demo → Alpha)
 
-- [ ] ENG-0252 · Demo · P1 · S · Determinism lint rule — bans `Math.random`, `Date.now`, `performance.now` and DOM access inside `src/surgery` and `src/content`
+- [x] ENG-0252 · Demo · P1 · S · Determinism lint rule — bans `Math.random`, `Date.now`, `performance.now` and DOM access inside `src/surgery` and `src/content`
 - [x] ENG-0253 · Demo · P1 · M · Input recording — per-tick pointer/tool/key events delta+varint encoded; a 5-minute operation replay file ≤50 KB
 - [x] ENG-0254 · Demo · P1 · M · State hashing every 60 ticks — replaying a recording reproduces identical hashes, and the dev desync detector reports the first divergent tick and entity
 - [x] ENG-0255 · Demo · P1 · M · Golden-run regression suite — one recorded run per Ch1–2 operation re-simulated headlessly in CI; final score, rank, vitals and hash must match exactly

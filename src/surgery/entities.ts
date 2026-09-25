@@ -1,3 +1,4 @@
+import { fxRandom } from './fxRandom';
 import { burnSeverity } from '../art/burnGrades';
 import { clamp, dist, pointSegment, type Vec } from '../core/math';
 import { drawBlotch, flinchCurl, presentation, shaftTwitch } from '../render/presentation';
@@ -1904,7 +1905,7 @@ export class Grub extends Entity {
     if (tool !== 'brand' || dist(ptr.pos, this.pos) > 20 + op.hitPad) return;
     this.branded = true;
     this.heat += dt;
-    if (Math.random() < dt * 20) op.emit('spark', this.pos, 2);
+    if (fxRandom() < dt * 20) op.emit('spark', this.pos, 2);
     const need = op.tuning.brand.grubHold * (this.small ? 0.5 : 1);
     if (this.heat >= need) {
       this.kill();
@@ -2105,8 +2106,8 @@ export class Sigil extends Entity {
     }
     if (!hit) return;
     this.branded = true;
-    if (Math.random() < 0.3) op.emit('spark', ptr.pos, 2);
-    if (Math.random() < 0.1) op.emit('smoke', ptr.pos, 1);
+    if (fxRandom() < 0.3) op.emit('spark', ptr.pos, 2);
+    if (fxRandom() < 0.1) op.emit('smoke', ptr.pos, 1);
     if (op.rng.next() < 0.15) op.cues.push('burn');
     if (this.progress >= 1) {
       this.kill();

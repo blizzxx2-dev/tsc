@@ -3,6 +3,7 @@
  * the talking cyst and its remnant, a child lifted from a labouring mother,
  * mutagenic hexstone shot and the buds it raises.
  */
+import { fxRandom } from '../fxRandom';
 import { dist, type Vec } from '../../core/math';
 import { hex } from '../../render/color';
 import type { Gfx } from '../../render/gfx';
@@ -119,7 +120,7 @@ export class Remnant extends Entity {
     if (tool !== 'brand' || dist(ptr.pos, this.pos) > 22) return;
     this.branded = true;
     this.hp -= 40 * dt;
-    if (Math.random() < dt * 20) op.emit('spark', this.pos, 2);
+    if (fxRandom() < dt * 20) op.emit('spark', this.pos, 2);
     if (this.hp <= 0) {
       this.kill();
       op.cues.push('burn');

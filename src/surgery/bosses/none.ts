@@ -1,3 +1,4 @@
+import { fxRandom } from '../fxRandom';
 import { dist, type Vec } from '../../core/math';
 import { hex } from '../../render/color';
 import type { Gfx } from '../../render/gfx';
@@ -177,7 +178,7 @@ export class BurrowSegment extends Entity {
     if (tool !== 'brand' || dist(ptr.pos, this.pos) > 22) return;
     this.branded = true;
     this.heat += dt;
-    if (Math.random() < dt * 20) op.emit('spark', this.pos, 2);
+    if (fxRandom() < dt * 20) op.emit('spark', this.pos, 2);
     if (this.heat >= 0.7) {
       this.kill();
       op.cues.push('burn');
@@ -411,7 +412,7 @@ export class NoneMalison extends Entity {
     this.branded = true;
     this.hp -= this.tune.dps * dt;
     this.hurtFlash = 1;
-    if (Math.random() < dt * 25) op.emit('spark', ptr.pos, 3);
+    if (fxRandom() < dt * 25) op.emit('spark', ptr.pos, 3);
     if (op.rng.next() < dt * 6) op.cues.push('burn');
     if (this.hp <= this.maxHp * 0.7) this.divide(op);
   }

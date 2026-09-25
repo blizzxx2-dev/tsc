@@ -1,3 +1,4 @@
+import { fxRandom } from '../fxRandom';
 import { MATINS_DEATH_FRAMES, matinsDeathEye, matinsUnravel } from '../../art/bossVfx';
 import { FPS, frameOf } from '../../art/timing';
 import type { Vec } from '../../core/math';
@@ -295,8 +296,8 @@ export class BossDeath extends Entity {
   }
   override update(op: Operation, dt: number): void {
     this.t += dt;
-    if (this.t < DEATH_SECONDS && Math.random() < dt * 30) op.emit('mote', { x: this.pos.x + (Math.random() - 0.5) * 80, y: this.pos.y + (Math.random() - 0.5) * 80 }, 1, -Math.PI / 2, 0.8, 40);
-    for (const g of this.ghosts) if (this.t < WITHER_SECONDS && Math.random() < dt * 4) op.emit('smoke', g, 1);
+    if (this.t < DEATH_SECONDS && fxRandom() < dt * 30) op.emit('mote', { x: this.pos.x + (fxRandom() - 0.5) * 80, y: this.pos.y + (fxRandom() - 0.5) * 80 }, 1, -Math.PI / 2, 0.8, 40);
+    for (const g of this.ghosts) if (this.t < WITHER_SECONDS && fxRandom() < dt * 4) op.emit('smoke', g, 1);
     if (this.t >= Math.max(DEATH_SECONDS, WITHER_SECONDS)) this.kill();
   }
   draw(g: Gfx): void {

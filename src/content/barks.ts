@@ -542,6 +542,7 @@ export function resetBarkHistory(): void {
  * Pick a line from `lines` for the history key `key`, never one of the last three picked for that
  * key (or the last n − 1 when the set is small). `rng` is a unit-interval source; cosmetic only.
  */
+// eslint-disable-next-line no-restricted-properties -- presentation-only choice; the simulation never reads it
 export function pickLine(key: string, lines: readonly string[], rng: () => number = Math.random): string | undefined {
   if (!lines.length) return undefined;
   const recent = HISTORY.get(key) ?? [];
@@ -556,21 +557,25 @@ export function pickLine(key: string, lines: readonly string[], rng: () => numbe
 }
 
 /** A bark for `speaker` on `trigger`, obeying the anti-repeat rule; undefined if they have none. */
+// eslint-disable-next-line no-restricted-properties -- presentation-only choice; the simulation never reads it
 export function pickBark(speaker: BarkSpeaker, trigger: BarkTrigger, rng: () => number = Math.random): string | undefined {
   return pickLine(`${speaker}:${trigger}`, BARKS[speaker][trigger] ?? [], rng);
 }
 
 /** A patient's line for the op, if they have one for that moment. */
+// eslint-disable-next-line no-restricted-properties -- presentation-only choice; the simulation never reads it
 export function pickPatientBark(opId: string, trigger: PatientTrigger, rng: () => number = Math.random): string | undefined {
   return pickLine(`patient:${opId}:${trigger}`, PATIENT_BARKS[opId]?.[trigger] ?? [], rng);
 }
 
 /** A whisper from the Hour, in order of phase (wraps), never the same line twice running. */
+// eslint-disable-next-line no-restricted-properties -- presentation-only choice; the simulation never reads it
 export function pickWhisper(hour: keyof typeof MALISON_WHISPERS, rng: () => number = Math.random): string {
   return pickLine(`whisper:${hour}`, MALISON_WHISPERS[hour], rng)!;
 }
 
 /** The rank-card quip for this op's speaker and rank. */
+// eslint-disable-next-line no-restricted-properties -- presentation-only choice; the simulation never reads it
 export function rankQuip(opId: string, rank: Rank, rng: () => number = Math.random): string {
   const speaker = speakerFor(opId);
   return pickLine(`quip:${speaker}:${rank}`, RANK_QUIPS[speaker][rank], rng)!;

@@ -1,3 +1,4 @@
+import { fxRandom } from '../fxRandom';
 import { dist, type Vec } from '../../core/math';
 import { hex } from '../../render/color';
 import type { Gfx } from '../../render/gfx';
@@ -342,7 +343,7 @@ export class MatinsHerald extends Entity {
     if (tool !== 'brand' || dist(ptr.pos, this.pos) > 22) return;
     this.branded = true;
     this.heat += dt;
-    if (Math.random() < dt * 20) op.emit('spark', this.pos, 2);
+    if (fxRandom() < dt * 20) op.emit('spark', this.pos, 2);
     if (this.heat >= 0.5) {
       this.kill();
       this.caught = true;

@@ -1,3 +1,4 @@
+import { fxRandom } from '../fxRandom';
 import { dist, pointSegment, type Vec } from '../../core/math';
 import { hex } from '../../render/color';
 import type { Gfx } from '../../render/gfx';
@@ -124,7 +125,7 @@ export class NameSigil extends Entity {
     if (this.writeT >= 1) {
       this.writeT = 0;
       this.written++;
-      if (Math.random() < 0.6) op.emit('mote', this.strokes[this.written - 1][0], 3);
+      if (fxRandom() < 0.6) op.emit('mote', this.strokes[this.written - 1][0], 3);
       if (this.written === this.count - 1) {
         op.sayOnce('prime-nearly', 'It’s nearly written! Strike the last stroke out!');
         op.cues.push('bell');
@@ -426,7 +427,7 @@ export class PrimeMalison extends Entity {
     this.voice.tick(op, dt, this.pos);
     this.branded = false;
     this.hurtFlash = Math.max(0, this.hurtFlash - dt * 3);
-    if (Math.random() < dt * 6) op.emit('mote', { x: this.pos.x + fxRange(-20, 20), y: this.pos.y + fxRange(-20, 20) }, 1);
+    if (fxRandom() < dt * 6) op.emit('mote', { x: this.pos.x + fxRange(-20, 20), y: this.pos.y + fxRange(-20, 20) }, 1);
     if (this.exposedT > 0) this.exposedT = Math.max(0, this.exposedT - dt);
     // The quill drifts while it is not exposed.
     if (!this.exposed) {
@@ -488,7 +489,7 @@ export class PrimeMalison extends Entity {
     const before = this.phaseNo;
     this.hp -= this.tune.dps * dt;
     this.hurtFlash = 1;
-    if (Math.random() < dt * 25) op.emit('spark', ptr.pos, 3);
+    if (fxRandom() < dt * 25) op.emit('spark', ptr.pos, 3);
     if (op.rng.next() < dt * 6) op.cues.push('burn');
     if (this.hp <= 0) return this.die(op);
     // Crossing into a new phase ends the exposure and starts the next movement.
