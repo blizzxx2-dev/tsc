@@ -12,3 +12,7 @@ dist-*/
 coverage/
 steam/output/
 steam_appid.txt
+dist-qa/
+reports/
+test-results/
+.stryker-tmp/

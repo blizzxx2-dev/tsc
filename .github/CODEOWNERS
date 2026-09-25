@@ -1,0 +1,28 @@
+# Review routing (QAT-0057, QAT-0067). Team handles are created by the producer — see
+# docs/handoff/QAT/README.md. Later rules override earlier ones.
+
+# Screenshot baselines: ART approves art scenes, UIX approves UI, QAT approves flows.
+/tests/e2e/visual/__baselines__/                @suture-and-steel/qa
+/tests/e2e/visual/__baselines__/title*          @suture-and-steel/art @suture-and-steel/qa
+/tests/e2e/visual/__baselines__/story*          @suture-and-steel/art @suture-and-steel/qa
+/tests/e2e/visual/__baselines__/demo-end*       @suture-and-steel/art @suture-and-steel/qa
+/tests/e2e/visual/__baselines__/operation*      @suture-and-steel/art @suture-and-steel/qa
+/tests/e2e/visual/__baselines__/briefing*       @suture-and-steel/uix @suture-and-steel/qa
+/tests/e2e/visual/__baselines__/options*        @suture-and-steel/uix @suture-and-steel/qa
+/tests/e2e/visual/__baselines__/results*        @suture-and-steel/uix @suture-and-steel/qa
+
+# Behaviour locks: characterisation snapshots, the tool×entity matrix and golden replays change
+# only with the `behaviour-change` label and a GAM reviewer.
+/tests/characterisation/__snapshots__/          @suture-and-steel/gam @suture-and-steel/qa
+/docs/qa/tool-entity-matrix.md                  @suture-and-steel/gam @suture-and-steel/qa
+/tests/replays/                                 @suture-and-steel/gam @suture-and-steel/qa
+/tests/golden/                                  @suture-and-steel/gam @suture-and-steel/qa
+
+# QA tooling and policy.
+/.github/workflows/qa-*                         @suture-and-steel/qa
+/.github/ISSUE_TEMPLATE/                        @suture-and-steel/qa
+/.gitleaks.toml                                 @suture-and-steel/qa
+/docs/qa/                                       @suture-and-steel/qa
+/tests/QUARANTINE.md                            @suture-and-steel/qa
+/src/debug/                                     @suture-and-steel/qa
+/src/telemetry/                                 @suture-and-steel/qa

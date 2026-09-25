@@ -37,6 +37,8 @@ import { downloadRecording, parseRecording, Recorder, Replayer } from './input/r
 const DEV_TOOLS = import.meta.env.DEV || import.meta.env.MODE !== 'release';
 import { platform } from './platform';
 import { installPlatform, platformFrame, sceneChanged } from './platform/session';
+import { installTelemetry } from './telemetry';
+import { installQaHooks } from './debug/hooks';
 
 class Main implements Game {
   input: Input;
@@ -318,6 +320,7 @@ async function boot(): Promise<void> {
   if (!DEV_TOOLS) return;
   // Dev/QA hooks: ?op=<id> jumps straight into an operation; window.__game exposes the game for automation.
   (window as unknown as { __game: Main }).__game = game;
+  installQaHooks(game, { telemetry: installTelemetry(game) });
   const params = new URLSearchParams(location.search);
   const opId = params.get('op');
   const dev = [SHOWCASE, SHOWCASE_BOSS, showcaseOrgan((params.get('organ') ?? 'heart') as OperationDef['organ'])];

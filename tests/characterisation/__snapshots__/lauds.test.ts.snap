@@ -1,0 +1,126 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Malison of Lauds > each Voice is silenced by a 0.6 s brand hold (COOL "Silenced"); released, silence decays at 0.35/s 1`] = `
+"1.20 initial LaudsMalison radius=42 hp=100 @(660,440)
+2.02 -- partial silence: status=running vitals=98.3 score=0 combo=0 counts=0/0/0/0 live=[ChoirVoice,ChoirVoice,ChoirVoice,ChoirVoice,LaudsMalison] held=0.29 after=0.12
+2.08 cue burn
+2.23 cue burn
+2.30 cue burn
+2.32 cue burn
+2.48 rate COOL "Silenced" +105 combo=1
+2.48 flag brand-flesh
+2.48 say "Careful! The brand is searing healthy flesh!"
+"
+`;
+
+exports[`Malison of Lauds > full fight: silence the choir, wound it to half ("Wounded" → submerges), hunt it with the Lens, unmake it into three hexstone shards 1`] = `
+"1.20 initial LaudsMalison radius=42 hp=100 @(660,440)
+1.57 cue burn
+1.72 cue burn
+1.78 cue burn
+1.78 rate COOL "Silenced" +105 combo=1
+1.78 flag brand-flesh
+1.78 say "Careful! The brand is searing healthy flesh!"
+1.82 cue burn
+2.00 cue burn
+2.10 cue burn
+2.22 cue burn
+2.40 cue burn
+2.40 rate COOL "Silenced" +110 combo=2
+2.67 cue burn
+2.68 cue burn
+2.75 cue burn
+3.02 rate COOL "Silenced" +115 combo=3
+3.40 cue burn
+3.43 cue burn
+3.45 cue burn
+3.50 cue burn
+3.63 rate COOL "Silenced" +120 combo=4
+3.65 say "The choir is silenced — its heart is bare! Brand it, now!"
+3.67 -- choir silenced: status=running vitals=96.9 score=450 combo=4 counts=4/0/0/0 live=[LaudsMalison] voices=0
+3.80 cue burn
+4.40 cue burn
+4.50 cue burn
+4.67 rate GOOD "Wounded" +75 combo=5
+4.67 say "It’s gone under the skin! The Scrying Lens — hunt it down!"
+4.70 -- wounded: status=running vitals=96.4 score=525 combo=5 counts=4/1/0/0 live=[LaudsMalison] hp=49.17 submerged=true
+6.47 spawn Rot r=26 @(790,408)
+7.20 popup "Found it!"
+7.20 say "There! It’s surfacing — finish it!"
+7.22 -- found: status=running vitals=96.2 score=525 combo=5 counts=4/1/0/0 live=[LaudsMalison,Rot] submerged=false
+7.78 cue burn
+7.90 cue burn
+7.95 cue burn
+7.97 cue burn
+8.20 rate COOL "Malison unmade" +130 combo=6
+8.20 spawn MalisonAsh r=29.9 optional @(764,466)
+8.20 say "It shattered — hexstone, everywhere! Get every shard out before it spoils him!"
+8.20 spawn Embedded kind=hexstone @(828,487)
+8.20 spawn Embedded kind=hexstone @(708,499)
+8.20 spawn Embedded kind=hexstone @(755,411)
+8.23 -- unmade: status=running vitals=95.4 score=655 combo=6 counts=5/1/0/0 live=[Rot,MalisonAsh,Embedded,Embedded,Embedded]
+"
+`;
+
+exports[`Malison of Lauds > left exposed for more than 5 s, it calls two Voices back 1`] = `
+"1.20 initial LaudsMalison radius=42 hp=100 @(660,440)
+1.57 cue burn
+1.72 cue burn
+1.78 cue burn
+1.78 rate COOL "Silenced" +105 combo=1
+1.78 flag brand-flesh
+1.78 say "Careful! The brand is searing healthy flesh!"
+1.82 cue burn
+2.00 cue burn
+2.10 cue burn
+2.22 cue burn
+2.40 cue burn
+2.40 rate COOL "Silenced" +110 combo=2
+2.67 cue burn
+2.68 cue burn
+2.75 cue burn
+3.02 rate COOL "Silenced" +115 combo=3
+3.40 cue burn
+3.43 cue burn
+3.45 cue burn
+3.50 cue burn
+3.63 rate COOL "Silenced" +120 combo=4
+3.65 say "The choir is silenced — its heart is bare! Brand it, now!"
+7.72 flag lauds-hymn
+7.72 say "It’s singing — every verse tears him open! Stitch the cuts as they come!"
+7.72 cue sfx.lauds.hymn
+8.38 spawn Laceration length=55.9 bleed=0.9 @(786,295)
+8.38 hurt 2
+8.38 popup "-2"
+8.65 spawn ChoirVoice @(838,422)
+8.65 spawn ChoirVoice @(655,385)
+8.65 say "It’s calling its Voices back!"
+8.65 -- rekindled: status=running vitals=92.3 score=450 combo=4 counts=4/0/0/0 live=[LaudsMalison,Laceration,ChoirVoice,ChoirVoice] voices=2
+"
+`;
+
+exports[`Malison of Lauds > sings a Hymn every 6.5 s that opens a laceration and costs 2 vitals 1`] = `
+"1.20 initial LaudsMalison radius=42 hp=100 @(660,440)
+7.72 flag lauds-hymn
+7.72 say "It’s singing — every verse tears him open! Stitch the cuts as they come!"
+7.72 cue sfx.lauds.hymn
+8.38 spawn Laceration length=55.6 bleed=0.9 @(680,313)
+8.38 hurt 2
+8.38 popup "-2"
+9.43 spawn BloodPool ichor=blood r=8 optional @(681,311)
+14.23 cue sfx.lauds.hymn
+14.90 spawn Laceration length=44.5 bleed=0.9 @(511,289)
+14.90 hurt 2
+14.90 popup "-2"
+15.07 spawn BloodPool ichor=blood r=8 optional @(514,283)
+15.20 -- two hymns: status=running vitals=78.6 score=0 combo=0 counts=0/0/0/0 live=[ChoirVoice,ChoirVoice,ChoirVoice,ChoirVoice,LaudsMalison,Laceration,BloodPool,Laceration,BloodPool]
+"
+`;
+
+exports[`Malison of Lauds > spawns four Voices; branding the core while they live says lauds-shielded and does no damage 1`] = `
+"1.20 initial LaudsMalison radius=42 hp=100 @(660,440)
+1.20 flag lauds-shielded
+1.20 say "The Voices shield it. Silence them first — hold the brand on each as it circles."
+2.22 -- branded the shielded core: status=running vitals=98.1 score=0 combo=0 counts=0/0/0/0 live=[ChoirVoice,ChoirVoice,ChoirVoice,ChoirVoice,LaudsMalison] hp=100
+"
+`;

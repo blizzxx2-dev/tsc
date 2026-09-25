@@ -1,0 +1,97 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Incision tracing > a press away from the head of the line is not captured 1`] = `
+"1.20 initial Incision @(510,470)
+1.20 rate MISS +0 combo=0
+1.20 hurt 3
+1.20 popup "-3"
+1.20 cue cut
+1.53 -- after mid-line press: status=running vitals=96 score=0 combo=0 counts=0/0/0/1 live=[Incision]
+"
+`;
+
+exports[`Incision tracing > a stroke 0 px off the guide rates cool "Incision" 1`] = `
+"1.20 initial Incision @(510,470)
+1.20 cue cut
+2.10 rate COOL "Incision" +105 combo=1
+2.10 cue squelch
+2.15 -- after stroke: status=running vitals=99 score=105 combo=1 counts=1/0/0/0 live=[Incision] state="open" progress=308.75
+"
+`;
+
+exports[`Incision tracing > a stroke 9 px off the guide rates good "Incision" 1`] = `
+"1.20 initial Incision @(510,470)
+1.20 cue cut
+2.10 rate GOOD "Incision" +63 combo=1
+2.10 cue squelch
+2.15 -- after stroke: status=running vitals=99 score=63 combo=1 counts=0/1/0/0 live=[Incision] state="open" progress=308.67
+"
+`;
+
+exports[`Incision tracing > a stroke 20 px off the guide rates bad "Incision" 1`] = `
+"1.20 initial Incision @(510,470)
+1.20 cue cut
+2.08 rate BAD "Incision" +15 combo=0
+2.08 cue squelch
+2.13 -- after stroke: status=running vitals=99 score=15 combo=0 counts=0/0/1/0 live=[Incision] state="open" progress=308.58
+"
+`;
+
+exports[`Incision tracing > slipping more than 34 px off the line is BAD "Off the line", costs 2 vitals, and stops tracking until the next press 1`] = `
+"1.20 initial Incision @(510,470)
+1.20 cue cut
+1.62 rate BAD "Off the line" +15 combo=0
+1.62 hurt 2
+1.62 popup "-2"
+2.05 -- after slip: status=running vitals=97 score=15 combo=0 counts=0/0/1/0 live=[Incision] progress=110.38
+2.05 cue cut
+2.63 rate COOL "Incision" +105 combo=1
+2.63 cue squelch
+2.68 -- after resume: status=running vitals=97 score=120 combo=1 counts=1/0/1/0 live=[Incision] state="open"
+"
+`;
+
+exports[`StitchLine closing > closing in one stroke rates COOL "Closed" 1`] = `
+"1.20 initial Incision optional @(510,470)
+1.20 -- closing: status=running vitals=99 score=0 combo=0 counts=0/0/0/0 live=[Incision] needed=10
+1.28 cue stitch
+1.43 cue stitch
+1.58 cue stitch
+1.73 cue stitch
+1.88 cue stitch
+2.03 cue stitch
+2.18 cue stitch
+2.33 cue stitch
+2.48 cue stitch
+2.63 cue stitch
+2.63 rate COOL "Closed" +105 combo=1
+4.23 -- after stitching: status=running vitals=99 score=105 combo=1 counts=1/0/0/0 live=[]
+"
+`;
+
+exports[`StitchLine closing > closing over several strokes rates GOOD "Closed" 1`] = `
+"1.20 initial Incision optional @(510,470)
+1.20 -- closing: status=running vitals=99 score=0 combo=0 counts=0/0/0/0 live=[Incision] needed=10
+1.28 cue stitch
+1.43 cue stitch
+1.58 cue stitch
+1.73 cue stitch
+1.88 cue stitch
+1.98 -- after first stroke: status=running vitals=99 score=0 combo=0 counts=0/0/0/0 live=[Incision] count=5 strokes=1
+2.07 cue stitch
+2.22 cue stitch
+2.37 cue stitch
+2.52 cue stitch
+2.67 cue stitch
+2.67 rate GOOD "Closed" +63 combo=1
+4.27 -- after second stroke: status=running vitals=99 score=63 combo=1 counts=0/1/0/0 live=[]
+"
+`;
+
+exports[`StitchLine closing > rejects a stitch within 10 px of an existing one 1`] = `
+"1.20 initial Incision optional @(510,470)
+1.20 -- closing: status=running vitals=99 score=0 combo=0 counts=0/0/0/0 live=[Incision] needed=10
+1.40 cue stitch
+1.50 -- after double crossing: status=running vitals=99 score=0 combo=0 counts=0/0/0/0 live=[Incision] count=1
+"
+`;

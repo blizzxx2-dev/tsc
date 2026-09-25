@@ -1,0 +1,56 @@
+# Regenerate screenshot baselines inside the pinned Playwright image (QAT-0066) and open a PR with
+# them. This and `npm run visual:update` (Docker) are the only sanctioned ways to change baselines;
+# CODEOWNERS routes the PR to ART/UIX/QAT for approval (QAT-0067).
+name: Visual baselines
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: Why the baselines change (goes into the PR description)
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.1-noble
+      options: --ipc=host
+    env:
+      PLAYWRIGHT_DOCKER: '1'
+      QA_BASELINE_ENV: playwright-docker
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - name: Keep the old baselines for the before/after table
+        run: mkdir -p /tmp/before && cp -r tests/e2e/visual/__baselines__/. /tmp/before/ 2>/dev/null || true
+      - name: Regenerate
+        run: node scripts/qa/visual-update.mjs --in-container
+      - name: Before/after table
+        run: node scripts/qa/visual-diff-table.mjs /tmp/before tests/e2e/visual/__baselines__ > /tmp/diff.md
+      - name: Open PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REASON: ${{ github.event.inputs.reason }}
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config user.name "qa-baselines-bot"
+          git config user.email "qa-baselines-bot@users.noreply.github.com"
+          branch="visual-baselines/${{ github.run_id }}"
+          git checkout -b "$branch"
+          git add tests/e2e/visual/__baselines__
+          if git diff --cached --quiet; then echo "No baseline changes."; exit 0; fi
+          git commit -m "test(visual): regenerate baselines in the Playwright image" -m "$REASON"
+          git push origin "$branch"
+          {
+            echo "Baselines regenerated in \`mcr.microsoft.com/playwright:v1.55.1-noble\` by run ${{ github.run_id }}."
+            echo
+            echo "**Why:** $REASON"
+            echo
+            cat /tmp/diff.md
+          } > /tmp/body.md
+          gh pr create --title "test(visual): regenerate screenshot baselines" --body-file /tmp/body.md --label behaviour-change

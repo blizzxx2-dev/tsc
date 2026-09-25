@@ -4,6 +4,7 @@
 import { chromium } from 'playwright';
 import { preview } from 'vite';
 import { mkdirSync } from 'node:fs';
+import { resolveChromium } from './qa/launch.mjs';
 
 const [out = 'shots', ...list] = process.argv.slice(2);
 const shots = list.length ? list : ['title', 'story:hospice', 'op:showcase:3'];
@@ -11,7 +12,7 @@ mkdirSync(out, { recursive: true });
 const server = await preview({ preview: { port: 0, strictPort: false, open: false }, logLevel: 'silent' });
 const url = server.resolvedUrls.local[0];
 const browser = await chromium.launch({
-  executablePath: process.env.CHROMIUM ?? '/opt/pw-browsers/chromium',
+  executablePath: resolveChromium(),
   args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'],
 });
 const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });

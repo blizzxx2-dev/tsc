@@ -3,7 +3,7 @@
  * the game uses. It is deliberately competent but not superhuman in timing, and
  * is used to prove every operation is completable and to calibrate rank thresholds.
  */
-import { dist, type Vec } from '../src/core/math';
+import type { Vec } from '../src/core/math';
 import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, SALVE_MAX, Sigil, Venom } from '../src/surgery/entities';
 import type { Entity } from '../src/surgery/entity';
 import { ChoirVoice, EggSac, LaudsMalison, SpiderlingGrub } from '../src/surgery/lauds';
@@ -15,7 +15,7 @@ import type { Input } from '../src/core/input';
 import type { Game } from '../src/core/scene';
 import { OperationScene } from '../src/scenes/operation';
 
-const DT = 1 / 60;
+import { DT, pointerFrame, raster, release, samplePath, zigzagAlong as zigzag } from './helpers/sim';
 
 interface Frame {
   tool: ToolId;
@@ -51,62 +51,15 @@ function* grabTo(tool: ToolId, target: () => Vec | null, dest: Vec, speed = 600)
 
 /** Drag along a polyline at a human-ish speed. */
 function* drag(tool: ToolId, pts: Vec[], speed = 420): Action {
-  const step = speed * DT;
-  yield { tool, pos: pts[0], down: true };
-  for (let i = 1; i < pts.length; i++) {
-    const a = pts[i - 1];
-    const b = pts[i];
-    const n = Math.max(1, Math.ceil(dist(a, b) / step));
-    for (let k = 1; k <= n; k++) yield { tool, pos: { x: a.x + ((b.x - a.x) * k) / n, y: a.y + ((b.y - a.y) * k) / n }, down: true };
-  }
+  const path = samplePath(pts, speed);
+  for (const pos of path) yield { tool, pos, down: true };
   yield { tool, pos: pts[pts.length - 1], down: false };
-}
-
-/** Zig-zag across a polyline, crossing it `crossings` times. */
-function zigzag(line: Vec[], crossings: number, amp = 26): Vec[] {
-  const lens: number[] = [0];
-  for (let i = 1; i < line.length; i++) lens.push(lens[i - 1] + dist(line[i - 1], line[i]));
-  const total = lens[lens.length - 1];
-  const at = (s: number): { p: Vec; n: Vec } => {
-    let i = 1;
-    while (i < line.length - 1 && lens[i] < s) i++;
-    const a = line[i - 1];
-    const b = line[i];
-    const seg = lens[i] - lens[i - 1] || 1;
-    const t = (s - lens[i - 1]) / seg;
-    const d = { x: (b.x - a.x) / seg, y: (b.y - a.y) / seg };
-    return { p: { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t }, n: { x: -d.y, y: d.x } };
-  };
-  const pts: Vec[] = [];
-  for (let i = 0; i <= crossings; i++) {
-    const s = total * (0.04 + (0.92 * i) / crossings);
-    const { p, n } = at(s);
-    const side = i % 2 ? -amp : amp;
-    pts.push({ x: p.x + n.x * side, y: p.y + n.y * side });
-  }
-  return pts;
-}
-
-/** Brush raster over a disc. */
-function raster(c: Vec, r: number): Vec[] {
-  const pts: Vec[] = [];
-  let flip = false;
-  for (let y = -r; y <= r; y += 16) {
-    const w = Math.sqrt(Math.max(0, r * r - y * y)) + 6;
-    const row = [
-      { x: c.x - w, y: c.y + y },
-      { x: c.x + w, y: c.y + y },
-    ];
-    pts.push(...(flip ? row.reverse() : row));
-    flip = !flip;
-  }
-  return pts;
 }
 
 const OFF_BODY: Vec = { x: FIELD.cx, y: FIELD.cy - FIELD.ry - 60 };
 const alive = (e: Entity) => () => (e.alive && !e.hidden ? e.pos : null);
 
-function plan(op: Operation): Action | null {
+function plan(op: Operation, invokeLitany: () => void): Action | null {
   const ents = op.entities.filter((e) => e.alive);
   const vis = ents.filter((e) => !e.hidden);
   const has = (t: ToolId) => op.def.tools.includes(t);
@@ -129,7 +82,7 @@ function plan(op: Operation): Action | null {
   if (bubo) return tap('lancet', bubo.pos);
 
   // A player invokes the Litany when a Malison shows itself.
-  if (op.canInvokeLitany() && vis.some((e) => e instanceof Malison || e instanceof LaudsMalison)) op.invokeLitany();
+  if (op.canInvokeLitany() && vis.some((e) => e instanceof Malison || e instanceof LaudsMalison)) invokeLitany();
 
   const shard = find(MalisonShard);
   if (shard) return grabTo('tongs', alive(shard), OFF_BODY);
@@ -209,6 +162,12 @@ export interface BotOptions {
   onOp?: (op: Operation) => void;
   /** Observe each frame after the update, before cues are cleared (audio replay tests). */
   onFrame?: (op: Operation, ptr: Pointer | null, dt: number) => void;
+  /**
+   * Emit the release that ends a gesture on its own frame and plan the next gesture on the
+   * following frame. Real mouse input can deliver only one button transition per frame, so the
+   * E2E mirror uses this; the headless suites keep the default (release + next press in one frame).
+   */
+  splitRelease?: boolean;
 }
 
 /** Idle frames at the current pointer (pointer up). */
@@ -216,40 +175,73 @@ function* pause(pos: Vec, tool: ToolId, seconds: number): Action {
   for (let t = 0; t < seconds; t += DT) yield { tool, pos, down: false };
 }
 
+/** One input event the bot wants applied this frame, in order. */
+export type BotEvent = { kind: 'pointer'; tool: ToolId; ptr: Pointer; select: boolean } | { kind: 'litany' };
+
+/**
+ * Frame-by-frame bot surgeon. Call `tick(op)` once per frame while the operation is running and
+ * apply the returned events in order (`select` pointer events call `setTool` first), then `op.update`.
+ */
+export class BotDriver {
+  prev: Vec = { x: FIELD.cx, y: FIELD.cy };
+  wasDown = false;
+  private action: Action | null = null;
+
+  constructor(private opts: BotOptions = {}) {}
+
+  tick(op: Operation): BotEvent[] {
+    const out: BotEvent[] = [];
+    const think = this.opts.think ?? 0;
+    let f = this.action?.next();
+    if (!f || f.done) {
+      // Finish the previous gesture cleanly before planning the next.
+      if (this.wasDown) {
+        out.push({ kind: 'pointer', tool: op.tool, ptr: release(this.prev), select: false });
+        this.wasDown = false;
+        if (this.opts.splitRelease) {
+          this.action = null;
+          return out;
+        }
+      }
+      const next = plan(op, () => out.push({ kind: 'litany' }));
+      this.action = next && think > 0 ? chain(pause(this.prev, op.tool, think), next) : next;
+      f = this.action?.next();
+    }
+    if (f && !f.done) {
+      const fr = f.value;
+      out.push({ kind: 'pointer', tool: fr.tool, ptr: pointerFrame(fr.pos, this.prev, fr.down, this.wasDown), select: true });
+      this.wasDown = fr.down;
+      this.prev = fr.pos;
+    }
+    return out;
+  }
+}
+
+/** Apply bot events straight to the simulation (the headless equivalent of the operation scene). */
+export function applyBotEvents(op: Operation, events: BotEvent[]): void {
+  for (const ev of events) {
+    if (ev.kind === 'litany') op.invokeLitany();
+    else {
+      if (ev.select) op.setTool(ev.tool);
+      op.handlePointer(ev.ptr, DT);
+    }
+  }
+}
+
 /** Play an operation to completion (or failure) with the bot. */
 export function playWithBot(def: OperationDef, opts: BotOptions = {}): BotResult {
   const maxSeconds = opts.maxSeconds ?? 900;
-  const think = opts.think ?? 0;
   const op = new Operation(def);
   opts.onOp?.(op);
-  let prev: Vec = { x: FIELD.cx, y: FIELD.cy };
-  let wasDown = false;
-  let action: Action | null = null;
+  const bot = new BotDriver(opts);
   let frames = 0;
   let last: Pointer | null = null;
   while ((op.status === 'intro' || op.status === 'running') && frames < maxSeconds * 60) {
     frames++;
     if (op.status === 'running') {
-      let f = action?.next();
-      if (!f || f.done) {
-        // Finish the previous gesture cleanly before planning the next.
-        if (wasDown) {
-          op.handlePointer({ pos: prev, prev, down: false, pressed: false, released: true }, DT);
-          wasDown = false;
-        }
-        const next = plan(op);
-        action = next && think > 0 ? chain(pause(prev, op.tool, think), next) : next;
-        f = action?.next();
-      }
-      if (f && !f.done) {
-        const fr = f.value;
-        op.setTool(fr.tool);
-        const ptr: Pointer = { pos: fr.pos, prev, down: fr.down, pressed: fr.down && !wasDown, released: !fr.down && wasDown };
-        op.handlePointer(ptr, DT);
-        last = ptr;
-        wasDown = fr.down;
-        prev = fr.pos;
-      }
+      const evs = bot.tick(op);
+      applyBotEvents(op, evs);
+      for (const ev of evs) if (ev.kind === 'pointer') last = ev.ptr;
     }
     op.update(DT);
     opts.onFrame?.(op, last, DT);
@@ -289,7 +281,7 @@ export function playWithBotThroughInput(def: OperationDef, input: Input, opts: B
           input.push({ t: t + 1, type: 'up', code: 'mouse:0' });
           wasDown = false;
         }
-        const next = plan(op);
+        const next = plan(op, () => op.invokeLitany());
         action = next && think > 0 ? chain(pause(prev, op.tool, think), next) : next;
         f = action?.next();
       }
