@@ -460,7 +460,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] PLT-0025 · Demo · P0 · S · Steam depot layout — separate Windows, macOS and Linux depots with correct executable bits
 - [x] PLT-0026 · Demo · P0 · S · Electron fuses: disable `RunAsNode` and `NODE_OPTIONS`, enable `OnlyLoadAppFromAsar` and embedded ASAR integrity validation — verified with `@electron/fuses read`
 - [x] PLT-0027 · Demo · P1 · S · Strip unused Chromium locale paks and dev artefacts — size delta recorded; Windows demo depot ≤250 MB compressed
-- [ ] PLT-0028 · Demo · P1 · M · Per-bundle resource archives — code, common, chapter1, chapter2 split so a code-only hotfix is a Steam patch ≤20 MB instead of re-downloading one big ASAR
+- [x] PLT-0028 · Demo · P1 · M · Per-bundle resource archives — code, common, chapter1, chapter2 split so a code-only hotfix is a Steam patch ≤20 MB instead of re-downloading one big ASAR
 - [ ] PLT-0029 · Demo · P0 · S · macOS universal binary runs natively on Apple Silicon and Intel (no Rosetta prompt) — verified on both
 - [ ] PLT-0030 · Demo · P0 · M · Linux build runs inside the Steam Linux Runtime (sniper) container on Ubuntu, Fedora and SteamOS — X11 and Wayland (`ozone-platform-hint=auto`) tested
 - [ ] PLT-0031 · Demo · P1 · S · Windows — per-monitor-v2 DPI awareness, Windows 10 1809+ minimum, no external redistributables required (clean VM test)
@@ -526,7 +526,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] PLT-0070 · Demo · P0 · S · Next Fest checklist with dates — demo build live and reviewed ≥2 weeks before the festival, store page demo section, broadcast/press build, known-issues list
 - [ ] PLT-0071 · Demo · P0 · M · Festival hotfix pipeline rehearsed — fix → CI build → signed → `beta` branch → smoke on 3 OSes + Deck → `default` in ≤4 hours
 - [x] PLT-0072 · Demo · P1 · M · Opt-in anonymous demo telemetry — operations started/finished/failed, fail phase, session length, quit point, settings tier; first-run consent, options toggle, published data policy
-- [ ] PLT-0073 · Demo · P1 · S · "Send feedback" link — form/Discord prefilled with build id, OS and GPU tier
+- [x] PLT-0073 · Demo · P1 · S · "Send feedback" link — form/Discord prefilled with build id, OS and GPU tier
 - [x] PLT-0074 · Demo · P2 · M · Kiosk/booth mode (`--kiosk`) — no saves, auto-return to title after 90 s idle, quit disabled, operation select for show floors
 - [ ] PLT-0075 · Demo · P0 · M · Clean-machine demo QA via the Steam client (no dev tools installed) on Windows 10, Windows 11, macOS arm64, Ubuntu and Steam Deck — install, play Ch1–2 end to end, Cloud sync, uninstall
 - [ ] PLT-0076 · Demo · P1 · S · Demo Deck compatibility review — requested once the Deck checklist items pass
@@ -679,7 +679,7 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [ ] PLT-0184 · Release · P1 · M · GOG build — DRM-free offline installers, GOG Galaxy integration evaluated (achievements/cloud) with a decision recorded
 - [ ] PLT-0185 · Release · P1 · M · itch.io build — `butler push` channels for Windows/macOS/Linux and `.itch.toml` launch config, plus the browser demo channel
 - [ ] PLT-0186 · Release · P1 · M · Auto-updater for direct-download builds only (signed update feed, differential downloads, rollback on failed start) — disabled in Steam/GOG builds
-- [ ] PLT-0187 · Release · P2 · S · Storefront-aware links — "rate / wishlist" URLs resolved per storefront build
+- [x] PLT-0187 · Release · P2 · S · Storefront-aware links — "rate / wishlist" URLs resolved per storefront build
 - [ ] PLT-0188 · Release · P0 · S · Storefront clean-machine checklist — each build passes install/play/uninstall on all target OSes
 
 ## PLT-R · Launch readiness & compliance (Release)

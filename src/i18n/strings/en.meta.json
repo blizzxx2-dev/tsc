@@ -6226,5 +6226,13 @@
     "maxPx": 260,
     "context": "Beside the cursor over a target the instrument in hand cannot treat; {tool} is the instrument it needs.",
     "screenshot": "docs/loc/screens/operation.png"
+  },
+  "ui.pause.feedback": {
+    "scene": "pause",
+    "font": "display",
+    "size": 26,
+    "maxPx": 340,
+    "context": "Pause menu entry opening the feedback form in the browser (shown only when a feedback URL is configured).",
+    "screenshot": "docs/loc/screens/pause.png"
   }
 }

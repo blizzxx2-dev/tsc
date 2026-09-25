@@ -49,7 +49,9 @@ module.exports = {
   asar: true,
   // The generated 3D models (hundreds of MB, 4K KTX2 textures) stay outside the asar archive and
   // are read straight from disk; Steam ships the unpacked folder (win target 'dir') at any size.
-  asarUnpack: ['node_modules/steamworks.js/dist/**', 'dist/assets/models_*', 'dist/assets/models.json'],
+  // Content (sprites, fonts, audio, models) stays outside the asar too (PLT-0028): SteamPipe patches
+  // per file, so a code-only hotfix re-ships just the small asar, not the content.
+  asarUnpack: ['node_modules/steamworks.js/dist/**', 'dist/assets/**', 'dist/audio/**'],
   electronLanguages: LOCALES,
   compression: 'normal',
   npmRebuild: false,

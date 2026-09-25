@@ -64,4 +64,18 @@ export const EDITIONS: Record<Edition, EditionInfo> = {
 /** Store page used when the Steam app id is not assigned yet or Steam is unavailable. */
 export const STORE_FALLBACK_URL = 'https://store.steampowered.com/search/?term=Suture%20%26%20Steel';
 
-export const storeUrl = (appId: number): string => (appId > 0 ? `https://store.steampowered.com/app/${appId}/` : STORE_FALLBACK_URL);
+/** Which shop this package was built for (PLT-0187): `VITE_STOREFRONT=steam|gog|itch`, Steam by default. */
+export type Storefront = 'steam' | 'gog' | 'itch';
+export const STOREFRONT: Storefront = ((import.meta as { env?: Record<string, string | undefined> }).env?.VITE_STOREFRONT as Storefront | undefined) ?? 'steam';
+
+/** Full-game pages on the other shops (empty until the products exist; then the Steam page is the fallback). */
+export const STORE_PAGES: Record<Exclude<Storefront, 'steam'>, string> = { gog: '', itch: '' };
+
+/** The full game's page on the storefront this build is for; Steam's when that shop has no page yet. */
+export const storeUrl = (appId: number, shop: Storefront = STOREFRONT): string => {
+  if (shop !== 'steam' && STORE_PAGES[shop]) return STORE_PAGES[shop];
+  return appId > 0 ? `https://store.steampowered.com/app/${appId}/` : STORE_FALLBACK_URL;
+};
+
+/** Where players send feedback (PLT-0073): `VITE_FEEDBACK_URL`; the entry point is hidden when unset. */
+export const FEEDBACK_URL: string = (import.meta as { env?: Record<string, string | undefined> }).env?.VITE_FEEDBACK_URL ?? '';

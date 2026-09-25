@@ -15,7 +15,7 @@ import { uiEvents } from '../ui/events';
 import { reticle } from '../ui/widgets';
 import { platform } from '../platform';
 import { IS_DEMO } from '../platform/build';
-import { EDITIONS } from '../platform/editions';
+import { EDITIONS, FEEDBACK_URL } from '../platform/editions';
 import { flag } from '../platform/flags';
 import { confirm } from './confirm';
 import { OptionsScene } from './options';
@@ -77,6 +77,7 @@ export class PauseScene implements Scene {
     add('abandon', t('hud.pause.abandon'), () => this.guarded(game, t('ui.pause.confirm_abandon'), () => this.finish(game, 'abandon')));
     // Demo: a plain menu entry to the full game's store page (PLT-0063) — never an interruption.
     if (IS_DEMO && flag('wishlistPrompts')) add('wishlist', t('ui.title.wishlist'), () => platform.steam.openStore(EDITIONS.full.steamAppId));
+    if (FEEDBACK_URL) add('feedback', t('ui.pause.feedback'), () => platform.open({ url: FEEDBACK_URL }));
     if (platform.kind === 'desktop' && !platform.args.kiosk) add('quit', t('ui.pause.quit_desktop'), () => confirm(game, { message: t('ui.pause.confirm_quit'), onYes: () => platform.quit(), danger: true }));
     if (!ui.focus) ui.focusFirst('resume');
   }
