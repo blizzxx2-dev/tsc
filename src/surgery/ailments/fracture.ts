@@ -1,5 +1,5 @@
 import { dist, type Vec } from '../../core/math';
-import { drawBoneView } from '../../art/boneView';
+import { boneChipsArt, boneFragmentArt, drawBoneView, splintArt } from '../../art/boneView';
 import { hex } from '../../render/color';
 import type { Gfx } from '../../render/gfx';
 import { angleDiff, BloodPool, surfDisc } from '../entities';
@@ -174,6 +174,10 @@ export class Fracture extends Entity {
   private finish(op: Operation, at: Vec): void {
     const loose = this.fragments.filter((f) => !f.set).length;
     this.kill();
+    // The set bone stays splinted and bandaged for the rest of the operation (ART-0223).
+    const first = this.fragments[0];
+    const last = this.fragments[this.fragments.length - 1];
+    op.spawn(new Splint(this.end(first.target, first.targetRot, -1), this.end(last.target, last.targetRot, 1)));
     if (loose > 0) {
       op.rate('bad', at, 'Misaligned');
       op.endPenalty += FRACTURE.misalignPenalty * loose;
@@ -190,13 +194,14 @@ export class Fracture extends Entity {
   draw(g: Gfx, op: Operation): void {
     // The vellum anatomy plate (ENG-0273): the inked bone, its breaks and, with guides on, where each fragment goes.
     drawBoneView(g, this, op.elapsed, op.guides);
-    for (const f of this.fragments) {
-      const a = this.end(f.pos, f.rot, -1);
-      const b = this.end(f.pos, f.rot, 1);
-      g.line(a, b, 16, hex(f.set ? '#e8e0cc' : '#d8ceb4'));
-      g.line(a, b, 6, hex('#f8f2e4', 0.6));
+    // Fracture sprites (ART-0223): broken ends jagged where fragments meet, chips round a comminuted
+    // break, and a compound fracture's end through the skin until it is set.
+    const n = this.fragments.length;
+    this.fragments.forEach((f, i) => {
+      boneFragmentArt(g, f.pos, f.rot, FRACTURE.segLen, { brokenA: i > 0, brokenB: i < n - 1, set: f.set, protrude: this.compound && i === n - 1 && !f.set, seed: i });
       if (this.held === f) g.glow(f.pos.x, f.pos.y, 30, hex('#ffe0a0', 0.3));
-    }
+    });
+    if (n >= 4) for (let i = 1; i < n; i++) if (!(this.fragments[i - 1].set && this.fragments[i].set)) boneChipsArt(g, this.pins[Math.min(this.pins.length - 1, i - 1)] ?? this.pos, 3, i);
     if (this.roughlyAligned)
       this.pins.forEach((q, i) => {
         const done = i < this.pinned;
@@ -257,4 +262,23 @@ export function fractureSite(op: Operation, pos: Vec, opts: { axis?: number; fra
   }
   out.push(new BloodPool({ x: pos.x, y: pos.y + 30 }, 22, 'bonedust'));
   return out;
+}
+
+/** The splint and bandage left on a pinned bone (presentation; not required, no drain). */
+export class Splint extends Entity {
+  noun = 'the splint';
+  constructor(
+    public a: Vec,
+    public b: Vec,
+  ) {
+    super({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
+    this.required = false;
+    this.layer = 2;
+  }
+  override hitTest(): boolean {
+    return false;
+  }
+  draw(g: Gfx): void {
+    splintArt(g, this.a, this.b);
+  }
 }

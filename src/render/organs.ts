@@ -44,5 +44,15 @@ export function speciesBlood(paletteBlood: string, look: SpeciesLook): string {
   return tintBlood(paletteBlood, look);
 }
 
+/** Vespers' tallow (ART-0174): blood turned waxy, pale and opaque, mixed in by `k` 0..1. */
+export const TALLOW = '#d8c896';
+export function tallowBlood(blood: string, k: number): string {
+  if (k <= 0) return blood;
+  const p = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const a = p(blood);
+  const b = p(TALLOW);
+  return '#' + a.map((v, i) => Math.round(v + (b[i] - v) * Math.min(1, k)).toString(16).padStart(2, '0')).join('');
+}
+
 /** Each organ set's base vein colour (for the colour-blind pass, ART-0357). */
 export const ORGAN_VEINS = Object.fromEntries(Object.entries(ORGAN).map(([k, v]) => [k, v.vein])) as Record<OrganKind, string>;

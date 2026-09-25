@@ -7,7 +7,7 @@ import { FIELD, TRAY_DISH } from '../src/surgery/operation';
 import type { TinctureColor } from '../src/surgery/progress';
 import type { ToolId } from '../src/surgery/types';
 import { AlchemicalAcid, CompoundPoison, GasPocket } from '../src/surgery/ailments/alchemy';
-import { BoneSplinter, Fracture, FRACTURE } from '../src/surgery/ailments/fracture';
+import { BoneSplinter, Fracture, FRACTURE, Splint } from '../src/surgery/ailments/fracture';
 import { FrostPatch, IceCrystal } from '../src/surgery/ailments/frost';
 import { Amputation, Gangrene } from '../src/surgery/ailments/gangrene';
 import { Growth, GROWTH, MutationBud } from '../src/surgery/ailments/growth';
@@ -25,6 +25,8 @@ import { DT, drag, hold, raster, still, tap, zigzag, type Action, type BotContex
 
 const ALPHA = [
   WebSilk,
+  // A pinned bone's splint: presentation only, nothing to do.
+  Splint,
   AlchemicalAcid,
   CompoundPoison,
   GasPocket,

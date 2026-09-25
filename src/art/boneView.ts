@@ -91,3 +91,92 @@ export function drawBoneView(g: Gfx, fr: Fracture, t: number, guides: boolean): 
     if (turn > 0.5) g.arc(f.target.x, f.target.y, 20, 1.6, c, Math.min(1, turn / 180), f.targetRot);
   }
 }
+
+// ---------------------------------------------------------------- fracture sprites (ART-0223)
+
+const BONE = '#e8e0cc';
+const BONE_LO = '#b8ac90';
+const MARROW = '#8a3a2a';
+
+/** A jagged fracture edge across a bone end at `c`, perpendicular to `rot`. */
+function breakEdge(g: Gfx, c: { x: number; y: number }, rot: number, w: number, seed: number): void {
+  const nx = -Math.sin(rot);
+  const ny = Math.cos(rot);
+  const tx = Math.cos(rot);
+  const ty = Math.sin(rot);
+  const pts = [];
+  for (let i = -3; i <= 3; i++) {
+    const zig = ((i + seed) % 2 === 0 ? 1 : -1) * 3;
+    pts.push({ x: c.x + nx * (i / 3) * w + tx * zig, y: c.y + ny * (i / 3) * w + ty * zig });
+  }
+  g.polyline(pts, 3, hex(BONE_LO));
+  g.circle(c.x, c.y, w * 0.35, hex(MARROW, 0.7));
+}
+
+/**
+ * One bone fragment: cortical shaft with a highlight; ends that meet another fragment are broken
+ * (jagged, marrow showing), the bone's own ends rounded. `protrude` pushes a compound fracture's
+ * end out through a skin tear.
+ */
+export function boneFragmentArt(g: Gfx, c: { x: number; y: number }, rot: number, len: number, o: { brokenA: boolean; brokenB: boolean; set: boolean; protrude?: boolean; seed?: number }): void {
+  const h = len / 2 - 3;
+  const a = { x: c.x - Math.cos(rot) * h, y: c.y - Math.sin(rot) * h };
+  const b = { x: c.x + Math.cos(rot) * h, y: c.y + Math.sin(rot) * h };
+  const w = 8;
+  g.line({ x: a.x + 2, y: a.y + 3 }, { x: b.x + 2, y: b.y + 3 }, w * 2 + 2, hex('#000000', 0.3));
+  g.line(a, b, w * 2, hex(o.set ? BONE : '#d8ceb4'));
+  // Cortical highlight along the lamp side, and a faint nutrient-canal line.
+  const nx = -Math.sin(rot);
+  const ny = Math.cos(rot);
+  g.line({ x: a.x - nx * w * 0.45, y: a.y - ny * w * 0.45 }, { x: b.x - nx * w * 0.45, y: b.y - ny * w * 0.45 }, 2.5, hex('#fff8e8', 0.6));
+  g.line({ x: a.x + nx * w * 0.2, y: a.y + ny * w * 0.2 }, { x: b.x + nx * w * 0.2, y: b.y + ny * w * 0.2 }, 1, hex(BONE_LO, 0.5));
+  for (const [end, broken] of [[a, o.brokenA], [b, o.brokenB]] as const) {
+    if (broken) breakEdge(g, end, rot, w, o.seed ?? 0);
+    else {
+      g.circle(end.x, end.y, w * 1.25, hex(BONE));
+      g.arc(end.x, end.y, w * 1.25, 1.2, hex(BONE_LO, 0.8));
+    }
+  }
+  if (o.protrude) {
+    // Compound: the end has come through the skin — a torn, bloodied rim around it.
+    g.ellipse(b.x, b.y, w * 2.2, w * 1.4, rot, hex('#6a0a10', 0.55), hex('#6a0a10', 0));
+    g.arc(b.x, b.y, w * 1.9, 2, hex('#a01818', 0.8));
+  }
+}
+
+/** Chips of bone round a comminuted break. */
+export function boneChipsArt(g: Gfx, at: { x: number; y: number }, n: number, seed = 0): void {
+  for (let i = 0; i < n; i++) {
+    const a = seed + i * 2.399;
+    const d = 10 + ((i * 7) % 5) * 3;
+    const x = at.x + Math.cos(a) * d;
+    const y = at.y + Math.sin(a) * d;
+    g.tri(x - 3, y + 2, x + 3, y + 3, x + 1, y - 3, hex(BONE));
+  }
+}
+
+/** A splint lashed along a set bone: linen padding, two wooden staves and a dense spiral wrap. */
+export function splintArt(g: Gfx, a: { x: number; y: number }, b: { x: number; y: number }): void {
+  const rot = Math.atan2(b.y - a.y, b.x - a.x);
+  const nx = -Math.sin(rot);
+  const ny = Math.cos(rot);
+  const tx = Math.cos(rot);
+  const ty = Math.sin(rot);
+  g.line({ x: a.x + 3, y: a.y + 4 }, { x: b.x + 3, y: b.y + 4 }, 38, hex('#000000', 0.25));
+  g.line(a, b, 34, hex('#d8ceb4'));
+  for (const side of [-1, 1]) {
+    const o = side * 15;
+    g.line({ x: a.x + nx * o, y: a.y + ny * o }, { x: b.x + nx * o, y: b.y + ny * o }, 7, hex('#8a6a40'));
+    g.line({ x: a.x + nx * (o - 2), y: a.y + ny * (o - 2) }, { x: b.x + nx * (o - 2), y: b.y + ny * (o - 2) }, 1.5, hex('#c8a870', 0.7));
+  }
+  // The wrap: overlapping diagonal turns, alternately lit and shaded, leaving the staves' ends bare.
+  const len = Math.hypot(b.x - a.x, b.y - a.y);
+  const turns = Math.max(6, Math.floor((len - 30) / 9));
+  for (let i = 0; i <= turns; i++) {
+    const k = 15 / len + (i / turns) * (1 - 30 / len);
+    const c = { x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k };
+    const s = 20;
+    g.line({ x: c.x - nx * s - tx * 5, y: c.y - ny * s - ty * 5 }, { x: c.x + nx * s + tx * 5, y: c.y + ny * s + ty * 5 }, 10, hex(i % 2 ? '#e2d8c0' : '#f2ecdc'));
+    g.line({ x: c.x - nx * s - tx * 8, y: c.y - ny * s - ty * 8 }, { x: c.x + nx * s + tx * 2, y: c.y + ny * s + ty * 2 }, 1, hex('#a89878', 0.6));
+  }
+}

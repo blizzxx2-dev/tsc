@@ -1,3 +1,5 @@
+import { surgicalFlapArt } from '../art/surgicalFlap';
+import { speciesOf } from './species';
 import { poisonFor, type PoisonId } from '../content/poisons';
 import { fxRandom } from './fxRandom';
 import { burnSeverity } from '../art/burnGrades';
@@ -270,6 +272,8 @@ export class Incision extends Entity {
       // The flesh shader carves the gash (surface layer); the cut-edge art paints skin lips, fat and the
       // bleeding edge over it, opening over 6 frames once the last layer is through.
       const open = this.openedAt < 0 ? 1 : Math.min(1, (op.elapsed - this.openedAt) / 0.5);
+      // Deep-organ operations hold the incision wide with pinned skin flaps (ART-0189).
+      if (op.def.organ !== 'flesh' && op.def.organ !== 'skin' && op.def.organ !== 'muscle' && this.state === 'open') surgicalFlapArt(g, this.points, open, speciesOf(op.def.race).look.skin);
       woundArt(g, this.points, 5, { open, bleed: this.state === 'open' ? 0.6 : 0.25, beat: beatPulse(op), seed: this.id, alpha: woundAlpha() });
       g.polyline(this.points, 2, hex('#ff9090', 0.15));
       if (this.state === 'closing') g.dashed(this.points, 2, hex('#ffebbe', 0.35 + 0.2 * Math.sin(op.elapsed * 4)), 6, 10, op.elapsed * 10);

@@ -4,6 +4,7 @@
  * pixel (`TOOL_TIPS`) sits exactly on the pointer — the point every hit-test uses. The debug overlay
  * (`op.debug`) draws `drawTipDebug`: a crosshair at the pointer and a box round the tip pixel.
  */
+import { FPS } from './timing';
 import type { Vec } from '../core/math';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
@@ -241,4 +242,31 @@ export function toolGlyph(g: Gfx, tool: ToolId, x: number, y: number, size = TOO
   const tip = TOOL_TIPS[tool];
   drawFieldTool(g, tool, { x: tip.x - 32, y: tip.y - 32 }, { heat: 0.7, closed: false });
   g.restore();
+}
+
+/** Frames in the live leech's squirm loop (ART-0267). */
+export const LEECH_SQUIRM_FRAMES = 4;
+
+/**
+ * The live leech at the Leech-Pipe's mouth (ART-0267): a glossy three-segment leech that squirms in
+ * a 4-frame woodcut loop, drawn over the tray icon at (x, y) for an icon `size` px across.
+ */
+export function leechSquirm(g: Gfx, x: number, y: number, size: number, t: number): void {
+  const f = Math.floor(t * FPS.woodcut) % LEECH_SQUIRM_FRAMES;
+  const k = size / 64;
+  const bend = [0, 0.35, 0, -0.35][f];
+  const reach = [1, 0.9, 0.8, 0.9][f];
+  const mx = x + 18 * k;
+  const my = y - 18 * k;
+  let px = mx;
+  let py = my;
+  let a = -0.78;
+  for (let i = 0; i < 3; i++) {
+    a += bend;
+    const r = (4.2 - i * 0.8) * k;
+    px += Math.cos(a) * 5.5 * k * reach;
+    py += Math.sin(a) * 5.5 * k * reach;
+    g.circle(px, py, r, hex(i === 2 ? '#3a0c0c' : '#4a1212'));
+    g.circle(px - r * 0.3, py - r * 0.35, r * 0.35, hex('#ffb0a0', 0.35));
+  }
 }

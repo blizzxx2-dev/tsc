@@ -1,3 +1,4 @@
+import { leechSquirm } from '../art/toolSprites';
 import { cursorColour } from './hudPrefs';
 import { toolIcon3d } from './toolIcons3d';
 import { glass, menuItem } from './hudKit';
@@ -64,13 +65,20 @@ export function button(g: Gfx, input: Input, label: string, x: number, y: number
  * 50 px across; `state` gives the tray states (idle, selected gilt rim, disabled tarnish,
  * cooldown shutter with `cooldown` 0..1).
  */
-export function toolIcon(g: Gfx, tool: ToolId, x: number, y: number, s = 1, _t = 0, state: ToolState = 'idle', cooldown = 0): void {
+export function toolIcon(g: Gfx, tool: ToolId, x: number, y: number, s = 1, t = 0, state: ToolState = 'idle', cooldown = 0): void {
   // The 3D-rendered instrument when its model is built and loaded; the shader icon otherwise.
   const tex = toolIcon3d(g, tool);
-  if (!tex) return toolArt(g, tool, x, y, 50 * s, state, cooldown);
+  // The Leech-Pipe carries a live leech that squirms (ART-0267), except when the instrument is out of reach.
+  const live = tool === 'leech' && state !== 'disabled';
+  if (!tex) {
+    toolArt(g, tool, x, y, 50 * s, state, cooldown);
+    if (live) leechSquirm(g, x, y, 64 * s, t);
+    return;
+  }
   const size = 64 * s;
   const tint = state === 'disabled' ? 0xc0707070 : 0xffffffff;
   g.texQuad(tex, x - size / 2, y - size / 2, size, size, tint >>> 0, true);
+  if (live) leechSquirm(g, x, y, size, t);
   if (state === 'cooldown' && cooldown > 0) g.rect(x - size / 2, y - size / 2, size, size * Math.min(1, cooldown), hex('#000000', 0.55));
 }
 

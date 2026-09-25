@@ -42,7 +42,8 @@ import type { ActionId } from '../input/actions';
 import { DamageAggregator, ToolHints } from '../ui/hudPrefs';
 import { stackPopup } from '../ui/popupStack';
 import { clearOfHud, HUD_SCORE, HUD_TIMER, HUD_VITALS, operationHud } from '../ui/popupPlacement';
-import { speciesBlood } from '../render/organs';
+import { speciesBlood, tallowBlood } from '../render/organs';
+import { VespersMalison } from '../surgery/bosses/vespers';
 import { band, caps, heading, heartIcon, phaseSeal, ratingStamp, glass, INK, keycap, meter, numerals, titleRule, well } from '../ui/hudKit';
 import { localeInfo } from '../i18n/locales';
 import { getLocale } from '../i18n';
@@ -816,8 +817,11 @@ export class OperationScene implements Scene {
     const colours = palette();
     this.decals.drawScorch(t);
     this.decals.drawStain(op.elapsed);
-    this.decals.drawBlood(op.elapsed, { fresh: vec3(speciesBlood(colours.blood, pal.species)), light: { x: (light.x - FIELD.cx) / FIELD.rx, y: -(light.y - FIELD.cy) / FIELD.ry } });
-    g.fluidComposite(light, { blood: speciesBlood(colours.blood, pal.species), pus: colours.pus, bile: colours.bile, gore: presentation.gore });
+    // While Vespers burns, the blood on the field runs to tallow (ART-0174).
+    const tallow = op.entities.some((e) => e.alive && e instanceof VespersMalison) ? 0.75 : 0;
+    const blood = tallowBlood(speciesBlood(colours.blood, pal.species), tallow);
+    this.decals.drawBlood(op.elapsed, { fresh: vec3(blood), light: { x: (light.x - FIELD.cx) / FIELD.rx, y: -(light.y - FIELD.cy) / FIELD.ry } });
+    g.fluidComposite(light, { blood, pus: colours.pus, bile: colours.bile, gore: presentation.gore });
     // Entities, particles and world FX go through the world camera (ENG-0045); endWorld resets it.
     g.setCamera(this.camera.isIdentity ? null : this.camera.matrix());
     this.drawGloss(g, op);

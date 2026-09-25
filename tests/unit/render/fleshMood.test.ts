@@ -61,3 +61,13 @@ describe('fever (ART-0212)', () => {
     expect(fever(mk(20))).toBe(1);
   });
 });
+
+describe('tallow blood (ART-0174)', () => {
+  it('mixes the blood toward tallow by k, and leaves it alone at 0', async () => {
+    const { tallowBlood, TALLOW } = await import('../../../src/render/organs');
+    expect(tallowBlood('#6a0208', 0)).toBe('#6a0208');
+    expect(tallowBlood('#6a0208', 1)).toBe(TALLOW);
+    const mid = tallowBlood('#6a0208', 0.5);
+    expect(parseInt(mid.slice(1, 3), 16)).toBeGreaterThan(0x6a);
+  });
+});

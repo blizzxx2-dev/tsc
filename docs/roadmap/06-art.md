@@ -273,7 +273,7 @@ Texture-set standard: each set = **albedo** (painted, sRGB, 1024² tileable) + *
 - [ ] ART-0171 · Beta · P1 · L · `brain` set: gyri height map, meningeal vessels and a pale-pink albedo
 - [ ] ART-0172 · Alpha · P1 · L · `bone` set: cortical and cancellous, periosteum and a fracture-edge detail variant for bone-setting
 - [ ] ART-0173 · Beta · P2 · M · Petrified-tissue overlay set (grey stone crust with cracks as a height map) for Sext and petrification ailments
-- [ ] ART-0174 · Beta · P2 · M · Tallow-blood overlay (waxy, opaque, low-spec) for the Vespers Malison
+- [x] ART-0174 · Beta · P2 · M · Tallow-blood overlay (waxy, opaque, low-spec) for the Vespers Malison
 
 ### Species variants
 - [x] ART-0175 · Demo · P0 · M · Dwarf `flesh` variant: denser muscle fibre, ruddier albedo, thicker subcutaneous fat — needed for op2-2 Orsa
@@ -300,7 +300,7 @@ Ailment standard: painted sprite(s) in the woodcut-over-paint style at 2× virtu
 - [x] ART-0186 · Demo · P0 · S · Gut Thread suture art: stitch sprite per crossing (gut-coloured, knotted) plus a tightening pull frame for `StitchLine`
 - [x] ART-0187 · Demo · P1 · S · Claw-rake variant: 3–4 parallel lacerations as one grouped decal for monster ops (op2-1)
 - [x] ART-0188 · Demo · P1 · S · Closed-wound state: a sutured scar sprite that persists to the results screen
-- [ ] ART-0189 · Alpha · P2 · S · Surgical-flap art (retracted skin with a pin clamp) for deep-organ ops in Chapters 3–5
+- [x] ART-0189 · Alpha · P2 · S · Surgical-flap art (retracted skin with a pin clamp) for deep-organ ops in Chapters 3–5
 
 ### Fluids
 - [x] ART-0190 · Demo · P0 · M · Blood pool sprites: 4 shapes × 3 sizes with a wet-map channel, a spreading flipbook (8 frames) and a Leech-Pipe draining shrink
@@ -348,7 +348,7 @@ Ailment standard: painted sprite(s) in the woodcut-over-paint style at 2× virtu
 - [x] ART-0222 · Beta · P2 · S · Name-sigils (for Prime): blackletter names written stroke by stroke as a 20-frame write-on effect
 
 ### Discipline-specific
-- [ ] ART-0223 · Alpha · P2 · M · Bone-setting: fracture sprites (simple, comminuted, compound with bone-end), splint and bandage wrap art
+- [x] ART-0223 · Alpha · P2 · M · Bone-setting: fracture sprites (simple, comminuted, compound with bone-end), splint and bandage wrap art
 - [ ] ART-0224 · Alpha · P2 · M · Field triage: casualty body-card art (8 poses) with tag ribbons (black, red, yellow, green)
 - [ ] ART-0225 · Beta · P2 · M · Inquisition forensics: evidence-item illustrations (15 items) on a parchment evidence board
 
@@ -424,7 +424,7 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [x] ART-0264 · Demo · P0 · S · Icon states for each tool: idle, selected (gilt rim), disabled (tarnished) and cooldown (tincture/salve refill)
 - [ ] ART-0265 · Demo · P0 · S · Silhouette test: all 8 icons distinguishable in pure black at 48 px (5-tester hallway test, ≥ 95% correct)
 - [x] ART-0266 · Demo · P1 · S · Small 32 px icon variants for the tutorial text inline glyphs and the keybind options page
-- [ ] ART-0267 · Demo · P1 · S · Leech-Pipe live-leech detail: a 4-frame squirm loop on the tray icon
+- [x] ART-0267 · Demo · P1 · S · Leech-Pipe live-leech detail: a 4-frame squirm loop on the tray icon
 - [x] ART-0268 · Alpha · P2 · S · Discipline-tool icons (splint, bone saw, triage tag, evidence tongs, magnifier) in the same style
 
 ### Cursors & in-field tool sprites
