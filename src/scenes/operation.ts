@@ -23,6 +23,8 @@ import { settings } from '../core/settings';
 import { OptionsScene } from './options';
 import { litanyMode, OperationInput } from '../input/opinput';
 import { dragGlyphFor, glyphFor, toolKeyLabel } from '../input/glyphs';
+import { calmWave, drawBossHud, drawLitanyTheft, drawTorpor, ecgCalm, toolBlinded } from '../surgery/bosses/hud';
+import { BossAudio, withBossAssists } from './bossAudio';
 
 export interface OperationOutcome {
   op: Operation;
@@ -73,14 +75,19 @@ export class OperationScene implements Scene {
     op.events.on('popup', (p) => this.popups.push({ ...p, t: 0 }));
     op.events.on('fx', (e) => this.particles.spawn(e));
     op.events.on('cue', (c) => this.pendingCues.add(c));
+    this.bossAudio.listen(op);
   }
+  /** Boss sounds, ambience and adaptive-music hooks (BOS-0008/0017/0020). */
+  private bossAudio = new BossAudio();
 
   /** Apply player assists to the operation definition. */
   private static create(def: OperationDef): Operation {
-    return new Operation(settings.timerAssist === 1 ? def : { ...def, timeLimit: Math.round(def.timeLimit * settings.timerAssist) });
+    const withTime = settings.timerAssist === 1 ? def : { ...def, timeLimit: Math.round(def.timeLimit * settings.timerAssist) };
+    return new Operation(withBossAssists(withTime));
   }
 
   dispose(): void {
+    this.bossAudio.dispose();
     this.op.events.clear();
   }
 
@@ -100,6 +107,8 @@ export class OperationScene implements Scene {
 
   private restart(): void {
     this.op.events.clear();
+    // A repeat attempt skips the bosses' phase-transition beats (BOS-0004).
+    this.def = { ...this.def, skipCinematics: true } as OperationDef;
     this.op = OperationScene.create(this.def);
     this.presRng = new Rng(this.def.seed ?? 1);
     this.popups.length = 0;
@@ -159,7 +168,7 @@ export class OperationScene implements Scene {
     const samples = Math.max(1, Math.round(dt * 120));
     for (let i = 0; i < samples; i++) {
       this.ecg.shift();
-      this.ecg.push(bpm === 0 ? 0 : ecgWave(this.beatPhase) * (op.vitals < 25 ? 0.6 + this.presRng.next() * 0.4 : 1));
+      this.ecg.push(bpm === 0 ? 0 : ecgCalm(op) ? calmWave(this.beatPhase) : ecgWave(this.beatPhase) * (op.vitals < 25 ? 0.6 + this.presRng.next() * 0.4 : 1));
     }
 
     const cursed = op.entities.some((e) => e instanceof Malison || e instanceof MalisonShard) ? 0.7 : op.entities.some((e) => e instanceof Sigil) ? 0.25 : 0;
@@ -318,6 +327,7 @@ export class OperationScene implements Scene {
     // Cursor: reticle at the tip with the instrument beside it.
     const p = game.input.pos;
     if (op.tool === 'tincture' && op.injectT > 0) g.arc(p.x, p.y, 18, 3, hex(PALETTE.good), op.injectT / TINCTURE_TIME);
+    drawTorpor(g, op, p, viewRect());
     toolIcon(g, op.tool, p.x + 20, p.y - 20, 0.8 + this.toolFlash * 0.3, t);
     reticle(g, p);
     g.endFrame();
@@ -371,6 +381,7 @@ export class OperationScene implements Scene {
       g.circle(bx, 92, cur ? 5.5 : 4.5, hex('#000000', 0.5));
       g.circleGrad(bx, 91, cur ? 5 : 4, hex(done ? UI.gilt : cur ? '#e8c8a0' : '#4a3a28'), hex(done ? UI.giltLo : cur ? '#8a6a48' : '#241a10'));
     }
+    drawBossHud(g, op);
 
     // ---- Score and chain.
     leatherPanel(g, { x: VIEW_W - 280, y: 10, w: 266, h: 72 }, { corners: false });
@@ -403,6 +414,7 @@ export class OperationScene implements Scene {
       // Engraved key tag.
       g.circleGrad(r.x + 13, r.y + 14, 10, hex(sel ? UI.brassHi : '#c8a050'), hex(UI.brassLo));
       g.text(toolKeyLabel(TOOL_INFO.findIndex((ti) => ti.id === id) + 1), r.x + 13, r.y + 20, { size: 17, color: hex('#140a02'), align: 'center', shadow: false });
+      if (toolBlinded(op, id)) g.rect(r.x + 2, r.y + 2, r.w - 4, r.h - 4, hex('#8a8a8a', 0.6));
       if (id === 'tincture' && op.injectCooldown > 0) {
         const f = op.injectCooldown / TINCTURE_COOLDOWN;
         g.rect(r.x + 2, r.y + 2 + (r.h - 4) * (1 - f), r.w - 4, (r.h - 4) * f, hex('#000000', 0.65));
@@ -430,6 +442,7 @@ export class OperationScene implements Scene {
     medallion(g, lx, ly, 30, hex(ready ? '#2a1a06' : '#120a08'));
     if (ready) g.glow(lx, ly, 48, hex(UI.gilt, 0.2 + 0.1 * Math.sin(g.time * 3)));
     star(g, lx, ly + 1, 19, ready ? hex(UI.gilt) : hex('#3a3024'));
+    drawLitanyTheft(g, op, lx, ly);
     if (op.litanyTime > 0) {
       g.glow(lx, ly, 60, hex(UI.gilt, 0.35));
       g.arc(lx, ly, 34, 4, hex(UI.gilt), op.litanyTime / LITANY_DURATION);

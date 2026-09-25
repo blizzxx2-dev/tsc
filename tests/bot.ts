@@ -6,11 +6,13 @@
 import { dist, type Vec } from '../src/core/math';
 import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, SALVE_MAX, Sigil, Venom } from '../src/surgery/entities';
 import type { Entity } from '../src/surgery/entity';
-import { ChoirVoice, EggSac, LaudsMalison, SpiderlingGrub } from '../src/surgery/lauds';
+import { EggSac, LaudsMalison, SpiderlingGrub } from '../src/surgery/lauds';
 import { Malison, MalisonShard } from '../src/surgery/malison';
 import { FIELD, Operation, type OperationDef } from '../src/surgery/operation';
 import type { Pointer, ToolId } from '../src/surgery/types';
 import { planLater } from './bot-later';
+import { hoursUrgent, planHours } from './bot-hours';
+import { MalisonBase } from '../src/surgery/bosses/base';
 import type { Input } from '../src/core/input';
 import type { Game } from '../src/core/scene';
 import { OperationScene } from '../src/scenes/operation';
@@ -116,8 +118,24 @@ function plan(op: Operation): Action | null {
   if (op.vitals < 40 && op.injectCooldown === 0 && has('tincture')) return hold('tincture', () => ({ x: FIELD.cx + 330, y: FIELD.cy + 20 }), 0.8);
 
   // Chapters III–V: bosses and ailments with their own counterplay.
-  const later = planLater(op, { hold, tap, drag, grabTo, chain, pause, zigzag, raster, OFF_BODY });
+  const kit = { hold, tap, drag, grabTo, chain, pause, zigzag, raster, OFF_BODY };
+  const later = planLater(op, kit);
   if (later) return later;
+
+  // A player invokes the Litany when a Malison shows itself (the phased Hours pick their own moment).
+  if (op.canInvokeLitany() && vis.some((e) => (e instanceof Malison || e instanceof LaudsMalison) && !e.tune.phased)) op.invokeLitany();
+
+  // The Hours on MalisonBase (Matins, Lauds): their own strategies, unless wounds are piling up.
+  const lacs = vis.filter((e): e is Laceration => e instanceof Laceration);
+  if (hoursUrgent(op) || !(lacs.length >= 3 || (lacs.length && op.vitals < 45) || find(BloodPool, (p) => p.r > 34))) {
+    const hours = planHours(op, kit);
+    if (hours) return hours;
+  } else if (lacs.length && ents.some((e) => e instanceof MalisonBase)) {
+    // In a boss fight, close the bleeding wound before mopping up what it bleeds.
+    const big = find(BloodPool, (p) => p.r > 40);
+    if (big) return hold('leech', alive(big), 3);
+    return tendLaceration(lacs.sort((a, b) => b.drain() - a.drain())[0], has('salve'));
+  }
 
   const venom = find(Venom);
   if (venom) return hold('tincture', alive(venom), 1.0);
@@ -128,9 +146,6 @@ function plan(op: Operation): Action | null {
   const bubo = find(Bubo, (b) => !b.lanced);
   if (bubo) return tap('lancet', bubo.pos);
 
-  // A player invokes the Litany when a Malison shows itself.
-  if (op.canInvokeLitany() && vis.some((e) => e instanceof Malison || e instanceof LaudsMalison)) op.invokeLitany();
-
   const shard = find(MalisonShard);
   if (shard) return grabTo('tongs', alive(shard), OFF_BODY);
 
@@ -139,14 +154,9 @@ function plan(op: Operation): Action | null {
     if (g) return hold('brand', alive(g), 2);
   }
 
-  const voice = find(ChoirVoice);
-  if (voice) return hold('brand', alive(voice), 2);
-  const lauds = ents.find((e): e is LaudsMalison => e instanceof LaudsMalison);
-  if (lauds?.submerged) return hold('lens', () => (lauds.alive && lauds.submerged ? lauds.pos : null), 1.5);
-  if (lauds && lauds.livingVoices.length === 0) return hold('brand', () => (lauds.alive && !lauds.submerged && lauds.livingVoices.length === 0 ? lauds.pos : null), 5);
-
-  const matins = find(Malison, (m) => m.open);
-  if (matins) return hold('brand', () => (matins.alive && matins.open ? matins.pos : null), 3);
+  // With wounds tended, press the Hour again.
+  const hours = planHours(op, kit);
+  if (hours && !find(Laceration) && !find(BloodPool, (p) => p.ichor !== 'blood' || p.r > 28)) return hours;
 
   // Drain big pools before anything they cover.
   const pool = find(BloodPool, (p) => p.ichor !== 'blood' || p.r > 28);
@@ -168,10 +178,7 @@ function plan(op: Operation): Action | null {
   }
 
   const lac = find(Laceration);
-  if (lac) {
-    if (lac.length <= SALVE_MAX && has('salve')) return drag('salve', raster(lac.pos, lac.length / 2 + 6), 900);
-    return drag('thread', zigzag([lac.a, lac.b], lac.stitch.needed - lac.stitch.count + 1), 380);
-  }
+  if (lac) return tendLaceration(lac, has('salve'));
 
   const lanced = find(Bubo, (b) => b.lanced);
   if (lanced) return drag('salve', raster(lanced.cov.center, lanced.cov.radius), 900);
@@ -194,6 +201,11 @@ function plan(op: Operation): Action | null {
   if (hidden && has('lens')) return hold('lens', () => (hidden.alive && hidden.hidden ? hidden.pos : null), 0.8);
 
   return null;
+}
+
+function tendLaceration(lac: Laceration, salve: boolean): Action {
+  if (lac.length <= SALVE_MAX && salve) return drag('salve', raster(lac.pos, lac.length / 2 + 6), 900);
+  return drag('thread', zigzag([lac.a, lac.b], lac.stitch.needed - lac.stitch.count + 1), 380);
 }
 
 export interface BotResult {

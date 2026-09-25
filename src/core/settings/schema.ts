@@ -85,6 +85,14 @@ export interface Settings {
   cursorSize: number;
   /** Holds (drag, suction, cautery) toggle on click instead of requiring a held button. */
   holdToToggle: boolean;
+  /** Boss assists: Sext's torpor capped at 120 ms. */
+  bossReducedLag: boolean;
+  /** Boss assists: Vespers's dark never below 45 % brightness. */
+  bossMinBrightness: boolean;
+  /** Boss assists: Terce's heat-haze as an outline and ghost cursor. */
+  bossHazeOutline: boolean;
+  /** Boss assists: numeric torpor-lag readout. */
+  bossLagReadout: boolean;
   // gameplay
   /** Assist: multiply every operation's time limit. */
   timerAssist: 1 | 1.5 | 2;
@@ -157,6 +165,10 @@ export const SETTINGS_SCHEMA: readonly SettingDef[] = [
   d('colorFilter', 'accessibility', 'choice', { type: 'enum', options: ['none', 'protanopia', 'deuteranopia', 'tritanopia', 'highContrast'] }),
   d('cursorSize', 'accessibility', 'slider', { type: 'number', min: 0.75, max: 2, step: 0.25 }),
   d('holdToToggle', 'accessibility', 'toggle', { type: 'bool' }),
+  d('bossReducedLag', 'accessibility', 'toggle', { type: 'bool' }),
+  d('bossMinBrightness', 'accessibility', 'toggle', { type: 'bool' }),
+  d('bossHazeOutline', 'accessibility', 'toggle', { type: 'bool' }),
+  d('bossLagReadout', 'accessibility', 'toggle', { type: 'bool' }),
   d('timerAssist', 'gameplay', 'choice', { type: 'enum', options: [1, 1.5, 2] }),
   d('litanyKey', 'gameplay', 'toggle', { type: 'bool' }),
   d('pauseOnFocusLoss', 'gameplay', 'toggle', { type: 'bool' }),
@@ -200,6 +212,10 @@ export const DEFAULT_SETTINGS: Readonly<Settings> = Object.freeze({
   colorFilter: 'none',
   cursorSize: 1,
   holdToToggle: false,
+  bossReducedLag: false,
+  bossMinBrightness: false,
+  bossHazeOutline: false,
+  bossLagReadout: false,
   timerAssist: 1,
   litanyKey: false,
   pauseOnFocusLoss: true,

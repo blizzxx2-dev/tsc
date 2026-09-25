@@ -7,6 +7,7 @@ import { FIELD, onBody, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
 import { drawBossRing, pathLength, pointAlong, TAU } from './common';
 import { Voice, VoiceLine } from './voices';
+import { attack, bossSound, leadFor, tell } from './signals';
 
 /** The Precentor's voice, heard through Pieter's mouth as None is cut down (phase 3). */
 export const PRECENTOR_THROUGH_NONE: readonly string[] = [
@@ -117,9 +118,18 @@ export class BurrowRipple extends Entity {
   }
   override drawSurface(g: Gfx, op: Operation): void {
     if (!this.owner.hidden) return;
+    if (this.owner.surfacingT > 0) {
+      // The bulge swells where the core will break through.
+      const k = 1 - this.owner.surfacingT;
+      surfDisc(g, this.pos, 30 + 26 * Math.max(0, k), 0, 0.2, 0, 1);
+      return;
+    }
     surfDisc(g, this.pos, 34 + 6 * Math.sin(op.elapsed * 6), 0, 0.15, 0, 0.9);
   }
   draw(g: Gfx, op: Operation): void {
+    // Ninth-hour gloom over the field.
+    if (this.owner.gloom) g.rect(0, 0, 1320, 820, hex('#05040c', 0.22));
+    if (this.owner.surfacingT > 0) g.arc(this.pos.x, this.pos.y, 40, 2, hex('#e0a0a0', 0.6), 1 - this.owner.surfacingT);
     if (!this.owner.hidden || this.owner.stage !== 1) return;
     g.arc(this.pos.x, this.pos.y, 26 + 8 * ((op.elapsed * 1.5) % 1), 2, hex('#e0b0b0', 0.25 * (1 - ((op.elapsed * 1.5) % 1))));
   }
@@ -217,6 +227,11 @@ export class NoneMalison extends Entity {
   private scars = 0;
   segments: BurrowSegment[] = [];
   private hurtFlash = 0;
+  private beatT = 1;
+  /** Seconds of skin-bulge tell left before the phase-3 core surfaces. */
+  surfacingT = 0;
+  /** Ninth-hour gloom (phase 3). */
+  gloom = false;
 
   constructor(
     op: Operation,
@@ -275,6 +290,20 @@ export class NoneMalison extends Entity {
     }
     this.branded = false;
     this.hurtFlash = Math.max(0, this.hurtFlash - dt * 3);
+    // The heartbeat: audible whether or not the Lens is in hand.
+    this.beatT -= dt;
+    if (this.beatT <= 0) {
+      this.beatT = this.beatGap;
+      bossSound(op, 'ripple', this.heart, 0.5 + 0.5 * (1 - (this.beatGap - 0.3) / 1.1));
+    }
+    if (this.surfacingT > 0) {
+      this.surfacingT -= dt;
+      if (this.surfacingT <= 0) {
+        this.hidden = false;
+        attack(op, 'none', 'surface', this.pos);
+      }
+      return;
+    }
     if (this.stage === 2) return;
     if (this.exposedT > 0) {
       this.exposedT -= dt;
@@ -402,13 +431,28 @@ export class NoneMalison extends Entity {
     if (this.segments.some((s) => s.alive)) return;
     this.stage = 3;
     this.hp = this.maxHp * 0.35;
-    this.hidden = false;
     this.cutsDone = 0;
     this.pos = { x: FIELD.cx + 200, y: FIELD.cy + 60 };
     this.newPath(op, 2, this.speed);
-    op.say('The core has surfaced, shrunken — cut it down to size, then pull it out!');
+    // Surfacing tell (BOS-0098): the skin bulges before the core breaks through.
+    this.hidden = true;
+    this.surfacingT = leadFor(op, 'none', 'surface');
+    tell(op, 'none', 'surface', this.pos);
+    bossSound(op, 'bulge', this.pos);
+    // The ninth hour tolls three, and the light goes grey (BOS-0099).
+    this.gloom = true;
+    bossSound(op, 'three');
+    op.events.emit('boss', { kind: 'lighting', dim: 0.25 });
+    op.say('Three bells — the ninth hour. The core is coming up, shrunken — cut it down to size, then pull it out!');
     op.cues.push('bell');
     op.shake = 8;
+  }
+
+  /** The heartbeat quickens as the nearest head nears the heart (BOS-0097): seconds between beats. */
+  get beatGap(): number {
+    const live = this.segments.filter((s) => s.alive);
+    const eta = this.stage === 2 && live.length ? Math.min(...live.map((s) => s.eta)) : this.eta;
+    return Math.max(0.3, Math.min(1.4, 0.25 + eta * 0.06));
   }
 
   override kill(): void {

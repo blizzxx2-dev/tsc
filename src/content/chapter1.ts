@@ -1,5 +1,6 @@
 import { Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, Sigil, SIGILS } from '../surgery/entities';
 import { Malison } from '../surgery/malison';
+import { MatinsHerald } from '../surgery/bosses/elites';
 import { FIELD, type Operation, type OperationDef } from '../surgery/operation';
 import type { Vec } from '../core/math';
 import { n, say, type StoryDef } from './story';
@@ -222,7 +223,7 @@ export const OP_1_4: OperationDef = {
     },
     {
       callout: ['The rot’s spreading. Salve every patch — quickly, it creeps back.'],
-      spawn: () => [new Rot(at(-180, 70), 50, 0.6), new Rot(at(180, -60), 55, 0.6)],
+      spawn: (op) => [new Rot(at(-180, 70), 50, 0.6), new Rot(at(180, -60), 55, 0.6), new MatinsHerald(at(0, 60), op)],
     },
   ],
 };

@@ -15,6 +15,7 @@ import { currentLag } from '../src/surgery/bosses/common';
 import { BurrowSegment, NoneMalison } from '../src/surgery/bosses/none';
 import { TallowClot, VespersMalison, WickFilament } from '../src/surgery/bosses/vespers';
 import { ComplineMalison, SilenceNode } from '../src/surgery/bosses/compline';
+import { OfficeMalison } from '../src/surgery/bosses/office';
 import { Agitation, Amputation, ClothFragment, HornBud, Molar, TinctureSite, Vessel, WoundFever, Worm } from '../src/surgery/ailments/kilnrows';
 import { Artery, BiteChannel, Contamination, Lockbox, Nodule, PetrifyFront, Retractor, StilledHeart, Tick } from '../src/surgery/ailments/vennmark';
 import { Bud, Cyst, HexBall, Infant, LEAD_DISH, Remnant, VocalFold } from '../src/surgery/ailments/hollownight';
@@ -85,6 +86,13 @@ function planBosses(op: Operation, k: BotKit, ents: Entity[], vis: Entity[], lag
     if (pools.length >= 5) return k.hold('leech', () => (pools[0].alive ? pools[0].pos : null), 1.5);
   }
 
+  // ------------------------------------------------------------ The Office: the Final Litany at the Heart
+  const office = ents.find((e): e is OfficeMalison => e instanceof OfficeMalison);
+  if (office?.stage === 3 && op.canInvokeLitany()) {
+    op.invokeLitany();
+    if (office.prayerT > 0 && op.canInvokeLitany()) op.invokeLitany();
+  }
+
   // ------------------------------------------------------------ Sext
   const sext = ents.find((e): e is SextMalison => e instanceof SextMalison);
   if (sext) {
@@ -134,6 +142,8 @@ function planBosses(op: Operation, k: BotKit, ents: Entity[], vis: Entity[], lag
     return lazy(() => (none.alive && !none.hidden ? k.tap('lancet', none.pos) : null));
   }
   if (none?.stage === 3) {
+    // Wait out the surfacing bulge.
+    if (none.hidden) return k.pause(none.pos, 'lancet', Math.max(0.1, none.surfacingT));
     if (none.size > 0) return lazy(() => (none.alive ? k.tap('lancet', none.pos) : null));
     return k.grabTo('tongs', () => (none.alive ? none.pos : null), k.OFF_BODY);
   }

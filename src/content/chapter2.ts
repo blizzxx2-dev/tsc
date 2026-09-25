@@ -1,5 +1,6 @@
 import { Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, Sigil, SIGILS, Venom } from '../surgery/entities';
 import { EggSac, LaudsMalison } from '../surgery/lauds';
+import { CantorKnot, EggCluster, gravehoundNest } from '../surgery/bosses/elites';
 import type { Operation, OperationDef } from '../surgery/operation';
 import { at, closeIncision } from './chapter1';
 import type { Chapter } from './campaign';
@@ -128,7 +129,12 @@ export const OP_2_1: OperationDef = {
     },
     {
       callout: ['Now the fangs. Tongs — pull each one clear.'],
-      spawn: () => [new Embedded(at(-150, -50), 'tooth', 0.9, false), new Embedded(at(-100, -10), 'tooth', 1.2, false), new Embedded(at(-80, -60), 'tooth', 0.6, false)],
+      spawn: (op: Operation) =>
+        gravehoundNest(op, [
+          [at(-150, -50), 0.9],
+          [at(-100, -10), 1.2],
+          [at(-80, -60), 0.6],
+        ]),
     },
     {
       callout: ['Claw rakes. Three deep lines — drain and stitch each.'],
@@ -188,6 +194,10 @@ export const OP_2_3: OperationDef = {
       spawn: () => [new EggSac(at(-170, 30), 3, 16), new EggSac(at(0, 70), 3, 22), new EggSac(at(170, 10), 3, 28)],
     },
     {
+      callout: ['Her brood-cluster — three sacs under one skin.', 'Cut the membrane right around them with the lancet first, or they’ll wake as one.'],
+      spawn: (op: Operation) => new EggCluster(at(-20, 20), op, 26).all,
+    },
+    {
       callout: ['One more sac, deeper. Use the lens to find it, then open it.', 'And he’s taken a fever-bubo from the bite — lance and cleanse it.'],
       spawn: () => {
         const deep = new EggSac(at(90, 90), 4, 30);
@@ -221,6 +231,10 @@ export const OP_2_4: OperationDef = {
       spawn: () => [new Sigil(at(-160, -20), SIGILS.crown, 55, 4.5), new Sigil(at(160, -10), SIGILS.hourglass, 55, 4.5), new Sigil(at(0, -90), SIGILS.eye, 50, 4.5)],
     },
     {
+      callout: ['There — a knot of it round his throat. Every time he hums, it ties itself again.', 'Burn it out between the verses.'],
+      spawn: (op: Operation) => new CantorKnot(at(0, -150), op).all,
+    },
+    {
       callout: ['The hexfire burns. Pluck the eschar, then salve them.'],
       spawn: (op: Operation) => [new Burn(at(-150, 60), 44, op, 'hexfire'), new Burn(at(150, 70), 40, op, 'hexfire'), new Burn(at(10, 100), 36, op, 'hexfire')],
     },
@@ -237,7 +251,7 @@ export const OP_2_5: OperationDef = {
   patient: 'Jorg, standard-bearer',
   diagnosis: 'Collapsed during the dawn hymn. Something beneath the sternum is singing.',
   organ: 'flesh',
-  timeLimit: 420,
+  timeLimit: 480,
   baseDrain: 0.1,
   tools: ALL,
   ranks: { S: 7600, A: 6100, B: 4550 },
