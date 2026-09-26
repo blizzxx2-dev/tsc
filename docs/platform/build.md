@@ -73,7 +73,10 @@ integrity validation **on** (enforced on Windows/macOS), cookie encryption on, f
   shortcuts exist only with `--dev` (or an unpackaged checkout).
 - **Command line:** `--windowed`, `--fullscreen`, `--safe-mode`, `--reset-settings`, `--kiosk`, `--dev`,
   `--log-level=debug|info|warn|error`, `--gl-backend=d3d11|d3d9|gl|gles|vulkan|metal|swiftshader`,
-  `--flag=<name>=0|1` (QA builds).
+  `--integrated-gpu`, `--flag=<name>=0|1` (QA builds).
+- **Graphics card:** on machines with both an integrated and a discrete GPU the game asks for the discrete one
+  (Chromium's `force_high_performance_gpu`, on top of WebGL's `powerPreference: 'high-performance'`). Safe mode,
+  the SwiftShader backend and `--integrated-gpu` leave the choice to the system.
 - **Safe mode:** Low preset, no MSAA, default settings, windowed, sRGB colour profile. Offered automatically after
   two consecutive launches that never reached 20 s of healthy running, and after two renderer crashes within ten
   minutes (crash dialog). Steam launch option 2 starts it directly.

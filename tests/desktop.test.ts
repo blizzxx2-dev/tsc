@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { build } from 'esbuild';
 import { resolvePaths, userNamespace, isSafeName } from '../desktop/src/paths';
-import { parseArgs } from '../desktop/src/args';
+import { gpuSwitches, parseArgs } from '../desktop/src/args';
 import { onCrash, onHealthy, onLaunch, parseHealth, initialHealth, CRASH_WINDOW_MS } from '../desktop/src/health';
 import { parseWindowSize, restoreState, sizedState, type Screen } from '../desktop/src/windowstate';
 import { buildCsp, dsnOrigin, resolveAppFile } from '../desktop/src/csp';
@@ -87,6 +87,15 @@ describe('command line', () => {
       dev: false,
     });
     expect(parseArgs(['--log-level=loud']).logLevel).toBeNull();
+  });
+
+  it('asks for the discrete graphics card, except in safe mode, on the software renderer or with --integrated-gpu', () => {
+    expect(gpuSwitches({ safeMode: false, glBackend: null })).toEqual(['force_high_performance_gpu']);
+    expect(gpuSwitches({ safeMode: false, glBackend: 'd3d11' })).toEqual(['force_high_performance_gpu']);
+    expect(gpuSwitches({ safeMode: true, glBackend: null })).toEqual([]);
+    expect(gpuSwitches({ safeMode: false, glBackend: 'swiftshader' })).toEqual([]);
+    expect(parseArgs(['--integrated-gpu']).integratedGpu).toBe(true);
+    expect(gpuSwitches(parseArgs(['--integrated-gpu']))).toEqual([]);
   });
 });
 

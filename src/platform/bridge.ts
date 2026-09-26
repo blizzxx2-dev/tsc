@@ -37,6 +37,8 @@ export interface LaunchArgs {
   kiosk: boolean;
   logLevel: string | null;
   glBackend: string | null;
+  /** `--integrated-gpu`: stay on the power-saving GPU instead of asking for the discrete one. */
+  integratedGpu?: boolean;
   flags: Record<string, string>;
 }
 

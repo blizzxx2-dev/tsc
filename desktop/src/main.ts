@@ -5,7 +5,23 @@
  * display-sleep blocking, focus/suspend events, Steamworks, save files (atomic), log files, crash
  * reporting, renderer-crash recovery, hang watchdog, screenshots, support bundles.
  */
-import { app, BrowserWindow, crashReporter, dialog, ipcMain, Menu, powerMonitor, powerSaveBlocker, protocol, screen, session, shell, type Display, type IpcMainEvent, type IpcMainInvokeEvent } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  crashReporter,
+  dialog,
+  ipcMain,
+  Menu,
+  powerMonitor,
+  powerSaveBlocker,
+  protocol,
+  screen,
+  session,
+  shell,
+  type Display,
+  type IpcMainEvent,
+  type IpcMainInvokeEvent,
+} from 'electron';
 import { createHash, randomUUID } from 'node:crypto';
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { homedir, release as osRelease, type as osType } from 'node:os';
@@ -15,7 +31,7 @@ import { EDITIONS, type Edition } from '../../src/platform/editions';
 import { ACHIEVEMENTS, achievementsFor } from '../../src/platform/achievements';
 import { scrub, addScrubSecret } from '../../src/platform/log';
 import { decode } from '../../src/core/save/codec';
-import { angleSwitch, parseArgs } from './args';
+import { angleSwitch, parseArgs, gpuSwitches } from './args';
 import { buildCsp, dsnOrigin, mimeFor, resolveAppFile } from './csp';
 import { atomicWrite, readAll, removeFile } from './fsstore';
 import { HEALTHY_AFTER_MS, onCleanQuit, onCrash, onHealthy, onLaunch, parseHealth, type HealthState } from './health';
@@ -112,6 +128,13 @@ let safeMode = args.safeMode;
 /* ───────────── Chromium switches ───────────── */
 const gl = angleSwitch(args.glBackend ?? launchSwitches.glBackend ?? null);
 if (gl) app.commandLine.appendSwitch('use-angle', gl);
+// The discrete graphics card over the integrated one on hybrid-GPU machines (PLT: high-performance GPU).
+for (const sw of gpuSwitches({
+  safeMode: safeMode || launch.offerSafeMode,
+  glBackend: args.glBackend ?? launchSwitches.glBackend ?? null,
+  integratedGpu: args.integratedGpu,
+}))
+  app.commandLine.appendSwitch(sw);
 if (launchSwitches.vsync === false) {
   // No runtime vsync toggle in Chromium: applied on the next launch (PLT-0111).
   app.commandLine.appendSwitch('disable-gpu-vsync');
@@ -151,7 +174,17 @@ const windowFile = join(paths.cache, 'window.json');
 const toScreen = (d: Display): Screen => ({ id: d.id, bounds: d.bounds, workArea: d.workArea, primary: d.id === screen.getPrimaryDisplay().id });
 function displayInfo(): DisplayInfo[] {
   const primary = screen.getPrimaryDisplay().id;
-  return screen.getAllDisplays().map((d, i) => ({ id: d.id, label: d.label || `Display ${i + 1}`, width: d.size.width, height: d.size.height, scaleFactor: d.scaleFactor, refreshRate: d.displayFrequency, primary: d.id === primary }));
+  return screen
+    .getAllDisplays()
+    .map((d, i) => ({
+      id: d.id,
+      label: d.label || `Display ${i + 1}`,
+      width: d.size.width,
+      height: d.size.height,
+      scaleFactor: d.scaleFactor,
+      refreshRate: d.displayFrequency,
+      primary: d.id === primary,
+    }));
 }
 let windowed = { x: 0, y: 0, width: 1280, height: 720 };
 let mode: DisplayMode = 'fullscreen';
@@ -173,7 +206,8 @@ function persistWindow(): void {
 function applyMode(next: DisplayMode, displayId: number | null): WindowState {
   if (!win) return currentState();
   if (mode === 'windowed' && !win.isFullScreen() && !win.isSimpleFullScreen()) windowed = win.getNormalBounds();
-  const target = displayId === null ? screen.getDisplayMatching(win.getBounds()) : (screen.getAllDisplays().find((d) => d.id === displayId) ?? screen.getPrimaryDisplay());
+  const target =
+    displayId === null ? screen.getDisplayMatching(win.getBounds()) : (screen.getAllDisplays().find((d) => d.id === displayId) ?? screen.getPrimaryDisplay());
   mode = next;
   if (next === 'windowed') {
     if (OS === 'mac' && win.isSimpleFullScreen()) win.setSimpleFullScreen(false);
@@ -217,7 +251,8 @@ function applyWindowSize(width: number, height: number): WindowState {
 /* ───────────── bootstrap for the renderer ───────────── */
 function snapshot(): Record<string, string> {
   const files = readAll(paths.saves);
-  if (paths.settings !== paths.saves) Object.assign(files, Object.fromEntries(Object.entries(readAll(paths.settings)).filter(([n]) => n.startsWith('settings.json'))));
+  if (paths.settings !== paths.saves)
+    Object.assign(files, Object.fromEntries(Object.entries(readAll(paths.settings)).filter(([n]) => n.startsWith('settings.json'))));
   return files;
 }
 
@@ -232,7 +267,10 @@ function bootInfo(): BootInfo {
     args: { ...args, safeMode },
     safeMode,
     recovered,
-    steam: steam.boot(EDITIONS.full.steamAppId, achievementsFor(EDITION.id).map((a) => a.id)),
+    steam: steam.boot(
+      EDITIONS.full.steamAppId,
+      achievementsFor(EDITION.id).map((a) => a.id),
+    ),
     userNamespace: USER_NS,
     files: snapshot(),
     demoFiles: EDITION.id === 'full' ? readAll(paths.demoSaves) : null,
@@ -262,7 +300,19 @@ function on<C extends keyof SendContract>(channel: C, fn: (e: IpcMainEvent, ...a
 }
 
 async function confirm(o: ConfirmOptions): Promise<boolean> {
-  const ask = async (message: string) => (await dialog.showMessageBox(win!, { type: 'question', title: o.title, message, detail: o.detail, buttons: [o.cancel, o.confirm], defaultId: 0, cancelId: 0, noLink: true })).response === 1;
+  const ask = async (message: string) =>
+    (
+      await dialog.showMessageBox(win!, {
+        type: 'question',
+        title: o.title,
+        message,
+        detail: o.detail,
+        buttons: [o.cancel, o.confirm],
+        defaultId: 0,
+        cancelId: 0,
+        noLink: true,
+      })
+    ).response === 1;
   if (!(await ask(o.message))) return false;
   return !o.twice || ask('Are you certain? This cannot be undone.');
 }
@@ -288,7 +338,9 @@ function registerIpc(): void {
       return { ok: false, error: (err as NodeJS.ErrnoException).code ?? 'EIO' };
     }
   });
-  handle('ss:window-set', (_e, m, displayId) => applyMode(['windowed', 'borderless', 'fullscreen'].includes(m) ? m : 'windowed', typeof displayId === 'number' ? displayId : null));
+  handle('ss:window-set', (_e, m, displayId) =>
+    applyMode(['windowed', 'borderless', 'fullscreen'].includes(m) ? m : 'windowed', typeof displayId === 'number' ? displayId : null),
+  );
   handle('ss:window-size', (_e, w, h) => applyWindowSize(Number(w), Number(h)));
   handle('ss:displays', () => displayInfo());
   handle('ss:steam-achievement', (_e, id, unlock) => (ACHIEVEMENTS.some((a) => a.id === id) ? steam.setAchievement(id, !!unlock) : false));
@@ -297,7 +349,14 @@ function registerIpc(): void {
   handle('ss:screenshot', () => takeScreenshot());
   handle('ss:support-export', (_e, extra) => supportBundle(extra));
   handle('ss:delete-all-data', async () => {
-    const ok = await confirm({ title: 'Delete all local data', message: 'Delete every journal, save slot and setting for this game on this computer?', detail: 'Steam Cloud copies are removed on the next sync.', confirm: 'Delete everything', cancel: 'Keep my data', twice: true });
+    const ok = await confirm({
+      title: 'Delete all local data',
+      message: 'Delete every journal, save slot and setting for this game on this computer?',
+      detail: 'Steam Cloud copies are removed on the next sync.',
+      confirm: 'Delete everything',
+      cancel: 'Keep my data',
+      twice: true,
+    });
     if (!ok) return false;
     for (const d of new Set([paths.saves, paths.settings])) rmSync(d, { recursive: true, force: true });
     mlog('INFO', 'all local data deleted by the player');
@@ -376,7 +435,8 @@ async function supportBundle(extra: Record<string, string>): Promise<string | nu
     const files: Record<string, Uint8Array | string> = {};
     for (const [n, t] of Object.entries(snapshot())) files[`saves/${n}`] = t;
     for (const n of readdirSync(paths.logs)) if (/^game(\.\d)?\.log$/.test(n)) files[`logs/${n}`] = readFileSync(join(paths.logs, n));
-    if (extra && typeof extra === 'object') for (const [n, t] of Object.entries(extra)) if (isSafeName(n) && typeof t === 'string') files[`report/${n}`] = scrub(t);
+    if (extra && typeof extra === 'object')
+      for (const [n, t] of Object.entries(extra)) if (isSafeName(n) && typeof t === 'string') files[`report/${n}`] = scrub(t);
     if (win) files['report/screenshot.png'] = (await win.webContents.capturePage()).toPNG();
     mkdirSync(paths.support, { recursive: true });
     const name = `support-${stamp()}-${randomUUID().slice(0, 8)}.zip`;
@@ -434,7 +494,10 @@ function installMenu(): void {
   if (OS !== 'mac') return Menu.setApplicationMenu(null);
   Menu.setApplicationMenu(
     Menu.buildFromTemplate([
-      { label: EDITION.productName, submenu: [{ role: 'about' }, { type: 'separator' }, { role: 'hide' }, { role: 'hideOthers' }, { type: 'separator' }, { role: 'quit' }] },
+      {
+        label: EDITION.productName,
+        submenu: [{ role: 'about' }, { type: 'separator' }, { role: 'hide' }, { role: 'hideOthers' }, { type: 'separator' }, { role: 'quit' }],
+      },
       { label: 'View', submenu: [{ role: 'togglefullscreen' }] },
     ]),
   );
@@ -496,7 +559,15 @@ function watchRenderer(w: BrowserWindow): void {
     if (Date.now() - lastHeartbeat < 10_000) return;
     hangAsked = true;
     mlog('ERROR', 'renderer unresponsive for >10 s');
-    const r = await dialog.showMessageBox(win, { type: 'warning', title: EDITION.productName, message: 'Suture & Steel is not responding', detail: 'You can wait, or restart at your last autosave.', buttons: ['Wait', 'Restart'], defaultId: 0, noLink: true });
+    const r = await dialog.showMessageBox(win, {
+      type: 'warning',
+      title: EDITION.productName,
+      message: 'Suture & Steel is not responding',
+      detail: 'You can wait, or restart at your last autosave.',
+      buttons: ['Wait', 'Restart'],
+      defaultId: 0,
+      noLink: true,
+    });
     if (r.response === 1) {
       // Crash the renderer deliberately so Crashpad captures its state, then recover.
       win.webContents.forcefullyCrashRenderer();
@@ -517,7 +588,14 @@ function createWindow(): void {
   const preset = stored ? null : parseWindowSize(s.windowSize);
   if (preset) st = sizedState(st, preset.w, preset.h, screens);
   windowed = st.bounds;
-  const wanted: DisplayMode = args.windowed || safeMode ? 'windowed' : args.fullscreen ? 'fullscreen' : ['windowed', 'borderless', 'fullscreen'].includes(s.displayMode as string) ? (s.displayMode as DisplayMode) : st.mode;
+  const wanted: DisplayMode =
+    args.windowed || safeMode
+      ? 'windowed'
+      : args.fullscreen
+        ? 'fullscreen'
+        : ['windowed', 'borderless', 'fullscreen'].includes(s.displayMode as string)
+          ? (s.displayMode as DisplayMode)
+          : st.mode;
   win = new BrowserWindow({
     ...st.bounds,
     minWidth: 960,
@@ -662,7 +740,10 @@ void app.whenReady().then(async () => {
   if (mustExit) return;
   let gpu = 'unknown';
   try {
-    const info = (await app.getGPUInfo('basic')) as { gpuDevice?: { vendorId: number; deviceId: number; active?: boolean }[]; auxAttributes?: { glRenderer?: string } };
+    const info = (await app.getGPUInfo('basic')) as {
+      gpuDevice?: { vendorId: number; deviceId: number; active?: boolean }[];
+      auxAttributes?: { glRenderer?: string };
+    };
     gpu = info.auxAttributes?.glRenderer ?? JSON.stringify(info.gpuDevice?.find((d) => d.active) ?? info.gpuDevice?.[0] ?? {});
   } catch {
     // ignore
@@ -680,7 +761,15 @@ void app.whenReady().then(async () => {
   fileLog.write(early.splice(0));
 
   if (launch.offerSafeMode && !safeMode) {
-    const r = await dialog.showMessageBox({ type: 'warning', title: EDITION.productName, message: 'Suture & Steel did not start properly last time.', detail: 'Start in safe mode? Safe mode uses the lowest graphics settings in a window. You can raise them again in Options.', buttons: ['Start in safe mode', 'Start normally'], defaultId: 0, noLink: true });
+    const r = await dialog.showMessageBox({
+      type: 'warning',
+      title: EDITION.productName,
+      message: 'Suture & Steel did not start properly last time.',
+      detail: 'Start in safe mode? Safe mode uses the lowest graphics settings in a window. You can raise them again in Options.',
+      buttons: ['Start in safe mode', 'Start normally'],
+      defaultId: 0,
+      noLink: true,
+    });
     safeMode = r.response === 0;
   }
   mlog('INFO', `launch: edition=${EDITION.id} safeMode=${safeMode} kiosk=${args.kiosk} dev=${DEV} user=${USER_NS}`);
