@@ -1,21 +1,21 @@
 import { JOURNAL_STORY } from './journal';
 import { EPILOGUE_STORY } from './epilogue';
-import { ENDING_EXILE, ENDING_PARDON, ENDING_PYRE, endingIs, complineHost, hostIs, strohTrust, trialVerdict, verdictIs } from './endings';
+import { ENDING_EXILE, ENDING_PARDON, ENDING_PYRE, endingIs, hostIs, strohTrust, trialVerdict, verdictIs } from './endings';
 import { whisperThought } from './whisper';
-import { flags } from './flags';
 import { Embedded, Incision, Laceration, Rot } from '../surgery/entities';
 import { TinctureSite, Vessel } from '../surgery/ailments/kilnrows';
 import { Bud, Cyst, HexBall, Infant, VocalFold } from '../surgery/ailments/hollownight';
-import { ComplineMalison } from '../surgery/bosses/compline';
 import { NoneMalison, NONE_DEFAULT } from '../surgery/bosses/none';
 import { OfficeMalison } from '../surgery/bosses/office';
 import { PrimeMalison, PRIME_DEFAULT } from '../surgery/bosses/prime';
 import { TerceMalison, TERCE_DEFAULT } from '../surgery/bosses/terce';
-import { TallowClot, VespersMalison } from '../surgery/bosses/vespers';
+import { TallowClot } from '../surgery/bosses/vespers';
 import type { Operation, OperationDef } from '../surgery/operation';
 import { at, closeIncision } from './chapter1';
 import type { Chapter } from './campaign';
 import { choose, n, onlyIf, say, type StoryDef } from './story';
+import { OP_5_6, OP_5_8 } from './ops/hours';
+export { OP_5_6, OP_5_8 };
 
 const ALL = ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture', 'brand', 'lens'] as const;
 
@@ -486,29 +486,6 @@ export const OP_5_4: OperationDef = {
   ],
 };
 
-export const OP_5_6: OperationDef = {
-  id: 'op5-6',
-  title: 'The Hour of Vespers',
-  patient: 'Sister Ilse, of the Merciful Order',
-  diagnosis: 'Wick-filaments through the vessels, blood turning to tallow; the ward’s lamps are dying with her. Callouts: Orsa.',
-  organ: 'flesh',
-  timeLimit: 420,
-  baseDrain: 0.05,
-  tools: ALL,
-  ranks: { S: 9060, A: 7250, B: 5440 },
-  litany: true,
-  seed: 56,
-  phases: [
-    {
-      callout: ['Orsa: Lamps! Keep them burning — brand on a lamp relights it. The wicks only show in the light.', 'Orsa: Cut the wicks across with the lancet, soften the tallow, draw it off.'],
-      spawn: (op: Operation) => [new VespersMalison(at(0, 0), op)],
-    },
-    {
-      callout: ['Orsa: It’s gone out of her! Tidy her up, Doctor — she’ll want to do it herself otherwise.'],
-      spawn: () => [new Laceration(at(-90, 60), 0.4, 50, 0.5), new Rot(at(120, -40), 30, 0.3)],
-    },
-  ],
-};
 
 export const OP_5_7: OperationDef = {
   id: 'op5-7',
@@ -542,32 +519,6 @@ export const OP_5_7: OperationDef = {
   ],
 };
 
-export const OP_5_8: OperationDef = {
-  id: 'op5-8',
-  title: 'The Hour of Compline',
-  // CON-0199: the host follows the campaign (complineHost); patient string only — the fight is the same.
-  get patient() {
-    return complineHost(flags) === 'stroh' ? 'Inquisitor Stroh, Ash Tribunal' : 'The Burgomaster of Kessendorf';
-  },
-  diagnosis: 'Compline, sung into him by the Precentor. His heart slows toward “a perfect end”. The Litany has been stolen.',
-  organ: 'heart',
-  timeLimit: 480,
-  baseDrain: 0.05,
-  tools: ALL,
-  ranks: { S: 7210, A: 5770, B: 4330 },
-  litany: true,
-  seed: 58,
-  phases: [
-    {
-      callout: ['Orsa: It’s wearing the old Hours like masks. Beat each one as it comes.'],
-      spawn: (op: Operation) => [new ComplineMalison(at(0, 0), op)],
-    },
-    {
-      callout: ['Orsa: Quiet’s broken. He’s breathing! Mend him.'],
-      spawn: () => [new Laceration(at(-110, 60), 0.3, 56, 0.5), new Rot(at(110, -30), 30, 0.3)],
-    },
-  ],
-};
 
 export const OP_5_9: OperationDef = {
   id: 'op5-9',

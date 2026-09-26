@@ -139,6 +139,8 @@ export function hourTrial(op: Operation, hour: HourId, at: Vec, heart: Vec): Hou
  * holds the patient's vitals with a tincture every ten seconds.
  */
 export class OfficeMalison extends Entity {
+  // An Hour: the operation treats it as a boss (banner, time bonus, checkpoints, phase hints).
+  override boss = true;
   private voice = new Voice('office', 9, '#e0b0ff');
   stage: 1 | 2 | 3 = 1;
   order: HourId[];

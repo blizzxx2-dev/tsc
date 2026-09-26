@@ -175,6 +175,8 @@ export class HeartTruth extends Entity {
  * the Litany against it to stun it.
  */
 export class SextMalison extends Entity {
+  // An Hour: the operation treats it as a boss (banner, time bonus, checkpoints, phase hints).
+  override boss = true;
   private voice = new Voice('sext', 9, '#f0d890');
   hp: number;
   readonly maxHp: number;

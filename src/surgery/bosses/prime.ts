@@ -328,6 +328,8 @@ export const PRIME_DEFAULT: PrimeTuning = { hp: 100, dps: 7, exposure: 3, stroke
  * the quill to the brand for a few seconds.
  */
 export class PrimeMalison extends Entity {
+  // An Hour: the operation treats it as a boss (banner, time bonus, checkpoints, phase hints).
+  override boss = true;
   private voice = new Voice('prime', 9, '#d8c8f0');
   hp: number;
   readonly maxHp: number;

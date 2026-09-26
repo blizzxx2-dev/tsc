@@ -104,6 +104,8 @@ export interface OperationDef {
   outcomes?: (op: Operation) => string[];
   /** Short strategy tips per failure cause, offered after repeated losses. */
   tips?: Partial<Record<string, string>>;
+  /** Stages inside a multi-stage Hour a retry may resume at (e.g. Compline's [2, 3]; CON-0200). */
+  bossCheckpoints?: readonly number[];
   /** Tincture colours this operation supplies besides red. */
   tinctures?: readonly TinctureColor[];
 }
@@ -117,6 +119,8 @@ export interface OperationOptions {
   upgrades?: readonly string[];
   /** Start at this phase (boss checkpoint). */
   checkpoint?: number;
+  /** With `checkpoint`: the stage inside the Hour to resume at (one of `def.bossCheckpoints`). */
+  bossStage?: number;
   /** Record every input for replay. */
   record?: boolean;
   seed?: number;
@@ -1587,6 +1591,23 @@ export class Operation {
   checkpointPhase(): number | null {
     if (this.status !== 'lost' || !this.bossOp || this.opts.challenge) return null;
     return this.phase >= this.bossPhase && this.bossPhase >= 1 ? this.bossPhase : null;
+  }
+
+  /**
+   * The Hour's own checkpoint after a loss (CON-0200): the furthest of `def.bossCheckpoints` the stage
+   * reached has passed, read from any entity exposing a numeric `stage` — or null.
+   */
+  checkpointBossStage(): number | null {
+    const cps = this.def.bossCheckpoints;
+    // Unlike checkpointPhase, this applies when the Hour is the first phase too (Compline opens op5-8).
+    if (!cps?.length || this.status !== 'lost' || !this.bossOp || this.opts.challenge || this.phase < this.bossPhase) return null;
+    let reached = 0;
+    for (const e of this.entities) {
+      const st = (e as { stage?: unknown }).stage;
+      if (typeof st === 'number') reached = Math.max(reached, st);
+    }
+    const ok = cps.filter((c) => c <= reached);
+    return ok.length ? Math.max(...ok) : null;
   }
 
   /** Assists or states that disqualify XS / leaderboards. */

@@ -51,6 +51,8 @@ export function playOperation(game: Game, def: OperationDef, onWin: () => void, 
           emitGameEvent({ type: 'operation-end', opId: def.id, won, rank: won ? op.rank() : null, score: op.score, assisted: assisted(), litanyUsed: op.litanyUsed, maxCombo: op.maxCombo });
           const summary = finishOperation(op);
           const cp = op.checkpointPhase();
+          // An Hour's own stage checkpoint (CON-0200) resumes inside the fight, even when it opens the op.
+          const stage = op.checkpointBossStage();
           noteOutcome(def.id, won ? op.rank() : null, op.litanyUsed);
           const after = story && won ? aftermathFor(def.id) : undefined;
           const next = after ? () => game.go(new StoryScene(resolveStory(after, lastOutcome()), onWin)) : onWin;
@@ -66,7 +68,8 @@ export function playOperation(game: Game, def: OperationDef, onWin: () => void, 
                   quit: onLeave,
                   // Retry at Novice for this op only; boss ops can resume at the Malison.
                   retryNovice: op.opts.challenge || op.difficulty === 'novice' ? undefined : () => begin({ ...runOpts, difficulty: 'novice' }),
-                  retryCheckpoint: cp !== null ? () => begin({ ...runOpts, checkpoint: cp }) : undefined,
+                  retryCheckpoint:
+                    cp !== null || stage !== null ? () => begin({ ...runOpts, checkpoint: cp ?? op.bossPhase, bossStage: stage ?? undefined }) : undefined,
                 },
                 summary,
               ),

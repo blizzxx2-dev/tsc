@@ -18,6 +18,12 @@ import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, SALVE
 import { ChoirVoice, EggSac, LaudsMalison, SpiderlingGrub } from '../src/surgery/lauds';
 import { Malison, MalisonShard } from '../src/surgery/malison';
 import { WebSilk } from '../src/surgery/ailments/silk';
+import { ComplineMalison } from '../src/surgery/bosses/compline';
+import { NoneMalison } from '../src/surgery/bosses/none';
+import { PrimeMalison } from '../src/surgery/bosses/prime';
+import { SextMalison } from '../src/surgery/bosses/sext';
+import { TerceMalison } from '../src/surgery/bosses/terce';
+import { VespersMalison } from '../src/surgery/bosses/vespers';
 import { Operation, type OperationDef } from '../src/surgery/operation';
 import type { ToolId } from '../src/surgery/types';
 import { playWithBot } from './bot';
@@ -55,6 +61,12 @@ describe('entity registry (CON-0002)', () => {
     [{ e: 'silk', at: [0, 0] }, WebSilk],
     [{ e: 'malison-matins', at: [0, 0] }, Malison],
     [{ e: 'malison-lauds', at: [0, 0] }, LaudsMalison],
+    [{ e: 'malison-prime', at: [0, 20] }, PrimeMalison],
+    [{ e: 'malison-terce' }, TerceMalison],
+    [{ e: 'malison-sext', at: [30, 30] }, SextMalison],
+    [{ e: 'malison-none' }, NoneMalison],
+    [{ e: 'malison-vespers', at: [0, 0] }, VespersMalison],
+    [{ e: 'malison-compline', at: [0, 0] }, ComplineMalison],
     [{ e: 'elite-broodcluster', at: [0, 0] }, EggCluster],
     [{ e: 'elite-cantor', at: [0, -60] }, CantorKnot],
     [

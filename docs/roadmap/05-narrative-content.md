@@ -453,13 +453,13 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0130 · Alpha · P0 · M · Prime design spec — writes name-sigils across tissue stroke by stroke; each completed name = −12 vitals; trace-erase with brand in reverse stroke order; up to 3 names writing at once in phase 2
 - [x] CON-0131 · Alpha · P0 · L · Implement PrimeMalison + NameSigil entities — phases, write speed curve, erase rules; with unit tests
 - [x] CON-0132 · Alpha · P1 · S · Name list content — 40 original Kessendorf names used by the name-sigils (IP-checked)
-- [ ] CON-0133 · Alpha · P1 · S · Author `op3-10` data file — callouts, boss-fail tips, thresholds, checklist pass
+- [x] CON-0133 · Alpha · P1 · S · Author `op3-10` data file — callouts, boss-fail tips, thresholds, checklist pass
 
 ### op3-11 "The Hour of Terce" (Master Haller) — boss
 - [x] CON-0134 · Alpha · P0 · M · Terce design spec — hexfire tongues leap between 3 organ zones; salve the flame-front, then excise the root with lancet; brand feeds the fire (+size)
 - [x] CON-0135 · Alpha · P0 · L · Implement TerceMalison + FlameTongue entities — spread graph between zones; with unit tests
 - [x] CON-0136 · Alpha · P1 · S · Burned-hands aftermath phase — Haller's hands require salve + thread; rank feeds `hallerFate`
-- [ ] CON-0137 · Alpha · P1 · S · Author `op3-11` data file — callouts, boss-fail tips, thresholds, checklist pass
+- [x] CON-0137 · Alpha · P1 · S · Author `op3-11` data file — callouts, boss-fail tips, thresholds, checklist pass
 
 ## CON · Epic 7 — Chapter IV operations (Sext and None, field hospital)
 
@@ -503,7 +503,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0160 · Alpha · P0 · M · Sext design spec — torpor: tool response delay up to 0.6 s, fake calm vitals shown on HUD (true vitals under lens), stone crust over organs cracked with lancet taps; stimulant tincture removes delay for 10 s
 - [x] CON-0161 · Alpha · P0 · L · Implement SextMalison — InputTorpor effect, FalseVitals HUD override, StoneCrust entity (tests incl. input-delay determinism)
 - [ ] CON-0162 · Alpha · P1 · S · Accessibility check — torpor delay capped at 0.3 s in Assist mode
-- [ ] CON-0163 · Alpha · P1 · S · Author `op4-7` data file — callouts, boss-fail tips, thresholds, `mauerFate` write, checklist pass
+- [x] CON-0163 · Alpha · P1 · S · Author `op4-7` data file — callouts, boss-fail tips, thresholds, `mauerFate` write, checklist pass
 
 ### op4-8 "The Stone Bride" (Hanne, camp-follower)
 - [x] CON-0164 · Alpha · P0 · S · Design spec — petrification front advancing from fingertips toward the heart; crack plates with lancet taps in the shown pattern, salve the living margin; Litany freezes spread; lens shows the front
@@ -514,7 +514,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0167 · Alpha · P0 · M · None design spec — heart-seeking burrower tunnels through 4 organs; instant fail on reaching the heart; cut down in stages (3 sizes) until small enough to extract with tongs; Litany intercept window
 - [x] CON-0168 · Alpha · P0 · L · Implement NoneMalison burrower pathing — seeded organ graph; stage splits and heart-fail condition (tests)
 - [x] CON-0169 · Alpha · P1 · S · Precentor voice-through overlay during phase 3 — VN lines over op
-- [ ] CON-0170 · Alpha · P1 · S · Author `op4-9` data file — callouts, boss-fail tips, thresholds, checklist pass
+- [x] CON-0170 · Alpha · P1 · S · Author `op4-9` data file — callouts, boss-fail tips, thresholds, checklist pass
 
 ## CON · Epic 8 — Chapter V operations (Vespers and Compline, Hollow Night)
 
@@ -548,7 +548,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0188 · Alpha · P0 · M · Vespers design spec — wick-filaments turn blood to tallow; field dims over time; keep 4 lamp nodes lit with brand; curse hides in shadow (only visible within lamp radius); drain tallow clots
 - [x] CON-0189 · Alpha · P0 · L · Implement VespersMalison — LampNode lighting mask and shadow-hide rule (tests)
 - [ ] CON-0190 · Alpha · P1 · S · Assistant swap — Haller (letter barks) or Orsa voices callouts since Ilse is the patient; data-driven assistant per op
-- [ ] CON-0191 · Alpha · P1 · S · Author `op5-6` data file — callouts, boss-fail tips, thresholds, checklist pass
+- [x] CON-0191 · Alpha · P1 · S · Author `op5-6` data file — callouts, boss-fail tips, thresholds, checklist pass
 
 ### op5-7 "The Precentor's Remnants" (the Burgomaster's guard) — gauntlet
 - [x] CON-0192 · Alpha · P1 · S · Design spec — escalation gauntlet: short phases of Prime names, Terce tongues and None burrower on one patient, 300 s
@@ -561,7 +561,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0197 · Alpha · P0 · L · Implement ComplineMalison phases 3–4 — silence nodes, Litany recovery, two-hand combo finale; with tests
 - [ ] CON-0198 · Alpha · P0 · S · Two-hand combo accessibility — toggle mode (tap to hold) and controller mapping verified
 - [x] CON-0199 · Alpha · P1 · S · Host swap — if Stroh was lost, host is the Burgomaster (patient string and barks only)
-- [ ] CON-0200 · Alpha · P1 · S · Author `op5-8` data file — callouts, boss-fail tips, thresholds, checklist pass; phase checkpoints after phase 2 and 3
+- [x] CON-0200 · Alpha · P1 · S · Author `op5-8` data file — callouts, boss-fail tips, thresholds, checklist pass; phase checkpoints after phase 2 and 3
 
 ## CON · Epic 9 — Challenge mode ("Trials of the Guild") and X-ops
 

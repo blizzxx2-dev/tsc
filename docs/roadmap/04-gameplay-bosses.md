@@ -252,7 +252,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0152 · Demo · P0 · S · XS rank requires S score + no BAD/MISS + vitals never < 50 + Litany either unused or used at a scripted peak — documented in results tooltip
 - [x] GAM-0154 · Demo · P1 · S · Results breakdown — ratings histogram, max combo, vitals bonus, time bonus, penalties, final rank with the next-rank delta ("312 to A")
 - [x] GAM-0155 · Demo · P1 · S · Best rank/score per op persisted per difficulty in save — results shows NEW BEST
-- [ ] GAM-0156 · Alpha · P1 · S · Ch3–5 rank thresholds — every op calibrated via `CALIBRATE=1` bot run and signed off by designer in PR
+- [x] GAM-0156 · Alpha · P1 · S · Ch3–5 rank thresholds — every op calibrated via `CALIBRATE=1` bot run and signed off by designer in PR
 - [x] GAM-0157 · Beta · P2 · S · Online leaderboard hook (Steam) — submit score only from validated replays (replay re-simulated headlessly on submit)
 
 ## GAM-G · Vitals model

@@ -209,6 +209,8 @@ export class BurrowSegment extends Entity {
  * tongs within a short window, or it regrows. Old tunnels cave in as cuts.
  */
 export class NoneMalison extends Entity {
+  // An Hour: the operation treats it as a boss (banner, time bonus, checkpoints, phase hints).
+  override boss = true;
   private voice = new Voice('none', 9, '#f0a0b0');
   private precentorT = 1;
   private precentorIx = 0;

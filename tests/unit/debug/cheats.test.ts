@@ -23,7 +23,8 @@ describe('GAM-0019 debug cheats', () => {
       const made = spawnAt(op, id);
       expect(made.length, id).toBeGreaterThan(0);
       for (const e of made) expect(op.entities, id).toContain(e);
-      if (id !== 'incision' && id !== 'elite-fangnest' && id !== 'malison-lauds')
+      // Lauds, Terce (organ zones) and None (the burrow's entry) place themselves.
+      if (!['incision', 'elite-fangnest', 'malison-lauds', 'malison-terce', 'malison-none'].includes(id))
         expect(Math.hypot(made[0].pos.x - op.cursor.x, made[0].pos.y - op.cursor.y), id).toBeLessThan(80);
       wait(op, 0.5);
     }

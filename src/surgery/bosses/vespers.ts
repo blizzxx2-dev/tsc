@@ -204,6 +204,8 @@ export class TallowClot extends Entity {
  * remains and wanders; trace the wick back to its root and excise it.
  */
 export class VespersMalison extends Entity {
+  // An Hour: the operation treats it as a boss (banner, time bonus, checkpoints, phase hints).
+  override boss = true;
   private voice = new Voice('vespers', 9, '#ffe0a0');
   hp: number;
   readonly maxHp: number;

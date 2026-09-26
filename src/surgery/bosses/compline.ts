@@ -135,6 +135,8 @@ export class SilenceNode extends BrandNode {
  * Throughout, windows of silence mute every sound cue.
  */
 export class ComplineMalison extends Entity {
+  // An Hour: the operation treats it as a boss (banner, time bonus, checkpoints, phase hints).
+  override boss = true;
   private voice = new Voice('compline', 9, '#c0c8f0');
   hp: number;
   readonly maxHp: number;
@@ -295,7 +297,23 @@ export class ComplineMalison extends Entity {
 
   // -------------------------------------------------------------- frame
 
+  /** A checkpoint retry resumes at stage 2 or 3 (CON-0200); applied on the first frame. */
+  private resumed = false;
+
+  private resumeStage(op: Operation): void {
+    this.resumed = true;
+    const want = op.opts.bossStage ?? 1;
+    if (want < 2 || op.opts.checkpoint === undefined) return;
+    this.enterNunc(op);
+    if (want < 3) return;
+    for (const n of this.nodes) n.kill();
+    this.nodes = [];
+    this.restoreLitany(op);
+    this.enterSilence(op);
+  }
+
   override update(op: Operation, dt: number): void {
+    if (!this.resumed) this.resumeStage(op);
     this.voice.tick(op, dt, this.pos);
     this.branded = false;
     this.hurtFlash = Math.max(0, this.hurtFlash - dt * 3);

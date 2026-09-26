@@ -152,6 +152,8 @@ export class FlameTongue extends Entity {
  * The brand feeds the fire: it heals Terce and relights what was doused.
  */
 export class TerceMalison extends Entity {
+  // An Hour: the operation treats it as a boss (banner, time bonus, checkpoints, phase hints).
+  override boss = true;
   private voice = new Voice('terce', 9, '#ffb080');
   hp: number;
   readonly maxHp: number;

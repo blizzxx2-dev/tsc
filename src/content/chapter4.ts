@@ -1,15 +1,15 @@
 import { whisperThought } from './whisper';
 import { teach } from './teach';
-import { BloodPool, Embedded, Grub, Incision, Laceration, Rot } from '../surgery/entities';
+import { BloodPool, Embedded, Incision, Laceration, Rot } from '../surgery/entities';
 import { TinctureSite } from '../surgery/ailments/kilnrows';
 import { Artery, BiteChannel, Contamination, Lockbox, NoCutZone, Nodule, PetrifyFront, RainDrip, Retractor, StilledHeart, Tick } from '../surgery/ailments/vennmark';
-import { NoneMalison } from '../surgery/bosses/none';
-import { SextMalison } from '../surgery/bosses/sext';
 import type { Operation, OperationDef } from '../surgery/operation';
 import { at, closeIncision } from './chapter1';
 import type { Chapter } from './campaign';
 import { choose, n, onlyIf, say, type StoryDef } from './story';
 import { strohTrust } from './endings';
+import { OP_4_7, OP_4_9 } from './ops/hours';
+export { OP_4_7, OP_4_9 };
 
 const ALL = ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture', 'brand', 'lens'] as const;
 
@@ -500,34 +500,6 @@ export const OP_4_6: OperationDef = {
   ],
 };
 
-export const OP_4_7: OperationDef = {
-  id: 'op4-7',
-  title: 'The Hour of Sext',
-  patient: 'Captain Mauer, Kessendorf Watch',
-  diagnosis: 'Collapsed at noon reporting all quiet. Vitals read calm; the colour says otherwise. Stone crusting over the organs.',
-  organ: 'flesh',
-  timeLimit: 420,
-  baseDrain: 0.05,
-  tools: ALL,
-  ranks: { S: 6990, A: 5590, B: 4190 },
-  litany: true,
-  seed: 47,
-  phases: [
-    {
-      callout: ['Open him — the stone is under the sternum.'],
-      spawn: () => [new Incision([at(-190, 30), at(-70, 0), at(70, 0), at(190, 30)])],
-    },
-    {
-      callout: ['Stone crust over it. Chip the plates away with the lancet, then brand what’s beneath.', 'And if your hands slow — tincture. It’s the curse, not you.'],
-      spawn: (op: Operation) => [new SextMalison(at(30, 30), op)],
-    },
-    {
-      callout: ['Noon has passed. Tend him.'],
-      spawn: () => [new Laceration(at(-100, 70), 0.3, 56, 0.6), new Rot(at(110, -50), 32, 0.3)],
-    },
-    closeIncision(['Close him up. Thirty-five men will want their captain.']),
-  ],
-};
 
 export const OP_4_8: OperationDef = {
   id: 'op4-8',
@@ -567,29 +539,6 @@ export const OP_4_8: OperationDef = {
   ],
 };
 
-export const OP_4_9: OperationDef = {
-  id: 'op4-9',
-  title: 'The Hour of None',
-  patient: 'Pieter, militiaman',
-  diagnosis: 'Collapsed at the ninth hour. Something that entered with an old arrow wound is tunnelling toward his heart.',
-  organ: 'flesh',
-  timeLimit: 420,
-  baseDrain: 0.05,
-  tools: ALL,
-  ranks: { S: 6900, A: 5520, B: 4140 },
-  litany: true,
-  seed: 49,
-  phases: [
-    {
-      callout: ['It’s under the skin, moving for his heart. Lens to find the head — then cut across it and brand it!'],
-      spawn: (op: Operation) => [new NoneMalison(op)],
-    },
-    {
-      callout: ['Out. The tunnels are opening — tend them.'],
-      spawn: (op: Operation) => [new Laceration(at(150, 60), 0.7, 50, 0.5), new Grub(at(-30, 40), op, 35)],
-    },
-  ],
-};
 
 export const CHAPTER_4: Chapter = {
   id: 'ch4',

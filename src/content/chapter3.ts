@@ -1,15 +1,15 @@
 import { teach } from './teach';
-import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot } from '../surgery/entities';
+import { BloodPool, Bubo, Burn, Embedded, Incision, Laceration, Rot } from '../surgery/entities';
 import { Agitation, Amputation, ClothFragment, HornBud, Jaw, leadDeposit, Molar, TinctureSite, Worm, woundFeverPhase } from '../surgery/ailments/kilnrows';
 import { Artery } from '../surgery/ailments/vennmark';
-import { PrimeMalison } from '../surgery/bosses/prime';
-import { TerceMalison, TERCE_DEFAULT } from '../surgery/bosses/terce';
 import type { Operation, OperationDef } from '../surgery/operation';
 import { at, closeIncision } from './chapter1';
 import type { Chapter } from './campaign';
 import { choose, n, onlyIf, say, type StoryDef } from './story';
 import { whisperThought } from './whisper';
 import { licenceKept } from './flags';
+import { OP_3_10, OP_3_11 } from './ops/hours';
+export { OP_3_10, OP_3_11 };
 
 const ALL = ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture', 'brand', 'lens'] as const;
 
@@ -466,34 +466,6 @@ export const OP_3_8: OperationDef = {
   ],
 };
 
-export const OP_3_10: OperationDef = {
-  id: 'op3-10',
-  title: 'The Hour of Prime',
-  patient: 'Oswin Tallert, Registrar of Kessendorf',
-  diagnosis: 'Collapsed reading the roll of the plague dead. Names are writing themselves across his skin, stroke by stroke.',
-  organ: 'flesh',
-  timeLimit: 420,
-  baseDrain: 0.05,
-  tools: ALL,
-  ranks: { S: 8640, A: 6910, B: 5180 },
-  litany: true,
-  seed: 310,
-  phases: [
-    {
-      callout: ['The ink goes deep. Open him along the line.'],
-      spawn: () => [new Incision([at(-200, 30), at(-80, 0), at(70, 0), at(200, 30)])],
-    },
-    {
-      callout: ['There — the quill! It writes the names. Strike each one out with the lancet, newest stroke first.', 'When a name is gone, the quill falters. Brand it then.'],
-      spawn: (op: Operation) => [new PrimeMalison(at(0, 20), op)],
-    },
-    {
-      callout: ['The roll is closed. Mend the cuts the names left in him.'],
-      spawn: () => [new Laceration(at(-100, 80), 0.3, 60, 0.6), new Rot(at(120, -60), 34, 0.4)],
-    },
-    closeIncision(['Close him. Carefully — he has a great deal of paperwork to catch up on.']),
-  ],
-};
 
 export const OP_3_9: OperationDef = {
   id: 'op3-9',
@@ -522,33 +494,6 @@ export const OP_3_9: OperationDef = {
   ],
 };
 
-export const OP_3_11: OperationDef = {
-  id: 'op3-11',
-  title: 'The Hour of Terce',
-  patient: 'Master Haller, guild surgeon',
-  diagnosis: 'Hexfire took him mid-speech in the burning Guildhall. The fire is inside him, leaping between his organs.',
-  organ: 'flesh',
-  timeLimit: 420,
-  baseDrain: 0.1,
-  tools: ALL,
-  ranks: { S: 9130, A: 7300, B: 5480 },
-  litany: true,
-  seed: 311,
-  phases: [
-    {
-      callout: ['Hexfire, in three organs at once. Salve the front, then cut out the root — and never the brand!'],
-      spawn: (op: Operation) => [new TerceMalison(op, TERCE_DEFAULT)],
-    },
-    {
-      callout: ['It’s out. Now his hands — the burns go to the bone. Eschar off, salve, and stitch the splits.'],
-      spawn: (op: Operation) => [new Burn(at(-150, 40), 38, op, 'hexfire'), new Burn(at(150, 40), 38, op, 'hexfire'), new Laceration(at(-150, -60), 0.5, 60, 0.5), new Laceration(at(150, -60), 2.6, 60, 0.5)],
-    },
-    {
-      callout: ['Grubs in the ash-burns — the hall was filthy. Sear them.'],
-      spawn: (op: Operation) => [new Grub(at(-60, 20), op, 40), new Grub(at(70, 10), op, 40)],
-    },
-  ],
-};
 
 export const CHAPTER_3: Chapter = {
   id: 'ch3',

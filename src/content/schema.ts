@@ -17,6 +17,12 @@ import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, SALVE
 import type { Entity } from '../surgery/entity';
 import { EggSac, LaudsMalison } from '../surgery/lauds';
 import { Malison } from '../surgery/malison';
+import { ComplineMalison } from '../surgery/bosses/compline';
+import { NoneMalison } from '../surgery/bosses/none';
+import { PrimeMalison } from '../surgery/bosses/prime';
+import { SextMalison } from '../surgery/bosses/sext';
+import { TerceMalison } from '../surgery/bosses/terce';
+import { VespersMalison } from '../surgery/bosses/vespers';
 import { CantorKnot, EggCluster, FangNest, MatinsHerald } from '../surgery/bosses/elites';
 import { FIELD, onBody, type Operation, type OperationDef, type PhaseDef } from '../surgery/operation';
 import type { ToolId } from '../surgery/types';
@@ -46,6 +52,12 @@ export type EntitySpec =
   | ({ e: 'silk'; at: Pt; strands?: number; r?: number } & Common)
   | ({ e: 'malison-matins'; at: Pt; hp?: number } & Common)
   | ({ e: 'malison-lauds'; at: Pt } & Common)
+  | ({ e: 'malison-prime'; at: Pt } & Common)
+  | ({ e: 'malison-terce' } & Common)
+  | ({ e: 'malison-sext'; at: Pt } & Common)
+  | ({ e: 'malison-none' } & Common)
+  | ({ e: 'malison-vespers'; at: Pt } & Common)
+  | ({ e: 'malison-compline'; at: Pt } & Common)
   | ({ e: 'elite-broodcluster'; at: Pt; hatchIn?: number } & Common)
   | ({ e: 'elite-cantor'; at: Pt; every?: number } & Common)
   | ({ e: 'elite-fangnest'; path: readonly Pt[]; angles: readonly number[] } & Common)
@@ -188,6 +200,38 @@ export const ENTITY_REGISTRY: { [K in EntityId]: Entry<K> } = {
     params: { at: { type: 'pt' } },
     needs: () => [['brand'], ['lens'], ['tongs']],
     make: (s, op) => new LaudsMalison(P(s.at), op),
+  },
+  // The late Hours (CON-0133/0137/0163/0170/0191/0200): Terce and None place themselves (organ zones,
+  // the burrow's entry); the needs are each Hour's counters from its phase sheet.
+  'malison-prime': {
+    params: { at: { type: 'pt' } },
+    needs: () => [['lancet'], ['brand']],
+    make: (s, op) => new PrimeMalison(P(s.at), op),
+  },
+  'malison-terce': {
+    params: {},
+    needs: () => [['salve'], ['lancet'], ['leech']],
+    make: (_s, op) => new TerceMalison(op),
+  },
+  'malison-sext': {
+    params: { at: { type: 'pt' } },
+    needs: () => [['lancet'], ['brand'], ['tincture']],
+    make: (s, op) => new SextMalison(P(s.at), op),
+  },
+  'malison-none': {
+    params: {},
+    needs: () => [['lens'], ['lancet'], ['brand']],
+    make: (_s, op) => new NoneMalison(op),
+  },
+  'malison-vespers': {
+    params: { at: { type: 'pt' } },
+    needs: () => [['brand'], ['lancet'], ['leech']],
+    make: (s, op) => new VespersMalison(P(s.at), op),
+  },
+  'malison-compline': {
+    params: { at: { type: 'pt' } },
+    needs: () => [['lancet'], ['brand'], ['salve'], ['lens']],
+    make: (s, op) => new ComplineMalison(P(s.at), op),
   },
   // Demo elites (BOS-0147..0150): each spawns its core with the wounds it binds.
   'elite-broodcluster': {
