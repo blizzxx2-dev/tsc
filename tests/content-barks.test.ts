@@ -67,7 +67,8 @@ describe('bark sets (NAR-0071…0076)', () => {
     const n = Object.values(BARKS.stroh).reduce((a, l) => a + (l?.length ?? 0), 0);
     expect(n).toBeGreaterThanOrEqual(20);
     expect(Object.keys(BARKS.stroh).sort()).toEqual(['enraged', 'fail', 'litany', 'phase', 'success']);
-    expect(STROH_PRESENT).toEqual(['op1-4', 'op1-5', 'op2-4', 'op2-5']);
+    // The demo four, then Prime's records and the Office in the late chapters (NAR-0162).
+    expect(STROH_PRESENT).toEqual(['op1-4', 'op1-5', 'op2-4', 'op2-5', 'op3-10', 'op5-9']);
   });
 
   it('NAR-0075: every demo patient has 4–6 lines covering first incision, extraction or pain, and closing', () => {

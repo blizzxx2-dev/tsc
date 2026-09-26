@@ -16,6 +16,7 @@ import {
   pickWhisper,
   resetBarkHistory,
   speakerFor,
+  HALLER_LETTER,
   STROH_PRESENT,
   type BarkSpeaker,
   type BarkTrigger,
@@ -70,7 +71,14 @@ export class BarkDirector {
     resetBarkHistory();
     this.listen();
     this.fire('op-start');
+    this.letter();
     this.environment();
+  }
+
+  /** Chapter IV field operations open with a line of Master Haller's latest letter (NAR-0162). */
+  private letter(): void {
+    if (!/^op4-/.test(this.op.def.id) || this.op.opts.challenge) return;
+    this.say('letter', HALLER_LETTER[Math.floor(this.rng() * HALLER_LETTER.length) % HALLER_LETTER.length]);
   }
 
   /** One warning per table condition the operation opens under (NAR-0164): rain, a moving cart, one candle. */

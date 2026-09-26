@@ -4,6 +4,8 @@
  * Runtime: barkDirector.ts. Nothing here is an instruction the player needs.
  */
 import type { Rank } from '../surgery/types';
+import { HALLER_LETTER, ORSA, PATIENT_BARKS_LATER } from './barksLater';
+export { HALLER_LETTER };
 
 export type BarkTrigger =
   | 'op-start'
@@ -47,7 +49,7 @@ export const BARK_TRIGGERS: readonly BarkTrigger[] = [
 ];
 
 /** `examiner`: the neutral voice of challenge mode (NAR-0167) — no names, no story. */
-export type BarkSpeaker = 'ilse' | 'haller' | 'mauer' | 'stroh' | 'examiner';
+export type BarkSpeaker = 'ilse' | 'haller' | 'mauer' | 'stroh' | 'orsa' | 'examiner';
 
 /** Seconds between any two barks in one operation (sim clock). */
 export const BARK_COOLDOWN = 6;
@@ -403,15 +405,17 @@ const EXAMINER: Partial<Record<BarkTrigger, readonly string[]>> = {
   fail: ['The case is failed. Review and retry.', 'The patient is lost. The examination ends.', 'Failed. The table will be reset.', 'The examination is over.'],
 };
 
-export const BARKS: Record<BarkSpeaker, Partial<Record<BarkTrigger, readonly string[]>>> = { ilse: ILSE, haller: HALLER, mauer: MAUER, stroh: STROH, examiner: EXAMINER };
+export const BARKS: Record<BarkSpeaker, Partial<Record<BarkTrigger, readonly string[]>>> = { ilse: ILSE, haller: HALLER, mauer: MAUER, stroh: STROH, orsa: ORSA, examiner: EXAMINER };
 
 /** Operations where Inquisitor Stroh is present and adds his lines. */
-export const STROH_PRESENT: readonly string[] = ['op1-4', 'op1-5', 'op2-4', 'op2-5'];
+export const STROH_PRESENT: readonly string[] = ['op1-4', 'op1-5', 'op2-4', 'op2-5', 'op3-10', 'op5-9'];
 
 /** Which observer talks at the table for a given operation (docs/narrative/barks.md §1). */
 export function speakerFor(opId: string): BarkSpeaker {
   if (opId === 'op1-1' || opId === 'op1-2') return 'haller';
   if (opId === 'op2-1' || opId === 'op2-2' || opId === 'op2-3' || opId === 'op2-5') return 'mauer';
+  // Orsa (NAR-0162): at the table for her delvers, and while Ilse is on it or recovering.
+  if (opId === 'op4-3' || opId === 'op5-6' || opId === 'op5-7' || opId === 'op5-8') return 'orsa';
   return 'ilse';
 }
 
@@ -421,6 +425,7 @@ export type PatientTrigger = 'first-cut' | 'extract' | 'closing' | 'pain' | 'rel
 
 /** The demo patients, keyed by operation id; fired on first incision, extraction, closing. */
 export const PATIENT_BARKS: Record<string, Partial<Record<PatientTrigger, readonly string[]>>> = {
+  ...PATIENT_BARKS_LATER,
   'op1-1': {
     'first-cut': ['Hff. Go on, then. I have had worse from a goose.'],
     pain: ['Saints — the dice were loaded, I swear it.', 'Gently, master. I am a drover, not a hide.'],
@@ -517,6 +522,13 @@ export const MALISON_WHISPERS: Record<'matins' | 'lauds', readonly string[]> = {
 
 /** One italic line under the rank seal, in the voice of the op's speaker. */
 export const RANK_QUIPS: Record<BarkSpeaker, Record<Rank, readonly string[]>> = {
+  orsa: {
+    XS: ['I’m naming the next three mines after that. The good ones.', 'Not a wasted stroke. Delvers would weep, if delvers wept.', 'That was rock-perfect, surgeon. I don’t say that about rock.', 'Tell nobody I said so, but that was beautiful.'],
+    S: ['Clean work. I’d have you on my crew.', 'Fast and sound. The way a good shaft goes down.', 'Barely a slip. I was watching for one.', 'That’s a proper job, surgeon.'],
+    A: ['Good digging. A bit slow in the middle.', 'Sound. He’ll walk out of here.', 'Well done. Mostly well done.', 'It holds. Most things do, if you did them right.'],
+    B: ['He lives. I’ve seen tidier, I’ve seen worse.', 'Rough seam, but it’s through.', 'It’ll hold. Don’t lean on it.', 'Alive. That’s what we came for.'],
+    C: ['Alive, just. We’ll call it a win and not talk about it.', 'That was a cave-in with a happy ending.', 'He breathes. Let’s not do that again.', 'We got him out. Ugly, but out.'],
+  },
   ilse: {
     XS: ['I have no column for this. I shall rule one.', 'The Saint held the thread, and you held the Saint.', 'Not a slip. Not one. I counted twice.', 'The Master will say “hm”. Treasure it.'],
     S: ['Sound, swift and clean. I shall write it plainly.', 'That is work the Guild would frame and then fine.', 'Nearly faultless. The candle barely moved.', 'I have seen worse called a miracle.'],
