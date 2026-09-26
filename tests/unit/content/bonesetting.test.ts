@@ -83,3 +83,52 @@ describe('chelating tincture (CON-0108, CON-0109)', () => {
     expect(lead.alive).toBe(false);
   });
 });
+
+describe('rotate gesture and pinned grip (INP-0106, INP-0107)', () => {
+  it('rotationAround sums the signed sweep: 90°, 180°, −270° within 5°', async () => {
+    const { rotationAround } = await import('../../../src/surgery/gesture');
+    const arc = (from: number, to: number) =>
+      Array.from({ length: 41 }, (_, i) => {
+        const a = ((from + ((to - from) * i) / 40) * Math.PI) / 180;
+        return { x: 100 + Math.cos(a) * 50, y: 100 + Math.sin(a) * 50 };
+      });
+    const deg = (r: number) => (r * 180) / Math.PI;
+    expect(Math.abs(deg(rotationAround(arc(0, 90), { x: 100, y: 100 })) - 90)).toBeLessThan(5);
+    expect(Math.abs(deg(rotationAround(arc(30, 210), { x: 100, y: 100 })) - 180)).toBeLessThan(5);
+    expect(Math.abs(deg(rotationAround(arc(0, -270), { x: 100, y: 100 })) + 270)).toBeLessThan(5);
+  });
+
+  it('gripping a fragment by its end twists it about its middle', async () => {
+    const { Fracture } = await import('../../../src/surgery/ailments/fracture');
+    const op = running((o) => [new Fracture(at(0, 0), o, 0, 2)]);
+    const fr = op.entities[0] as InstanceType<typeof Fracture>;
+    const f = fr.fragments[1];
+    const pos = { ...f.pos };
+    const end = { x: f.pos.x + Math.cos(f.rot) * 22, y: f.pos.y + Math.sin(f.rot) * 22 };
+    const rot0 = f.rot;
+    const h = new Hand(op);
+    const turned = { x: f.pos.x + Math.cos(f.rot + 0.3) * 22, y: f.pos.y + Math.sin(f.rot + 0.3) * 22 };
+    h.drag('tongs', [end, turned], 100);
+    expect(f.pos).toEqual(pos);
+    expect(f.rot - rot0).toBeCloseTo(0.3, 1);
+  });
+
+  it('F pins the tongs’ grip: the fragment stays held while the hand is free, and lets go after 10 s', async () => {
+    const { Fracture } = await import('../../../src/surgery/ailments/fracture');
+    const { PIN_HOLD } = await import('../../../src/surgery/operation');
+    const op = running((o) => [new Fracture(at(0, 0), o, 0, 2)]);
+    const fr = op.entities[0] as InstanceType<typeof Fracture>;
+    const f = fr.fragments[1];
+    const h = new Hand(op);
+    h.press('tongs', f.pos);
+    h.drag('tongs', [f.pos, f.target], 300, false);
+    expect(op.pinGrip()).toBe(true);
+    expect(op.pinned?.e).toBe(fr);
+    h.release();
+    h.hold('lancet', at(200, 100), 0.2);
+    h.release();
+    expect(op.pinned?.e).toBe(fr);
+    h.hold('lancet', at(200, 100), PIN_HOLD);
+    expect(op.pinned).toBeNull();
+  });
+});

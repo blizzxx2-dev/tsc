@@ -24,6 +24,8 @@ import {
   WHISPER_BAND_BARKS,
   ENV_BARKS,
 } from './barks';
+import { pickLine } from './barks';
+import { BONE_PAIN } from './barksDiscipline';
 import type { WhisperBand } from './whisper';
 
 export interface BarkDirectorOptions {
@@ -95,8 +97,10 @@ export class BarkDirector {
   private listen(): void {
     const ev = this.op.events;
     this.unsubscribe.push(
-      ev.on('rate', ({ rating, combo }) => {
+      ev.on('rate', ({ rating, combo, label }) => {
         this.lastRated = this.op.elapsed;
+        // On the bone-setter's table (NAR-0168): the pull and the set are felt.
+        if ((label === 'Over-traction' || label === 'Set') && !this.ended && this.ready(false, 'bone-pain', 2)) this.say('bone-pain', pickLine('bone-pain', BONE_PAIN, this.rng)!);
         if (combo === 5 || combo === 10 || combo === 20) this.fire(`combo-${combo}` as BarkTrigger);
         else if (this.rng() < (BARK_SAMPLE[rating] ?? 1)) this.fire(rating);
       }),

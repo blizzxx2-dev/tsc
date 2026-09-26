@@ -177,6 +177,9 @@ export interface OperationOptions {
   timeAttack?: boolean;
 }
 
+/** Seconds a pinned grip holds before it lets go (INP-0107). */
+export const PIN_HOLD = 10;
+
 export type SupplyKind = 'thread' | 'salve' | 'tincture';
 export const SUPPLY = { penalty: 40 };
 
@@ -263,7 +266,8 @@ export type LogOp =
   | ['w', number]
   | ['k']
   | ['r']
-  | ['d'];
+  | ['d']
+  | ['f'];
 
 export interface Telemetry {
   opId: string;
@@ -983,6 +987,11 @@ export class Operation {
       this.log?.push(['w', dir]);
       if (this.as(c, () => c.onWheel(this, dir))) return;
     }
+    const pin = this.pinned?.e;
+    if (pin?.alive) {
+      this.log?.push(['w', dir]);
+      if (this.as(pin, () => pin.onWheel(this, dir))) return;
+    }
     if (this.tinctureHeld && this.tinctures.length > 1) {
       this.cycleTincture();
       return;
@@ -1056,6 +1065,32 @@ export class Operation {
 
   // ------------------------------------------------------------------ frame
 
+  /** A tongs grip locked in place (INP-0107): the hand is free for another instrument. Auto-releases after 10 s. */
+  pinned: { e: Entity; t: number } | null = null;
+
+  /** Pin (or unpin) the tongs' grip on what they hold, if it can be pinned. */
+  pinGrip(): boolean {
+    this.log?.push(['f']);
+    if (this.pinned) {
+      this.unpin();
+      return true;
+    }
+    const c = this.captured;
+    if (!c?.alive || this.tool !== 'tongs' || !c.canPin) return false;
+    this.pinned = { e: c, t: PIN_HOLD };
+    this.captured = null;
+    this.cues.push('select');
+    this.popup('Grip pinned', { x: this.pointer.x, y: this.pointer.y - 30 }, '#e8dcc0');
+    return true;
+  }
+
+  private unpin(): void {
+    const p = this.pinned;
+    this.pinned = null;
+    const at = { ...this.pointer };
+    if (p?.e.alive) this.as(p.e, () => p.e.onRelease(this, { pos: at, prev: at, down: false, pressed: false, released: true }, 'tongs'));
+  }
+
   private releaseCapture(): void {
     this.captured = null;
     this.injectT = 0;
@@ -1126,6 +1161,7 @@ export class Operation {
     if (ptr.pressed) {
       this.pressId++;
       this.captured = null;
+      if (this.pinned && tool === 'tongs' && this.pinned.e.hitTest(ptr.pos, this.hitPad)) this.unpin();
       this.emptyHoldT = 0;
       this.emptyMissed = false;
       for (const e of live) {
@@ -1358,6 +1394,11 @@ export class Operation {
     }
     dt *= this.assists.gameSpeed;
     const T = this.tuning;
+    if (this.pinned) {
+      this.pinned.t -= dt;
+      if (!this.pinned.e.alive) this.pinned = null;
+      else if (this.pinned.t <= 0) this.unpin();
+    }
     // Presentation timers run in real time.
     this.shake = Math.max(0, this.shake - dt * 30);
     if (this.callouts.length) {

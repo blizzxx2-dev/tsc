@@ -78,6 +78,13 @@ export interface InterviewDef {
   candle?: number;
 }
 
+/**
+ * Palpation (INP-0109): examining with the hand is a hold-and-sweep over the place — the finding is
+ * made once this much of it (a disc of `radius` px) has been felt. The big-hitbox assist widens the
+ * fingers' reach.
+ */
+export const PALPATE = { radius: 22, needed: 0.6, reach: 10, assistReach: 16 };
+
 /** Candle seconds each action burns (forensics). */
 export const CANDLE_COST = { examine: 6, ask: 4, present: 5 };
 

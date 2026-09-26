@@ -198,3 +198,25 @@ export function circlePath(center: Vec, r: number, n = 48, start = 0): Vec[] {
   }
   return pts;
 }
+
+/**
+ * The signed angle (radians, clockwise on screen positive) a stroke sweeps around a pivot (INP-0106):
+ * the sum of the turns between successive samples, so a full circle is 2π and a back-and-forth nets
+ * out. Samples within 6 px of the pivot are skipped (their angle is noise).
+ */
+export function rotationAround(stroke: readonly Vec[], pivot: Vec): number {
+  let sum = 0;
+  let prev: number | null = null;
+  for (const p of stroke) {
+    if (Math.hypot(p.x - pivot.x, p.y - pivot.y) < 6) continue;
+    const a = Math.atan2(p.y - pivot.y, p.x - pivot.x);
+    if (prev !== null) {
+      let d = a - prev;
+      while (d > Math.PI) d -= 2 * Math.PI;
+      while (d < -Math.PI) d += 2 * Math.PI;
+      sum += d;
+    }
+    prev = a;
+  }
+  return sum;
+}

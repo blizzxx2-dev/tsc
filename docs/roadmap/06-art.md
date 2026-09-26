@@ -89,7 +89,6 @@ Cross-refs: ENG (texture loading, atlases, shader inputs), UX (layouts and widge
 - [x] ART-0060 · Demo · P1 · M · End-of-demo wishlist screen: a woodcut plate of the Chapter 3 teaser with a "Wishlist on Steam" button in UI-kit style
 - [x] ART-0061 · Demo · P2 · S · Loading-screen art: 4 woodcut vignettes (Wound Man, leech jar, Pyre, Choir mask) with an hourglass spinner
 - [ ] ART-0062 · Alpha · P2 · M · Challenge-mode board: a guild notice board with pinned bills per challenge, parchment variants and a rank-wax stamp
-- [ ] ART-0063 · Alpha · P2 · M · Discipline-select art for field triage, diagnosis, inquisition forensics and bone-setting — one illuminated tab each
 
 ### Wax seals, stamps & rank marks
 - [x] ART-0064 · Demo · P0 · M · Rank seals XS / S / A / B / C in wax (gold-leaf XS, oxblood S, green A, brown B, cracked grey C), each with a press-in animation of 6 frames
@@ -208,7 +207,6 @@ Background standard: 3840×2160 master, 1920×1080 ship, split into far/mid/near
 - [ ] ART-0150 · Alpha · P1 · L · Chapter 4 location set: 5 backgrounds with 2 lighting variants
 - [ ] ART-0151 · Beta · P1 · L · Chapter 5 location set: 5 backgrounds including the Choir's cathedral and the Compline finale space
 - [x] ART-0152 · Beta · P2 · M · Hospice ward "burned" variant for the late-game story state
-- [ ] ART-0153 · Alpha · P2 · M · Discipline backgrounds: triage field, diagnosis study, inquisition cell and bone-setter's bench
 
 ### Background animation & FX layers
 - [x] ART-0154 · Demo · P1 · M · Candle and torch flicker sprites (3 sizes, 12-frame loop) with light-pool masks for every Chapter 1–2 interior
@@ -316,8 +314,8 @@ Ailment standard: painted sprite(s) in the woodcut-over-paint style at 2× virtu
 
 ### Discipline-specific
 - [x] ART-0223 · Alpha · P2 · M · Bone-setting: fracture sprites (simple, comminuted, compound with bone-end), splint and bandage wrap art
-- [ ] ART-0224 · Alpha · P2 · M · Field triage: casualty body-card art (8 poses) with tag ribbons (black, red, yellow, green)
-- [ ] ART-0225 · Beta · P2 · M · Inquisition forensics: evidence-item illustrations (15 items) on a parchment evidence board
+- [x] ART-0224 · Alpha · P2 · M · Field triage: casualty body-card art (8 poses) with tag ribbons (black, red, yellow, green)
+- [x] ART-0225 · Beta · P2 · M · Inquisition forensics: evidence-item illustrations (15 items) on a parchment evidence board
 
 ---
 

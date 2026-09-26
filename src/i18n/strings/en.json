@@ -1154,5 +1154,7 @@
   "ui.calibrate_audio.keep": "Keep it",
   "ui.calibrate_audio.again": "Again",
   "ui.options.audio_offset_note": "How late you hear the game’s sounds. Rhythm windows allow for it; calibrate below.",
-  "ui.options.calibrate_audio_note": "Tap along with a bell to measure your audio latency."
+  "ui.options.calibrate_audio_note": "Tap along with a bell to measure your audio latency.",
+  "action.op.pin": "Pin the tongs’ grip",
+  "popup.grip_pinned": "Grip pinned"
 }

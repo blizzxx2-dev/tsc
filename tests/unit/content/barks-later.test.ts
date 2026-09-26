@@ -34,3 +34,19 @@ describe('late-chapter barks', () => {
     expect(lines('op3-1').some((l) => HALLER_LETTER.includes(l))).toBe(false);
   });
 });
+
+describe('discipline barks (NAR-0168)', () => {
+  it('twenty each, every line under 90 characters, no repeats', async () => {
+    const m = await import('../../../src/content/barksDiscipline');
+    for (const [name, lines] of Object.entries({
+      ILSE_INCOMING: m.ILSE_INCOMING,
+      BONE_PAIN: m.BONE_PAIN,
+      STROH_FORENSIC: m.STROH_FORENSIC,
+      WITNESS_RETORTS: m.WITNESS_RETORTS,
+    })) {
+      expect(lines, name).toHaveLength(20);
+      expect(new Set(lines).size, name).toBe(20);
+      for (const l of lines) expect(l.length, l).toBeLessThanOrEqual(90);
+    }
+  });
+});

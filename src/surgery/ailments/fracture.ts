@@ -3,8 +3,9 @@ import { boneChipsArt, boneFragmentArt, drawBoneView, splintArt } from '../../ar
 import { hex } from '../../render/color';
 import type { Gfx } from '../../render/gfx';
 import { angleDiff, BloodPool, surfDisc } from '../entities';
+import { rotationAround } from '../gesture';
 import { Entity } from '../entity';
-import { onBody, strokeCrosses, type Operation } from '../operation';
+import { onBody, PIN_HOLD, strokeCrosses, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
 
 /** Fracture tuning (px, degrees, s). */
@@ -24,6 +25,8 @@ export const FRACTURE = {
   perLoose: 0.1,
   compoundBlock: 130,
   splinterDrain: 0.2,
+  /** Grip this far along a fragment from its middle, near its line, and the tongs twist it (INP-0106). */
+  twistFrom: 17,
   wrapDrain: 0.15,
   wrapBandPx: 6,
 };
@@ -53,6 +56,8 @@ export class Fracture extends Entity {
   pinned = 0;
   private held: Fragment | null = null;
   private grabOff: Vec = { x: 0, y: 0 };
+  /** Holding a fragment by its end turns it about its middle (INP-0106) instead of moving it. */
+  private twist: Vec | null = null;
   noun = 'the broken bone';
   /** Turns of bandage the splint needs once pinned (CON-0238); 0 leaves a finished splint. */
   wrapTurns = 0;
@@ -66,6 +71,7 @@ export class Fracture extends Entity {
   ) {
     super(pos);
     this.layer = 2;
+    this.canPin = true;
     const n = Math.max(2, Math.min(5, count));
     const ca = Math.cos(axis);
     const sa = Math.sin(axis);
@@ -128,6 +134,20 @@ export class Fracture extends Entity {
       return true;
     }
     if (tool !== 'tongs') return false;
+    // An end, well clear of the middle and close to the bone's line: the grip twists it (INP-0106).
+    for (const f of this.fragments) {
+      if (f.set) continue;
+      const ax = Math.cos(f.rot);
+      const ay = Math.sin(f.rot);
+      const along = (ptr.pos.x - f.pos.x) * ax + (ptr.pos.y - f.pos.y) * ay;
+      const across = Math.abs(-(ptr.pos.x - f.pos.x) * ay + (ptr.pos.y - f.pos.y) * ax);
+      if (Math.abs(along) >= FRACTURE.twistFrom && Math.abs(along) <= FRACTURE.segLen / 2 + 6 && across <= 10 + op.hitPad) {
+        this.held = f;
+        this.twist = { ...ptr.pos };
+        op.cues.push('pluck');
+        return true;
+      }
+    }
     let best: Fragment | null = null;
     let bd = FRACTURE.grab + op.hitPad;
     for (const f of this.fragments) {
@@ -147,6 +167,11 @@ export class Fracture extends Entity {
 
   override onDrag(_op: Operation, ptr: Pointer, tool: ToolId): void {
     if (!this.held || tool !== 'tongs') return;
+    if (this.twist) {
+      this.held.rot += rotationAround([this.twist, ptr.pos], this.held.pos);
+      this.twist = { ...ptr.pos };
+      return;
+    }
     this.held.pos = { x: ptr.pos.x + this.grabOff.x, y: ptr.pos.y + this.grabOff.y };
   }
 
@@ -159,6 +184,7 @@ export class Fracture extends Entity {
   override onRelease(op: Operation): void {
     const f = this.held;
     this.held = null;
+    this.twist = null;
     if (!f) return;
     const d = dist(f.pos, f.target);
     const a = angleDiff(f.rot, f.targetRot);
@@ -206,6 +232,8 @@ export class Fracture extends Entity {
     this.fragments.forEach((f, i) => {
       boneFragmentArt(g, f.pos, f.rot, FRACTURE.segLen, { brokenA: i > 0, brokenB: i < n - 1, set: f.set, protrude: this.compound && i === n - 1 && !f.set, seed: i });
       if (this.held === f) g.glow(f.pos.x, f.pos.y, 30, hex('#ffe0a0', 0.3));
+      // A pinned grip (INP-0107): the seconds it has left, as a ring round the fragment.
+      if (this.held === f && op.pinned?.e === this) g.arc(f.pos.x, f.pos.y, 34, 3, hex('#e8dcc0', 0.8), op.pinned.t / PIN_HOLD);
     });
     if (n >= 4) for (let i = 1; i < n; i++) if (!(this.fragments[i - 1].set && this.fragments[i].set)) boneChipsArt(g, this.pins[Math.min(this.pins.length - 1, i - 1)] ?? this.pos, 3, i);
     if (this.roughlyAligned)
@@ -215,6 +243,40 @@ export class Fracture extends Entity {
         if (!done && op.guides) g.text(String(i + 1), q.x, q.y + 5, { size: 12, color: hex('#20100a'), align: 'center', shadow: false });
       });
     if (this.compound && !this.aligned) g.arc(this.pos.x, this.pos.y, 30, 2, hex('#ff8060', 0.4));
+    this.drawGuides(g);
+  }
+
+  /**
+   * The bone-setting HUD (UIX-0193): while a fragment is held, an alignment gauge (how far it sits
+   * from home, green inside the COOL tolerance) and a guide arc from its angle to the one it wants;
+   * once every piece is roughly set, a ghost of the splint that will go on.
+   */
+  private drawGuides(g: Gfx): void {
+    const f = this.held;
+    if (f && !f.set) {
+      const d = dist(f.pos, f.target);
+      const a = angleDiff(f.rot, f.targetRot);
+      const ok = (v: number, cool: number, good: number) => (v <= cool ? '#9fd3a8' : v <= good ? '#f0d070' : '#e07050');
+      // Gauge: two short bars over the fragment, distance and angle, full when home.
+      const gx = f.pos.x - 30;
+      const gy = f.pos.y - 44;
+      g.rect(gx, gy, 60, 5, hex('#000000', 0.5));
+      g.rect(gx, gy, 60 * Math.max(0, 1 - d / 40), 5, hex(ok(d, FRACTURE.coolPx, FRACTURE.goodPx)));
+      g.rect(gx, gy + 8, 60, 5, hex('#000000', 0.5));
+      g.rect(gx, gy + 8, 60 * Math.max(0, 1 - a / 35), 5, hex(ok(a, FRACTURE.coolDeg, FRACTURE.goodDeg)));
+      // Guide arc: from where it points to where it should, round its middle.
+      let turn = f.targetRot - f.rot;
+      while (turn > Math.PI) turn -= Math.PI * 2;
+      while (turn < -Math.PI) turn += Math.PI * 2;
+      if (Math.abs(turn) > FRACTURE.coolDeg * RAD) g.arc(f.pos.x, f.pos.y, FRACTURE.segLen / 2 + 8, 2, hex(ok(a, FRACTURE.coolDeg, FRACTURE.goodDeg), 0.8), Math.abs(turn) / (Math.PI * 2), Math.min(f.rot, f.rot + turn));
+      // And the home it's heading for.
+      g.circle(f.target.x, f.target.y, 4, hex('#f4ecd8', 0.6));
+    }
+    if (this.roughlyAligned && this.pinned === 0) {
+      const first = this.fragments[0];
+      const last = this.fragments[this.fragments.length - 1];
+      g.line(this.end(first.target, first.targetRot, -1), this.end(last.target, last.targetRot, 1), 34, hex('#d8ceb4', 0.14));
+    }
   }
 
   private end(c: Vec, rot: number, s: number): Vec {

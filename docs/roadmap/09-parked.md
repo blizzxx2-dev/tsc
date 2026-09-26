@@ -489,7 +489,7 @@ Current priorities: [docs/ROADMAP.md](../ROADMAP.md#priorities) (tiers in `prior
 - [ ] UIX-0201 · Beta · P1 · M · CJK text support — dynamic glyph atlas pages for Simplified Chinese and Japanese (Noto Serif CJK subset per language), line breaking by character, blackletter titles fall back to a matching CJK display face
 - [ ] UIX-0205 · Release · P0 · M · Screenshot regression suite — Playwright captures every scene and modal at 1280×720, 1280×800 and 2560×1440 in English and one CJK language; diffs reviewed on each RC
 
-## Commissioned painted art (the game draws its art procedurally) (38)
+## Commissioned painted art (the game draws its art procedurally) (40)
 
 - [ ] ART-0015 · M0 · P1 · M · Costume guide: Landsknecht slashed doublets, mercy-order habits, Pyre inquisitors, Watch halberdiers, guild surgeons, the Hollow Choir — 1 turnaround sheet per faction
 - [ ] ART-0016 · M0 · P1 · M · Material library sheet: brass, pewter, tallow, waxed linen, gut thread, leech skin, vellum, stained glass — painted swatch + lighting notes each
@@ -529,3 +529,5 @@ Current priorities: [docs/ROADMAP.md](../ROADMAP.md#priorities) (tiers in `prior
 - [ ] ENG-0278 · Beta · P1 · M · Spike: skeletal 2D animation runtime (Spine vs DragonBones vs custom mesh rig) for VN portraits and Malisons — license, bundle size, draw-call cost; decision recorded
 - [ ] ENG-0279 · Beta · P0 · M · VN portrait renderer — layered expression sprites with blink and mouth-flap cycles, crossfade on expression change, speaker highlight/dim
 - [ ] UIX-0129 · Demo · P0 · M · Layered portraits — base + expression + effects layers per character (Kreuzer, Ilse, Stroh, Haller, Mauer, patients, Choir hood); script tag `say('ilse', text, { face: 'worried' })`; missing expression falls back to neutral with a dev warning
+- [ ] ART-0063 · Alpha · P2 · M · Discipline-select art for field triage, diagnosis, inquisition forensics and bone-setting — one illuminated tab each
+- [ ] ART-0153 · Alpha · P2 · M · Discipline backgrounds: triage field, diagnosis study, inquisition cell and bone-setter's bench

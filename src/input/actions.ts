@@ -19,6 +19,7 @@ export type ActionId =
   | 'op.assist'
   | 'op.leechReverse'
   | 'op.precision'
+  | 'op.pin'
   | 'op.retry'
   | 'op.debug'
   | 'pause'
@@ -80,6 +81,7 @@ export const ACTIONS: readonly ActionDef[] = [
   { id: 'op.assist', group: 'tools', label: 'Call Sister Ilse (once per operation)', contexts: op },
   { id: 'op.leechReverse', group: 'tools', label: 'Reverse the leech', contexts: op },
   { id: 'op.precision', group: 'tools', label: 'Precision (hold)', contexts: op },
+  { id: 'op.pin', group: 'tools', label: 'Pin the tongs’ grip', contexts: op },
   // Shares R with the leech tap on purpose: the tap fires at once, the restart only after a 1 s hold.
   { id: 'op.retry', group: 'menus', label: 'Restart (hold 1 s)', contexts: ['op', 'menu'] },
   { id: 'op.debug', group: 'tools', label: 'Gameplay debug overlay', contexts: op },
@@ -126,6 +128,7 @@ export const DEFAULT_BINDINGS: Readonly<Record<ActionId, BindingSet>> = {
   'op.assist': b(['key:KeyH']),
   'op.leechReverse': b(['key:KeyR']),
   'op.precision': b(['key:ControlLeft'], ['pad:10']),
+  'op.pin': b(['key:KeyF'], ['pad:2']),
   'op.retry': b(['key:KeyR'], ['pad:8']),
   'op.debug': b(['key:F7']),
   pause: b(['key:Escape'], ['pad:9']),

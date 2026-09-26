@@ -41,6 +41,8 @@ export abstract class Entity {
   /** What Ilse says when a stitch is blocked by this entity. */
   stitchBlockHint = 'The bone’s through the skin — set it before you stitch over it.';
   stitchBlockFlag = 'compound';
+  /** The tongs' grip on it can be pinned in place (INP-0107). */
+  canPin = false;
   /** Seconds this entity has existed (world time). */
   age = 0;
 

@@ -9387,5 +9387,20 @@
     "maxPx": 820,
     "context": "Options row description.",
     "screenshot": "docs/loc/screens/options.png"
+  },
+  "action.op.pin": {
+    "scene": "options",
+    "font": "body",
+    "size": 24,
+    "maxPx": 360,
+    "context": "Options row label, left-aligned."
+  },
+  "popup.grip_pinned": {
+    "scene": "operation",
+    "font": "body",
+    "size": 20,
+    "maxPx": 300,
+    "context": "Popup when the tongs grip is pinned in place.",
+    "screenshot": "docs/loc/screens/operation.png"
   }
 }

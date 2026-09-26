@@ -80,8 +80,8 @@ describe('rebinding screen', () => {
     s.tap('pad:15');
     s.tap('pad:15');
     s.tap('pad:0');
-    s.tap('pad:2');
-    expect(bindings.get('tool.next').pad).toEqual(['pad:2']);
+    s.tap('pad:11');
+    expect(bindings.get('tool.next').pad).toEqual(['pad:11']);
   });
 
   it('Reset row / Reset all and Back from the footer', () => {

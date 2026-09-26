@@ -50,6 +50,9 @@ export function replay(def: OperationDef, log: InputLog): Operation {
       case 'k':
         op.cycleTincture();
         break;
+      case 'f':
+        op.pinGrip();
+        break;
       case 'r':
         op.toggleLeechReverse();
         break;

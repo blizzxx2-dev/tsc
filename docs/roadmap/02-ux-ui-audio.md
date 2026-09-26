@@ -526,11 +526,11 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] INP-0103 · Alpha · P1 · M · `isEncircle(stroke, centre, radius)` in `gesture.ts` — returns quality 0..1: closed within 35 % of loop size, winding number ≥ 1 around the centre, loop encloses ≥ 85 % of the target disc, loop area ≤ 3× target; tests accept circle, ellipse, double loop; reject C-shape, figure-8 off-target, spiral into centre
 - [x] INP-0104 · Alpha · P1 · S · Encircle rating — quality ≥ 0.85 COOL, ≥ 0.6 GOOD, else BAD; the Lancet hint "Encircle growths to excise them" in `TOOL_INFO` is honoured by the first growth/tumour entity in Chapters 3–5 (integration test)
 - [x] INP-0105 · Alpha · P2 · S · Encircle guide — with the Lancet selected, excisable growths show a faint dotted ring at the ideal cut radius; the live stroke is drawn as a fine red line
-- [ ] INP-0106 · Alpha · P1 · M · Rotate gesture — `rotationAround(stroke, pivot)` accumulates signed angle of a drag around a pivot (±5° accuracy, tests at 90°/180°/−270°) for bone-setting twists; wheel steps of 15° as keyboard/mouse alternative
-- [ ] INP-0107 · Alpha · P1 · M · Two-point actions without a second hand — "pin" action (default `F`/gamepad X) locks the current Tongs grip in place so the player can switch tool and work elsewhere (e.g. hold a fang while cauterising); pinned grip auto-releases after 10 s; unit tests
-- [ ] INP-0108 · Alpha · P1 · S · Tap-to-tag input for field triage — single press on a casualty cycles triage tags; long-press (0.5 s) opens the tag radial; gamepad face buttons map directly to tags
-- [ ] INP-0109 · Alpha · P1 · S · Palpation/scan hold for diagnosis — hold-and-sweep gesture reporting coverage of a body region (reuses `Coverage`), with hit-scale assist support
-- [ ] INP-0110 · Alpha · P2 · S · Magnifier input for forensic/inquisition scenes — hover pan + wheel zoom 1–4× with smooth zoom around the cursor; gamepad triggers zoom
+- [x] INP-0106 · Alpha · P1 · M · Rotate gesture — `rotationAround(stroke, pivot)` accumulates signed angle of a drag around a pivot (±5° accuracy, tests at 90°/180°/−270°) for bone-setting twists; wheel steps of 15° as keyboard/mouse alternative
+- [x] INP-0107 · Alpha · P1 · M · Two-point actions without a second hand — "pin" action (default `F`/gamepad X) locks the current Tongs grip in place so the player can switch tool and work elsewhere (e.g. hold a fang while cauterising); pinned grip auto-releases after 10 s; unit tests
+- [x] INP-0108 · Alpha · P1 · S · Tap-to-tag input for field triage — single press on a casualty cycles triage tags; long-press (0.5 s) opens the tag radial; gamepad face buttons map directly to tags
+- [x] INP-0109 · Alpha · P1 · S · Palpation/scan hold for diagnosis — hold-and-sweep gesture reporting coverage of a body region (reuses `Coverage`), with hit-scale assist support
+- [x] INP-0110 · Alpha · P2 · S · Magnifier input for forensic/inquisition scenes — hover pan + wheel zoom 1–4× with smooth zoom around the cursor; gamepad triggers zoom
 - [x] INP-0111 · Alpha · P1 · M · Timing-window input for rhythmic Malison gimmicks (Ch3–5 hours) — windows ±60 ms (COOL) / ±120 ms (GOOD) measured from event timestamps, compensated by an audio-latency offset from a calibration screen (Options → Audio → Calibrate)
 - [x] INP-0112 · Alpha · P1 · S · Petrification chip gesture — rapid repeated short Lancet strokes on stone crust register as chips (min 3 per second) with an assist that accepts holding instead
 - [x] INP-0113 · Alpha · P2 · S · Challenge-mode instant retry — hold `R` (gamepad Back) for 1 s to restart; ring fills on the reticle; not active in story mode
@@ -560,10 +560,10 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] UIX-0189 · Beta · P2 · S · Medal results — bronze/silver/gold/"Saint's" medals on the challenge report with next-medal target
 
 ### Disciplines & Chapters 3–5 screens
-- [ ] UIX-0190 · Alpha · P1 · M · Field-triage HUD — casualty cards with triage tags, time-to-deterioration rings, battlefield overview map
-- [ ] UIX-0191 · Alpha · P1 · M · Diagnosis UI — patient interview panel (question list, answers into a symptom checklist), examination findings sheet, diagnosis selection with confirm seal
-- [ ] UIX-0192 · Alpha · P2 · M · Forensic/inquisition evidence board — pinned clues, connect-the-string interaction, verdict parchment; keyboard/gamepad navigable
-- [ ] UIX-0193 · Alpha · P2 · M · Bone-setting HUD — joint alignment gauge, rotation guide arc, splint placement ghost
+- [x] UIX-0190 · Alpha · P1 · M · Field-triage HUD — casualty cards with triage tags, time-to-deterioration rings, battlefield overview map
+- [x] UIX-0191 · Alpha · P1 · M · Diagnosis UI — patient interview panel (question list, answers into a symptom checklist), examination findings sheet, diagnosis selection with confirm seal
+- [x] UIX-0192 · Alpha · P2 · M · Forensic/inquisition evidence board — pinned clues, connect-the-string interaction, verdict parchment; keyboard/gamepad navigable
+- [x] UIX-0193 · Alpha · P2 · M · Bone-setting HUD — joint alignment gauge, rotation guide arc, splint placement ghost
 - [x] UIX-0194 · Alpha · P1 · S · Chapter select for five chapters — Ch III–V cards unlocked progressively; demo "locked" cards removed in full builds
 - [ ] UIX-0195 · Beta · P1 · M · Final UI art pass for Ch3–5 — chapter cards, title cards and discipline HUDs match the style guide; signed off by the art director
 

@@ -95,6 +95,9 @@ function replayInto(op: Operation, ops: InputLog['ops']): Operation {
       case 'r':
         op.toggleLeechReverse();
         break;
+      case 'f':
+        op.pinGrip();
+        break;
     }
   }
   return op;

@@ -489,6 +489,7 @@ export class OperationScene implements Scene {
     }
     if (input.actPressed('op.assist')) op.ilseAssist();
     if (input.actPressed('op.leechReverse')) op.toggleLeechReverse();
+    if (input.actPressed('op.pin')) op.pinGrip();
 
     // Tool selection, the Litany and every pointer event since last frame, in the order they happened.
     // Samples are mapped from view space into world space through the camera (ENG-0046); under the
