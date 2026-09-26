@@ -9255,7 +9255,7 @@
     "scene": "triage",
     "font": "body",
     "size": 17,
-    "maxPx": 110,
+    "maxPx": 180,
     "context": "Triage procedure button."
   },
   "ui.triage.proc.pack": {
@@ -9376,7 +9376,7 @@
     "scene": "options",
     "font": "italic",
     "size": 18,
-    "maxPx": 820,
+    "maxPx": 1300,
     "context": "Options row description.",
     "screenshot": "docs/loc/screens/options.png"
   },
@@ -9392,7 +9392,7 @@
     "scene": "options",
     "font": "body",
     "size": 24,
-    "maxPx": 360,
+    "maxPx": 380,
     "context": "Options row label, left-aligned."
   },
   "popup.grip_pinned": {
@@ -9402,5 +9402,265 @@
     "maxPx": 300,
     "context": "Popup when the tongs grip is pinned in place.",
     "screenshot": "docs/loc/screens/operation.png"
+  },
+  "ui.trials.title": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 560,
+    "context": "Trials board heading and the Extras entry."
+  },
+  "ui.trials.tier.journeyman": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 210,
+    "context": "Trials tier tab."
+  },
+  "ui.trials.tier.master": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 210,
+    "context": "Trials tier tab."
+  },
+  "ui.trials.tier.grandmaster": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 210,
+    "context": "Trials tier tab."
+  },
+  "ui.trials.tier.unsung": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 210,
+    "context": "Trials tier tab."
+  },
+  "ui.trials.tier.disciplines": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 210,
+    "context": "Trials tier tab: triage, interview, forensic, bone-setting trials."
+  },
+  "ui.trials.rule.time": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 150,
+    "context": "Trial rule seal: time limit multiplier."
+  },
+  "ui.trials.rule.drain": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 200,
+    "context": "Trial rule seal: wound drain multiplier."
+  },
+  "ui.trials.rule.no_litany": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 150,
+    "context": "Trial rule seal."
+  },
+  "ui.trials.rule.no_lens": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 150,
+    "context": "Trial rule seal."
+  },
+  "ui.trials.rule.no_salve": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 150,
+    "context": "Trial rule seal."
+  },
+  "ui.trials.rule.one_life": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 150,
+    "context": "Trial rule seal: any MISS ends the trial."
+  },
+  "ui.trials.rule.mirrored": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 150,
+    "context": "Trial rule seal: the field is laid out left for right."
+  },
+  "ui.trials.rule.silent": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 150,
+    "context": "Trial rule seal: no assistant callouts."
+  },
+  "ui.trials.rule.muted": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 150,
+    "context": "Trial rule seal: no sound cues."
+  },
+  "ui.trials.rule.candle": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 150,
+    "context": "Trial rule seal: candle-light only."
+  },
+  "ui.trials.rule.cart": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 150,
+    "context": "Trial rule seal: the table sways on a moving cart."
+  },
+  "ui.trials.rule.rain": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 150,
+    "context": "Trial rule seal: rain drips into the field."
+  },
+  "ui.trials.rule.mud": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 150,
+    "context": "Trial rule seal: every wound is fouled with mud."
+  },
+  "ui.trials.rule.stroh": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 150,
+    "context": "Trial rule seal: the Inquisitor watches."
+  },
+  "ui.trials.locked_first": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 700,
+    "context": "Trials: locked message."
+  },
+  "ui.trials.locked_tier": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 700,
+    "context": "Trials: tier locked message."
+  },
+  "ui.trials.secret": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 700,
+    "context": "Trials: a secret trial not yet unlocked."
+  },
+  "ui.trials.later": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 340,
+    "context": "Trials bill: this trial needs a later chapter."
+  },
+  "ui.trials.medal.bronze": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 120,
+    "context": "Trials medal name."
+  },
+  "ui.trials.medal.silver": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 120,
+    "context": "Trials medal name."
+  },
+  "ui.trials.medal.gold": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 120,
+    "context": "Trials medal name."
+  },
+  "ui.trials.medal.saint": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 120,
+    "context": "Trials medal name: the highest, for XS."
+  },
+  "ui.trials.best": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 240,
+    "context": "Trials bill: best rank and score."
+  },
+  "ui.trials.medal_won": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 230,
+    "context": "Results note: the trial medal earned."
+  },
+  "ui.trials.next_medal": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 230,
+    "context": "Results note: the next medal and the score it needs."
+  },
+  "loss.one_life": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 24,
+    "maxPx": 760,
+    "context": "Loss reason: a MISS under the one-life trial rule.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "ui.trials.tier.loom": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 180,
+    "context": "Trials tab: the Symptom Loom (procedural operations)."
+  },
+  "ui.trials.loom_daily": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 300,
+    "context": "Trials bill: the same procedural operation for everyone today."
+  },
+  "ui.trials.loom_daily_blurb": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 1000,
+    "context": "Trials bill blurb."
+  },
+  "ui.trials.loom_random": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 300,
+    "context": "Trials bill: a random procedural operation."
+  },
+  "ui.trials.loom_random_blurb": {
+    "scene": "trials",
+    "font": "body",
+    "size": 16,
+    "maxPx": 1000,
+    "context": "Trials bill blurb."
   }
 }

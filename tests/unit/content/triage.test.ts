@@ -108,6 +108,14 @@ describe('field triage (CON-0226…0230)', () => {
     }
   });
 
+  it('CON-0248: the triage trials can be won outright by a perfect hand', async () => {
+    const { TRIALS } = await import('../../../src/content/trials');
+    for (const x of TRIALS.filter((y) => y.triage)) {
+      const best = playField(x.triage!, 1, 1, 0.5).outcome!;
+      expect(best.saved, x.id).toBe(best.savable);
+    }
+  });
+
   it('CON-0247: each scenario is a triage step in the campaign, writing its saved count', () => {
     const steps = FULL_CAMPAIGN.flatMap((c) => c.steps).filter((s) => s.kind === 'discipline' && s.discipline.mode === 'triage');
     expect(steps.map((s) => (s.kind === 'discipline' ? s.discipline.id : ''))).toEqual(TRIAGE_SCENARIOS.map((s) => s.id));

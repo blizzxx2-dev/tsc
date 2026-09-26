@@ -156,6 +156,14 @@ export interface OperationOptions {
   checkpoint?: number;
   /** The player's audio latency in ms (INP-0111), allowed for by the rhythm windows. */
   audioOffset?: number;
+  /** The rules in force, as wax seals for the HUD corner (UIX-0187). */
+  seals?: readonly string[];
+  /** Trials rules (CON-0202): any MISS ends the run. */
+  oneLife?: boolean;
+  /** Trials rules: the assistant says nothing (Compline, Alone). */
+  silentAssistant?: boolean;
+  /** Trials rules: no sound cue plays at all (the Choir in full voice). */
+  muted?: boolean;
   /** With `checkpoint`: the stage inside the Hour to resume at (one of `def.bossCheckpoints`). */
   bossStage?: number;
   /** Record every input for replay. */
@@ -485,6 +493,8 @@ export class Operation {
   private trendT = 0;
   /** The environment in force: the op's own `env` and any challenge mutators. */
   readonly env: ReadonlySet<MutatorId>;
+  /** A MISS under the one-life rule (CON-0202): the run ends at the next check. */
+  private oneLifeLost = false;
   /** Supplies left (CON-0140); absent kinds are unlimited. */
   readonly stock: Partial<Record<SupplyKind, number>>;
   /** Uses made past empty, per kind. */
@@ -504,6 +514,7 @@ export class Operation {
     this.tuning = applySpecies(mergeTuning(OP_TUNING[def.id], def.tuning, this.mods.tuning, upgradeTuning(this.upgrades)), def.race);
     this.env = new Set([...(opts.mutators ?? []), ...(def.env ?? [])]);
     this.stock = { ...(def.supplies ?? {}) };
+    if (opts.muted) this.cues.muteFrames = Number.MAX_SAFE_INTEGER;
     if (def.supplies) {
       const push = this.cues.push.bind(this.cues);
       this.cues.push = (...cs) => {
@@ -600,6 +611,7 @@ export class Operation {
   /** Rate an action. `pay = false` counts the rating (and combo) but awards no points. */
   rate(r: Rating, pos: Vec, label?: string, pay = true): void {
     const T = this.tuning.scoring;
+    if (r === 'miss' && this.opts.oneLife && this.status === 'running') this.oneLifeLost = true;
     const origin: Origin = this.actor?.spawnedBy ?? 'content';
     this.counts[r]++;
     const positive = r === 'cool' || r === 'good';
@@ -659,6 +671,7 @@ export class Operation {
 
   /** Queue assistant lines. Danger lines jump ahead of instructions, which jump ahead of praise. */
   say(...args: (string | CalloutPriority)[]): void {
+    if (this.opts.silentAssistant) return;
     let pri: CalloutPriority = 'instruction';
     const last = args[args.length - 1];
     if (last === 'danger' || last === 'instruction' || last === 'praise') {
@@ -1553,6 +1566,7 @@ export class Operation {
     this.runScripted();
 
     if (this.vitals <= 0) return this.lose('The patient has died.', 'vitals');
+    if (this.oneLifeLost) return this.lose('A single miss, and the trial is over.', 'one-life');
     if (this.vitals2 !== null && this.vitals2 <= 0) return this.lose('The second patient has died.', 'vitals2');
     if (this.timeLeft <= 0) {
       this.timeLeft = 0;

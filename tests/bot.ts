@@ -306,7 +306,7 @@ function plan(ctx: BotContext): Action | null {
   if (later) return later;
 
   // Chapters III–V have their own entity kinds, planned by tests/bot-later.ts.
-  const laterOp = /^op[345]-/.test(op.def.id) || op.def.id === 'bossrush';
+  const laterOp = /^op[345]-/.test(op.def.id) || op.def.id.startsWith('bossrush') || op.def.id.startsWith('unsung');
   if (!laterOp) for (const e of ents) if (!isKnown(e)) throw new Error(`bot: unknown entity kind ${e.constructor.name}`);
 
   if (op.vitals < (ctx.expert ? 60 : 40) && op.injectCooldown === 0 && has('tincture')) return hold('tincture', () => ({ x: FIELD.cx + 330, y: FIELD.cy + 20 }), 0.8);

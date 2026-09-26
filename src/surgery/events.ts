@@ -75,7 +75,7 @@ export class CueSink {
 
   /** Silence cues for the rest of this frame and the next. */
   muteFrame(): void {
-    this.muteFrames = 2;
+    this.muteFrames = Math.max(this.muteFrames, 2);
     this.published = 0;
   }
 

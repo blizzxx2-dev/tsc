@@ -554,9 +554,9 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] UIX-0185 · Beta · P2 · S · Boss HUD distortion effects — per-hour HUD interference (e.g. timer digits corrupting, tray icons veiled) implemented as optional shader/animation effects that never hide critical information and are disabled by Reduced Motion
 
 ### Challenge mode
-- [ ] UIX-0186 · Alpha · P1 · M · Challenge list — challenge cards (patient, modifiers such as "No Litany", "Half time", "Blood never stops", target medals), locked/unlocked states, best results
-- [ ] UIX-0187 · Alpha · P1 · S · Modifier display — active modifiers shown as seals on the briefing chart and in a HUD corner during play
-- [ ] UIX-0189 · Beta · P2 · S · Medal results — bronze/silver/gold/"Saint's" medals on the challenge report with next-medal target
+- [x] UIX-0186 · Alpha · P1 · M · Challenge list — challenge cards (patient, modifiers such as "No Litany", "Half time", "Blood never stops", target medals), locked/unlocked states, best results
+- [x] UIX-0187 · Alpha · P1 · S · Modifier display — active modifiers shown as seals on the briefing chart and in a HUD corner during play
+- [x] UIX-0189 · Beta · P2 · S · Medal results — bronze/silver/gold/"Saint's" medals on the challenge report with next-medal target
 
 ### Disciplines & Chapters 3–5 screens
 - [x] UIX-0190 · Alpha · P1 · M · Field-triage HUD — casualty cards with triage tags, time-to-deterioration rings, battlefield overview map

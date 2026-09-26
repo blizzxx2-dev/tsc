@@ -3,6 +3,7 @@ import { t, tSource } from '../i18n';
 import { formatClock, formatNumber } from '../i18n/format';
 import { BOSS_OPS, debriefBand } from '../surgery/bosses/codex';
 import { bossStoryFlags } from '../content/flags';
+import { MEDAL_OF, nextMedal, trial } from '../content/trials';
 import type { Game, Scene } from '../core/scene';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
@@ -190,6 +191,13 @@ export class ResultsScene implements Scene {
       }
       if (br.costly) notes.push(br.costly);
       if (bd.flags.length) notes.push(`(${bd.flags.join(', ')})`);
+      // A trial pays in medals (UIX-0189): the one won, and what the next needs.
+      if (op.opts.challenge && trial(op.opts.challenge)) {
+        const medal = this.won ? MEDAL_OF[op.rank()] : null;
+        if (medal) notes.push(t('ui.trials.medal_won', { medal: t(`ui.trials.medal.${medal}`) }));
+        const nx = nextMedal(this.won ? op.rank() : 'C', op.ranks);
+        if (nx) notes.push(t('ui.trials.next_medal', { medal: t(`ui.trials.medal.${nx.medal}`), need: nx.need }));
+      }
       if (this.summary?.fee) notes.push(`Fee paid: ${this.summary.fee} crowns`);
       for (const a2 of this.summary?.achievements ?? []) notes.push(`✦ ${ACHIEVEMENTS[a2]}`);
       g.textBlock(notes.join('  ·  '), r.x + 420, r.y + 480, 230, { size: 16, font: 'italic', color: hex(INK.dim), shadow: false }, 1.2);

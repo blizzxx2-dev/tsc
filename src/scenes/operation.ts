@@ -1,4 +1,5 @@
 import { packPose } from '../art/portraitRig';
+import { drawSeal } from '../ui/seals';
 import { FACES, type Face } from '../content/story';
 import { curseSource, hourOf } from '../art/curse';
 import { VanishFx } from '../art/vanishFx';
@@ -953,6 +954,12 @@ export class OperationScene implements Scene {
     g.save();
     g.translate(0, anchorShift('bottom'));
     this.drawCallout(g, t);
+    // A trial's rules, as seals in the corner under the vitals (UIX-0187).
+    let sx = 20;
+    for (const seal of op.opts.seals ?? []) {
+      if (sx > 420) break;
+      sx += drawSeal(g, sx, 120, seal) + 6;
+    }
     g.restore();
     drawTrayState(g, op, (i) => this.slot(i), game.input);
     if (this.debug) drawDebug(g, op);

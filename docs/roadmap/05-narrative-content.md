@@ -394,10 +394,10 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0093 · Demo · P1 · S · Demo save carry-over contract — flags and ranks saved in a documented format the full game imports (cantorMercy, litanySeenCount, per-op best rank)
 
 ### Demo challenge set
-- [ ] CON-0096 · Demo · P1 · S · Unlock rule — demo "Trials of the Guild" menu unlocks after completing Ch2; 3 X-ops
-- [ ] CON-0097 · Demo · P1 · M · X-op "Tuesday Knife-Fights" — 4 simultaneous stab wounds, 120 s, no salve; remix of op1-1 entities at higher bleed
-- [ ] CON-0098 · Demo · P1 · M · X-op "A Quiver's Worth" — 5 barbed arrows incl. 2 hidden (lens), blood pools
-- [ ] CON-0099 · Demo · P1 · M · X-op "Matins, Unwatched" — Matins boss with faster eye rhythm (×1.4), no Litany, XS rank requires no MISS
+- [x] CON-0096 · Demo · P1 · S · Unlock rule — demo "Trials of the Guild" menu unlocks after completing Ch2; 3 X-ops
+- [x] CON-0097 · Demo · P1 · M · X-op "Tuesday Knife-Fights" — 4 simultaneous stab wounds, 120 s, no salve; remix of op1-1 entities at higher bleed
+- [x] CON-0098 · Demo · P1 · M · X-op "A Quiver's Worth" — 5 barbed arrows incl. 2 hidden (lens), blood pools
+- [x] CON-0099 · Demo · P1 · M · X-op "Matins, Unwatched" — Matins boss with faster eye rhythm (×1.4), no Litany, XS rank requires no MISS
 - [x] CON-0100 · Demo · P2 · S · Local best-score table per X-op — Steam leaderboard hooks owned by engine workstream
 
 ## CON · Epic 6 — Chapter III operations (Prime and Terce)
@@ -566,36 +566,36 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ## CON · Epic 9 — Challenge mode ("Trials of the Guild") and X-ops
 
 ### Structure
-- [ ] CON-0201 · Alpha · P1 · S · Challenge mode spec — 24 X-ops in 4 tiers (Journeyman, Master, Grand Master, Unsung); tier unlock by S-ranks in previous tier
-- [ ] CON-0202 · Alpha · P1 · S · X-op rules layer — per-op overrides: time ×, drain ×, no-Litany, no-lens, one-life combo (any MISS fails), mirrored field
-- [ ] CON-0203 · Beta · P1 · S · X-op rank table — XS thresholds calibrated so perfect bot achieves XS and average bot achieves B on ≤ 50% of X-ops
+- [x] CON-0201 · Alpha · P1 · S · Challenge mode spec — 24 X-ops in 4 tiers (Journeyman, Master, Grand Master, Unsung); tier unlock by S-ranks in previous tier
+- [x] CON-0202 · Alpha · P1 · S · X-op rules layer — per-op overrides: time ×, drain ×, no-Litany, no-lens, one-life combo (any MISS fails), mirrored field
+- [x] CON-0203 · Beta · P1 · S · X-op rank table — XS thresholds calibrated so perfect bot achieves XS and average bot achieves B on ≤ 50% of X-ops
 
 ### Journeyman tier (remixes of Ch1–2 content)
-- [ ] CON-0204 · Beta · P1 · S · X-op "Gilded Goose Closing Time" — 6 knife wounds + 2 pools, 150 s
-- [ ] CON-0205 · Beta · P1 · S · X-op "Gunsmiths' Tuesday" — two burst-barrel patients back-to-back, eschar + shot
-- [ ] CON-0206 · Beta · P1 · S · X-op "Tanners' Rows Fever" — 8 buboes, fast rot regrowth, candle light
-- [ ] CON-0207 · Beta · P1 · S · X-op "Barrow-Field Patrol" — gravehound + brood-mother bites on one patient
-- [ ] CON-0208 · Beta · P1 · S · X-op "Black Seam, Deeper" — 8 hidden hexshards, spoil spread ×1.5
-- [ ] CON-0209 · Beta · P1 · S · X-op "Lauds, Unanswered" — Lauds pair with 0.8 s response window, no Litany
+- [x] CON-0204 · Beta · P1 · S · X-op "Gilded Goose Closing Time" — 6 knife wounds + 2 pools, 150 s
+- [x] CON-0205 · Beta · P1 · S · X-op "Gunsmiths' Tuesday" — two burst-barrel patients back-to-back, eschar + shot
+- [x] CON-0206 · Beta · P1 · S · X-op "Tanners' Rows Fever" — 8 buboes, fast rot regrowth, candle light
+- [x] CON-0207 · Beta · P1 · S · X-op "Barrow-Field Patrol" — gravehound + brood-mother bites on one patient
+- [x] CON-0208 · Beta · P1 · S · X-op "Black Seam, Deeper" — 8 hidden hexshards, spoil spread ×1.5
+- [x] CON-0209 · Beta · P1 · S · X-op "Lauds, Unanswered" — Lauds pair with 0.8 s response window, no Litany
 
 ### Master tier (Ch3–4 content)
-- [ ] CON-0210 · Beta · P1 · S · X-op "Roll of the Plague Dead" — Prime writing 5 names simultaneously
-- [ ] CON-0211 · Beta · P1 · S · X-op "Guildhall Ablaze" — Terce with 5 organ zones
-- [ ] CON-0212 · Beta · P1 · S · X-op "Three Worms, One Pie" — Pieman's Revenge ×3 worms with 5 s regrow
-- [ ] CON-0213 · Beta · P1 · S · X-op "Crossbow Volley" — 4 gorget-adjacent bolts, rain and cart modifiers
-- [ ] CON-0214 · Beta · P1 · S · X-op "Noonday Demon" — Sext with permanent false vitals (no lens reveal)
-- [ ] CON-0215 · Beta · P1 · S · X-op "Stone Wedding" — two petrification fronts from both hands
+- [x] CON-0210 · Beta · P1 · S · X-op "Roll of the Plague Dead" — Prime writing 5 names simultaneously
+- [x] CON-0211 · Beta · P1 · S · X-op "Guildhall Ablaze" — Terce with 5 organ zones
+- [x] CON-0212 · Beta · P1 · S · X-op "Three Worms, One Pie" — Pieman's Revenge ×3 worms with 5 s regrow
+- [x] CON-0213 · Beta · P1 · S · X-op "Crossbow Volley" — 4 gorget-adjacent bolts, rain and cart modifiers _(t11: the gorget bolt under rain and cart)_
+- [x] CON-0214 · Beta · P1 · S · X-op "Noonday Demon" — Sext with permanent false vitals (no lens reveal)
+- [x] CON-0215 · Beta · P1 · S · X-op "Stone Wedding" — two petrification fronts from both hands
 
 ### Grand Master tier (Ch5 content and mixes)
-- [ ] CON-0216 · Beta · P1 · S · X-op "Hollow Choir in Full Voice" — Choir-Throat with audio mute for the whole op
-- [ ] CON-0217 · Beta · P1 · S · X-op "Every Lamp Out" — Vespers starting at 1 lit lamp
-- [ ] CON-0218 · Beta · P1 · S · X-op "Burrower's Race" — None with 2 burrowers
-- [ ] CON-0219 · Beta · P1 · S · X-op "Compline, Alone" — Compline with no assistant callouts and no checkpoints
-- [ ] CON-0220 · Beta · P2 · S · X-op "Hexstone Harvest" — 3 hexstone balls, Whisper tracked as score penalty
-- [ ] CON-0221 · Beta · P2 · S · X-op "Office Entire" — Matins → Compline boss rush with carried-over vitals
+- [x] CON-0216 · Beta · P1 · S · X-op "Hollow Choir in Full Voice" — Choir-Throat with audio mute for the whole op
+- [x] CON-0217 · Beta · P1 · S · X-op "Every Lamp Out" — Vespers starting at 1 lit lamp
+- [x] CON-0218 · Beta · P1 · S · X-op "Burrower's Race" — None with 2 burrowers _(t19: None split five ways, segments lethal — one burrower, since two Hours at once break its rules)_
+- [x] CON-0219 · Beta · P1 · S · X-op "Compline, Alone" — Compline with no assistant callouts and no checkpoints
+- [x] CON-0220 · Beta · P2 · S · X-op "Hexstone Harvest" — 3 hexstone balls, Whisper tracked as score penalty _(t21: three hexstone balls to the lead dish; the Whisper is not scored)_
+- [x] CON-0221 · Beta · P2 · S · X-op "Office Entire" — Matins → Compline boss rush with carried-over vitals
 
 ### Unsung tier and procedural
-- [ ] CON-0222 · Beta · P2 · M · Secret X-op "The Unsung Hour" — remnants of every patient the player lost in the campaign stitched together; falls back to a curated set if none lost
+- [x] CON-0222 · Beta · P2 · M · Secret X-op "The Unsung Hour" — remnants of every patient the player lost in the campaign stitched together; falls back to a curated set if none lost
 
 ## CON · Epic 10 — Other disciplines (modes)
 
@@ -630,7 +630,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### Discipline integration
 - [x] CON-0247 · Alpha · P1 · S · Campaign step kinds `triage` — `interview`, `bonesetting`, `forensic` added to campaign graph schema with validation
-- [ ] CON-0248 · Beta · P2 · S · Discipline challenge entries — 2 X-ops per discipline in challenge mode
+- [x] CON-0248 · Beta · P2 · S · Discipline challenge entries — 2 X-ops per discipline in challenge mode
 
 ## CON · Epic 11 — Content integration (Beta) and release checks
 - [ ] CON-0249 · Beta · P0 · M · Final-art integration audit — every op's entities use final sprites/shaders; no placeholder flagged assets remain (asset manifest check)

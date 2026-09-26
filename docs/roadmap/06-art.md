@@ -88,7 +88,7 @@ Cross-refs: ENG (texture loading, atlases, shader inputs), UX (layouts and widge
 - [x] ART-0059 · Demo · P1 · S · Save/load slot cards: ledger entries with chapter vignette thumbnails (1 per chapter scene) and a date-stamp style
 - [x] ART-0060 · Demo · P1 · M · End-of-demo wishlist screen: a woodcut plate of the Chapter 3 teaser with a "Wishlist on Steam" button in UI-kit style
 - [x] ART-0061 · Demo · P2 · S · Loading-screen art: 4 woodcut vignettes (Wound Man, leech jar, Pyre, Choir mask) with an hourglass spinner
-- [ ] ART-0062 · Alpha · P2 · M · Challenge-mode board: a guild notice board with pinned bills per challenge, parchment variants and a rank-wax stamp
+- [x] ART-0062 · Alpha · P2 · M · Challenge-mode board: a guild notice board with pinned bills per challenge, parchment variants and a rank-wax stamp
 
 ### Wax seals, stamps & rank marks
 - [x] ART-0064 · Demo · P0 · M · Rank seals XS / S / A / B / C in wax (gold-leaf XS, oxblood S, green A, brown B, cracked grey C), each with a press-in animation of 6 frames
@@ -261,7 +261,7 @@ Ailment standard: painted sprite(s) in the woodcut-over-paint style at 2× virtu
 - [x] ART-0210 · Demo · P0 · M · Rot/gangrene: spreading necrotic decal (4 growth stages) with a crusted edge and a debrided clean state
 - [x] ART-0211 · Demo · P1 · S · Pox pustule cluster decal (small, many) for Symptom Loom reuse
 - [x] ART-0212 · Alpha · P2 · S · Flux/fever flush overlay (full-field tint map) and a sweat-bead sparkle loop
-- [ ] ART-0213 · Alpha · P2 · M · Symptom Loom module icons (12 symptom modules) as woodcut roundels for challenge-mode briefings
+- [x] ART-0213 · Alpha · P2 · M · Symptom Loom module icons (12 symptom modules) as woodcut roundels for challenge-mode briefings
 
 ### Venom & creatures
 - [x] ART-0214 · Demo · P0 · M · Venom: a spreading vein-web decal (green-black) with a tincture-neutralised fade, driven by the `Venom` entity's spread value

@@ -52,7 +52,34 @@ export const RANK_TABLE: Record<string, { S: number; A: number; B: number }> = {
   'op3-12': { S: 5310, A: 4250, B: 3190 }, // steady won 5534
   'op3-13': { S: 6420, A: 5140, B: 3850 }, // steady won 6688
   'op4-11': { S: 5390, A: 4310, B: 3230 }, // steady won 5618
-  'op5-10': { S: 8860, A: 7090, B: 5320 }, // steady won 9234
+  'op5-10': { S: 8830, A: 7060, B: 5300 }, // steady won 9202 (candle-lit)
+  // The Trials of the Guild (CON-0203): calibrated by tests/sim/trials.test.ts.
+  'trial-knives-t01': { S: 3310, A: 2650, B: 1990 },
+  'trial-quiver-t02': { S: 5880, A: 4700, B: 3530 },
+  'trial-goose-t03': { S: 3830, A: 3060, B: 2300 },
+  'trial-gunsmiths-t04': { S: 6020, A: 4820, B: 3610 },
+  'trial-tanners-t05': { S: 6750, A: 5400, B: 4050 },
+  'trial-barrow-t06': { S: 5670, A: 4540, B: 3400 },
+  'op1-5-t07': { S: 3670, A: 2940, B: 2200 },
+  'op2-5-t08': { S: 4350, A: 3480, B: 2610 },
+  'trial-seam-t09': { S: 5680, A: 4540, B: 3410 },
+  'op3-6-t10': { S: 4380, A: 3500, B: 2630 },
+  'op4-1-t11': { S: 4440, A: 3550, B: 2660 },
+  'op1-5-t12': { S: 4040, A: 3230, B: 2420 },
+  'op3-10-t13': { S: 5230, A: 4180, B: 3140 },
+  'op3-11-t14': { S: 6660, A: 5330, B: 4000 },
+  'op4-7-t15': { S: 5330, A: 4260, B: 3200 },
+  'op4-8-t16': { S: 6340, A: 5070, B: 3800 },
+  'op5-1-t17': { S: 4600, A: 3680, B: 2760 },
+  'op5-6-t18': { S: 7890, A: 6310, B: 4730 },
+  'op4-9-t19': { S: 5270, A: 4220, B: 3160 },
+  'op5-8-t20': { S: 4910, A: 3930, B: 2950 },
+  'op5-5-t21': { S: 4750, A: 3800, B: 2850 },
+  'bossrush-t22': { S: 23450, A: 18760, B: 14070 },
+  'op5-8-t23': { S: 5760, A: 4610, B: 3460 },
+  'unsung-t24': { S: 6300, A: 5040, B: 3780 },
+  'op3-12-d7': { S: 3870, A: 3100, B: 2320 },
+  'op5-10-d8': { S: 8830, A: 7060, B: 5300 },
   // Challenge X-ops (Master rules).
   'op1-5-x1': { S: 3150, A: 2520, B: 1890 },
   'op2-5-x2': { S: 3940, A: 3150, B: 2360 },
