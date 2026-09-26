@@ -49,7 +49,7 @@ export type EntitySpec =
   | ({ e: 'rot'; at: Pt; r: number; spread?: number } & Common)
   | ({ e: 'venom'; at: Pt; rate?: number; poison?: PoisonId } & Common)
   | ({ e: 'grub'; at: Pt; speed?: number } & Common)
-  | ({ e: 'sigil'; at: Pt; shape: keyof typeof SIGILS; size?: number; lashEvery?: number } & Common)
+  | ({ e: 'sigil'; at: Pt; shape: keyof typeof SIGILS; size?: number; lashEvery?: number; lashStart?: number } & Common)
   | ({ e: 'pool'; at: Pt; r: number; ichor?: 'blood' | 'pus' | 'blackbile' } & Common)
   | ({ e: 'eggsac'; at: Pt; brood?: number; hatchIn?: number } & Common)
   | ({ e: 'silk'; at: Pt; strands?: number; r?: number } & Common)
@@ -178,9 +178,9 @@ export const ENTITY_REGISTRY: { [K in EntityId]: Entry<K> } = {
     make: (s, op) => new Grub(P(s.at), op, s.speed),
   },
   sigil: {
-    params: { at: { type: 'pt' }, shape: { type: 'string', oneOf: Object.keys(SIGILS) }, size: num(true, [16, 140]), lashEvery: num(true, [0.5, 9999]) },
+    params: { at: { type: 'pt' }, shape: { type: 'string', oneOf: Object.keys(SIGILS) }, size: num(true, [16, 140]), lashEvery: num(true, [0.5, 9999]), lashStart: num(true, [0, 9999]) },
     needs: () => [['brand']],
-    make: (s) => new Sigil(P(s.at), SIGILS[s.shape], s.size, s.lashEvery),
+    make: (s) => new Sigil(P(s.at), SIGILS[s.shape], s.size, s.lashEvery, s.lashStart),
   },
   pool: {
     params: { at: { type: 'pt' }, r: num(false, [4, 90]), ichor: { type: 'string', optional: true, oneOf: ['blood', 'pus', 'blackbile'] } },

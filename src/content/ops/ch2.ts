@@ -184,9 +184,10 @@ export const OP_2_4 = defineOp({
 
       callout: ['Those sigils are burning him from within. Sear each one out — every stroke.'],
       spawn: [
-        { e: 'sigil', at: [-160, -20], shape: 'crown', size: 55, lashEvery: 4.5 },
+        // They ignite on a stagger, one after another (CON-0068), not all at once.
+        { e: 'sigil', at: [-160, -20], shape: 'crown', size: 55, lashEvery: 4.5, lashStart: 1.5 },
         { e: 'sigil', at: [160, -10], shape: 'hourglass', size: 55, lashEvery: 4.5 },
-        { e: 'sigil', at: [0, -90], shape: 'eye', size: 50, lashEvery: 4.5 },
+        { e: 'sigil', at: [0, -90], shape: 'eye', size: 50, lashEvery: 4.5, lashStart: 3 },
       ],
     },
     {

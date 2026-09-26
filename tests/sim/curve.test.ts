@@ -24,6 +24,11 @@ describe('the demo difficulty curve', () => {
     }
   });
 
+  it('CON-0037: after the arrow comes out, the novice still keeps the militiaman above 40', { timeout: 120_000 }, () => {
+    const def = ops.find((d) => d.id === 'op1-2')!;
+    expect(med(runs(def, 'novice').map((o) => o.minVitals))).toBeGreaterThan(40);
+  });
+
   it('GAM-0199: within each chapter the steady hand’s lowest vitals only fall (save the scripted dip and the breather)', { timeout: 300_000 }, () => {
     const skip = new Set(['op1-3', 'op2-1']);
     for (const ch of ['op1-', 'op2-']) {

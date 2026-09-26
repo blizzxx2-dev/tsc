@@ -263,7 +263,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ## NAR · Epic 10 — Script passes, VO prep and localisation readiness
 
 ### Script passes
-- [ ] NAR-0174 · Demo · P1 · S · Demo proofread pass — spelling, punctuation (typographic quotes/dashes consistent), speaker names; zero issues in second read
+- [x] NAR-0174 · Demo · P1 · S · Demo proofread pass — spelling, punctuation (typographic quotes/dashes consistent), speaker names; zero issues in second read _(automated: tests/unit/content/proofread.test.ts — quotes, dashes, ellipses, spacing)_
 - [ ] NAR-0175 · Demo · P1 · S · Demo continuity pass — injuries, names, times of day and item names consistent across scenes, briefings, codex and case notes
 - [ ] NAR-0177 · Alpha · P0 · L · Ch3–5 second draft — incorporates playtest notes and ending matrix; all scene ids wired in campaign data
 - [ ] NAR-0178 · Beta · P0 · M · Ch3–5 polish pass — pacing budget enforced, jokes audited against humour rule, Kreuzer voice consistent
@@ -313,8 +313,8 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### op1-2 "The Barbed Shaft" (Pieter, militiaman) — lancet nicks, tongs
 - [x] CON-0035 · Demo · P0 · S · Barb rule clarity — each required nick marked with a faint ink tick until performed; tearing an un-nicked barb spawns a 1.6× bleed laceration + BAD (test)
-- [ ] CON-0037 · Demo · P1 · S · Post-extraction bleed phase tuned — so average bot keeps vitals > 40
-- [ ] CON-0038 · Demo · P2 · S · Horned-folk arrow codex unlock — entry unlocks on first clean extraction (test)
+- [x] CON-0037 · Demo · P1 · S · Post-extraction bleed phase tuned — so average bot keeps vitals > 40
+- [x] CON-0038 · Demo · P2 · S · Horned-folk arrow codex unlock — entry unlocks on first clean extraction (test)
 
 ### op1-3 "Powder Burns" (Anno, gunsmith's apprentice) — tongs on eschar, incision, tincture intro
 - [x] CON-0039 · Demo · P0 · S · Eschar-before-salve rule enforced — salving over eschar gives BAD and a festering rot spawn after 10 s (test)
@@ -333,7 +333,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0049 · Demo · P0 · M · Matins boss phase review — eye-open rhythm telegraphed 0.8 s before opening (audio + visual), brand damage only while open
 - [x] CON-0050 · Demo · P0 · S · Litany teaching beat — first Malison enrage forces a callout prompting the star gesture; op still winnable without Litany (perfect bot test)
 - [ ] CON-0051 · Demo · P1 · S · Sigil trace phase — stroke order shown as numbered ink dots on first attempt, hidden on retry ≥ 2
-- [ ] CON-0052 · Demo · P1 · S · Mote spawn cap — ≤ 6 alive; so the field never becomes unreadable
+- [x] CON-0052 · Demo · P1 · S · Mote spawn cap — ≤ 6 alive; so the field never becomes unreadable
 - [x] CON-0053 · Demo · P1 · S · Final phase — MATINS word seared into flesh as a visual when boss dies (matches s1-end)
 - [x] CON-0054 · Demo · P1 · S · Boss-fail tips — 3 context tips cycling on retry ("Brand only when the eye is open", etc.) _(BOS-0009: Ilse’s tip for the phase it was lost in)_
 
@@ -341,7 +341,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### op2-1 "Gravehound" (Tomas, scout) — claw rakes, lodged teeth, venom
 - [x] CON-0055 · Demo · P0 · S · Venom-on-bite tincture interaction — tincture held on bite for 1.5 s neutralises venom; wrong spot gives MISS (test)
-- [ ] CON-0056 · Demo · P1 · S · Claw-rake lacerations as parallel triples — stitch zig-zag detection works on parallel close wounds (no cross-stitch mis-assignment)
+- [x] CON-0056 · Demo · P1 · S · Claw-rake lacerations as parallel triples — stitch zig-zag detection works on parallel close wounds (no cross-stitch mis-assignment)
 - [ ] CON-0057 · Demo · P1 · S · Tooth count 3–4 — one tooth broken (tongs twice) for variety
 - [ ] CON-0058 · Demo · P2 · S · Grave-dirt contamination — 2 dirt spots must be drained before salve or salve rates BAD
 
@@ -354,12 +354,12 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### op2-3 "Brood-Mother's Kiss" (Henning, forager) — venom, egg sacs, grubs
 - [x] CON-0064 · Demo · P0 · S · Egg-sac hatch timer shown as swelling — lanced sacs spill grubs to be branded; unlanced hatch scatters 3× grubs (test)
-- [ ] CON-0065 · Demo · P1 · S · Venom spread along drawn veins — tincture targets the vein head
+- [x] CON-0065 · Demo · P1 · S · Venom spread along drawn veins — tincture targets the vein head _(the bite is the vein’s head: the Antidote rule, tincture held on it)_
 - [x] CON-0066 · Demo · P1 · S · Web-silk wrapping overlay that must be cut — with the lancet before the field is accessible
 - [x] CON-0067 · Demo · P2 · S · Grub AI flees toward nearest open wound — not random; so good play closes wounds first
 
 ### op2-4 "The Silenced Cantor" (lay-cantor of the Hollow Choir) — igniting sigils, swallowed object
-- [ ] CON-0068 · Demo · P0 · S · Igniting sigils — each sigil ignites on a stagger (not all at once); untraced ignition causes hexfire burn
+- [x] CON-0068 · Demo · P0 · S · Igniting sigils — each sigil ignites on a stagger (not all at once); untraced ignition causes hexfire burn
 - [ ] CON-0069 · Demo · P1 · S · Swallowed object phase — lens reveals a hymn-token in the stomach; incision + tongs extraction; item appears in codex
 - [x] CON-0070 · Demo · P1 · S · `cantorMercy` flag read — if Kreuzer chose to argue with Stroh, op starts with +10 vitals (Ilse prepared him); test
 
@@ -377,7 +377,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0080 · Demo · P1 · S · Ch1 briefings rewritten for op1-1…op1-5 — diagnosis strings match the scenes (vagrant renamed), objective list matches phases
 - [x] CON-0081 · Demo · P1 · S · Ch2 briefings rewritten for op2-1…op2-5 — "The Black Seam" retitle, Lauds described as "two voices beneath the sternum"
 - [x] CON-0082 · Demo · P1 · S · Objective-to-phase test — every briefing objective maps to at least one phase id; test fails on orphans
-- [ ] CON-0084 · Demo · P2 · S · Patient ages and trades consistent between briefing — scene text and case note (content test cross-references ids)
+- [x] CON-0084 · Demo · P2 · S · Patient ages and trades consistent between briefing — scene text and case note (content test cross-references ids) _(NAR-0170: every case note names the patient its op names)_
 
 ### Demo retry and replay content
 - [x] CON-0085 · Demo · P1 · S · Chapter-select for demo — replay any cleared op; best rank shown per op
@@ -630,6 +630,6 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0248 · Beta · P2 · S · Discipline challenge entries — 2 X-ops per discipline in challenge mode
 
 ## CON · Epic 11 — Content integration (Beta) and release checks
-- [ ] CON-0252 · Beta · P1 · S · Codex/case-note unlock audit across full campaign graph — all branches
-- [ ] CON-0253 · Beta · P1 · S · Full-campaign playthrough script — QA route covering each ending with flag setup; 4 routes documented
+- [x] CON-0252 · Beta · P1 · S · Codex/case-note unlock audit across full campaign graph — all branches
+- [x] CON-0253 · Beta · P1 · S · Full-campaign playthrough script — QA route covering each ending with flag setup; 4 routes documented
 

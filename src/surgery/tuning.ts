@@ -244,6 +244,8 @@ export const DEFAULT_TUNING = {
     drainPerPx: 0.012,
     maxSpread: 120,
     moteEvery: 5,
+    /** At most this many drops alive on a vein at once (CON-0052), so the field stays readable. */
+    moteCap: 6,
     moteSpeed: 38,
     moteHurt: 10,
     moteHit: 16,

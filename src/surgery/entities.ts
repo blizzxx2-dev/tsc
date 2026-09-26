@@ -1746,7 +1746,7 @@ export class Venom extends Entity {
     this.spreadR = Math.min(V.maxSpread, this.spreadR + this.rate * dt);
     if (this.rate <= 0) return;
     this.moteT += dt;
-    if (this.moteT >= V.moteEvery) {
+    if (this.moteT >= V.moteEvery && this.motes.filter((m) => m.alive).length < V.moteCap) {
       this.moteT = 0;
       this.motes.push({ s: 0, alive: true });
       op.sayOnce('venom-mote', 'The venom’s running for his heart along the vein — sear or draw off the drops, or tie the vein!', 'danger');
@@ -2051,9 +2051,12 @@ export class Sigil extends Entity {
     shape: Vec[][],
     public size = 60,
     public lashEvery = 5,
+    /** Seconds already on the lash clock at spawn: sigils set to ignite on a stagger (CON-0068). */
+    lashStart = 0,
   ) {
     super(pos);
     this.layer = -1;
+    this.lashT = lashStart;
     shape.forEach((stroke, si) => {
       this.nodes.push({ x: pos.x + stroke[0].x * size, y: pos.y + stroke[0].y * size });
       for (let i = 1; i < stroke.length; i++) {
