@@ -584,7 +584,6 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0139 · Beta · P1 · S · Stroh branch — if story flag `strohAlly`, Stroh's brand strike clears one hour-sigil in phase 1 automatically
 ### Counterplay, tells & cues
 - [x] BOS-0140 · Beta · P1 · S · Dial tell — hand of the clock sweeps to the next Hour over 1.5 s with that Hour's signature sound
-- [ ] BOS-0141 · Beta · P1 · S · All eight Hours' leitmotifs layered as a canon in phase 2 — mix test for clarity of tells
 ### Tuning & tests
 - [x] BOS-0142 · Beta · P0 · S · Bot completion on 50 seeds all difficulties — steady clears 480–600 s; op timeLimit 720 s _(tests/sim/compline-50.test.ts: 50/50 on every difficulty inside the 480 s limit)_
 - [x] BOS-0143 · Beta · P0 · S · Pairing validator — every allowed pair of Hours tested for tool conflicts and drain budget ≤ 2.2/s
@@ -628,7 +627,6 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 ## BOS-M · Boss release polish & post-launch
 
 - [x] BOS-0173 · Beta · P1 · S · Boss consistency pass — all 8 Hours + Office share tell lead-time rules, HUD, checkpoint behaviour, results "Hour defeated" stamp
-- [ ] BOS-0174 · Beta · P1 · S · Boss audio mix pass — tells audible over music at all volume presets (loudness test −3 dB margin)
 - [x] BOS-0176 · Release · P1 · S · Replay-verified boss speedrun leaderboards — (fastest clear per Hour) enabled
 - [x] BOS-0177 · Release · P1 · S · Crash/soft-lock audit — each boss run with random-input fuzz bot for 10 min × 20 seeds; no exceptions, no stuck phases
 

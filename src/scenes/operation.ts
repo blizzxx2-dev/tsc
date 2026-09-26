@@ -1,3 +1,5 @@
+import { packPose } from '../art/portraitRig';
+import { FACES, type Face } from '../content/story';
 import { curseSource, hourOf } from '../art/curse';
 import { VanishFx } from '../art/vanishFx';
 import { ExtractionTray } from '../art/extractionTray';
@@ -1675,14 +1677,20 @@ export class OperationScene implements Scene {
     g.pushClip({ x: mx - 30, y: my - 30, w: 60, h: 60 });
     // Whoever calls the phases (CON-0190): Sister Ilse, or Orsa while Ilse is on the table.
     const aide = CAST[(this.op.def.assistant ?? 'ilse') as CharacterId] ?? CAST.ilse;
+    // The bust's face follows the line (UIX-0059): alarmed on a danger call, kind on praise, and
+    // worried whenever the patient is failing; she blinks every few seconds.
+    const pri = this.op.calloutPriority;
+    const face: Face = pri === 0 ? 'afraid' : pri === 2 ? 'kind' : this.op.vitals < 30 ? 'worried' : 'neutral';
+    const blinkPhase = (t + 0.7) % 3.7;
+    const pose = packPose({ prev: FACES.indexOf(face), next: FACES.indexOf(face), blend: 1, blink: blinkPhase < 0.12 ? 1 : 0, mouth: talking ? 0.5 + 0.5 * Math.sin(t * 16) : 0, lit: 1 });
     g.portrait(mx - 36, my - 40, 72, 92, {
       style: 1,
       rim: vec3(aide.color),
       cloth: vec3(aide.cloth ?? '#3e454e'),
       skin: vec3(aide.skin ?? '#d8b098'),
-      active: 1,
+      active: pose.active,
       seed: 3,
-      talk: talking ? 0.5 + 0.5 * Math.sin(t * 16) : 0,
+      talk: pose.talk,
     });
     g.popClip();
     caps(g, this.op.def.assistant ? aide.name : ASSISTANT_NAME, r.x + 94, r.y + 26, 11, hex(INK.gold));

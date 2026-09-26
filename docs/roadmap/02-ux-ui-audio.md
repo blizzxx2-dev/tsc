@@ -208,7 +208,7 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 ### Callouts & guidance
 - [x] UIX-0057 · Demo · P0 · S · Callout panel placement — the panel (y 650–708) currently overlaps the bottom of the operating field; move it into a reserved bottom strip or make it click-through and auto-shift away from the active entity; hit-test confirms clicks pass to the field
 - [ ] UIX-0058 · Demo · P1 · M · Callout priorities — `op.say(line, { priority })`: urgent lines (low vitals, shard rejoining, Brand on healthy flesh) interrupt the queue; tips queue; duplicate lines within 10 s are dropped (unit tests on the queue)
-- [ ] UIX-0059 · Demo · P1 · M · Ilse callout bust — portrait in the callout panel with calm/urgent/relieved/worried expressions keyed by line priority or tag; subtle blink and mouth flap while text types
+- [x] UIX-0059 · Demo · P1 · M · Ilse callout bust — portrait in the callout panel with calm/urgent/relieved/worried expressions keyed by line priority or tag; subtle blink and mouth flap while text types
 - [x] UIX-0060 · Demo · P1 · S · Callout log — last 20 callouts of the current operation viewable from the pause menu
 - [x] UIX-0061 · Demo · P1 · S · Phase objective banner — optional `PhaseDef.objective` ("Close the wounds", "Draw off the blood") shown for 2 s at phase start and kept as a small line under the timer
 - [x] UIX-0062 · Demo · P2 · S · Threat markers — entities with a countdown (Malison shard rejoin, hexstone corruption every 7 s, bubo swelling) show a thin radial timer ring; edge arrows point to off-attention threats when the cursor is > 400 px away
@@ -498,7 +498,6 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] AUD-0099 · Demo · P1 · S · Bark variants & cooldowns — repeated barks (low vitals, praise, flooded, brand on flesh) have 3 variants and per-bark cooldowns (≥ 20 s) so they never repeat back-to-back
 
 ### Casting & recording
-- [ ] AUD-0105 · Demo · P0 · M · Malison voices — layered choir + creature voice for Matins and Lauds with processing chain (granular smear, reversed whispers, pitch −5 st) documented so later hours stay consistent
 
 ## Epic AUD-F · Loudness, audio options & visual sound cues (Demo)
 
@@ -551,8 +550,8 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 ### Malison dossier
 - [ ] UIX-0182 · Alpha · P1 · M · Dossier screen — one page per canonical hour (Matins, Lauds, Prime, Terce, Sext, None, Vespers, Compline): silhouette until defeated, then illustration, phases diagram, weaknesses, best time/rank, Hollow Choir marginalia
 - [ ] UIX-0183 · Beta · P1 · M · Dossier content — final art and text for all eight hours; ordering matches the canonical hours; hidden entries remain spoiler-free
-- [ ] UIX-0184 · Alpha · P1 · M · Boss HUD variants — intro cards, name plates and bar notch layouts for Prime, Terce, Sext, None, Vespers and Compline; each hour's gimmick has a dedicated readable HUD widget reviewed against its design doc
-- [ ] UIX-0185 · Beta · P2 · S · Boss HUD distortion effects — per-hour HUD interference (e.g. timer digits corrupting, tray icons veiled) implemented as optional shader/animation effects that never hide critical information and are disabled by Reduced Motion
+- [x] UIX-0184 · Alpha · P1 · M · Boss HUD variants — intro cards, name plates and bar notch layouts for Prime, Terce, Sext, None, Vespers and Compline; each hour's gimmick has a dedicated readable HUD widget reviewed against its design doc
+- [x] UIX-0185 · Beta · P2 · S · Boss HUD distortion effects — per-hour HUD interference (e.g. timer digits corrupting, tray icons veiled) implemented as optional shader/animation effects that never hide critical information and are disabled by Reduced Motion
 
 ### Challenge mode
 - [ ] UIX-0186 · Alpha · P1 · M · Challenge list — challenge cards (patient, modifiers such as "No Litany", "Half time", "Blood never stops", target medals), locked/unlocked states, best results
@@ -565,7 +564,6 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] UIX-0192 · Alpha · P2 · M · Forensic/inquisition evidence board — pinned clues, connect-the-string interaction, verdict parchment; keyboard/gamepad navigable
 - [x] UIX-0193 · Alpha · P2 · M · Bone-setting HUD — joint alignment gauge, rotation guide arc, splint placement ghost
 - [x] UIX-0194 · Alpha · P1 · S · Chapter select for five chapters — Ch III–V cards unlocked progressively; demo "locked" cards removed in full builds
-- [ ] UIX-0195 · Beta · P1 · M · Final UI art pass for Ch3–5 — chapter cards, title cards and discipline HUDs match the style guide; signed off by the art director
 
 ### Extras & meta
 - [ ] UIX-0196 · Beta · P2 · M · Extras menu — art gallery (unlocked CGs and portraits), music room (unlocked tracks with loop toggle), statistics (operations played, total stitches, Litanies cast, XS count)
@@ -591,7 +589,6 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] AUD-0134 · Beta · P1 · M · Ch3–5 ambiences — witch-hunter pyre square, cathedral, catacombs, army camp at night, flooded lower city; 60–120 s loops with emitters
 
 ### Voice
-- [ ] AUD-0137 · Beta · P1 · M · Remaining Malison voices — Hollow Choir and Malison voices for Prime through Compline using the documented processing chain
 
 ## Epic UIX-I · Localisation-ready UI & audio (Beta)
 

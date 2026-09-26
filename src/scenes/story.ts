@@ -4,7 +4,7 @@ import type { Game, Scene } from '../core/scene';
 import { t } from '../i18n';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
-import { CAST, type CharacterId } from '../content/characters';
+import { CAST, patientLook, type CharacterId } from '../content/characters';
 import { lineShownNow } from '../content/conditions';
 import { flags } from '../content/flags';
 import type { Line, StoryDef } from '../content/story';
@@ -126,6 +126,7 @@ export class StoryScene implements Scene {
   private choosing = false;
   /** Portraits on stage (UIX-0130). */
   readonly stage = new PortraitStage({ reduceMotion: () => settings.reduceMotion });
+  private patientName: string | undefined;
   /** The current line has not yet been entered (effects, staging) — done on the first update with the game. */
   private pending = true;
   /** Line effects in flight (UIX-0133). */
@@ -396,7 +397,9 @@ export class StoryScene implements Scene {
       drawBackdrop(g, this.cg, g.time, { pointer });
     } else {
       drawBackdrop(g, this.story.backdrop, g.time, { lighting: this.story.lighting, pointer });
-      for (const e of this.stage.entries()) drawPortrait(g, CAST[e.who], SLOT_X[e.slot] + e.dx, SLOT_Y, g.time, e.speaking, false, e.pose);
+      // A patient on stage wears their own face (ART-0115…0128): the name of the last patient who spoke.
+      if (line.who === 'patient' && line.as) this.patientName = line.as;
+      for (const e of this.stage.entries()) drawPortrait(g, e.who === 'patient' ? patientLook(this.patientName) : CAST[e.who], SLOT_X[e.slot] + e.dx, SLOT_Y, g.time, e.speaking, false, e.pose);
     }
     const trauma = this.shake > 0 && !settings.reduceMotion ? Math.min(1, this.shake * settings.shake) : undefined;
     g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, trauma, bloom: 'story', lutA: gradeFor(this.cg ?? this.story.backdrop) });

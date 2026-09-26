@@ -2,7 +2,9 @@
  * The late Hours as data (CON-0133, CON-0137, CON-0163, CON-0170, CON-0191, CON-0200): Prime, Terce,
  * Sext, None, Vespers and Compline. Each Hour is one registry entity (`malison-*`, src/content/schema.ts);
  * its phase hints come from the boss sheet, and `tips.time` is Ilse's line when the clock beats us.
- * Rank thresholds are calibrated in src/surgery/ranks.ts; `ranks` here is the fallback.
+ * Rank thresholds are calibrated in src/surgery/ranks.ts; `ranks` here is the fallback. Each Hour is
+ * fought under its own arena grade (ENG-0268…0270): the records hall's chapel cold, Terce's candle-fire,
+ * Sext's noon glare, None's street dusk, and night for Vespers and Compline.
  */
 import { complineHost } from '../endings';
 import { flags } from '../flags';
@@ -18,6 +20,7 @@ export const OP_3_10 = defineOp({
   organ: 'flesh',
   timeLimit: 420,
   baseDrain: 0.05,
+  grade: 'chapel',
   tools: ALL,
   ranks: { S: 5890, A: 4710, B: 3530 },
   litany: true,
@@ -54,6 +57,7 @@ export const OP_3_11 = defineOp({
   organ: 'flesh',
   timeLimit: 420,
   baseDrain: 0.1,
+  grade: 'candle',
   tools: ALL,
   ranks: { S: 7260, A: 5810, B: 4360 },
   litany: true,
@@ -94,6 +98,7 @@ export const OP_4_7 = defineOp({
   organ: 'flesh',
   timeLimit: 420,
   baseDrain: 0.05,
+  grade: 'dawn',
   tools: ALL,
   ranks: { S: 5720, A: 4580, B: 3430 },
   litany: true,
@@ -130,6 +135,7 @@ export const OP_4_9 = defineOp({
   organ: 'flesh',
   timeLimit: 420,
   baseDrain: 0.05,
+  grade: 'street',
   tools: ALL,
   ranks: { S: 5790, A: 4630, B: 3470 },
   litany: true,
@@ -160,6 +166,7 @@ export const OP_5_6 = defineOp({
   organ: 'flesh',
   timeLimit: 420,
   baseDrain: 0.05,
+  grade: 'night',
   tools: ALL,
   ranks: { S: 8400, A: 6720, B: 5040 },
   litany: true,
@@ -192,6 +199,7 @@ export const OP_5_8 = defineOp({
   organ: 'heart',
   timeLimit: 480,
   baseDrain: 0.05,
+  grade: 'night',
   tools: ALL,
   ranks: { S: 5610, A: 4490, B: 3370 },
   litany: true,

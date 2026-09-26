@@ -400,7 +400,7 @@ Current priorities: [docs/ROADMAP.md](../ROADMAP.md#priorities) (tiers in `prior
 - [ ] OPS-0102 · Release · P0 · M · Launch trailer (≈90 s) — edited from the ART launch storyboard with final art and VO, release-date card, LOC subtitles
 - [ ] QAT-0157 · Beta · P1 · M · Final-content regression — Ch3–5 re-run with final art, audio and VO against the Alpha suites; visual/readability regressions filed to ART/ENG
 
-## Recorded audio & commissioned music (9)
+## Recorded audio & commissioned music (13)
 
 - [ ] AUD-0029 · Demo · P0 · S · SFX direction brief — period-authentic palette (steel, horn, wood, glass, wax, wet leather, embers, church bronze; no modern beeps), grim but not gratuitous gore level, reference clips; approved before recording
 - [ ] AUD-0030 · Demo · P0 · M · Foley session — record flesh (cabbage, wet chamois, raw meat, gelatine), antique steel instruments, glass vials/jars, wax seals, parchment, quill, thread through leather, embers/cautery iron in water; 48 kHz/24-bit, slate log, ≥ 5 takes per action
@@ -411,6 +411,10 @@ Current priorities: [docs/ROADMAP.md](../ROADMAP.md#priorities) (tiers in `prior
 - [ ] AUD-0120 · Beta · P1 · L · Malison of Prime and Terce themes — final stemmed boss tracks, one liturgical character each (Prime: morning office in plainsong; Terce: bright brass turned sour), with phase sections and outros
 - [ ] AUD-0121 · Beta · P1 · L · Malison of Sext and None themes — final stemmed boss tracks (Sext: midday heat, droning shawms; None: the hour of death, funereal organ)
 - [ ] AUD-0122 · Beta · P1 · L · Malison of Vespers and Compline themes — final stemmed boss tracks (Vespers: evening Magnificat inverted; Compline: final night office, full Hollow Choir), Compline as the finale with extended phases
+- [ ] AUD-0105 · Demo · P0 · M · Malison voices — layered choir + creature voice for Matins and Lauds with processing chain (granular smear, reversed whispers, pitch −5 st) documented so later hours stay consistent
+- [ ] AUD-0137 · Beta · P1 · M · Remaining Malison voices — Hollow Choir and Malison voices for Prime through Compline using the documented processing chain
+- [ ] BOS-0141 · Beta · P1 · S · All eight Hours' leitmotifs layered as a canon in phase 2 — mix test for clarity of tells
+- [ ] BOS-0174 · Beta · P1 · S · Boss audio mix pass — tells audible over music at all volume presets (loudness test −3 dB margin)
 
 ## Translation & localisation QA (74)
 
@@ -489,7 +493,7 @@ Current priorities: [docs/ROADMAP.md](../ROADMAP.md#priorities) (tiers in `prior
 - [ ] UIX-0201 · Beta · P1 · M · CJK text support — dynamic glyph atlas pages for Simplified Chinese and Japanese (Noto Serif CJK subset per language), line breaking by character, blackletter titles fall back to a matching CJK display face
 - [ ] UIX-0205 · Release · P0 · M · Screenshot regression suite — Playwright captures every scene and modal at 1280×720, 1280×800 and 2560×1440 in English and one CJK language; diffs reviewed on each RC
 
-## Commissioned painted art (the game draws its art procedurally) (40)
+## Commissioned painted art (the game draws its art procedurally) (91)
 
 - [ ] ART-0015 · M0 · P1 · M · Costume guide: Landsknecht slashed doublets, mercy-order habits, Pyre inquisitors, Watch halberdiers, guild surgeons, the Hollow Choir — 1 turnaround sheet per faction
 - [ ] ART-0016 · M0 · P1 · M · Material library sheet: brass, pewter, tallow, waxed linen, gut thread, leech skin, vellum, stained glass — painted swatch + lighting notes each
@@ -531,3 +535,54 @@ Current priorities: [docs/ROADMAP.md](../ROADMAP.md#priorities) (tiers in `prior
 - [ ] UIX-0129 · Demo · P0 · M · Layered portraits — base + expression + effects layers per character (Kreuzer, Ilse, Stroh, Haller, Mauer, patients, Choir hood); script tag `say('ilse', text, { face: 'worried' })`; missing expression falls back to neutral with a dev warning
 - [ ] ART-0063 · Alpha · P2 · M · Discipline-select art for field triage, diagnosis, inquisition forensics and bone-setting — one illuminated tab each
 - [ ] ART-0153 · Alpha · P2 · M · Discipline backgrounds: triage field, diagnosis study, inquisition cell and bone-setter's bench
+- [ ] ART-0092 · Demo · P1 · S · Kreuzer extra expressions: exhausted (after surgery), blood-spattered variant of neutral and determined
+- [ ] ART-0093 · Demo · P1 · S · Kreuzer surgical-mask variant (linen mask + magnifier spectacles) for pre-op VN scenes
+- [ ] ART-0094 · Alpha · P2 · M · Kreuzer field-surgeon costume (Chapter 3 campaign) with the full expression set
+- [ ] ART-0097 · Demo · P1 · S · Ilse extra expressions: urgent-callout (used in op callouts), laughing, suspicious-of-Stroh
+- [ ] ART-0099 · Beta · P2 · M · Ilse travelling-cloak costume for Chapters 3–5 with the full expression set
+- [ ] ART-0102 · Demo · P2 · S · Haller extra expressions: drunk-jovial, lecturing (finger raised)
+- [ ] ART-0105 · Demo · P1 · S · Stroh extra expressions: cold smile, interrogating (leaning in), plus a hat-shadowed eyes variant for menace beats
+- [ ] ART-0106 · Alpha · P2 · S · Stroh wounded variant (bandaged, Chapter 4 story beat)
+- [ ] ART-0109 · Demo · P2 · S · Mauer helm-off variant for the Chapter 2 camp scenes
+- [ ] ART-0110 · Demo · P0 · M · Hollow Choir cantor design: a hooded chorister with a hollow porcelain singing-mask (open O-mouth), violet-lined robes and a hymnal chained to the wrist
+- [ ] ART-0111 · Demo · P0 · M · Choir portrait (`choir` cast id): base + 4 states (singing, silent, mask-cracked, unmasked-in-shadow)
+- [ ] ART-0112 · Demo · P1 · S · Lay-cantor patient portrait (op2-4 "The Silenced Cantor"): unmasked, throat bound, fearful and defiant expressions
+- [ ] ART-0113 · Alpha · P1 · M · Choir Precentor (coven leader) design and portrait with 6 expressions for Chapters 3–5
+- [ ] ART-0114 · Beta · P2 · M · 3 further Choir ranks (novice, cantor, precentor's hand) as silhouette-distinct portraits
+- [ ] ART-0124 · Demo · P1 · M · Generic NPC bust kit: 6 bodies × 8 heads × 4 hats, recolourable, for unnamed speakers (orderly, watchman, pikeman, camp follower)
+- [ ] ART-0125 · Alpha · P1 · L · Chapter 3 named cast: 4 portraits with 6 expressions each (list from NAR's Chapter 3 script)
+- [ ] ART-0126 · Alpha · P1 · L · Chapter 4 named cast: 4 portraits with 6 expressions each
+- [ ] ART-0127 · Beta · P1 · L · Chapter 5 named cast: 3 portraits with 6 expressions each
+- [ ] ART-0132 · Demo · P2 · S · Portrait entry and exit poses: slide + fade, with a "lean-in" alt frame for Kreuzer, Ilse and Stroh
+- [ ] ART-0149 · Alpha · P1 · L · Chapter 3 location set: 5 backgrounds (list from NAR), each with 2 lighting variants
+- [ ] ART-0150 · Alpha · P1 · L · Chapter 4 location set: 5 backgrounds with 2 lighting variants
+- [ ] ART-0151 · Beta · P1 · L · Chapter 5 location set: 5 backgrounds including the Choir's cathedral and the Compline finale space
+- [ ] ART-0163 · Demo · P0 · L · Skin/subcutaneous `flesh` set: epidermis, fat lobules and muscle-fibre direction layers — used by all ten demo ops
+- [ ] ART-0164 · Demo · P0 · M · Muscle-fascia detail variant of `flesh` (fibre-aligned normals) for deep laceration and arrow sites
+- [ ] ART-0167 · Alpha · P1 · L · `heart` set: myocardium striation, coronary vein mask and high-gloss wet map
+- [ ] ART-0168 · Alpha · P1 · L · `lung` set: alveolar sponge albedo, pleural sheen and soot-speckle variant for smoke/powder victims
+- [ ] ART-0169 · Alpha · P1 · L · `gut` set: serosa, peristalsis-ready normal and mesentery vein mask
+- [ ] ART-0170 · Alpha · P1 · L · `liver` set: lobular albedo, a satin wet map and a cirrhotic variant
+- [ ] ART-0171 · Beta · P1 · L · `brain` set: gyri height map, meningeal vessels and a pale-pink albedo
+- [ ] ART-0172 · Alpha · P1 · L · `bone` set: cortical and cancellous, periosteum and a fracture-edge detail variant for bone-setting
+- [ ] ART-0173 · Beta · P2 · M · Petrified-tissue overlay set (grey stone crust with cracks as a height map) for Sext and petrification ailments
+- [ ] ART-0177 · Alpha · P1 · M · Halfling `flesh` variant: rosy, softer fat layer
+- [ ] ART-0179 · Beta · P2 · L · Species × organ spot-check: every organ set reviewed under all 5 species tints in `fleshlab`, with a screenshot matrix archived
+- [ ] ART-0180 · Beta · P2 · M · Monster anatomy set for inquisition forensics (gravehound and brood-spider tissue)
+- [ ] ART-0203 · Alpha · P2 · S · Splinter and shrapnel set (wood, iron nail, gun-barrel fragment) for Chapter 3 siege ops
+- [ ] ART-0207 · Demo · P1 · S · Powder burn with embedded black grains (op1-3), with grains as pickable sub-sprites
+- [ ] ART-0239 · Demo · P0 · L · Lauds phase-3 fused form: merge transition (20 frames), fused idle loop and death sequence
+- [ ] ART-0242 · Beta · P1 · L · Prime sprites: idle, writing-stroke loop, hurt and death, integrated with the name-sigil write-on effect
+- [ ] ART-0245 · Beta · P1 · L · Terce sprites and VFX: tongue-of-fire flipbooks (leap, land, spread), root-core states and death
+- [ ] ART-0248 · Beta · P1 · L · Sext sprites and VFX: petrify-spread wave, fake-vitals overlay glitch, crack states and death
+- [ ] ART-0251 · Beta · P1 · L · None sprites: burrow tunnel decal, surfacing flipbook, 4 cut-down size stages, extraction and death
+- [ ] ART-0254 · Beta · P1 · L · Vespers sprites and VFX: wick-filament growth, glow-node "lamps" (lit/dimming/out), shadow-hide dissolve and death
+- [ ] ART-0257 · Beta · P0 · L · Compline sprites: 3 phase forms, silence-node sprites (intact/broken), a Litany-theft animation and a two-hand-combo final vulnerable state
+- [ ] ART-0259 · Beta · P1 · M · Compline Book-of-Hours card, intro splash and a full-screen finale CG
+- [ ] ART-0296 · Alpha · P2 · M · VFX for Chapter 3–5 ailments (petrify crack, tallow melt, name-sigil write-on, dragon-breath embers) using the same template
+- [ ] ART-0304 · Beta · P2 · M · Idle breathing on Chapter 3–5 principal portraits
+- [ ] ART-0358 · Demo · P1 · S · Readability pass of every ailment on every flesh set it can appear on in the demo (a matrix screenshot)
+- [ ] ENG-0095 · Demo · P2 · M · Species details: orc thick green-grey dermis and dark blood, dwarf dense fibrous tissue with higher gloss, elf pale translucent vessels — art sign-off in shader lab
+- [ ] ENG-0280 · Beta · P1 · M · Final tool sprites — state animation (lancet glint, brand heat ramp, tongs grip, lens shimmer) replacing vector-drawn `toolIcon`
+- [ ] ENG-0281 · Beta · P1 · S · Final LUTs for Chapters 3–5 — every location and per-Malison arena graded and signed off
+- [ ] UIX-0195 · Beta · P1 · M · Final UI art pass for Ch3–5 — chapter cards, title cards and discipline HUDs match the style guide; signed off by the art director

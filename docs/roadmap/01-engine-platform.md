@@ -140,7 +140,6 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0092 · Demo · P2 · S · Bone surface — cortical/cancellous texture, periosteum film, dry low specular
 - [x] ENG-0093 · Demo · P1 · M · New organ kinds for Ch1–2 briefs — `muscle` (striated fibres along a direction uniform) and `skin` (pores, fine hair, sweat sheen) wired through `OrganKind`/`organPalette`
 - [x] ENG-0094 · Demo · P1 · M · Data-driven `SpeciesProfile` (human, dwarf, elf, halfling, orc): base/deep/vein tints, fat ratio, surface scale, spec gain — replaces `RACE_TINT`, which currently never tints veins
-- [ ] ENG-0095 · Demo · P2 · M · Species details: orc thick green-grey dermis and dark blood, dwarf dense fibrous tissue with higher gloss, elf pale translucent vessels — art sign-off in shader lab
 - [x] ENG-0096 · Demo · P1 · S · Species blood colour source of truth — one table consumed by BloodPool, particles and decal maps (no hard-coded reds left; grep check)
 - [ ] ENG-0097 · Demo · P1 · M · Drape as its own pass — linen weave texture, fold normal map, blood soak from the decal map (moved out of `FLESH_FS`), species-independent
 - [ ] ENG-0098 · Demo · P1 · M · Opening shape from a mask texture instead of the fixed `FIELD` ellipse, with retractor/clamp sprites around the rim — supports irregular openings per operation def
@@ -370,9 +369,9 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0267 · Alpha · P2 · S · Poison variants — venom vein-spread shader tinted by a per-poison colour ramp from content data
 
 ### Remaining Malison variants
-- [ ] ENG-0268 · Alpha · P0 · L · Malison of Prime and Terce render sets per boss design doc — body shader, hit flash, phase-change effect, defeat dissolve, arena LUT
-- [ ] ENG-0269 · Alpha · P0 · L · Malison of Sext and None render sets per boss design doc — body shader, hit flash, phase-change effect, defeat dissolve, arena LUT
-- [ ] ENG-0270 · Alpha · P0 · L · Malison of Vespers and Compline render sets — per boss design doc, including Compline's finale-only full-screen corruption sequence
+- [x] ENG-0268 · Alpha · P0 · L · Malison of Prime and Terce render sets per boss design doc — body shader, hit flash, phase-change effect, defeat dissolve, arena LUT
+- [x] ENG-0269 · Alpha · P0 · L · Malison of Sext and None render sets per boss design doc — body shader, hit flash, phase-change effect, defeat dissolve, arena LUT
+- [x] ENG-0270 · Alpha · P0 · L · Malison of Vespers and Compline render sets — per boss design doc, including Compline's finale-only full-screen corruption sequence
 - [x] ENG-0271 · Alpha · P1 · S · Shared Malison shader chunk — ink flow, sigil glints and dissolve, so each variant is a parameter set plus at most one bespoke function
 
 ### Other disciplines
@@ -384,8 +383,6 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 
 ## ENG-Q · Final art integration & rendering polish (Beta)
 
-- [ ] ENG-0280 · Beta · P1 · M · Final tool sprites — state animation (lancet glint, brand heat ramp, tongs grip, lens shimmer) replacing vector-drawn `toolIcon`
-- [ ] ENG-0281 · Beta · P1 · S · Final LUTs for Chapters 3–5 — every location and per-Malison arena graded and signed off
 - [ ] ENG-0282 · Beta · P1 · M · sRGB-correct pipeline — `SRGB8_ALPHA8` textures and linear blending in the HDR target, with art sign-off that final art matches the source files
 - [ ] ENG-0283 · Beta · P0 · S · Full-campaign VRAM audit with final art — per-chapter atlas pages unloaded on chapter exit, peak within budget on Low
 

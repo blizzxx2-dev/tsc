@@ -335,6 +335,10 @@ export class Operation {
   /** Reading-time factor for callouts (the locale's reading speed, LOC-0018); presentation only. */
   calloutPace = 1;
   private calloutPri: number[] = [];
+  /** The priority of the callout showing (0 danger, 1 instruction, 2 praise), or null with none. */
+  get calloutPriority(): number | null {
+    return this.callouts.length ? (this.calloutPri[0] ?? 1) : null;
+  }
   calloutT = 0;
   litanyTime = 0;
   /** Vigil / Mercy / Wrath rite time remaining. */

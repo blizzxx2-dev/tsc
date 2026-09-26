@@ -104,7 +104,7 @@ Cross-refs: ENG (texture loading, atlases, shader inputs), UX (layouts and widge
 - [x] ART-0073 · Demo · P0 · M · Litany gauge: a five-pointed-star reliquary that fills with gilt, with a "spent" tarnished state and a ready glint animation
 - [x] ART-0074 · Demo · P1 · S · Tincture vial HUD element with 3 fill levels and an empty cork state
 - [x] ART-0075 · Demo · P1 · S · ECG replacement: a pulse "quill trace" drawn on a vellum strip, with a flatline-warning ink blot
-- [ ] ART-0076 · Demo · P1 · S · Sister Ilse callout portrait inset (circular brass locket frame) with 4 expressions for operation callouts
+- [x] ART-0076 · Demo · P1 · S · Sister Ilse callout portrait inset (circular brass locket frame) with 4 expressions for operation callouts
 - [x] ART-0077 · Demo · P1 · S · Score and combo popup font treatment: gilt numerals with a dark outline, legible over red flesh at 18 px virtual
 - [x] ART-0078 · Demo · P1 · S · Phase banner art ("Phase II", "The Malison Stirs") as a torn ribbon scroll with a slide-in animation
 - [x] ART-0079 · Demo · P2 · S · Pause-screen overlay: a candle-snuffed vignette plus a hanging ledger menu
@@ -127,54 +127,35 @@ Portrait standard (applies to every task below): half-body at 2048 px master / 1
 - [x] ART-0089 · Demo · P1 · S · Portrait lighting rule: key light from candle (warm, screen-left), rim light in the speaker's `CAST.color`, and the inactive-speaker darken value (−35% value)
 
 ### Dr. Kreuzer (player)
-- [ ] ART-0092 · Demo · P1 · S · Kreuzer extra expressions: exhausted (after surgery), blood-spattered variant of neutral and determined
-- [ ] ART-0093 · Demo · P1 · S · Kreuzer surgical-mask variant (linen mask + magnifier spectacles) for pre-op VN scenes
-- [ ] ART-0094 · Alpha · P2 · M · Kreuzer field-surgeon costume (Chapter 3 campaign) with the full expression set
 
 ### Sister Ilse (assistant)
-- [ ] ART-0097 · Demo · P1 · S · Ilse extra expressions: urgent-callout (used in op callouts), laughing, suspicious-of-Stroh
-- [ ] ART-0098 · Demo · P1 · S · Ilse locket crops (HUD callout inset) exported from the portrait: neutral, urgent, relieved, alarmed
-- [ ] ART-0099 · Beta · P2 · M · Ilse travelling-cloak costume for Chapters 3–5 with the full expression set
+- [x] ART-0098 · Demo · P1 · S · Ilse locket crops (HUD callout inset) exported from the portrait: neutral, urgent, relieved, alarmed
 
 ### Master Haller
-- [ ] ART-0102 · Demo · P2 · S · Haller extra expressions: drunk-jovial, lecturing (finger raised)
 
 ### Inquisitor Stroh
-- [ ] ART-0105 · Demo · P1 · S · Stroh extra expressions: cold smile, interrogating (leaning in), plus a hat-shadowed eyes variant for menace beats
-- [ ] ART-0106 · Alpha · P2 · S · Stroh wounded variant (bandaged, Chapter 4 story beat)
 
 ### Captain Mauer
-- [ ] ART-0109 · Demo · P2 · S · Mauer helm-off variant for the Chapter 2 camp scenes
 
 ### The Hollow Choir
-- [ ] ART-0110 · Demo · P0 · M · Hollow Choir cantor design: a hooded chorister with a hollow porcelain singing-mask (open O-mouth), violet-lined robes and a hymnal chained to the wrist
-- [ ] ART-0111 · Demo · P0 · M · Choir portrait (`choir` cast id): base + 4 states (singing, silent, mask-cracked, unmasked-in-shadow)
-- [ ] ART-0112 · Demo · P1 · S · Lay-cantor patient portrait (op2-4 "The Silenced Cantor"): unmasked, throat bound, fearful and defiant expressions
-- [ ] ART-0113 · Alpha · P1 · M · Choir Precentor (coven leader) design and portrait with 6 expressions for Chapters 3–5
-- [ ] ART-0114 · Beta · P2 · M · 3 further Choir ranks (novice, cantor, precentor's hand) as silhouette-distinct portraits
 
 ### Chapter 1 patients (demo)
-- [ ] ART-0115 · Demo · P0 · S · Jost, drover (op1-1): portrait with 3 expressions (pained, drunk-defiant, grateful)
-- [ ] ART-0116 · Demo · P0 · S · Pieter, militiaman (op1-2): portrait in a Watch jerkin with 3 expressions (pained, stoic, grateful)
-- [ ] ART-0117 · Demo · P0 · S · Anno, gunsmith's apprentice (op1-3): powder-blackened face, singed hair, 3 expressions
-- [ ] ART-0118 · Demo · P0 · S · Unknown vagrant of Tanners' Rows (op1-4): buboes visible at the neck, 3 expressions (feverish, delirious, calm)
-- [ ] ART-0119 · Demo · P0 · S · Emmerich, page-boy (op1-5): livery, a curse-sigil faintly visible on the collarbone, 3 expressions (frightened, unconscious, recovered)
+- [x] ART-0115 · Demo · P0 · S · Jost, drover (op1-1): portrait with 3 expressions (pained, drunk-defiant, grateful)
+- [x] ART-0116 · Demo · P0 · S · Pieter, militiaman (op1-2): portrait in a Watch jerkin with 3 expressions (pained, stoic, grateful)
+- [x] ART-0117 · Demo · P0 · S · Anno, gunsmith's apprentice (op1-3): powder-blackened face, singed hair, 3 expressions
+- [x] ART-0118 · Demo · P0 · S · Unknown vagrant of Tanners' Rows (op1-4): buboes visible at the neck, 3 expressions (feverish, delirious, calm)
+- [x] ART-0119 · Demo · P0 · S · Emmerich, page-boy (op1-5): livery, a curse-sigil faintly visible on the collarbone, 3 expressions (frightened, unconscious, recovered)
 
 ### Chapter 2 patients (demo)
-- [ ] ART-0120 · Demo · P0 · S · Gravehound victim (op2-1): a camp sutler with a torn sleeve, 3 expressions
-- [ ] ART-0121 · Demo · P0 · S · Orsa Flintvein, dwarf prospector (op2-2): braided beard with ore beads, ruddy dwarf skin tone matching the dwarf flesh tint, 3 expressions
-- [ ] ART-0122 · Demo · P0 · S · Henning, forager (op2-3): swollen bite at the neck, 3 expressions
-- [ ] ART-0123 · Demo · P0 · S · Jorg, standard-bearer (op2-5): company colours over his shoulder, 3 expressions + a cursed variant (violet veins)
+- [x] ART-0120 · Demo · P0 · S · Gravehound victim (op2-1): a camp sutler with a torn sleeve, 3 expressions
+- [x] ART-0121 · Demo · P0 · S · Orsa Flintvein, dwarf prospector (op2-2): braided beard with ore beads, ruddy dwarf skin tone matching the dwarf flesh tint, 3 expressions
+- [x] ART-0122 · Demo · P0 · S · Henning, forager (op2-3): swollen bite at the neck, 3 expressions
+- [x] ART-0123 · Demo · P0 · S · Jorg, standard-bearer (op2-5): company colours over his shoulder, 3 expressions + a cursed variant (violet veins)
 
 ### Crowd, NPC & later-chapter cast
-- [ ] ART-0124 · Demo · P1 · M · Generic NPC bust kit: 6 bodies × 8 heads × 4 hats, recolourable, for unnamed speakers (orderly, watchman, pikeman, camp follower)
-- [ ] ART-0125 · Alpha · P1 · L · Chapter 3 named cast: 4 portraits with 6 expressions each (list from NAR's Chapter 3 script)
-- [ ] ART-0126 · Alpha · P1 · L · Chapter 4 named cast: 4 portraits with 6 expressions each
-- [ ] ART-0127 · Beta · P1 · L · Chapter 5 named cast: 3 portraits with 6 expressions each
-- [ ] ART-0128 · Alpha · P1 · L · Chapter 3–5 patient portraits (≈ 15 ops × 3 expressions), covering elf, halfling and orc species variants
+- [x] ART-0128 · Alpha · P1 · L · Chapter 3–5 patient portraits (≈ 15 ops × 3 expressions), covering elf, halfling and orc species variants
 
 ### VN presentation art
-- [ ] ART-0132 · Demo · P2 · S · Portrait entry and exit poses: slide + fade, with a "lean-in" alt frame for Kreuzer, Ilse and Stroh
 - [ ] ART-0133 · Beta · P2 · M · CG gallery thumbnails and a locked-silhouette card for the extras menu
 
 ---
@@ -203,9 +184,6 @@ Background standard: 3840×2160 master, 1920×1080 ship, split into far/mid/near
 - [x] ART-0148 · Demo · P1 · S · Dawn battlefield vista for the Lauds reveal, with a sun-flare FX layer
 
 ### Chapters 3–5
-- [ ] ART-0149 · Alpha · P1 · L · Chapter 3 location set: 5 backgrounds (list from NAR), each with 2 lighting variants
-- [ ] ART-0150 · Alpha · P1 · L · Chapter 4 location set: 5 backgrounds with 2 lighting variants
-- [ ] ART-0151 · Beta · P1 · L · Chapter 5 location set: 5 backgrounds including the Choir's cathedral and the Compline finale space
 - [x] ART-0152 · Beta · P2 · M · Hospice ward "burned" variant for the late-game story state
 
 ### Background animation & FX layers
@@ -227,26 +205,14 @@ Texture-set standard: each set = **albedo** (painted, sRGB, 1024² tileable) + *
 - [x] ART-0162 · Demo · P1 · S · Wet-map authoring guide: specular response per organ (heart glossy, liver satin, bone dry) with target roughness values
 
 ### Human organ sets
-- [ ] ART-0163 · Demo · P0 · L · Skin/subcutaneous `flesh` set: epidermis, fat lobules and muscle-fibre direction layers — used by all ten demo ops
-- [ ] ART-0164 · Demo · P0 · M · Muscle-fascia detail variant of `flesh` (fibre-aligned normals) for deep laceration and arrow sites
 - [x] ART-0165 · Demo · P1 · M · Burned-skin overlay set (charred, blistered, weeping) blended by burn severity for `Burn` entities
 - [x] ART-0166 · Demo · P1 · M · Plague/rot overlay set (necrotic black-green, pus-slick wet map) blended by `Rot` spread
-- [ ] ART-0167 · Alpha · P1 · L · `heart` set: myocardium striation, coronary vein mask and high-gloss wet map
-- [ ] ART-0168 · Alpha · P1 · L · `lung` set: alveolar sponge albedo, pleural sheen and soot-speckle variant for smoke/powder victims
-- [ ] ART-0169 · Alpha · P1 · L · `gut` set: serosa, peristalsis-ready normal and mesentery vein mask
-- [ ] ART-0170 · Alpha · P1 · L · `liver` set: lobular albedo, a satin wet map and a cirrhotic variant
-- [ ] ART-0171 · Beta · P1 · L · `brain` set: gyri height map, meningeal vessels and a pale-pink albedo
-- [ ] ART-0172 · Alpha · P1 · L · `bone` set: cortical and cancellous, periosteum and a fracture-edge detail variant for bone-setting
-- [ ] ART-0173 · Beta · P2 · M · Petrified-tissue overlay set (grey stone crust with cracks as a height map) for Sext and petrification ailments
 - [x] ART-0174 · Beta · P2 · M · Tallow-blood overlay (waxy, opaque, low-spec) for the Vespers Malison
 
 ### Species variants
 - [x] ART-0175 · Demo · P0 · M · Dwarf `flesh` variant: denser muscle fibre, ruddier albedo, thicker subcutaneous fat — needed for op2-2 Orsa
 - [x] ART-0176 · Alpha · P1 · M · Elf `flesh` variant: fine-grained, pale, translucent (fake subsurface in the albedo)
-- [ ] ART-0177 · Alpha · P1 · M · Halfling `flesh` variant: rosy, softer fat layer
 - [x] ART-0178 · Alpha · P1 · M · Orc `flesh` variant: green-grey, coarse and scarred, with thick hide normals
-- [ ] ART-0179 · Beta · P2 · L · Species × organ spot-check: every organ set reviewed under all 5 species tints in `fleshlab`, with a screenshot matrix archived
-- [ ] ART-0180 · Beta · P2 · M · Monster anatomy set for inquisition forensics (gravehound and brood-spider tissue)
 
 ### Corruption & Malison tissue
 - [x] ART-0181 · Demo · P0 · M · Curse-corruption texture (violet veining, bruise-black necrosis, woodcut-hatched sigil scarring) driven by `u_corrupt` 0–1, replacing the procedural tint
@@ -283,13 +249,11 @@ Ailment standard: painted sprite(s) in the woodcut-over-paint style at 2× virtu
 - [x] ART-0200 · Demo · P1 · S · Glass shards: 5 shapes with a refraction highlight (rim-lit via the additive pass)
 - [x] ART-0201 · Demo · P0 · M · Hexstone shard: black-violet crystal with pulsing inner light (6-frame loop), a crackle on grab and a dissolve on removal
 - [x] ART-0202 · Demo · P1 · S · Extraction-tray art: removed objects dropped into a pewter kidney dish at screen edge (one sprite per object type)
-- [ ] ART-0203 · Alpha · P2 · S · Splinter and shrapnel set (wood, iron nail, gun-barrel fragment) for Chapter 3 siege ops
 
 ### Burns
 - [x] ART-0204 · Demo · P0 · M · Fire burn: 3 severity decals (reddened, blistered, charred), with a cooling transition when salved
 - [x] ART-0205 · Demo · P0 · S · Acid burn: yellow-green etched decal with a bubbling 6-frame loop and a neutralised state
 - [x] ART-0206 · Demo · P0 · M · Hexfire burn: violet-cored flame-edge decal with licking flame flipbook (8 frames) that reignites if untreated
-- [ ] ART-0207 · Demo · P1 · S · Powder burn with embedded black grains (op1-3), with grains as pickable sub-sprites
 - [x] ART-0208 · Beta · P1 · M · Dragon-breath burn: deep crater with a glassy fused-edge normal and an ember-glow loop
 
 ### Plague & disease
@@ -340,33 +304,25 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [x] ART-0236 · Demo · P0 · L · Lauds sprites: body A and body B idle loops, "call" and "answer" singing flipbooks (8 frames each), hurt and heal-answer states
 - [x] ART-0237 · Demo · P0 · M · Lauds light-thread VFX: a stretchable beam sprite with travelling pulses, a sever animation (Lancet) and a tie-off (Thread)
 - [x] ART-0238 · Demo · P0 · M · Lauds dawn-flare VFX spec: full-screen gold bloom burst that blinds the Scrying Lens view, with an ENG shader-parameter table (intensity curve, duration)
-- [ ] ART-0239 · Demo · P0 · L · Lauds phase-3 fused form: merge transition (20 frames), fused idle loop and death sequence
 - [x] ART-0240 · Demo · P1 · S · Lauds Book-of-Hours card (dawn psalm miniature) and boss-intro splash
 
 ### Prime (Chapter 3)
-- [ ] ART-0242 · Beta · P1 · L · Prime sprites: idle, writing-stroke loop, hurt and death, integrated with the name-sigil write-on effect
 - [x] ART-0243 · Beta · P2 · S · Prime Book-of-Hours card and intro splash
 
 ### Terce (Chapter 3)
-- [ ] ART-0245 · Beta · P1 · L · Terce sprites and VFX: tongue-of-fire flipbooks (leap, land, spread), root-core states and death
 - [x] ART-0246 · Beta · P2 · S · Terce Book-of-Hours card and intro splash
 
 ### Sext (Chapter 4)
-- [ ] ART-0248 · Beta · P1 · L · Sext sprites and VFX: petrify-spread wave, fake-vitals overlay glitch, crack states and death
 - [x] ART-0249 · Beta · P2 · S · Sext Book-of-Hours card and intro splash
 
 ### None (Chapter 4)
-- [ ] ART-0251 · Beta · P1 · L · None sprites: burrow tunnel decal, surfacing flipbook, 4 cut-down size stages, extraction and death
 - [x] ART-0252 · Beta · P2 · S · None Book-of-Hours card and intro splash
 
 ### Vespers (Chapter 5)
-- [ ] ART-0254 · Beta · P1 · L · Vespers sprites and VFX: wick-filament growth, glow-node "lamps" (lit/dimming/out), shadow-hide dissolve and death
 - [x] ART-0255 · Beta · P2 · S · Vespers Book-of-Hours card and intro splash
 
 ### Compline (Chapter 5 finale)
-- [ ] ART-0257 · Beta · P0 · L · Compline sprites: 3 phase forms, silence-node sprites (intact/broken), a Litany-theft animation and a two-hand-combo final vulnerable state
 - [x] ART-0258 · Beta · P0 · M · Compline VFX spec: audio-mute visual (desaturate + chalk-line hatching), an inverted Litany ripple and a final death that restores colour
-- [ ] ART-0259 · Beta · P1 · M · Compline Book-of-Hours card, intro splash and a full-screen finale CG
 
 ### The Unsung Hour (secret, post-game)
 - [x] ART-0262 · Release · P3 · S · Unsung Hour blank Book-of-Hours card (an illuminated page with the text scraped away)
@@ -424,7 +380,6 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 ### VFX system standards
 - [x] ART-0294 · Demo · P0 · S · VFX spec template (sprite, frames, fps, blend mode, lifetime, max concurrent) filled for every Demo effect in `docs/art/vfx/`
 - [x] ART-0295 · Demo · P1 · S · Reduced-flashing variants for the Lauds dawn-flare, the Litany burst and low-vitals pulse (accessibility toggle) — peak luminance change under 3 flashes/s
-- [ ] ART-0296 · Alpha · P2 · M · VFX for Chapter 3–5 ailments (petrify crack, tallow melt, name-sigil write-on, dragon-breath embers) using the same template
 
 ---
 
@@ -440,7 +395,6 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [x] ART-0301 · Demo · P0 · S · Blink timing (random 2–6 s interval, 3 frames) and lip-flap timing tied to text reveal speed for all demo portraits
 - [x] ART-0302 · Demo · P1 · M · Idle breathing (a 2-layer mesh warp) on Kreuzer, Ilse, Haller, Stroh and Mauer portraits
 - [x] ART-0303 · Demo · P2 · M · Hollow Choir mask animation: a slow tilt and a violet glow breathing from the mask's mouth
-- [ ] ART-0304 · Beta · P2 · M · Idle breathing on Chapter 3–5 principal portraits
 
 ### Title & menu animation
 - [x] ART-0305 · Demo · P1 · M · Title screen animated layers: candle flicker, drifting ash and a slow key-art parallax (10 s loop)
@@ -505,7 +459,6 @@ Boss standard: concept (3 thumbnails → chosen callout sheet) → per-phase spr
 - [x] ART-0354 · Demo · P0 · M · Automated asset lint in CI: dimensions match the spec, power-of-two for textures, no non-premultiplied alpha, file size within budget, no orphaned manifest entries
 - [ ] ART-0355 · Demo · P0 · M · Screenshot-diff regression suite: 20 canonical scenes (each backdrop, the op HUD, each demo boss phase) rendered headless and diffed against approved goldens
 - [x] ART-0357 · Demo · P1 · S · Colour-blind pass (protanopia, deuteranopia, tritanopia simulation) on the ratings, vitals, sigils vs. veins and the curse-violet vs. blood contrast — fixes filed
-- [ ] ART-0358 · Demo · P1 · S · Readability pass of every ailment on every flesh set it can appear on in the demo (a matrix screenshot)
 - [x] ART-0360 · Demo · P1 · S · Localisation art pass: no baked-in text in any image except the logo; stamps and seals with text use a runtime text layer
 - [x] ART-0361 · Demo · P1 · S · Placeholder sweep: the build report shows 0 `placeholder` assets in Chapters 1–2 (from the manifest tags)
 - [x] ART-0362 · Demo · P2 · S · Z-order and overlap audit: ailment sprites never draw under blood pools unless intended; HUD never overlaps a Malison weak point at 16:10
