@@ -17,6 +17,7 @@ import {
 import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, SALVE_MAX, Sigil, Venom } from '../src/surgery/entities';
 import { ChoirVoice, EggSac, LaudsMalison, SpiderlingGrub } from '../src/surgery/lauds';
 import { Malison, MalisonShard } from '../src/surgery/malison';
+import { GraveDirt } from '../src/surgery/ailments/graveDirt';
 import { WebSilk } from '../src/surgery/ailments/silk';
 import { Fracture } from '../src/surgery/ailments/fracture';
 import { ClosedReduction } from '../src/surgery/disciplines';
@@ -61,6 +62,7 @@ describe('entity registry (CON-0002)', () => {
     [{ e: 'pool', at: [0, 0], r: 20 }, BloodPool],
     [{ e: 'eggsac', at: [0, 0] }, EggSac],
     [{ e: 'silk', at: [0, 0] }, WebSilk],
+    [{ e: 'gravedirt', at: [0, 0] }, GraveDirt],
     [{ e: 'malison-matins', at: [0, 0] }, Malison],
     [{ e: 'malison-lauds', at: [0, 0] }, LaudsMalison],
     [{ e: 'malison-prime', at: [0, 20] }, PrimeMalison],

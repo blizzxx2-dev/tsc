@@ -97,7 +97,8 @@ describe('Laceration', () => {
   });
 
   it('op2-1 claw rakes: three parallel lacerations, each stitched in one stroke', () => {
-    const { op, ents, trace } = scenario((o) => OP_2_1.phases[2].spawn(o) as Laceration[]);
+    // The grave-dirt riding in with them (CON-0058) is tests/unit/content/graveDirt.test.ts's.
+    const { op, ents, trace } = scenario((o) => OP_2_1.phases[2].spawn(o).filter((e): e is Laceration => e instanceof Laceration));
     expect(ents).toHaveLength(3);
     expect(ents.map((l) => l.length)).toEqual([86, 100, 86]);
     for (const lac of ents) {

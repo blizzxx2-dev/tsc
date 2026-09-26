@@ -21,11 +21,13 @@ import { Spill, Ulcer, ULCER } from '../src/surgery/ailments/ulcer';
 import { BiteChannel, DonorBowl } from '../src/surgery/ailments/vampire';
 import { MudSmear, RainDrips } from '../src/surgery/ailments/environment';
 import { WebSilk } from '../src/surgery/ailments/silk';
+import { GraveDirt } from '../src/surgery/ailments/graveDirt';
 import { SearedWord } from '../src/surgery/entities';
 import { DT, drag, hold, raster, still, tap, zigzag, type Action, type BotContext, type Frame } from './bot';
 
 const ALPHA = [
   WebSilk,
+  GraveDirt,
   // A pinned bone's splint: presentation only, nothing to do.
   Splint,
   AlchemicalAcid,
@@ -123,6 +125,10 @@ export function botPlanAlpha(ctx: BotContext): Action | null {
   const find = <T extends Entity>(cls: new (...a: never[]) => T, pred: (e: T) => boolean = () => true) =>
     vis.find((e): e is T => e instanceof cls && pred(e as T));
   const has = ctx.has;
+
+  // Grave-dirt: leech it out before anything touches the wound (CON-0058).
+  const dirt = find(GraveDirt, (d) => d.sealed < 0);
+  if (dirt && has('leech')) return hold('leech', () => (dirt.alive ? dirt.pos : null), 1.6);
 
   // Brood silk: one lancet stroke across the middle of each strand.
   const silk = find(WebSilk);

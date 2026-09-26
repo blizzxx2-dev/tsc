@@ -23,7 +23,7 @@ export const OP_2_1 = defineOp({
   organ: 'flesh',
   timeLimit: 240,
   tools: ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture'],
-  ranks: { S: 4850, A: 3900, B: 2900 },
+  ranks: { S: 4900, A: 3920, B: 2940 },
   litany: true,
   seed: 21,
   phases: [
@@ -52,8 +52,9 @@ export const OP_2_1 = defineOp({
     {
       objective: 'Stitch the claw rakes',
 
-      callout: ['Claw rakes. Three deep lines — drain and stitch each.'],
-      spawn: clawRake(110, 20, -0.5, 100),
+      callout: ['Claw rakes. Three deep lines — drain and stitch each.', 'Grave-dirt in them too — Leech-Pipe it out before any Saint’s Salve.'],
+      // CON-0058: the hound feeds on the dead; two clots of grave-dirt ride in on the rakes.
+      spawn: [...clawRake(110, 20, -0.5, 100), { e: 'gravedirt', at: [70, -40] }, { e: 'gravedirt', at: [165, 70] }],
     },
   ],
 });

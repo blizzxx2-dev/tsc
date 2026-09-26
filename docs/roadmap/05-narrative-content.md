@@ -343,7 +343,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0055 · Demo · P0 · S · Venom-on-bite tincture interaction — tincture held on bite for 1.5 s neutralises venom; wrong spot gives MISS (test)
 - [x] CON-0056 · Demo · P1 · S · Claw-rake lacerations as parallel triples — stitch zig-zag detection works on parallel close wounds (no cross-stitch mis-assignment)
 - [ ] CON-0057 · Demo · P1 · S · Tooth count 3–4 — one tooth broken (tongs twice) for variety
-- [ ] CON-0058 · Demo · P2 · S · Grave-dirt contamination — 2 dirt spots must be drained before salve or salve rates BAD
+- [x] CON-0058 · Demo · P2 · S · Grave-dirt contamination — 2 dirt spots must be drained before salve or salve rates BAD _(`gravedirt` (src/surgery/ailments/graveDirt.ts): the Leech-Pipe draws it out in 1.2 s; Saint’s Salve over it rates BAD "Dirt sealed in", harms, and festers into rot 5 s later. op2-1 carries two in with the claw rakes. tests/unit/content/graveDirt.test.ts)_
 
 ### op2-2 "The Green Seam" → rename "The Black Seam" (Orsa Flintvein) — scrying lens intro
 - [x] CON-0059 · Demo · P0 · S · Rename op title and all references to "The Black Seam" — hexshard visual is black glass with a heartbeat pulse, no green

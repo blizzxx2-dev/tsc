@@ -10,6 +10,7 @@
  * Positions are `[dx, dy]` offsets from the centre of the operating field (the `at()` convention).
  */
 import { WebSilk } from '../surgery/ailments/silk';
+import { GraveDirt } from '../surgery/ailments/graveDirt';
 import { Fracture, fractureSite } from '../surgery/ailments/fracture';
 import '../surgery/ailments/environment'; // registers the op environment's effects (CON-0139)
 import { ClosedReduction } from '../surgery/disciplines';
@@ -55,6 +56,7 @@ export type EntitySpec =
   | ({ e: 'pool'; at: Pt; r: number; ichor?: 'blood' | 'pus' | 'blackbile' } & Common)
   | ({ e: 'eggsac'; at: Pt; brood?: number; hatchIn?: number } & Common)
   | ({ e: 'silk'; at: Pt; strands?: number; r?: number } & Common)
+  | ({ e: 'gravedirt'; at: Pt } & Common)
   | ({ e: 'malison-matins'; at: Pt; hp?: number } & Common)
   | ({ e: 'malison-lauds'; at: Pt } & Common)
   | ({ e: 'malison-prime'; at: Pt } & Common)
@@ -195,6 +197,11 @@ export const ENTITY_REGISTRY: { [K in EntityId]: Entry<K> } = {
     make: (s) => new EggSac(P(s.at), s.brood, s.hatchIn),
   },
   // Brood silk over the field (ART-0217, CON-0066): every strand cut with a lancet stroke.
+  gravedirt: {
+    params: { at: { type: 'pt' } },
+    needs: () => [['leech']],
+    make: (s, op) => new GraveDirt(P(s.at), op),
+  },
   silk: {
     params: { at: { type: 'pt' }, strands: num(true, [1, 9]), r: num(true, [30, 200]) },
     needs: () => [['lancet']],

@@ -1144,6 +1144,8 @@
   "ui.triage.lost": "Lost: {names}",
   "ui.triage.tags": "Tags right: {right} of {total}",
   "label.mud_cleaned": "Mud cleaned",
+  "label.dirt_drawn": "Dirt drawn",
+  "label.dirt_sealed_in": "Dirt sealed in",
   "ui.results.malison_unmade": "Malison Unmade",
   "ui.options.audio_offset": "Audio latency",
   "ui.options.calibrate_audio": "Calibrate latency…",
