@@ -462,12 +462,14 @@ void main() {
   woundCol = mix(woundCol, vec3(0.3, 0.17, 0.08) * mix(1.0, 0.45, smoothstep(0.3, 1.0, sf.r)), step(0.5, u_gore));
   woundCol = mix(woundCol, vec3(0.04, 0.035, 0.035), step(1.5, u_gore));
   woundCol += vec3(1.0, 0.85, 0.85) * wspec * 1.3 * (1.0 - step(1.5, u_gore));
-  float rim = smoothstep(0.02, 0.15, sf.r) * (1.0 - smoothstep(0.15, 0.45, sf.r));
+  // A broad, soft darkening down the channel's slope (a narrow band here ringed every cut).
+  float rim = smoothstep(0.0, 0.3, sf.r) * (1.0 - smoothstep(0.3, 0.8, sf.r));
   col = mix(col, woundCol, cut);
-  col *= 1.0 - rim * 0.55;
+  col *= 1.0 - rim * 0.3;
   // The cut's lips show the tissue in section, so the depth of the hide reads: a line of skin,
   // the pale dermis (a hair on an elf, a thick leathery band on an orc), yellow fat, then the wound.
-  if (u_gore < 1.5 && sf.r > 0.02) {
+  // Off: the wound art paints the strata inside each cut; bands here aliased into rings round it.
+  if (false && u_gore < 1.5 && sf.r > 0.02) {
     float e1 = 0.05;
     float e2 = e1 + 0.055 * u_layers.x;
     float e3 = e2 + 0.05 * u_layers.y;
@@ -478,9 +480,11 @@ void main() {
     float sDerm = smoothstep(e1 - 0.008, e1, sf.r) * (1.0 - smoothstep(e2 - 0.01, e2, sf.r));
     float sFat = smoothstep(e2 - 0.01, e2, sf.r) * (1.0 - smoothstep(e3 - 0.012, e3, sf.r));
     float goreK = u_gore > 0.5 ? 0.5 : 1.0;
-    col = mix(col, u_skin * lit, sSkin * 0.9 * goreK);
-    col = mix(col, dermisCol, sDerm * 0.85 * goreK);
-    col = mix(col, fatCol + vec3(0.1) * wspec, sFat * 0.75 * goreK);
+    // Faint: the wound art paints the strata inside the cut; these only tint the carved slope, and
+    // at full strength their thin bands aliased into dotted lines along every angled cut.
+    col = mix(col, u_skin * lit, sSkin * 0.35 * goreK);
+    col = mix(col, dermisCol, sDerm * 0.3 * goreK);
+    col = mix(col, fatCol + vec3(0.1) * wspec, sFat * 0.2 * goreK);
   }
   // Blood staining and bruising.
   // Thin films dry to a brown crust at the edge; thick pools stay dark, wet and glossy.

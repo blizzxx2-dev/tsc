@@ -735,74 +735,71 @@ vec4 woundStrip(vec2 q) {
   float hw = W * op * prof + rag * prof;
   float ay = abs(q.y);
   float inX = rsmooth(L * 0.5 + 0.5, L * 0.5 - 0.5, abs(q.x));
-  // Gap: a real trench under the cut. Each pixel casts a ray down past the lips along the oblique eye;
-  // it strikes a funnel wall (skin, dermis, fat, muscle strata) or the muscle floor, darkening with
-  // depth, shadowed by the lamp-side lip, with blood pooling from the bottom on the heartbeat.
+  // The open wound in cross-section: walls slope down from each lip through the strata — pale
+  // dermis, lobulated yellow fat, red muscle — to a dark crimson floor. Each wall is lit by how it
+  // faces the lamp, the lamp-side lip shades the wall below it, and blood wells up from the floor
+  // to a glossy surface with a meniscus, rising on the heartbeat.
   float gap = fill(ay - hw) * inX;
-  float D = hw * 1.4 + 2.0;
-  float k = 0.8;
-  float fw = hw * k / D;
-  float zH = D, side = 0.0;
-  for (int i = 0; i < 2; i++) {
-    float sd = i == 0 ? -1.0 : 1.0;
-    float den = VV.y + sd * fw;
-    float z = abs(den) > 1e-4 ? (sd * hw - q.y) / den : 1e9;
-    if (z > 0.0 && z < zH) { zH = z; side = sd; }
-  }
-  float well = clamp(u_b.x * (0.6 + 0.4 * u_b.y), 0.0, 1.0);
-  float zB = D * (1.0 - 0.55 * well);
-  float f = zH / D;
-  vec2 hp = vec2(along + VV.x * zH, q.y + VV.y * zH);
-  float jag = claw * (noise(vec2(hp.x * 0.3, side * 5.0 + u_seed)) - 0.5) * 0.2;
-  float fs = f + jag + (noise(vec2(hp.x * 0.15, side + u_seed)) - 0.5) * 0.06;
-  vec3 wall = vec3(0.62, 0.3, 0.26);
-  wall = mix(wall, vec3(0.88, 0.62, 0.55), smoothstep(0.05, 0.08, fs));
-  float lob = 0.8 + 0.3 * noise(hp * vec2(0.45, 0.9) + 3.0);
-  wall = mix(wall, vec3(0.95, 0.8, 0.45) * lob, smoothstep(0.14, 0.17, fs));
-  float fib = 0.85 + 0.2 * noise(vec2(hp.x * 0.5, hp.y * 2.5 + u_seed));
-  wall = mix(wall, vec3(0.72, 0.12, 0.1) * fib, smoothstep(0.27, 0.31, fs));
-  vec3 floorC = vec3(0.5, 0.05, 0.06) * (0.8 + 0.25 * noise(vec2(hp.x * 0.4, hp.y * 2.0) + 7.0));
-  vec3 tn = side == 0.0 ? vec3(0.0, 0.0, 1.0) : normalize(vec3(0.0, -side * 0.8, 1.0));
-  vec3 tb = side == 0.0 ? floorC : wall;
-  float td = max(dot(tn, LL), 0.0);
-  vec3 th = normalize(LL + vec3(0.0, 0.0, 1.0));
-  vec3 tc = tb * (0.55 + 0.6 * td) + vec3(1.0, 0.9, 0.85) * pow(max(dot(tn, th), 0.0), 50.0) * 0.6;
-  // Lamp shadow: follow the point back up toward the lamp; if the ray clears the lips it is lit.
-  float yS = hp.y + LL.y / max(LL.z, 0.3) * zH * 0.6;
-  float lipS = smoothstep(hw - 1.5, hw + 1.5, abs(yS));
-  tc *= 1.0 - 0.4 * lipS * smoothstep(0.1, 0.4, f);
-  // Depth falloff: the bottom of the hole sinks to near black.
-  tc *= mix(1.1, 0.4, smoothstep(0.15, 1.0, f));
-  // Welling blood fills the trench to a glossy, dark surface.
-  if (zH > zB) {
-    vec2 bp = vec2(along + VV.x * zB, q.y + VV.y * zB);
-    float men = smoothstep(hw * (1.0 - k * zB / D) - 2.0, hw * (1.0 - k * zB / D), abs(bp.y));
-    vec3 bn = normalize(vec3(0.0, sign(bp.y) * men * 0.8, 1.0));
-    vec3 bc = lit(vec3(0.3, 0.01, 0.03) * mix(1.0, 0.55, zB / D), bn, 1.4, 90.0);
-    tc = bc * (1.0 - 0.4 * lipS);
+  float u = clamp(ay / max(hw, 0.5), 0.0, 1.0);          // 0 centre line .. 1 at the lip
+  float sgn = q.y >= 0.0 ? 1.0 : -1.0;
+  float ragU = claw * (noise(vec2(along * 0.25, sgn * 9.0 + u_seed)) - 0.5) * 0.25;
+  float wallT = smoothstep(0.25, 1.0, u + ragU);          // how far up the wall (1 = lip)
+  vec3 wn = normalize(vec3(0.0, -sgn * 0.9 * smoothstep(0.2, 0.6, u), 1.0));
+  float wd = max(dot(wn, LL), 0.0);
+  float grain = 0.85 + 0.25 * noise(vec2(along * 0.5, u * 6.0 + sgn * 3.0 + u_seed));
+  vec3 muscleC = vec3(0.62, 0.1, 0.1) * grain;
+  vec3 fatC = vec3(0.92, 0.76, 0.42) * (0.8 + 0.3 * noise(vec2(along * 0.4, sgn * 5.0 + u_seed)));
+  vec3 dermC = vec3(0.9, 0.66, 0.58);
+  vec3 wallC = muscleC;
+  // Narrow cuts show too little wall for a fat stratum to read (it muddies to olive): wide ones only.
+  float fatBand = smoothstep(0.45, 0.68, wallT) * (1.0 - smoothstep(0.78, 0.9, wallT)) * (1.0 - claw * 0.7) * smoothstep(14.0, 20.0, hw) * 0.8;
+  wallC = mix(wallC, fatC, fatBand);
+  wallC = mix(wallC, dermC, smoothstep(0.8, 0.98, wallT) * smoothstep(6.0, 12.0, hw) * 0.7);
+  // Floor: deeper mid-cut, where the wound is widest.
+  vec3 floorC = vec3(0.55, 0.07, 0.08) * (0.8 + 0.25 * noise(vec2(along * 0.3, q.y * 0.5 + 7.0)));
+  vec3 tb = mix(floorC, wallC, smoothstep(0.2, 0.45, u));
+  vec3 tc = tb * (0.45 + 0.8 * wd);
+  tc *= mix(0.7, 1.0, smoothstep(0.1, 0.8, u)) * mix(1.0, 0.88, prof);
+  // The lamp-side lip throws its shadow onto the wall beneath it.
+  float lampSide = step(0.0, -sgn * LL.y);
+  tc *= 1.0 - 0.35 * lampSide * smoothstep(0.35, 0.9, u);
+  // Wet glints scattered along the walls.
+  // Wet glints: small round spots at hashed places up the walls.
+  float gcell = floor(along * 0.12);
+  vec2 gpos = vec2((gcell + 0.2 + 0.6 * hash(vec2(gcell, sgn + u_seed))) / 0.12, sgn * hw * (0.55 + 0.3 * hash(vec2(gcell, 3.0 + u_seed))));
+  float gl = step(0.8, hash(vec2(gcell, 7.0 + sgn + u_seed))) * rsmooth(1.1, 0.2, length(vec2(along, q.y) - gpos));
+  tc += vec3(1.0, 0.92, 0.88) * gl * wd * 0.6;
+  // Welling blood: it fills the trench from the floor up, dark and glossy, with a lit meniscus
+  // line where it meets the walls and the lamp's reflection lying along the cut.
+  float well = clamp(u_b.x * (0.65 + 0.35 * u_b.y), 0.0, 1.0);
+  float level = well * 0.85;
+  if (u < level) {
+    float men = smoothstep(level - 0.12, level, u);
+    vec3 bn = normalize(vec3(0.0, sgn * men * 0.7, 1.0));
+    vec3 bc = lit(vec3(0.34, 0.01, 0.04), bn, 1.5, 110.0);
+    bc += vec3(1.0, 0.85, 0.85) * rsmooth(0.15, 0.0, abs(u - 0.25)) * 0.12 * (1.0 - lampSide);
+    tc = mix(tc, bc, smoothstep(0.0, 0.04, level - u) + 0.0);
   }
   vec3 wc = tc;
-  // Fat layer: a thin yellow band at the cut's lip (the strata continue down the walls).
-  float fat = fill(ay - hw - 0.8) * (1.0 - gap) * inX * step(0.05, op) * (1.0 - claw) * smoothstep(0.1, 0.4, prof);
-  vec3 fc = lit(vec3(0.9, 0.76, 0.42), vec3(0.0, sign(q.y) * 0.5, 0.87), 0.6, 30.0);
-  // Skin lips: the cut edges swell into soft rolls that follow the wound's taper — widest mid-cut,
-  // closing to nothing at the tips — lit on the lamp side, flushed near the cut and feathering out
-  // into the skin (no band of constant width, so no rectangle shows behind the cut).
+  // Skin lips: the cut edges swell into one soft roll each that follows the wound's taper — widest
+  // mid-cut, closing to nothing at the tips — lit on the lamp side, flushed near the cut and
+  // feathering out into the skin (no band of constant width, so no rectangle shows behind it).
   float lipW = (3.0 + W * 0.45) * (0.25 + 0.75 * prof);
-  float lt = clamp((ay - hw - 0.6) / lipW, 0.0, 1.0);
-  float lipIn = (1.0 - fill(ay - hw - 0.6)) * inX * smoothstep(0.0, 0.3, prof);
-  float lipA = lipIn * (1.0 - smoothstep(0.35, 1.0, lt)) * (0.3 + 0.5 * op);
-  float rise = sin(3.14159 * min(1.0, lt * 1.6));
-  vec3 ln = normalize(vec3(0.0, sign(q.y) * cos(3.14159 * min(1.0, lt * 1.6)) * 0.9, 1.0));
-  vec3 flush = mix(vec3(0.72, 0.24, 0.2), vec3(0.8, 0.42, 0.36), lt);
-  // Torn lips are scuffed and raw rather than rolled.
+  float lt = clamp((ay - hw) / lipW, 0.0, 1.0);
+  float lipIn = (1.0 - fill(ay - hw - 0.3)) * inX * smoothstep(0.0, 0.3, prof);
+  float lipA = lipIn * (1.0 - smoothstep(0.3, 1.0, lt)) * (0.35 + 0.5 * op);
+  // Height of the roll: up steeply from the edge to a crest, then easing down to the flat.
+  float dh = lt < 0.3 ? cos(lt / 0.3 * 1.5708) * 1.5708 / 0.3 : -6.0 * ((lt - 0.3) / 0.7) * (1.0 - (lt - 0.3) / 0.7) / 0.7;
+  vec3 ln = normalize(vec3(0.0, -sgn * dh * 0.3, 1.0));
+  vec3 flush = mix(vec3(0.74, 0.28, 0.24), vec3(0.8, 0.46, 0.4), lt);
   flush = mix(flush, vec3(0.6, 0.14, 0.12), claw * (1.0 - lt) * 0.7);
-  vec3 lc = lit(flush, ln, 0.25 + 0.2 * rise, 30.0);
+  // Shaded relative to the flat skin around it (which the flesh shader lights already).
+  vec3 lh = normalize(LL + vec3(0.0, 0.0, 1.0));
+  vec3 lc = flush * clamp(0.95 + 1.2 * (dot(ln, LL) - LL.z), 0.6, 1.3) + vec3(1.0, 0.93, 0.85) * pow(max(dot(ln, lh), 0.0), 30.0) * 0.25;
   vec4 acc = paint(lc, lipA);
-  acc = over(paint(fc, fat * 0.75), acc);
   acc = over(paint(wc, gap), acc);
   // The cut edge itself: a thin dark line where skin turns down into the wound.
-  acc = over(paint(vec3(0.12, 0.01, 0.02), fill(abs(ay - hw) - 0.55) * inX * step(0.05, op) * 0.7 * smoothstep(0.05, 0.25, prof)), acc);
+  acc = over(paint(vec3(0.16, 0.02, 0.03), fill(abs(ay - hw) - 0.45) * inX * step(0.05, op) * 0.55 * smoothstep(0.05, 0.25, prof)), acc);
   // Blade cuts run on a little past their ends as a fine scratch where the knife went in and out.
   float pre = -along;
   float post = along - total;
