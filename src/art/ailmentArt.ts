@@ -39,6 +39,7 @@ export const AIL = {
   dish: 24,
   hour: 25,
   flake: 26,
+  vessel: 27,
 } as const;
 
 export type MissileKind = 'arrow' | 'barbed' | 'bolt' | 'bolt-leather';
@@ -69,6 +70,12 @@ export function missileArt(g: Gfx, pos: Vec, angle: number, len: number, entry: 
 export function escharFlakeArt(g: Gfx, pos: Vec, radius: number, rot: number, seed = 0): void {
   const s = radius * 3.2 + 10;
   g.ailment(AIL.flake, pos.x, pos.y, s, s, { rot, seed, a: [radius, 0, 0, 0] });
+}
+
+/** An exposed artery lying along `angle` through `pos`, `len` px long with its ends diving under the tissue. */
+export function vesselArt(g: Gfx, pos: Vec, angle: number, len: number, halfWidth: number, o: { beat?: number; clamped?: boolean; seed?: number } = {}): void {
+  const s = len + 30;
+  g.ailment(AIL.vessel, pos.x, pos.y, s, s, { rot: angle, seed: o.seed, a: [len, halfWidth, o.beat ?? 0, o.clamped ? 1 : 0] });
 }
 
 /** A lead ball: `radius` 5/7/9 px for the three calibres; `flattened` where it struck bone; `sunk` into the wound. */

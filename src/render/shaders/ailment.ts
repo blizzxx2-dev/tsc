@@ -35,6 +35,7 @@
  * 24 extraction dish               (a.x radius px, a.w 0 pewter kidney dish, 1 round lead dish)
  * 25 Malison silhouette            (a.x Hour 0 Matins … 7 Compline; col = the Hour's secondary colour)
  * 26 eschar flake                 (a.x radius px; rot = the flake's turn)
+ * 27 exposed vessel               (a.x length px, a.y half-width px, a.z heartbeat 0..1, a.w clamped)
  *
  * Colour filters and gore levels are applied by the callers through `u_col` / `u_alpha`.
  */
@@ -937,6 +938,32 @@ vec4 escharFlake(vec2 q) {
   return over(paint(c, body), paint(vec3(0.0), sh * (1.0 - body)));
 }
 
+
+// ---------------------------------------------------------------- exposed vessel
+
+vec4 vessel(vec2 q) {
+  float L = u_a.x, W = u_a.y, beat = u_a.z, clamped = u_a.w;
+  // An artery lying in the open tissue along x: a round, wet, pale-walled tube with blood showing
+  // dark through it, swelling on each heartbeat, its ends diving back under the tissue.
+  float w = W * (1.0 + 0.1 * beat * (1.0 - clamped));
+  float ay = abs(q.y);
+  float along = abs(q.x) / (L * 0.5);
+  float body = fill(ay - w) * rsmooth(1.0, 0.72, along);
+  vec3 n = cylN(q.y, w);
+  float core = rsmooth(0.75, 0.2, ay / w);
+  vec3 wall = mix(vec3(0.86, 0.62, 0.6), vec3(0.62, 0.08, 0.12), core * (clamped > 0.5 ? 0.7 : 0.9));
+  // Vasa vasorum: fine vessels on the outer wall.
+  float vv = pow(1.0 - abs(fbm(vec2(q.x * 0.08, q.y * 0.3) + u_seed) * 2.0 - 1.0), 14.0);
+  wall = mix(wall, vec3(0.55, 0.06, 0.12), vv * 0.5 * (1.0 - core));
+  vec3 c = lit(wall, n, 0.9, 60.0);
+  // Where it dives under, the tissue closes over it: dim and fade.
+  c *= mix(1.0, 0.55, smoothstep(0.55, 0.95, along));
+  // Contact shadow along its lamp-away side.
+  vec2 so = -LL.xy / max(LL.z, 0.3) * 2.5;
+  float sh = fill(abs(q.y - so.y) - w) * rsmooth(1.0, 0.72, along) * 0.35;
+  return over(paint(c, body), paint(vec3(0.0), sh));
+}
+
 // ---------------------------------------------------------------- the Malison's thread
 
 /** A point on one of the three thread-knot curves (t in 0..2π), in units of the knot radius. */
@@ -1181,6 +1208,7 @@ void main() {
   else if (u_mode == 23) r = spool(q);
   else if (u_mode == 24) r = dish(q);
   else if (u_mode == 26) r = escharFlake(q);
+  else if (u_mode == 27) r = vessel(q);
   else r = hourSilhouette(q);
   // Nothing may touch the quad's border, so no rectangle edge ever shows.
   vec2 e = abs(v_uv - 0.5);

@@ -2,6 +2,8 @@
 import { drawStitch } from './paint';
 import { drawer } from './registry';
 import { petrifyCrustArt, petrifyPlateArt } from '../../art/lateAilmentArt';
+import { vesselArt } from '../../art/ailmentArt';
+import type { Gfx } from '../gfx';
 import { dist, type Vec } from '../../core/math';
 import { hex } from '../color';
 import { surfDisc, surfLine } from './paint';
@@ -14,18 +16,29 @@ drawer(Artery, {
     surfLine(g, e.stitch.points, 10, 0.2, 0, 0, 0.3);
   },
   draw(g, e, op) {
-    const [a, b] = e.stitch.points;
-    const pulse = 0.7 + 0.3 * Math.sin(op.elapsed * 7);
-    g.line(a, b, 9, hex('#a01020', 0.9));
-    g.line(a, b, 4, hex('#ff5060', 0.5 * pulse));
+    // The exposed vessel, swelling on each heartbeat until it is clamped.
+    const beat = Math.exp(-(op.beatPhase % 1) * 6);
+    vesselArt(g, e.pos, e.angle, 110, 5, { beat, clamped: e.clamped, seed: e.id });
     drawStitch(g, e.stitch);
-    if (e.clamped) {
-      const { x, y } = e.pos;
-      g.line({ x: x - 12, y: y - 12 }, { x: x + 12, y: y + 12 }, 3, hex('#c8c8d0'));
-      g.line({ x: x + 12, y: y - 12 }, { x: x - 12, y: y + 12 }, 3, hex('#c8c8d0'));
-    }
+    if (e.clamped) drawClamp(g, e.pos, e.angle + Math.PI / 2);
   },
 });
+
+/** A steel artery clamp across a vessel: two jaws over it, the box lock and the ring handles out to one side. */
+function drawClamp(g: Gfx, at: Vec, angle: number): void {
+  const c = Math.cos(angle);
+  const sn = Math.sin(angle);
+  const P = (u: number, v: number) => ({ x: at.x + c * u - sn * v, y: at.y + sn * u + c * v });
+  g.line(P(-12, 3), P(38, 5), 4, hex('#000000', 0.3));
+  for (const v of [-2.2, 2.2]) g.line(P(-11, v), P(30, v * 2.2), 2.6, hex('#8a9098'));
+  g.line(P(-11, -2.2), P(30, -4.8), 1, hex('#e0e6ee', 0.7));
+  const lock = P(12, 0);
+  g.rect(lock.x - 3, lock.y - 3, 6, 6, hex('#6a7078'));
+  for (const v of [-7, 7]) {
+    const r = P(36, v);
+    g.arc(r.x, r.y, 4.5, 2, hex('#8a9098'));
+  }
+}
 
 drawer(Tick, {
   draw(g, e, op) {

@@ -147,6 +147,20 @@ float surfH(vec2 uv) {
   vec4 s = texture(u_surface, uv);
   return s.a * 1.3 - s.r * 1.4;
 }
+// Drape height: creases gather where the linen is pulled tight round the opening (sharp-crested
+// ridges that wander) and fade out into broad slack swells further off. Single-octave noise only:
+// it is sampled three times per pixel for the normal.
+float drapeH(vec2 p, out float ridge, out float nearHole) {
+  vec2 fq = (p - u_center) / u_radii;
+  float ang = atan(fq.y, fq.x);
+  float rad = length(fq);
+  float warpA = ang + (noise(fq * 1.5) - 0.5) * 0.7;
+  ridge = 1.0 - abs(sin(warpA * 7.0 + noise(fq * 2.0) * 2.5));
+  ridge *= ridge;
+  nearHole = smoothstep(1.0, 1.12, rad) * (1.0 - smoothstep(1.3, 2.1, rad));
+  float slack = noise(p * 0.006 + vec2(3.0, 1.0)) * 0.7 + noise(p * 0.013 + 7.0) * 0.3;
+  return ridge * nearHole * 0.8 + slack * 0.5;
+}
 void main() {
   vec2 px = vec2(v_uv.x, 1.0 - v_uv.y) * u_view;
   bool warped = u_warp.x > 0.0;
@@ -163,11 +177,12 @@ void main() {
   vec2 fq = (px - u_center) / u_radii;
   float ang = atan(fq.y, fq.x);
   float rad = length(fq);
-  float folds = sin(ang * 9.0 + fbm(fq * 2.0) * 3.0) * 0.5 + 0.5;
-  folds *= smoothstep(1.0, 1.35, rad) * (1.0 - smoothstep(1.6, 2.4, rad));
-  float slack = fbm(px * 0.008 + vec2(3.0, 1.0));
-  float fh = folds * 0.6 + slack * 0.8;
-  vec2 fd = vec2(dFdx(fh), dFdy(fh)) * 40.0;
+  // The fold normal comes from the height sampled a few pixels apart, not from screen derivatives,
+  // which step visibly in 2×2 blocks wherever the creases are strong.
+  float ridge, nearHole;
+  float fh0 = drapeH(px, ridge, nearHole);
+  float rdx, ndx;
+  vec2 fd = vec2(drapeH(px + vec2(2.0, 0.0), rdx, ndx) - fh0, drapeH(px + vec2(0.0, 2.0), rdx, ndx) - fh0) * 19.0;
   // The linen's real weave, from the scanned map.
   vec3 linenM = u_maps > 0.5 ? texture(u_linenMap, px / 240.0).rgb : vec3(0.5);
   if (u_maps > 0.5) fd += (linenM.rg * 2.0 - 1.0) * 0.9;
@@ -179,12 +194,14 @@ void main() {
   float weave = 0.5 + 0.18 * sin(w.x * 2.2) * sin(w.y * 2.2) + 0.2 * noise(px * 0.35);
   if (u_maps > 0.5) weave = mix(weave, linenM.b, 0.8);
   vec3 linen = mix(vec3(0.42, 0.40, 0.34), vec3(0.62, 0.59, 0.5), weave);
-  vec3 drape = linen * (0.18 + 0.85 * fdiff);
-  drape *= 0.45 + 0.65 * rsmooth(950.0, 150.0, length(px - u_light));
+  vec3 drape = linen * (0.2 + 0.85 * fdiff);
+  // Occlusion in the troughs between creases.
+  drape *= 1.0 - 0.3 * nearHole * (1.0 - ridge);
+  drape *= 0.55 + 0.6 * rsmooth(1000.0, 150.0, length(px - u_light));
   // Blood soaks into the linen nearest the wound, and old stains elsewhere.
   float soak = rsmooth(1.3, 1.0, rad) * (0.6 + 0.4 * fbm(px * 0.02));
   drape = mix(drape, vec3(0.22, 0.02, 0.03) * (0.5 + 0.6 * fdiff), soak * 0.85);
-  drape = mix(drape, vec3(0.3, 0.1, 0.07) * (0.5 + 0.5 * fdiff), smoothstep(0.64, 0.74, fbm(px * 0.006 + 3.0)) * 0.55);
+  drape = mix(drape, vec3(0.36, 0.2, 0.13) * (0.5 + 0.5 * fdiff), smoothstep(0.62, 0.78, fbm(px * 0.006 + 3.0)) * 0.3);
   // Oak table at the frame edges.
   float tableMask = smoothstep(2.05, 2.25, rad + 0.1 * fbm(fq * 3.0));
   vec3 oak = vec3(0.14, 0.08, 0.045) * (0.6 + 0.5 * noise(vec2(px.x * 0.02, px.y * 0.6))) * (0.4 + 0.6 * rsmooth(1100.0, 200.0, length(px - u_light)));

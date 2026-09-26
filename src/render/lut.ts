@@ -23,7 +23,9 @@ export const GRADES: Record<string, Grade> = {
   /** Candlelit hospice: warm highlights, green-cool shadows, gentle S-curve. */
   candle: (r, g, b) => {
     const l = lum(r, g, b);
-    let c: [number, number, number] = [r * 1.05, g * 0.99, b * 0.88];
+    // A touch below full saturation: with the warm lamps, flesh otherwise pushes toward orange.
+    const d = sat([r, g, b], 0.9);
+    let c: [number, number, number] = [d[0] * 1.04, d[1] * 0.99, d[2] * 0.9];
     const sh = 1 - sm(0, 0.45, l);
     c = [c[0] * (1 - sh * 0.1), c[1] * (1 + sh * 0.02), c[2] * (1 + sh * 0.02)];
     return c.map((v) => v + (sm(0, 1, v) - v) * 0.35) as [number, number, number];

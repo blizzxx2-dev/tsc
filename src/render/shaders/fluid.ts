@@ -16,17 +16,23 @@ uniform vec3 u_bile;
 uniform float u_gore;
 out vec4 o;
 float dens(vec2 uv) { vec4 f = texture(u_fluid, uv); return f.r + f.g + f.b; }
+float hash(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+float vnoise(vec2 p) { vec2 i = floor(p), f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1, 0)), u.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), u.x), u.y); }
 void main() {
   vec4 f = texture(u_fluid, v_uv);
   float d = f.r + f.g + f.b;
-  float a = smoothstep(0.42, 0.52, d);
+  vec2 px = vec2(v_uv.x, 1.0 - v_uv.y) * u_view;
+  // The edge wanders: liquid creeps along the tissue's grain instead of keeping a metaball outline.
+  float wob = (vnoise(px * 0.11) - 0.5) * 0.07 + (vnoise(px * 0.35) - 0.5) * 0.03;
+  float a = smoothstep(0.42, 0.52, d + wob);
   if (a < 0.003) discard;
   vec2 t = u_texel * 2.0;
   float dx = dens(v_uv + vec2(t.x, 0.0)) - dens(v_uv - vec2(t.x, 0.0));
   float dy = dens(v_uv - vec2(0.0, t.y)) - dens(v_uv + vec2(0.0, t.y));
-  // Surface bulges toward the centre of each pool; clamp so thick pools stay flat and glassy.
-  vec3 n = normalize(vec3(-dx * 2.2, -dy * 2.2, 1.0) * vec3(1.0, 1.0, 1.0 + smoothstep(0.5, 1.4, d) * 3.0));
-  vec2 px = vec2(v_uv.x, 1.0 - v_uv.y) * u_view;
+  // A pool lies flat and mirror-like: its surface only bends at the meniscus round the edge.
+  float meniscus = 1.0 - smoothstep(0.5, 0.85, d);
+  vec3 n = normalize(vec3(vec2(-dx, -dy) * (0.35 + 1.9 * meniscus), 1.0));
   vec3 L = normalize(vec3((u_light - px) / 700.0, 0.9));
   float diff = max(dot(n, L), 0.0);
   float spec = pow(max(dot(reflect(-L, n), vec3(0.0, 0.0, 1.0)), 0.0), 90.0);
@@ -55,7 +61,10 @@ void main() {
   vec3 hiBile = vec3(1.0) * spec * 1.6 + rainbow * spec2 * 0.35;
   col += (hiBlood * w.r + hiPus * w.g + hiBile * w.b) * gloss;
   // Opacity: pus is semi-opaque at thin edges, bile fully opaque, blood nearly so.
-  float op = mix(0.97, mix(0.8, 0.97, deep), w.g * (1.0 - w.r));
+  // Thin films at the rim let the tissue show through.
+  float thin = 1.0 - smoothstep(0.47, 0.75, d);
+  col = mix(col, base * 1.25, thin * 0.35);
+  float op = mix(0.97, mix(0.8, 0.97, deep), w.g * (1.0 - w.r)) * (1.0 - thin * 0.3);
   op = mix(op, 1.0, w.b);
   o = vec4(col, a * op);
 }`;
