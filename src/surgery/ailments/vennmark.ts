@@ -1,21 +1,13 @@
-/**
- * Ailments of Chapter IV (the Vennmark field hospital): a bolt beside the
- * artery, horned-folk ticks and dung-fouled wounds, delver's lung, a giant's
- * swallowed strongbox, a bite-tranced heart, a thirsted neck and the stone
- * bride's petrification — plus the rain that drips through the tent.
- */
-import { petrifyCrustArt, petrifyPlateArt } from '../../art/lateAilmentArt';
+
 import { dist, pointSegment, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
 import { Coverage } from '../coverage';
 import { Entity } from '../entity';
-import { BloodPool, Embedded, StitchLine, surfDisc, surfLine } from '../entities';
+import { BloodPool, Embedded, StitchLine } from '../entities';
 import { FIELD, onBody, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
 import { pathLength, pointAlong } from '../bosses/common';
 
-const TAU = Math.PI * 2;
+export const TAU = Math.PI * 2;
 
 // ============================================================ the artery
 
@@ -81,21 +73,6 @@ export class Artery extends Entity {
       op.rate(this.clamped ? 'cool' : 'good', this.pos, 'Ligated');
     }
   }
-  override drawSurface(g: Gfx): void {
-    surfLine(g, this.stitch.points, 10, 0.2, 0, 0, 0.3);
-  }
-  draw(g: Gfx, op: Operation): void {
-    const [a, b] = this.stitch.points;
-    const pulse = 0.7 + 0.3 * Math.sin(op.elapsed * 7);
-    g.line(a, b, 9, hex('#a01020', 0.9));
-    g.line(a, b, 4, hex('#ff5060', 0.5 * pulse));
-    this.stitch.draw(g);
-    if (this.clamped) {
-      const { x, y } = this.pos;
-      g.line({ x: x - 12, y: y - 12 }, { x: x + 12, y: y + 12 }, 3, hex('#c8c8d0'));
-      g.line({ x: x + 12, y: y - 12 }, { x: x - 12, y: y + 12 }, 3, hex('#c8c8d0'));
-    }
-  }
 }
 
 // ============================================================ ticks and contamination
@@ -109,7 +86,7 @@ export class Tick extends Entity {
   override pickReach = 30;
   life = 0;
   burrowed = false;
-  private heading: number;
+  heading: number;
   constructor(
     pos: Vec,
     op: Operation,
@@ -143,15 +120,6 @@ export class Tick extends Entity {
     op.rate(this.burrowed ? 'good' : 'cool', this.pos, 'Tick plucked');
     return true;
   }
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    for (let i = 0; i < 8; i++) {
-      const a = (i / 8) * TAU + Math.sin(op.elapsed * 16 + i) * 0.2;
-      g.line({ x, y }, { x: x + Math.cos(a) * 9, y: y + Math.sin(a) * 9 }, 1.2, hex('#2a1a10'));
-    }
-    g.ellipse(x, y, 7, 5, this.heading, hex('#4a3020'));
-    if (!this.burrowed) g.arc(x, y, 13, 2, hex('#e05040', 0.6), 1 - this.life / this.burrowAfter);
-  }
 }
 
 /** Dung and mud fouling a wound: it drains the patient until irrigated with the leech-pipe (held 1.5 s). */
@@ -175,17 +143,6 @@ export class Contamination extends Entity {
       this.kill();
       op.rate('good', this.pos, 'Irrigated');
     }
-  }
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, this.r * 1.5, 0, 0.5 * (1 - this.flushT / 1.5), 0.3, 0.3);
-  }
-  draw(g: Gfx): void {
-    const { x, y } = this.pos;
-    for (let i = 0; i < 7; i++) {
-      const a = (i / 7) * TAU + this.id;
-      g.circle(x + Math.cos(a) * this.r * 0.55, y + Math.sin(a) * this.r * 0.45, 5, hex('#4a3a20', 0.7 * (1 - this.flushT / 1.5)));
-    }
-    if (this.flushT > 0) g.arc(x, y, this.r, 3, hex('#8ab8ff'), this.flushT / 1.5);
   }
 }
 
@@ -253,18 +210,6 @@ export class Nodule extends Entity {
     op.rate(this.stage === 1 ? 'cool' : 'good', this.pos, 'Nodule out');
     return true;
   }
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, this.radius * 2, 0, 0.1, 0.3, 0.4);
-  }
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    const r = this.radius;
-    const pts = [0, 1, 2, 3, 4, 5].map((i) => ({ x: x + Math.cos((i / 6) * TAU + this.id) * r * (i % 2 ? 0.7 : 1), y: y + Math.sin((i / 6) * TAU + this.id) * r * (i % 2 ? 0.7 : 1) }));
-    g.poly(pts, hex(this.cracked ? '#806070' : '#a8c8e0', 0.9), hex('#f0f8ff'));
-    g.glow(x, y, r * 2, hex('#b0e0ff', 0.1 + 0.05 * Math.sin(op.elapsed * 3 + this.id)));
-    for (let i = 0; i < this.stage; i++) g.circle(x - 6 + i * 6, y + r + 8, 2, hex('#e0f0ff', 0.8));
-    if (this.heat > 0 && !this.cracked) g.arc(x, y, r + 6, 2, hex('#ff9040'), this.heat / 0.6);
-  }
 }
 
 /** A region the surgeon must not cut (a mountain-folk beard; a sacred tattoo). A lancet stroke inside it costs score. */
@@ -291,16 +236,6 @@ export class NoCutZone extends Entity {
     op.score = Math.max(0, op.score - this.penalty);
     op.sayOnce('nocut', 'Never the beard, Doctor! She’d sooner lose the lung!');
     return true;
-  }
-  draw(g: Gfx): void {
-    g.ellipse(this.pos.x, this.pos.y, this.rx, this.ry, 0, hex('#8a5a30', 0.25));
-    g.dashed(
-      Array.from({ length: 41 }, (_, i) => ({ x: this.pos.x + Math.cos((i / 40) * TAU) * this.rx, y: this.pos.y + Math.sin((i / 40) * TAU) * this.ry })),
-      2,
-      hex('#e8c080', 0.4),
-      6,
-      6,
-    );
   }
 }
 
@@ -374,18 +309,6 @@ export class Lockbox extends Entity {
       op.spawn(new BloodPool({ ...this.origin }, 22));
     } else this.pos = { ...this.origin };
   }
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    g.rect(x - 56, y - 30, 112, 60, hex('#5a4020'));
-    g.rectLine(x - 56, y - 30, 112, 60, 3, hex('#c8a060'));
-    for (let i = 0; i < 3; i++) {
-      const p = this.pinPos(i);
-      const pin = this.pins[i];
-      g.circle(p.x, p.y, 12, hex(pin.set ? '#9fd3a8' : '#2a1a08'));
-      g.line(p, { x: p.x + Math.cos(pin.angle) * 11, y: p.y + Math.sin(pin.angle) * 11 }, 3, hex('#f0d890'));
-      g.line({ x: p.x, y: p.y - 16 }, { x: p.x, y: p.y - 12 }, 2, hex('#f0d890', 0.7 + 0.3 * Math.sin(op.elapsed * 6)));
-    }
-  }
 }
 
 /**
@@ -395,8 +318,8 @@ export class Lockbox extends Entity {
  */
 export class Retractor extends Entity {
   openT = 0;
-  private held = false;
-  private drag: Vec | null = null;
+  held = false;
+  drag: Vec | null = null;
   constructor(
     pos: Vec,
     public beneath: Entity[],
@@ -434,16 +357,6 @@ export class Retractor extends Entity {
     }
     this.held = false;
     this.drag = null;
-  }
-  draw(g: Gfx): void {
-    const { x, y } = this.pos;
-    if (this.open) {
-      g.ellipse(x - 150, y, 20, 70, 0, hex('#8a3040', 0.8));
-      return;
-    }
-    const off = this.held && this.drag ? Math.min(80, dist(this.drag, this.pos)) : 0;
-    g.ellipse(x - off, y, 130, 80, 0, hex('#a04050', 0.85), hex('#c06070', 0.9));
-    g.circle(x - off, y, 10, hex('#e8dcc0', 0.8));
   }
 }
 
@@ -517,16 +430,6 @@ export class StilledHeart extends Entity {
   override onRelease(): void {
     this.holdT = 0;
   }
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    const beat = this.inBeat ? 1 - this.beatT / this.window : 0;
-    g.glow(x, y, 60, hex('#ff3040', 0.1 + 0.4 * beat));
-    g.circleGrad(x, y, 22 + 6 * beat, hex('#a01828'), hex('#400810', 0.7));
-    g.arc(x, y, 34, 2, hex('#e0a0a0', 0.6), this.beatT / this.every);
-    for (let i = 0; i < this.need; i++) g.circle(x - 6 + i * 12, y + 44, 3, hex(i < this.restarts ? '#9fd3a8' : '#503030'));
-    if (this.holdT > 0) g.arc(x, y, 28, 3, hex('#9fd3a8'), this.holdT / 0.8);
-    void op;
-  }
 }
 
 // ============================================================ the thirsted neck
@@ -568,16 +471,6 @@ export class BiteChannel extends Entity {
         op.rate('good', this.pos, 'The bond left be');
       }
     }
-  }
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, 30, 0.6, 0.2, 0, 0.3);
-  }
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    g.circle(x - 6, y, 3, hex('#300408'));
-    g.circle(x + 6, y, 3, hex('#300408'));
-    g.glow(x, y, 30, hex('#c02040', 0.15 + 0.1 * Math.sin(op.elapsed * 2)));
-    if (this.heat > 0) g.arc(x, y, 18, 3, hex('#ff9040'), this.heat / 0.6);
   }
 }
 
@@ -656,29 +549,6 @@ export class PetrifyFront extends Entity {
       op.rate('cool', this.pos, 'The stone halts');
     }
   }
-  override drawSurface(g: Gfx): void {
-    const pts: Vec[] = [];
-    for (let s = 0; s <= this.s; s += 12) pts.push(pointAlong(this.path, s));
-    pts.push(this.frontPos);
-    if (pts.length > 1) surfLine(g, pts, 40, 0, 0.1, 0.2, 0.3);
-  }
-  draw(g: Gfx, op: Operation): void {
-    // The crust in four stages by age (ART-0221): a point the front passed d px ago has been stone d/speed seconds.
-    const pts: Vec[] = [];
-    const ages: number[] = [];
-    for (let s = 0; s <= this.s; s += 12) {
-      pts.push(pointAlong(this.path, s));
-      ages.push((this.s - s) / Math.max(0.1, this.speed));
-    }
-    pts.push(this.frontPos);
-    ages.push(0);
-    if (pts.length > 1) petrifyCrustArt(g, pts, ages, this.id);
-    g.dashed(this.path, 1.5, hex('#e8dcc0', 0.2), 5, 7);
-    const f = this.frontPos;
-    g.glow(f.x, f.y, 30, hex('#d0d0c0', 0.3 + 0.1 * Math.sin(op.elapsed * 4)));
-    this.plates.forEach((p, i) => petrifyPlateArt(g, p.pos, 14, { index: i, next: i === this.next, crackAge: p.cracked ? op.elapsed - (p.crackedAt ?? -99) : -1, seed: i * 1.3 }));
-    if (this.margin) for (const c of this.margin.cells) if (c.done) g.circleGrad(this.margin.center.x + c.x, this.margin.center.y + c.y, 10, hex('#bff0c8', 0.35), hex('#bff0c8', 0));
-  }
 }
 
 // ============================================================ the rain
@@ -702,12 +572,5 @@ export class RainDrip extends Entity {
     this.t = this.every;
     const p = { x: FIELD.cx + op.rng.range(-0.6, 0.6) * FIELD.rx, y: FIELD.cy + op.rng.range(-0.5, 0.5) * FIELD.ry };
     if (onBody(p)) op.spawn(new BloodPool(p, 14));
-  }
-  draw(g: Gfx, op: Operation): void {
-    for (let i = 0; i < 12; i++) {
-      const x = FIELD.cx - FIELD.rx + ((i * 97 + op.elapsed * 40) % (FIELD.rx * 2));
-      const y = FIELD.cy - FIELD.ry + ((i * 53 + op.elapsed * 320) % (FIELD.ry * 2));
-      g.line({ x, y }, { x: x - 2, y: y + 10 }, 1, hex('#b0c8e0', 0.25));
-    }
   }
 }

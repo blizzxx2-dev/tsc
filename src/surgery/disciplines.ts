@@ -1,6 +1,4 @@
 import { dist, type Vec } from '../core/math';
-import { hex } from '../render/color';
-import type { Gfx } from '../render/gfx';
 import { Fracture } from './ailments/fracture';
 import type { Operation } from './operation';
 import type { Pointer, ToolId } from './types';
@@ -260,11 +258,5 @@ export class ClosedReduction extends Fracture {
       return false;
     }
     return super.onPress(op, ptr, tool);
-  }
-
-  override draw(g: Gfx, op: Operation): void {
-    super.draw(g, op);
-    g.circle(this.tractionPoint.x, this.tractionPoint.y, 12, hex('#c8a060', 0.8));
-    g.arc(this.tractionPoint.x, this.tractionPoint.y, 18, 3, hex(this.traction >= TRACTION.needed ? '#9fd3a8' : '#f0c060'), this.traction);
   }
 }

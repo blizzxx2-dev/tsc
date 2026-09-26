@@ -1,11 +1,8 @@
 import { dist, pointSegment, type Vec } from '../../core/math';
-import { boneChipsArt, boneFragmentArt, drawBoneView, splintArt } from '../../art/boneView';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
-import { angleDiff, BloodPool, surfDisc } from '../entities';
+import { angleDiff, BloodPool } from '../entities';
 import { rotationAround } from '../gesture';
 import { Entity } from '../entity';
-import { onBody, PIN_HOLD, strokeCrosses, type Operation } from '../operation';
+import { onBody, strokeCrosses, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
 
 /** Fracture tuning (px, degrees, s). */
@@ -31,7 +28,7 @@ export const FRACTURE = {
   wrapBandPx: 6,
 };
 
-const RAD = Math.PI / 180;
+export const RAD = Math.PI / 180;
 
 export interface Fragment {
   pos: Vec;
@@ -54,7 +51,7 @@ export class Fracture extends Entity {
   fragments: Fragment[] = [];
   pins: Vec[] = [];
   pinned = 0;
-  private held: Fragment | null = null;
+  held: Fragment | null = null;
   private grabOff: Vec = { x: 0, y: 0 };
   /** Holding a fragment by its end turns it about its middle (INP-0106) instead of moving it. */
   private twist: Vec | null = null;
@@ -219,67 +216,7 @@ export class Fracture extends Entity {
     op.rate('good', at, 'Pinned');
   }
 
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, FRACTURE.segLen * this.fragments.length * 0.6, 0, 0.25, 0.05, 0.4);
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    // The vellum anatomy plate (ENG-0273): the inked bone, its breaks and, with guides on, where each fragment goes.
-    drawBoneView(g, this, op.elapsed, op.guides);
-    // Fracture sprites (ART-0223): broken ends jagged where fragments meet, chips round a comminuted
-    // break, and a compound fracture's end through the skin until it is set.
-    const n = this.fragments.length;
-    this.fragments.forEach((f, i) => {
-      boneFragmentArt(g, f.pos, f.rot, FRACTURE.segLen, { brokenA: i > 0, brokenB: i < n - 1, set: f.set, protrude: this.compound && i === n - 1 && !f.set, seed: i });
-      if (this.held === f) g.glow(f.pos.x, f.pos.y, 30, hex('#ffe0a0', 0.3));
-      // A pinned grip (INP-0107): the seconds it has left, as a ring round the fragment.
-      if (this.held === f && op.pinned?.e === this) g.arc(f.pos.x, f.pos.y, 34, 3, hex('#e8dcc0', 0.8), op.pinned.t / PIN_HOLD);
-    });
-    if (n >= 4) for (let i = 1; i < n; i++) if (!(this.fragments[i - 1].set && this.fragments[i].set)) boneChipsArt(g, this.pins[Math.min(this.pins.length - 1, i - 1)] ?? this.pos, 3, i);
-    if (this.roughlyAligned)
-      this.pins.forEach((q, i) => {
-        const done = i < this.pinned;
-        g.circle(q.x, q.y, done ? 5 : 8, hex(done ? '#9aa0a6' : '#ffebbe', done ? 1 : 0.5 + 0.4 * Math.sin(op.elapsed * 6)));
-        if (!done && op.guides) g.text(String(i + 1), q.x, q.y + 5, { size: 12, color: hex('#20100a'), align: 'center', shadow: false });
-      });
-    if (this.compound && !this.aligned) g.arc(this.pos.x, this.pos.y, 30, 2, hex('#ff8060', 0.4));
-    this.drawGuides(g);
-  }
-
-  /**
-   * The bone-setting HUD (UIX-0193): while a fragment is held, an alignment gauge (how far it sits
-   * from home, green inside the COOL tolerance) and a guide arc from its angle to the one it wants;
-   * once every piece is roughly set, a ghost of the splint that will go on.
-   */
-  private drawGuides(g: Gfx): void {
-    const f = this.held;
-    if (f && !f.set) {
-      const d = dist(f.pos, f.target);
-      const a = angleDiff(f.rot, f.targetRot);
-      const ok = (v: number, cool: number, good: number) => (v <= cool ? '#9fd3a8' : v <= good ? '#f0d070' : '#e07050');
-      // Gauge: two short bars over the fragment, distance and angle, full when home.
-      const gx = f.pos.x - 30;
-      const gy = f.pos.y - 44;
-      g.rect(gx, gy, 60, 5, hex('#000000', 0.5));
-      g.rect(gx, gy, 60 * Math.max(0, 1 - d / 40), 5, hex(ok(d, FRACTURE.coolPx, FRACTURE.goodPx)));
-      g.rect(gx, gy + 8, 60, 5, hex('#000000', 0.5));
-      g.rect(gx, gy + 8, 60 * Math.max(0, 1 - a / 35), 5, hex(ok(a, FRACTURE.coolDeg, FRACTURE.goodDeg)));
-      // Guide arc: from where it points to where it should, round its middle.
-      let turn = f.targetRot - f.rot;
-      while (turn > Math.PI) turn -= Math.PI * 2;
-      while (turn < -Math.PI) turn += Math.PI * 2;
-      if (Math.abs(turn) > FRACTURE.coolDeg * RAD) g.arc(f.pos.x, f.pos.y, FRACTURE.segLen / 2 + 8, 2, hex(ok(a, FRACTURE.coolDeg, FRACTURE.goodDeg), 0.8), Math.abs(turn) / (Math.PI * 2), Math.min(f.rot, f.rot + turn));
-      // And the home it's heading for.
-      g.circle(f.target.x, f.target.y, 4, hex('#f4ecd8', 0.6));
-    }
-    if (this.roughlyAligned && this.pinned === 0) {
-      const first = this.fragments[0];
-      const last = this.fragments[this.fragments.length - 1];
-      g.line(this.end(first.target, first.targetRot, -1), this.end(last.target, last.targetRot, 1), 34, hex('#d8ceb4', 0.14));
-    }
-  }
-
-  private end(c: Vec, rot: number, s: number): Vec {
+  end(c: Vec, rot: number, s: number): Vec {
     const h = (FRACTURE.segLen / 2 - 3) * s;
     return { x: c.x + Math.cos(rot) * h, y: c.y + Math.sin(rot) * h };
   }
@@ -315,9 +252,6 @@ export class BoneSplinter extends Entity {
       op.rate('good', ptr.pos, 'Splinter');
     }
   }
-  draw(g: Gfx): void {
-    g.line({ x: this.pos.x - 6, y: this.pos.y - 2 }, { x: this.pos.x + 6, y: this.pos.y + 2 }, 3, hex('#efe8d8'));
-  }
 }
 
 /** A fracture with its hidden splinters and a drift of bone dust. */
@@ -345,9 +279,6 @@ export class Splint extends Entity {
   }
   override hitTest(): boolean {
     return false;
-  }
-  draw(g: Gfx): void {
-    splintArt(g, this.a, this.b);
   }
 }
 
@@ -398,12 +329,5 @@ export class SplintWrap extends Entity {
       op.spawn(new Splint(this.a, this.b));
       op.rate('good', this.pos, 'Splinted');
     }
-  }
-  draw(g: Gfx, op: Operation): void {
-    splintArt(g, this.a, this.b, this.bound);
-    this.bound.forEach((done, i) => {
-      const c = this.bandAt(i);
-      if (!done) g.circle(c.x, c.y, 6, hex('#ffebbe', 0.35 + 0.3 * Math.sin(op.elapsed * 5 + i)));
-    });
   }
 }

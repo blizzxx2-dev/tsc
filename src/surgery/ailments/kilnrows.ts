@@ -4,17 +4,13 @@
  * gut-worms, a thrashing penitent and an Inquisitor's rotten molar.
  */
 import type { TinctureColor } from '../progress';
-import { drawDrape } from '../../art/drape';
-import { wormArt } from '../../art/wormArt';
 import { dist, pointSegment, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
 import { Entity } from '../entity';
-import { BloodPool, Embedded, Laceration, Sigil, SIGILS, StitchLine, surfDisc, surfLine } from '../entities';
+import { BloodPool, Embedded, Laceration, Sigil, SIGILS, StitchLine } from '../entities';
 import { onBody, type Operation, type PhaseDef } from '../operation';
 import type { Pointer, ToolId } from '../types';
 
-const TAU = Math.PI * 2;
+export const TAU = Math.PI * 2;
 
 // ============================================================ tincture sites
 
@@ -62,19 +58,6 @@ export class TinctureSite extends Entity {
   }
   override onRelease(): void {
     this.holdT = 0;
-  }
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, 46, 0, 0.2, 0.25, 0.4);
-  }
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    for (let i = 0; i < 6; i++) {
-      const a = (i / 6) * TAU + this.id;
-      const l = 26 + 6 * Math.sin(op.elapsed * 2 + i);
-      g.quadCurve({ x, y }, { x: x + Math.cos(a + 0.4) * l * 0.5, y: y + Math.sin(a + 0.4) * l * 0.5 }, { x: x + Math.cos(a) * l, y: y + Math.sin(a) * l }, 3, hex(this.color, 0.7));
-    }
-    g.circle(x, y, 6, hex(this.color));
-    if (this.holdT > 0) g.arc(x, y, 20, 3, hex('#9fd3a8'), this.holdT / this.holdTime);
   }
 }
 
@@ -137,21 +120,13 @@ export class DressedBud extends Entity {
       op.rate('cool', this.pos, 'Left in peace');
     }
   }
-
-  draw(g: Gfx): void {
-    const { x, y } = this.pos;
-    g.circleGrad(x, y, 30, hex('#c07860', 0.5), hex('#c07860', 0));
-    g.ellipse(x, y, 11, 9, -0.4, hex('#e8d8b8'), hex('#b8a080'));
-    g.circle(x - 3, y - 3, 3, hex('#fff6e0', 0.7));
-    if (this.holdT > 0) g.arc(x, y, 24, 3, hex('#d8f0c0'), Math.min(1, this.holdT / this.need));
-  }
 }
 
 export class HornBud extends Entity {
   state: 'drill' | 'disc' | 'bud' = 'drill';
   drillT = 0;
   private drilling = false;
-  private discPos: Vec;
+  discPos: Vec;
   private lifting = false;
   private overheated = false;
 
@@ -227,27 +202,6 @@ export class HornBud extends Entity {
       } else this.discPos = { ...this.pos };
     }
   }
-
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, 34, this.state === 'drill' ? 0 : 0.6, 0.15, 0, 0.4);
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    if (this.state === 'drill') {
-      g.circle(x, y, 22, hex('#e8e0cc'));
-      g.dashed(Array.from({ length: 25 }, (_, i) => ({ x: x + Math.cos((i / 24) * TAU) * 22, y: y + Math.sin((i / 24) * TAU) * 22 })), 2, hex('#6a5030', 0.7), 4, 4);
-      if (this.drillT > 0) g.arc(x, y, 28, 3, hex(this.drillT > 3 ? '#ff4030' : this.drillT >= 1.5 ? '#9fd3a8' : '#ffd080'), Math.min(1, this.drillT / 3));
-    }
-    if (this.state !== 'bud') {
-      const d = this.discPos;
-      g.circle(d.x, d.y, 18, hex('#d8d0b8', this.state === 'disc' ? 1 : 0));
-      if (this.state === 'disc') g.arc(d.x, d.y, 18, 2, hex('#8a7a5a'));
-    }
-    // The bud itself: a pale, ridged nub of horn.
-    const s = this.state === 'bud' ? 1 : 0.6;
-    g.ellipse(x, y - 4 * s, 9 * s, 14 * s, 0.2 + Math.sin(op.elapsed) * 0.02, hex('#c8b890', this.state === 'drill' ? 0.5 : 1), hex('#8a7a5a'));
-  }
 }
 
 // ============================================================ wadding and wound-fever
@@ -278,19 +232,6 @@ export class ClothFragment extends Entity {
       this.kill();
       op.rate('cool', this.pos, 'Wadding out');
     } else this.pos = { ...this.origin };
-  }
-  draw(g: Gfx): void {
-    const { x, y } = this.pos;
-    g.poly(
-      [
-        { x: x - 9, y: y - 6 },
-        { x: x + 8, y: y - 8 },
-        { x: x + 10, y: y + 5 },
-        { x: x - 6, y: y + 8 },
-      ],
-      hex('#6a4a3a'),
-      hex('#8a6a4a'),
-    );
   }
 }
 
@@ -384,13 +325,6 @@ export class Vessel extends Entity {
       }
     }
   }
-  draw(g: Gfx): void {
-    const { x, y } = this.pos;
-    g.circle(x, y, 8, hex('#8a1020'));
-    g.circle(x, y, 4, hex('#300408'));
-    this.stitch.draw(g);
-    if (this.heat > 0) g.arc(x, y, 14, 3, hex('#ff9040'), this.heat / 0.5);
-  }
 }
 
 /**
@@ -460,15 +394,6 @@ export class Amputation extends Entity {
       op.spawn(new Vessel({ x: this.a.x + (this.b.x - this.a.x) * f, y: this.a.y + (this.b.y - this.a.y) * f + (i % 2 ? 14 : -14) }, ang + Math.PI / 2));
     }
     op.say('It’s off. Now the vessels — tie them with thread, or sear them if he can bear it.');
-  }
-  override drawSurface(g: Gfx): void {
-    surfLine(g, [this.a, this.b], 12, (this.strokes / this.need) * 0.8, 0.3);
-  }
-  draw(g: Gfx, op: Operation): void {
-    // Tone guard (GAM-0126): the limb stays under the drapes; only the strip being sawn shows.
-    drawDrape(g, this.a, this.b, { material: op.def.drape });
-    g.dashed([this.a, this.b], 3, hex('#f0e0c0', 0.7), 10, 6);
-    g.text(`${this.strokes}/${this.need}`, this.pos.x, this.pos.y - 26, { size: 18, color: hex('#f0e0c0', 0.8), align: 'center' });
   }
 }
 
@@ -548,14 +473,6 @@ export class Worm extends Entity {
     this.pos = { ...this.origin };
     this.pulled = 0;
   }
-  draw(g: Gfx, op: Operation): void {
-    const o = this.origin;
-    const head = this.pos;
-    // The painted parasite worm (ART-0218), shared with the gut worm.
-    wormArt(g, { origin: o, head, t: op.elapsed, torn: this.torn, held: this.tension > 0.05, seed: this.id, width: 7 });
-    if (this.torn) g.arc(o.x, o.y, 12, 2, hex('#e8d0c0', 0.6), 1 - this.regrowT / this.regrow);
-    if (this.tension > 0.05) g.arc(head.x, head.y, 16, 3, hex(this.tension > 0.75 ? '#ff4030' : '#f5d76e'), Math.min(1, this.tension));
-  }
 }
 
 // ============================================================ agitation
@@ -567,7 +484,7 @@ export class Worm extends Entity {
  */
 export class Agitation extends Entity {
   level = 0.2;
-  private calmT = 0;
+  calmT = 0;
   private joltT = 0;
   private lastCount = -1;
   constructor(
@@ -621,14 +538,6 @@ export class Agitation extends Entity {
   }
   override onRelease(): void {
     this.calmT = 0;
-  }
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    const c = this.thrashing ? '#ff5040' : this.level > 0.45 ? '#f0c060' : '#9fd3a8';
-    g.glow(x, y, 40, hex(c, 0.15 + (this.thrashing ? 0.15 * Math.sin(op.elapsed * 14) : 0)));
-    g.arc(x, y, 22, 4, hex(c, 0.85), this.level);
-    g.text('restless', x, y + 38, { size: 14, font: 'italic', color: hex(c, 0.8), align: 'center' });
-    if (this.calmT > 0) g.arc(x, y, 28, 3, hex('#9fd3a8'), this.calmT / 0.6);
   }
 }
 
@@ -694,23 +603,6 @@ export class Molar extends Entity {
     this.grabbed = false;
     this.pos = { ...this.origin };
   }
-  draw(g: Gfx): void {
-    const { x, y } = this.pos;
-    g.poly(
-      [
-        { x: x - 13, y: y - 10 },
-        { x: x + 13, y: y - 10 },
-        { x: x + 11, y: y + 8 },
-        { x: x + 4, y: y + 14 },
-        { x: x - 4, y: y + 14 },
-        { x: x - 11, y: y + 8 },
-      ],
-      hex('#b8a878'),
-      hex('#e8dcc0'),
-    );
-    g.circle(x + 3, y - 3, 4, hex('#3a2a18'));
-    for (let i = 0; i < 3; i++) g.circle(x - 8 + i * 8, y - 20, 2.5, hex(i < this.rocks ? '#9fd3a8' : '#605040'));
-  }
 }
 
 /**
@@ -749,5 +641,4 @@ export class Jaw extends Entity {
       op.say('He bit down! Don’t leave the blade idling in his mouth!');
     }
   }
-  draw(): void {}
 }

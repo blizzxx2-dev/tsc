@@ -5,15 +5,13 @@
  */
 import { fxRandom } from '../fxRandom';
 import { dist, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
 import { Entity } from '../entity';
-import { BloodPool, Embedded, Laceration, surfDisc } from '../entities';
+import { BloodPool, Embedded, Laceration } from '../entities';
 import { LEAD_DISH, onBody, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
 import { Muffler } from '../bosses/common';
 
-const TAU = Math.PI * 2;
+export const TAU = Math.PI * 2;
 
 // ============================================================ choir-throat
 
@@ -69,18 +67,6 @@ export class VocalFold extends Entity {
     op.rate(this.restLeft > this.rest * 0.4 ? 'cool' : 'good', this.pos, 'Fold excised');
     return true;
   }
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    const sing = this.singing;
-    const w = sing ? 1 + 0.2 * Math.sin(op.elapsed * 30) : 1;
-    g.ellipse(x - 8, y, 6 * w, 18, 0.1, hex('#e0a0a8'), hex('#a05060'));
-    g.ellipse(x + 8, y, 6 * w, 18, -0.1, hex('#e0a0a8'), hex('#a05060'));
-    if (sing) g.glow(x, y, 40, hex('#b060ff', 0.25)); // curse-violet: Choir vocal fold
-    // Visual metronome: how far through the verse or the rest.
-    const cyc = this.verse + this.rest;
-    const c = this.t % cyc;
-    g.arc(x, y, 26, 3, hex(sing ? '#b060ff' : '#9fd3a8', 0.8), sing ? c / this.verse : (c - this.verse) / this.rest); // curse-violet: Choir vocal fold
-  }
 }
 
 // ============================================================ the mouth beneath
@@ -126,16 +112,6 @@ export class Remnant extends Entity {
       op.cues.push('burn');
       op.rate('good', this.pos, 'Remnant seared');
     }
-  }
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    for (let i = 0; i < 6; i++) {
-      const a = (i / 6) * TAU + Math.sin(op.elapsed * 10 + i) * 0.3;
-      g.line({ x, y }, { x: x + Math.cos(a) * 14, y: y + Math.sin(a) * 14 }, 2, hex('#6a3040'));
-    }
-    g.circle(x, y, 10, hex('#8a4050'));
-    g.ellipse(x, y + 2, 5, 2, 0, hex('#200008'));
-    g.arc(x, y, 18, 2, hex('#ff9040', 0.7), this.hp / 40);
   }
 }
 
@@ -255,26 +231,6 @@ export class Cyst extends Entity {
       op.say('Out, and not a word more out of it.');
     } else this.pos = { ...this.origin };
   }
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.origin, this.r * 1.8, this.freed ? 0.8 : 0, 0.2, 0, 0.8);
-  }
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    const breath = 1 + 0.04 * Math.sin(op.elapsed * 2);
-    g.circleGrad(x, y, this.r * breath, hex('#d8c0a8'), hex('#8a6a5a', 0.9));
-    // A mouth, talking.
-    const talk = 0.3 + 0.7 * Math.abs(Math.sin(op.elapsed * 7));
-    g.ellipse(x, y + 4, this.r * 0.45, this.r * 0.15 * talk, 0, hex('#300810'));
-    if (!this.freed)
-      g.dashed(
-        Array.from({ length: 41 }, (_, i) => ({ x: x + Math.cos((i / 40) * TAU) * (this.r + 24), y: y + Math.sin((i / 40) * TAU) * (this.r + 24) })),
-        1.5,
-        hex('#f0e0c0', 0.35),
-        6,
-        6,
-      );
-    if (this.integrity < 1) g.arc(x, y, this.r + 6, 2, hex('#ff5040'), this.integrity);
-  }
 }
 
 // ============================================================ under the Hollow Moon
@@ -288,8 +244,8 @@ export class Cyst extends Entity {
 export class Infant extends Entity {
   vigour = 100;
   grip = 0;
-  private held = false;
-  private moving = false;
+  held = false;
+  moving = false;
   private lastPos: Vec;
   private rough = false;
   readonly origin: Vec;
@@ -358,16 +314,6 @@ export class Infant extends Entity {
       op.say('…A cry. A good, loud cry. Hollow Night or no.');
     } else this.pos = { ...this.origin };
   }
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    g.glow(x, y, 50, hex('#ffe0c0', 0.2 + 0.05 * Math.sin(op.elapsed * 2)));
-    g.ellipse(x, y, 30, 22, 0.2, hex('#e8b8a0'), hex('#f8d8c8'));
-    g.circle(x + 18, y - 12, 13, hex('#f0c8b0'));
-    // Vigour bar: the child's own vitals.
-    g.rect(x - 30, y + 30, 60, 5, hex('#301010', 0.8));
-    g.rect(x - 30, y + 30, (60 * this.vigour) / 100, 5, hex(this.vigour > 40 ? '#8fe0a0' : '#ff6040'));
-    if (this.held && !this.moving) g.arc(x, y, 38, 3, hex(this.grip > 2.5 ? '#ff4030' : this.grip >= 0.6 ? '#9fd3a8' : '#f5d76e'), Math.min(1, this.grip / 2.5));
-  }
 }
 
 // ============================================================ hexstone shot
@@ -431,15 +377,7 @@ export class HexBall extends Embedded {
     this.pos = { ...this.origin };
     op.sayOnce('hex-dish', 'Into the lead dish — nowhere else!');
   }
-  override draw(g: Gfx, op: Operation): void {
-    const d = LEAD_DISH;
-    g.ellipse(d.x, d.y, 44, 20, 0, hex('#6a6a70'), hex('#9a9aa0'));
-    g.text('lead dish', d.x, d.y + 38, { size: 14, font: 'italic', color: hex('#c8c8d0', 0.7), align: 'center' });
-    super.draw(g, op);
-  }
 }
-
-const BUD_KINDS = ['tooth', 'finger', 'eye'] as const;
 
 /**
  * A mutagenic bud: a tooth, a finger or an eye pushing out of the flesh. Cut it
@@ -495,19 +433,5 @@ export class Bud extends Entity {
       op.cues.push('burn');
       op.rate('good', this.pos, 'Seared out');
     }
-  }
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    const s = 0.6 + 0.4 * Math.min(1, 1 - this.rootT / 8);
-    const k = BUD_KINDS[this.kind];
-    if (k === 'tooth') g.tri(x - 6 * s, y + 6, x + 6 * s, y + 6, x, y - 12 * s, hex('#f0ead8'));
-    else if (k === 'finger') g.ellipse(x, y - 4 * s, 5 * s, 13 * s, 0.3, hex('#e0b8a0'), hex('#c89880'));
-    else {
-      g.circle(x, y, 9 * s, hex('#f0f0e8'));
-      g.circle(x + Math.sin(op.elapsed * 2) * 2, y, 4 * s, hex('#304060'));
-    }
-    if (!this.rooted) g.arc(x, y, 16, 2, hex('#e05040', 0.6), this.rootT / 8);
-    else g.arc(x, y, 16, 2, hex('#6a2030', 0.8));
-    if (this.heat > 0) g.arc(x, y, 20, 3, hex('#ff9040'), this.heat / 0.8);
   }
 }
