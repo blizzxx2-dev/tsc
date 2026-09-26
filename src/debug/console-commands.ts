@@ -9,7 +9,7 @@ const RANKS: Rank[] = ['XS', 'S', 'A', 'B', 'C'];
 
 export interface ConsoleHooks {
   /** Visual debug overlays (ENG-0232/0233). */
-  visual?: { shapes: boolean; targets: boolean };
+  visual?: { shapes: boolean; targets: boolean; grid?: boolean };
   /** Telemetry controls, when the telemetry module is present. */
   telemetry?: { setEnabled(on: boolean): void; enabled(): boolean; dump(): unknown[] };
 }
@@ -180,6 +180,15 @@ export function buildCommands(api: DebugApi, hooks: ConsoleHooks = {}): CommandR
         run: (_a, [x]) => {
           v.shapes = x === undefined ? !v.shapes : boolArg(x);
           return `overlay ${v.shapes ? 'on' : 'off'}`;
+        },
+      },
+      {
+        name: 'grid',
+        usage: '[on|off]',
+        help: 'placement grid in at(x, y) units; a click copies the point (Alt+F2)',
+        run: (_a, [x]) => {
+          v.grid = x === undefined ? !v.grid : boolArg(x);
+          return `grid ${v.grid ? 'on' : 'off'}`;
         },
       },
       {

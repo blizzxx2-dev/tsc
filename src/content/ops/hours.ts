@@ -230,3 +230,6 @@ Object.defineProperty(OP_5_8, 'patient', {
   get: () => (complineHost(flags) === 'stroh' ? 'Inquisitor Stroh, Ash Tribunal' : 'The Burgomaster of Kessendorf'),
   enumerable: true,
 });
+
+// Dev hot-reload (CON-0011): an edit here restarts the running operation (src/scenes/operation.ts).
+if (import.meta.hot) import.meta.hot.accept((m) => (globalThis as { __opHotReload?: (m: unknown) => void }).__opHotReload?.(m));

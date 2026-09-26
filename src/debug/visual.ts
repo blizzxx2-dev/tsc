@@ -39,6 +39,8 @@ export function hitOutline(e: Pick<Entity, 'pos' | 'hitTest'>, reach = 140, step
 export class VisualDebug {
   shapes = false;
   targets = false;
+  /** Placement grid (CON-0013): the field in `at(x, y)` units, with the cursor's point; a click copies it. */
+  grid = false;
   private enlarged: string | null = null;
   private rects: { name: string; x: number; y: number; w: number; h: number }[] = [];
 
@@ -46,9 +48,10 @@ export class VisualDebug {
     game.overlays?.add({ id: 'debug-visual', order: 120, draw: (g) => this.draw(g) });
   }
 
-  onKey(e: { code: string; shiftKey: boolean }): boolean {
+  onKey(e: { code: string; shiftKey: boolean; altKey?: boolean }): boolean {
     if (e.code !== 'F2') return false;
-    if (e.shiftKey) this.targets = !this.targets;
+    if (e.altKey) this.grid = !this.grid;
+    else if (e.shiftKey) this.targets = !this.targets;
     else this.shapes = !this.shapes;
     return true;
   }
@@ -59,8 +62,26 @@ export class VisualDebug {
   }
 
   draw(g: Gfx): void {
+    if (this.grid) this.drawGrid(g);
     if (this.shapes) this.drawShapes(g);
     if (this.targets) this.drawTargets(g);
+  }
+
+  /** The placement grid (CON-0013): 50-unit lines about the field centre, entity bounds, and the cursor's `at()`. */
+  private drawGrid(g: Gfx): void {
+    const faint = hex('#60d8ff', 0.25);
+    for (let x = -450; x <= 450; x += 50)
+      g.line({ x: FIELD.cx + x, y: FIELD.cy - FIELD.ry - 20 }, { x: FIELD.cx + x, y: FIELD.cy + FIELD.ry + 20 }, x === 0 ? 2 : 1, x === 0 ? CYAN : faint);
+    for (let y = -250; y <= 250; y += 50)
+      g.line({ x: FIELD.cx - FIELD.rx - 20, y: FIELD.cy + y }, { x: FIELD.cx + FIELD.rx + 20, y: FIELD.cy + y }, y === 0 ? 2 : 1, y === 0 ? CYAN : faint);
+    for (let x = -400; x <= 400; x += 100) g.text(String(x), FIELD.cx + x, FIELD.cy + FIELD.ry + 36, { size: 16, color: CYAN, align: 'center' });
+    for (let y = -200; y <= 200; y += 100) g.text(String(y), FIELD.cx - FIELD.rx - 30, FIELD.cy + y + 5, { size: 16, color: CYAN, align: 'right' });
+    const scene = this.op();
+    if (scene) for (const e of scene.op.entities) if (e.alive) g.rectLine(e.pos.x - 24, e.pos.y - 24, 48, 48, 1, hex('#50ff90', 0.6));
+    const p = this.game.input.pos;
+    const at = `at(${Math.round(p.x - FIELD.cx)}, ${Math.round(p.y - FIELD.cy)})`;
+    g.text(at, p.x + 16, p.y - 12, { size: 16, color: AMBER });
+    if (this.game.input.pressed) void navigator.clipboard?.writeText(`[${Math.round(p.x - FIELD.cx)}, ${Math.round(p.y - FIELD.cy)}]`).catch(() => undefined);
   }
 
   private drawShapes(g: Gfx): void {

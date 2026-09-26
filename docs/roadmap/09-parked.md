@@ -493,7 +493,7 @@ Current priorities: [docs/ROADMAP.md](../ROADMAP.md#priorities) (tiers in `prior
 - [ ] UIX-0201 · Beta · P1 · M · CJK text support — dynamic glyph atlas pages for Simplified Chinese and Japanese (Noto Serif CJK subset per language), line breaking by character, blackletter titles fall back to a matching CJK display face
 - [ ] UIX-0205 · Release · P0 · M · Screenshot regression suite — Playwright captures every scene and modal at 1280×720, 1280×800 and 2560×1440 in English and one CJK language; diffs reviewed on each RC
 
-## Commissioned painted art (the game draws its art procedurally) (91)
+## Commissioned painted art (the game draws its art procedurally) (96)
 
 - [ ] ART-0015 · M0 · P1 · M · Costume guide: Landsknecht slashed doublets, mercy-order habits, Pyre inquisitors, Watch halberdiers, guild surgeons, the Hollow Choir — 1 turnaround sheet per faction
 - [ ] ART-0016 · M0 · P1 · M · Material library sheet: brass, pewter, tallow, waxed linen, gut thread, leech skin, vellum, stained glass — painted swatch + lighting notes each
@@ -586,3 +586,8 @@ Current priorities: [docs/ROADMAP.md](../ROADMAP.md#priorities) (tiers in `prior
 - [ ] ENG-0280 · Beta · P1 · M · Final tool sprites — state animation (lancet glint, brand heat ramp, tongs grip, lens shimmer) replacing vector-drawn `toolIcon`
 - [ ] ENG-0281 · Beta · P1 · S · Final LUTs for Chapters 3–5 — every location and per-Malison arena graded and signed off
 - [ ] UIX-0195 · Beta · P1 · M · Final UI art pass for Ch3–5 — chapter cards, title cards and discipline HUDs match the style guide; signed off by the art director
+- [ ] CON-0034 · Demo · P2 · S · Flavour dressing — dice-wound pattern and tavern-straw overlay on flesh field
+- [ ] CON-0036 · Demo · P1 · S · Second arrow variant — horn-fletched, broadhead; appears on retry with a new seed for replay variety
+- [ ] CON-0071 · Demo · P2 · S · Hymn-token prop — one sigil matches Emmerich's (visual continuity with s1-end)
+- [ ] CON-0249 · Beta · P0 · M · Final-art integration audit — every op's entities use final sprites/shaders; no placeholder flagged assets remain (asset manifest check)
+- [ ] CON-0251 · Beta · P1 · S · Op briefing images — woodcut briefing plate per op (37 campaign ops) referenced in data

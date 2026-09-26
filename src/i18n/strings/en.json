@@ -1193,5 +1193,8 @@
   "ui.trials.loom_daily": "The Daily Loom",
   "ui.trials.loom_daily_blurb": "Today’s weave: the same three verses for every surgeon in the Guild.",
   "ui.trials.loom_random": "A Loom of Your Own",
-  "ui.trials.loom_random_blurb": "Three verses the shuttle chose for you alone."
+  "ui.trials.loom_random_blurb": "Three verses the shuttle chose for you alone.",
+  "label.salve_on_eschar": "Salve on eschar",
+  "label.not_the_dish": "Not the dish",
+  "ui.briefing.xs_goal": "XS {xs}: no Bad or Miss, vitals never under {floor}"
 }

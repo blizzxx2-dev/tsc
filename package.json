@@ -65,7 +65,8 @@
     "art:tileable": "node scripts/art/check-tileable.ts",
     "art:export": "node scripts/art/export.ts",
     "predev": "node scripts/art/check-models.mjs",
-    "release:checksums": "node scripts/release-checksums.mjs"
+    "release:checksums": "node scripts/release-checksums.mjs",
+    "sim": "vite-node scripts/sim.ts --"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.3",

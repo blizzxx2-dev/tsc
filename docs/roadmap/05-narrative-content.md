@@ -283,52 +283,50 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0008 · Demo · P1 · S · Flag store — named boolean/int campaign flags (cantorMercy, litanySeenCount) persisted in save; unit tests for set/get/serialise
 - [x] CON-0009 · Demo · P1 · S · Story script conditionals — `Line` gains optional `if` (flag expression) so s1-end/s2-end Litany-conditional lines work; parser tested
 - [x] CON-0010 · Demo · P1 · S · Choice nodes in StoryDef — 2–3 option choices writing flags; used by s2-4
-- [ ] CON-0011 · Demo · P2 · S · Op hot-reload in dev — editing an op data file restarts the running operation with same seed within 1 s
+- [x] CON-0011 · Demo · P2 · S · Op hot-reload in dev — editing an op data file restarts the running operation with same seed within 1 s
 
 ### Authoring tools
-- [ ] CON-0012 · Demo · P1 · M · Dev op-sandbox scene — pick any op/phase, jump to phase N, toggle invulnerable vitals, freeze timer; available only in dev builds
-- [ ] CON-0013 · Demo · P1 · M · Placement overlay — in sandbox, shows field grid in `at(x,y)` units and entity bounds; click copies coordinates to clipboard
-- [ ] CON-0014 · Demo · P1 · S · Headless op simulator CLI — `npm run sim op2-3 --bot perfect|average|poor` runs the op with a scripted bot and prints score, time, rank, vitals min
+- [x] CON-0012 · Demo · P1 · M · Dev op-sandbox scene — pick any op/phase, jump to phase N, toggle invulnerable vitals, freeze timer; available only in dev builds _(the dev console: `op`, `phase`, `god`, `nodrain`, `time`)_
+- [x] CON-0013 · Demo · P1 · M · Placement overlay — in sandbox, shows field grid in `at(x,y)` units and entity bounds; click copies coordinates to clipboard
+- [x] CON-0014 · Demo · P1 · S · Headless op simulator CLI — `npm run sim op2-3 --bot perfect|average|poor` runs the op with a scripted bot and prints score, time, rank, vitals min
 - [x] CON-0016 · Demo · P1 · S · Rank-threshold report — sim runs every op with 3 bots × 20 seeds and outputs a CSV of scores vs S/A/B thresholds
-- [ ] CON-0017 · Alpha · P1 · M · Phase timeline visualiser — renders per-op phase durations and entity counts from sim runs as an HTML report
-- [ ] CON-0018 · Alpha · P2 · M · Story scene previewer — dev scene renders any StoryDef with a flag override panel
+- [x] CON-0017 · Alpha · P1 · M · Phase timeline visualiser — renders per-op phase durations and entity counts from sim runs as an HTML report
+- [x] CON-0018 · Alpha · P2 · M · Story scene previewer — dev scene renders any StoryDef with a flag override panel _(the dev console: `story <id>` with `flag` overrides)_
 
 ## CON · Epic 2 — Operation-authoring QA and balance (applies to every op)
 - [x] CON-0019 · Demo · P0 · S · Op acceptance checklist `docs/content/op-checklist.md` — winnable with perfect bot, loseable with poor bot, all callouts ≤ 28 chars/line, briefing present, case note present, rank thresholds from sim, no softlock
 - [x] CON-0020 · Demo · P0 · M · Softlock test — for every op, sim with a "do nothing" bot must end in `lost` before timeLimit + 5 s; with perfect bot must reach `won`
 - [x] CON-0021 · Demo · P0 · S · Determinism test — each op run twice with same seed and inputs yields identical score and final vitals
-- [ ] CON-0022 · Demo · P1 · S · Difficulty curve targets — Ch1 op average-bot win rate 95→80%, Ch2 85→65% (op2-5 boss lowest); sim report checked in CI
-- [ ] CON-0023 · Demo · P1 · S · Time budget rule — perfect-bot clear time ≤ 55% of timeLimit, average-bot ≤ 85%; violations fail report
+- [x] CON-0022 · Demo · P1 · S · Difficulty curve targets — Ch1 op average-bot win rate 95→80%, Ch2 85→65% (op2-5 boss lowest); sim report checked in CI _(superseded by GAM-0185: novice ≥ 95 % on every op)_
+- [x] CON-0023 · Demo · P1 · S · Time budget rule — perfect-bot clear time ≤ 55% of timeLimit, average-bot ≤ 85%; violations fail report
 - [x] CON-0024 · Demo · P1 · S · Tool-introduction ledger — table of which op first requires each tool and the Litany; demo introduces each at most once per op, lens last (op2-2)
 - [x] CON-0027 · Alpha · P1 · S · Apply checklist — softlock and determinism tests to every Ch3–5 op (CI gate for the content folder)
-- [ ] CON-0029 · Beta · P1 · S · Difficulty modes content — Easy (+40% time, −30% drain) and Hard (−20% time, stricter COOL window) values set per op and validated by sim
+- [x] CON-0029 · Beta · P1 · S · Difficulty modes content — Easy (+40% time, −30% drain) and Hard (−20% time, stricter COOL window) values set per op and validated by sim _(Novice / Surgeon / Master in src/surgery/difficulty.ts)_
 
 ## CON · Epic 3 — Chapter I operations: demo polish
 
 ### op1-1 "A Tavern Knife" (Jost, drover) — tutorial: thread, leech, salve
 - [x] CON-0030 · Demo · P0 · S · Split into guided tutorial phases — stitch-only phase cannot fail (vitals floor 40) until first successful stitch
-- [ ] CON-0031 · Demo · P1 · S · Reposition lacerations — so neither overlaps HUD safe area at 16:9, 16:10 and Steam Deck 1280×800
-- [ ] CON-0032 · Demo · P1 · S · Blood-pool phase — pool spawns over the second laceration so "drain before stitch" is demonstrated, not just told
+- [x] CON-0031 · Demo · P1 · S · Reposition lacerations — so neither overlaps HUD safe area at 16:9, 16:10 and Steam Deck 1280×800
+- [x] CON-0032 · Demo · P1 · S · Blood-pool phase — pool spawns over the second laceration so "drain before stitch" is demonstrated, not just told _(superseded by GAM-0191: the first op keeps its pool in plain sight)_
 - [x] CON-0033 · Demo · P1 · S · Rank thresholds re-derived from sim — currently S 3950 / A 3150 / B 2350; XS requires no BAD/MISS
-- [ ] CON-0034 · Demo · P2 · S · Flavour dressing — dice-wound pattern and tavern-straw overlay on flesh field
 
 ### op1-2 "The Barbed Shaft" (Pieter, militiaman) — lancet nicks, tongs
-- [ ] CON-0035 · Demo · P0 · S · Barb rule clarity — each required nick marked with a faint ink tick until performed; tearing an un-nicked barb spawns a 1.6× bleed laceration + BAD (test)
-- [ ] CON-0036 · Demo · P1 · S · Second arrow variant — horn-fletched, broadhead; appears on retry with a new seed for replay variety
+- [x] CON-0035 · Demo · P0 · S · Barb rule clarity — each required nick marked with a faint ink tick until performed; tearing an un-nicked barb spawns a 1.6× bleed laceration + BAD (test)
 - [ ] CON-0037 · Demo · P1 · S · Post-extraction bleed phase tuned — so average bot keeps vitals > 40
 - [ ] CON-0038 · Demo · P2 · S · Horned-folk arrow codex unlock — entry unlocks on first clean extraction (test)
 
 ### op1-3 "Powder Burns" (Anno, gunsmith's apprentice) — tongs on eschar, incision, tincture intro
-- [ ] CON-0039 · Demo · P0 · S · Eschar-before-salve rule enforced — salving over eschar gives BAD and a festering rot spawn after 10 s (test)
-- [ ] CON-0041 · Demo · P1 · S · Tincture intro moment — scripted vitals dip to 30 at shot extraction with callout, guaranteed once
-- [ ] CON-0042 · Demo · P1 · S · Lead-fragment count 3–5 by seed — lens not available so all fragments visible
-- [ ] CON-0043 · Demo · P2 · S · Burst-barrel shrapnel pattern — radial; instead of random scatter
+- [x] CON-0039 · Demo · P0 · S · Eschar-before-salve rule enforced — salving over eschar gives BAD and a festering rot spawn after 10 s (test)
+- [x] CON-0041 · Demo · P1 · S · Tincture intro moment — scripted vitals dip to 30 at shot extraction with callout, guaranteed once _(shipped as op1-3 opening at 70 vitals with the tincture callout)_
+- [x] CON-0042 · Demo · P1 · S · Lead-fragment count 3–5 by seed — lens not available so all fragments visible
+- [x] CON-0043 · Demo · P2 · S · Burst-barrel shrapnel pattern — radial; instead of random scatter
 
 ### op1-4 "Pestilent Humours" (named vagrant, Tanners' Rows) — buboes, rot, grubs, brand intro
 - [ ] CON-0044 · Demo · P0 · S · Rot regrowth timer shown as a creeping edge — regrowth rate tuned so average bot clears it in ≤ 2 passes
-- [ ] CON-0045 · Demo · P1 · S · Bubo lancing — sloppy lance (angle > 30° off axis) leaves a festering wound; clean lance COOL (test)
-- [ ] CON-0046 · Demo · P1 · S · Pus-on-open-cut rule — pus contacting an unstitched laceration spawns rot (test)
-- [ ] CON-0047 · Demo · P1 · S · Brand intro — grubs flee from brand heat; searing healthy flesh gives MISS and −2 vitals
+- [x] CON-0045 · Demo · P1 · S · Bubo lancing — sloppy lance (angle > 30° off axis) leaves a festering wound; clean lance COOL (test) _(superseded by the Overcut rule: a cut longer than the bubo spills it)_
+- [x] CON-0046 · Demo · P1 · S · Pus-on-open-cut rule — pus contacting an unstitched laceration spawns rot (test)
+- [x] CON-0047 · Demo · P1 · S · Brand intro — grubs flee from brand heat; searing healthy flesh gives MISS and −2 vitals
 - [ ] CON-0048 · Demo · P2 · S · Stroh observer overlay — silhouette at field edge during this op only
 
 ### op1-5 "The Hour of Matins" (Emmerich, page-boy) — sigils, Malison boss, Litany intro
@@ -336,13 +334,13 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0050 · Demo · P0 · S · Litany teaching beat — first Malison enrage forces a callout prompting the star gesture; op still winnable without Litany (perfect bot test)
 - [ ] CON-0051 · Demo · P1 · S · Sigil trace phase — stroke order shown as numbered ink dots on first attempt, hidden on retry ≥ 2
 - [ ] CON-0052 · Demo · P1 · S · Mote spawn cap — ≤ 6 alive; so the field never becomes unreadable
-- [ ] CON-0053 · Demo · P1 · S · Final phase — MATINS word seared into flesh as a visual when boss dies (matches s1-end)
-- [ ] CON-0054 · Demo · P1 · S · Boss-fail tips — 3 context tips cycling on retry ("Brand only when the eye is open", etc.)
+- [x] CON-0053 · Demo · P1 · S · Final phase — MATINS word seared into flesh as a visual when boss dies (matches s1-end)
+- [x] CON-0054 · Demo · P1 · S · Boss-fail tips — 3 context tips cycling on retry ("Brand only when the eye is open", etc.) _(BOS-0009: Ilse’s tip for the phase it was lost in)_
 
 ## CON · Epic 4 — Chapter II operations: demo polish
 
 ### op2-1 "Gravehound" (Tomas, scout) — claw rakes, lodged teeth, venom
-- [ ] CON-0055 · Demo · P0 · S · Venom-on-bite tincture interaction — tincture held on bite for 1.5 s neutralises venom; wrong spot gives MISS (test)
+- [x] CON-0055 · Demo · P0 · S · Venom-on-bite tincture interaction — tincture held on bite for 1.5 s neutralises venom; wrong spot gives MISS (test)
 - [ ] CON-0056 · Demo · P1 · S · Claw-rake lacerations as parallel triples — stitch zig-zag detection works on parallel close wounds (no cross-stitch mis-assignment)
 - [ ] CON-0057 · Demo · P1 · S · Tooth count 3–4 — one tooth broken (tongs twice) for variety
 - [ ] CON-0058 · Demo · P2 · S · Grave-dirt contamination — 2 dirt spots must be drained before salve or salve rates BAD
@@ -351,8 +349,8 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0059 · Demo · P0 · S · Rename op title and all references to "The Black Seam" — hexshard visual is black glass with a heartbeat pulse, no green
 - [ ] CON-0060 · Demo · P0 · S · Lens tutorial — first hidden shard revealed automatically under the lens with callout; rest must be found (4–6 by seed)
 - [ ] CON-0061 · Demo · P1 · S · Spoiling flesh around unfound shards spreads at 1 radius/10 s — spread rate tuned from sim
-- [ ] CON-0062 · Demo · P1 · S · Thick-hide stitching — mountain-folk flesh tint and 1.3× thread-pass requirement (Orsa's "strong arm" line)
-- [ ] CON-0063 · Demo · P2 · S · Hexshard handling — shards dropped only in the lead dish tray; dropping elsewhere = BAD (plants Whisper system)
+- [x] CON-0062 · Demo · P1 · S · Thick-hide stitching — mountain-folk flesh tint and 1.3× thread-pass requirement (Orsa's "strong arm" line)
+- [x] CON-0063 · Demo · P2 · S · Hexshard handling — shards dropped only in the lead dish tray; dropping elsewhere = BAD (plants Whisper system)
 
 ### op2-3 "Brood-Mother's Kiss" (Henning, forager) — venom, egg sacs, grubs
 - [x] CON-0064 · Demo · P0 · S · Egg-sac hatch timer shown as swelling — lanced sacs spill grubs to be branded; unlanced hatch scatters 3× grubs (test)
@@ -363,29 +361,28 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ### op2-4 "The Silenced Cantor" (lay-cantor of the Hollow Choir) — igniting sigils, swallowed object
 - [ ] CON-0068 · Demo · P0 · S · Igniting sigils — each sigil ignites on a stagger (not all at once); untraced ignition causes hexfire burn
 - [ ] CON-0069 · Demo · P1 · S · Swallowed object phase — lens reveals a hymn-token in the stomach; incision + tongs extraction; item appears in codex
-- [ ] CON-0070 · Demo · P1 · S · `cantorMercy` flag read — if Kreuzer chose to argue with Stroh, op starts with +10 vitals (Ilse prepared him); test
-- [ ] CON-0071 · Demo · P2 · S · Hymn-token prop — one sigil matches Emmerich's (visual continuity with s1-end)
+- [x] CON-0070 · Demo · P1 · S · `cantorMercy` flag read — if Kreuzer chose to argue with Stroh, op starts with +10 vitals (Ilse prepared him); test
 
 ### op2-5 "The Hour of Lauds" (Jorg, standard-bearer) — antiphonal Malison boss
 - [x] CON-0072 · Demo · P0 · M · Lauds antiphonal pair — two linked bodies joined by a light-thread; damaging one makes the other "answer" (heals 15% + spawns a cut) unless struck within a 1.2 s response window
 - [x] CON-0073 · Demo · P0 · S · Thread-sever option — lancet then gut thread on the light-thread splits the pair for 8 s
 - [x] CON-0074 · Demo · P1 · S · Dawn-flare hazard — every 20 s the field flares white and the lens is blinded 3 s; warned 1 s ahead
-- [ ] CON-0075 · Demo · P1 · S · Phase 3 fusion — halves fuse into one body with a Voices ring; brand the Voices as currently implemented
+- [x] CON-0075 · Demo · P1 · S · Phase 3 fusion — halves fuse into one body with a Voices ring; brand the Voices as currently implemented _(superseded by the Lauds redesign: split, then Dawn)_
 - [ ] CON-0076 · Demo · P1 · S · Litany synergy — during Litany both halves can be hit in one window; sim confirms Litany is not mandatory
-- [ ] CON-0077 · Demo · P1 · S · Boss-fail tips (3) and phase checkpoint — on fail after phase 2, retry offers "start at the Choir" with rank capped at B
-- [ ] CON-0078 · Demo · P1 · S · Closing phase — LAUDS word seared over the heart; banner-cloth fibres to tweeze from the wound (tongs) as the final flourish
+- [x] CON-0077 · Demo · P1 · S · Boss-fail tips (3) and phase checkpoint — on fail after phase 2, retry offers "start at the Choir" with rank capped at B _(GAM-0178: the checkpoint restart flags the run and blocks XS)_
+- [x] CON-0078 · Demo · P1 · S · Closing phase — LAUDS word seared over the heart; banner-cloth fibres to tweeze from the wound (tongs) as the final flourish
 
 ### Demo briefing and diagnosis content (all 10 ops)
-- [ ] CON-0079 · Demo · P1 · S · Briefing schema — patient name/age/trade, presenting complaint, diagnosis (≤ 160 chars), tools unlocked, objective list, woodcut plate id
+- [x] CON-0079 · Demo · P1 · S · Briefing schema — patient name/age/trade, presenting complaint, diagnosis (≤ 160 chars), tools unlocked, objective list, woodcut plate id
 - [x] CON-0080 · Demo · P1 · S · Ch1 briefings rewritten for op1-1…op1-5 — diagnosis strings match the scenes (vagrant renamed), objective list matches phases
-- [ ] CON-0081 · Demo · P1 · S · Ch2 briefings rewritten for op2-1…op2-5 — "The Black Seam" retitle, Lauds described as "two voices beneath the sternum"
-- [ ] CON-0082 · Demo · P1 · S · Objective-to-phase test — every briefing objective maps to at least one phase id; test fails on orphans
+- [x] CON-0081 · Demo · P1 · S · Ch2 briefings rewritten for op2-1…op2-5 — "The Black Seam" retitle, Lauds described as "two voices beneath the sternum"
+- [x] CON-0082 · Demo · P1 · S · Objective-to-phase test — every briefing objective maps to at least one phase id; test fails on orphans
 - [ ] CON-0084 · Demo · P2 · S · Patient ages and trades consistent between briefing — scene text and case note (content test cross-references ids)
 
 ### Demo retry and replay content
 - [x] CON-0085 · Demo · P1 · S · Chapter-select for demo — replay any cleared op; best rank shown per op
 - [ ] CON-0086 · Demo · P1 · S · Seed variants — each demo op defines 3 seeds; replays rotate seeds; all 30 seed/op pairs pass softlock and determinism tests
-- [ ] CON-0087 · Demo · P2 · S · Rank-goal hints on op select — "S rank: finish with no MISS and 60 s spare"; derived from thresholds
+- [x] CON-0087 · Demo · P2 · S · Rank-goal hints on op select — "S rank: finish with no MISS and 60 s spare"; derived from thresholds
 - [x] CON-0088 · Demo · P1 · S · Op failure analytics events — op id, phase, cause of loss; emitted for playtest builds to target polish
 
 ## CON · Epic 5 — Demo end flow, wishlist hook and demo extras
@@ -633,8 +630,6 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0248 · Beta · P2 · S · Discipline challenge entries — 2 X-ops per discipline in challenge mode
 
 ## CON · Epic 11 — Content integration (Beta) and release checks
-- [ ] CON-0249 · Beta · P0 · M · Final-art integration audit — every op's entities use final sprites/shaders; no placeholder flagged assets remain (asset manifest check)
-- [ ] CON-0251 · Beta · P1 · S · Op briefing images — woodcut briefing plate per op (37 campaign ops) referenced in data
 - [ ] CON-0252 · Beta · P1 · S · Codex/case-note unlock audit across full campaign graph — all branches
 - [ ] CON-0253 · Beta · P1 · S · Full-campaign playthrough script — QA route covering each ending with flag setup; 4 routes documented
 

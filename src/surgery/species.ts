@@ -176,10 +176,15 @@ export function tintBlood(authored: string, look: SpeciesLook): string {
 export const bloodOf = (race: Species | undefined, authored: string = HUMAN_BLOOD): string => tintBlood(authored, speciesOf(race).look);
 
 /** Scale a merged tuning by the patient's body (applied after operation and upgrade overrides). */
+/** Thread passes through thick hide, relative to human skin (CON-0062). */
+export const THICK_HIDE_STITCHES = 1.3;
+
 export function applySpecies(t: Tuning, race: Species | undefined): Tuning {
   const b = speciesOf(race).body;
   if (race === undefined || race === 'human') return t;
   t.incision.rushedSpeed /= b.hide;
+  // Thick hide (CON-0062): the thread must pass 1.3 times as often through mountain-folk and orc skin.
+  if (b.hide > 1.2) t.stitch.pxPerStitch /= THICK_HIDE_STITCHES;
   t.incision.slipHurt *= b.fragility;
   t.miss.strayCutHurt *= b.fragility;
   t.laceration.baseDrain *= b.bleed;

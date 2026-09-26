@@ -2,6 +2,7 @@
  * Chapter II operations as data (CON-0001). Positions are offsets from the centre of the
  * operating field; see src/content/schema.ts for the entity ids and their parameters.
  */
+import { flags } from '../flags';
 import { defineOp, type EntitySpec } from '../schema';
 
 const ALL = ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture', 'brand', 'lens'] as const;
@@ -222,7 +223,7 @@ export const OP_2_5 = defineOp({
   title: 'The Hour of Lauds',
   patient: 'Jorg, standard-bearer',
   patientGender: 'm',
-  diagnosis: 'Collapsed during the dawn hymn. Something beneath the sternum is singing.',
+  diagnosis: 'Collapsed during the dawn hymn. Two voices beneath the sternum are singing, one against the other.',
   organ: 'flesh',
   timeLimit: 480,
   baseDrain: 0.1,
@@ -257,3 +258,9 @@ export const OP_2_5 = defineOp({
     { objective: 'Close the incision', callout: ['Close him up. Gently — he has a banner to carry.'], close: true },
   ],
 });
+
+// CON-0070: a surgeon who stood up to Stroh over the cantor (s2-4) has Ilse's poppy ready: he comes in 10 stronger.
+Object.defineProperty(OP_2_4, 'vitals', { get: () => 80 + (flags.get('cantorMercy') === true ? 10 : 0), enumerable: true });
+
+// Dev hot-reload (CON-0011): an edit here restarts the running operation (src/scenes/operation.ts).
+if (import.meta.hot) import.meta.hot.accept((m) => (globalThis as { __opHotReload?: (m: unknown) => void }).__opHotReload?.(m));

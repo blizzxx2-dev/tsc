@@ -42,10 +42,11 @@ exports[`Bubo > lancing below 75 % of max radius is COOL "Lanced" and spills a p
 exports[`Burn > fire: salve first says burn-eschar; each pluck GOOD "Debrided"; last flake says burn-salve; full salve COOL "Burn dressed" 1`] = `
 "2.02 initial Burn source=fire radius=44 @(660,410)
 2.02 popup "The Saint’s Salve won’t help with the burn — try the Tongs."
+2.02 rate BAD "Salve on eschar" +15 combo=0
 2.02 flag burn-eschar
 2.02 say "Pluck away the charred eschar with the tongs first!"
 2.02 say "instruction"
-2.78 -- salve before debriding: status=running vitals=98.6 score=0 combo=0 counts=0/0/0/0 live=[Burn] fraction=0
+2.78 -- salve before debriding: status=running vitals=98.6 score=15 combo=0 counts=0/0/1/0 live=[Burn] fraction=0
 2.78 cue pluck
 2.78 rate GOOD "Debrided" +63 combo=1
 2.82 cue pluck
@@ -57,9 +58,9 @@ exports[`Burn > fire: salve first says burn-eschar; each pluck GOOD "Debrided"; 
 2.88 flag burn-salve
 2.88 say "The dead flesh is off. Now salve the raw burn."
 2.88 say "instruction"
-2.92 -- debrided: status=running vitals=98.5 score=270 combo=4 counts=0/4/0/0 live=[Burn]
+2.92 -- debrided: status=running vitals=98.5 score=285 combo=4 counts=0/4/1/0 live=[Burn]
 3.35 rate COOL "Burn dressed" +125 combo=5
-3.68 -- dressed: status=running vitals=98.5 score=395 combo=5 counts=1/4/0/0 live=[]
+3.68 -- dressed: status=running vitals=98.5 score=410 combo=5 counts=1/4/1/0 live=[]
 "
 `;
 

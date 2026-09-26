@@ -116,6 +116,8 @@ export class BriefingScene implements Scene {
     const rk = rankThresholds(d);
     caps(g, t('ui.briefing.targets'), lx, r.y + 296, 12);
     g.text(t('ui.briefing.targets_value', { s: rk.S, a: rk.A, b: rk.B }), vx, r.y + 300, { size: 17, color: hex(INK.dim), shadow: false });
+    // What XS asks beyond the score (CON-0087): no Bad or Miss, and the vitals never below the floor.
+    g.text(t('ui.briefing.xs_goal', { xs: Math.round(rk.S * 1.05), floor: DEFAULT_TUNING.scoring.xsVitalsFloor }), vx + 330, r.y + 300, { size: 16, font: 'italic', color: hex(INK.dim, 0.8), shadow: false });
     caps(g, t('ui.briefing.time_allowed'), lx, r.y + 326, 12);
     numerals(g, formatClock(d.timeLimit), vx, r.y + 330, 22, '#ffffff', '#d8ccb4');
     // The Litany is sealed for this patient (GAM-0170): a red tag beside the clock, so the player knows before the star fails.

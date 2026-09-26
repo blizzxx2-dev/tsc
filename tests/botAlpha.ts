@@ -21,6 +21,7 @@ import { Spill, Ulcer, ULCER } from '../src/surgery/ailments/ulcer';
 import { BiteChannel, DonorBowl } from '../src/surgery/ailments/vampire';
 import { MudSmear, RainDrips } from '../src/surgery/ailments/environment';
 import { WebSilk } from '../src/surgery/ailments/silk';
+import { SearedWord } from '../src/surgery/entities';
 import { DT, drag, hold, raster, still, tap, zigzag, type Action, type BotContext, type Frame } from './bot';
 
 const ALPHA = [
@@ -34,6 +35,7 @@ const ALPHA = [
   Fracture,
   SplintWrap,
   MudSmear,
+  SearedWord,
   FrostPatch,
   IceCrystal,
   Amputation,

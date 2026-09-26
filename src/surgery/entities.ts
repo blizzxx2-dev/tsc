@@ -995,6 +995,7 @@ export class Embedded extends Entity {
     this.whisperT = 0;
     const off = !onBody(this.pos);
     if (off && this.kind === 'hexstone' && !inLeadDish(this.pos)) {
+      op.rate('bad', this.pos, 'Not the dish');
       op.sayOnce('lead-dish', 'Not the tray — hexstone goes in the lead dish!', 'danger');
       this.pos = { ...this.origin };
       this.shallow = true;
@@ -1045,13 +1046,15 @@ export class Embedded extends Entity {
     const sa = Math.sin(this.angle);
     // Entry wound.
     g.ellipse(this.origin.x, this.origin.y, 10, 7, this.angle, hex('#2a0306'), hex('#5a0a10'));
-    if (this.barbed && this.nicks > 0) {
-      for (let i = 0; i < this.nicks; i++) {
+    if (this.barbed) {
+      // The two nicks a barbed head needs (CON-0035): cut ones in blood, the ones still owed as faint ink ticks.
+      for (let i = 0; i < 2; i++) {
         const a = this.angle + Math.PI / 2 + i * Math.PI;
-        g.line(this.origin, { x: this.origin.x + Math.cos(a) * 14, y: this.origin.y + Math.sin(a) * 14 }, 3, hex('#8a1016'));
+        const tip = { x: this.origin.x + Math.cos(a) * 14, y: this.origin.y + Math.sin(a) * 14 };
+        if (i < this.nicks) g.line(this.origin, tip, 3, hex('#8a1016'));
+        else g.line({ x: this.origin.x + Math.cos(a) * 8, y: this.origin.y + Math.sin(a) * 8 }, { x: this.origin.x + Math.cos(a) * 18, y: this.origin.y + Math.sin(a) * 18 }, 1.5, hex('#2a1a10', 0.55));
       }
-    } else if (this.barbed) {
-      g.arc(this.origin.x, this.origin.y, 26, 2, hex('#ffebbe', 0.25 + 0.2 * Math.sin(op.elapsed * 4)));
+      if (this.nicks === 0) g.arc(this.origin.x, this.origin.y, 26, 2, hex('#ffebbe', 0.25 + 0.2 * Math.sin(op.elapsed * 4)));
     }
     // Pull-axis hint: shown with guides on; a fang's true angle only under the lens.
     const lensNear = op.tool === 'lens' && dist(op.cursor, this.origin) < op.tuning.lens.radius;
@@ -1163,8 +1166,14 @@ export type BurnSource = 'fire' | 'acid' | 'hexfire' | 'dragon';
 /** Seconds for a dragon-breath burn's embers to cool to 1/e (ENG-0263). */
 export const DRAGON_COOL_S = 45;
 
+/** Salve on live eschar (CON-0039): seconds until it festers, and the rot it leaves (offset, radius, spread). */
+export const ESCHAR_FESTER = { after: 10, offset: 10, r: 26, spread: 0.3 };
+
 export class Burn extends Entity {
   flakes: Vec[] = [];
+  private escharPress = -1;
+  /** When salve sealed over eschar: the rot comes at this time (−1 none). */
+  festerAt = -1;
   readonly cov: Coverage;
   readonly total: number;
   /** Grade-3: a charred core to excise with the lancet before salving. */
@@ -1253,6 +1262,12 @@ export class Burn extends Entity {
   override update(op: Operation, dt: number): void {
     const B = op.tuning.burn;
     this.branded = false;
+    if (this.festerAt >= 0 && op.elapsed >= this.festerAt) {
+      this.festerAt = -1;
+      const F = ESCHAR_FESTER;
+      op.spawnPenalty(new Rot({ x: this.pos.x + F.offset, y: this.pos.y + F.offset }, F.r, F.spread));
+      op.sayOnce('eschar-fester', 'It’s festering — the salve sealed the eschar in. Clean that rot.', 'danger');
+    }
     if (this.acidLive) this.radiusNow = Math.min(B.acidMax, this.radiusNow + B.acidSpread * dt);
     if (this.smoulder >= 0) {
       this.smoulder -= dt;
@@ -1335,6 +1350,12 @@ export class Burn extends Entity {
       return;
     }
     if (this.flakes.length > 0) {
+      // Salve over live eschar (CON-0039): BAD once a stroke, and it festers into rot in 10 s.
+      if (this.escharPress !== op.pressId) {
+        this.escharPress = op.pressId;
+        op.rate('bad', ptr.pos, 'Salve on eschar');
+        if (this.festerAt < 0) this.festerAt = op.elapsed + ESCHAR_FESTER.after;
+      }
       op.sayOnce('burn-eschar', 'Pluck away the charred eschar with the tongs first!');
       return;
     }
@@ -1835,6 +1856,9 @@ export class Venom extends Entity {
  * the brand puffs it up and, if released too soon, it splits in two. Left for
  * 6 s it burrows (the lens finds it again).
  */
+/** Grubs steer away from a held brand within `radius` px, until it is on them (`onIt`), turning `steer`× as hard (CON-0047). */
+export const GRUB_FLEE = { radius: 70, onIt: 20, steer: 2 };
+
 export class Grub extends Entity {
   /** Small and numerous: indexed by position on crowded fields (ENG-0246). */
   override pickReach = 48;
@@ -1913,6 +1937,18 @@ export class Grub extends Entity {
       while (dA > Math.PI) dA -= TAU;
       while (dA < -Math.PI) dA += TAU;
       this.heading += clamp(dA, -G.steer * dt, G.steer * dt);
+    }
+    // The brand's heat nearby (not on it) drives it off (CON-0047).
+    if (op.holdingBrand && op.tool === 'brand') {
+      const d = dist(op.pointer, this.pos);
+      if (d < GRUB_FLEE.radius && d > GRUB_FLEE.onIt) {
+        const away = Math.atan2(this.pos.y - op.pointer.y, this.pos.x - op.pointer.x);
+        let dA = away - this.heading;
+        while (dA > Math.PI) dA -= TAU;
+        while (dA < -Math.PI) dA += TAU;
+        const turn = G.steer * GRUB_FLEE.steer * dt;
+        this.heading += clamp(dA, -turn, turn);
+      }
     }
     this.heading += op.rng.range(-G.wander, G.wander) * dt;
     const sp = this.speed * (this.small ? G.smallSpeed : 1);
@@ -2361,5 +2397,29 @@ export function drawCoverage(g: Gfx, cov: Coverage, within = Infinity): void {
     const y = cov.center.y + c.y;
     g.circleGrad(x, y, 10 + 2 * wet, hex('#f0dc98', 0.14 + 0.46 * wet), hex('#f0dc98', 0));
     if (wet > 0.05) g.ellipse(x - 3, y - 3, 3.2, 1.5, -0.5, hex('#fffbe8', 0.7 * wet), hex('#fffbe8', 0));
+  }
+}
+
+/**
+ * The Hour's name seared into the flesh where it died (CON-0053, CON-0078): the MATINS over the
+ * shroud's last place, the LAUDS over the heart. Presentation only — it asks for nothing.
+ */
+export class SearedWord extends Entity {
+  noun = 'the seared word';
+  constructor(
+    pos: Vec,
+    public word: string,
+  ) {
+    super(pos);
+    this.required = false;
+    this.layer = -3;
+  }
+  override hitTest(): boolean {
+    return false;
+  }
+  draw(g: Gfx): void {
+    const k = Math.min(1, this.age / 1.5);
+    g.text(this.word, this.pos.x, this.pos.y + 8, { size: 34, font: 'display', color: hex('#2a0806', 0.75 * k), align: 'center', tracking: 0.3, shadow: false });
+    g.text(this.word, this.pos.x, this.pos.y + 7, { size: 34, font: 'display', color: hex('#ff8040', 0.25 * (1 - k) + 0.05), align: 'center', tracking: 0.3, shadow: false });
   }
 }

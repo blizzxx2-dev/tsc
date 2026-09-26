@@ -5,7 +5,7 @@ import { Entity } from './entity';
 import { hex } from '../render/color';
 import { presentation } from '../render/presentation';
 import type { Gfx } from '../render/gfx';
-import { Laceration, surfDisc } from './entities';
+import { Laceration, SearedWord, surfDisc } from './entities';
 import { threadKnotArt } from '../art/ailmentArt';
 import { FIELD, onBody, type Operation } from './operation';
 import type { Pointer, ToolId } from './types';
@@ -391,6 +391,7 @@ export class Malison extends MalisonBase {
   protected override onDeath(op: Operation): void {
     op.rate('cool', this.pos, 'Malison unmade');
     op.emit('blood', this.pos, 30, undefined, undefined, 200);
+    op.spawn(new SearedWord({ ...this.pos }, this.hour.toUpperCase()));
     if (!this.tune.phased) return;
     op.spawn(...[0, 1, 2].map((i) => new MalisonShard({ x: this.pos.x + Math.cos((i * TAU) / 3) * 50, y: this.pos.y + Math.sin((i * TAU) / 3) * 40 }, op)));
     op.say('It’s splitting apart! Seize every shard with the tongs and cast it out — before they rejoin!');

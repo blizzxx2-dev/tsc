@@ -67,6 +67,8 @@ export const SCORING: readonly ScoringRule[] = [
   { label: 'Cleansed', action: 'Salve a lanced bubo', tools: ['salve'], criteria: { good: 'after the pus is drained' } },
   { label: 'Rot purged', action: 'Salve rot away', tools: ['salve'], criteria: { cool: `≥ ${S.rot.coverage * 100} % in one stroke`, good: 'several strokes' } },
   { label: 'Soothed', action: 'Salve a scorch mark', tools: ['salve'], criteria: { good: 'always' } },
+  { label: 'Salve on eschar', action: 'Salve a burn before its eschar is plucked', tools: ['salve'], criteria: { bad: 'once per stroke; festers into rot in 10 s' } },
+  { label: 'Not the dish', action: 'Drop hexstone anywhere but the lead dish', tools: ['tongs'], criteria: { bad: 'always; it slips back in' } },
   { label: 'Salve on acid', action: 'Salve before the acid is drawn off', tools: ['salve'], criteria: { bad: 'once per stroke' } },
   // Tincture
   { label: 'Stabilised', action: 'Inject the red tincture', tools: ['tincture'], criteria: { cool: `vitals < ${S.tincture.coolBelow} (counts for the combo; rescue pays no points)`, good: `vitals < ${S.tincture.goodBelow}` } },

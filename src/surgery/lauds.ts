@@ -6,7 +6,7 @@ import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { dawnFlare, flareIntensity, laudsChoir, lightThread, THREAD_SEVER_S, THREAD_TIE_S, type ChoirState } from '../art/bossVfx';
 import { Entity } from './entity';
-import { Embedded, Laceration, Rot, surfDisc } from './entities';
+import { Embedded, Laceration, Rot, SearedWord, surfDisc } from './entities';
 import { FIELD, onBody, type Operation } from './operation';
 import type { Pointer, ToolId } from './types';
 import { BossRot, BossWound, clampToField, MalisonBase, rateAdd, type BossPhase } from './bosses/base';
@@ -442,6 +442,7 @@ export class LaudsMalison extends MalisonBase {
     for (const v of this.voices) v.kill();
     op.events.emit('boss', { kind: 'hud', flag: 'lens-blind', on: false });
     op.rate('cool', this.pos, 'Malison unmade');
+    op.spawn(new SearedWord({ ...this.pos }, 'lauds'.toUpperCase()));
     op.say('It shattered — hexstone, everywhere! Get every shard out before it spoils him!');
     for (let i = 0; i < 3; i++) {
       const a = (i / 3) * TAU + 0.4;

@@ -89,6 +89,7 @@ exports[`Malison of Lauds > Dawn: submerged, found with the Lens, unmade into th
 3.50 cue burn
 3.60 spawn BossDeath optional @(622,419)
 3.60 rate COOL "Malison unmade" +105 combo=1
+3.60 spawn SearedWord optional @(622,419)
 3.60 say "It shattered — hexstone, everywhere! Get every shard out before it spoils him!"
 3.60 spawn Embedded kind=hexstone @(687,441)
 3.60 flag first-hexstone
@@ -96,7 +97,7 @@ exports[`Malison of Lauds > Dawn: submerged, found with the Lens, unmade into th
 3.60 say "instruction"
 3.60 spawn Embedded kind=hexstone @(567,452)
 3.60 spawn Embedded kind=hexstone @(614,365)
-3.63 -- unmade: status=running vitals=97.9 score=105 combo=1 counts=1/0/0/0 live=[BossDeath,Embedded,Embedded,Embedded] alive=false
+3.63 -- unmade: status=running vitals=97.9 score=105 combo=1 counts=1/0/0/0 live=[BossDeath,SearedWord,Embedded,Embedded,Embedded] alive=false
 "
 `;
 

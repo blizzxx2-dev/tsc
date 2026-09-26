@@ -405,10 +405,27 @@ export class OperationScene implements Scene {
   }
 
   enter(): void {
+    OperationScene.live = this;
     if (this.entered) return;
     this.entered = true;
     this.setupViews();
     this.op.say('Instruments ready, Doctor.');
+  }
+
+  /** The operation on screen, for the dev hot-reload (CON-0011). */
+  static live: OperationScene | null = null;
+
+  /**
+   * Dev hot-reload (CON-0011): an edited op data file hands in its fresh definitions; the running
+   * operation restarts from the one with its id, on the same seed.
+   */
+  hotReload(defs: readonly OperationDef[]): boolean {
+    const next = defs.find((d) => d.id === this.def.id);
+    if (!next) return false;
+    this.def = next;
+    this.adopt(OperationScene.create(next, this.runOpts));
+    this.op.say('The case notes changed — starting again.');
+    return true;
   }
 
   private restart(): void {
@@ -1759,3 +1776,13 @@ export function ecgWave(ph: number): number {
   return bump(0.1, 0.025, 0.12) - bump(0.19, 0.008, 0.15) + bump(0.21, 0.01, 1) - bump(0.235, 0.01, 0.3) + bump(0.42, 0.05, 0.25);
 }
 
+
+// Dev hot-reload (CON-0011): an op data file that is edited re-runs and hands its fresh definitions
+// here (see the self-accepting modules under src/content/ops); the running operation restarts
+// with its new definition and the same seed, within the second Vite takes to rebuild.
+if (import.meta.hot) {
+  (globalThis as { __opHotReload?: (m: unknown) => void }).__opHotReload = (m) => {
+    const defs = m ? Object.values(m as Record<string, unknown>).filter((v): v is OperationDef => !!v && typeof v === 'object' && 'phases' in v && 'id' in v) : [];
+    OperationScene.live?.hotReload(defs);
+  };
+}

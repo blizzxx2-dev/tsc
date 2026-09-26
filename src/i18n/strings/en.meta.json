@@ -9662,5 +9662,30 @@
     "size": 16,
     "maxPx": 1000,
     "context": "Trials bill blurb."
+  },
+  "label.salve_on_eschar": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Rating label: Salve on eschar",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.not_the_dish": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Rating label: Not the dish",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "ui.briefing.xs_goal": {
+    "scene": "briefing",
+    "font": "body",
+    "size": 16,
+    "maxPx": 330,
+    "context": "Briefing: what the XS rank needs beyond the score."
   }
 }

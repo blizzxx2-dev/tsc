@@ -143,3 +143,6 @@ export const OP_5_10 = defineOp({
     },
   ],
 });
+
+// Dev hot-reload (CON-0011): an edit here restarts the running operation (src/scenes/operation.ts).
+if (import.meta.hot) import.meta.hot.accept((m) => (globalThis as { __opHotReload?: (m: unknown) => void }).__opHotReload?.(m));

@@ -113,10 +113,19 @@ export const OP_1_3 = defineOp({
       objective: 'Extract the shot',
 
       callout: ['There — the shot. Pull each ball out with the Tongs.'],
+      // The burst barrel scatters its shot in a ring (CON-0043): three to five balls, by seed (CON-0042).
       spawn: [
-        { e: 'embedded', at: [-80, 40], kind: 'shot' },
-        { e: 'embedded', at: [30, 70], kind: 'shot' },
-        { e: 'embedded', at: [120, 20], kind: 'shot' },
+        {
+          e: 'pick',
+          n: [3, 5],
+          of: [
+            { e: 'embedded', at: [-80, 40], kind: 'shot' },
+            { e: 'embedded', at: [-10, 100], kind: 'shot' },
+            { e: 'embedded', at: [80, 90], kind: 'shot' },
+            { e: 'embedded', at: [130, 20], kind: 'shot' },
+            { e: 'embedded', at: [30, -30], kind: 'shot' },
+          ],
+        },
       ],
     },
     { objective: 'Close the incision', callout: ['Everything’s clear. Close the incision with the Gut Thread.'], close: true },
@@ -219,3 +228,6 @@ export const OP_1_5 = defineOp({
     { objective: 'Close the incision', callout: ['Everything’s clear. Close the incision with the Gut Thread.'], close: true },
   ],
 });
+
+// Dev hot-reload (CON-0011): an edit here restarts the running operation (src/scenes/operation.ts).
+if (import.meta.hot) import.meta.hot.accept((m) => (globalThis as { __opHotReload?: (m: unknown) => void }).__opHotReload?.(m));
