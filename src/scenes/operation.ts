@@ -127,6 +127,11 @@ const TIP_FLOOR = 612;
 /** The surface set resident across operation scenes (ART-0367). */
 const SURFACE_SETS = new SurfaceSetCache();
 
+/** Where the watcher stands (CON-0048): left of the field, clear of the HUD bars and the trays. */
+const OBSERVER = { x: 120, y: 520, w: 150, h: 200, watchBelow: 40 };
+/** Portrait shader silhouette styles (as src/scenes/backdrop.ts). */
+const STYLE_OF: Record<string, number> = { hood: 0, coif: 1, cap: 2, hat: 3, helm: 4, bare: 5 };
+
 export class OperationScene implements Scene {
   op: Operation;
   private paused = false;
@@ -954,6 +959,7 @@ export class OperationScene implements Scene {
     // Brand smoke hangs over the field for a moment after heavy searing (GAM-0051).
     if (this.smoke.veil > 0.01) g.glow(op.cursor.x, op.cursor.y - 30, 260, hex('#9a9088', this.smoke.veil * 0.45));
     if (!settings.minimalHud) this.drawThreatRings(g);
+    this.drawObserver(g, t);
     drawTutorial(g, op);
     // WorldUI (ENG-0044): popups and hurt rings after post, through the world camera.
     g.setCamera(this.camera.isIdentity ? null : this.camera.matrix());
@@ -1721,6 +1727,32 @@ export class OperationScene implements Scene {
     // Keyed callouts are translated with the patient's grammatical gender for ICU select (LOC-0014).
     const shown = text.slice(0, Math.floor(this.op.calloutT * 60 * settings.textSpeed));
     g.textBlock(shown, r.x + 94, r.y + 34 + size * 0.8, textW, { size, color: hex(INK.text), shadow: hex('#000000', 0.8), soft: true }, 1.3);
+  }
+
+  /**
+   * The watcher at the field's edge (CON-0048): Inquisitor Stroh at the Tanners' Rows, a dim bust
+   * outside the lamp's reach, rim-lit in his colour. He only looks up when the patient is failing.
+   */
+  private drawObserver(g: Gfx, t: number): void {
+    const who = this.op.def.observer ? CAST[this.op.def.observer as CharacterId] : undefined;
+    if (!who) return;
+    const O = OBSERVER;
+    const bob = settings.reduceMotion ? 0 : Math.sin(t * 0.7) * 2;
+    const x = O.x;
+    const y = O.y + bob;
+    g.glow(x, y - O.h * 0.45, O.w, hex(who.color, 0.06));
+    const lit = this.op.vitals < O.watchBelow ? 0.45 : 0.18;
+    g.portrait(x - O.w / 2, y - O.h, O.w, O.h, {
+      style: STYLE_OF[who.silhouette] ?? 3,
+      rim: vec3(who.color),
+      cloth: vec3(who.cloth ?? '#161214'),
+      skin: vec3(who.skin ?? '#c0a090'),
+      active: lit,
+      seed: who.name.length * 1.7,
+      talk: 0,
+      beard: who.beard ?? 0,
+      hair: vec3(who.hair ?? '#1a1210'),
+    });
   }
 
   private drawPopups(g: Gfx): void {

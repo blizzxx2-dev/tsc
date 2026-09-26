@@ -127,6 +127,8 @@ export interface OperationDef {
    * Seeded like the rest of the op; challenge mutators add to it.
    */
   env?: readonly MutatorId[];
+  /** Someone watching from the edge of the field (CON-0048): a character id, drawn as a dim bust. */
+  observer?: string;
   /**
    * Limited supplies (CON-0140): thread (stitches), salve (seconds laid) and tincture (doses) this op
    * carries. Running out is a soft fail: the work goes on, each use past empty costs 40 end bonus.

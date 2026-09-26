@@ -141,6 +141,8 @@ export const OP_1_4 = defineOp({
   organ: 'flesh',
   timeLimit: 240,
   baseDrain: 0.15,
+  // CON-0048: the Inquisitor watches this one from the doorway.
+  observer: 'stroh',
   tools: ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture', 'brand'],
   ranks: { S: 5250, A: 4200, B: 3150 },
   litany: false,

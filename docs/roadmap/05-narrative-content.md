@@ -327,7 +327,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0045 · Demo · P1 · S · Bubo lancing — sloppy lance (angle > 30° off axis) leaves a festering wound; clean lance COOL (test) _(superseded by the Overcut rule: a cut longer than the bubo spills it)_
 - [x] CON-0046 · Demo · P1 · S · Pus-on-open-cut rule — pus contacting an unstitched laceration spawns rot (test)
 - [x] CON-0047 · Demo · P1 · S · Brand intro — grubs flee from brand heat; searing healthy flesh gives MISS and −2 vitals
-- [ ] CON-0048 · Demo · P2 · S · Stroh observer overlay — silhouette at field edge during this op only
+- [x] CON-0048 · Demo · P2 · S · Stroh observer overlay — silhouette at field edge during this op only _(`observer` on an op def: a dim portrait-shader bust left of the field, rim-lit in the character’s colour, lifting into the light when vitals drop below 40. op1-4 only (after s1-4’s “I only wish to watch”). tests/unit/content/observer.test.ts)_
 
 ### op1-5 "The Hour of Matins" (Emmerich, page-boy) — sigils, Malison boss, Litany intro
 - [x] CON-0049 · Demo · P0 · M · Matins boss phase review — eye-open rhythm telegraphed 0.8 s before opening (audio + visual), brand damage only while open
