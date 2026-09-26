@@ -29,7 +29,7 @@ Code: `src/content/flags.ts` (`flags.get / set / has / truthy / count`), conditi
 | `hornchildCertificate` | `'natural' \| 'turned'` | s3-2 choice (NAR-0119): the kind lie or the true sentence | s3-2 (the rest of the scene), Ch4, Ch5 |
 | `choice.s3-2` | `'natural' \| 'turned'` | s3-2 pick record | tools, tests |
 | `strohTooth` | boolean | winning op3-9 (CON-0129, `OP_FLAG_WRITES` in `src/content/flags.ts`) | Ch5 |
-| `hallerFate` | `'hands' \| 'scarred' \| 'lost'` | winning op3-11 by rank: XS/S → `hands`, A/B → `scarred`, C → `lost` (CON-0136) | Ch4, Ch5 |
+| `hallerFate` | `'hands' \| 'scarred'` (`'lost'` only in old saves) | winning op3-11 by rank: XS/S/A → `hands` (he keeps them, advises by letter), B/C → `scarred` (maimed and bitter); never a death (CON-0136, NAR-0100) | Ch4, Ch5 |
 | `thirstChoice` | `'salve' \| 'brand'` | s4-6 choice (NAR-0137) | Ch5 |
 | `strohToothFine` | boolean | winning op3-9 at XS/S (NAR-0102) | Ch5 (Stroh's trust) |
 | `mauerFate` | `'hale' \| 'maimed'` | winning op4-7 by rank: C → `maimed`, else `hale` (NAR-0105) | Ch5 (ending matrix) |

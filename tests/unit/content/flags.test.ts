@@ -501,10 +501,13 @@ describe('chapter flag contracts (NAR-0116, NAR-0131, NAR-0145)', () => {
     expect(f.get('strohTooth')).toBe(true);
     applyOpFlags('op3-11', 'XS', f);
     expect(f.get('hallerFate')).toBe('hands');
+    applyOpFlags('op3-11', 'A', f);
+    expect(f.get('hallerFate')).toBe('hands');
     applyOpFlags('op3-11', 'B', f);
     expect(f.get('hallerFate')).toBe('scarred');
+    // NAR-0100: Haller never dies of a poor Terce; he lives maimed and bitter.
     applyOpFlags('op3-11', 'C', f);
-    expect(f.get('hallerFate')).toBe('lost');
+    expect(f.get('hallerFate')).toBe('scarred');
     applyOpFlags('op1-1', 'S', f);
     expect(Object.keys(f.all())).toEqual(['strohTooth', 'strohToothFine', 'hallerFate']);
   });

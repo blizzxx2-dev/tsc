@@ -150,7 +150,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ### Master Haller
 - [ ] NAR-0098 · Alpha · P0 · M · Haller arc doc — mentor who once struck the Precentor from the guild rolls; guilt; licence vote in Ch3; hexfire host in Terce; survives or dies by player rank
 - [x] NAR-0099 · Alpha · P1 · S · Haller confession scene (Ch3) — reveals he knew the Precentor as his pupil, Aurel Vennholt; 12–16 lines
-- [ ] NAR-0100 · Alpha · P1 · S · Haller fate branch — Terce op rank ≥ A: he lives, retires with burned hands and becomes Ch4–5 advisor by letter; < A: he survives maimed and bitter (no death to keep op fail distinct)
+- [x] NAR-0100 · Alpha · P1 · S · Haller fate branch — Terce op rank ≥ A: he lives, retires with burned hands and becomes Ch4–5 advisor by letter; < A: he survives maimed and bitter (no death to keep op fail distinct)
 
 ### Inquisitor Stroh
 - [ ] NAR-0101 · Alpha · P0 · M · Stroh arc doc — chartered agent of the council; his charter has lapsed (Ch4 reveal); trust meter drives whether he defends or prosecutes Kreuzer in Ch5

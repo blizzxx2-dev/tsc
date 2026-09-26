@@ -152,8 +152,10 @@ export const OP_FLAG_WRITES: Readonly<Record<string, (rank: Rank) => FlagRecord>
   'op3-9': (rank) => ({ strohTooth: true, strohToothFine: rank === 'XS' || rank === 'S' }),
   // Sext in Mauer: a captain hale enough to lead the Watch on Hollow Night, or maimed (NAR-0105).
   'op4-7': (rank) => ({ mauerFate: rank === 'C' ? 'maimed' : 'hale' }),
-  // Terce, then Haller's burned hands: how much of the old man's craft survives (CON-0136).
-  'op3-11': (rank) => ({ hallerFate: rank === 'XS' || rank === 'S' ? 'hands' : rank === 'C' ? 'lost' : 'scarred' }),
+  // Terce, then Haller's burned hands (CON-0136, NAR-0100): at A or better he keeps them and advises by
+  // letter; below, he lives maimed and bitter. He never dies of it — a lost operation stays its own
+  // failure. ('lost' is still read, for saves made before this rule.)
+  'op3-11': (rank) => ({ hallerFate: rank === 'XS' || rank === 'S' || rank === 'A' ? 'hands' : 'scarred' }),
 };
 
 /** Flags written by the engine rather than by content, so the flag audit knows their source. */

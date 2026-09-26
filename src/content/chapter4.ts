@@ -197,7 +197,15 @@ export const STORY_4_10: StoryDef = {
   place: 'The Vennmark camp — a letter from Kessendorf',
   backdrop: 'hospice',
   lines: [
-    n('A letter from Master Haller, in a hand shaky with burns and furious with capital letters.'),
+    // NAR-0100: how Terce left Haller's hands decides how he writes to the Doctor.
+    ...onlyIf(
+      { not: { flag: 'hallerFate', is: 'scarred' } },
+      n('A letter from Master Haller, in his own hand — shaky with healing burns, and furious with capital letters.'),
+    ),
+    ...onlyIf(
+      { flag: 'hallerFate', is: 'scarred' },
+      n('A letter from Master Haller, dictated to a Guild clerk. His own hands no longer close on a pen.'),
+    ),
     say('haller', 'KREUZER. The Widow Reiss came to visit me. Brought grapes. Asked after you, and the Sister, and your Litany.'),
     say('haller', 'She wore black gloves and never took them off. Under the left one, when she reached for the grapes: a sigil. Choir work.'),
     say('haller', 'Her carriage waits outside the hospice every night. No crest on it. You saw it the night of the page-boy. So did I.'),
@@ -207,6 +215,14 @@ export const STORY_4_10: StoryDef = {
     // The Litany's origin (NAR-0092): Haller's postscript.
     say('haller', 'P.S. I went to the Guild library for the old offices. Our Litany is in them. It is not a prayer, boy. It is a verse.'),
     say('haller', 'The stillness before Compline. The pause the Choir sings before the last office. We have been borrowing his silence.'),
+    ...onlyIf(
+      { not: { flag: 'hallerFate', is: 'scarred' } },
+      say('haller', 'P.P.S. The hands are mending. I can hold a pen, a glass, and very nearly a lancet. Do not tell the Guild. Write back.'),
+    ),
+    ...onlyIf(
+      { flag: 'hallerFate', is: 'scarred' },
+      say('haller', 'P.P.S. I shall never hold a lancet again, so somebody must do the shouting. Ink will have to do. Write back, damn you.'),
+    ),
     say('kreuzer', 'Every time I drew the star, I was singing one line of his hymn.'),
     say('ilse', 'Then it is a line he cannot finish without you. Remember that, Doctor, when he asks for it back.'),
   ],
