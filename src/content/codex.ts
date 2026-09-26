@@ -6,6 +6,7 @@
  * (docs/narrative/art-requests.md); the gallery falls back to a plate with the title until they land.
  */
 import type { Rank } from '../surgery/types';
+import { LATE_CODEX, LATE_HOURS } from './codexLater';
 
 export type CodexCategory = 'People' | 'Places' | 'Afflictions' | 'Instruments' | 'The Hours' | 'Orders';
 
@@ -426,17 +427,8 @@ const HOURS: CodexEntry[] = [
     body: 'Dawn praise, sung in answer. In Jorg the standard-bearer it was two linked bodies that answered each other across the chest, and a ring of small lights — its Voices — that circled and sang. While any Voice sings the heart is shrouded; silence every one with the brand and it lies bare. It flares at dawn. It carried on the antiphon the lay-cantor had swallowed: who keeps the watch before the sun.',
     more: { unlock: op('op2-5', 'S'), body: 'The Voices answer the brand as they answer each other: one silenced, the next sings louder. Take them in a ring, not at random.' },
   },
-  ...(['Prime', 'Terce', 'Sext', 'None', 'Vespers', 'Compline'] as const).map(
-    (title): CodexEntry => ({
-      id: title.toLowerCase(),
-      title,
-      category: 'The Hours',
-      unlock: chapter(5),
-      image: `wc-${title.toLowerCase()}`,
-      silhouette: true,
-      body: 'An Hour the Doctor has not yet met.',
-    }),
-  ),
+  // The six remaining Hours and the Office, in full (NAR-0169): silhouettes until met.
+  ...LATE_HOURS,
 ];
 
 // ------------------------------------------------------------------ The Precentor's letters (NAR-0110)
@@ -531,7 +523,7 @@ const ON_MERCY: CodexEntry = {
   body: 'Aurel Vennholt believed mercy was stillness: no more pain, no more fear, a quiet night and a perfect end. Haller believed mercy was a rule, and struck him off for breaking it. Stroh believed it was a ledger. Ilse believes it is a habit, practised daily and never finished. I have come to believe it is only this: to keep a person going a little longer than the world intended, and then to give them back to it. The Litany taught me to hold things still. The table taught me that stillness is not the point. The point is the next breath, and the one after, and the drover with his dice. Every mercy I ever managed was unfinished. I have stopped thinking that a flaw.',
 };
 
-export const CODEX: readonly CodexEntry[] = [...PEOPLE, ...INSTRUMENTS, ...AFFLICTIONS, ...PLACES, ...ORDERS, ...LETTERS, ...HOURS, ...HYMNAL, ON_MERCY];
+export const CODEX: readonly CodexEntry[] = [...PEOPLE, ...INSTRUMENTS, ...AFFLICTIONS, ...PLACES, ...ORDERS, ...LETTERS, ...HOURS, ...HYMNAL, ...LATE_CODEX, ON_MERCY];
 
 export const codexEntry = (id: string): CodexEntry | undefined => CODEX.find((e) => e.id === id);
 

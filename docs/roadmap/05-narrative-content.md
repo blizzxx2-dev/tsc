@@ -255,7 +255,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] NAR-0168 · Beta · P2 · S · Discipline barks — triage (Ilse callouts of incoming), bone-setting (patient pain), forensic (Stroh), interviews (witnesses) — 20 each
 
 ### Codex and case notes
-- [ ] NAR-0169 · Alpha · P1 · M · Ch3–5 codex entries — ≥ 40 new entries (afflictions, places, Choir hierarchy, the six remaining Hours, Precentor letters)
+- [x] NAR-0169 · Alpha · P1 · M · Ch3–5 codex entries — ≥ 40 new entries (afflictions, places, Choir hierarchy, the six remaining Hours, Precentor letters)
 - [ ] NAR-0170 · Alpha · P1 · M · Case notes for 27 Ch3–5 operations — with rank-variant outcomes
 - [x] NAR-0171 · Beta · P2 · S · Codex completion reward text — a final Kreuzer essay "On Mercy" unlocked at 100%
 - [x] NAR-0172 · Beta · P2 · S · Hymnal page — full original lyrics of all eight Hours collected in codex, unlocked by defeating each Malison

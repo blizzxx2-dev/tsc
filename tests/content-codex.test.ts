@@ -21,6 +21,19 @@ const demoOps = [...CHAPTER_1.steps, ...CHAPTER_2.steps].flatMap((s) => (s.kind 
 const unlocks = (): { where: string; u: CodexUnlock }[] =>
   CODEX.flatMap((e) => [{ where: e.id, u: e.unlock }, ...(e.more ? [{ where: `${e.id}.more`, u: e.more.unlock }] : [])]);
 
+/** Play the whole campaign (Chapters I–V) in order and return the progress at the end. */
+function walkAll(rank: Rank): CodexProgress {
+  const p: { won: Record<string, Rank>; stories: string[]; chapters: number[]; flags: string[] } = { won: {}, stories: [], chapters: [], flags: [] };
+  FULL_CAMPAIGN.forEach((ch, i) => {
+    for (const s of ch.steps) {
+      if (s.kind === 'story') p.stories.push(s.story.id);
+      else p.won[s.op.id] = rank;
+    }
+    p.chapters.push(i + 1);
+  });
+  return p;
+}
+
 /** Play the demo campaign in order at the given rank and return progress after each step. */
 function walk(rank: Rank): CodexProgress[] {
   const p: { won: Record<string, Rank>; stories: string[]; chapters: number[]; flags: string[] } = { won: {}, stories: [], chapters: [], flags: [] };
@@ -108,9 +121,10 @@ describe('codex content (NAR-0080…0085, NAR-0016, NAR-0048)', () => {
         .map((e) => e.id)
         .sort(),
     ).toEqual(['hours', 'lauds', 'matins']);
+    // The later Hours and the Office are silhouettes through the demo, each opening at its own fight (NAR-0169).
     const locked = hours.filter((e) => e.silhouette);
-    expect(locked.map((e) => e.title)).toEqual(['Prime', 'Terce', 'Sext', 'None', 'Vespers', 'Compline']);
-    for (const e of locked) expect(wordCount(e.body)).toBeLessThan(12);
+    expect(locked.map((e) => e.title)).toEqual(['Prime', 'Terce', 'Sext', 'None', 'Vespers', 'Compline', 'The Office']);
+    for (const e of locked) expect(e.unlock.kind, e.id).toBe('op');
   });
 
   it('NAR-0085: five folk-remedy sidebars on affliction entries', () => {
@@ -159,9 +173,18 @@ describe('codex unlock audit (NAR-0086)', () => {
     const end = steps[steps.length - 1];
     for (const e of CODEX) if (!e.silhouette) expect(unlocked(e.unlock, end), e.id).toBe(true);
     const endS = walk('S').slice(-1)[0];
-    for (const e of CODEX) if (e.more) expect(unlocked(e.more.unlock, endS), `${e.id}.more`).toBe(true);
+    for (const e of CODEX) if (e.more && !e.silhouette) expect(unlocked(e.more.unlock, endS), `${e.id}.more`).toBe(true);
     // Silhouettes stay locked through the demo.
     for (const e of CODEX) if (e.silhouette) expect(unlocked(e.unlock, endS), e.id).toBe(false);
+  });
+
+  it('the whole campaign (A ranks) opens every page, silhouettes included; S ranks every second paragraph (NAR-0169)', () => {
+    const endA = walkAll('A');
+    const locked = CODEX.filter((e) => e.unlock.kind !== 'complete' && !unlocked(e.unlock, endA)).map((e) => e.id);
+    expect(locked).toEqual([]);
+    const endS = walkAll('S');
+    for (const e of CODEX) if (e.more) expect(unlocked(e.more.unlock, endS), `${e.id}.more`).toBe(true);
+    expect(CODEX.filter((e) => e.silhouette && !e.id.startsWith('letter-')).length).toBeGreaterThanOrEqual(40);
   });
 
   it('entries unlock in campaign order and never re-lock', () => {
