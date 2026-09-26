@@ -9173,5 +9173,131 @@
     "context": "Rating label: bone-setting (Splinted)",
     "screenshot": "docs/loc/screens/operation.png",
     "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "ui.triage.clock": {
+    "scene": "triage",
+    "font": "body",
+    "size": 17,
+    "maxPx": 260,
+    "context": "Triage: seconds until the field is cleared."
+  },
+  "ui.triage.tag.immediate": {
+    "scene": "triage",
+    "font": "body",
+    "size": 17,
+    "maxPx": 180,
+    "context": "Triage tag: treat now."
+  },
+  "ui.triage.tag.delayed": {
+    "scene": "triage",
+    "font": "body",
+    "size": 17,
+    "maxPx": 180,
+    "context": "Triage tag: can wait for the surgeon."
+  },
+  "ui.triage.tag.walking": {
+    "scene": "triage",
+    "font": "body",
+    "size": 17,
+    "maxPx": 180,
+    "context": "Triage tag: walking wounded."
+  },
+  "ui.triage.tag.beyond": {
+    "scene": "triage",
+    "font": "body",
+    "size": 17,
+    "maxPx": 180,
+    "context": "Triage tag: will not survive; given last rites."
+  },
+  "ui.triage.dead": {
+    "scene": "triage",
+    "font": "body",
+    "size": 17,
+    "maxPx": 200,
+    "context": "Triage card status: the patient died."
+  },
+  "ui.triage.stable": {
+    "scene": "triage",
+    "font": "body",
+    "size": 17,
+    "maxPx": 200,
+    "context": "Triage card status: will survive."
+  },
+  "ui.triage.working": {
+    "scene": "triage",
+    "font": "body",
+    "size": 17,
+    "maxPx": 200,
+    "context": "Triage card status: a procedure in progress."
+  },
+  "ui.triage.pick": {
+    "scene": "triage",
+    "font": "body",
+    "size": 17,
+    "maxPx": 720,
+    "context": "Triage: detail panel before a patient is picked."
+  },
+  "ui.triage.tag": {
+    "scene": "triage",
+    "font": "body",
+    "size": 17,
+    "maxPx": 380,
+    "context": "Triage: heading over the tag buttons."
+  },
+  "ui.triage.treat": {
+    "scene": "triage",
+    "font": "body",
+    "size": 17,
+    "maxPx": 380,
+    "context": "Triage: heading over the procedure buttons."
+  },
+  "ui.triage.proc.tourniquet": {
+    "scene": "triage",
+    "font": "body",
+    "size": 17,
+    "maxPx": 110,
+    "context": "Triage procedure button."
+  },
+  "ui.triage.proc.pack": {
+    "scene": "triage",
+    "font": "body",
+    "size": 17,
+    "maxPx": 110,
+    "context": "Triage procedure button."
+  },
+  "ui.triage.proc.splint": {
+    "scene": "triage",
+    "font": "body",
+    "size": 17,
+    "maxPx": 110,
+    "context": "Triage procedure button."
+  },
+  "ui.triage.wagons": {
+    "scene": "triage",
+    "font": "body",
+    "size": 17,
+    "maxPx": 400,
+    "context": "Triage: button that ends the field early."
+  },
+  "ui.triage.result": {
+    "scene": "triage",
+    "font": "body",
+    "size": 17,
+    "maxPx": 820,
+    "context": "Triage result heading: rank seal letter, then counts."
+  },
+  "ui.triage.lost": {
+    "scene": "triage",
+    "font": "body",
+    "size": 17,
+    "maxPx": 820,
+    "context": "Triage results: names of patients who died."
+  },
+  "ui.triage.tags": {
+    "scene": "triage",
+    "font": "body",
+    "size": 17,
+    "maxPx": 820,
+    "context": "Triage results: tag accuracy."
   }
 }

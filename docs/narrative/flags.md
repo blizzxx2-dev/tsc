@@ -31,6 +31,9 @@ Code: `src/content/flags.ts` (`flags.get / set / has / truthy / count`), conditi
 | `trialRebuttals` | number | the trial's cross-examination (CON-0235): charges rebutted | `trialEvidence` (−1 each) |
 | `predecessorFinding` | `'prime' \| 'natural'` | the Registrar's predecessor examination (CON-0244) | — (record) |
 | `coachmanFinding` | `'choir' \| 'robbery'` | the Widow's coachman examination (CON-0245) | s4-8 (Stroh names the carriage) |
+| `kilnrowsSaved` | number | the Kilnrows blast triage (CON-0228, tr3-kilnrows): patients saved, of 8 | s3-4 (Ilse's day-book, 7+) |
+| `fordSaved` | number | the ford triage (CON-0228, tr4-ford): patients saved, of 8 | s4-2 (Mauer's count, 7+) |
+| `hollowSaved` | number | the Penny Stair triage (CON-0228, tr5-hollow): patients saved, of 8 | s5-5 (the Stair behind them, 7+) |
 | `choice.s2-4` | `'mercy' \| 'awake'` | s2-4 pick record | tools, tests |
 | `hornchildCertificate` | `'natural' \| 'turned'` | s3-2 choice (NAR-0119): the kind lie or the true sentence | s3-2 (the rest of the scene), Ch4, Ch5 |
 | `choice.s3-2` | `'natural' \| 'turned'` | s3-2 pick record | tools, tests |

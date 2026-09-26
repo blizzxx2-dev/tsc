@@ -25,6 +25,7 @@ import { CreditsScene } from './credits';
 import { POST_CREDITS } from '../content/endings';
 import { IS_DEMO } from '../platform/build';
 import { InterviewScene } from './interview';
+import { TriageScene } from './triage';
 import { interviewOf, type DisciplineStepDef } from '../content/campaign';
 
 export const save: SaveData = load();
@@ -167,6 +168,17 @@ function syncChapterBundles(game: Game, chapter: number, step: number): void {
 
 /** A discipline step (CON-0247): the interview, then its flags and its seal in the ledger. */
 export function playDiscipline(game: Game, d: DisciplineStepDef, onDone: () => void): void {
+  if (d.mode === 'triage' && d.triage) {
+    game.go(
+      new TriageScene(d.triage, d.backdrop, (outcome) => {
+        if (d.savedFlag) flags.set(d.savedFlag, outcome.saved);
+        recordBest(save, d.id, outcome.rank, outcome.score);
+        store(save);
+        onDone();
+      }),
+    );
+    return;
+  }
   const def = interviewOf(d, flags);
   game.go(
     new InterviewScene(def, d.backdrop, (result, session) => {

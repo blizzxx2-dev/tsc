@@ -600,11 +600,11 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ## CON · Epic 10 — Other disciplines (modes)
 
 ### Field triage (Kilnrows blast, Vennmark field)
-- [ ] CON-0226 · Alpha · P1 · M · Triage mode spec — 4–8 incoming patients on stretchers with visible wounds and a declining clock each; player assigns tag (Immediate / Delayed / Beyond Help / Walking) and short procedures (tourniquet, pack, splint)
-- [ ] CON-0227 · Alpha · P1 · L · Implement triage scene simulation — DOM-free, seeded; with patient deterioration curves and scoring by lives saved + correct tags (unit tests)
-- [ ] CON-0228 · Alpha · P1 · M · Triage content — 3 scenarios: "Kilnrows Blast" (Ch3), "After the Ford" (Ch4), "Hollow Night Streets" (Ch5); 30 patient cards total with correct-tag answers
-- [ ] CON-0229 · Alpha · P2 · S · "Beyond Help" moral beat — tagging a patient Beyond Help triggers a 2-line last-rites vignette; tagging wrongly is shown in results
-- [ ] CON-0230 · Beta · P1 · S · Triage tutorial prompts and balance pass — average bot saves ≥ 60%
+- [x] CON-0226 · Alpha · P1 · M · Triage mode spec — 4–8 incoming patients on stretchers with visible wounds and a declining clock each; player assigns tag (Immediate / Delayed / Beyond Help / Walking) and short procedures (tourniquet, pack, splint)
+- [x] CON-0227 · Alpha · P1 · L · Implement triage scene simulation — DOM-free, seeded; with patient deterioration curves and scoring by lives saved + correct tags (unit tests)
+- [x] CON-0228 · Alpha · P1 · M · Triage content — 3 scenarios: "Kilnrows Blast" (Ch3), "After the Ford" (Ch4), "Hollow Night Streets" (Ch5); 30 patient cards total with correct-tag answers
+- [x] CON-0229 · Alpha · P2 · S · "Beyond Help" moral beat — tagging a patient Beyond Help triggers a 2-line last-rites vignette; tagging wrongly is shown in results
+- [x] CON-0230 · Beta · P1 · S · Triage tutorial prompts and balance pass — average bot saves ≥ 60%
 
 ### Diagnosis and inquisition interviews
 - [x] CON-0231 · Alpha · P1 · M · Interview mode spec — examine patient (click body regions for findings), ask questions from a topic list, present evidence; conclusion chosen from 3–4 diagnoses/verdicts
@@ -629,7 +629,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0246 · Beta · P2 · S · Forensic tutorial and balance pass — perfect evidence rate achievable in ≤ 70% of candle
 
 ### Discipline integration
-- [ ] CON-0247 · Alpha · P1 · S · Campaign step kinds `triage` — `interview`, `bonesetting`, `forensic` added to campaign graph schema with validation
+- [x] CON-0247 · Alpha · P1 · S · Campaign step kinds `triage` — `interview`, `bonesetting`, `forensic` added to campaign graph schema with validation
 - [ ] CON-0248 · Beta · P2 · S · Discipline challenge entries — 2 X-ops per discipline in challenge mode
 
 ## CON · Epic 11 — Content integration (Beta) and release checks

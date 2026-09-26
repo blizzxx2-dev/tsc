@@ -1,10 +1,11 @@
 import { JOURNAL_STORY } from './journal';
+import { TRIAGE_HOLLOW } from './triage';
 import { OP_5_10 } from './ops/bones';
 import { EPILOGUE_STORY } from './epilogue';
 import { ENDING_EXILE, ENDING_PARDON, ENDING_PYRE, endingIs, hostIs, strohTrust, trialVerdict, verdictIs } from './endings';
 import { whisperBand, whisperScore, whisperThought, type WhisperBand } from './whisper';
 import { trialInterview } from './interviews';
-import { byBand, chapterAverageA, flags } from './flags';
+import { byBand, chapterAverageA, flags, atLeast } from './flags';
 import { Embedded, Incision, Laceration, Rot } from '../surgery/entities';
 import { TinctureSite, Vessel } from '../surgery/ailments/kilnrows';
 import { Bud, Cyst, HexBall, Infant, VocalFold } from '../surgery/ailments/hollownight';
@@ -211,6 +212,9 @@ export const STORY_5_5: StoryDef = {
   backdrop: 'street',
   lines: [
     n('On the cathedral steps a chorister boy, Jakob, sings the Choir’s hymn in a voice that is not his own, and cannot stop.'),
+    // CON-0228: the Penny Stair (tr5-hollow).
+    ...onlyIf(atLeast('hollowSaved', 7), n('Behind them, the Penny Stair is empty of the hurt. Lotte’s squad carried every one of them in.')),
+    ...onlyIf({ not: atLeast('hollowSaved', 7) }, n('Behind them, the Watch is laying cloaks over the ones on the Penny Stair who did not last.')),
     say('ilse', 'Extra vocal folds. They’ve grown in his throat, and they hum with the procession. While they sing, I can’t hear a thing.'),
     say('kreuzer', 'Then we cut in the silences. Between the verses.'),
     // NAR-0114: Emmerich (op1-5), who once carried Matins, knows this hymn.
@@ -596,8 +600,8 @@ export const CHAPTER_5: Chapter = {
   title: 'Vespers and Compline',
   // NAR-0145/0158: the finale reads every prior flag; the ending is derived from them (src/content/endings.ts).
   flags: {
-    reads: ['cantorMercy', 'litanySeenCount', 'hornchildCertificate', 'strohTooth', 'strohToothFine', 'hallerFate', 'thirstChoice', 'mauerFate', 'deadManVerdict', 'trialAnswer', 'trialRebuttals'],
-    writes: ['trialAnswer', 'trialRebuttals'],
+    reads: ['hollowSaved', 'cantorMercy', 'litanySeenCount', 'hornchildCertificate', 'strohTooth', 'strohToothFine', 'hallerFate', 'thirstChoice', 'mauerFate', 'deadManVerdict', 'trialAnswer', 'trialRebuttals'],
+    writes: ['hollowSaved', 'trialAnswer', 'trialRebuttals'],
   },
   steps: [
     { kind: 'story', story: STORY_5_1 },
@@ -618,6 +622,7 @@ export const CHAPTER_5: Chapter = {
     },
     { kind: 'story', story: STORY_5_3 },
     { kind: 'story', story: STORY_5_4 },
+    { kind: 'discipline', discipline: { id: TRIAGE_HOLLOW.id, title: TRIAGE_HOLLOW.title, place: TRIAGE_HOLLOW.place, backdrop: 'street', mode: 'triage', triage: TRIAGE_HOLLOW, savedFlag: 'hollowSaved' } },
     { kind: 'op', op: OP_5_5 },
     { kind: 'op', op: OP_5_10 },
     { kind: 'story', story: STORY_5_5 },

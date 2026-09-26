@@ -1,4 +1,5 @@
 import { teach } from './teach';
+import { TRIAGE_KILNROWS } from './triage';
 import { OP_3_12, OP_3_13 } from './ops/bones';
 import { BloodPool, Bubo, Burn, Embedded, Incision, Laceration, Rot } from '../surgery/entities';
 import { Agitation, Amputation, ClothFragment, DressedBud, HornBud, Jaw, leadDeposit, Molar, TinctureSite, Worm, woundFeverPhase } from '../surgery/ailments/kilnrows';
@@ -10,7 +11,7 @@ import { choose, n, onlyIf, say, type StoryDef } from './story';
 import { whisperThought } from './whisper';
 import { INTERVIEW_FOUNDERS, INTERVIEW_LIESL } from './interviews';
 import { FORENSIC_PREDECESSOR } from './forensics';
-import { byBand, chapterAverageA, flags, licenceKept } from './flags';
+import { byBand, chapterAverageA, flags, licenceKept, atLeast } from './flags';
 import { OP_3_10, OP_3_11 } from './ops/hours';
 export { OP_3_10, OP_3_11 };
 
@@ -105,6 +106,9 @@ export const STORY_3_4: StoryDef = {
   backdrop: 'hospice',
   lines: [
     n('The last of the mill-hands are stitched and sent home. The bells have rung for Vespers, and nobody went.'),
+    // CON-0228: the Kilnrows field (tr3-kilnrows).
+    ...onlyIf(atLeast('kilnrowsSaved', 7), n('Ilse closes the day-book on the blast. Every stretcher in the yard that could be saved, was.')),
+    ...onlyIf({ not: atLeast('kilnrowsSaved', 7) }, n('Ilse closes the day-book on the blast. Some of the names from the yard have a line drawn through them.')),
     say('patient', 'Ute Brandt, bell-founder. The belly-gripes, Doctor. Forty years of pouring lead has made my blood heavy.', 'Ute Brandt'),
     say('ilse', 'Founder’s colic. The lead settles in the flesh like grey silt — you won’t see it without the lens.'),
     say('haller', 'A chelating draught lifts it. Tincture on each deposit, then draw off the grey bile it leaves.'),
@@ -558,8 +562,8 @@ export const CHAPTER_3: Chapter = {
   title: 'Prime and Terce',
   // NAR-0116: reads the demo's choice and Litany count; writes the certificate, Stroh's tooth (op3-9) and Haller's fate (op3-11).
   flags: {
-    reads: ['cantorMercy', 'litanySeenCount', 'hornchildCertificate', 'guildMarks', 'guildOps', 'hornchildFinding', 'foundersVerdict'],
-    writes: ['hornchildCertificate', 'strohTooth', 'strohToothFine', 'hallerFate', 'hornchildFinding', 'foundersVerdict', 'predecessorFinding'],
+    reads: ['kilnrowsSaved', 'cantorMercy', 'litanySeenCount', 'hornchildCertificate', 'guildMarks', 'guildOps', 'hornchildFinding', 'foundersVerdict'],
+    writes: ['kilnrowsSaved', 'hornchildCertificate', 'strohTooth', 'strohToothFine', 'hallerFate', 'hornchildFinding', 'foundersVerdict', 'predecessorFinding'],
   },
   steps: [
     { kind: 'story', story: STORY_3_1 },
@@ -569,6 +573,7 @@ export const CHAPTER_3: Chapter = {
     { kind: 'op', op: OP_3_1 },
     { kind: 'story', story: STORY_3_3 },
     { kind: 'op', op: OP_3_2 },
+    { kind: 'discipline', discipline: { id: TRIAGE_KILNROWS.id, title: TRIAGE_KILNROWS.title, place: TRIAGE_KILNROWS.place, backdrop: 'street', mode: 'triage', triage: TRIAGE_KILNROWS, savedFlag: 'kilnrowsSaved' } },
     { kind: 'op', op: OP_3_4 },
     { kind: 'op', op: OP_3_12 },
     { kind: 'story', story: STORY_3_4 },

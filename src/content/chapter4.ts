@@ -1,4 +1,5 @@
 import { whisperThought } from './whisper';
+import { TRIAGE_FORD } from './triage';
 import { OP_4_11 } from './ops/bones';
 import { teach } from './teach';
 import { BloodPool, Embedded, Incision, Laceration, Rot } from '../surgery/entities';
@@ -10,7 +11,7 @@ import type { Chapter } from './campaign';
 import { choose, n, onlyIf, say, type StoryDef } from './story';
 import { strohTrust } from './endings';
 import { FORENSIC_COACHMAN, FORENSIC_SALM } from './forensics';
-import { byBand, chapterAverageA } from './flags';
+import { byBand, chapterAverageA, atLeast } from './flags';
 import { OP_4_7, OP_4_9 } from './ops/hours';
 export { OP_4_7, OP_4_9 };
 
@@ -51,6 +52,9 @@ export const STORY_4_2: StoryDef = {
   backdrop: 'night',
   lines: [
     n('It rains for three days. The tent drips onto the table in a rhythm Ilse starts humming without noticing.'),
+    // CON-0228: the ford (tr4-ford).
+    ...onlyIf(atLeast('fordSaved', 7), say('mauer', 'Forty-one this morning, Doctor. The same forty-one. The ford did not take one of mine.')),
+    ...onlyIf({ not: atLeast('fordSaved', 7) }, say('mauer', 'Thirty-eight this morning. I count the three at the ford every time, and then I take them off.')),
     // NAR-0114: Tomas (op2-1), the scout, back from the barrow-fields.
     ...byBand('op2-1', {
       high: say('patient', 'Tomas, Doctor. The arm throws better than it did before the hound. I scout the Vennmark for the captain now.', 'Tomas, scout'),
@@ -608,13 +612,14 @@ export const CHAPTER_4: Chapter = {
   // NAR-0131: reads Chapter III's outcomes and Stroh's trust (s4-8, s4-end); writes `deadManVerdict` (s4-5),
   // `thirstChoice` (s4-6) and `mauerFate` (op4-7). See docs/narrative/flags.md.
   flags: {
-    reads: ['hallerFate', 'hornchildCertificate', 'litanySeenCount', 'cantorMercy', 'strohTooth', 'strohToothFine', 'deadManVerdict', 'coachmanFinding'],
-    writes: ['deadManVerdict', 'thirstChoice', 'mauerFate', 'coachmanFinding'],
+    reads: ['fordSaved', 'hallerFate', 'hornchildCertificate', 'litanySeenCount', 'cantorMercy', 'strohTooth', 'strohToothFine', 'deadManVerdict', 'coachmanFinding'],
+    writes: ['fordSaved', 'deadManVerdict', 'thirstChoice', 'mauerFate', 'coachmanFinding'],
   },
   steps: [
     { kind: 'story', story: STORY_4_1 },
     { kind: 'op', op: OP_4_1 },
     { kind: 'op', op: OP_4_10 },
+    { kind: 'discipline', discipline: { id: TRIAGE_FORD.id, title: TRIAGE_FORD.title, place: TRIAGE_FORD.place, backdrop: 'camp', mode: 'triage', triage: TRIAGE_FORD, savedFlag: 'fordSaved' } },
     { kind: 'story', story: STORY_4_2 },
     { kind: 'op', op: OP_4_2 },
     { kind: 'story', story: STORY_4_3 },

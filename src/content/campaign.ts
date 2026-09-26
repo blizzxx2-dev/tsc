@@ -1,4 +1,5 @@
 import type { OperationDef } from '../surgery/operation';
+import type { TriageScenario } from '../surgery/triage';
 import { CHAPTER_1 } from './chapter1';
 import { CHAPTER_2 } from './chapter2';
 import { LATER_CHAPTERS } from './later';
@@ -18,16 +19,21 @@ import { EDITION } from '../platform/build';
 export type Step = ({ kind: 'story'; story: StoryDef } | { kind: 'op'; op: OperationDef } | { kind: 'discipline'; discipline: DisciplineStepDef }) & { if?: FlagCondition };
 
 /**
- * A step in one of the other disciplines (CON-0247): an interview (CON-0231) — and, as they land,
- * forensics, triage and bone-setting. The def may be built from the flags when the step starts.
+ * A step in one of the other disciplines (CON-0247): an interview (CON-0231), a forensic
+ * examination (CON-0241) or a field triage (CON-0226). Bone-setting cases are operations. The
+ * interview may be built from the flags when the step starts.
  */
 export interface DisciplineStepDef {
   id: string;
   title: string;
   place: string;
   backdrop: Backdrop;
-  mode: 'interview' | 'forensic';
-  interview: InterviewDef | ((f: FlagReader) => InterviewDef);
+  mode: 'interview' | 'forensic' | 'triage';
+  /** The interview or forensic examination (modes `interview`, `forensic`). */
+  interview?: InterviewDef | ((f: FlagReader) => InterviewDef);
+  /** The field (mode `triage`, CON-0226): its saved count is written to `savedFlag`. */
+  triage?: TriageScenario;
+  savedFlag?: string;
   /** Flags to write from the finished session, beyond the conclusion's own. */
   after?: (result: InterviewResult, session: InterviewSession) => FlagRecord;
   /** The flags `after` writes (for the flag audit). */
@@ -37,12 +43,17 @@ export interface DisciplineStepDef {
 /** Every flag a discipline step can write: its conclusions' and its `after`'s. */
 export function disciplineWrites(d: DisciplineStepDef, f: FlagReader): string[] {
   const keys = new Set<string>(d.writes ?? []);
+  if (d.savedFlag) keys.add(d.savedFlag);
+  if (d.mode === 'triage') return [...keys];
   for (const c of interviewOf(d, f).conclusions) for (const k of Object.keys(c.flags ?? {})) keys.add(k);
   return [...keys];
 }
 
 /** The interview a discipline step plays, resolved against the flags. */
-export const interviewOf = (d: DisciplineStepDef, f: FlagReader): InterviewDef => (typeof d.interview === 'function' ? d.interview(f) : d.interview);
+export function interviewOf(d: DisciplineStepDef, f: FlagReader): InterviewDef {
+  if (!d.interview) throw new Error(`discipline ${d.id} has no interview`);
+  return typeof d.interview === 'function' ? d.interview(f) : d.interview;
+}
 
 /** A chapter's flag contract (NAR-0116, NAR-0131, NAR-0145): audited by tests/unit/content/flags.test.ts. */
 export interface ChapterFlags {

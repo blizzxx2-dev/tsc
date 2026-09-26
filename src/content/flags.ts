@@ -111,6 +111,12 @@ export type FlagCondition =
   | { any: readonly FlagCondition[] }
   | { not: FlagCondition };
 
+/** A numeric flag at or above `min` (a triage's saved count, CON-0228). */
+export const atLeast =
+  (flag: string, min: number) =>
+  (f: FlagReader): boolean =>
+    Number(f.get(flag) ?? 0) >= min;
+
 export function evalCondition(c: FlagCondition, f: FlagReader): boolean {
   if (typeof c === 'function') return c(f);
   if ('flag' in c) {
