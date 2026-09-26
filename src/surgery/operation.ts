@@ -154,6 +154,8 @@ export interface OperationOptions {
   upgrades?: readonly string[];
   /** Start at this phase (boss checkpoint). */
   checkpoint?: number;
+  /** The player's audio latency in ms (INP-0111), allowed for by the rhythm windows. */
+  audioOffset?: number;
   /** With `checkpoint`: the stage inside the Hour to resume at (one of `def.bossCheckpoints`). */
   bossStage?: number;
   /** Record every input for replay. */

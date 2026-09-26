@@ -377,7 +377,7 @@ export class OperationScene implements Scene {
   private static create(def: OperationDef, runOpts: OperationOptions = {}): Operation {
     const d = settings.timerAssist === 1 || runOpts.challenge ? def : { ...def, timeLimit: Math.round(def.timeLimit * settings.timerAssist) };
     // Every run records its inputs (ENG-0256): bug reports carry the replay of the run that went wrong.
-    return new Operation(withBossContext(d), { ...operationOptions(def, runOpts), record: true });
+    return new Operation(withBossContext(d), { audioOffset: settings.audioOffset, ...operationOptions(def, runOpts), record: true });
   }
 
   /** Unsubscribes the hitstop binding (ENG-0058); set on the first update that has a clock. */

@@ -137,6 +137,8 @@ export interface Settings {
   cursorColor: 'brass' | 'white' | 'cyan' | 'magenta';
   /** Display brightness / gamma multiplier (UIX-0076). */
   brightness: number;
+  /** Audio latency in ms (INP-0111): how late the player hears a beat; the rhythm windows allow for it. */
+  audioOffset: number;
   /** Post-process vignette (UIX-0105). */
   vignette: boolean;
   // controls
@@ -243,6 +245,7 @@ export const SETTINGS_SCHEMA: readonly SettingDef[] = [
   d('readableFont', 'accessibility', 'toggle', { type: 'bool' }),
   d('cursorColor', 'accessibility', 'choice', { type: 'enum', options: ['brass', 'white', 'cyan', 'magenta'] }),
   d('brightness', 'display', 'slider', { type: 'number', min: 0.7, max: 1.3, step: 0.05 }),
+  d('audioOffset', 'audio', 'slider', { type: 'number', min: -100, max: 250, step: 10 }),
   d('vignette', 'graphics', 'toggle', { type: 'bool' }),
   d('bindings', 'controls', 'bindings', { type: 'bindings' }),
   d('swapMouseButtons', 'controls', 'toggle', { type: 'bool' }),
@@ -317,6 +320,7 @@ export const DEFAULT_SETTINGS: Readonly<Settings> = Object.freeze({
   readableFont: false,
   cursorColor: 'brass',
   brightness: 1,
+  audioOffset: 0,
   vignette: true,
   bindings: Object.freeze({ ...DEFAULT_BINDINGS }) as Bindings,
   swapMouseButtons: false,

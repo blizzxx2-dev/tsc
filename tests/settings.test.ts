@@ -77,7 +77,7 @@ describe('presets, reset, metadata', () => {
 
   it('per-category defaults touch only that category', () => {
     const audio = defaultsFor('audio');
-    expect(Object.keys(audio).sort()).toEqual(['ambience', 'music', 'muteWhenUnfocused', 'muted', 'sfx', 'voice', 'volume']);
+    expect(Object.keys(audio).sort()).toEqual(['ambience', 'audioOffset', 'music', 'muteWhenUnfocused', 'muted', 'sfx', 'voice', 'volume']);
     expect(Object.keys(defaultsFor(null)).length).toBe(SETTINGS_SCHEMA.length);
   });
 

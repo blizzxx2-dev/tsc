@@ -169,6 +169,8 @@ export class ResultsScene implements Scene {
       rankSeal(g, sx, sy, 74, rank, this.t - 1.6);
       if (k >= 1) {
         caps(g, t('ui.results.rank'), sx, sy - 104, 13, hex(INK.dim), 'center');
+        // Every Hour and the Office end on the same stamp (BOS-0173).
+        if (BOSS_OPS[op.def.id]) caps(g, t('ui.results.malison_unmade'), sx, sy - 132, 16, hex('#d86a50'), 'center');
         if (rank === 'XS') g.text(t('ui.results.xs_subtitle'), sx, sy + 100, { size: 17, font: 'italic', color: hex('#fff4d0'), align: 'center', shadow: hex('#000000', 0.8), soft: true });
         if (this.newBest) caps(g, t('ui.results.new_best'), sx, sy + (rank === 'XS' ? 128 : 116), 14, hex(INK.goldHi), 'center');
         if (assisted() || op.resultFlags().length) g.text(t('ui.results.assisted'), sx, sy + 142, { size: 16, font: 'italic', color: hex(INK.dim), align: 'center', shadow: false });

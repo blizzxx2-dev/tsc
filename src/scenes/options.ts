@@ -26,6 +26,7 @@ import { palette, PALETTES, type PaletteId } from '../ui/theme';
 import { ChoiceScene } from './choice';
 import { ControlsCardScene } from './controlsCard';
 import { CalibrateScene } from './calibrate';
+import { CalibrateAudioScene } from './calibrateAudio';
 import { AudioOptionsScene } from '../audio/options-scene';
 import { GameplayOptionsScene } from './gameplayOptions';
 import { exportSupportBundle } from '../platform/support';
@@ -244,6 +245,8 @@ export function optionRows(tabId: OptionsTab): OptionRow[] {
         slider('volume', 'volume', 0, 1, 0.1, (v) => pct(v), 'ui.options.volume'),
         { ...toggle('sound', 'muted', 'ui.options.sound'), on: () => !settings.muted, set: (v) => (settings.muted = !v) },
         toggle('mute_unfocused', 'muteWhenUnfocused'),
+        slider('audio_offset', 'audioOffset', -100, 250, 10, (v) => `${v} ms`),
+        { id: 'calibrate_audio', label: 'ui.options.calibrate_audio', kind: 'action', run: (g) => g.push?.(new CalibrateAudioScene(() => g.pop!())) },
       ];
     case 'access':
       return [

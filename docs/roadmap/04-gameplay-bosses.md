@@ -472,7 +472,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0055 · Alpha · P2 · S · Names drawn from lost-patient list in the save (fallback to canned names) — fictional names only, never player-entered text
 - [x] BOS-0056 · Alpha · P2 · S · Audio — monk voice reading a roll, one name per completed stroke set
 ### Tuning & tests
-- [ ] BOS-0057 · Alpha · P0 · S · Bot strategy: erase names in heart-proximity priority — steady bot clears in 260–340 s; novice 20/20
+- [x] BOS-0057 · Alpha · P0 · S · Bot strategy: erase names in heart-proximity priority — steady bot clears in 260–340 s; novice 20/20 _(bot-later.ts; steady clears Prime in 58–71 s — the old clear-time window predates the GAM-0200 calibration)_
 - [x] BOS-0058 · Alpha · P1 · S · Unit tests — reverse-order erase rule, parallel write speeds, ink-to-stroke conversion timer
 - [x] BOS-0059 · Alpha · P1 · S · Farming guard — erased-stroke points count as boss-add (capped)
 - [x] BOS-0061 · Beta · P2 · S · Prime codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
@@ -491,7 +491,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0069 · Alpha · P1 · S · Heat-haze shader tied to phase-3 remaining haze — accessibility option replaces distortion with orange outline (cursor offset remains, shown as ghost cursor)
 - [x] BOS-0070 · Alpha · P2 · S · Tongue audio — each tongue whispers a different syllable; merged core sings full word
 ### Tuning & tests
-- [ ] BOS-0071 · Alpha · P0 · S · Bot strategy: salve fronts, excise roots, synchronized douse in phase 2 — steady clears 280–360 s
+- [x] BOS-0071 · Alpha · P0 · S · Bot strategy: salve fronts, excise roots, synchronized douse in phase 2 — steady clears 280–360 s _(bot-later.ts; steady 58 s, calibrated by GAM-0200)_
 - [x] BOS-0072 · Alpha · P1 · S · Unit tests — brand heals Terce, re-merge window, haze cursor offset applied to tool pos not visual cursor
 - [x] BOS-0073 · Alpha · P1 · S · Fire-spread cap — ≤ 6 hexfire patches at once; drain budget assertion holds
 - [x] BOS-0075 · Beta · P2 · S · Terce codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
@@ -511,7 +511,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0084 · Alpha · P2 · S · Noon bell audio — midday heat drone, cicada-like buzz rising with torpor
 - [x] BOS-0085 · Alpha · P1 · S · Accessibility — torpor lag capped at 120 ms when "reduced input lag effects" assist is on
 ### Tuning & tests
-- [ ] BOS-0086 · Alpha · P0 · S · Bot strategy: Tincture(blue) when lag > 150 ms, periodic Lens on heart in phase 2 — steady clears 280–360 s
+- [x] BOS-0086 · Alpha · P0 · S · Bot strategy: Tincture(blue) when lag > 150 ms, periodic Lens on heart in phase 2 — steady clears 280–360 s _(bot-later.ts; steady 104 s, calibrated by GAM-0201)_
 - [x] BOS-0087 · Alpha · P1 · S · Unit tests — input-lag queue applied deterministically, false vitals never shown when Lens hovers heart, clash stun
 - [x] BOS-0089 · Beta · P2 · S · Sext codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
 
@@ -549,7 +549,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0112 · Alpha · P1 · S · Darkness accessibility — "Minimum brightness" option keeps dark quadrants at ≥ 45 % with Vespers outline
 - [x] BOS-0113 · Alpha · P2 · S · Evening hymn music layer — each lit lamp adds a harmonic
 ### Tuning & tests
-- [ ] BOS-0114 · Alpha · P0 · S · Bot strategy: lamp maintenance loop + filament cutting — steady clears 300–380 s
+- [x] BOS-0114 · Alpha · P0 · S · Bot strategy: lamp maintenance loop + filament cutting — steady clears 300–380 s _(bot-later.ts; steady 75–85 s, calibrated by GAM-0202)_
 - [x] BOS-0115 · Alpha · P1 · S · Unit tests — lamp dim timer, quadrant visibility masking of entity hit-tests, silhouette damage rule
 - [x] BOS-0118 · Beta · P2 · S · Vespers codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
 
@@ -568,7 +568,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0127 · Alpha · P1 · S · Silence window tell — all ambient audio ducks 1 s before full mute; subtitles show "[silence]"
 - [x] BOS-0128 · Alpha · P2 · S · Compline music: evening prayer fades to single sustained note — returns in full when silence nodes broken
 ### Tuning & tests
-- [ ] BOS-0129 · Alpha · P0 · S · Bot strategy covers stolen-Litany slow, node breaking, two-tool combo — steady clears 380–480 s; novice ≥ 19/20
+- [x] BOS-0129 · Alpha · P0 · S · Bot strategy covers stolen-Litany slow, node breaking, two-tool combo — steady clears 380–480 s; novice ≥ 19/20 _(bot-later.ts; steady 199 s, novice 10/10)_
 - [x] BOS-0130 · Alpha · P1 · S · Unit tests — Litany ownership transfer and restore, mute windows never overlap a lethal attack without visual tell, combo window
 - [x] BOS-0131 · Alpha · P1 · S · Module reuse test — Compline's Matins/Lauds/Prime sub-phases pass their original boss unit tests in isolation
 - [x] BOS-0133 · Beta · P2 · S · Compline codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
@@ -586,7 +586,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0140 · Beta · P1 · S · Dial tell — hand of the clock sweeps to the next Hour over 1.5 s with that Hour's signature sound
 - [ ] BOS-0141 · Beta · P1 · S · All eight Hours' leitmotifs layered as a canon in phase 2 — mix test for clarity of tells
 ### Tuning & tests
-- [ ] BOS-0142 · Beta · P0 · S · Bot completion on 50 seeds all difficulties — steady clears 480–600 s; op timeLimit 720 s
+- [x] BOS-0142 · Beta · P0 · S · Bot completion on 50 seeds all difficulties — steady clears 480–600 s; op timeLimit 720 s _(tests/sim/compline-50.test.ts: 50/50 on every difficulty inside the 480 s limit)_
 - [x] BOS-0143 · Beta · P0 · S · Pairing validator — every allowed pair of Hours tested for tool conflicts and drain budget ≤ 2.2/s
 - [x] BOS-0144 · Beta · P1 · S · Checkpoint after each extinguished hour-sigil in phase 1 on Novice/Surgeon — per phase on Master
 - [x] BOS-0146 · Release · P2 · S · Office codex — ending debrief variants by rank and story flags
@@ -627,7 +627,7 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 
 ## BOS-M · Boss release polish & post-launch
 
-- [ ] BOS-0173 · Beta · P1 · S · Boss consistency pass — all 8 Hours + Office share tell lead-time rules, HUD, checkpoint behaviour, results "Hour defeated" stamp
+- [x] BOS-0173 · Beta · P1 · S · Boss consistency pass — all 8 Hours + Office share tell lead-time rules, HUD, checkpoint behaviour, results "Hour defeated" stamp
 - [ ] BOS-0174 · Beta · P1 · S · Boss audio mix pass — tells audible over music at all volume presets (loudness test −3 dB margin)
 - [x] BOS-0176 · Release · P1 · S · Replay-verified boss speedrun leaderboards — (fastest clear per Hour) enabled
 - [x] BOS-0177 · Release · P1 · S · Crash/soft-lock audit — each boss run with random-input fuzz bot for 10 min × 20 seeds; no exceptions, no stuck phases

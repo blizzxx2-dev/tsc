@@ -1,4 +1,5 @@
 import { fxRandom } from './fxRandom';
+import { TIMING } from './timing';
 import { dist, pointSegment, type Vec } from '../core/math';
 import { Entity } from './entity';
 import { hex } from '../render/color';
@@ -135,8 +136,17 @@ export class Malison extends MalisonBase {
 
   /** The brand bites: shroud open, or the eye on its third beat. */
   get vulnerable(): boolean {
-    if (this.phase.key === 'eye') return this.beat === 3;
-    return this.open || (!!this.tune.eyeFromStart && this.beat === 3);
+    if (this.phase.key === 'eye') return this.beat === 3 || this.lateOnBeat;
+    return this.open || (!!this.tune.eyeFromStart && (this.beat === 3 || this.lateOnBeat));
+  }
+
+  /** Latency set by the operation (INP-0111): a strike this late after the third beat still lands. */
+  latency = 0;
+
+  /** Just past the third beat, for a player who hears it late: within their latency plus the GOOD window. */
+  private get lateOnBeat(): boolean {
+    const late = this.eyeT - (2 * this.tune.beat + this.tune.beat3);
+    return this.latency > 0 && late >= 0 && late <= TIMING.good + this.latency;
   }
 
   private get openSpan(): number {
@@ -268,6 +278,7 @@ export class Malison extends MalisonBase {
 
   /** Phase 3 (and the X1 remix): the eye's 3-beat pulse and its gaze lash. */
   private eye(op: Operation, dt: number): void {
+    this.latency = (op.opts.audioOffset ?? 0) / 1000;
     const before = this.beat;
     this.eyeT += dt;
     if (this.eyeT >= this.eyeCycle) {

@@ -531,8 +531,8 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] INP-0108 · Alpha · P1 · S · Tap-to-tag input for field triage — single press on a casualty cycles triage tags; long-press (0.5 s) opens the tag radial; gamepad face buttons map directly to tags
 - [ ] INP-0109 · Alpha · P1 · S · Palpation/scan hold for diagnosis — hold-and-sweep gesture reporting coverage of a body region (reuses `Coverage`), with hit-scale assist support
 - [ ] INP-0110 · Alpha · P2 · S · Magnifier input for forensic/inquisition scenes — hover pan + wheel zoom 1–4× with smooth zoom around the cursor; gamepad triggers zoom
-- [ ] INP-0111 · Alpha · P1 · M · Timing-window input for rhythmic Malison gimmicks (Ch3–5 hours) — windows ±60 ms (COOL) / ±120 ms (GOOD) measured from event timestamps, compensated by an audio-latency offset from a calibration screen (Options → Audio → Calibrate)
-- [ ] INP-0112 · Alpha · P1 · S · Petrification chip gesture — rapid repeated short Lancet strokes on stone crust register as chips (min 3 per second) with an assist that accepts holding instead
+- [x] INP-0111 · Alpha · P1 · M · Timing-window input for rhythmic Malison gimmicks (Ch3–5 hours) — windows ±60 ms (COOL) / ±120 ms (GOOD) measured from event timestamps, compensated by an audio-latency offset from a calibration screen (Options → Audio → Calibrate)
+- [x] INP-0112 · Alpha · P1 · S · Petrification chip gesture — rapid repeated short Lancet strokes on stone crust register as chips (min 3 per second) with an assist that accepts holding instead
 - [x] INP-0113 · Alpha · P2 · S · Challenge-mode instant retry — hold `R` (gamepad Back) for 1 s to restart; ring fills on the reticle; not active in story mode
 
 ### Advanced devices

@@ -1143,5 +1143,16 @@
   "ui.triage.result": "{rank} — {saved} of {savable} saved",
   "ui.triage.lost": "Lost: {names}",
   "ui.triage.tags": "Tags right: {right} of {total}",
-  "label.mud_cleaned": "Mud cleaned"
+  "label.mud_cleaned": "Mud cleaned",
+  "ui.results.malison_unmade": "Malison Unmade",
+  "ui.options.audio_offset": "Audio latency",
+  "ui.options.calibrate_audio": "Calibrate latency…",
+  "ui.calibrate_audio.title": "Audio Latency",
+  "ui.calibrate_audio.help": "Click as you hear each toll of the bell.",
+  "ui.calibrate_audio.taps": "{n} tolls heard",
+  "ui.calibrate_audio.result": "You hear the bell {ms} ms late.",
+  "ui.calibrate_audio.keep": "Keep it",
+  "ui.calibrate_audio.again": "Again",
+  "ui.options.audio_offset_note": "How late you hear the game’s sounds. Rhythm windows allow for it; calibrate below.",
+  "ui.options.calibrate_audio_note": "Tap along with a bell to measure your audio latency."
 }

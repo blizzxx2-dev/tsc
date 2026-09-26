@@ -19,6 +19,8 @@ export const STONE = {
   lensAhead: 20,
   /** How much a stone front's edge may overlap the organ before it strikes. */
   organR: 18,
+  /** Simple gestures: seconds the lancet rests on a crack point to chip it (INP-0112). */
+  holdChip: 0.3,
 };
 
 export interface StonePlate {
@@ -47,6 +49,7 @@ export class Petrification extends Entity {
   front: number;
   struck = false;
   noun = 'the stone';
+  private holdT = 0;
 
   constructor(
     pos: Vec,
@@ -115,24 +118,42 @@ export class Petrification extends Entity {
     if (tool !== 'lancet') return false;
     const plate = this.plates.find((p) => !p.lifted && dist(p.center, ptr.pos) < STONE.plateR + op.hitPad);
     if (!plate) return false;
-    const next = plate.nodes[plate.chipped];
-    if (dist(next, ptr.pos) <= STONE.nodeReach + op.hitPad) {
-      plate.chipped++;
-      op.cues.push('pluck');
-      op.emit('dust', ptr.pos, 6);
-      if (plate.chipped === plate.nodes.length) {
-        plate.lifted = true;
-        plate.marginT = 0;
-        plate.cov = new Coverage(plate.center, STONE.plateR, 10);
-        op.rate('cool', plate.center, 'Chipped');
-        op.sayOnce('stone-margin', 'The plate’s off — salve the raw flesh beneath, quickly!');
-      }
-    } else {
+    this.holdT = 0;
+    if (dist(plate.nodes[plate.chipped], ptr.pos) <= STONE.nodeReach + op.hitPad) this.chip(op, plate, ptr.pos);
+    else {
       op.rate('bad', ptr.pos, 'Off the crack');
       this.front = Math.max(0, this.front - STONE.wrongSpread);
       op.sayOnce('stone-order', 'Tap the cracks in order — the numbered points. Anywhere else spreads it.');
     }
     return true;
+  }
+
+  /** Simple gestures (INP-0112): holding the lancet on the next crack point chips it, instead of a fresh tap. */
+  override onDrag(op: Operation, ptr: Pointer, tool: ToolId, dt: number): void {
+    if (tool !== 'lancet' || !op.assists.simpleGestures) return;
+    const plate = this.plates.find((p) => !p.lifted && dist(p.nodes[p.chipped], ptr.pos) <= STONE.nodeReach + op.hitPad);
+    if (!plate) {
+      this.holdT = 0;
+      return;
+    }
+    this.holdT += dt;
+    if (this.holdT >= STONE.holdChip) {
+      this.holdT = 0;
+      this.chip(op, plate, ptr.pos);
+    }
+  }
+
+  private chip(op: Operation, plate: StonePlate, at: Vec): void {
+    plate.chipped++;
+    op.cues.push('pluck');
+    op.emit('dust', at, 6);
+    if (plate.chipped === plate.nodes.length) {
+      plate.lifted = true;
+      plate.marginT = 0;
+      plate.cov = new Coverage(plate.center, STONE.plateR, 10);
+      op.rate('cool', plate.center, 'Chipped');
+      op.sayOnce('stone-margin', 'The plate’s off — salve the raw flesh beneath, quickly!');
+    }
   }
 
   override onSweep(op: Operation, ptr: Pointer, tool: ToolId): void {

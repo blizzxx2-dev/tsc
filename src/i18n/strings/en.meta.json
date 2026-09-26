@@ -9308,5 +9308,84 @@
     "context": "Rating label: field mud salved out of a wound (Mud cleaned)",
     "screenshot": "docs/loc/screens/operation.png",
     "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "ui.results.malison_unmade": {
+    "scene": "results",
+    "font": "display",
+    "size": 16,
+    "maxPx": 260,
+    "context": "Results: stamp over the rank seal after any Malison (boss) is defeated."
+  },
+  "ui.options.audio_offset": {
+    "scene": "options",
+    "font": "body",
+    "size": 18,
+    "maxPx": 380,
+    "context": "Options: slider for how late the player hears sounds, in ms."
+  },
+  "ui.options.calibrate_audio": {
+    "scene": "options",
+    "font": "body",
+    "size": 18,
+    "maxPx": 380,
+    "context": "Options: opens the audio latency calibration screen."
+  },
+  "ui.calibrate_audio.title": {
+    "scene": "calibrate",
+    "font": "body",
+    "size": 18,
+    "maxPx": 600,
+    "context": "Audio calibration screen title."
+  },
+  "ui.calibrate_audio.help": {
+    "scene": "calibrate",
+    "font": "body",
+    "size": 18,
+    "maxPx": 900,
+    "context": "Audio calibration instructions."
+  },
+  "ui.calibrate_audio.taps": {
+    "scene": "calibrate",
+    "font": "body",
+    "size": 18,
+    "maxPx": 400,
+    "context": "Audio calibration: how many clicks were recorded."
+  },
+  "ui.calibrate_audio.result": {
+    "scene": "calibrate",
+    "font": "body",
+    "size": 18,
+    "maxPx": 700,
+    "context": "Audio calibration result."
+  },
+  "ui.calibrate_audio.keep": {
+    "scene": "calibrate",
+    "font": "body",
+    "size": 18,
+    "maxPx": 260,
+    "context": "Audio calibration: save the measured latency."
+  },
+  "ui.calibrate_audio.again": {
+    "scene": "calibrate",
+    "font": "body",
+    "size": 18,
+    "maxPx": 260,
+    "context": "Audio calibration: measure again."
+  },
+  "ui.options.audio_offset_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
+  },
+  "ui.options.calibrate_audio_note": {
+    "scene": "options",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 820,
+    "context": "Options row description.",
+    "screenshot": "docs/loc/screens/options.png"
   }
 }
