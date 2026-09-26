@@ -1,142 +1,237 @@
 id,asset_key,character,line,context,emotion,max_duration_s,variants
-prologue.003,line.cbb226bf,Master Haller,"So. You are the new sawbones the Guild sent me. Kreuzer, is it?",I · Kessendorf — the Hospice of Saint Ildra the Merciful,questioning,5.1,1
-prologue.004,line.90debf92,Dr. Kreuzer,"Apothecary-surgeon, sworn at Weissburg. I have my letters, Master Haller—",I · Kessendorf — the Hospice of Saint Ildra the Merciful,neutral,5.7,1
-prologue.005,line.6cc898e5,Master Haller,Letters. Letters don’t stop a man bleeding into the straw. Hands do. Show me your hands.,I · Kessendorf — the Hospice of Saint Ildra the Merciful,neutral,6.7,1
-prologue.006,line.04d16598,Master Haller,…Steady enough. Sister! Our young doctor has arrived just in time for the Tuesday knife-fights.,I · Kessendorf — the Hospice of Saint Ildra the Merciful,urgent,7.2,1
-prologue.007,line.f836d1b6,Sister Ilse,"Sister Ilse, of the Merciful Order. I keep the instruments, the ledgers, and the Master’s temper.",I · Kessendorf — the Hospice of Saint Ildra the Merciful,neutral,7.3,1
-prologue.008,line.b1277c37,Sister Ilse,There’s a drover on the table already. Somebody at the Gilded Goose disagreed with his dice.,I · Kessendorf — the Hospice of Saint Ildra the Merciful,neutral,7.0,1
-prologue.009,line.80eee7e2,Master Haller,"Knife wounds. Simple work. Stitch him, drain him, salve him. I’ll watch.",I · Kessendorf — the Hospice of Saint Ildra the Merciful,neutral,5.7,1
-prologue.010,line.bd5d22c7,Master Haller,And Kreuzer — in this hospice we do not lose patients to simple work.,I · Kessendorf — the Hospice of Saint Ildra the Merciful,neutral,5.5,1
-op1-1.p0.1,line.40279e1a,Sister Ilse,Two deep cuts. Take the gut thread and zig-zag across each wound to stitch it.,A Tavern Knife — phase 1,neutral,4.3,1
+prologue.005,line.cbb226bf,Master Haller,"So. You are the new sawbones the Guild sent me. Kreuzer, is it?",I · Kessendorf — the Hospice of Saint Ildra the Merciful,questioning,5.1,1
+prologue.006,line.90debf92,Dr. Kreuzer,"Apothecary-surgeon, sworn at Weissburg. I have my letters, Master Haller—",I · Kessendorf — the Hospice of Saint Ildra the Merciful,neutral,5.7,1
+prologue.007,line.6cc898e5,Master Haller,Letters. Letters don’t stop a man bleeding into the straw. Hands do. Show me your hands.,I · Kessendorf — the Hospice of Saint Ildra the Merciful,neutral,6.7,1
+prologue.008,line.ad36f59f,Master Haller,…Steady enough. Why would a sworn Weissburg man take a charity bed in a city that burns its sick?,I · Kessendorf — the Hospice of Saint Ildra the Merciful,questioning,7.3,1
+prologue.009,line.8868385a,Dr. Kreuzer,"Weissburg taught me the rules, Master. I came somewhere too poor to afford them.",I · Kessendorf — the Hospice of Saint Ildra the Merciful,neutral,6.2,1
+prologue.010,line.15216245,Master Haller,Hm. Sister! Our young doctor has arrived just in time for the Tuesday knife-fights.,I · Kessendorf — the Hospice of Saint Ildra the Merciful,urgent,6.4,1
+prologue.011,line.f836d1b6,Sister Ilse,"Sister Ilse, of the Merciful Order. I keep the instruments, the ledgers, and the Master’s temper.",I · Kessendorf — the Hospice of Saint Ildra the Merciful,neutral,7.3,1
+prologue.012,line.6b672d73,Sister Ilse,There’s a drover on the table already. Somebody at the Crooked Goose disagreed with his dice.,I · Kessendorf — the Hospice of Saint Ildra the Merciful,neutral,7.0,1
+prologue.013,line.997ff194,Master Haller,Knife wounds. Simple work. I’ll watch.,I · Kessendorf — the Hospice of Saint Ildra the Merciful,neutral,3.5,1
+prologue.014,line.bd5d22c7,Master Haller,And Kreuzer — in this hospice we do not lose patients to simple work.,I · Kessendorf — the Hospice of Saint Ildra the Merciful,neutral,5.5,1
+op1-1.p0.1,line.40279e1a,Sister Ilse,Two deep cuts. Take the Gut Thread and zig-zag across each wound to stitch it.,A Tavern Knife — phase 1,neutral,4.3,1
 op1-1.p0.2,line.8709a984,Sister Ilse,"Cross the wound again and again, moving along it. One smooth stroke earns the best marks.",A Tavern Knife — phase 1,neutral,4.9,1
-op1-1.p1.1,line.68685aa1,Sister Ilse,Blood’s pooling. Hold the leech-pipe over it to draw it off.,A Tavern Knife — phase 2,neutral,3.3,1
-op1-1.p1.2,line.8ea01b4b,Sister Ilse,You can’t stitch through a pool of blood — drain first.,A Tavern Knife — phase 2,neutral,3.0,1
-op1-1.p2.1,line.52fff16b,Sister Ilse,Just nicks left. Brush Saint’s Salve over the small ones — no need for thread.,A Tavern Knife — phase 3,neutral,4.3,1
+op1-1.p1.1,line.7ff97648,Sister Ilse,Blood’s pooled from the cuts. Hold the Leech-Pipe over it to draw it off.,A Tavern Knife — phase 2,neutral,4.0,1
+op1-1.p1.2,line.16f7299b,Sister Ilse,"Next time, drain first — you can’t stitch through a pool of blood.",A Tavern Knife — phase 2,neutral,3.6,1
+op1-1.p2.1,line.233b880f,Sister Ilse,Just nicks left. Brush Saint’s Salve over the small ones — no need for Gut Thread.,A Tavern Knife — phase 3,neutral,4.5,1
 s1-2.002,line.d6faf67e,Captain Mauer,"Make way! Make way, damn you! Surgeon! Where’s the surgeon?",I · The Hospice — the next morning,urgent,4.8,1
 s1-2.003,line.efa6ae84,Sister Ilse,"Captain Mauer of the Watch. Lower your voice, Captain, this is a house of mercy.",I · The Hospice — the next morning,neutral,6.2,1
-s1-2.004,line.17d91140,Captain Mauer,"Horned raiders hit the timber-road caravan at dawn. We drove them off, but young Pieter took a shaft in the side.",I · The Hospice — the next morning,neutral,8.3,1
-s1-2.005,line.fd945e99,Master Haller,Beast-folk fletch their arrows with barbed heads. Rip one straight out and you’ll tear half his side with it.,I · The Hospice — the next morning,neutral,8.1,1
-s1-2.006,line.2d169b53,Master Haller,Nick the flesh at the entry with the lancet — twice — to free the barbs. Then pull. Cleanly.,I · The Hospice — the next morning,neutral,7.0,1
-op1-2.p0.1,line.ae49748f,Sister Ilse,The arrow’s barbed. Lancet first — two nicks at the entry wound. Then seize it with the tongs and pull it well clear.,The Barbed Shaft — phase 1,neutral,6.4,1
-op1-2.p0.2,line.02e2dc61,Sister Ilse,Then drain and stitch the wound it leaves.,The Barbed Shaft — phase 1,neutral,2.4,1
+s1-2.004,line.abb3a531,Captain Mauer,"Twelve went out with the timber-road caravan. Twelve came back, eleven walking. Horned folk hit us at dawn.",I · The Hospice — the next morning,neutral,8.0,1
+s1-2.005,line.ad28bb8c,Captain Mauer,"Young Pieter took a shaft in the side. Twelve, Doctor. I’d like it to stay twelve.",I · The Hospice — the next morning,neutral,6.3,1
+s1-2.006,line.e6789601,Dr. Kreuzer,"Then put him down gently, Captain, and stop counting him among the dead.",I · The Hospice — the next morning,neutral,5.7,1
+s1-2.007,line.5f408694,Master Haller,Horned-folk heads are barbed like fish-hooks. They cut a notch in their antlers for every one that sticks in a man.,I · The Hospice — the next morning,neutral,8.5,1
+s1-2.008,line.76d8a7fb,Master Haller,"Rip it straight out and you’ll take half his side with it. Free the barbs first, then pull. Cleanly.",I · The Hospice — the next morning,neutral,7.5,1
+s1-2.009,line.250eaace,Captain Mauer,"Twelve. Say it with me, Doctor. Twelve.",I · The Hospice — the next morning,neutral,3.5,1
+op1-2.p0.1,line.60bb3c7f,Sister Ilse,The arrow’s barbed. Lancet first — two nicks at the entry wound.,The Barbed Shaft — phase 1,neutral,3.5,1
+op1-2.p0.2,line.2115be87,Sister Ilse,Then seize it with the Tongs and pull it well clear.,The Barbed Shaft — phase 1,neutral,2.9,1
+op1-2.p0.3,line.02e2dc61,Sister Ilse,Then drain and stitch the wound it leaves.,The Barbed Shaft — phase 1,neutral,2.4,1
 op1-2.p1.1,line.e9fb7cb1,Sister Ilse,"The bolt in his thigh has no barbs. Tongs, and pull it straight out.",The Barbed Shaft — phase 2,neutral,3.7,1
 op1-2.p1.2,line.d24cc680,Sister Ilse,"Quick, clean pulls earn the best marks.",The Barbed Shaft — phase 2,neutral,2.4,1
 s1-3.002,line.ec96d949,Sister Ilse,"Doctor, the gunsmiths’ quarter. An apprentice was proving a new handgun barrel and it burst in his hands.",I · The Hospice — noon,neutral,7.8,1
-s1-3.003,line.f545322a,Sister Ilse,Burns across the chest and lead fragments driven under the skin.,I · The Hospice — noon,neutral,5.2,1
-s1-3.004,line.84c6e391,Master Haller,"Powder burns. The charred skin is dead — pluck the eschar away with tongs before you salve, or it festers.",I · The Hospice — noon,neutral,7.9,1
-s1-3.005,line.a9c6a2a2,Master Haller,"The shot is in deep. You’ll have to open him. Trace the line I’ve inked, and keep your hand true.",I · The Hospice — noon,neutral,7.3,1
-s1-3.006,line.8d0327ca,Master Haller,"He’s lost blood already. If his pulse flags, the tincture — hold it to the flesh and let it take.",I · The Hospice — noon,neutral,7.3,1
-op1-3.p0.1,line.f82e9382,Sister Ilse,His pulse is weak already. Hold the tincture to the flesh to steady him if you need it.,Powder Burns — phase 1,neutral,4.8,1
-op1-3.p0.2,line.a39260b5,Sister Ilse,"Burns first. Pluck the black eschar away with the tongs, then salve the raw flesh.",Powder Burns — phase 1,neutral,4.5,1
-op1-3.p1.1,line.b1e3ff3b,Sister Ilse,Now open him along the inked line with the lancet. Keep to the line — start at the glowing end.,Powder Burns — phase 2,neutral,5.2,1
-op1-3.p2.1,line.6329085f,Sister Ilse,There — the shot. Pull each ball out with the tongs.,Powder Burns — phase 3,neutral,2.9,1
-op1-3.p3.1,line.3c579abf,Sister Ilse,Everything’s clear. Close the incision with the thread.,Powder Burns — phase 4,neutral,3.0,1
-s1-4.002,line.e9455ff4,Sister Ilse,Doctor… this one was found in the Tanners’ Rows. Swellings at the neck and groin. Fever. Maggots in a sore.,I · The Hospice — dusk,hesitant,8.0,1
-s1-4.003,line.19792da8,Master Haller,"Buboes. Lance them before they burst, draw off the pus, and salve the wound. Rot-patches creep back if you dawdle.",I · The Hospice — dusk,neutral,8.4,1
-s1-4.004,line.3b79b8e7,Master Haller,And the grubs — the cautery brand. Hold it on them until they stop wriggling. Mind you don’t sear good flesh.,I · The Hospice — dusk,neutral,8.1,1
-s1-4.005,line.17f0ec91,Inquisitor Stroh,A plague case. In the city. How very interesting.,I · The Hospice — dusk,neutral,4.2,1
-s1-4.006,line.5a10918b,Sister Ilse,…Inquisitor Stroh. Of the Ash Tribunal.,I · The Hospice — dusk,hesitant,3.5,1
-s1-4.007,line.bb9be2a8,Inquisitor Stroh,"Please, do carry on, Doctor. I only wish to watch. Pestilence so often has a sponsor.",I · The Hospice — dusk,neutral,6.5,1
-op1-4.p0.1,line.007a08de,Sister Ilse,Lance each bubo with a single touch of the lancet before it bursts. Then drain the pus and salve it.,Pestilent Humours — phase 1,neutral,5.5,1
-op1-4.p1.1,line.e35314fb,Sister Ilse,Grubs in the sore! The cautery brand — hold it on each one until it stops moving.,Pestilent Humours — phase 2,urgent,4.5,1
-op1-4.p1.2,line.107db705,Sister Ilse,Don’t linger on bare flesh with the brand.,Pestilent Humours — phase 2,neutral,2.4,1
-op1-4.p2.1,line.a981819e,Sister Ilse,"The rot’s spreading. Salve every patch — quickly, it creeps back.",Pestilent Humours — phase 3,neutral,3.6,1
+s1-3.003,line.c12a720c,Sister Ilse,"Burns across the chest, lead driven under the skin — and a note from the Gunsmiths’ Guild pinned to his shirt.",I · The Hospice — noon,neutral,8.2,1
+s1-3.004,line.be342c17,Sister Ilse,The Guild will pay for his care. Once we have paid the Guild’s fee for inspecting its own burst barrel.,I · The Hospice — noon,neutral,7.7,1
+s1-3.005,line.96e13e67,Master Haller,Naturally. In Kessendorf a man pays the Guild for the privilege of being shot by its work.,I · The Hospice — noon,neutral,6.9,1
+s1-3.006,line.71289176,Dr. Kreuzer,"Then we send the Guild a bill for the lead we take out of him. Itemised, by the ounce.",I · The Hospice — noon,neutral,6.6,1
+s1-3.007,line.6f069806,Master Haller,"Powder burns. The black crust is dead meat: off with it before any salve, or it festers underneath.",I · The Hospice — noon,neutral,7.4,1
+s1-3.008,line.7537d349,Master Haller,The shot is deep. You’ll open him along the line I’ve inked. And if his pulse flags — the tincture.,I · The Hospice — noon,neutral,7.4,1
+op1-3.p0.1,line.a4178f73,Sister Ilse,His pulse is weak already. Hold the Tincture to the flesh to steady him if need be.,Powder Burns — phase 1,neutral,4.6,1
+op1-3.p0.2,line.6d929375,Sister Ilse,"Burns first. Tongs to pluck the black eschar, then Saint’s Salve on the raw flesh.",Powder Burns — phase 1,neutral,4.5,1
+op1-3.p1.1,line.4aa65a3a,Sister Ilse,Now open him along the inked line with the Lancet. Start at the glowing end.,Powder Burns — phase 2,neutral,4.2,1
+op1-3.p2.1,line.6329085f,Sister Ilse,There — the shot. Pull each ball out with the Tongs.,Powder Burns — phase 3,neutral,2.9,1
+op1-3.p3.1,line.33b341eb,Sister Ilse,Everything’s clear. Close the incision with the Gut Thread.,Powder Burns — phase 4,neutral,3.2,1
+s1-4.002,line.f2501ef8,Sister Ilse,This one was found in the Tanners’ Rows. Swellings at the neck and groin. Fever. Maggots in an old sore.,I · The Hospice — dusk,neutral,7.8,1
+s1-4.003,line.80f3c586,Matthis Kolb,"Matthis Kolb. Twenty years a tanner’s man. Write that, Sister, not “vagrant”. I had a trade before I had a fever.",I · The Hospice — dusk,neutral,8.3,1
+s1-4.004,line.18b0aa55,Sister Ilse,"Matthis Kolb, tanner’s man. Written, and underlined.",I · The Hospice — dusk,neutral,4.4,1
+s1-4.005,line.abbdc5a8,Master Haller,"Buboes, and a rotting sore. He’s slept in the Rows among the hides. Burn the grubs, Kreuzer — not the man.",I · The Hospice — dusk,neutral,7.9,1
+s1-4.007,line.17f0ec91,Inquisitor Stroh,A plague case. In the city. How very interesting.,I · The Hospice — dusk,neutral,4.2,1
+s1-4.008,line.5a10918b,Sister Ilse,…Inquisitor Stroh. Of the Ash Tribunal.,I · The Hospice — dusk,hesitant,3.5,1
+s1-4.009,line.a90d4ecb,Inquisitor Stroh,"Carry on, Doctor. I only wish to watch. Pestilence so often has a sponsor — and I hear the Kilnrows are coughing too.",I · The Hospice — dusk,neutral,8.6,1
+s1-4.010,line.e15268c6,Dr. Kreuzer,"Then stand back from the table, Inquisitor. Whoever sponsors it, it isn’t particular whom it takes.",I · The Hospice — dusk,neutral,7.4,1
+op1-4.p0.1,line.446b9a77,Sister Ilse,Lance each bubo with a single touch of the Lancet before it bursts.,Pestilent Humours — phase 1,neutral,3.7,1
+op1-4.p0.2,line.47c2084b,Sister Ilse,Then drain the pus and brush Saint’s Salve over it.,Pestilent Humours — phase 1,neutral,2.8,1
+op1-4.p1.1,line.e35314fb,Sister Ilse,Grubs in the sore! The Cautery Brand — hold it on each one until it stops moving.,Pestilent Humours — phase 2,urgent,4.5,1
+op1-4.p1.2,line.d12f2cc2,Sister Ilse,Don’t linger on bare flesh with the Cautery Brand.,Pestilent Humours — phase 2,neutral,2.8,1
+op1-4.p2.1,line.d6bc701c,Sister Ilse,"The rot’s spreading. Saint’s Salve on every patch — quickly, it creeps back.",Pestilent Humours — phase 3,neutral,4.2,1
 s1-5.002,line.2d3b24d2,Page-boy Emmerich,The choir… they’re singing in me… make them stop singing…,I · The Hospice — the small hours,hesitant,4.7,1
-s1-5.003,line.2eaf1d1e,Sister Ilse,"Doctor, look at his chest. Those marks — they’re moving.",I · The Hospice — the small hours,neutral,4.6,1
+s1-5.003,line.5ee9e6b2,Sister Ilse,"Doctor, look at his chest. Those marks — they’re moving. That one is an eye, with a stroke drawn through it.",I · The Hospice — the small hours,neutral,8.0,1
 s1-5.004,line.1f485fc1,Master Haller,…That is no disease. Those are sigils. Someone has written on this boy.,I · The Hospice — the small hours,hesitant,5.6,1
-s1-5.005,line.3ad78e17,Master Haller,Kreuzer. Listen to me carefully. Sear the sigils out with the brand — trace every stroke.,I · The Hospice — the small hours,neutral,6.8,1
-s1-5.006,line.ee81ef00,Master Haller,And if something… answers… when you do — there is an old apothecary’s rite. The Litany of Stillness.,I · The Hospice — the small hours,hesitant,7.5,1
-s1-5.007,line.bf7002f2,Master Haller,"Trace the five-pointed star and still your heart. For a few breaths, the world will wait for you.",I · The Hospice — the small hours,neutral,7.3,1
+s1-5.005,line.7d6b1984,Dr. Kreuzer,"Then we unwrite him. The brand, Sister. And more light.",I · The Hospice — the small hours,neutral,4.6,1
+s1-5.006,line.75f4c3cd,Master Haller,If something answers when you do — there is an old apothecary’s rite. The Litany of Stillness.,I · The Hospice — the small hours,neutral,7.1,1
+s1-5.007,line.d353d42b,Master Haller,"Draw the five-pointed star and still your heart. For a few breaths, the world will wait for you.",I · The Hospice — the small hours,neutral,7.2,1
 s1-5.008,line.21637c0a,Master Haller,Do not do it where the Inquisitor can see. The Tribunal does not distinguish between a prayer and a spell.,I · The Hospice — the small hours,neutral,7.9,1
-op1-5.p0.1,line.6692a2f0,Sister Ilse,Those sigils are draining him. Trace every stroke of each one with the brand to sear it out.,The Hour of Matins — phase 1,neutral,5.1,1
-op1-5.p1.1,line.c852d077,Sister Ilse,Something is moving beneath the skin. We have to open him. The lancet — along the line.,The Hour of Matins — phase 2,neutral,4.8,1
+op1-5.p0.1,line.63dc423e,Sister Ilse,Those sigils are draining him. Trace every stroke with the Cautery Brand to sear them.,The Hour of Matins — phase 1,neutral,4.7,1
+op1-5.p1.1,line.c852d077,Sister Ilse,Something is moving beneath the skin. We have to open him. The Lancet — along the line.,The Hour of Matins — phase 2,neutral,4.8,1
 op1-5.p2.1,line.2b81ecff,Sister Ilse,Saints preserve us… what is that?,The Hour of Matins — phase 3,questioning,2.4,1
-op1-5.p2.2,line.98c6e7f9,Sister Ilse,"Doctor — if ever there were a time for the Litany, it is now. Draw the star with the right hand.",The Hour of Matins — phase 3,neutral,5.3,1
+op1-5.p2.2,line.aafc225f,Sister Ilse,"Doctor — if ever there were a time for the Litany, it is now. Draw the star.",The Hour of Matins — phase 3,neutral,4.2,1
 op1-5.p3.1,line.b5f103a5,Sister Ilse,It’s gone. Tend the wounds it left.,The Hour of Matins — phase 4,neutral,2.4,1
-op1-5.p4.1,line.3c579abf,Sister Ilse,Everything’s clear. Close the incision with the thread.,The Hour of Matins — phase 5,neutral,3.0,1
-s1-end.002,line.916b1070,Sister Ilse,"Doctor… after it broke, a word was left seared into the flesh. Matins.",I · The Hospice — before dawn,hesitant,5.5,1
+op1-5.p4.1,line.33b341eb,Sister Ilse,Everything’s clear. Close the incision with the Gut Thread.,The Hour of Matins — phase 5,neutral,3.2,1
+s1-end.002,line.35864fad,Sister Ilse,"Doctor… after it broke, a word was left seared into the flesh. Matins. And beside it, fading: the struck-through eye.",I · The Hospice — before dawn,hesitant,8.6,1
 s1-end.003,line.d8a59159,Master Haller,The first of the canonical hours. The first prayer of the night.,I · The Hospice — before dawn,neutral,5.2,1
 s1-end.004,line.9df17b30,Master Haller,"A curse that lives and fights like a beast, and signs itself like a psalm. A Malison.",I · The Hospice — before dawn,neutral,6.5,1
 s1-end.005,line.1c75383d,Master Haller,"And if this was Matins… then somewhere, someone is already writing Lauds.",I · The Hospice — before dawn,hesitant,5.7,1
-s1-end.006,line.3d673674,Inquisitor Stroh,"A remarkable recovery, Doctor. Remarkable.",I · The Hospice — before dawn,neutral,3.7,1
-s1-end.007,line.8395e8e1,Inquisitor Stroh,"Tell me — at the end, your hands moved so very quickly. Almost as if time itself were… obliging you.",I · The Hospice — before dawn,hesitant,7.5,1
-s1-end.008,line.37d9f403,Dr. Kreuzer,"Practice, Inquisitor. And the grace of Saint Ildra.",I · The Hospice — before dawn,neutral,4.3,1
-s1-end.009,line.a48ae42c,Inquisitor Stroh,Of course. The grace of the Saint. I shall pray on it.,I · The Hospice — before dawn,neutral,4.5,1
-s2-1.003,line.78325429,Captain Mauer,"Don’t look at me like that, Doctor. I didn’t ask for you. The Inquisitor “suggested” it to the Burgomaster.","II · The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf",neutral,8.0,1
-s2-1.004,line.0ece8713,Sister Ilse,So he can watch you somewhere with fewer witnesses.,"II · The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf",neutral,4.3,1
-s2-1.005,line.a9a17223,Captain Mauer,We’re clearing the Grauwald of raiders before the spring caravans. My lads need a surgeon more than a city needs rumours.,"II · The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf",neutral,8.9,1
-s2-1.006,line.bd194436,Captain Mauer,Speaking of which — the scouts came back. Two of them. Something followed them out of the barrow-fields.,"II · The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf",neutral,7.8,1
-s2-1.007,line.d357b11e,Sister Ilse,"Doctor, it’s a gravehound bite. Claw rakes across the back, and — look — it left its teeth in him.","II · The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf",neutral,7.4,1
-s2-1.008,line.9d6eb332,Sister Ilse,Corpse-eaters carry a venom in their spit. Hold the tincture to the bite itself and it will draw the poison.,"II · The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf",neutral,8.0,1
-op2-1.p0.1,line.e354a7fa,Sister Ilse,The venom first — hold the tincture on the bite until it takes.,Gravehound — phase 1,neutral,3.5,1
+s1-end.007,line.3d673674,Inquisitor Stroh,"A remarkable recovery, Doctor. Remarkable.",I · The Hospice — before dawn,neutral,3.7,1
+s1-end.008,line.8395e8e1,Inquisitor Stroh,"Tell me — at the end, your hands moved so very quickly. Almost as if time itself were… obliging you.",I · The Hospice — before dawn,hesitant,7.5,1
+s1-end.009,line.37d9f403,Dr. Kreuzer,"Practice, Inquisitor. And the grace of Saint Ildra.",I · The Hospice — before dawn,neutral,4.3,1
+s1-end.010,line.a48ae42c,Inquisitor Stroh,Of course. The grace of the Saint. I shall pray on it.,I · The Hospice — before dawn,neutral,4.5,1
+s1-end.011,line.32535018,Inquisitor Stroh,"I watched every stroke. No tricks, no prayers. Only a surgeon, working. I find it almost disappointing.",I · The Hospice — before dawn,neutral,7.7,1
+s1-end.012,line.7f0985dc,Dr. Kreuzer,"Surgery usually is, Inquisitor. That is how you know it worked.",I · The Hospice — before dawn,neutral,5.1,1
+s2-1.004,line.0a362da5,Captain Mauer,"Don’t look at me like that, Doctor. The Inquisitor dines with the Burgomaster on Thursdays. On Fridays, the Burgomaster signs things.","II · The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf",neutral,9.6,1
+s2-1.005,line.83e89dc2,Sister Ilse,So Stroh can watch you somewhere with fewer witnesses.,"II · The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf",neutral,4.5,1
+s2-1.006,line.ee75fd88,Captain Mauer,"Fewer? Forty men in this camp, Sister. Forty witnesses. Forty-one with the cook, and I don’t count the cook.","II · The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf",questioning,8.0,1
+s2-1.007,line.f4f9f6cc,Sister Ilse,"You count everyone, Captain. You counted the mules.","II · The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf",neutral,4.3,1
+s2-1.008,line.048c8cb9,Captain Mauer,The mules keep better order. We clear the Grauwald of raiders before the spring caravans. Two scouts came back from the barrow-fields.,"II · The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf",neutral,9.7,1
+s2-1.009,line.39c9d365,Captain Mauer,Something followed them out.,"II · The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf",neutral,2.8,1
+s2-1.010,line.899d1cb8,Sister Ilse,A gravehound. Claw rakes across his back — and it has left its teeth in him.,"II · The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf",neutral,5.9,1
+s2-1.011,line.7aed64af,Dr. Kreuzer,"Corpse-eaters carry a venom in their spit. Tomas, isn’t it? Look at me, Tomas. You’ll keep the arm.","II · The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf",questioning,7.4,1
+op2-1.p0.1,line.e354a7fa,Sister Ilse,The venom first — hold the Tincture on the bite until it takes.,Gravehound — phase 1,neutral,3.5,1
 op2-1.p0.2,line.7c54ab12,Sister Ilse,"The longer it spreads, the harder it drags on him.",Gravehound — phase 1,neutral,2.8,1
 op2-1.p1.1,line.38cd0d59,Sister Ilse,Now the fangs. Tongs — pull each one clear.,Gravehound — phase 2,neutral,2.4,1
 op2-1.p2.1,line.82aff8f0,Sister Ilse,Claw rakes. Three deep lines — drain and stitch each.,Gravehound — phase 3,neutral,2.9,1
-s2-2.002,line.1d7fc3fb,Orsa Flintvein,"Put me down, you long-legged oafs! I can walk! I can… mostly walk.",II · The muster camp — afternoon,urgent,5.3,1
-s2-2.003,line.ae203e18,Captain Mauer,Dwarf prospector. Her crew was working a seam in the hills when it caved in.,II · The muster camp — afternoon,neutral,5.9,1
-s2-2.004,line.29ad4572,Orsa Flintvein,"The rock went black, Doctor. Black and wrong, like a bruise in the stone. It sang when we struck it. Then it burst.",II · The muster camp — afternoon,neutral,8.5,1
-s2-2.005,line.ecddd420,Sister Ilse,There are shards under her skin that I can’t see — but the flesh around them is spoiling.,II · The muster camp — afternoon,neutral,6.8,1
-s2-2.006,line.8d203b3a,Sister Ilse,Master Haller sent this with me. His old Scrying Lens. Pass it slowly over the flesh and it shows what hides beneath.,II · The muster camp — afternoon,neutral,8.6,1
-s2-2.007,line.a2593c49,Orsa Flintvein,"Dwarf hide’s thicker than yours, lad. You’ll want a strong arm on that thread.",II · The muster camp — afternoon,neutral,6.1,1
+op2-1.p2.2,line.108f36af,Sister Ilse,Grave-dirt in them too — Leech-Pipe it out before any Saint’s Salve.,Gravehound — phase 3,neutral,3.7,1
+s2-2.001,line.1d7fc3fb,Orsa Flintvein,"Put me down, you long-legged oafs! I can walk! I can… mostly walk.",II · The muster camp — afternoon,urgent,5.3,1
+s2-2.002,line.ae203e18,Captain Mauer,Dwarf prospector. Her crew was working a seam in the hills when it caved in.,II · The muster camp — afternoon,neutral,5.9,1
+s2-2.003,line.7772afbe,Orsa Flintvein,"The rock went black, Doctor. Black as a wet eye, and it had a pulse. It sang when we struck it. Then it burst.",II · The muster camp — afternoon,neutral,8.2,1
+s2-2.004,line.d346b8a3,Orsa Flintvein,"Took my lamp with it. So it’s glass in me as well as stone, and you’ll find both.",II · The muster camp — afternoon,neutral,6.3,1
+s2-2.005,line.24675f29,Sister Ilse,"Mind her beard, Doctor. Every knot in it is tied for a debt.",II · The muster camp — afternoon,neutral,4.9,1
+s2-2.006,line.ca100b03,Orsa Flintvein,"Nineteen knots. Nine are owed to me, ten I owe. If I die owing ten, my sons pay them, and my sons are idle.",II · The muster camp — afternoon,neutral,8.0,1
+s2-2.007,line.87352a9b,Sister Ilse,There are shards under her skin I can’t see — but the flesh around them is spoiling.,II · The muster camp — afternoon,neutral,6.5,1
+s2-2.008,line.2947f089,Sister Ilse,Master Haller sent his old Scrying Lens with me. He says you are to break anything else of his first.,II · The muster camp — afternoon,neutral,7.6,1
+s2-2.009,line.a2593c49,Orsa Flintvein,"Dwarf hide’s thicker than yours, lad. You’ll want a strong arm on that thread.",II · The muster camp — afternoon,neutral,6.1,1
+s2-2.010,line.049688fb,Dr. Kreuzer,"Hold still, Mistress Flintvein, and I’ll owe you a knot.",II · The muster camp — afternoon,neutral,4.6,1
 op2-2.p0.1,line.40fca4c0,Sister Ilse,Rock splinters on the surface first. Tongs.,The Black Seam — phase 1,neutral,2.4,1
 op2-2.p1.1,line.6ee6bb8c,Sister Ilse,"Now — the Scrying Lens. Pass it slowly over the flesh; where something hides, it shimmers.",The Black Seam — phase 2,neutral,5.0,1
 op2-2.p1.2,line.bf0407b3,Sister Ilse,"Hold it still over the shimmer to bring the shard to light, then pull it.",The Black Seam — phase 2,neutral,4.0,1
 op2-2.p2.1,line.3ba6237e,Sister Ilse,Clean up the spoiled flesh and any wounds left.,The Black Seam — phase 3,neutral,2.6,1
-s2-3.002,line.5c2a90dc,Captain Mauer,Forager. Went to check his snares near the old web-trees. We found him wrapped up like a Martinmas ham.,II · The muster camp — night,neutral,7.7,1
-s2-3.003,line.00d6a116,Sister Ilse,"A web-spinner bite. Venom, spreading fast. And these lumps under the skin… Saints. She laid in him.",II · The muster camp — night,hesitant,7.4,1
-s2-3.004,line.a0f3c80d,Sister Ilse,"Lance the sacs before they hatch, Doctor, and sear what spills out. If they hatch on their own, they’ll scatter.",II · The muster camp — night,neutral,8.3,1
-op2-3.p0.1,line.6958a95f,Sister Ilse,"Venom from two bites. Tincture on each, quickly.",Brood-Mother’s Kiss — phase 1,neutral,2.6,1
-op2-3.p1.1,line.b04091d8,Sister Ilse,"The sacs — lance each one with a single touch, then sear the hatchlings with the brand.",Brood-Mother’s Kiss — phase 2,neutral,4.8,1
-op2-3.p1.2,line.cb936197,Sister Ilse,Mind the ones that are close to hatching.,Brood-Mother’s Kiss — phase 2,neutral,2.4,1
-op2-3.p2.1,line.ca828c79,Sister Ilse,"One more sac, deeper. Use the lens to find it, then open it.",Brood-Mother’s Kiss — phase 3,neutral,3.3,1
-op2-3.p2.2,line.311d6a5b,Sister Ilse,And he’s taken a fever-bubo from the bite — lance and cleanse it.,Brood-Mother’s Kiss — phase 3,neutral,3.6,1
+s2-3.002,line.0f6a9cd2,Captain Mauer,"Elf forager. Checked his snares by the old web-trees yesterday and never came back. We found him at dusk, wrapped like a midwinter ham.",II · The muster camp — nightfall,neutral,9.8,1
+s2-3.003,line.da965a0d,Ilvaren,…the brood-mother… she kissed me… she was so gentle about it…,II · The muster camp — nightfall,hesitant,5.0,1
+s2-3.004,line.7a208f87,Sister Ilse,"Elf skin, Doctor — thin as vellum. It cuts at a breath and bleeds like a spring.",II · The muster camp — nightfall,neutral,6.2,1
+s2-3.005,line.3d63020f,Sister Ilse,"The foresters call the great web-spinners brood-mothers. Venom, spreading fast. And these lumps… Saints. She laid in him.",II · The muster camp — nightfall,hesitant,8.9,1
+s2-3.006,line.c7e06ad9,Captain Mauer,My lads won’t fetch water past the web-trees now. They say a brood-mother remembers every face that has seen her.,II · The muster camp — nightfall,neutral,8.3,1
+s2-3.007,line.3062e34b,Dr. Kreuzer,"Then fetch my water from somewhere she hasn’t looked, Captain. And more light.",II · The muster camp — nightfall,neutral,6.1,1
+s2-3.008,line.4bead589,Sister Ilse,"The sacs are swelling, Doctor. If they hatch on their own, they’ll scatter.",II · The muster camp — nightfall,neutral,5.9,1
+op2-3.p0.1,line.64833e06,Sister Ilse,Silk over the bites. Cut each strand with one stroke of the Lancet.,Brood-Mother’s Kiss — phase 1,neutral,3.7,1
+op2-3.p1.1,line.6958a95f,Sister Ilse,"Venom from two bites. Tincture on each, quickly.",Brood-Mother’s Kiss — phase 2,neutral,2.6,1
+op2-3.p2.1,line.bce94f0a,Sister Ilse,"The sacs — lance each with one touch, then sear the hatchlings with the Cautery Brand.",Brood-Mother’s Kiss — phase 3,neutral,4.7,1
+op2-3.p2.2,line.cb936197,Sister Ilse,Mind the ones that are close to hatching.,Brood-Mother’s Kiss — phase 3,neutral,2.4,1
+op2-3.p3.1,line.6995899e,Sister Ilse,Her brood-cluster — three sacs under one skin.,Brood-Mother’s Kiss — phase 4,neutral,2.5,1
+op2-3.p3.2,line.d8bc52cc,Sister Ilse,"Cut the membrane right around them with the Lancet first, or they’ll wake as one.",Brood-Mother’s Kiss — phase 4,neutral,4.5,1
+op2-3.p4.1,line.278a8d4e,Sister Ilse,"One more sac, deeper. Use the Scrying Lens to find it, then open it.",Brood-Mother’s Kiss — phase 5,neutral,3.7,1
+op2-3.p4.2,line.311d6a5b,Sister Ilse,And he’s taken a fever-bubo from the bite — lance and cleanse it.,Brood-Mother’s Kiss — phase 5,neutral,3.6,1
 s2-4.001,line.dc4c4fd2,Inquisitor Stroh,Doctor. I have brought you a gift.,II · The muster camp — before midnight,neutral,3.2,1
-s2-4.003,line.1127a263,Inquisitor Stroh,"A lay-cantor of the Hollow Choir. We took him in the barrow-fields, singing to the dead.",II · The muster camp — before midnight,neutral,6.7,1
-s2-4.004,line.4b20cfb9,Inquisitor Stroh,"The moment he began to confess, those marks ignited. His masters would rather he burned than spoke.",II · The muster camp — before midnight,neutral,7.4,1
-s2-4.005,line.d4ab0f0f,Inquisitor Stroh,"He also swallowed something. You will keep him alive. I have questions, and the dead are poor at answering them.",II · The muster camp — before midnight,neutral,8.3,1
-s2-4.006,line.db51acea,Sister Ilse,"…Doctor. Whatever he is, he’s a patient.",II · The muster camp — before midnight,hesitant,3.6,1
-s2-4.007,line.11dd3553,Dr. Kreuzer,On the table. Now.,II · The muster camp — before midnight,neutral,2.2,1
-op2-4.p0.1,line.4291b3af,Sister Ilse,"The poison he swallowed — tincture, now, or he’s gone before we start.",The Silenced Cantor — phase 1,neutral,3.9,1
+s2-4.003,line.bbe78c87,Inquisitor Stroh,"A lay-cantor of the Hollow Choir. We took him in the barrow-fields, singing to the dead. Something in the barrows sang back.",II · The muster camp — before midnight,neutral,9.1,1
+s2-4.004,line.797ffa25,Inquisitor Stroh,"The moment he began to confess, those marks ignited. He also swallowed something. His masters would rather he burned than spoke.",II · The muster camp — before midnight,neutral,9.3,1
+s2-4.005,line.8a3b594e,Inquisitor Stroh,"You will keep him alive, Doctor — and awake. I have questions, and the dead are poor at answering them.",II · The muster camp — before midnight,neutral,7.7,1
+s2-4.006,line.43a2b8e1,Sister Ilse,"…He’s dying, Doctor. Whatever else he is, he’s a patient.",II · The muster camp — before midnight,hesitant,4.7,1
+s2-4.008,line.06e75d10,Inquisitor Stroh,Poppy. So the Choir’s man sleeps soft while the city burns its sick. I shall remember whose mercy that was.,II · The muster camp — before midnight,neutral,8.0,1
+s2-4.009,line.6c32ed41,Inquisitor Stroh,"Alive and awake. Good. We understand each other, Doctor — a rarer thing than you know.",II · The muster camp — before midnight,neutral,6.6,1
+s2-4.010,line.11dd3553,Dr. Kreuzer,On the table. Now.,II · The muster camp — before midnight,neutral,2.2,1
+op2-4.p0.1,line.4291b3af,Sister Ilse,"The poison he swallowed — Tincture, now, or he’s gone before we start.",The Silenced Cantor — phase 1,neutral,3.9,1
 op2-4.p1.1,line.e3a7a166,Sister Ilse,Those sigils are burning him from within. Sear each one out — every stroke.,The Silenced Cantor — phase 2,neutral,4.1,1
-op2-4.p2.1,line.56813c21,Sister Ilse,"The hexfire burns. Pluck the eschar, then salve them.",The Silenced Cantor — phase 3,neutral,2.9,1
-op2-4.p3.1,line.a445c297,Sister Ilse,Maggots in an old sore — the Tribunal’s cells are filthy. Brand them.,The Silenced Cantor — phase 4,neutral,3.8,1
-s2-5.002,line.8b9ae3d0,The cantor,Lauds… is sung at dawn… with the muster… under the banner…,II · The muster camp — dawn,hesitant,4.8,1
-s2-5.003,line.2ba80e53,Captain Mauer,The dawn muster? That’s now — the whole company’s singing the morning hymn—,II · The muster camp — dawn,questioning,5.9,1
-s2-5.005,line.fb9d0d8b,Sister Ilse,"Doctor! It’s Jorg, the standard-bearer — his chest is moving… it’s singing back!",II · The muster camp — dawn,urgent,6.2,1
-s2-5.006,line.41565d23,Dr. Kreuzer,Clear a table. Sister — every instrument we have.,II · The muster camp — dawn,neutral,4.2,1
+op2-4.p2.1,line.c02d9a13,Sister Ilse,"There — a knot of it round his throat. Every time he hums, it ties itself again.",The Silenced Cantor — phase 3,neutral,4.4,1
+op2-4.p2.2,line.34293e62,Sister Ilse,Burn it out between the verses.,The Silenced Cantor — phase 3,neutral,2.4,1
+op2-4.p3.1,line.733890df,Sister Ilse,"The hexfire burns. Pluck the eschar, then Saint’s Salve on them.",The Silenced Cantor — phase 4,neutral,3.5,1
+op2-4.p4.1,line.ff5e0e98,Sister Ilse,Maggots in an old sore — the Tribunal’s cells are filthy. Cautery Brand.,The Silenced Cantor — phase 5,neutral,4.0,1
+op2-4.p5.1,line.2e9995c9,Sister Ilse,One more thing — the Scrying Lens. He swallowed something the Tribunal wasn’t to find.,The Silenced Cantor — phase 6,neutral,4.7,1
+op2-4.p5.2,line.b29f9d30,Sister Ilse,"Open him along the line with the Lancet, then the Tongs.",The Silenced Cantor — phase 6,neutral,3.1,1
+s2-5.001,line.8b9ae3d0,The cantor,Lauds… is sung at dawn… with the muster… under the banner…,II · The muster camp — dawn,hesitant,4.8,1
+s2-5.002,line.8a029ff0,Captain Mauer,The dawn muster? That’s now—,II · The muster camp — dawn,questioning,2.8,1
+s2-5.004,line.d7336cca,The first voice,Who keeps the watch before the sun?,II · The muster camp — dawn,questioning,3.3,1
+s2-5.005,line.1fb77722,The answering voice,"The one who wakes, and wakes alone.",II · The muster camp — dawn,neutral,3.3,1
+s2-5.006,line.2ed66b91,The first voice,Who sings the day when day is done?,II · The muster camp — dawn,questioning,3.3,1
+s2-5.007,line.b059945d,The answering voice,"The one we answer, bone to bone.",II · The muster camp — dawn,neutral,3.1,1
+s2-5.009,line.0ab95736,Sister Ilse,"Doctor! It’s Jorg — there are two of them in his chest, and each one answers the other!",II · The muster camp — dawn,urgent,6.7,1
+s2-5.010,line.41565d23,Dr. Kreuzer,Clear a table. Sister — every instrument we have.,II · The muster camp — dawn,neutral,4.2,1
 op2-5.p0.1,line.730fa433,Sister Ilse,"We have to open him — along the line, Doctor.",The Hour of Lauds — phase 1,neutral,2.5,1
-op2-5.p1.1,line.8b87a4cc,Sister Ilse,Saints… it has a choir. Those little lights are its Voices — hold the brand on each as it circles.,The Hour of Lauds — phase 2,hesitant,5.4,1
+op2-5.p1.1,line.3f20d18d,Sister Ilse,A choir! Those lights are its Voices — hold the Cautery Brand on each as it circles.,The Hour of Lauds — phase 2,urgent,4.6,1
 op2-5.p1.2,line.18bb4172,Sister Ilse,Silence all of them and its heart will be bare.,The Hour of Lauds — phase 2,neutral,2.6,1
 op2-5.p2.1,line.c8d012cc,Sister Ilse,It’s done. Tend what it left of him.,The Hour of Lauds — phase 3,neutral,2.4,1
 op2-5.p3.1,line.db0252e3,Sister Ilse,Close him up. Gently — he has a banner to carry.,The Hour of Lauds — phase 4,neutral,2.6,1
-s2-end.002,line.642f3f9f,Captain Mauer,"Two of them now. Matins in the city, Lauds in my own camp. Someone is keeping time, Doctor.",II · The muster camp — morning,neutral,6.9,1
-s2-end.003,line.9ce99c67,Sister Ilse,Six more hours to the full Office. Prime. Terce. Sext. None. Vespers. Compline.,II · The muster camp — morning,neutral,6.1,1
-s2-end.004,line.4f23154c,Inquisitor Stroh,Doctor Kreuzer.,II · The muster camp — morning,neutral,2.0,1
-s2-end.005,line.f9320ea4,Inquisitor Stroh,"When that thing screamed, every candle in this tent stopped flickering. The flames stood still. For eight heartbeats.",II · The muster camp — morning,neutral,8.6,1
-s2-end.006,line.25fc1cb4,Inquisitor Stroh,I counted.,II · The muster camp — morning,neutral,1.6,1
-s2-end.007,line.0810462f,Dr. Kreuzer,"…The morning air is very still, Inquisitor.",II · The muster camp — morning,hesitant,3.8,1
-s2-end.008,line.a66e504f,Inquisitor Stroh,"So it is. We will speak at length, you and I. After Prime.",II · The muster camp — morning,neutral,4.8,1
+s2-end.002,line.9de33789,Sister Ilse,"And beside it — Doctor, look. An eye with a stroke through it. The same mark the page-boy carried.",II · The muster camp — morning,neutral,7.4,1
+s2-end.003,line.642f3f9f,Captain Mauer,"Two of them now. Matins in the city, Lauds in my own camp. Someone is keeping time, Doctor.",II · The muster camp — morning,neutral,6.9,1
+s2-end.004,line.9ce99c67,Sister Ilse,Six more hours to the full Office. Prime. Terce. Sext. None. Vespers. Compline.,II · The muster camp — morning,neutral,6.1,1
+s2-end.006,line.4f23154c,Inquisitor Stroh,Doctor Kreuzer.,II · The muster camp — morning,neutral,2.0,1
+s2-end.007,line.f9320ea4,Inquisitor Stroh,"When that thing screamed, every candle in this tent stopped flickering. The flames stood still. For eight heartbeats.",II · The muster camp — morning,neutral,8.6,1
+s2-end.008,line.25fc1cb4,Inquisitor Stroh,I counted.,II · The muster camp — morning,neutral,1.6,1
+s2-end.009,line.0810462f,Dr. Kreuzer,"…The morning air is very still, Inquisitor.",II · The muster camp — morning,hesitant,3.8,1
+s2-end.010,line.2e0de72c,Inquisitor Stroh,"I watched your hands while that thing screamed. They shook, Doctor. For once.",II · The muster camp — morning,neutral,6.0,1
+s2-end.011,line.0a525fe3,Dr. Kreuzer,"It was a long night, Inquisitor.",II · The muster camp — morning,neutral,3.1,1
+s2-end.012,line.d9ea2b60,Inquisitor Stroh,"We will speak at length, you and I. After Prime.",II · The muster camp — morning,neutral,4.1,1
+bark.over-traction,line.2938b171,Sister Ilse,Ease off! You’ll tear the joint from its socket.,bark (surgery/disciplines.ts),urgent,2.6,1
+bark.traction,line.6d1d517e,Sister Ilse,"Pull on the limb first — traction, or the ends grind.",bark (surgery/disciplines.ts),neutral,2.9,1
+bark.overshoot,line.fbd1ee83,Sister Ilse,Stop at the end of the line — you’ve nicked him.,bark (surgery/entities.ts),neutral,2.6,1
+bark.incision-layer,line.0b2ec76d,Sister Ilse,Through the skin. Now the layer beneath — trace it again.,bark (surgery/entities.ts),neutral,3.1,1
+bark.stitch-gap,line.3f40de6b,Sister Ilse,There’s a gap in the suture — it’s still bleeding. Close it up.,bark (surgery/entities.ts),neutral,3.5,1
+bark.stitch-first,line.1513988d,Sister Ilse,"It keeps filling — stitch the wound beneath it first, then drain.",bark (surgery/entities.ts),neutral,3.6,1
+bark.pus-wound,line.13f68b5f,Sister Ilse,The pus is getting into that cut — drain it before it festers!,bark (surgery/entities.ts),urgent,3.4,1
 bark.flooded,line.8b2f37f7,Sister Ilse,Too much blood — draw it off with the leech-pipe before you stitch!,bark (surgery/entities.ts),urgent,3.7,3
+bark.salve-big,line.41957288,Sister Ilse,Salve won’t hold a wound that size. Stitch it first.,bark (surgery/entities.ts),neutral,2.9,1
+bark.hex-whisper,line.88fe3776,Sister Ilse,"It’s whispering to him through the tongs — into the lead dish, quickly!",bark (surgery/entities.ts),urgent,3.9,1
 bark.hexstone,line.0bfbac1e,Sister Ilse,The hexstone is corrupting the flesh around it — get it out!,bark (surgery/entities.ts),urgent,3.3,1
+bark.token-closed,line.067ab77f,Sister Ilse,"It’s in his stomach, Doctor — open him along the line first.",bark (surgery/entities.ts),neutral,3.3,1
 bark.barbs,line.42cecd1b,Sister Ilse,Barbed! Nick the flesh at the entry with the lancet before you pull.,bark (surgery/entities.ts),urgent,3.7,1
+bark.axis,line.a7123236,Sister Ilse,Pull along the line it went in — you’re tearing the channel!,bark (surgery/entities.ts),urgent,3.3,1
+bark.bolt-snap,line.be3e1856,Sister Ilse,"It snapped — the head’s still in there! Ease them out: pull, pause, then draw.",bark (surgery/entities.ts),urgent,4.3,3
+bark.glass-slow,line.1c12d284,Sister Ilse,Slowly with glass — it slices as it goes.,bark (surgery/entities.ts),neutral,2.4,1
+bark.lead-dish,line.ca00e7ea,Sister Ilse,Not the tray — hexstone goes in the lead dish!,bark (surgery/entities.ts),urgent,2.5,1
+bark.fang-crown,line.abfdc250,Sister Ilse,That one was broken — only the crown came. The root’s still in; tongs again.,bark (surgery/entities.ts),neutral,4.2,1
+bark.token-out,line.281d4f23,Sister Ilse,A hymn-token — the Choir’s. He swallowed it rather than let the Tribunal find it on him.,bark (surgery/entities.ts),neutral,4.8,1
+bark.drop-off,line.495481f3,Sister Ilse,"Right off the body, Doctor — into the tray, or it sinks back in.",bark (surgery/entities.ts),neutral,3.5,1
+bark.wadding,line.ff07c226,Sister Ilse,"Scraps of wadding went in with the shot — pull those out too, or it’ll fester.",bark (surgery/entities.ts),neutral,4.3,1
+bark.wadding,line.691047a8,Sister Ilse,Shot drives wadding in after it. Search with the lens before we close.,bark (surgery/entities.ts),neutral,3.9,1
+bark.eschar-fester,line.400ff6d6,Sister Ilse,It’s festering — the salve sealed the eschar in. Clean that rot.,bark (surgery/entities.ts),neutral,3.5,1
+bark.hex-tell,line.12265dc3,Sister Ilse,Green flicker — it’s rekindling! Brand out the ember!,bark (surgery/entities.ts),urgent,2.9,3
 bark.burn-salve,line.b6fde798,Sister Ilse,The dead flesh is off. Now salve the raw burn.,bark (surgery/entities.ts),neutral,2.5,1
+bark.burn-core,line.1acd06b1,Sister Ilse,"The dead core’s out. Pluck the rest of the eschar, then salve.",bark (surgery/entities.ts),neutral,3.4,1
+bark.burn-char,line.72f0d4e5,Sister Ilse,That centre is dead flesh — cut the char out with the lancet first!,bark (surgery/entities.ts),urgent,3.7,1
+bark.acid-first,line.3629403e,Sister Ilse,The acid’s still live! Draw it off with the leech-pipe before you salve.,bark (surgery/entities.ts),urgent,4.0,1
 bark.burn-eschar,line.74897ecd,Sister Ilse,Pluck away the charred eschar with the tongs first!,bark (surgery/entities.ts),urgent,2.8,1
+bark.hex-ember,line.f7c5c80e,Sister Ilse,Its ember still glows — brand it out or the hexfire will rekindle!,bark (surgery/entities.ts),urgent,3.6,3
+bark.bubo-cut,line.45392ca1,Sister Ilse,Draw a short cut across the crown — a prick won’t open it.,bark (surgery/entities.ts),neutral,3.2,1
+bark.bubo-overcut,line.749cba86,Sister Ilse,Too long a cut — it’s spilling everywhere. Short and across the crown!,bark (surgery/entities.ts),urgent,3.9,1
 bark.pus,line.2eb24033,Sister Ilse,Draw off the pus before you salve it.,bark (surgery/entities.ts),neutral,2.4,1
+bark.venom-mote,line.6f21b4c0,Sister Ilse,"The venom’s running for his heart along the vein — sear or draw off the drops, or tie the vein!",bark (surgery/entities.ts),urgent,5.2,1
+bark.grub-burrow,line.082fdfc4,Sister Ilse,One’s burrowed in! Find it with the lens.,bark (surgery/entities.ts),urgent,2.4,1
+bark.grub-split,line.23c921a1,Sister Ilse,Don’t let go half-way — hold the brand until it stops moving!,bark (surgery/entities.ts),urgent,3.4,3
+bark.sigil-regress,line.7da05791,Sister Ilse,Don’t stop half-way — the curse heals what you leave!,bark (surgery/entities.ts),urgent,2.9,1
+bark.a5cf2fb6,line.a5cf2fb6,Sister Ilse,sigil-order,bark (surgery/entities.ts),neutral,2.4,1
 bark.b6fb00a0,line.b6fb00a0,Sister Ilse,"The choir is silenced — its heart is bare! Brand it, now!",bark (surgery/lauds.ts),urgent,3.1,3
 bark.cb4fc011,line.cb4fc011,Sister Ilse,It’s calling its Voices back!,bark (surgery/lauds.ts),urgent,2.4,1
+bark.lauds-response,line.7080f278,Sister Ilse,"It heals from the other body! Strike one, then the other — quickly!",bark (surgery/lauds.ts),urgent,3.7,1
 bark.lauds-hymn,line.9e447097,Sister Ilse,It’s singing — every verse tears him open! Stitch the cuts as they come!,bark (surgery/lauds.ts),urgent,4.0,1
-bark.4c80f2c6,line.4c80f2c6,Sister Ilse,There! It’s surfacing — finish it!,bark (surgery/lauds.ts),urgent,2.4,3
-bark.lauds-shielded,line.67247343,Sister Ilse,The Voices shield it. Silence them first — hold the brand on each as it circles.,bark (surgery/lauds.ts),neutral,4.4,3
-bark.6ef14403,line.6ef14403,Sister Ilse,It’s gone under the skin! The Scrying Lens — hunt it down!,bark (surgery/lauds.ts),urgent,3.2,1
+bark.lauds-flare,line.dc11a2f2,Sister Ilse,The dawn — I can’t see a thing through the Lens! Wait for the glare to pass!,bark (surgery/lauds.ts),urgent,4.2,1
+bark.lauds-under,line.926ed241,Sister Ilse,It’s gone under the skin! The Scrying Lens — hunt its ripples!,bark (surgery/lauds.ts),urgent,3.4,1
+bark.lauds-surface,line.f8471ff7,Sister Ilse,There! It’s surfacing — brand it before it dives!,bark (surgery/lauds.ts),urgent,2.7,3
+bark.lauds-shielded,line.6c32c902,Sister Ilse,The Voices shield it. Silence them first — trace each one’s sigil with the brand.,bark (surgery/lauds.ts),neutral,4.5,3
+bark.308b8754,line.308b8754,Sister Ilse,"It has split in two — and the halves sing to each other! Strike one, then the other, before it answers!",bark (surgery/lauds.ts),urgent,5.7,1
+bark.74907c5b,line.74907c5b,Sister Ilse,Dawn is breaking — and it has dived! Find it with the Lens between the flares!,bark (surgery/lauds.ts),urgent,4.3,1
 bark.1307de3f,line.1307de3f,Sister Ilse,"It shattered — hexstone, everywhere! Get every shard out before it spoils him!",bark (surgery/lauds.ts),urgent,4.3,1
-bark.ec569d31,line.ec569d31,Sister Ilse,That sac is moving… it’s about to hatch!,bark (surgery/lauds.ts),urgent,2.4,1
+bark.a82c25de,line.a82c25de,Sister Ilse,The thread has rewoven — they’re linked again!,bark (surgery/lauds.ts),urgent,2.5,1
+bark.lauds-dim,line.efec9f90,Sister Ilse,"The thread between them dims — cut across it with the lancet, now!",bark (surgery/lauds.ts),urgent,3.6,1
+bark.lauds-bright,line.c5e752a9,Sister Ilse,Not while it blazes — wait for the thread to dim.,bark (surgery/lauds.ts),neutral,2.7,1
+bark.9a4c3f3f,line.9a4c3f3f,Sister Ilse,Severed! Strike freely while they’re apart!,bark (surgery/lauds.ts),urgent,2.4,1
+bark.lauds-voice-trace,line.94b796a6,Sister Ilse,"Holding it there won’t quiet it — trace the Voice’s sigil with the brand, line by line.",bark (surgery/lauds.ts),neutral,4.8,3
+bark.f799ed8c,line.f799ed8c,Sister Ilse,That sac is swelling… it’s about to hatch!,bark (surgery/lauds.ts),urgent,2.4,1
 bark.eggsac-lanced,line.691f9d07,Sister Ilse,Spiderlings! Brand them before they scatter!,bark (surgery/lauds.ts),urgent,2.4,3
 bark.malison-open,line.a4522c4b,Sister Ilse,"Its shroud has parted — sear it with the brand, now!",bark (surgery/malison.ts),urgent,2.9,3
 bark.malison-rend,line.d998a08e,Sister Ilse,It’s tearing the flesh as it moves! Stitch those wounds!,bark (surgery/malison.ts),urgent,3.1,1
-bark.malison-veiled,line.c75d6c64,Sister Ilse,The brand can’t touch it while it’s veiled. Wait for the shroud to part!,bark (surgery/malison.ts),urgent,4.0,3
-bark.7247eff0,line.7247eff0,Sister Ilse,It’s shedding hexlings! Burn them before they feed!,bark (surgery/malison.ts),urgent,2.8,1
+bark.matins-shards,line.6ac1a9da,Sister Ilse,It’s shedding shards — they’re crawling for the wounds! Tongs — cast them out!,bark (surgery/malison.ts),urgent,4.3,1
+bark.matins-gaze,line.a853c273,Sister Ilse,The eye has fixed on your hand — move off its line!,bark (surgery/malison.ts),urgent,2.8,1
+bark.matins-offbeat,line.05c61dd9,Sister Ilse,"Only on the third beat, Doctor — when the eye is wide!",bark (surgery/malison.ts),urgent,3.0,1
+bark.456f0763,line.456f0763,Sister Ilse,Wait for it to open.,bark (surgery/malison.ts),neutral,2.4,1
+bark.e7adfaa3,line.e7adfaa3,Sister Ilse,It’s quickening! Doctor — the Litany. Draw the star with the right hand and still the hour.,bark (surgery/malison.ts),urgent,5.0,1
+bark.93051efa,line.93051efa,Sister Ilse,"The shroud has burned away — an eye! Brand it on the third beat, and only then!",bark (surgery/malison.ts),urgent,4.3,3
 bark.830c5e94,line.830c5e94,Sister Ilse,It’s splitting apart! Seize every shard with the tongs and cast it out — before they rejoin!,bark (surgery/malison.ts),urgent,5.1,1
+bark.Steady-hands-,line.c3ac6729,Sister Ilse,praise,bark (surgery/operation.ts),neutral,2.4,1
+bark.Now-Doctor-the-Litany-Draw-the-five-pointed-star-with-the-right-hand-,line.84e3a65f,Sister Ilse,instruction,bark (surgery/operation.ts),neutral,2.4,1
+bark.overheat,line.410eb989,Sister Ilse,The brand’s overheated. Give it a moment between searings.,bark (surgery/operation.ts),neutral,3.2,3
 bark.brand-flesh,line.82dbfa51,Sister Ilse,Careful! The brand is searing healthy flesh!,bark (surgery/operation.ts),urgent,2.4,3
-bark.low-vitals,line.c4ae9cfb,Sister Ilse,"Vitals are failing! Use the tincture, Doctor!",bark (surgery/operation.ts),urgent,2.5,3
+bark.reopened,line.23b93411,Sister Ilse,You’ve cut through your own stitches! Close it again.,bark (surgery/operation.ts),urgent,2.9,1
+bark.inject-wound,line.6d46fd3c,Sister Ilse,"Not into the wound, Doctor — clean flesh, away from the cuts.",bark (surgery/operation.ts),neutral,3.4,1
+bark.inject-waste,line.4d0df626,Sister Ilse,"He didn’t need that, Doctor. Save the tincture.",bark (surgery/operation.ts),neutral,2.6,1
+bark.overdose,line.17ec1f41,Sister Ilse,Too much tincture — your hands are shaking!,bark (surgery/operation.ts),urgent,2.4,1
+bark.Vitals-are-failing-Use-the-tincture-Doctor-,line.219901ae,Sister Ilse,danger,bark (surgery/operation.ts),neutral,2.4,1
+bark.3c579abf,line.3c579abf,Sister Ilse,Everything’s clear. Close the incision with the thread.,bark (surgery/operation.ts),neutral,3.0,1
 bark.7d19b7e0,line.7d19b7e0,Sister Ilse,The operation is complete.,bark (surgery/operation.ts),neutral,2.4,1
+bark.salve-dry,line.845c9dfb,Sister Ilse,The salve pot’s empty — give it a moment to refill.,bark (surgery/operation.ts),neutral,2.8,1
 bark.347dc00d,line.347dc00d,Sister Ilse,"Instruments ready, Doctor.",bark (scenes/operation.ts),neutral,2.4,1
+bark.bb77b3b3,line.bb77b3b3,Sister Ilse,The case notes changed — starting again.,bark (scenes/operation.ts),neutral,2.4,1

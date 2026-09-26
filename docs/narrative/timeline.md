@@ -21,7 +21,7 @@ apart, or if a scene is missing. Operations happen between the scenes around the
 |---|---|---|---|
 | s2-1 | Thu 23 Hartung | Prime | `The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf` |
 | s2-2 | Thu 23 Hartung | None (afternoon) | `The muster camp — afternoon` |
-| s2-3 | Thu 23 Hartung | Compline (night) | `The muster camp — night` |
+| s2-3 | Thu 23 Hartung | Vespers (nightfall) | `The muster camp — nightfall` |
 | s2-4 | Thu 23 Hartung | before midnight | `The muster camp — before midnight` |
 | s2-5 | Fri 24 Hartung | Lauds (dawn) | `The muster camp — dawn` |
 | s2-end | Fri 24 Hartung | Prime | `The muster camp — morning` |

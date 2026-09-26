@@ -33,6 +33,7 @@ export const STORY_2_2: StoryDef = {
     say('patient', 'Put me down, you long-legged oafs! I can walk! I can… mostly walk.', 'Orsa Flintvein'),
     say('mauer', 'Dwarf prospector. Her crew was working a seam in the hills when it caved in.'),
     say('patient', 'The rock went black, Doctor. Black as a wet eye, and it had a pulse. It sang when we struck it. Then it burst.', 'Orsa Flintvein'),
+    say('patient', 'Took my lamp with it. So it’s glass in me as well as stone, and you’ll find both.', 'Orsa Flintvein'),
     say('ilse', 'Mind her beard, Doctor. Every knot in it is tied for a debt.'),
     say('patient', 'Nineteen knots. Nine are owed to me, ten I owe. If I die owing ten, my sons pay them, and my sons are idle.', 'Orsa Flintvein'),
     say('ilse', 'There are shards under her skin I can’t see — but the flesh around them is spoiling.'),
@@ -44,11 +45,11 @@ export const STORY_2_2: StoryDef = {
 
 export const STORY_2_3: StoryDef = {
   id: 's2-3',
-  place: 'The muster camp — night',
+  place: 'The muster camp — nightfall',
   backdrop: 'night',
   lines: [
     n('Orsa sleeps in the supply wagon, snoring like a bellows. The sentries swear it keeps the wolves off.'),
-    say('mauer', 'Elf forager. Went to check his snares by the old web-trees. We found him wrapped up like a midwinter ham.'),
+    say('mauer', 'Elf forager. Checked his snares by the old web-trees yesterday and never came back. We found him at dusk, wrapped like a midwinter ham.'),
     say('patient', '…the brood-mother… she kissed me… she was so gentle about it…', 'Ilvaren'),
     say('ilse', 'Elf skin, Doctor — thin as vellum. It cuts at a breath and bleeds like a spring.'),
     say('ilse', 'The foresters call the great web-spinners brood-mothers. Venom, spreading fast. And these lumps… Saints. She laid in him.'),

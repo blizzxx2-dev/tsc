@@ -87,8 +87,8 @@ const DEMO_NOTES: readonly CaseNote[] = [
   {
     op: 'op2-1',
     patient: 'Tomas, scout of the Watch.',
-    presenting: 'Mauled by a gravehound out of the barrow-fields: fangs lodged in the shoulder, venom spreading from the bite, three claw rakes across the back.',
-    procedure: 'Tincture on the bite until it drew. Tongs for every fang. Drained and stitched each rake.',
+    presenting: 'Mauled by a gravehound out of the barrow-fields: fangs lodged in the shoulder, one broken off; venom spreading from the bite; three claw rakes across the back with grave-dirt in them.',
+    procedure: 'Tincture on the bite until it drew. Tongs for every fang, twice for the broken one: crown, then root. The grave-dirt leeched out of the rakes before anything touched them; then drained and stitched each rake.',
     outcome: {
       high: 'Venom drawn before it reached the heart; every fang out; rakes closed clean. Fit to scout.',
       mid: 'Venom drawn, fangs out, rakes closed. A week before he is fit to march.',
@@ -99,7 +99,7 @@ const DEMO_NOTES: readonly CaseNote[] = [
   {
     op: 'op2-2',
     patient: 'Orsa Flintvein, dwarf prospector.',
-    presenting: 'Cave-in at a black seam. Rock splinters on the surface; hexstone shards under the skin, invisible to the eye; the flesh around them spoiling.',
+    presenting: 'Cave-in at a black seam; her lamp burst with it. Rock and glass splinters on the surface; hexstone and lamp-glass under the skin, invisible to the eye; the flesh around them spoiling.',
     procedure: 'Tongs for the surface splinters. Scrying Lens passed slowly until it shimmered; each shard brought to light and drawn. Spoiled flesh cleaned and the wounds closed.',
     outcome: {
       high: 'Every shard found and drawn whole; the spoiled flesh cleaned clean. She sat up and tied a knot.',
@@ -111,7 +111,7 @@ const DEMO_NOTES: readonly CaseNote[] = [
   {
     op: 'op2-3',
     patient: 'Ilvaren, elf forager.',
-    presenting: 'Two web-spinner bites at the neck; venom spreading; several egg sacs laid beneath the skin, one deep. A fever-bubo rising from the bite.',
+    presenting: 'Two web-spinner bites at the neck, a day old; venom spreading; several egg sacs laid beneath the skin, one deep. A fever-bubo rising from the bite.',
     procedure: 'Tincture on each bite. Lanced every sac with a single touch and seared the hatchlings. The deep sac found with the lens and opened. Lanced and cleansed the bubo.',
     outcome: {
       high: 'Nothing hatched. Every sac gone, the venom drawn, the bubo drained. He will forage again, elsewhere.',
@@ -123,8 +123,8 @@ const DEMO_NOTES: readonly CaseNote[] = [
   {
     op: 'op2-4',
     patient: 'A lay-cantor of the Hollow Choir. Prisoner of the Ash Tribunal.',
-    presenting: 'Silence-sigils igniting across the chest as hexfire; poison swallowed on capture; maggots in an old sore from the cells.',
-    procedure: 'Tincture for the poison, at once. Seared out every stroke of every sigil. Plucked the hexfire eschar and salved. Brand on the maggots.',
+    presenting: 'Silence-sigils igniting across the chest as hexfire; poison swallowed on capture, and something else with it; maggots in an old sore from the cells.',
+    procedure: 'Tincture for the poison, at once. Seared out every stroke of every sigil. Plucked the hexfire eschar and salved. Brand on the maggots. The lens on the stomach; opened along the line and drew out a pewter hymn-token.',
     outcome: {
       high: 'The poison drawn in time, every sigil out, the burns dressed clean. He asked why I would close him.',
       mid: 'Poison drawn, sigils out, burns dressed. He will live to be questioned.',
@@ -136,7 +136,7 @@ const DEMO_NOTES: readonly CaseNote[] = [
     op: 'op2-5',
     patient: 'Jorg, standard-bearer of the Watch.',
     presenting: 'Collapsed during the dawn hymn. Something beneath the sternum, singing in two voices: the Hour of Lauds.',
-    procedure: 'Opened along the line. Silenced each of its Voices with the brand as they circled; then the heart, bare. Tended what it left and closed him.',
+    procedure: 'Opened along the line. Silenced each of its Voices with the brand as they circled; struck its two halves each before the other could answer; then the heart at dawn. Tended what it left and closed him.',
     outcome: {
       high: 'Every Voice silenced in turn and the heart bared clean. Closed gently. He has a banner to carry.',
       mid: 'Voices silenced, the thing put down, closed sound. He will carry the banner in a month.',

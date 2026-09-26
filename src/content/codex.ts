@@ -379,7 +379,7 @@ const ORDERS: CodexEntry[] = [
     category: 'Orders',
     unlock: op('op2-4'),
     image: 'wc-hymn-token',
-    body: 'A pewter disc no wider than a thumbnail, stamped on one face with an open mouth: the Hollow Choir’s mark. Kreuzer took it out of the cantor’s stomach in the Tribunal’s cells, where it had been swallowed rather than found. On the back, scratched with a pin, a line of neumes, and under them two words — “Lauds. Standard.” Ilse says a lay-cantor carries a message so that it goes into the grave with the carrier if taken. This one was meant to. Stroh has not asked for it. Kreuzer has not offered it. It sits in the dispensary drawer, under the ledger, with the other things he has not decided about.',
+    body: 'A pewter disc no wider than a thumbnail, stamped on one face with an open mouth: the Hollow Choir’s mark. Kreuzer took it out of the cantor’s stomach by lamplight in the muster camp; it had been swallowed rather than let Stroh’s men find it. On the back, scratched with a pin, a line of neumes, and under them two words — “Lauds. Standard.” Ilse says a lay-cantor carries a message so that it goes into the grave with the carrier if taken. This one was meant to. Stroh has not asked for it. Kreuzer has not offered it. It sits in the dispensary drawer, under the ledger, with the other things he has not decided about.',
   },
   {
     id: 'merciful-order',

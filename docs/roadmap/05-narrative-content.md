@@ -264,7 +264,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### Script passes
 - [x] NAR-0174 · Demo · P1 · S · Demo proofread pass — spelling, punctuation (typographic quotes/dashes consistent), speaker names; zero issues in second read _(automated: tests/unit/content/proofread.test.ts — quotes, dashes, ellipses, spacing)_
-- [ ] NAR-0175 · Demo · P1 · S · Demo continuity pass — injuries, names, times of day and item names consistent across scenes, briefings, codex and case notes
+- [x] NAR-0175 · Demo · P1 · S · Demo continuity pass — injuries, names, times of day and item names consistent across scenes, briefings, codex and case notes _(op2-3 is two bites, a day old, everywhere (Ilvaren out since yesterday, found at dusk; s2-3 at nightfall); op2-2’s glass is her burst lamp; op2-1’s grave-dirt and broken fang and op2-4’s hymn-token reach briefing, ledger and codex; op2-5’s ledger follows the split-and-dawn fight; the VO script regenerated. tests/unit/content/continuity.test.ts)_
 - [ ] NAR-0177 · Alpha · P0 · L · Ch3–5 second draft — incorporates playtest notes and ending matrix; all scene ids wired in campaign data
 - [ ] NAR-0178 · Beta · P0 · M · Ch3–5 polish pass — pacing budget enforced, jokes audited against humour rule, Kreuzer voice consistent
 - [ ] NAR-0179 · Beta · P1 · S · Full-game continuity pass — timeline, flags and callbacks verified against the bible; issues tracked to zero
