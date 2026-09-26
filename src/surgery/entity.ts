@@ -3,6 +3,12 @@ import type { Gfx } from '../render/gfx';
 import type { Operation } from './operation';
 import type { Pointer, ToolId } from './types';
 
+/** The lens tutorial (CON-0060): the first hidden find shows itself from further off, and Ilse names the shimmer. */
+export const LENS_GUIDE = {
+  reach: 1.8,
+  line: 'There — see it glint? That’s how they look under the lens. The rest won’t come to you; sweep slow and hold where it shimmers.',
+} as const;
+
 /**
  * Where an entity came from, for scoring:
  * - `content`: placed by the operation's phases (full points);
@@ -109,8 +115,16 @@ export abstract class Entity {
     return this.revealT;
   }
 
+  /** The lens tutorial's first find (CON-0060): shows at once, from LENS_GUIDE.reach × the lens radius. */
+  lensGuide = false;
+
   /** Lens hovering nearby: by default a hidden entity surfaces once the lens lingers over it. */
   onReveal(op: Operation, p: Vec, dt: number): void {
+    if (this.lensGuide && dist(p, this.pos) <= op.tuning.lens.radius * LENS_GUIDE.reach) {
+      this.reveal(op);
+      op.say(LENS_GUIDE.line);
+      return;
+    }
     if (dist(p, this.pos) > op.tuning.lens.radius) return;
     this.revealT += dt;
     if (this.revealT > op.tuning.lens.reveal) this.reveal(op);

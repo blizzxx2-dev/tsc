@@ -93,21 +93,20 @@ exports[`hexstone and hidden objects > lodged hexstone drains, spawns rot every 
 `;
 
 exports[`hexstone and hidden objects > op2-2 hidden shards ignore the tongs until the Scrying Lens reveals them 1`] = `
-"2.02 initial Embedded kind=hexstone hidden @(540,370)
+"2.02 initial Embedded kind=hexstone hidden @(640,400)
 2.02 initial Embedded kind=hexstone hidden @(750,440)
-2.02 initial Embedded kind=hexstone hidden @(660,310)
+2.02 initial Embedded kind=glass hidden @(660,310)
+2.02 initial Embedded kind=glass hidden @(720,520)
 2.28 rate MISS +0 combo=0
-3.93 -- tongs on hidden shard: status=running vitals=96.4 score=0 combo=0 counts=0/0/0/1 live=[Embedded,Embedded,Embedded]
-4.33 popup "Found!"
-4.43 -- after lens: status=running vitals=95.7 score=0 combo=0 counts=0/0/0/1 live=[Embedded,Embedded,Embedded] hidden=false
-4.43 cue pluck
-6.45 hurt 2
-6.45 popup "-2"
-6.45 flag hex-whisper
-6.45 say "It’s whispering to him through the tongs — into the lead dish, quickly!"
-6.45 say "instruction"
-6.45 rate GOOD "Hexstone" +63 combo=1
-6.45 spawn Laceration source=blade length=40 bleed=0.8 @(540,370)
-6.47 -- after pull: status=running vitals=91 score=63 combo=1 counts=0/1/0/1 live=[Embedded,Embedded,Laceration]
+3.25 -- tongs on hidden shard: status=running vitals=97.3 score=0 combo=0 counts=0/0/0/1 live=[Embedded,Embedded,Embedded,Embedded]
+3.25 popup "Found!"
+3.25 say "There — see it glint? That’s how they look under the lens. The rest won’t come to you; sweep slow and hold where it shimmers."
+3.65 popup "Found!"
+3.65 popup "Found!"
+3.75 -- after lens: status=running vitals=96.6 score=0 combo=0 counts=0/0/0/1 live=[Embedded,Embedded,Embedded,Embedded] hidden=false
+3.75 cue pluck
+5.08 rate GOOD "Hexstone" +63 combo=1
+5.08 spawn Laceration source=blade length=40 bleed=0.8 @(750,440)
+5.10 -- after pull: status=running vitals=94.7 score=63 combo=1 counts=0/1/0/1 live=[Embedded,Embedded,Embedded,Laceration]
 "
 `;

@@ -36,6 +36,8 @@ export type Pt = readonly [number, number];
 interface Common {
   /** Starts hidden beneath the flesh: needs the Scrying Lens. */
   hidden?: boolean;
+  /** The lens tutorial's first find (CON-0060): the lens shows it at once, from further off, with a word from Ilse. */
+  guide?: boolean;
   /** Override whether the entity holds up the phase. */
   required?: boolean;
 }
@@ -130,7 +132,7 @@ export interface RegistryEntry<S extends EntitySpec = EntitySpec> {
 
 const P = (x: Pt): Vec => ({ x: FIELD.cx + x[0], y: FIELD.cy + x[1] });
 const num = (optional = false, range?: readonly [number, number]): Param => ({ type: 'number', optional, range });
-const COMMON: Record<string, Param> = { hidden: { type: 'boolean', optional: true }, required: { type: 'boolean', optional: true } };
+const COMMON: Record<string, Param> = { hidden: { type: 'boolean', optional: true }, guide: { type: 'boolean', optional: true }, required: { type: 'boolean', optional: true } };
 const EMBED_KINDS: readonly EmbeddedKind[] = ['arrow', 'bolt', 'shot', 'tooth', 'shard', 'glass', 'hexstone'];
 
 type Entry<K extends EntityId> = RegistryEntry<Extract<EntitySpec, { e: K }>>;
@@ -318,6 +320,7 @@ export function makeEntities(spec: EntitySpec, op: Operation): Entity[] {
   const list = Array.isArray(made) ? made : [made];
   const core = list[0];
   if (spec.hidden) core.hidden = true;
+  if (spec.guide) core.lensGuide = true;
   if (spec.required !== undefined) core.required = spec.required;
   return list;
 }

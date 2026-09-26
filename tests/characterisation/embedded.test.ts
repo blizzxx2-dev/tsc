@@ -109,9 +109,11 @@ describe('hexstone and hidden objects', () => {
 
   it('op2-2 hidden shards ignore the tongs until the Scrying Lens reveals them', () => {
     const { op, ents, trace } = scenario((o) => OP_2_2.phases[1].spawn(o).filter((e): e is Embedded => e instanceof Embedded));
-    expect(ents).toHaveLength(3);
+    // CON-0060: the guide hexstone first (the lens shows it at once), then two more and a seeded pick of glass.
+    expect(ents.length).toBeGreaterThanOrEqual(4);
     expect(ents.every((e) => e.hidden)).toBe(true);
-    const target = ents[0];
+    expect(ents[0].lensGuide).toBe(true);
+    const target = ents[1];
     op.setTool('tongs');
     op.handlePointer(press(target.pos), DT);
     op.update(DT);
@@ -127,7 +129,12 @@ describe('hexstone and hidden objects', () => {
     pull(op, target);
     trace.note('after pull');
     expect(target.alive).toBe(false);
-    expect(ents.filter((e) => e.hidden)).toHaveLength(2);
+    // The lens shows the guide from further off; every other shard out of the lens's reach stays hidden.
+    const far = ents.filter(
+      (e) => e !== target && !e.lensGuide && Math.hypot(e.pos.x - target.origin.x, e.pos.y - target.origin.y) > op.tuning.lens.radius * 1.2,
+    );
+    expect(far.length).toBeGreaterThan(0);
+    expect(far.every((e) => e.hidden)).toBe(true);
     expect(trace.text()).toMatchSnapshot();
   });
 });

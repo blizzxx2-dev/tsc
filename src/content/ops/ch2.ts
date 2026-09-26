@@ -12,6 +12,7 @@ export const clawRake = (x: number, y: number, angle: number, len = 90): EntityS
   [-1, 0, 1].map((i) => ({ e: 'laceration', at: [x - Math.sin(angle) * i * 26, y + Math.cos(angle) * i * 26], angle, len: len - Math.abs(i) * 14, bleed: 0.8 }));
 
 const hiddenShard = (x: number, y: number, angle: number): EntitySpec => ({ e: 'embedded', at: [x, y], kind: 'hexstone', angle, barbed: false, hidden: true });
+const hiddenGlass = (x: number, y: number, angle: number): EntitySpec => ({ e: 'embedded', at: [x, y], kind: 'glass', angle, barbed: false, hidden: true });
 
 export const OP_2_1 = defineOp({
   id: 'op2-1',
@@ -66,9 +67,9 @@ export const OP_2_2 = defineOp({
   diagnosis: 'Cave-in at a hexstone seam. Shards driven beneath the skin, invisible to the eye. Surrounding flesh spoiling.',
   organ: 'flesh',
   timeLimit: 270,
-  baseDrain: 0.1,
+  baseDrain: 0.05,
   tools: ALL,
-  ranks: { S: 5650, A: 4500, B: 3400 },
+  ranks: { S: 6010, A: 4810, B: 3610 },
   litany: true,
   seed: 22,
   phases: [
@@ -86,7 +87,14 @@ export const OP_2_2 = defineOp({
       objective: 'Find the hidden shards',
 
       callout: ['Now — the Scrying Lens. Pass it slowly over the flesh; where something hides, it shimmers.', 'Hold it still over the shimmer to bring the shard to light, then pull it.'],
-      spawn: [hiddenShard(-120, -40, 0.4), hiddenShard(90, 30, 2.1), hiddenShard(0, -100, -1.2), { e: 'rot', at: [-110, -30], r: 40, spread: 0.4 }],
+      // CON-0060: the first hexstone lies near the middle and shows itself under the lens; one more hexstone and
+      // two to four glass splinters (by seed) must be found.
+      spawn: [
+        { ...hiddenShard(-20, -10, 0.9), guide: true },
+        hiddenShard(90, 30, 2.1),
+        { e: 'pick', n: [2, 4], of: [hiddenGlass(0, -100, -1.2), hiddenGlass(170, -60, -0.5), hiddenGlass(-170, 70, 2.6), hiddenGlass(60, 110, 1.6)] },
+        { e: 'rot', at: [-110, -30], r: 40, spread: 0.4 },
+      ],
     },
     {
       objective: 'Clean the spoiled flesh',
@@ -111,9 +119,9 @@ export const OP_2_3 = defineOp({
   timeLimit: 240,
   baseDrain: 0.1,
   // GAM-0197/0199: the venom has had a day in him — he comes in weak, so the brood needn't bite so hard.
-  vitals: 85,
+  vitals: 80,
   tools: ALL,
-  ranks: { S: 8320, A: 6660, B: 4990 },
+  ranks: { S: 8230, A: 6580, B: 4940 },
   litany: true,
   seed: 23,
   phases: [

@@ -347,7 +347,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### op2-2 "The Green Seam" → rename "The Black Seam" (Orsa Flintvein) — scrying lens intro
 - [x] CON-0059 · Demo · P0 · S · Rename op title and all references to "The Black Seam" — hexshard visual is black glass with a heartbeat pulse, no green
-- [ ] CON-0060 · Demo · P0 · S · Lens tutorial — first hidden shard revealed automatically under the lens with callout; rest must be found (4–6 by seed)
+- [x] CON-0060 · Demo · P0 · S · Lens tutorial — first hidden shard revealed automatically under the lens with callout; rest must be found (4–6 by seed) _(op2-2: a `guide` hexstone shows at once within 1.8 × the lens radius and Ilse names the glint (LENS_GUIDE); one more hexstone and a seeded pick of 2–4 glass splinters must be found. Ranks recalibrated; op2-3 starts at 80 to keep the chapter curve. tests/unit/content/lensTutorial.test.ts)_
 - [ ] CON-0061 · Demo · P1 · S · Spoiling flesh around unfound shards spreads at 1 radius/10 s — spread rate tuned from sim
 - [x] CON-0062 · Demo · P1 · S · Thick-hide stitching — mountain-folk flesh tint and 1.3× thread-pass requirement (Orsa's "strong arm" line)
 - [x] CON-0063 · Demo · P2 · S · Hexshard handling — shards dropped only in the lead dish tray; dropping elsewhere = BAD (plants Whisper system)
