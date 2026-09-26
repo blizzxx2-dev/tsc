@@ -712,8 +712,9 @@ export class Laceration extends Entity {
         op.sayOnce('flooded', 'Too much blood — draw it off with the leech-pipe before you stitch!');
         return;
       }
-      if (op.entities.some((e) => e.alive && e.stitchBlockRadius > 0 && dist(e.pos, this.pos) < e.stitchBlockRadius)) {
-        op.sayOnce('compound', 'The bone’s through the skin — set it before you stitch over it.');
+      const blocker = op.entities.find((e) => e.alive && e.stitchBlockRadius > 0 && dist(e.pos, this.pos) < e.stitchBlockRadius);
+      if (blocker) {
+        op.sayOnce(blocker.stitchBlockFlag, blocker.stitchBlockHint);
         return;
       }
       if (this.stitch.sweep(op, ptr)) {

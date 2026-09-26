@@ -69,6 +69,9 @@ export function drawTrayState(g: Gfx, op: Operation, slot: (i: number) => Rect, 
       g.circle(r.x + r.w - 12, r.y + r.h - 12, 6, hex(TINCTURE_HEX[op.tinctureColor], op.overdoseRisk ? 0.35 : 1));
       if (op.overdoseRisk) g.circle(r.x + r.w - 12, r.y + r.h - 12, 6, hex('#000000', 0.5));
     }
+    // Limited supplies (CON-0140): what's left in the kit, red when it's gone.
+    const left = id === 'thread' || id === 'salve' || id === 'tincture' ? op.stock[id] : undefined;
+    if (left !== undefined) g.text(String(left), r.x + 6, r.y + 20, { size: 16, color: hex(left > 0 ? INK.text : '#e05a4a'), shadow: hex('#000000', 0.8) });
     if (!op.toolUsable(id)) {
       g.rect(r.x + 2, r.y + 2, r.w - 4, r.h - 4, hex('#303030', 0.7));
       const left = op.disabled.get(id) ?? op.brandLock;

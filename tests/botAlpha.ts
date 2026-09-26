@@ -19,7 +19,7 @@ import { RegenWound, REGEN } from '../src/surgery/ailments/regen';
 import { GlassCluster, WoodSplinter } from '../src/surgery/ailments/splinters';
 import { Spill, Ulcer, ULCER } from '../src/surgery/ailments/ulcer';
 import { BiteChannel, DonorBowl } from '../src/surgery/ailments/vampire';
-import { RainDrips } from '../src/surgery/ailments/environment';
+import { MudSmear, RainDrips } from '../src/surgery/ailments/environment';
 import { WebSilk } from '../src/surgery/ailments/silk';
 import { DT, drag, hold, raster, still, tap, zigzag, type Action, type BotContext, type Frame } from './bot';
 
@@ -33,6 +33,7 @@ const ALPHA = [
   BoneSplinter,
   Fracture,
   SplintWrap,
+  MudSmear,
   FrostPatch,
   IceCrystal,
   Amputation,

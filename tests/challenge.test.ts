@@ -123,7 +123,7 @@ describe('GAM-L mutators', () => {
     op.invokeLitany();
     expect(op.status).toBe('lost');
     expect(op.lostCause).toBe('stroh');
-    expect(Object.keys(MUTATORS)).toEqual(['candle', 'cart', 'rain', 'stroh']);
+    expect(Object.keys(MUTATORS)).toEqual(['candle', 'cart', 'rain', 'mud', 'stroh']);
   });
 });
 

@@ -36,8 +36,11 @@ export abstract class Entity {
   feverOnClose = false;
   /** Wound-fever drain this contributes if left inside at closing. */
   feverDrain = 0.4;
-  /** While > 0, lacerations within this radius cannot be stitched (compound fractures). */
+  /** While > 0, lacerations within this radius cannot be stitched (compound fractures, field mud). */
   stitchBlockRadius = 0;
+  /** What Ilse says when a stitch is blocked by this entity. */
+  stitchBlockHint = 'The bone’s through the skin — set it before you stitch over it.';
+  stitchBlockFlag = 'compound';
   /** Seconds this entity has existed (world time). */
   age = 0;
 

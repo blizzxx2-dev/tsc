@@ -9299,5 +9299,14 @@
     "size": 17,
     "maxPx": 820,
     "context": "Triage results: tag accuracy."
+  },
+  "label.mud_cleaned": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Rating label: field mud salved out of a wound (Mud cleaned)",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
   }
 }

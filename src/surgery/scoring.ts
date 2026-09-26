@@ -104,6 +104,7 @@ export const SCORING: readonly ScoringRule[] = [
   { label: 'Over-traction', action: 'Haul on a limb already at full traction', tools: ['tongs'], criteria: { bad: 'over 1.5 s; harms and −100 end bonus' } },
   { label: 'Wrapped', action: 'Bind one band of a splint with the thread', tools: ['thread'], criteria: { cool: 'through the band’s centre', good: 'anywhere in the band' } },
   { label: 'Splinted', action: 'Bind every band of a splint', tools: ['thread'], criteria: { good: 'always' } },
+  { label: 'Mud cleaned', action: 'Salve field mud out of a wound', tools: ['salve'], criteria: { good: '80 % of it salved' } },
   { label: 'Splinter', action: 'Remove a bone or wood splinter', tools: ['tongs'], criteria: { cool: 'wood, with the grain', good: 'bone splinter off the body' } },
   { label: 'Snapped splinter', action: 'Pull wood against the grain', tools: ['tongs'], criteria: { bad: 'more than 90° from the grain' } },
   // Petrification

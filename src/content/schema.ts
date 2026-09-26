@@ -11,6 +11,7 @@
  */
 import { WebSilk } from '../surgery/ailments/silk';
 import { Fracture, fractureSite } from '../surgery/ailments/fracture';
+import '../surgery/ailments/environment'; // registers the op environment's effects (CON-0139)
 import { ClosedReduction } from '../surgery/disciplines';
 import type { PoisonId } from './poisons';
 import { ChoirMagus, DeadPulse, FrostWight, GhoulClaw, Sellsword, WormMatriarch } from '../surgery/bosses/alphaElites';

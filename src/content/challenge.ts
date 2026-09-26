@@ -215,6 +215,7 @@ export const MUTATORS: Record<MutatorId, MutatorInfo> = {
   candle: { id: 'candle', name: 'Candle-Only', effect: 'The candle lights only the middle of the table; the lens sees 30 % less.' },
   cart: { id: 'cart', name: 'Moving Cart', effect: 'The field sways 12 px on the road. Your aim is judged as ever.' },
   rain: { id: 'rain', name: 'Field Tent in Rain', effect: 'Drips thin the blood into small pools every 5 s.' },
+  mud: { id: 'mud', name: 'Field Mud', effect: 'Every wound comes in fouled. Salve it clean before the thread will take.' },
   stroh: { id: 'stroh', name: 'Stroh Watches', effect: 'The Inquisitor is in the room. Invoke the Litany and the operation ends.' },
 };
 

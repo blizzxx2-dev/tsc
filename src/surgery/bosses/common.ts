@@ -122,6 +122,9 @@ export class InputDistortion {
   };
 }
 
+/** The longest torpor lag in assisted play (CON-0162), seconds. */
+export const TORPOR_ASSIST_CAP = 0.3;
+
 const distortions = new WeakMap<Operation, InputDistortion>();
 
 /** The operation's shared input distortion, installing its filter on first use. */
@@ -131,7 +134,11 @@ export function distortion(op: Operation): InputDistortion {
     const dd = new InputDistortion();
     d = dd;
     distortions.set(op, dd);
-    op.inputFilter = (ptr, dt) => dd.apply(ptr, dt, op.tool);
+    op.inputFilter = (ptr, dt) => {
+      // Accessibility (CON-0162): with slow tells on, or on Novice, torpor never lags past 0.3 s.
+      if (op.assists.slowTells || op.difficulty === 'novice') dd.lag = Math.min(dd.lag, TORPOR_ASSIST_CAP);
+      return dd.apply(ptr, dt, op.tool);
+    };
   }
   return d;
 }

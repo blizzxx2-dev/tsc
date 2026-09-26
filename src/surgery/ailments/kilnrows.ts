@@ -3,6 +3,7 @@
  * horn-buds, doublet wadding and wound-fever, lead in the blood, the saw,
  * gut-worms, a thrashing penitent and an Inquisitor's rotten molar.
  */
+import type { TinctureColor } from '../progress';
 import { drawDrape } from '../../art/drape';
 import { wormArt } from '../../art/wormArt';
 import { dist, pointSegment, type Vec } from '../../core/math';
@@ -31,6 +32,8 @@ export class TinctureSite extends Entity {
     public drainRate = 0.3,
     public color = '#8a8a90',
     public leaves: 'blackbile' | 'pus' | null = null,
+    /** The tincture colour it answers to (CON-0109); any colour when unset. */
+    public needs: TinctureColor | null = null,
   ) {
     super(pos);
     this.layer = 1;
@@ -45,6 +48,10 @@ export class TinctureSite extends Entity {
   }
   override onDrag(op: Operation, ptr: Pointer, tool: ToolId, dt: number): void {
     if (tool !== 'tincture' || dist(ptr.pos, this.pos) > 32) return;
+    if (this.needs && op.tinctureColor !== this.needs) {
+      op.sayOnce(`tincture-${this.needs}`, `Not that draught — the ${this.needs} one. Turn the wheel with the tincture held to change it.`);
+      return;
+    }
     this.holdT += dt;
     if (this.holdT >= this.holdTime) {
       this.kill();
@@ -71,9 +78,9 @@ export class TinctureSite extends Entity {
   }
 }
 
-/** Lead laid down in the flesh of a bell-founder: grey veins seen only through the lens. A chelating tincture lifts it as grey bile. */
+/** Lead laid down in the flesh of a bell-founder: grey veins seen only through the lens. The green (chelating) tincture lifts it as grey bile (CON-0108). */
 export const leadDeposit = (pos: Vec): TinctureSite => {
-  const s = new TinctureSite(pos, 'Lead lifted', 1.0, 0.3, '#9098a4', 'blackbile');
+  const s = new TinctureSite(pos, 'Lead lifted', 1.0, 0.3, '#9098a4', 'blackbile', 'green');
   s.hidden = true;
   return s;
 };
@@ -295,6 +302,10 @@ export class WoundFever extends TinctureSite {
   }
   override onDrag(op: Operation, ptr: Pointer, tool: ToolId, dt: number): void {
     if (tool !== 'tincture' || dist(ptr.pos, this.pos) > 32) return;
+    if (this.needs && op.tinctureColor !== this.needs) {
+      op.sayOnce(`tincture-${this.needs}`, `Not that draught — the ${this.needs} one. Turn the wheel with the tincture held to change it.`);
+      return;
+    }
     this.holdT += dt;
     if (this.holdT >= this.holdTime) {
       this.holdT = 0;

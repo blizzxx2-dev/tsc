@@ -884,7 +884,10 @@ export class OperationScene implements Scene {
     const inverted = this.compline.invertedLitany();
     g.endWorld({
       trauma,
-      spot: { cx: FIELD.cx, cy: FIELD.cy, rx: FIELD.rx, ry: FIELD.ry, k: 0.62 + 0.25 * soften * (op.entities.find((e): e is Malison => e instanceof Malison && e.alive)?.watching(op.elapsed) ?? 0) },
+      // Candle-light (CON-0121): the light is a hand-held candle, and follows the cursor.
+      spot: op.env.has('candle')
+        ? { cx: game.input.pos.x, cy: game.input.pos.y, rx: 230, ry: 210, k: 0.93 }
+        : { cx: FIELD.cx, cy: FIELD.cy, rx: FIELD.rx, ry: FIELD.ry, k: 0.62 + 0.25 * soften * (op.entities.find((e): e is Malison => e instanceof Malison && e.alive)?.watching(op.elapsed) ?? 0) },
       litany: inverted ? Math.max(litany, inverted[0] * soften) : litany,
       danger,
       silence: this.compline.silence,

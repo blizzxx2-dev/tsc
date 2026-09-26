@@ -372,6 +372,7 @@ export const OP_3_3: OperationDef = {
   timeLimit: 300,
   baseDrain: 0.15,
   tools: ALL,
+  tinctures: ['green'],
   ranks: { S: 5350, A: 4280, B: 3210 },
   litany: true,
   // CON-0234: a wrong verdict at the inquiry sends her in untreated for the lead — weaker.

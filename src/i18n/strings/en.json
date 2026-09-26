@@ -1142,5 +1142,6 @@
   "ui.triage.wagons": "Call the wagons",
   "ui.triage.result": "{rank} — {saved} of {savable} saved",
   "ui.triage.lost": "Lost: {names}",
-  "ui.triage.tags": "Tags right: {right} of {total}"
+  "ui.triage.tags": "Tags right: {right} of {total}",
+  "label.mud_cleaned": "Mud cleaned"
 }

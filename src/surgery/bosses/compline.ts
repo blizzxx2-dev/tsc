@@ -181,6 +181,11 @@ export class ComplineMalison extends Entity {
     return this.muteT > 0;
   }
 
+  /** The lancet→brand window; the accessibility assists (click-to-hold, slow tells) give 2.5× (CON-0198). */
+  comboWindow(op: Operation): number {
+    return this.tune.comboWindow * (op.assists.holdToggle || op.assists.slowTells ? 2.5 : 1);
+  }
+
   get comboOpen(): boolean {
     return this.comboOpenAt > -Infinity;
   }
@@ -350,7 +355,7 @@ export class ComplineMalison extends Entity {
       op.popup('[silence]', { x: FIELD.cx, y: FIELD.cy - FIELD.ry - 10 }, '#8090c0');
     }
 
-    if (this.comboOpen && op.elapsed - this.comboOpenAt > this.tune.comboWindow) this.comboOpenAt = -Infinity;
+    if (this.comboOpen && op.elapsed - this.comboOpenAt > this.comboWindow(op)) this.comboOpenAt = -Infinity;
 
     if (this.stage === 1) {
       if (this.echo) {
@@ -452,7 +457,7 @@ export class ComplineMalison extends Entity {
       const a = (i / 10) * TAU + t * 0.1;
       g.arc(x + Math.cos(a) * r * 0.2, y + Math.sin(a) * r * 0.2, r * (1.3 + 0.1 * i), 1, hex('#8090c0', 0.08));
     }
-    if (this.comboOpen) g.arc(x, y, r + 14, 3, hex('#ffd080'), 1 - (op.elapsed - this.comboOpenAt) / this.tune.comboWindow);
+    if (this.comboOpen) g.arc(x, y, r + 14, 3, hex('#ffd080'), 1 - (op.elapsed - this.comboOpenAt) / this.comboWindow(op));
     if (this.stage === 1 && this.echo) g.arc(x, y, r + 20, 2, hex('#b478ff', 0.6), this.echoT / this.tune.echoTime);
     if (this.litanyStolen) {
       // The stolen star, cracked and black.

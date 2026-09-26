@@ -110,6 +110,7 @@ export const OP_5_10 = defineOp({
   timeLimit: 420,
   baseDrain: 0.12,
   vitals: 85,
+  env: ['candle'],
   tools: ALL,
   ranks: { S: 3000, A: 2400, B: 1800 },
   litany: true,

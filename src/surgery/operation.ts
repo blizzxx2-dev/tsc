@@ -122,6 +122,17 @@ export interface OperationDef {
   /** Short strategy tips per failure cause, offered after repeated losses. */
   tips?: Partial<Record<string, string>>;
   /**
+   * Field-hospital environment (CON-0121, CON-0138, CON-0139): `candle` light follows the cursor,
+   * `rain` drips pools every 5 s, the `cart` sways the table, `mud` fouls every laceration until salved.
+   * Seeded like the rest of the op; challenge mutators add to it.
+   */
+  env?: readonly MutatorId[];
+  /**
+   * Limited supplies (CON-0140): thread (stitches), salve (seconds laid) and tincture (doses) this op
+   * carries. Running out is a soft fail: the work goes on, each use past empty costs 40 end bonus.
+   */
+  supplies?: Partial<Record<SupplyKind, number>>;
+  /**
    * Slow-pulse vitals (CON-0155): the heart beats once every this many seconds, and the vitals only
    * move on a beat — the drain between beats lands all at once. Ends when `op.endSlowPulse()` is called.
    */
@@ -164,7 +175,16 @@ export interface OperationOptions {
   timeAttack?: boolean;
 }
 
-export type MutatorId = 'candle' | 'cart' | 'rain' | 'stroh';
+export type SupplyKind = 'thread' | 'salve' | 'tincture';
+export const SUPPLY = { penalty: 40 };
+
+export type MutatorId = 'candle' | 'cart' | 'rain' | 'stroh' | 'mud';
+
+/**
+ * What an op's `env` spawns alongside each phase (CON-0139), keyed by modifier. Filled in by
+ * src/surgery/ailments/environment.ts, which would otherwise be an import cycle.
+ */
+export const ENV_EFFECTS: Partial<Record<MutatorId, (op: Operation, spawned: readonly Entity[], first: boolean) => Entity[]>> = {};
 
 /** Floating text shown by the HUD; built by the scene from `popup` events (see SimEvents). */
 export interface Popup {
@@ -387,6 +407,8 @@ export class Operation {
   /** Tincture colours in the kit and the one loaded. */
   tinctures: TinctureColor[];
   tinctureColor: TinctureColor = 'red';
+  /** The tincture's button is down (the wheel then picks its colour). */
+  tinctureHeld = false;
   /** Anti-fever (amber) and antivenom (green) effects, seconds remaining. */
   feverCalmT = 0;
   venomSlowT = 0;
@@ -451,6 +473,13 @@ export class Operation {
   private vitalsInt = 0;
   private runT = 0;
   private trendT = 0;
+  /** The environment in force: the op's own `env` and any challenge mutators. */
+  readonly env: ReadonlySet<MutatorId>;
+  /** Supplies left (CON-0140); absent kinds are unlimited. */
+  readonly stock: Partial<Record<SupplyKind, number>>;
+  /** Uses made past empty, per kind. */
+  readonly overdrawn: Partial<Record<SupplyKind, number>> = {};
+  private salveUse = 0;
 
   constructor(
     readonly def: OperationDef,
@@ -463,8 +492,18 @@ export class Operation {
     this.mods = combineMods(NO_MODS, opts.mods ?? {});
     this.upgrades = new Set(opts.challenge ? [] : (opts.upgrades ?? []));
     this.tuning = applySpecies(mergeTuning(OP_TUNING[def.id], def.tuning, this.mods.tuning, upgradeTuning(this.upgrades)), def.race);
+    this.env = new Set([...(opts.mutators ?? []), ...(def.env ?? [])]);
+    this.stock = { ...(def.supplies ?? {}) };
+    if (def.supplies) {
+      const push = this.cues.push.bind(this.cues);
+      this.cues.push = (...cs) => {
+        for (const c of cs) if (c === 'stitch') this.spend('thread');
+        else if (c === 'inject') this.spend('tincture');
+        return push(...cs);
+      };
+    }
     // Candle-Only: the lens sees less in the gloom.
-    if (opts.mutators?.includes('candle')) this.tuning.lens.radius *= 0.7;
+    if (this.env.has('candle')) this.tuning.lens.radius *= 0.7;
     this.litanyVariant = opts.litanyVariant ?? 'stillness';
     this.maxVitals = Math.round(this.tuning.vitals.max * (def.constitution === 'frail' ? 0.8 : 1));
     this.vitalsCap = this.maxVitals;
@@ -761,7 +800,7 @@ export class Operation {
   invokeLitany(): boolean {
     this.log?.push(['l']);
     if (!this.canInvokeLitany()) return false;
-    if (this.opts.mutators?.includes('stroh')) {
+    if (this.env.has('stroh')) {
       this.lose('Inquisitor Stroh saw the sign. The operation is over.', 'stroh');
       return false;
     }
@@ -843,7 +882,7 @@ export class Operation {
 
   /** Candle-Only: the vignette closes to 45 % of the view. */
   get vignette(): number {
-    return this.opts.mutators?.includes('candle') ? 0.45 : 1;
+    return this.env.has('candle') ? 0.45 : 1;
   }
 
   /**
@@ -851,7 +890,7 @@ export class Operation {
    * offset by this and maps the pointer back, so aim tolerance is unchanged.
    */
   sway(): Vec {
-    if (!this.opts.mutators?.includes('cart')) return { x: 0, y: 0 };
+    if (!this.env.has('cart')) return { x: 0, y: 0 };
     const w = Math.PI * 2 * 0.3 * this.elapsed;
     return { x: Math.sin(w) * 12, y: Math.sin(w * 0.5) * 4 };
   }
@@ -935,14 +974,32 @@ export class Operation {
     this.setTool(tools[(i + Math.sign(dir) + tools.length) % tools.length]);
   }
 
-  /** Mouse wheel: turns whatever the tongs hold (bone fragments, tumblers); otherwise steps the tool. */
+  /** Mouse wheel: turns whatever the tongs hold (bone fragments, tumblers); with the tincture pressed, picks its colour (CON-0109); otherwise steps the tool. */
   wheel(dir: number): void {
     const c = this.captured;
     if (c?.alive) {
       this.log?.push(['w', dir]);
       if (this.as(c, () => c.onWheel(this, dir))) return;
     }
+    if (this.tinctureHeld && this.tinctures.length > 1) {
+      this.cycleTincture();
+      return;
+    }
     this.cycleTool(dir);
+  }
+
+  /** Use one of a limited supply (CON-0140); past empty, the work goes on at a cost. */
+  spend(kind: SupplyKind, n = 1): void {
+    const left = this.stock[kind];
+    if (left === undefined) return;
+    if (left >= n) {
+      this.stock[kind] = left - n;
+      if (left - n === 0) this.sayOnce(`last-${kind}`, `That was the last of the ${kind}, Doctor. We’ll have to make do.`, 'danger');
+      return;
+    }
+    this.stock[kind] = 0;
+    this.overdrawn[kind] = (this.overdrawn[kind] ?? 0) + n;
+    this.endPenalty += SUPPLY.penalty * n;
   }
 
   /** Pressing the tincture key again cycles the loaded colour. */
@@ -1094,6 +1151,11 @@ export class Operation {
     }
 
     this.brandHeld = tool === 'brand' && ptr.down;
+    this.tinctureHeld = tool === 'tincture' && ptr.down;
+    if (tool === 'salve' && ptr.down && this.stock.salve !== undefined && (this.salveUse += edt) >= 1) {
+      this.salveUse -= 1;
+      this.spend('salve');
+    }
     if (tool === 'brand') {
       if (ptr.down) {
         this.brandHeat += dt;
@@ -1573,7 +1635,13 @@ export class Operation {
 
   private beginPhase(def: PhaseDef): void {
     if (def.callout) this.say(...def.callout);
-    this.spawn(...def.spawn(this));
+    const made = def.spawn(this);
+    this.spawn(...made);
+    // The environment answers each phase's spawns (CON-0139): rain starts once, mud fouls the cuts.
+    for (const m of this.def.env ?? []) {
+      const extra = ENV_EFFECTS[m]?.(this, made, this.phase === 0);
+      if (extra?.length) this.spawn(...extra);
+    }
   }
 
   /** Before the patient is closed: an unclosed incision gets closed; things left inside cause wound-fever. */

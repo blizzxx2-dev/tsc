@@ -66,3 +66,20 @@ describe('bone-setting (CON-0237…0240)', () => {
     }
   });
 });
+
+describe('chelating tincture (CON-0108, CON-0109)', () => {
+  it('lead answers only the green tincture; the wheel with the tincture held picks the colour', async () => {
+    const { leadDeposit } = await import('../../../src/surgery/ailments/kilnrows');
+    const op = running(() => [leadDeposit(at(0, 0))], { tinctures: ['green'] });
+    const lead = op.entities[0];
+    lead.hidden = false;
+    const h = new Hand(op);
+    h.hold('tincture', lead.pos, 1.3);
+    expect(lead.alive).toBe(true);
+    expect(op.tinctureColor).toBe('red');
+    op.wheel(1);
+    expect(op.tinctureColor).toBe('green');
+    h.hold('tincture', lead.pos, 1.3);
+    expect(lead.alive).toBe(false);
+  });
+});

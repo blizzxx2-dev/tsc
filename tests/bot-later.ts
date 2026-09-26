@@ -19,6 +19,7 @@ import { OfficeMalison } from '../src/surgery/bosses/office';
 import { Agitation, Amputation, ClothFragment, DressedBud, HornBud, Molar, TinctureSite, Vessel, WoundFever, Worm } from '../src/surgery/ailments/kilnrows';
 import { Artery, BiteChannel, Contamination, Lockbox, Nodule, PetrifyFront, Retractor, StilledHeart, Tick } from '../src/surgery/ailments/vennmark';
 import { SplintWrap } from '../src/surgery/ailments/fracture';
+import { MUD, MudSmear } from '../src/surgery/ailments/environment';
 import { ClosedReduction, TRACTION } from '../src/surgery/disciplines';
 import { Bud, Cyst, HexBall, Infant, LEAD_DISH, Remnant, VocalFold } from '../src/surgery/ailments/hollownight';
 
@@ -297,6 +298,9 @@ function planAilments(op: Operation, k: BotKit, ents: Entity[], vis: Entity[]): 
   if (closed && op.def.tools.includes('lens')) return k.hold('lens', () => (closed.alive && closed.hidden ? closed.pos : null), 0.8);
   const slack = find(ClosedReduction, (r) => !r.roughlyAligned && r.traction < TRACTION.needed + 0.3);
   if (slack) return k.hold('tongs', () => (slack.alive ? slack.tractionPoint : null), 1.2 - slack.traction);
+  // Field mud (CON-0138): salve it clean before the thread.
+  const mud = find(MudSmear);
+  if (mud) return k.drag('salve', k.raster(mud.pos, MUD.r), 900);
   const wrap = find(SplintWrap);
   if (wrap) {
     const c = wrap.bandAt(wrap.bound.findIndex((b) => !b));
@@ -350,6 +354,8 @@ function planAilments(op: Operation, k: BotKit, ents: Entity[], vis: Entity[]): 
   if (cloth?.hidden && op.def.tools.includes('lens')) return k.hold('lens', () => (cloth.alive && cloth.hidden ? cloth.pos : null), 0.8);
   if (cloth) return k.drag('tongs', [cloth.pos, up(cloth.pos, -90)], 300);
   const site = find(TinctureSite);
+  // A site that answers one colour only (CON-0109): turn the tincture to it first.
+  if (site?.needs && op.tinctures.includes(site.needs)) while (op.tinctureColor !== site.needs) op.cycleTincture();
   if (site) return k.hold('tincture', () => (site.alive ? site.pos : null), site instanceof WoundFever ? 2.4 : site.holdTime + 0.25);
   const amp = find(Amputation);
   if (amp) return k.drag('lancet', [amp.a, amp.b, amp.a, amp.b, amp.a, amp.b, amp.a, amp.b], 500);

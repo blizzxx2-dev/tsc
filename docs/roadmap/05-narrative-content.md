@@ -414,13 +414,13 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0107 · Alpha · P1 · S · Author `op3-2` data file — callouts, thresholds, checklist pass
 
 ### op3-3 "Founder's Colic" (Ute Brandt, bell-founder) — lead poisoning
-- [ ] CON-0108 · Alpha · P0 · S · Design spec — lead deposits visible under lens as grey veins; chelating tincture (new tincture colour) dissolves them; drain the grey bile with leech-pipe
-- [ ] CON-0109 · Alpha · P0 · M · Implement LeadDeposit entity and tincture-variant selection — wheel on tincture picks colour; with tests
+- [x] CON-0108 · Alpha · P0 · S · Design spec — lead deposits visible under lens as grey veins; chelating tincture (new tincture colour) dissolves them; drain the grey bile with leech-pipe
+- [x] CON-0109 · Alpha · P0 · M · Implement LeadDeposit entity and tincture-variant selection — wheel on tincture picks colour; with tests
 - [x] CON-0110 · Alpha · P1 · S · Author `op3-3` data file — callouts, thresholds, checklist pass
 
 ### op3-4 "Kilnrows Blast" (three powder-mill hands) — triage handoff op
-- [ ] CON-0111 · Alpha · P0 · S · Design spec — three patients in sequence on one timer; switch between them with Tab; each has burns, shrapnel and one lacerated artery
-- [ ] CON-0112 · Alpha · P0 · M · Implement multi-patient operation support — per-patient vitals, shared timer, switch cost 1 s; with tests
+- [x] CON-0111 · Alpha · P0 · S · Design spec — three patients in sequence on one timer; switch between them with Tab; each has burns, shrapnel and one lacerated artery _(shipped as op3-4's patients in turn on one clock and GAM-0248's two cots on one field — both visible, so no switch key)_
+- [x] CON-0112 · Alpha · P0 · M · Implement multi-patient operation support — per-patient vitals, shared timer, switch cost 1 s; with tests _(GAM-0248: `second` patient, `vitals2`, shared clock)_
 - [x] CON-0113 · Alpha · P1 · S · Author `op3-4` data file — callouts, thresholds, checklist pass
 
 ### op3-5 "The Crow's Beak" (Berthold, carter) — amputation choice
@@ -435,7 +435,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### op3-7 "Lance the Buboes" (quarantine ward, Mother Agathe) — plague
 - [x] CON-0120 · Alpha · P0 · S · Design spec — 6 buboes; clean lance only; pus must not touch open cuts; plague-rot regrows faster than op1-4; candle-only light modifier
-- [ ] CON-0121 · Alpha · P0 · M · Implement candle-light environment modifier — vignette radius follows cursor; data flag
+- [x] CON-0121 · Alpha · P0 · M · Implement candle-light environment modifier — vignette radius follows cursor; data flag
 - [x] CON-0122 · Alpha · P1 · S · Author `op3-7` data file — callouts, thresholds, checklist pass
 
 ### op3-8 "The Flagellant's Back" (Brother Ansgar) — scourge wounds on a thrashing penitent
@@ -464,9 +464,9 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ## CON · Epic 7 — Chapter IV operations (Sext and None, field hospital)
 
 ### Field environment
-- [ ] CON-0138 · Alpha · P0 · S · Field-hospital modifiers spec — rain drips (random blood-pool spawns), moving-cart table (periodic field drift 20 px), mud contamination (salve required before thread)
-- [ ] CON-0139 · Alpha · P0 · M · Implement environment modifiers as op data flags — `env: ['rain','cart','mud']`; with deterministic seeded effects (tests)
-- [ ] CON-0140 · Alpha · P1 · S · Limited supplies rule — per-op consumable counts for thread/salve/tincture shown on HUD; running out is a soft fail state (scored, not lost)
+- [x] CON-0138 · Alpha · P0 · S · Field-hospital modifiers spec — rain drips (random blood-pool spawns), moving-cart table (periodic field drift 20 px), mud contamination (salve required before thread)
+- [x] CON-0139 · Alpha · P0 · M · Implement environment modifiers as op data flags — `env: ['rain','cart','mud']`; with deterministic seeded effects (tests)
+- [x] CON-0140 · Alpha · P1 · S · Limited supplies rule — per-op consumable counts for thread/salve/tincture shown on HUD; running out is a soft fail state (scored, not lost)
 
 ### op4-1 "Quarrel at the Gorget" (Ruprecht, crossbowman)
 - [x] CON-0141 · Alpha · P0 · S · Design spec — bolt beside the carotid; clamp artery with tongs before extraction or arterial spray adds −1 vitals/s until ligated
@@ -485,8 +485,8 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### op4-4 "The Swallowed Strongbox" (Gutram, giant mercenary)
 - [x] CON-0150 · Alpha · P0 · S · Design spec — 3 incision layers (thick hide), low organ layout needing lens, heavy retraction held with tongs, lock-pick minigame inside the stomach (rotate wheel to align 3 pins)
-- [ ] CON-0151 · Alpha · P0 · M · Implement layered Incision and Retractor-hold — tongs held reduces field obstruction; (tests)
-- [ ] CON-0152 · Alpha · P1 · M · Implement Lock minigame entity — 3 pins, wheel-driven, time penalty on slip
+- [x] CON-0151 · Alpha · P0 · M · Implement layered Incision and Retractor-hold — tongs held reduces field obstruction; (tests)
+- [x] CON-0152 · Alpha · P1 · M · Implement Lock minigame entity — 3 pins, wheel-driven, time penalty on slip
 - [x] CON-0153 · Alpha · P1 · S · Author `op4-4` data file — callouts, thresholds, checklist pass
 
 ### op4-5 "The Dead Man's Pulse" (Lord Eckbert von Salm) — forensic/save branch
@@ -502,7 +502,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ### op4-7 "The Hour of Sext" (Captain Mauer) — boss
 - [x] CON-0160 · Alpha · P0 · M · Sext design spec — torpor: tool response delay up to 0.6 s, fake calm vitals shown on HUD (true vitals under lens), stone crust over organs cracked with lancet taps; stimulant tincture removes delay for 10 s
 - [x] CON-0161 · Alpha · P0 · L · Implement SextMalison — InputTorpor effect, FalseVitals HUD override, StoneCrust entity (tests incl. input-delay determinism)
-- [ ] CON-0162 · Alpha · P1 · S · Accessibility check — torpor delay capped at 0.3 s in Assist mode
+- [x] CON-0162 · Alpha · P1 · S · Accessibility check — torpor delay capped at 0.3 s in Assist mode
 - [x] CON-0163 · Alpha · P1 · S · Author `op4-7` data file — callouts, boss-fail tips, thresholds, `mauerFate` write, checklist pass
 
 ### op4-8 "The Stone Bride" (Hanne, camp-follower)
@@ -559,7 +559,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0195 · Alpha · P0 · M · Compline design spec — mixes all hours; mutes audio; steals the Litany (a star gesture now slows the player's own time); vitals drift toward a "peaceful" 0; break 5 silence nodes to recover the Litany; final phase needs a two-hand combo (hold tongs on core, brand with keyboard-bound second action)
 - [x] CON-0196 · Alpha · P0 · L · Implement ComplineMalison phases 1–2 — mixed-hour attacks, audio mute, Litany inversion; with tests
 - [x] CON-0197 · Alpha · P0 · L · Implement ComplineMalison phases 3–4 — silence nodes, Litany recovery, two-hand combo finale; with tests
-- [ ] CON-0198 · Alpha · P0 · S · Two-hand combo accessibility — toggle mode (tap to hold) and controller mapping verified
+- [x] CON-0198 · Alpha · P0 · S · Two-hand combo accessibility — toggle mode (tap to hold) and controller mapping verified
 - [x] CON-0199 · Alpha · P1 · S · Host swap — if Stroh was lost, host is the Burgomaster (patient string and barks only)
 - [x] CON-0200 · Alpha · P1 · S · Author `op5-8` data file — callouts, boss-fail tips, thresholds, checklist pass; phase checkpoints after phase 2 and 3
 
