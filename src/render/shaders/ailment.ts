@@ -53,6 +53,7 @@ out vec4 o;
 
 const float PI = 3.14159265;
 vec3 LL; // lamp direction in the art's local frame
+vec2 VV; // oblique eye offset in the art's local frame: how far a point shifts per px of depth
 float hash(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float noise(vec2 p) { vec2 i = floor(p), f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
   return mix(mix(hash(i), hash(i + vec2(1, 0)), u.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), u.x), u.y); }
@@ -678,33 +679,69 @@ vec4 woundStrip(vec2 q) {
   float hw = W * op * prof + rag * prof;
   float ay = abs(q.y);
   float inX = rsmooth(L * 0.5 + 0.5, L * 0.5 - 0.5, abs(q.x));
-  // Gap: deep, wet oxblood, with blood welling on the heartbeat.
+  // Gap: a real trench under the cut. Each pixel casts a ray down past the lips along the oblique eye;
+  // it strikes a funnel wall (skin, dermis, fat, muscle strata) or the muscle floor, darkening with
+  // depth, shadowed by the lamp-side lip, with blood pooling from the bottom on the heartbeat.
   float gap = fill(ay - hw) * inX;
-  float depth = clamp(1.0 - ay / max(hw, 0.5), 0.0, 1.0);
-  vec3 wound = mix(vec3(0.55, 0.06, 0.06), vec3(0.18, 0.0, 0.02), depth);
-  // Muscle fibres run across the floor of the cut.
-  wound *= 0.85 + 0.2 * sin((along * 0.6 + q.y * 1.4) * 1.3);
-  float well = u_b.x * (0.6 + 0.4 * u_b.y);
-  wound = mix(wound, vec3(0.62, 0.02, 0.04), well * depth * 0.6);
-  vec3 wn = normalize(vec3(0.0, -q.y / max(hw, 0.5) * 0.5, 1.0));
-  vec3 wc = lit(wound, wn, 0.9 + well, 60.0);
-  // Ink rim: the cut's edge reads as a bold dark line, Trauma Center style.
-  wc *= mix(0.3, 1.0, smoothstep(0.0, 1.4, hw - ay));
-  // Fat layer: a thin yellow band inside the lips (not on claw rakes, which tear through it raggedly).
-  float fat = fill(ay - hw - 1.4) * (1.0 - gap) * inX * step(0.05, op);
+  float D = hw * 1.4 + 2.0;
+  float k = 0.8;
+  float fw = hw * k / D;
+  float zH = D, side = 0.0;
+  for (int i = 0; i < 2; i++) {
+    float sd = i == 0 ? -1.0 : 1.0;
+    float den = VV.y + sd * fw;
+    float z = abs(den) > 1e-4 ? (sd * hw - q.y) / den : 1e9;
+    if (z > 0.0 && z < zH) { zH = z; side = sd; }
+  }
+  float well = clamp(u_b.x * (0.6 + 0.4 * u_b.y), 0.0, 1.0);
+  float zB = D * (1.0 - 0.55 * well);
+  float f = zH / D;
+  vec2 hp = vec2(along + VV.x * zH, q.y + VV.y * zH);
+  float jag = claw * (noise(vec2(hp.x * 0.3, side * 5.0 + u_seed)) - 0.5) * 0.2;
+  float fs = f + jag + (noise(vec2(hp.x * 0.15, side + u_seed)) - 0.5) * 0.06;
+  vec3 wall = vec3(0.62, 0.3, 0.26);
+  wall = mix(wall, vec3(0.88, 0.62, 0.55), smoothstep(0.05, 0.08, fs));
+  float lob = 0.8 + 0.3 * noise(hp * vec2(0.45, 0.9) + 3.0);
+  wall = mix(wall, vec3(0.95, 0.8, 0.45) * lob, smoothstep(0.14, 0.17, fs));
+  float fib = 0.85 + 0.2 * noise(vec2(hp.x * 0.5, hp.y * 2.5 + u_seed));
+  wall = mix(wall, vec3(0.72, 0.12, 0.1) * fib, smoothstep(0.27, 0.31, fs));
+  vec3 floorC = vec3(0.5, 0.05, 0.06) * (0.8 + 0.25 * noise(vec2(hp.x * 0.4, hp.y * 2.0) + 7.0));
+  vec3 tn = side == 0.0 ? vec3(0.0, 0.0, 1.0) : normalize(vec3(0.0, -side * 0.8, 1.0));
+  vec3 tb = side == 0.0 ? floorC : wall;
+  float td = max(dot(tn, LL), 0.0);
+  vec3 th = normalize(LL + vec3(0.0, 0.0, 1.0));
+  vec3 tc = tb * (0.55 + 0.6 * td) + vec3(1.0, 0.9, 0.85) * pow(max(dot(tn, th), 0.0), 50.0) * 0.6;
+  // Lamp shadow: follow the point back up toward the lamp; if the ray clears the lips it is lit.
+  float yS = hp.y + LL.y / max(LL.z, 0.3) * zH * 0.6;
+  float lipS = smoothstep(hw - 1.5, hw + 1.5, abs(yS));
+  tc *= 1.0 - 0.4 * lipS * smoothstep(0.1, 0.4, f);
+  // Depth falloff: the bottom of the hole sinks to near black.
+  tc *= mix(1.1, 0.4, smoothstep(0.15, 1.0, f));
+  // Welling blood fills the trench to a glossy, dark surface.
+  if (zH > zB) {
+    vec2 bp = vec2(along + VV.x * zB, q.y + VV.y * zB);
+    float men = smoothstep(hw * (1.0 - k * zB / D) - 2.0, hw * (1.0 - k * zB / D), abs(bp.y));
+    vec3 bn = normalize(vec3(0.0, sign(bp.y) * men * 0.8, 1.0));
+    vec3 bc = lit(vec3(0.3, 0.01, 0.03) * mix(1.0, 0.55, zB / D), bn, 1.4, 90.0);
+    tc = bc * (1.0 - 0.4 * lipS);
+  }
+  vec3 wc = tc;
+  // Fat layer: a thin yellow band at the cut's lip (the strata continue down the walls).
+  float fat = fill(ay - hw - 0.8) * (1.0 - gap) * inX * step(0.05, op) * (1.0 - claw);
   vec3 fc = lit(vec3(0.9, 0.76, 0.42), vec3(0.0, sign(q.y) * 0.5, 0.87), 0.6, 30.0);
   // Skin lips: raised, pinched and lit on the lamp side.
   float lipW = 3.5 + W * 0.3;
-  float lip = fill(ay - hw - 1.4 - lipW) * (1.0 - fill(ay - hw - 1.4)) * inX;
-  float lt = clamp((ay - hw - 1.4) / lipW, 0.0, 1.0);
+  float lip = fill(ay - hw - 0.8 - lipW) * (1.0 - fill(ay - hw - 0.8)) * inX;
+  float lt = clamp((ay - hw - 0.8) / lipW, 0.0, 1.0);
   vec3 ln = normalize(vec3(0.0, sign(q.y) * (1.0 - 2.0 * lt) * 0.8, 1.0));
   vec3 lc = lit(vec3(0.62, 0.26, 0.22), ln, 0.18, 25.0);
   vec4 acc = paint(lc, lip * (0.2 + 0.4 * op) * (1.0 - lt * 0.6));
   // Outer ink line where the pinched lip meets flat skin.
-  float outer = abs(ay - hw - 1.4 - lipW) - 0.6;
+  float outer = abs(ay - hw - 0.8 - lipW) - 0.6;
   acc = over(paint(vec3(0.16, 0.03, 0.03), fill(outer) * inX * step(0.05, op) * 0.55), acc);
   acc = over(paint(fc, fat * 0.75), acc);
   acc = over(paint(wc, gap), acc);
+  acc = over(paint(vec3(0.1, 0.01, 0.02), fill(abs(ay - hw) - 0.7) * inX * step(0.05, op) * 0.85), acc);
   // Blood running over the lip at the lowest point.
   return acc;
 }
@@ -1037,6 +1074,9 @@ void main() {
   vec2 q = vec2(px.x * c + px.y * s, -px.x * s + px.y * c);
   vec3 Ls = normalize(vec3(-0.55, -0.7, 0.62));
   LL = normalize(vec3(Ls.x * c + Ls.y * s, -Ls.x * s + Ls.y * c, Ls.z));
+  // The eye sits a little below the table's centre, so a hole shows its far (upper) wall.
+  vec2 Vs = vec2(0.0, -0.3);
+  VV = vec2(Vs.x * c + Vs.y * s, -Vs.x * s + Vs.y * c);
   vec4 r;
   if (u_mode == 0) r = missile(q);
   else if (u_mode == 1) r = leadShot(q);

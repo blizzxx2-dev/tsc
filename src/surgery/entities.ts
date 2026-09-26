@@ -267,14 +267,14 @@ export class Incision extends Entity {
       g.glow(head.x, head.y, 22, hex('#ffe0a0', 0.35 * a));
       g.circle(head.x, head.y, 6 + Math.sin(op.elapsed * 6) * 2, hex('#ffebbe', 0.9 * a));
       // A layer already opened shows its cut edge under the next guide.
-      if (this.depth > 0) woundArt(g, this.points, 3.5, { seed: this.id, alpha: woundAlpha() });
+      if (this.depth > 0) woundArt(g, this.points, 5, { seed: this.id, alpha: woundAlpha() });
     } else {
       // The flesh shader carves the gash (surface layer); the cut-edge art paints skin lips, fat and the
       // bleeding edge over it, opening over 6 frames once the last layer is through.
       const open = this.openedAt < 0 ? 1 : Math.min(1, (op.elapsed - this.openedAt) / 0.5);
       // Deep-organ operations hold the incision wide with pinned skin flaps (ART-0189).
       if (op.def.organ !== 'flesh' && op.def.organ !== 'skin' && op.def.organ !== 'muscle' && this.state === 'open') surgicalFlapArt(g, this.points, open, speciesOf(op.def.race).look.skin);
-      woundArt(g, this.points, 5, { open, bleed: this.state === 'open' ? 0.6 : 0.25, beat: beatPulse(op), seed: this.id, alpha: woundAlpha() });
+      woundArt(g, this.points, 8, { open, bleed: this.state === 'open' ? 0.6 : 0.25, beat: beatPulse(op), seed: this.id, alpha: woundAlpha() });
       g.polyline(this.points, 2, hex('#ff9090', 0.15));
       if (this.state === 'closing') g.dashed(this.points, 2, hex('#ffebbe', 0.35 + 0.2 * Math.sin(op.elapsed * 4)), 6, 10, op.elapsed * 10);
       if (this.stitch) this.stitch.draw(g, op);
@@ -762,7 +762,7 @@ export class Laceration extends Entity {
     // Carved by the flesh shader; the cut-edge art paints its lips and bleeding edge in three widths,
     // clean (blade) or ragged (claw), welling on the heartbeat until it is stitched.
     const closed = this.stitch.count >= this.stitch.needed;
-    const width = this.small ? 3 : this.length < 50 ? 4.5 : 6.5;
+    const width = this.small ? 4.5 : this.length < 50 ? 7 : 10;
     woundArt(g, this.edge(), width, { claw: this.source === 'claw', bleed: closed ? 0 : Math.min(1, this.bleed), beat: beatPulse(op), seed: this.id, alpha: woundAlpha() });
     g.polyline(this.edge(), 1.5, hex(presentation.gore === 2 ? '#000000' : '#ff9090', 0.3));
     if (this.pusT > 0) g.polyline(this.edge(), 5, hex('#d8c040', Math.min(0.6, this.pusT / op.tuning.laceration.pusRotTime)));
