@@ -688,6 +688,8 @@ vec4 woundStrip(vec2 q) {
   wound = mix(wound, vec3(0.62, 0.02, 0.04), well * depth * 0.6);
   vec3 wn = normalize(vec3(0.0, -q.y / max(hw, 0.5) * 0.5, 1.0));
   vec3 wc = lit(wound, wn, 0.9 + well, 60.0);
+  // Ink rim: the cut's edge reads as a bold dark line, Trauma Center style.
+  wc *= mix(0.3, 1.0, smoothstep(0.0, 1.4, hw - ay));
   // Fat layer: a thin yellow band inside the lips (not on claw rakes, which tear through it raggedly).
   float fat = fill(ay - hw - 1.4) * (1.0 - gap) * inX * step(0.05, op);
   vec3 fc = lit(vec3(0.9, 0.76, 0.42), vec3(0.0, sign(q.y) * 0.5, 0.87), 0.6, 30.0);
@@ -698,6 +700,9 @@ vec4 woundStrip(vec2 q) {
   vec3 ln = normalize(vec3(0.0, sign(q.y) * (1.0 - 2.0 * lt) * 0.8, 1.0));
   vec3 lc = lit(vec3(0.62, 0.26, 0.22), ln, 0.18, 25.0);
   vec4 acc = paint(lc, lip * (0.2 + 0.4 * op) * (1.0 - lt * 0.6));
+  // Outer ink line where the pinched lip meets flat skin.
+  float outer = abs(ay - hw - 1.4 - lipW) - 0.6;
+  acc = over(paint(vec3(0.16, 0.03, 0.03), fill(outer) * inX * step(0.05, op) * 0.55), acc);
   acc = over(paint(fc, fat * 0.75), acc);
   acc = over(paint(wc, gap), acc);
   // Blood running over the lip at the lowest point.
@@ -711,23 +716,43 @@ vec4 gutStitch(vec2 q) {
   float slack = (1.0 - step(0.5, tight)) * 2.5;
   float y = q.y;
   float bow = slack * (1.0 - (y / S) * (y / S));
-  float d = abs(q.x - bow) - 1.1;
-  d = max(d, abs(y) - S);
-  vec3 gut = vec3(0.78, 0.66, 0.42) * (0.85 + 0.2 * sin(y * 2.2));
-  vec3 c = lit(gut, normalize(vec3((q.x - bow) / 1.1 * 0.8, 0.0, 0.6)), 0.7, 30.0);
-  vec4 acc = paint(c, fill(d));
-  // Puncture holes where the needle went in and out.
+  // Pucker: the drawn thread pinches the skin into a shadowed dimple around each bite.
+  vec4 acc = vec4(0.0);
+  float R = 1.35;
   for (int i = 0; i < 2; i++) {
     float s = i == 0 ? -1.0 : 1.0;
-    float hole = length(q - vec2(0.0, s * S)) - 1.8;
-    acc = over(acc, paint(vec3(0.35, 0.03, 0.04), fill(hole)));
+    vec2 hq = q - vec2(0.0, s * S);
+    float dimple = rsmooth(5.5, 0.0, length(hq * vec2(1.0, 0.7))) * (0.25 + 0.3 * tight);
+    acc = over(paint(vec3(0.1, 0.02, 0.02), dimple * 0.5), acc);
+  }
+  // The thread: a round, twisted strand lit as a tube with an ink outline.
+  float dx = q.x - bow;
+  float d = abs(dx) - R;
+  d = max(d, abs(y) - S);
+  float u = clamp(dx / R, -1.0, 1.0);
+  vec3 n = normalize(vec3(u * 0.9, 0.0, sqrt(max(0.0, 1.0 - u * u)) + 0.15));
+  float twist = 0.5 + 0.5 * sin(y * 2.4 + u * 2.2);
+  vec3 gut = vec3(0.86, 0.74, 0.5) * (0.72 + 0.35 * twist);
+  vec3 c = lit(gut, n, 0.85, 40.0);
+  acc = over(paint(vec3(0.12, 0.06, 0.03), fill(d - 0.7)), acc);
+  acc = over(paint(c, fill(d)), acc);
+  // Puncture holes and a bead of blood welling where the needle went in.
+  for (int i = 0; i < 2; i++) {
+    float s = i == 0 ? -1.0 : 1.0;
+    vec2 hq = q - vec2(0.0, s * S);
+    float bead = length(hq - vec2(1.2, 0.0)) - (i == 0 ? 2.2 : 1.6);
+    vec3 bc = lit(vec3(0.42, 0.02, 0.03), domeN(hq - vec2(1.2, 0.0), 2.2), 1.0, 70.0);
+    acc = over(paint(vec3(0.08, 0.0, 0.01), fill(bead - 0.6)), acc);
+    acc = over(paint(bc, fill(bead)), acc);
   }
   // The knot: a lumpy double throw with two short tails.
   vec2 kq = q - vec2(0.0, S + 0.5);
   float knot = length(kq * vec2(1.0, 1.3)) - 2.6;
-  float tails = min(sdSeg(kq, vec2(0.0), vec2(4.5, 3.5)), sdSeg(kq, vec2(0.0), vec2(-4.0, 4.0))) - 0.6;
-  acc = over(paint(lit(gut * 0.9, domeN(kq, 2.6), 0.8, 30.0), fill(min(knot, tails))), acc);
-  float sh = rsmooth(2.5, 0.0, abs(q.x - bow - 1.2)) * step(abs(y), S) * 0.3;
+  float tails = min(sdSeg(kq, vec2(0.0), vec2(4.5, 3.5)), sdSeg(kq, vec2(0.0), vec2(-4.0, 4.0))) - 0.7;
+  float kd = min(knot, tails);
+  acc = over(paint(vec3(0.12, 0.06, 0.03), fill(kd - 0.7)), acc);
+  acc = over(paint(lit(gut * 0.95, domeN(kq, 2.6), 0.85, 40.0), fill(kd)), acc);
+  float sh = rsmooth(2.5, 0.0, abs(dx - 1.6)) * step(abs(y), S) * 0.3;
   return over(acc, vec4(0.0, 0.0, 0.0, sh));
 }
 

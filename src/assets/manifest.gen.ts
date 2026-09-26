@@ -11,7 +11,10 @@ export type AssetId =
   | 'fonts/eb-garamond-latin-ext-500-italic'
   | 'fonts/eb-garamond-latin-ext-500-normal'
   | 'sprites/fx'
+  | 'textures/hide-detail'
+  | 'textures/hide-mottle'
   | 'textures/linen-detail'
+  | 'textures/rot-mottle'
   | 'textures/skin-detail'
   | 'textures/skin-mottle'
   | 'textures/suture-rope'
@@ -141,12 +144,36 @@ export const MANIFEST: Record<AssetId, AssetEntry> = {
     ],
     "status": "final"
   },
+  "textures/hide-detail": {
+    "type": "image",
+    "url": "assets/textures_hide-detail.f424a2e0d2.jpg",
+    "bytes": 200055,
+    "bundle": "ops-common",
+    "hash": "f424a2e0d2",
+    "status": "final"
+  },
+  "textures/hide-mottle": {
+    "type": "image",
+    "url": "assets/textures_hide-mottle.378e063c10.jpg",
+    "bytes": 94657,
+    "bundle": "ops-common",
+    "hash": "378e063c10",
+    "status": "final"
+  },
   "textures/linen-detail": {
     "type": "image",
     "url": "assets/textures_linen-detail.babec6e2f2.jpg",
     "bytes": 49469,
     "bundle": "ops-common",
     "hash": "babec6e2f2",
+    "status": "final"
+  },
+  "textures/rot-mottle": {
+    "type": "image",
+    "url": "assets/textures_rot-mottle.c961c59ee1.jpg",
+    "bytes": 96175,
+    "bundle": "ops-common",
+    "hash": "c961c59ee1",
     "status": "final"
   },
   "textures/skin-detail": {
@@ -198,7 +225,10 @@ export const BUNDLES: Record<BundleId, readonly AssetId[]> = {
   "story-common": [],
   "ops-common": [
     "sprites/fx",
+    "textures/hide-detail",
+    "textures/hide-mottle",
     "textures/linen-detail",
+    "textures/rot-mottle",
     "textures/skin-detail",
     "textures/skin-mottle",
     "textures/suture-rope",

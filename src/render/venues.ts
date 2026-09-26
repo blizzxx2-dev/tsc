@@ -46,7 +46,7 @@ export function venueLights(venue: Venue, key: { x: number; y: number }, f: { cx
     ];
   }
   return [
-    { x: key.x, y: key.y, h: 1.1, i: 1.1, col: [0.95, 0.9, 0.82] },
+    { x: key.x, y: key.y, h: 1.1, i: 1.15, col: [0.98, 0.94, 0.86] },
     { x: f.cx - f.rx - 60, y: f.cy + 120, h: 0.35, i: 0.45 * candleFlicker(t, 0, flicker), col: [1.0, 0.6, 0.3] },
     { x: f.cx + f.rx + 60, y: f.cy - 60, h: 0.35, i: 0.4 * candleFlicker(t, 2, flicker), col: [1.0, 0.62, 0.32] },
   ];

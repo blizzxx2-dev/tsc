@@ -7,6 +7,8 @@ wounds, curse) — these add micro-surface: pores, weave, grain.
 |---|---|---|
 | `skin-detail.jpg` | R,G normal xy (×2.5 gain), B roughness | Julio Sillet, Material Pack Skin 01 — Skin 03 (CC-BY) — https://juliosillet.gumroad.com/l/IbCT |
 | `skin-mottle.jpg` | colour normalised to its mean (0.5 grey = mean tone) | same, Skin 03 base colour |
+| `hide-detail.jpg`, `hide-mottle.jpg` | as skin-detail / skin-mottle (orc, hornfolk, giant) | same pack — Skin 09 (CC-BY) |
+| `rot-mottle.jpg` | as skin-mottle (the forensic corpse) | same pack — Skin 05 (CC-BY) |
 | `linen-detail.jpg` | R,G normal xy, B weave shading | Poly Haven rough_linen — https://polyhaven.com/a/rough_linen |
 | `wood-table.jpg` | colour | Poly Haven dark_wood — https://polyhaven.com/a/dark_wood |
 | `suture-rope.jpg` | colour | ambientCG Rope001 — https://ambientcg.com/view?id=Rope001 |

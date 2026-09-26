@@ -804,7 +804,7 @@ export class OperationScene implements Scene {
       venue: VENUE_ID[venue],
       fiber: op.def.fiber,
       fever: fever(op),
-      maps: this.surfaceMaps(g),
+      maps: this.surfaceMaps(g, op.def.race ?? 'human', venue),
       warp,
       light: vc(light),
       corrupt: this.fleshCurse,
@@ -1332,11 +1332,13 @@ export class OperationScene implements Scene {
 
   /** Real-surface detail maps (CC0 scans): loaded once, tiled; the flesh pass waits until they are ready. */
   private maps: SurfaceMaps | null = null;
-  private surfaceMaps(g: Gfx): SurfaceMaps {
+  private surfaceMaps(g: Gfx, race: string, venue: string): SurfaceMaps {
     const url = (id: AssetId) => import.meta.env.BASE_URL + MANIFEST[id].url;
+    // Orc, hornfolk and giant patients get a thick scarred hide (Skin 09); a corpse, rot marbling (Skin 05).
+    const hide = race === 'orc' || race === 'hornfolk' || race === 'giant';
     return (this.maps ??= {
-      skin: g.image(url('textures/skin-detail'), { repeat: true }),
-      tone: g.image(url('textures/skin-mottle'), { repeat: true }),
+      skin: g.image(url(hide ? 'textures/hide-detail' : 'textures/skin-detail'), { repeat: true }),
+      tone: g.image(url(venue === 'forensic' ? 'textures/rot-mottle' : hide ? 'textures/hide-mottle' : 'textures/skin-mottle'), { repeat: true }),
       linen: g.image(url('textures/linen-detail'), { repeat: true }),
       wood: g.image(url('textures/wood-table'), { repeat: true }),
     });

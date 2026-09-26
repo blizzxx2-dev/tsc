@@ -212,7 +212,8 @@ void main() {
   // ---- flesh
   vec2 uv = q * 4.0;
   float n = fbm(uv + vec2(0.0, u_time * 0.02));
-  vec3 col = mix(u_deep, u_base, smoothstep(0.2, 0.85, n));
+  // A calm, painted base: the deep tone only in soft broad pools, never busy blotches.
+  vec3 col = mix(u_deep, u_base, 0.25 + 0.75 * smoothstep(0.15, 0.9, n));
   float c = 0.0;
   if (u_kind == 2) {
     // Lung: alveolar lobules that inflate with each breath; anthracotic speckle.
@@ -288,13 +289,13 @@ void main() {
     col = mix(col, vec3(0.35, 0.02, 0.1), vessel * 0.7);
     col *= 0.9 + 0.1 * u_pulse;
   }
-  else { c = cells(uv * 2.2); col *= 0.92 + 0.08 * smoothstep(0.0, 0.18, c); }
+  else { c = cells(uv * 2.2); col *= 0.96 + 0.04 * smoothstep(0.0, 0.18, c); }
 
   // Veins: ridged noise.
   float v = 1.0 - abs(fbm(uv * 0.7 + 10.0) * 2.0 - 1.0);
   v = pow(v, 14.0);
   // Skin hides its veins (ENG-0093): only a faint tracery shows through.
-  col = mix(col, u_vein, v * u_veinAmt * (u_kind == 8 ? 0.3 : 1.0));
+  col = mix(col, u_vein, v * u_veinAmt * (u_kind == 8 ? 0.3 : 0.55));
 
   // Wet specular from a smooth, low-frequency height field (finite differences, not dFdx,
   // so the highlight rolls over broad swells instead of sparkling on every noise texel).
@@ -319,15 +320,15 @@ void main() {
   if (u_maps > 0.5) {
     skinMap = texture(u_skinMap, px / 110.0).rgb;
     skinK = (u_kind == 0 || u_kind == 8) ? 1.0 : 0.25;
-    grad += (skinMap.rg * 2.0 - 1.0) * 4.0 * skinK;
+    grad += (skinMap.rg * 2.0 - 1.0) * 2.5 * skinK;
     // Real skin-tone mottling (freckles, flush, capillary blotches) over the field's own colour.
     vec3 tone = texture(u_toneMap, px / 180.0).rgb * 2.0;
-    col *= mix(vec3(1.0), tone * tone, 0.8 * skinK);
+    col *= mix(vec3(1.0), tone, 0.35 * skinK);
   }
   vec3 nrm = normalize(vec3(-grad * 0.35, 1.0));
   vec3 L = normalize(vec3((u_light - px) / 700.0, 0.9));
   // Wetness: glistening near wounds and blood, matte where the skin has dried.
-  float wet = clamp(0.35 + 0.35 * fbm(q * 1.3 + 7.0) + sf.r * 0.8 + sf.g * 0.6 + sf.a * 0.3, 0.0, 1.0);
+  float wet = clamp(0.5 + 0.25 * fbm(q * 1.3 + 7.0) + sf.r * 1.2 + sf.g * 0.8 + sf.a * 0.4, 0.0, 1.0);
   // Specular anti-aliasing (Toksvig-style): widen the lobe where the normal varies within a pixel.
   // fwidth is evaluated per 2x2 quad; keep its influence gentle so it never reads as blocks.
 #if SPEC_AA
@@ -366,17 +367,19 @@ void main() {
   vec3 sss = vec3(0.0);
 #endif
   float fres = pow(1.0 - clamp(nrm.z, 0.0, 1.0), 3.0);
-  col = col * (vec3(0.28, 0.27, 0.3) + 0.52 * lit) + sss + specCol * (0.08 + 0.22 * wet) + vec3(1.0, 0.75, 0.7) * fres * 0.12;
+  col = col * (vec3(0.2, 0.19, 0.21) + 0.78 * lit) + sss + specCol * (0.1 + 0.45 * wet) + vec3(1.0, 0.75, 0.7) * fres * 0.1;
 
   // Wound interior: deep, wet, glistening maroon with a dark rim.
-  vec3 woundCol = mix(u_blood, u_bloodDeep, smoothstep(0.3, 1.0, sf.r));
+  vec3 woundCol = mix(u_blood, u_bloodDeep * 0.55, smoothstep(0.2, 0.9, sf.r));
+  // Depth: the deeper the cut, the less lamp reaches its floor (a cavity, not a painted line).
+  woundCol *= mix(1.0, 0.35, smoothstep(0.35, 1.0, sf.r));
   float wspec = pow(max(dot(reflect(-L, nrm), vec3(0, 0, 1)), 0.0), 50.0);
   woundCol = mix(woundCol, vec3(0.3, 0.17, 0.08) * mix(1.0, 0.45, smoothstep(0.3, 1.0, sf.r)), step(0.5, u_gore));
   woundCol = mix(woundCol, vec3(0.04, 0.035, 0.035), step(1.5, u_gore));
-  woundCol += vec3(1.0, 0.8, 0.8) * wspec * 0.8 * (1.0 - step(1.5, u_gore));
+  woundCol += vec3(1.0, 0.85, 0.85) * wspec * 1.3 * (1.0 - step(1.5, u_gore));
   float rim = smoothstep(0.02, 0.15, sf.r) * (1.0 - smoothstep(0.15, 0.45, sf.r));
   col = mix(col, woundCol, cut);
-  col *= 1.0 - rim * 0.35;
+  col *= 1.0 - rim * 0.55;
   // The cut's lips show the tissue in section, so the depth of the hide reads: a line of skin,
   // the pale dermis (a hair on an elf, a thick leathery band on an orc), yellow fat, then the wound.
   if (u_gore < 1.5 && sf.r > 0.02) {
@@ -395,7 +398,14 @@ void main() {
     col = mix(col, fatCol + vec3(0.1) * wspec, sFat * 0.75 * goreK);
   }
   // Blood staining and bruising.
-  col = mix(col, vec3(0.26, 0.015, 0.04) * (0.7 + 0.5 * diff), clamp(sf.g * 1.3, 0.0, 1.0) * 0.85);
+  // Thin films dry to a brown crust at the edge; thick pools stay dark, wet and glossy.
+  float bl = clamp(sf.g * 1.3, 0.0, 1.0);
+  float thick = smoothstep(0.35, 0.8, sf.g);
+  vec3 bloodCol = mix(vec3(0.3, 0.07, 0.04), vec3(0.24, 0.01, 0.035), thick) * (0.7 + 0.5 * diff);
+  bloodCol += vec3(1.0, 0.8, 0.8) * spec * thick * 0.9;
+  float rimB = smoothstep(0.08, 0.2, sf.g) * (1.0 - smoothstep(0.2, 0.4, sf.g));
+  bloodCol *= 1.0 - rimB * 0.45;
+  col = mix(col, bloodCol, bl * 0.88);
   // Scorch: blackened, cracked eschar with ember-red fissures.
   float crack = rsmooth(0.02, 0.0, cells(uv * 5.0));
   vec3 charCol = mix(vec3(0.06, 0.04, 0.035), vec3(0.5, 0.12, 0.03), crack * 0.6) * (0.6 + 0.6 * diff);
