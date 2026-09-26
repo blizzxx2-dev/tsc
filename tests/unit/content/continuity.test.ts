@@ -6,6 +6,9 @@ import { CHAPTER_2, STORY_2_2, STORY_2_3 } from '../../../src/content/chapter2';
 import { CODEX } from '../../../src/content/codex';
 import { OP_2_1, OP_2_2, OP_2_3, OP_2_4 } from '../../../src/content/ops/ch2';
 import { FULL_CAMPAIGN } from '../../../src/content/campaign';
+import * as C3 from '../../../src/content/chapter3';
+import * as C4 from '../../../src/content/chapter4';
+import * as C5 from '../../../src/content/chapter5';
 import { lineShown } from '../../../src/content/conditions';
 import type { FlagReader } from '../../../src/content/flags';
 
@@ -61,5 +64,26 @@ describe('demo continuity (NAR-0175)', () => {
       for (let i = 1; i < counts.length; i++) expect(counts[i], `fordSaved ${fordSaved}: ${counts.join(' ')}`).toBeLessThanOrEqual(counts[i - 1]);
       expect(counts[counts.length - 1]).toBe(fordSaved >= 7 ? 35 : 32);
     }
+  });
+
+  it('every Ch3–5 scene defined is wired into the campaign — no orphans (NAR-0177)', () => {
+    const wired = new Set<string>();
+    const seen = new WeakSet<object>();
+    const walk = (x: unknown): void => {
+      if (!x || typeof x !== 'object' || seen.has(x)) return;
+      seen.add(x);
+      const o = x as Record<string, unknown>;
+      if (typeof o.id === 'string' && Array.isArray(o.lines)) wired.add(o.id);
+      for (const v of Object.values(o)) walk(v);
+    };
+    walk(FULL_CAMPAIGN);
+    const defined = [C3, C4, C5]
+      .flatMap((m) => Object.values(m))
+      .filter(
+        (v): v is { id: string; lines: unknown[] } =>
+          !!v && typeof v === 'object' && typeof (v as { id?: unknown }).id === 'string' && Array.isArray((v as { lines?: unknown }).lines),
+      );
+    expect(defined.length).toBeGreaterThan(30);
+    expect(defined.filter((s) => !wired.has(s.id)).map((s) => s.id)).toEqual([]);
   });
 });

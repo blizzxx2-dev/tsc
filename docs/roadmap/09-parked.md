@@ -197,8 +197,9 @@ Current priorities: [docs/ROADMAP.md](../ROADMAP.md#priorities) (tiers in `prior
 - [ ] QAT-0166 · Release · P0 · M · Release-candidate regression — full test plan on every matrix OS; results in `docs/qa/signoff/1.0-rc.md` with build SHA
 - [ ] QAT-0167 · Release · P0 · S · Day-one patch verification — patch build passes the RC regression subset and upgrades a 1.0 save and a demo carry-over save without loss
 
-## Human playtests, surveys & telemetry (41)
+## Human playtests, surveys & telemetry (42)
 
+- [ ] NAR-0192 · Beta · P1 · M · Ch3–5 revision from playtest notes — the part of NAR-0177 that needs players: fold table-read and playtest findings into the Ch3–5 script; re-run the NAR-0178 budgets and humour audit after
 - [ ] ART-0265 · Demo · P0 · S · Silhouette test: all 8 icons distinguishable in pure black at 48 px (5-tester hallway test, ≥ 95% correct)
 - [ ] BOS-0025 · Demo · P1 · S · Playtest gate — 5 new players: ≥ 4 clear Matins within 3 attempts on Surgeon
 - [ ] BOS-0045 · Demo · P1 · S · Playtest gate — ≥ 4/5 players clear Lauds in ≤ 4 attempts on Surgeon; median attempt time logged
