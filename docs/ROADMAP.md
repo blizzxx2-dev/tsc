@@ -38,12 +38,7 @@ Trauma Center-grade clarity (docs/art/visual-pass.md), then the six late Hours' 
 - [ ] **ENG-0097** (M) Drape as its own pass — linen weave texture, fold normal map, blood soak from the decal map (moved out of `FLESH_FS`), species-independent
 - [ ] **ENG-0098** (M) Opening shape from a mask texture instead of the fixed `FIELD` ellipse, with retractor/clamp sprites around the rim — supports irregular openings per operation def
 
-### 5 · Challenge mode — 0 open, 32 done
-
-The X-ops and the rules layer behind them; after the campaign is whole.
-
-
-### 6 · Chapter I–II polish — 16 open, 43 done
+### 5 · Chapter I–II polish — 16 open, 43 done
 
 Per-op details, tuning and a proofread of the chapters that already play well.
 

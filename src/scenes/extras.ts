@@ -14,6 +14,7 @@ import { MOTION, tween } from '../ui/motion';
 import { uiEvents } from '../ui/events';
 import { reticle } from '../ui/widgets';
 import { IS_DEMO } from '../platform/build';
+import { flag } from '../platform/flags';
 import { drawBackdrop } from './backdrop';
 import { campaignComplete } from './campaignState';
 import { CreditsScene, NoticesScene } from './credits';
@@ -41,9 +42,9 @@ export class ExtrasScene implements Scene {
     };
     const done = campaignComplete();
     add('summary', t(IS_DEMO ? 'ui.extras.demo_summary' : 'ui.extras.summary'), () => game.go(new DemoEndScene(true)), done, done ? undefined : t('ui.extras.summary_locked'));
-    // The Trials of the Guild open with Chapter II (CON-0096).
+    // The Trials of the Guild (CON-0096) are post-release: behind the challengeMode flag until then.
     const trials = progress.chaptersCleared >= 2;
-    add('trials', t('ui.trials.title'), () => game.go(new TrialsScene()), trials, trials ? undefined : t('ui.trials.locked_first'));
+    if (flag('challengeMode')) add('trials', t('ui.trials.title'), () => game.go(new TrialsScene()), trials, trials ? undefined : t('ui.trials.locked_first'));
     add('credits', t('ui.title.credits'), () => game.go(new CreditsScene((g) => g.go(new ExtrasScene()))));
     add('notices', t('ui.credits.notices'), () => game.push?.(new NoticesScene()));
     add('back', t('ui.common.back'), () => game.go(new TitleScene()));
@@ -67,7 +68,7 @@ export class ExtrasScene implements Scene {
     const vr = g.viewRect();
     g.rect(vr.x, vr.y, vr.w, vr.h, hex('#050303', 0.5));
     const k = tween(this.t, MOTION.panel);
-    const r = { x: VIEW_W / 2 - 230, y: 120, w: 460, h: 452 };
+    const r = { x: VIEW_W / 2 - 230, y: 120, w: 460, h: flag('challengeMode') ? 452 : 400 };
     g.save();
     g.translate(0, (1 - k) * 24);
     glass(g, r, { alpha: k, strength: 1.1 });

@@ -1,5 +1,5 @@
 {
- "note": "Priority tiers for the open roadmap tasks. scripts/roadmap-index.mjs renders the open ones into docs/ROADMAP.md; anything not listed is backlog. Parked work lives in 09-parked.md.",
+ "note": "Priority tiers for the open roadmap tasks. scripts/roadmap-index.mjs renders the open ones into docs/ROADMAP.md; anything not listed is backlog. Parked work lives in 09-parked.md. Challenge mode (the Trials of the Guild) is post-release: built, behind the challengeMode flag, and off the priority list.",
  "tiers": [
   {
    "name": "1 · Finish the story",
@@ -139,45 +139,7 @@
    ]
   },
   {
-   "name": "5 · Challenge mode",
-   "why": "The X-ops and the rules layer behind them; after the campaign is whole.",
-   "ids": [
-    "ART-0062",
-    "ART-0213",
-    "CON-0096",
-    "CON-0097",
-    "CON-0098",
-    "CON-0099",
-    "CON-0201",
-    "CON-0202",
-    "CON-0203",
-    "CON-0204",
-    "CON-0205",
-    "CON-0206",
-    "CON-0207",
-    "CON-0208",
-    "CON-0209",
-    "CON-0210",
-    "CON-0211",
-    "CON-0212",
-    "CON-0213",
-    "CON-0214",
-    "CON-0215",
-    "CON-0216",
-    "CON-0217",
-    "CON-0218",
-    "CON-0219",
-    "CON-0220",
-    "CON-0221",
-    "CON-0222",
-    "CON-0248",
-    "UIX-0186",
-    "UIX-0187",
-    "UIX-0189"
-   ]
-  },
-  {
-   "name": "6 · Chapter I–II polish",
+   "name": "5 · Chapter I–II polish",
    "why": "Per-op details, tuning and a proofread of the chapters that already play well.",
    "ids": [
     "CON-0011",

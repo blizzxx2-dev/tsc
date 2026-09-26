@@ -19,8 +19,9 @@ export const FLAG_DEFAULTS = {
   qaTools: QA_BUILD,
   /** Wishlist call-to-action on the demo title and pause menus (PLT-0063). */
   wishlistPrompts: IS_DEMO,
-  /** Unfinished full-game features (challenge mode, disciplines) — always off in the demo. */
+  /** Challenge mode (the Trials of the Guild board) is a post-release feature: off until then. */
   challengeMode: false,
+  /** Unfinished full-game features — always off in the demo. */
   disciplines: false,
 } satisfies Record<string, boolean>;
 
