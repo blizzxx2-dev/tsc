@@ -420,8 +420,10 @@ export class Gfx {
     this.upsampleProg = null;
     this.downProg = reg.createProgram('bloom-down', FULL_VS, DOWN_FS);
     this.upProg = reg.createProgram('bloom-up', FULL_VS, UP_FS);
-    // LUT textures belong to the old context after a restore; they are rebaked lazily.
+    // LUT textures belong to the old context after a restore; every grade is baked up front
+    // (32³ each, a few ms), so the first frame in a new location never stalls to make one.
     this.luts.clear();
+    for (const name of Object.keys(GRADES)) this.lut(name);
     this.samples = this.plan.aa === 'msaa' ? Math.min(this.plan.msaaSamples, gl.getParameter(gl.MAX_SAMPLES) as number) : 0;
 
     this.vao = reg.createVertexArray('batch');
@@ -926,6 +928,9 @@ export class Gfx {
     let t = this.luts.get(name);
     if (t) return t;
     const gl = this.gl;
+    // Creating a texture binds it to the active unit: put back whatever was bound there, or the
+    // frame that first uses a grade samples the LUT strip in place of the scene (stripes, or black).
+    const prev = gl.getParameter(gl.TEXTURE_BINDING_2D) as WebGLTexture | null;
     t = gl.createTexture()!;
     gl.bindTexture(gl.TEXTURE_2D, t);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, LUT_SIZE * LUT_SIZE, LUT_SIZE, 0, gl.RGBA, gl.UNSIGNED_BYTE, bakeLut(GRADES[name] ?? GRADES.neutral));
@@ -933,6 +938,7 @@ export class Gfx {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.bindTexture(gl.TEXTURE_2D, prev);
     this.luts.set(name, t);
     return t;
   }
