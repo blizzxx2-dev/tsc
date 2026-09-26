@@ -157,7 +157,24 @@ export const OP_FLAG_WRITES: Readonly<Record<string, (rank: Rank) => FlagRecord>
 };
 
 /** Flags written by the engine rather than by content, so the flag audit knows their source. */
-export const ENGINE_FLAG_WRITES: readonly string[] = ['litanySeenCount'];
+export const ENGINE_FLAG_WRITES: readonly string[] = ['litanySeenCount', 'guildMarks', 'guildOps'];
+
+/** Rank points toward the Guild's licence vote (NAR-0126): XS 4, S 3, A 2, B 1, C 0. */
+const GUILD_POINTS: Readonly<Record<Rank, number>> = { XS: 4, S: 3, A: 2, B: 1, C: 0 };
+
+/** Chapters I–III campaign wins feed the Guild's view of the Doctor: a running rank tally. */
+export function noteGuildRank(opId: string, rank: Rank, store: FlagStore = flags): void {
+  if (!/^op[1-3]-/.test(opId)) return;
+  store.count('guildMarks', GUILD_POINTS[rank]);
+  store.count('guildOps');
+}
+
+/** The licence vote carries when the Chapters I–III average is A or better (NAR-0126). */
+export function licenceKept(f: Pick<FlagReader, 'get'>): boolean {
+  const ops = Number(f.get('guildOps') ?? 0);
+  if (ops === 0) return true;
+  return Number(f.get('guildMarks') ?? 0) / ops >= GUILD_POINTS.A;
+}
 
 /**
  * Story flags a boss fight reads (`BossOpDef.storyFlags`). `strohAlly`: the Inquisitor owes the

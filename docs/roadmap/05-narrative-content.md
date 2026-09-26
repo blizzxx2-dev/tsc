@@ -200,7 +200,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] NAR-0123 · Alpha · P1 · S · s3-6 Penny-pie outbreak — black-humour scene with a pie vendor denying everything
 - [x] NAR-0124 · Alpha · P0 · M · s3-7 Prime — Registrar Oswin Tallert collapses reading the roll of plague dead; names writing themselves across his skin
 - [x] NAR-0125 · Alpha · P1 · S · s3-8 Stroh's toothache — he arrives at night, jaw swollen, and must be treated by the man he suspects
-- [ ] NAR-0126 · Alpha · P0 · M · s3-9 Licence vote at the Barber-Surgeons' Guildhall — Haller defends Kreuzer; Kreuzer's backstory surfaces; vote outcome depends on Ch1–3 average rank
+- [x] NAR-0126 · Alpha · P0 · M · s3-9 Licence vote at the Barber-Surgeons' Guildhall — Haller defends Kreuzer; Kreuzer's backstory surfaces; vote outcome depends on Ch1–3 average rank
 - [x] NAR-0127 · Alpha · P0 · M · s3-10 Terce — the guildhall catches hexfire mid-vote; Haller is the host
 - [x] NAR-0128 · Alpha · P0 · M · s3-end — Haller's confession about Aurel Vennholt; the Precentor's name spoken for the first time; the council orders the companies east
 - [x] NAR-0129 · Alpha · P1 · S · Ch3 aftermath micro-scenes for all 10 ops — 2–4 lines each

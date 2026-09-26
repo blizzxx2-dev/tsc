@@ -9,6 +9,7 @@ import { at, closeIncision } from './chapter1';
 import type { Chapter } from './campaign';
 import { choose, n, onlyIf, say, type StoryDef } from './story';
 import { whisperThought } from './whisper';
+import { licenceKept } from './flags';
 
 const ALL = ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture', 'brand', 'lens'] as const;
 
@@ -182,8 +183,20 @@ export const STORY_3_9: StoryDef = {
     say('haller', 'I will not do it twice. Kreuzer — tell them why you left Weissburg. Tell them what the Guild there taught you.'),
     say('kreuzer', 'A carter’s boy with a crushed hand. Guild rule: no surgery without a guild fee paid first. His father had no fee.'),
     say('kreuzer', 'I waited, as I was sworn to. He died of the waiting. I tore up my oath, and then my letters. The rules killed him, not the hand.'),
+    say('haller', 'And before you vote, count his patients. Every one who went on the table this year. Count how many walked off it.'),
+    n('The clerks count. Ledgers are opened, the hospice books are sent for, and the hall waits while the tally is chalked up.'),
+    ...onlyIf(
+      (f) => licenceKept(f),
+      say('patient', 'For striking: seven. Against: twenty-two. The licence stands. The Guild notes the Doctor’s results with— reluctance.', 'Guildmaster Voss'),
+      say('haller', 'Reluctance. From Voss that is practically a garland.'),
+    ),
+    ...onlyIf(
+      (f) => !licenceKept(f),
+      say('patient', 'For striking: sixteen. Against: thirteen. The licence is suspended until the Tribunal has ruled on the Doctor’s hands.', 'Guildmaster Voss'),
+      say('kreuzer', 'Suspended. So I am to go on cutting, and simply stop being paid for it. Weissburg all over again.'),
+    ),
     n('The hall is quiet. Somewhere below it, in the old cellars, something is humming the third hour.'),
-    say('patient', 'The vote stands at— what is that smell? Is the hall on fire?', 'Guildmaster Voss'),
+    say('patient', 'The minutes will record— what is that smell? Is the hall on fire?', 'Guildmaster Voss'),
   ],
 };
 
@@ -542,7 +555,7 @@ export const CHAPTER_3: Chapter = {
   numeral: 'III',
   title: 'Prime and Terce',
   // NAR-0116: reads the demo's choice and Litany count; writes the certificate, Stroh's tooth (op3-9) and Haller's fate (op3-11).
-  flags: { reads: ['cantorMercy', 'litanySeenCount', 'hornchildCertificate'], writes: ['hornchildCertificate', 'strohTooth', 'strohToothFine', 'hallerFate'] },
+  flags: { reads: ['cantorMercy', 'litanySeenCount', 'hornchildCertificate', 'guildMarks', 'guildOps'], writes: ['hornchildCertificate', 'strohTooth', 'strohToothFine', 'hallerFate'] },
   steps: [
     { kind: 'story', story: STORY_3_1 },
     { kind: 'story', story: STORY_3_2 },

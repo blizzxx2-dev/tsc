@@ -6,7 +6,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { FULL_CAMPAIGN, nextOpenStep, stepId, stepOpen, type Chapter, type Step } from '../../../src/content/campaign';
 import { CHAPTER_2, STORY_2_4 } from '../../../src/content/chapter2';
-import { STORY_3_1, STORY_3_2 } from '../../../src/content/chapter3';
+import { STORY_3_1, STORY_3_2, STORY_3_9 } from '../../../src/content/chapter3';
 import { describeLine, lineShown, lineShownNow, resolveStory } from '../../../src/content/conditions';
 import {
   applyOpFlags,
@@ -16,6 +16,8 @@ import {
   evalCondition,
   flags,
   FlagStore,
+  licenceKept,
+  noteGuildRank,
   OP_FLAG_WRITES,
   type FlagCondition,
 } from '../../../src/content/flags';
@@ -518,5 +520,34 @@ describe('demo carry-over of flags (CON-0093)', () => {
     expect(report.flags.sort()).toEqual(['cantorMercy', 'choice.s2-4', 'litanySeenCount']);
     // Read back through the codec, the flags are still there.
     expect(readProfile(encode('profile', profile), 'full', 'full-build')!.profile.flags).toEqual(demo.flags);
+  });
+});
+
+describe('NAR-0126 licence vote', () => {
+  const texts = (st: FlagStore) => STORY_3_9.lines.filter((l) => lineShown(l, {}, st)).map((l) => l.text);
+
+  it('tallies Chapters I–III campaign wins only, and carries the vote at an A average', () => {
+    const st = new FlagStore();
+    expect(licenceKept(st)).toBe(true);
+    noteGuildRank('op1-1', 'S', st);
+    noteGuildRank('op2-3', 'B', st);
+    noteGuildRank('op4-1', 'C', st);
+    expect([st.get('guildMarks'), st.get('guildOps')]).toEqual([4, 2]);
+    expect(licenceKept(st)).toBe(true);
+    noteGuildRank('op3-1', 'C', st);
+    expect(licenceKept(st)).toBe(false);
+  });
+
+  it('s3-9 reads out exactly one tally, matching the average', () => {
+    const kept = new FlagStore();
+    noteGuildRank('op1-1', 'XS', kept);
+    const lost = new FlagStore();
+    noteGuildRank('op1-1', 'C', lost);
+    const k = texts(kept).join(' ');
+    const l = texts(lost).join(' ');
+    expect(k).toContain('The licence stands');
+    expect(k).not.toContain('suspended');
+    expect(l).toContain('suspended');
+    expect(l).not.toContain('The licence stands');
   });
 });

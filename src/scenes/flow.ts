@@ -7,7 +7,7 @@ import { LoadingScene } from './loading';
 import type { Game } from '../core/scene';
 import { advance, load, recordBest, store, type SaveData } from '../core/save';
 import { CAMPAIGN, nextOpenStep } from '../content/campaign';
-import { applyOpFlags, flags } from '../content/flags';
+import { applyOpFlags, noteGuildRank, flags } from '../content/flags';
 import type { OperationDef } from '../surgery/operation';
 import { BriefingScene } from './briefing';
 import { OperationScene } from './operation';
@@ -43,6 +43,7 @@ export function playOperation(game: Game, def: OperationDef, onWin: () => void, 
           if (won && hour && !op.opts.challenge) submitHourClear(hour, op);
           if (story && won) {
             applyOpFlags(def.id, op.rank());
+            noteGuildRank(def.id, op.rank());
             // How often the Inquisitor may have seen the star drawn (CON-0093).
             if (op.litanyUsed) flags.count('litanySeenCount');
           }
