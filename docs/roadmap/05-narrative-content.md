@@ -174,7 +174,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### Supporting cast
 - [x] NAR-0113 · Alpha · P1 · S · Add cast entries to `characters.ts` — precentor, orsa, reiss, tallert, motherSuperior, burgomaster with colors and silhouettes
-- [ ] NAR-0114 · Alpha · P2 · S · Returning-patient cameos — Jost, Pieter, Anno, Emmerich, Tomas each reappear once in Ch3–5 with a line reflecting their demo op rank
+- [x] NAR-0114 · Alpha · P2 · S · Returning-patient cameos — Jost, Pieter, Anno, Emmerich, Tomas each reappear once in Ch3–5 with a line reflecting their demo op rank
 
 ## NAR · Epic 6 — Chapter III "Prime and Terce" (Kilnrows and quarantine)
 

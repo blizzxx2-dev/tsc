@@ -2,7 +2,7 @@ import { JOURNAL_STORY } from './journal';
 import { EPILOGUE_STORY } from './epilogue';
 import { ENDING_EXILE, ENDING_PARDON, ENDING_PYRE, endingIs, hostIs, strohTrust, trialVerdict, verdictIs } from './endings';
 import { whisperBand, whisperScore, whisperThought, type WhisperBand } from './whisper';
-import { chapterAverageA, flags } from './flags';
+import { byBand, chapterAverageA, flags } from './flags';
 import { Embedded, Incision, Laceration, Rot } from '../surgery/entities';
 import { TinctureSite, Vessel } from '../surgery/ailments/kilnrows';
 import { Bud, Cyst, HexBall, Infant, VocalFold } from '../surgery/ailments/hollownight';
@@ -35,6 +35,13 @@ export const STORY_5_1: StoryDef = {
     n('The warrant is served at the hospice door in the middle of a shift, with a patient still open on the table.'),
     say('patient', 'By order of the council of Kessendorf: Doctor Kreuzer, for witchcraft practised under colour of surgery.', 'A council bailiff'),
     say('kreuzer', 'Let me close him. Five minutes.'),
+    // NAR-0114: Jost (op1-1) drives the bailiff's cart, as slowly as a drover can.
+    n('The bailiff’s cart is driven by a drover the Doctor knows.'),
+    ...byBand('op1-1', {
+      high: say('patient', 'Two stitchings, Doctor, and I can’t find either scar. My wife says I’m lying. I’ll drive you. Slowly.', 'Jost'),
+      mid: say('patient', 'Your stitches still itch when it rains, Doctor. I’m to drive you to the cells. I’m driving very slowly.', 'Jost'),
+      low: say('patient', 'I’ve a scar like a ploughed field, Doctor, and I’d take it again. They’ll drive this cart without me or not at all.', 'Jost'),
+    }),
     say('patient', 'The warrant says now.', 'A council bailiff'),
     say('ilse', 'Then the warrant can wait on the step. Doctor — go. I will close him.'),
     n('They take Kreuzer out through the ward. Behind him he hears Ilse counting stitches under her breath, steady as a bell.'),
@@ -204,6 +211,12 @@ export const STORY_5_5: StoryDef = {
     n('On the cathedral steps a chorister boy, Jakob, sings the Choir’s hymn in a voice that is not his own, and cannot stop.'),
     say('ilse', 'Extra vocal folds. They’ve grown in his throat, and they hum with the procession. While they sing, I can’t hear a thing.'),
     say('kreuzer', 'Then we cut in the silences. Between the verses.'),
+    // NAR-0114: Emmerich (op1-5), who once carried Matins, knows this hymn.
+    ...byBand('op1-5', {
+      high: say('patient', 'Emmerich, Doctor — the page. I know that hymn. It sang in me once, and you made it stop. Make it stop for him.', 'Emmerich'),
+      mid: say('patient', 'Emmerich, Doctor. I still hear it sometimes, in my sleep. Make it stop for him the way you did for me.', 'Emmerich'),
+      low: say('patient', 'Emmerich, Doctor. The mark on my collarbone aches when they sing. I still hear them. Please — make it stop for him.', 'Emmerich'),
+    }),
     say('patient', '…Light the lamp… and let it… Doctor, make it stop, I want my own voice back…', 'Jakob'),
   ],
 };

@@ -619,3 +619,33 @@ describe('NAR-0097 Ilse side scenes', () => {
     }
   });
 });
+
+describe('NAR-0114 returning patients', () => {
+  it('each of five demo patients returns once, in the variant their operation earned', async () => {
+    const { STORY_3_3 } = await import('../../../src/content/chapter3');
+    const { STORY_4_1, STORY_4_2 } = await import('../../../src/content/chapter4');
+    const { STORY_5_1, STORY_5_5 } = await import('../../../src/content/chapter5');
+    const cameos: [string, StoryDef, string, [string, string, string]][] = [
+      ['op1-3', STORY_3_3, 'Anno', ['so clean', 'crooked', 'black grains']],
+      ['op1-2', STORY_4_1, 'Pieter', ['draw a bow again', 'stiff in the mornings', 'never came right']],
+      ['op2-1', STORY_4_2, 'Tomas, scout', ['throws better', 'aches in rain', 'Three fingers']],
+      ['op1-1', STORY_5_1, 'Jost', ['can’t find either scar', 'still itch', 'ploughed field']],
+      ['op1-5', STORY_5_5, 'Emmerich', ['you made it stop', 'in my sleep', 'collarbone aches']],
+    ];
+    for (const [op, scene, who, [hi, mid, lo]] of cameos) {
+      for (const [rank, cue] of [
+        ['S', hi],
+        ['B', mid],
+        ['C', lo],
+      ] as const) {
+        const f = new FlagStore();
+        noteGuildRank(op, rank, f);
+        const said = scene.lines.filter((l) => l.as === who && lineShown(l, {}, f)).map((l) => l.text);
+        expect(said, `${who} ${rank}`).toHaveLength(1);
+        expect(said[0], `${who} ${rank}`).toContain(cue);
+      }
+      const unplayed = scene.lines.filter((l) => l.as === who && lineShown(l, {}, new FlagStore()));
+      expect(unplayed[0].text, who).toContain(mid);
+    }
+  });
+});

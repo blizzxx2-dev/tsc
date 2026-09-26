@@ -7,7 +7,7 @@ import { at, closeIncision } from './chapter1';
 import type { Chapter } from './campaign';
 import { choose, n, onlyIf, say, type StoryDef } from './story';
 import { whisperThought } from './whisper';
-import { chapterAverageA, flags, licenceKept } from './flags';
+import { byBand, chapterAverageA, flags, licenceKept } from './flags';
 import { OP_3_10, OP_3_11 } from './ops/hours';
 export { OP_3_10, OP_3_11 };
 
@@ -77,6 +77,12 @@ export const STORY_3_3: StoryDef = {
     n('At noon the powder-mill on Saltpetre Lane goes up. The windows of the hospice bow inward and then, politely, stay whole.'),
     say('mauer', 'Doctor! Three dead in the mill yard, a dozen more coming. The guild’s own guard took a ball when the magazine cooked off.'),
     say('ilse', 'We can’t take them all at once. Sort them — the ones who’ll die without us, first. The walking wounded can wait on the steps.'),
+    // NAR-0114: Anno (op1-3) comes back to carry stretchers; how his face healed follows his operation.
+    ...byBand('op1-3', {
+      high: say('patient', 'Anno, Doctor — the gunsmith’s boy. My face healed so clean the master thinks I’ve been shirking. I’ll carry. I know powder.', 'Anno'),
+      mid: say('patient', 'Anno, Doctor. The eyebrows grew back crooked. I’ve come to carry stretchers — I know what powder does.', 'Anno'),
+      low: say('patient', 'Anno, Doctor. Still picking black grains out of my cheek. I know what powder does. Let me carry.', 'Anno'),
+    }),
     say('ilse', 'This one — Kaspar, the mill guard. A ball through the thigh, and it carried his doublet in with it.'),
     say('haller', 'Wadding. Cloth in a wound festers. Find every scrap with the lens, Kreuzer, or he will be burning by Vespers.'),
   ],

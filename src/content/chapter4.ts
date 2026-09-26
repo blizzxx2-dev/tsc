@@ -8,7 +8,7 @@ import { at, closeIncision } from './chapter1';
 import type { Chapter } from './campaign';
 import { choose, n, onlyIf, say, type StoryDef } from './story';
 import { strohTrust } from './endings';
-import { chapterAverageA } from './flags';
+import { byBand, chapterAverageA } from './flags';
 import { OP_4_7, OP_4_9 } from './ops/hours';
 export { OP_4_7, OP_4_9 };
 
@@ -26,6 +26,12 @@ export const STORY_4_1: StoryDef = {
     n('Kessendorf hires its wars. Three companies march east to the Vennmark marches: pikes, crossbows, and men nobody asks about.'),
     say('mauer', 'Forty-one of mine. Forty-one. Sixty crossbowmen from Ostrau. Nine deserters we’ve caught and four we haven’t. Forty-one.'),
     say('ilse', 'He counts them every morning. He counted them twice while you were asleep.'),
+    // NAR-0114: Pieter (op1-2) marches with the Watch.
+    ...byBand('op1-2', {
+      high: say('patient', 'Pieter, Doctor, of the Watch. The arrow healed clean — I can draw a bow again. Captain has me guarding your wagon.', 'Pieter'),
+      mid: say('patient', 'Pieter, Doctor. The shoulder’s stiff in the mornings. Not stiff enough to keep me home. I’m on your wagon.', 'Pieter'),
+      low: say('patient', 'Pieter, Doctor. The shoulder never came right; I carry the pike on the other side now. Still here. On your wagon.', 'Pieter'),
+    }),
     // Four days out, Kreuzer takes stock of what the city saw before he left (NAR-0093).
     ...whisperThought(1),
     say('mauer', 'Someone has to. Doctor, your field kit is in the second wagon. Rain gets in the tent. Mud gets in everything.'),
@@ -43,6 +49,12 @@ export const STORY_4_2: StoryDef = {
   backdrop: 'night',
   lines: [
     n('It rains for three days. The tent drips onto the table in a rhythm Ilse starts humming without noticing.'),
+    // NAR-0114: Tomas (op2-1), the scout, back from the barrow-fields.
+    ...byBand('op2-1', {
+      high: say('patient', 'Tomas, Doctor. The arm throws better than it did before the hound. I scout the Vennmark for the captain now.', 'Tomas, scout'),
+      mid: say('patient', 'Tomas, Doctor. The arm aches in rain like this, but it still throws. I scout for the captain now.', 'Tomas, scout'),
+      low: say('patient', 'Tomas, Doctor. Three fingers answer and two don’t. Enough to hold a lantern. I scout for the captain now.', 'Tomas, scout'),
+    }),
     say('ilse', 'Doctor. The Litany. When you draw the star, what do you hear?'),
     say('kreuzer', 'Nothing. That is the point of it. Everything stops.'),
     say('ilse', 'I hear something. Under the stillness, like a choir very far off. Five notes. The same five the Lauds antiphon began with.'),
