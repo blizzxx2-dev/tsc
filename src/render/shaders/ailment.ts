@@ -858,18 +858,39 @@ vec4 gutStitch(vec2 q) {
 }
 
 vec4 scar(vec2 q) {
-  float L = u_a.x, W = u_a.y, age = u_a.z;
-  float t = clamp(q.x / (L * 0.5), -1.0, 1.0);
+  float L = u_a.x, W = u_a.y, age = clamp(u_a.z, 0.0, 1.0);
+  // Tapered over the whole sutured line (b.z where this segment starts, b.w the full length), so
+  // a bent scar is one seam, not a string of lozenges.
+  float total = u_b.w > 0.0 ? u_b.w : L;
+  float along = (u_b.w > 0.0 ? u_b.z : 0.0) + q.x + L * 0.5;
+  float t = clamp(along / total * 2.0 - 1.0, -1.0, 1.0);
   float prof = sqrt(max(0.0, 1.0 - t * t));
-  float hw = W * (0.35 + 0.65 * prof);
-  float d = abs(q.y) - hw;
   float inX = rsmooth(L * 0.5 + 1.0, L * 0.5 - 1.0, abs(q.x));
-  // A raised, pink-to-pale ridge with a glossy crown; stitch tracks cross it every 11 px.
-  vec3 col = mix(vec3(0.78, 0.36, 0.36), vec3(0.86, 0.66, 0.6), age);
-  vec3 c = lit(col, cylN(q.y, hw), 0.5, 30.0);
-  float track = rsmooth(1.2, 0.3, abs(mod(q.x, 11.0) - 5.5)) * rsmooth(hw + 4.5, hw + 3.0, abs(q.y)) * step(hw * 0.4, abs(q.y));
-  vec4 acc = paint(c, fill(d) * inX * 0.85);
-  return over(paint(mix(vec3(0.5, 0.15, 0.15), vec3(0.7, 0.5, 0.45), age), track * inX * 0.8), acc);
+  float ay = abs(q.y);
+  // Fresh: a swollen pink seam either side of a dark crusted line of scab.
+  // Healed: the swelling gone, a narrow pale shiny line a touch lighter than the skin.
+  float hw = W * mix(1.0, 0.45, age) * (0.3 + 0.7 * prof);
+  float seam = rsmooth(hw + 1.5, hw * 0.3, ay) * inX;
+  vec3 pink = mix(vec3(0.82, 0.38, 0.36), vec3(0.93, 0.78, 0.72), age);
+  vec3 c = lit(pink, cylN(q.y, hw + 1.5), mix(0.25, 0.7, age), mix(25.0, 70.0, age));
+  vec4 acc = paint(c, seam * mix(0.7, 0.5, age));
+  float crustW = mix(1.1, 0.0, age) * (0.4 + 0.6 * prof);
+  float crust = fill(ay - crustW) * inX * (1.0 - age);
+  vec3 cc = mix(vec3(0.24, 0.05, 0.05), vec3(0.4, 0.14, 0.1), noise(vec2(along * 0.5, u_seed)));
+  acc = over(paint(cc, crust * 0.9), acc);
+  // Suture punctures: a pair of small marks either side of the line every stitch, a little
+  // irregular, fading to faint white dots once healed.
+  float cell = floor(along / 11.0);
+  float cx = (cell + 0.5 + (hash(vec2(cell, u_seed)) - 0.5) * 0.3) * 11.0;
+  float off = hw + 3.0 + hash(vec2(cell, u_seed + 3.0)) * 1.2;
+  float dots = 0.0;
+  for (int i = 0; i < 2; i++) {
+    float sy = i == 0 ? -1.0 : 1.0;
+    dots = max(dots, rsmooth(1.2, 0.3, length(vec2(along - cx, q.y - sy * off))));
+  }
+  dots *= step(4.0, along) * step(along, total - 4.0);
+  acc = over(paint(mix(vec3(0.45, 0.1, 0.1), vec3(0.95, 0.88, 0.84), age), dots * mix(0.75, 0.35, age)), acc);
+  return acc;
 }
 
 vec4 salvePaste(vec2 q) {

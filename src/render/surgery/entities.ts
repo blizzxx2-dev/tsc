@@ -54,7 +54,11 @@ drawer(Incision, {
   surface(g, e) {
     if (e.state === 'mark') {
       if (e.progress > 0 || e.depth > 0) surfLine(g, e.depth > 0 ? e.points : tracedPoints(e), 10 + e.depth * 4, 0.9, 0.3);
-    } else surfLine(g, e.points, 12, 1, 0.45, 0, 0.15);
+    } else {
+      // Closing: each stitch draws the edges together, so the channel narrows and shallows.
+      const k = e.stitch && e.stitch.needed > 0 ? Math.min(1, e.stitch.count / e.stitch.needed) : 0;
+      surfLine(g, e.points, 12 * (1 - 0.45 * k), 1 - 0.65 * k, 0.45 * (1 - 0.5 * k), 0, 0.15);
+    }
   },
   draw(g, e, op) {
     if (e.state === 'mark') {
@@ -75,7 +79,8 @@ drawer(Incision, {
       const open = e.openedAt < 0 ? 1 : Math.min(1, (op.elapsed - e.openedAt) / 0.5);
       // Deep-organ operations hold the incision wide with pinned skin flaps (ART-0189).
       if (op.fieldOrgan !== 'flesh' && op.fieldOrgan !== 'skin' && op.fieldOrgan !== 'muscle' && e.state === 'open') surgicalFlapArt(g, e.points, open, speciesOf(op.def.race).look.skin);
-      woundArt(g, e.points, 8, { open, bleed: e.state === 'open' ? 0.6 : 0.25, beat: beatPulse(op), seed: e.id, alpha: woundAlpha() });
+      const drawn = e.state === 'closing' && e.stitch && e.stitch.needed > 0 ? Math.min(1, e.stitch.count / e.stitch.needed) : 0;
+      woundArt(g, e.points, 8 * (1 - 0.72 * drawn), { open, bleed: e.state === 'open' ? 0.6 : 0.25 * (1 - drawn), beat: beatPulse(op), seed: e.id, alpha: woundAlpha() });
       if (e.state === 'closing') g.dashed(e.points, 2, hex('#ffebbe', 0.35 + 0.2 * Math.sin(op.elapsed * 4)), 6, 10, op.elapsed * 10);
       if (e.stitch) drawStitch(g, e.stitch, op);
     }
@@ -133,13 +138,16 @@ drawer(BloodPool, {
 drawer(Laceration, {
   surface(g, e) {
     // The carved channel stays inside the painted lips, so its bevel never shows as a ring outside them.
-    surfLine(g, e.edge(), e.small ? 6 : 9, 1, 0.5, 0, 0.1);
+    // Each stitch draws the edges together: the carved channel narrows and shallows with them.
+    const k = e.stitch.needed > 0 ? Math.min(1, e.stitch.count / e.stitch.needed) : 0;
+    surfLine(g, e.edge(), (e.small ? 6 : 9) * (1 - 0.45 * k), 1 - 0.65 * k, 0.5 * (1 - 0.5 * k), 0, 0.1);
   },
   draw(g, e, op) {
     // Carved by the flesh shader; the cut-edge art paints its lips and bleeding edge in three widths,
     // clean (blade) or ragged (claw), welling on the heartbeat until it is stitched.
     const closed = e.stitch.count >= e.stitch.needed;
-    const width = e.small ? 4.5 : e.length < 50 ? 7 : 10;
+    const drawn = e.stitch.needed > 0 ? Math.min(1, e.stitch.count / e.stitch.needed) : 0;
+    const width = (e.small ? 4.5 : e.length < 50 ? 7 : 10) * (1 - 0.72 * drawn);
     woundArt(g, e.edge(), width, { claw: e.source === 'claw', bleed: closed ? 0 : Math.min(1, e.bleed), beat: beatPulse(op), seed: e.id, alpha: woundAlpha() });
     if (e.pusT > 0) g.polyline(e.edge(), 5, hex('#d8c040', Math.min(0.6, e.pusT / op.tuning.laceration.pusRotTime)));
     drawStitch(g, e.stitch, op);

@@ -196,13 +196,20 @@ export function stitchArt(g: Gfx, at: Vec, woundAngle: number, span: number, tig
 
 /** A sutured scar along a polyline (`age` 0 fresh, 1 healed); persists to the results screen. */
 export function scarArt(g: Gfx, pts: readonly Vec[], width: number, age: number, alpha = 1): void {
+  let total = 0;
+  for (let i = 1; i < pts.length; i++) total += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y);
+  let at = 0;
   for (let i = 1; i < pts.length; i++) {
     const a = pts[i - 1];
     const b = pts[i];
     const len = Math.hypot(b.x - a.x, b.y - a.y);
     if (len < 1) continue;
-    const s = len + width * 2 + 16;
-    g.ailment(AIL.scar, (a.x + b.x) / 2, (a.y + b.y) / 2, s, s, { rot: Math.atan2(b.y - a.y, b.x - a.x), alpha, a: [len + (pts.length > 2 ? width * 2 : 0), width, age, 0] });
+    // Segments overlap by a pixel so the joints close; the taper runs over the whole line.
+    const lx = len + (i < pts.length - 1 ? 1.5 : 0);
+    const ang = Math.atan2(b.y - a.y, b.x - a.x);
+    const s = lx + width * 2 + 24;
+    g.ailment(AIL.scar, a.x + Math.cos(ang) * (lx / 2), a.y + Math.sin(ang) * (lx / 2), s, s, { rot: ang, alpha, a: [lx, width, age, 0], b: [at, total, 0, 0] });
+    at += len;
   }
 }
 
