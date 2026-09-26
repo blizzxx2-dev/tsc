@@ -405,7 +405,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ### op3-1 "The Hornchild" (Liesl, 7) — trepanation-style bud excision
 - [x] CON-0101 · Alpha · P0 · S · Design spec — 2 horn-buds on skull; new Drill entity (hold lancet in circle 1.5 s), lift bone disc with tongs, excise bud, salve; Choir sigil under each bud
 - [x] CON-0102 · Alpha · P0 · M · Implement Drill/BoneDisc entities — with unit tests (drill overheats if held > 3 s → BAD)
-- [ ] CON-0103 · Alpha · P1 · S · Branch — `hornchildCertificate = natural` skips excision of the second bud and scores the op on care only
+- [x] CON-0103 · Alpha · P1 · S · Branch — `hornchildCertificate = natural` skips excision of the second bud and scores the op on care only
 - [x] CON-0104 · Alpha · P1 · S · Author `op3-1` data file — callouts, thresholds, checklist pass
 
 ### op3-2 "Ball and Wadding" (Kaspar, powder-mill guard) — lead shot with cloth fragments

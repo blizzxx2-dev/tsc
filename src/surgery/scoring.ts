@@ -212,6 +212,11 @@ export const SCORING: readonly ScoringRule[] = [
   { label: 'The bond left be', action: 'Leave a blood-bond untouched', tools: [], criteria: { good: 'when the story allows' } },
   { label: 'Wrong plate', action: 'Pry the wrong petrified plate', tools: ['tongs'], criteria: { bad: 'always' } },
   { label: 'Plate cracked', action: 'Crack a petrified plate free', tools: ['tongs'], criteria: { good: 'always' } },
+  // A horn-bud certified natural (CON-0103): dressed, never cut.
+  { label: 'Scalp soothed', action: 'Hold the salve on a natural horn-bud', tools: ['salve'], criteria: { good: 'always' } },
+  { label: 'Bud dressed', action: 'Finish dressing a natural horn-bud', tools: ['salve'], criteria: { cool: 'always' } },
+  { label: 'Left in peace', action: 'Leave a natural horn-bud uncut', tools: ['salve'], criteria: { cool: 'always' } },
+  { label: 'Cut a natural growth', action: 'Take the lancet to a bud certified natural', tools: ['lancet'], criteria: { bad: 'always' } },
   // Brood silk (ART-0217, CON-0066).
   { label: 'Strand cut', action: 'Cut a strand of brood silk', tools: ['lancet'], criteria: { good: 'always' } },
   { label: 'Web cut away', action: 'Cut the last strand of the silk', tools: ['lancet'], criteria: { cool: 'always' } },

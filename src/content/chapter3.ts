@@ -1,13 +1,13 @@
 import { teach } from './teach';
 import { BloodPool, Bubo, Burn, Embedded, Incision, Laceration, Rot } from '../surgery/entities';
-import { Agitation, Amputation, ClothFragment, HornBud, Jaw, leadDeposit, Molar, TinctureSite, Worm, woundFeverPhase } from '../surgery/ailments/kilnrows';
+import { Agitation, Amputation, ClothFragment, DressedBud, HornBud, Jaw, leadDeposit, Molar, TinctureSite, Worm, woundFeverPhase } from '../surgery/ailments/kilnrows';
 import { Artery } from '../surgery/ailments/vennmark';
 import type { Operation, OperationDef } from '../surgery/operation';
 import { at, closeIncision } from './chapter1';
 import type { Chapter } from './campaign';
 import { choose, n, onlyIf, say, type StoryDef } from './story';
 import { whisperThought } from './whisper';
-import { licenceKept } from './flags';
+import { flags, licenceKept } from './flags';
 import { OP_3_10, OP_3_11 } from './ops/hours';
 export { OP_3_10, OP_3_11 };
 
@@ -253,8 +253,13 @@ export const OP_3_1: OperationDef = {
       spawn: () => [new HornBud(at(-110, -40))],
     },
     {
-      callout: ['The second bud. Same again — steady hands.'],
-      spawn: () => [new HornBud(at(120, -30))],
+      // CON-0103: a certificate of "natural growth" means the second bud stays; it is dressed, not cut.
+      get callout() {
+        return flags.get('hornchildCertificate') === 'natural'
+          ? ['The certificate says natural, so the second bud stays. Salve the scalp around it — gently. No lancet.']
+          : ['The second bud. Same again — steady hands.'];
+      },
+      spawn: () => [flags.get('hornchildCertificate') === 'natural' ? new DressedBud(at(120, -30)) : new HornBud(at(120, -30))],
     },
     {
       callout: ['Salve what we’ve opened. She has a long life to wear this scalp.'],

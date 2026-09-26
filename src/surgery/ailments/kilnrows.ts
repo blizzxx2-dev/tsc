@@ -85,6 +85,61 @@ export const leadDeposit = (pos: Vec): TinctureSite => {
  * (1.5 s; past 3 s the bone overheats), lift the bone disc with the tongs,
  * then excise the bud. A Choir sigil lies beneath it and must be seared out.
  */
+/**
+ * A horn-bud certified natural (CON-0103): not cut, only dressed. Hold the salve on it to soothe the
+ * scalp around it; the lancet has no business here. Scored on care alone — as much as the excision.
+ */
+export class DressedBud extends Entity {
+  holdT = 0;
+  private soothed = false;
+  readonly need = 1.6;
+
+  constructor(pos: Vec) {
+    super(pos);
+    this.layer = 3;
+  }
+
+  override drain(): number {
+    return 0.08;
+  }
+
+  override onPress(op: Operation, ptr: Pointer, tool: ToolId): boolean {
+    if (dist(ptr.pos, this.pos) > 30) return false;
+    if (tool === 'lancet') {
+      op.rate('bad', this.pos, 'Cut a natural growth');
+      op.sayOnce('bud-natural', 'Doctor — the certificate says natural. We leave it. Dress it, don’t cut it.');
+      return true;
+    }
+    return tool === 'salve';
+  }
+
+  override onDrag(op: Operation, ptr: Pointer, tool: ToolId, dt: number): void {
+    if (tool !== 'salve') return;
+    if (dist(ptr.pos, this.pos) > 34) {
+      this.holdT = Math.max(0, this.holdT - dt * 2);
+      return;
+    }
+    this.holdT += dt;
+    if (!this.soothed && this.holdT >= this.need / 2) {
+      this.soothed = true;
+      op.rate('good', this.pos, 'Scalp soothed');
+    }
+    if (this.holdT >= this.need) {
+      this.kill();
+      op.rate('cool', this.pos, 'Bud dressed');
+      op.rate('cool', this.pos, 'Left in peace');
+    }
+  }
+
+  draw(g: Gfx): void {
+    const { x, y } = this.pos;
+    g.circleGrad(x, y, 30, hex('#c07860', 0.5), hex('#c07860', 0));
+    g.ellipse(x, y, 11, 9, -0.4, hex('#e8d8b8'), hex('#b8a080'));
+    g.circle(x - 3, y - 3, 3, hex('#fff6e0', 0.7));
+    if (this.holdT > 0) g.arc(x, y, 24, 3, hex('#d8f0c0'), Math.min(1, this.holdT / this.need));
+  }
+}
+
 export class HornBud extends Entity {
   state: 'drill' | 'disc' | 'bud' = 'drill';
   drillT = 0;

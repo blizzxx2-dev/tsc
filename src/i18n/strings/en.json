@@ -1108,5 +1108,9 @@
   "ui.content_notes.footer": "You can turn these notes off in Options, under Accessibility.",
   "label.strand_cut": "Strand cut",
   "label.web_cut_away": "Web cut away",
+  "label.scalp_soothed": "Scalp soothed",
+  "label.bud_dressed": "Bud dressed",
+  "label.left_in_peace": "Left in peace",
+  "label.cut_a_natural_growth": "Cut a natural growth",
   "ui.credits.section_textures": "Textures"
 }

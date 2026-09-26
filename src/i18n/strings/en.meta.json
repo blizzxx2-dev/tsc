@@ -9041,6 +9041,42 @@
     "screenshot": "docs/loc/screens/operation.png",
     "note": "Past participle / short noun; ≤ 16 characters where possible."
   },
+  "label.scalp_soothed": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.bud_dressed": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.left_in_peace": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
+  "label.cut_a_natural_growth": {
+    "scene": "operation",
+    "font": "italic",
+    "size": 16,
+    "maxPx": 220,
+    "context": "Small caption above a rating popup naming what was done.",
+    "screenshot": "docs/loc/screens/operation.png",
+    "note": "Past participle / short noun; ≤ 16 characters where possible."
+  },
   "ui.credits.section_textures": {
     "scene": "credits",
     "font": "display",

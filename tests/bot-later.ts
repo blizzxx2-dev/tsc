@@ -16,7 +16,7 @@ import { BurrowSegment, NoneMalison } from '../src/surgery/bosses/none';
 import { TallowClot, VespersMalison, WickFilament } from '../src/surgery/bosses/vespers';
 import { ComplineMalison, SilenceNode } from '../src/surgery/bosses/compline';
 import { OfficeMalison } from '../src/surgery/bosses/office';
-import { Agitation, Amputation, ClothFragment, HornBud, Molar, TinctureSite, Vessel, WoundFever, Worm } from '../src/surgery/ailments/kilnrows';
+import { Agitation, Amputation, ClothFragment, DressedBud, HornBud, Molar, TinctureSite, Vessel, WoundFever, Worm } from '../src/surgery/ailments/kilnrows';
 import { Artery, BiteChannel, Contamination, Lockbox, Nodule, PetrifyFront, Retractor, StilledHeart, Tick } from '../src/surgery/ailments/vennmark';
 import { Bud, Cyst, HexBall, Infant, LEAD_DISH, Remnant, VocalFold } from '../src/surgery/ailments/hollownight';
 
@@ -314,6 +314,9 @@ function planAilments(op: Operation, k: BotKit, ents: Entity[], vis: Entity[]): 
   if (artery && !artery.clamped && !artery.boltOut && !artery.spraying) return k.tap('tongs', artery.pos);
   if (artery?.boltOut) return k.drag('thread', crossings(artery.stitch.points, [-0.6, 0, 0.6], 22), 300);
 
+  // A horn-bud certified natural (CON-0103): hold the salve on it, never the lancet.
+  const dressed = find(DressedBud);
+  if (dressed) return k.hold('salve', () => dressed.pos, dressed.need + 0.2);
   // Horn-buds: drill, lift the disc, excise.
   const hb = find(HornBud);
   if (hb) {
