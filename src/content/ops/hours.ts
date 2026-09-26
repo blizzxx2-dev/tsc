@@ -17,7 +17,7 @@ export const OP_3_10 = defineOp({
   title: 'The Hour of Prime',
   patient: 'Oswin Tallert, Registrar of Kessendorf',
   diagnosis: 'Collapsed reading the roll of the plague dead. Names are writing themselves across his skin, stroke by stroke.',
-  organ: 'flesh',
+  organ: 'skin',
   timeLimit: 420,
   baseDrain: 0.05,
   grade: 'chapel',

@@ -313,7 +313,7 @@ export const OP_3_2: OperationDef = {
   title: 'Ball and Wadding',
   patient: 'Kaspar, powder-mill guard',
   diagnosis: 'Lead ball through the thigh, carrying doublet cloth into the wound. Heavy bleeding from the powder-mill blast.',
-  organ: 'flesh',
+  organ: 'muscle',
   timeLimit: 330,
   baseDrain: 0.12,
   tools: ALL,

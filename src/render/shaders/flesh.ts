@@ -265,10 +265,12 @@ void main() {
     float gv = pow(1.0 - abs(noise(vec2(dot(q, vec2(-across.y, across.x)) * 30.0, band * 0.5)) * 2.0 - 1.0), 14.0);
     col = mix(col, vec3(0.5, 0.1, 0.18), gv * prof * 0.3);
   } else if (u_kind == 4) {
-    // Liver: glossy capsule over hexagonal lobules.
-    c = cells(uv * 1.6);
-    col *= 0.82 + 0.22 * smoothstep(0.0, 0.12, c);
-    col = mix(col, col * vec3(0.9, 1.0, 0.7), smoothstep(0.6, 0.9, fbm(uv * 0.5)) * 0.3);
+    // Liver: a smooth, glossy capsule over fine lobules — a faint honeycomb mottle only up close —
+    // with broad darker and lighter congestion.
+    c = cells(uv * 7.0);
+    col *= 0.93 + 0.08 * smoothstep(0.0, 0.1, c);
+    col *= 0.86 + 0.24 * fbm(uv * 0.45 + 12.0);
+    col = mix(col, col * vec3(1.05, 0.92, 0.85), smoothstep(0.55, 0.8, fbm(uv * 0.9 + 4.0)) * 0.35);
   } else if (u_kind == 5) {
     // Brain: gyri and sulci from warped ridged noise under a translucent meningeal veil.
     vec2 w = uv * 0.9 + vec2(fbm(uv * 0.6), fbm(uv * 0.6 + 7.0)) * 2.2;
@@ -292,18 +294,22 @@ void main() {
     float foramen = rsmooth(0.07, 0.02, length(fract(uv * 5.0) - 0.5 - (vec2(hash(fp), hash(fp + 3.3)) - 0.5) * 0.6)) * step(0.86, hash(fp + 7.0));
     col = mix(col, vec3(0.22, 0.1, 0.08), foramen * 0.7);
   } else if (u_kind == 7) {
-    // Muscle (ENG-0093): striated fibres along u_fiber, bundled into fascicles with pale
-    // perimysium between them, and a silky sheen that runs along the grain.
+    // Muscle (ENG-0093): fascicles as rounded bundles laid along u_fiber — each shaded across its
+    // width so it reads as a cord — with soft, slightly paler seams of perimysium between them,
+    // fine fibre streaks along the grain, and a satin sheen that runs lengthwise.
     vec2 fd = normalize(u_fiber + vec2(1e-4, 0.0));
     vec2 fp = vec2(-fd.y, fd.x);
     vec2 fq2 = vec2(dot(q, fd), dot(q, fp)) * 4.0;
-    float wobble = fbm(vec2(fq2.x * 0.3, fq2.y * 1.5)) * 0.8;
-    float fibre = 0.5 + 0.5 * sin((fq2.y + wobble) * 55.0);
-    float fascicle = 1.0 - abs(fract((fq2.y + wobble) * 3.2) - 0.5) * 2.0;
-    c = fibre;
-    col *= 0.78 + 0.22 * fibre;
-    col = mix(col, vec3(0.86, 0.72, 0.68), rsmooth(0.12, 0.03, fascicle) * 0.35);
-    col *= 0.92 + 0.12 * sin(fq2.x * 2.0 + fbm(fq2) * 3.0);
+    float wobble = fbm(vec2(fq2.x * 0.25, fq2.y * 1.2)) * 0.9;
+    float across = fract((fq2.y + wobble) * 2.6);
+    float bundle = sin(3.14159 * across);
+    float seam = rsmooth(0.16, 0.0, min(across, 1.0 - across));
+    float fibre = noise(vec2(fq2.x * 1.2, (fq2.y + wobble) * 90.0));
+    c = bundle;
+    col *= 0.7 + 0.32 * bundle;
+    col *= 0.92 + 0.12 * fibre;
+    col = mix(col, vec3(0.78, 0.5, 0.48), seam * 0.22);
+    col *= 0.94 + 0.08 * sin(fq2.x * 1.6 + fbm(fq2 * 0.7) * 3.0);
   } else if (u_kind == 8) {
     // Skin (ENG-0093): pores, fine hair laid one way, and a sweat sheen of tiny beads.
     vec2 pc = floor(uv * 18.0);
@@ -367,6 +373,8 @@ void main() {
   float h0 = fbm(hp);
   vec2 grad = vec2(fbm(hp + vec2(e, 0.0)) - h0, fbm(hp + vec2(0.0, e)) - h0) / e;
 #endif
+  // The liver's capsule is taut and smooth: only broad swells, no crinkle.
+  if (u_kind == 4) grad *= 0.3;
   // Dome the field so light wraps around the organ's bulk.
   grad += q * 0.9;
   // Wounds and swellings from the surface layer shape the normal: cuts read as carved channels.

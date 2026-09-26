@@ -382,7 +382,7 @@ export const OP_4_10: OperationDef = {
   second: { patient: 'Wendel, drummer boy', vitals: 80 },
   venue: 'field',
   diagnosis: 'Two brought in from the Gorget together: a pikeman with a spear-rent thigh, and the drummer boy trampled in the rout. Keep them both.',
-  organ: 'flesh',
+  organ: 'muscle',
   regions: [
     { kind: 'flesh', ...at(-200, 0), rx: 200, ry: 200 },
     { kind: 'flesh', ...at(200, 0), rx: 200, ry: 200 },
@@ -412,7 +412,7 @@ export const OP_4_2: OperationDef = {
   title: 'Tusk and Hoof',
   patient: 'Wendel, convoy guard',
   diagnosis: 'Gored by a horned raider: horn tip broken off inside, ticks crawling from the wound, dung in the flesh.',
-  organ: 'flesh',
+  organ: 'muscle',
   timeLimit: 300,
   baseDrain: 0.1,
   env: ['mud'],
@@ -597,7 +597,7 @@ export const OP_4_8: OperationDef = {
   title: 'The Stone Bride',
   patient: 'Hanne, sutler’s daughter',
   diagnosis: 'Petrification from the fingertips, advancing at her wedding. Hand, then arm, then chest.',
-  organ: 'flesh',
+  organ: 'skin',
   // Two regions (GAM-0247): the arm on the left, the chest on the right; Tab pans between them.
   regions: [
     { kind: 'flesh', ...at(-210, -20), rx: 230, ry: 190 },

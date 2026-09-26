@@ -89,7 +89,7 @@ export const OP_1_3 = defineOp({
   patient: 'Anno, gunsmith’s apprentice',
   patientGender: 'm',
   diagnosis: 'Burst-barrel injury: powder burns across the chest, lead fragments embedded beneath the skin.',
-  organ: 'flesh',
+  organ: 'skin',
   timeLimit: 240,
   baseDrain: 0.25,
   vitals: 70,

@@ -11,7 +11,7 @@ const ORGAN: Record<OrganKind, { base: string; deep: string; vein: string }> = {
   heart: { base: '#b83a3a', deep: '#5a0e14', vein: '#3a0a30' },
   lung: { base: '#d08a90', deep: '#8a4a58', vein: '#5a2040' },
   gut: { base: '#d09878', deep: '#8a4a3a', vein: '#6a2a3a' },
-  liver: { base: '#8a2a2a', deep: '#40080c', vein: '#200410' },
+  liver: { base: '#7c2c28', deep: '#3a0c0e', vein: '#200410' },
   brain: { base: '#d8a8a0', deep: '#9a6a70', vein: '#8a2030' },
   bone: { base: '#c89880', deep: '#6a3a30', vein: '#5a1a20' },
   // ENG-0093: deep red striated muscle; pale skin with pores and fine hair.
@@ -22,7 +22,7 @@ const ORGAN: Record<OrganKind, { base: string; deep: string; vein: string }> = {
 /** Membrane edge softness per organ: crisp alveoli, softer fat lobules. */
 const CELL_SOFT: Record<OrganKind, number> = { flesh: 0.1, heart: 0.08, lung: 0.05, gut: 0.09, liver: 0.07, brain: 0.08, bone: 0.12, muscle: 0.08, skin: 0.1 };
 /** Base roughness per organ: glossy serosa and heart, matte skin and bone. */
-const ROUGH: Record<OrganKind, number> = { flesh: 0.55, heart: 0.38, lung: 0.45, gut: 0.35, liver: 0.4, brain: 0.5, bone: 0.6, muscle: 0.42, skin: 0.62 };
+const ROUGH: Record<OrganKind, number> = { flesh: 0.55, heart: 0.38, lung: 0.45, gut: 0.35, liver: 0.3, brain: 0.5, bone: 0.6, muscle: 0.42, skin: 0.62 };
 
 /** Organ colours shifted by the patient's people, and that people's full look for the shader. */
 export function organPalette(def: Pick<OperationDef, 'organ' | 'race'>): { kind: number; base: RGB; deep: RGB; vein: RGB; cellSoft: number; rough: number; species: SpeciesLook } {

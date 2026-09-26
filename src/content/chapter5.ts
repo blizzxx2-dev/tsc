@@ -466,7 +466,7 @@ export const OP_5_2: OperationDef = {
   title: 'The Mouth Beneath',
   patient: 'Dietmar, tanner',
   diagnosis: 'A talking abdominal cyst. It must come out whole; if it ruptures, something crawls out.',
-  organ: 'gut',
+  organ: 'liver',
   timeLimit: 300,
   baseDrain: 0.1,
   tools: ALL,

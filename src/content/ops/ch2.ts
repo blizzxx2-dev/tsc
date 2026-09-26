@@ -72,7 +72,7 @@ export const OP_2_2 = defineOp({
   patientGender: 'f',
   race: 'dwarf',
   diagnosis: 'Cave-in at a hexstone seam; her lamp burst with it. Shards of stone and glass beneath the skin, invisible to the eye. Surrounding flesh spoiling.',
-  organ: 'flesh',
+  organ: 'skin',
   timeLimit: 270,
   baseDrain: 0.05,
   tools: ALL,
