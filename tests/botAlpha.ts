@@ -7,7 +7,7 @@ import { FIELD, TRAY_DISH } from '../src/surgery/operation';
 import type { TinctureColor } from '../src/surgery/progress';
 import type { ToolId } from '../src/surgery/types';
 import { AlchemicalAcid, CompoundPoison, GasPocket } from '../src/surgery/ailments/alchemy';
-import { BoneSplinter, Fracture, FRACTURE, Splint } from '../src/surgery/ailments/fracture';
+import { BoneSplinter, Fracture, FRACTURE, Splint, SplintWrap } from '../src/surgery/ailments/fracture';
 import { FrostPatch, IceCrystal } from '../src/surgery/ailments/frost';
 import { Amputation, Gangrene } from '../src/surgery/ailments/gangrene';
 import { Growth, GROWTH, MutationBud } from '../src/surgery/ailments/growth';
@@ -32,6 +32,7 @@ const ALPHA = [
   GasPocket,
   BoneSplinter,
   Fracture,
+  SplintWrap,
   FrostPatch,
   IceCrystal,
   Amputation,

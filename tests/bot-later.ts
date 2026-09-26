@@ -18,6 +18,8 @@ import { ComplineMalison, SilenceNode } from '../src/surgery/bosses/compline';
 import { OfficeMalison } from '../src/surgery/bosses/office';
 import { Agitation, Amputation, ClothFragment, DressedBud, HornBud, Molar, TinctureSite, Vessel, WoundFever, Worm } from '../src/surgery/ailments/kilnrows';
 import { Artery, BiteChannel, Contamination, Lockbox, Nodule, PetrifyFront, Retractor, StilledHeart, Tick } from '../src/surgery/ailments/vennmark';
+import { SplintWrap } from '../src/surgery/ailments/fracture';
+import { ClosedReduction, TRACTION } from '../src/surgery/disciplines';
 import { Bud, Cyst, HexBall, Infant, LEAD_DISH, Remnant, VocalFold } from '../src/surgery/ailments/hollownight';
 
 interface Frame {
@@ -288,6 +290,26 @@ function planAilments(op: Operation, k: BotKit, ents: Entity[], vis: Entity[]): 
     vis.find((e): e is T => e instanceof cls && pred(e as T));
   const live = (e: Entity) => () => (e.alive && !e.hidden ? e.pos : null);
   const up = (p: Vec, dy: number): Vec => ({ x: p.x, y: p.y + dy });
+
+  // Bone-setting (CON-0237…0240): find a closed break with the lens, pull the limb out to length
+  // (never holding at full), and let the generic fracture plan set and pin; bind each splint band by band.
+  const closed = ents.find((e): e is ClosedReduction => e instanceof ClosedReduction && e.hidden);
+  if (closed && op.def.tools.includes('lens')) return k.hold('lens', () => (closed.alive && closed.hidden ? closed.pos : null), 0.8);
+  const slack = find(ClosedReduction, (r) => !r.roughlyAligned && r.traction < TRACTION.needed + 0.3);
+  if (slack) return k.hold('tongs', () => (slack.alive ? slack.tractionPoint : null), 1.2 - slack.traction);
+  const wrap = find(SplintWrap);
+  if (wrap) {
+    const c = wrap.bandAt(wrap.bound.findIndex((b) => !b));
+    const a = Math.atan2(wrap.b.y - wrap.a.y, wrap.b.x - wrap.a.x) + Math.PI / 2;
+    return k.drag(
+      'thread',
+      [
+        { x: c.x - Math.cos(a) * 26, y: c.y - Math.sin(a) * 26 },
+        { x: c.x + Math.cos(a) * 26, y: c.y + Math.sin(a) * 26 },
+      ],
+      250,
+    );
+  }
 
   // Things that punish delay first.
   const agit = find(Agitation, (a) => a.level > 0.5 && ents.some((e) => e.alive && e.required));

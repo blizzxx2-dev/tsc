@@ -1,10 +1,10 @@
-import { dist, type Vec } from '../../core/math';
+import { dist, pointSegment, type Vec } from '../../core/math';
 import { boneChipsArt, boneFragmentArt, drawBoneView, splintArt } from '../../art/boneView';
 import { hex } from '../../render/color';
 import type { Gfx } from '../../render/gfx';
 import { angleDiff, BloodPool, surfDisc } from '../entities';
 import { Entity } from '../entity';
-import { onBody, type Operation } from '../operation';
+import { onBody, strokeCrosses, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
 
 /** Fracture tuning (px, degrees, s). */
@@ -24,6 +24,8 @@ export const FRACTURE = {
   perLoose: 0.1,
   compoundBlock: 130,
   splinterDrain: 0.2,
+  wrapDrain: 0.15,
+  wrapBandPx: 6,
 };
 
 const RAD = Math.PI / 180;
@@ -52,6 +54,8 @@ export class Fracture extends Entity {
   private held: Fragment | null = null;
   private grabOff: Vec = { x: 0, y: 0 };
   noun = 'the broken bone';
+  /** Turns of bandage the splint needs once pinned (CON-0238); 0 leaves a finished splint. */
+  wrapTurns = 0;
 
   constructor(
     pos: Vec,
@@ -177,7 +181,9 @@ export class Fracture extends Entity {
     // The set bone stays splinted and bandaged for the rest of the operation (ART-0223).
     const first = this.fragments[0];
     const last = this.fragments[this.fragments.length - 1];
-    op.spawn(new Splint(this.end(first.target, first.targetRot, -1), this.end(last.target, last.targetRot, 1)));
+    const a = this.end(first.target, first.targetRot, -1);
+    const b = this.end(last.target, last.targetRot, 1);
+    op.spawn(this.wrapTurns > 0 ? new SplintWrap(a, b, this.wrapTurns) : new Splint(a, b));
     if (loose > 0) {
       op.rate('bad', at, 'Misaligned');
       op.endPenalty += FRACTURE.misalignPenalty * loose;
@@ -280,5 +286,62 @@ export class Splint extends Entity {
   }
   draw(g: Gfx): void {
     splintArt(g, this.a, this.b);
+  }
+}
+
+/**
+ * A splint laid along a pinned bone, waiting to be bound (CON-0238): stroke the thread across it,
+ * a turn at a time along its length. Each band takes one turn; a turn through the band's centre
+ * is COOL, elsewhere in it GOOD, and one through a band already bound is wasted. Unbound, the
+ * bone shifts in its pins (0.15/s). Bound, it becomes the finished splint.
+ */
+export class SplintWrap extends Entity {
+  noun = 'the splint';
+  readonly bound: boolean[];
+  constructor(
+    public a: Vec,
+    public b: Vec,
+    turns: number,
+  ) {
+    super({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
+    this.layer = 2;
+    this.bound = new Array(Math.max(1, turns)).fill(false);
+  }
+  /** Where band `i`'s centre lies along the splint. */
+  bandAt(i: number): Vec {
+    const t = (i + 0.5) / this.bound.length;
+    return { x: this.a.x + (this.b.x - this.a.x) * t, y: this.a.y + (this.b.y - this.a.y) * t };
+  }
+  override wants(): readonly ToolId[] {
+    return ['thread'];
+  }
+  override hitTest(p: Vec, pad = 0): boolean {
+    return pointSegment(p, this.a, this.b).d < 16 + pad;
+  }
+  override drain(): number {
+    return FRACTURE.wrapDrain;
+  }
+  override onSweep(op: Operation, ptr: Pointer, tool: ToolId): void {
+    if (tool !== 'thread' || ptr.pressed || !strokeCrosses(ptr.prev, ptr.pos, this.a, this.b)) return;
+    const n = this.bound.length;
+    const t = pointSegment({ x: (ptr.prev.x + ptr.pos.x) / 2, y: (ptr.prev.y + ptr.pos.y) / 2 }, this.a, this.b).t;
+    const i = Math.min(n - 1, Math.floor(t * n));
+    if (this.bound[i]) return;
+    this.bound[i] = true;
+    op.cues.push('stitch');
+    const r = pointSegment(this.bandAt(i), ptr.prev, ptr.pos).d <= FRACTURE.wrapBandPx ? 'cool' : 'good';
+    op.rate(r, this.bandAt(i), 'Wrapped');
+    if (this.bound.every(Boolean)) {
+      this.kill();
+      op.spawn(new Splint(this.a, this.b));
+      op.rate('good', this.pos, 'Splinted');
+    }
+  }
+  draw(g: Gfx, op: Operation): void {
+    splintArt(g, this.a, this.b, this.bound);
+    this.bound.forEach((done, i) => {
+      const c = this.bandAt(i);
+      if (!done) g.circle(c.x, c.y, 6, hex('#ffebbe', 0.35 + 0.3 * Math.sin(op.elapsed * 5 + i)));
+    });
   }
 }

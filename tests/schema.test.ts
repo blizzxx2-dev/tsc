@@ -18,6 +18,8 @@ import { BloodPool, Bubo, Burn, Embedded, Grub, Incision, Laceration, Rot, SALVE
 import { ChoirVoice, EggSac, LaudsMalison, SpiderlingGrub } from '../src/surgery/lauds';
 import { Malison, MalisonShard } from '../src/surgery/malison';
 import { WebSilk } from '../src/surgery/ailments/silk';
+import { Fracture } from '../src/surgery/ailments/fracture';
+import { ClosedReduction } from '../src/surgery/disciplines';
 import { ComplineMalison } from '../src/surgery/bosses/compline';
 import { NoneMalison } from '../src/surgery/bosses/none';
 import { PrimeMalison } from '../src/surgery/bosses/prime';
@@ -82,6 +84,8 @@ describe('entity registry (CON-0002)', () => {
       FangNest,
     ],
     [{ e: 'herald', at: [0, 0] }, MatinsHerald],
+    [{ e: 'fracture', at: [0, 0], wrap: 3 }, Fracture],
+    [{ e: 'reduction', at: [0, 0], pull: [-160, 0] }, ClosedReduction],
     [{ e: 'elite-matriarch', at: [0, 0] }, WormMatriarch],
     [
       {

@@ -49,6 +49,10 @@ export const RANK_TABLE: Record<string, { S: number; A: number; B: number }> = {
   'op5-7': { S: 6020, A: 4820, B: 3610 },
   'op5-8': { S: 5610, A: 4490, B: 3370 },
   'op5-9': { S: 8950, A: 7160, B: 5370 },
+  'op3-12': { S: 5310, A: 4250, B: 3190 }, // steady won 5534
+  'op3-13': { S: 6420, A: 5140, B: 3850 }, // steady won 6688
+  'op4-11': { S: 5390, A: 4310, B: 3230 }, // steady won 5618
+  'op5-10': { S: 8860, A: 7090, B: 5320 }, // steady won 9234
   // Challenge X-ops (Master rules).
   'op1-5-x1': { S: 3150, A: 2520, B: 1890 },
   'op2-5-x2': { S: 3940, A: 3150, B: 2360 },

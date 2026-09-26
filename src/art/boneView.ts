@@ -156,7 +156,8 @@ export function boneChipsArt(g: Gfx, at: { x: number; y: number }, n: number, se
 }
 
 /** A splint lashed along a set bone: linen padding, two wooden staves and a dense spiral wrap. */
-export function splintArt(g: Gfx, a: { x: number; y: number }, b: { x: number; y: number }): void {
+/** `bound`, when given, wraps only those bands of the splint (a splint still being bound, CON-0238). */
+export function splintArt(g: Gfx, a: { x: number; y: number }, b: { x: number; y: number }, bound?: readonly boolean[]): void {
   const rot = Math.atan2(b.y - a.y, b.x - a.x);
   const nx = -Math.sin(rot);
   const ny = Math.cos(rot);
@@ -174,6 +175,7 @@ export function splintArt(g: Gfx, a: { x: number; y: number }, b: { x: number; y
   const turns = Math.max(6, Math.floor((len - 30) / 9));
   for (let i = 0; i <= turns; i++) {
     const k = 15 / len + (i / turns) * (1 - 30 / len);
+    if (bound && !bound[Math.min(bound.length - 1, Math.floor(k * bound.length))]) continue;
     const c = { x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k };
     const s = 20;
     g.line({ x: c.x - nx * s - tx * 5, y: c.y - ny * s - ty * 5 }, { x: c.x + nx * s + tx * 5, y: c.y + ny * s + ty * 5 }, 10, hex(i % 2 ? '#e2d8c0' : '#f2ecdc'));

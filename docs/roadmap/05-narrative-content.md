@@ -615,10 +615,10 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0236 · Beta · P1 · S · Interview content QA — every question path reachable; contradiction pairs tested
 
 ### Bone-setting
-- [ ] CON-0237 · Alpha · P1 · M · Bone-setting mode spec — X-ray-free: palpate with lens (bone silhouettes), traction via mouse drag with tension meter, rotate fragments with wheel, splint with thread
-- [ ] CON-0238 · Alpha · P1 · L · Implement Bone/Fragment entities — with alignment scoring (angle and gap tolerances) and over-traction damage (tests)
-- [ ] CON-0239 · Alpha · P1 · M · Bone-setting content — 4 cases: "Kicked by a Dray-Horse" (tibia), "Fall from the Scaffold" (radius/ulna), "Pike-Shaft Blow" (collarbone), "Rack-Broken Hands" (Ch5, Tribunal victim, many small fragments)
-- [ ] CON-0240 · Beta · P2 · S · Bone-setting tutorial and balance pass — average bot aligns ≥ 70% of fragments within tolerance
+- [x] CON-0237 · Alpha · P1 · M · Bone-setting mode spec — X-ray-free: palpate with lens (bone silhouettes), traction via mouse drag with tension meter, rotate fragments with wheel, splint with thread
+- [x] CON-0238 · Alpha · P1 · L · Implement Bone/Fragment entities — with alignment scoring (angle and gap tolerances) and over-traction damage (tests)
+- [x] CON-0239 · Alpha · P1 · M · Bone-setting content — 4 cases: "Kicked by a Dray-Horse" (tibia), "Fall from the Scaffold" (radius/ulna), "Pike-Shaft Blow" (collarbone), "Rack-Broken Hands" (Ch5, Tribunal victim, many small fragments)
+- [x] CON-0240 · Beta · P2 · S · Bone-setting tutorial and balance pass — average bot aligns ≥ 70% of fragments within tolerance
 
 ### Forensic post-mortem
 - [x] CON-0241 · Alpha · P1 · M · Forensic mode spec — no vitals; timer is "candle length"; find, document and tag wounds/foreign bodies in a corpse; conclusion answers cause and manner of death

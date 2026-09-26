@@ -1,4 +1,5 @@
 import { JOURNAL_STORY } from './journal';
+import { OP_5_10 } from './ops/bones';
 import { EPILOGUE_STORY } from './epilogue';
 import { ENDING_EXILE, ENDING_PARDON, ENDING_PYRE, endingIs, hostIs, strohTrust, trialVerdict, verdictIs } from './endings';
 import { whisperBand, whisperScore, whisperThought, type WhisperBand } from './whisper';
@@ -618,6 +619,7 @@ export const CHAPTER_5: Chapter = {
     { kind: 'story', story: STORY_5_3 },
     { kind: 'story', story: STORY_5_4 },
     { kind: 'op', op: OP_5_5 },
+    { kind: 'op', op: OP_5_10 },
     { kind: 'story', story: STORY_5_5 },
     { kind: 'op', op: OP_5_1 },
     { kind: 'story', story: STORY_5_6 },

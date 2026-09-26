@@ -1,4 +1,5 @@
 import { teach } from './teach';
+import { OP_3_12, OP_3_13 } from './ops/bones';
 import { BloodPool, Bubo, Burn, Embedded, Incision, Laceration, Rot } from '../surgery/entities';
 import { Agitation, Amputation, ClothFragment, DressedBud, HornBud, Jaw, leadDeposit, Molar, TinctureSite, Worm, woundFeverPhase } from '../surgery/ailments/kilnrows';
 import { Artery } from '../surgery/ailments/vennmark';
@@ -569,12 +570,14 @@ export const CHAPTER_3: Chapter = {
     { kind: 'story', story: STORY_3_3 },
     { kind: 'op', op: OP_3_2 },
     { kind: 'op', op: OP_3_4 },
+    { kind: 'op', op: OP_3_12 },
     { kind: 'story', story: STORY_3_4 },
     // CON-0234: the Founders' Guild asks for an opinion in writing before Ute Brandt reaches the table.
     { kind: 'discipline', discipline: { id: 'iv3-founders', title: INTERVIEW_FOUNDERS.title, place: INTERVIEW_FOUNDERS.place, backdrop: 'guildhall', mode: 'interview', interview: INTERVIEW_FOUNDERS } },
     { kind: 'op', op: OP_3_3 },
     { kind: 'story', story: STORY_3_5 },
     { kind: 'op', op: OP_3_5 },
+    { kind: 'op', op: OP_3_13 },
     { kind: 'story', story: STORY_3_6 },
     { kind: 'op', op: OP_3_6 },
     { kind: 'story', story: STORY_3_6B },

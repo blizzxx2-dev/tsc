@@ -101,6 +101,9 @@ export const SCORING: readonly ScoringRule[] = [
   { label: 'Pinned', action: 'Pin a set fracture', tools: ['lancet'], criteria: { good: 'both pins in order, every fragment seated' } },
   { label: 'Pin order', action: 'Tap the second pin first', tools: ['lancet'], criteria: { bad: 'always' } },
   { label: 'Misaligned', action: 'Pin a fragment that never seated', tools: ['lancet'], criteria: { bad: 'and −150 end bonus per fragment' } },
+  { label: 'Over-traction', action: 'Haul on a limb already at full traction', tools: ['tongs'], criteria: { bad: 'over 1.5 s; harms and −100 end bonus' } },
+  { label: 'Wrapped', action: 'Bind one band of a splint with the thread', tools: ['thread'], criteria: { cool: 'through the band’s centre', good: 'anywhere in the band' } },
+  { label: 'Splinted', action: 'Bind every band of a splint', tools: ['thread'], criteria: { good: 'always' } },
   { label: 'Splinter', action: 'Remove a bone or wood splinter', tools: ['tongs'], criteria: { cool: 'wood, with the grain', good: 'bone splinter off the body' } },
   { label: 'Snapped splinter', action: 'Pull wood against the grain', tools: ['tongs'], criteria: { bad: 'more than 90° from the grain' } },
   // Petrification

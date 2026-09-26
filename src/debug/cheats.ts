@@ -50,6 +50,8 @@ const SPAWN_DEFAULTS: { [K in EntityId]: Omit<Extract<EntitySpec, { e: K }>, 'e'
   'elite-ghoulclaw': { armpit: [220, -150] },
   'elite-magus': {},
   herald: {},
+  fracture: { fragments: 3, splinters: 1, wrap: 3 },
+  reduction: { pull: [-160, 0], fragments: 2, wrap: 3 },
 };
 
 /** Every id `spawn` accepts. */

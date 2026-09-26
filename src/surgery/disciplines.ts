@@ -193,16 +193,22 @@ export class TriageSession {
 
 // ====================================================================== closed bone-setting
 
-export const TRACTION = { build: 1, decay: 0.25, needed: 0.5, reach: 26 };
+export const TRACTION = { build: 1, decay: 0.25, needed: 0.5, reach: 26, overHold: 1.5, overHurt: 6, overPenalty: 100 };
 
 /**
- * Bone-setting without an incision: the fragments move only while traction is
+ * Bone-setting without an incision (CON-0237): the fragments move only while traction is
  * applied — hold the tongs on the traction point (the limb's end) to fill the
- * traction meter, then set the fragments before it slackens.
+ * traction meter, then set the fragments before it slackens. Hauling on a limb already at
+ * full traction for more than 1.5 s tears it: BAD "Over-traction", a wound's worth of harm and
+ * −100 end bonus, and the meter drops to half. A closed break may be `hidden` under the skin:
+ * the lens finds it (CON-0240).
  */
 export class ClosedReduction extends Fracture {
   traction = 0;
   private pulling = false;
+  /** Seconds hauled at full traction. */
+  private overT = 0;
+  overTractions = 0;
 
   constructor(
     pos: Vec,
@@ -210,20 +216,37 @@ export class ClosedReduction extends Fracture {
     public tractionPoint: Vec,
     axis = 0,
     count = 2,
+    opts: { hidden?: boolean; wrap?: number } = {},
   ) {
     super(pos, op, axis, count, false);
     this.noun = 'the limb';
+    this.hidden = !!opts.hidden;
+    this.wrapTurns = opts.wrap ?? 0;
   }
 
   override update(op: Operation, dt: number): void {
     super.update(op, dt);
     if (this.pulling) this.traction = Math.min(1, this.traction + TRACTION.build * dt);
     else this.traction = Math.max(0, this.traction - TRACTION.decay * dt);
+    this.overT = this.pulling && this.traction >= 1 ? this.overT + dt : 0;
+    if (this.overT > TRACTION.overHold) {
+      this.overT = 0;
+      this.traction = 0.5;
+      this.overTractions++;
+      op.rate('bad', this.tractionPoint, 'Over-traction');
+      op.hurt(TRACTION.overHurt, this.tractionPoint);
+      op.endPenalty += TRACTION.overPenalty;
+      op.sayOnce('over-traction', 'Ease off! You’ll tear the joint from its socket.');
+    }
     this.pulling = false;
   }
 
   override wants(): readonly ToolId[] {
-    return ['tongs'];
+    return this.roughlyAligned ? super.wants() : ['tongs'];
+  }
+
+  override hitTest(p: Vec, pad = 0): boolean {
+    return super.hitTest(p, pad) || (!this.roughlyAligned && dist(p, this.tractionPoint) < TRACTION.reach + pad);
   }
 
   override onSweep(op: Operation, ptr: Pointer, tool: ToolId): void {

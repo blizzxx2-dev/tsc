@@ -10,6 +10,8 @@
  * Positions are `[dx, dy]` offsets from the centre of the operating field (the `at()` convention).
  */
 import { WebSilk } from '../surgery/ailments/silk';
+import { Fracture, fractureSite } from '../surgery/ailments/fracture';
+import { ClosedReduction } from '../surgery/disciplines';
 import type { PoisonId } from './poisons';
 import { ChoirMagus, DeadPulse, FrostWight, GhoulClaw, Sellsword, WormMatriarch } from '../surgery/bosses/alphaElites';
 import type { Vec } from '../core/math';
@@ -67,7 +69,9 @@ export type EntitySpec =
   | ({ e: 'elite-frostwight'; at: Pt; count?: number } & Common)
   | ({ e: 'elite-ghoulclaw'; at: Pt; armpit: Pt } & Common)
   | ({ e: 'elite-magus'; at: Pt } & Common)
-  | ({ e: 'herald'; at: Pt } & Common);
+  | ({ e: 'herald'; at: Pt } & Common)
+  | ({ e: 'fracture'; at: Pt; angle?: number; fragments?: number; compound?: boolean; splinters?: number; wrap?: number } & Common)
+  | ({ e: 'reduction'; at: Pt; pull: Pt; angle?: number; fragments?: number; wrap?: number } & Common);
 
 export type EntityId = EntitySpec['e'];
 
@@ -281,6 +285,22 @@ export const ENTITY_REGISTRY: { [K in EntityId]: Entry<K> } = {
     params: { at: { type: 'pt' } },
     needs: () => [['tongs'], ['lens']],
     make: (s, op) => new ChoirMagus(P(s.at), op).all,
+  },
+  // Bone-setting (CON-0237…0240): an open fracture with its splinters, or a closed reduction
+  // under traction; `wrap` turns of bandage bind the splint once it is pinned.
+  fracture: {
+    params: { at: { type: 'pt' }, angle: num(true), fragments: num(true, [2, 5]), compound: { type: 'boolean', optional: true }, splinters: num(true, [0, 4]), wrap: num(true, [0, 8]) },
+    needs: (s) => [['tongs'], ['lancet'], ...((s.wrap ?? 0) > 0 ? [['thread'] as ToolId[]] : [])],
+    make: (s, op) => {
+      const out = fractureSite(op, P(s.at), { axis: s.angle ?? 0, fragments: s.fragments ?? 3, compound: s.compound, splinters: s.splinters ?? 1 });
+      (out[0] as Fracture).wrapTurns = s.wrap ?? 0;
+      return out;
+    },
+  },
+  reduction: {
+    params: { at: { type: 'pt' }, pull: { type: 'pt' }, angle: num(true), fragments: num(true, [2, 5]), wrap: num(true, [0, 8]) },
+    needs: (s) => [['tongs'], ['lancet'], ...((s.wrap ?? 0) > 0 ? [['thread'] as ToolId[]] : [])],
+    make: (s, op) => new ClosedReduction(P(s.at), op, P(s.pull), s.angle ?? 0, s.fragments ?? 2, { wrap: s.wrap ?? 0 }),
   },
   herald: {
     params: { at: { type: 'pt' } },

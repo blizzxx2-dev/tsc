@@ -1,4 +1,5 @@
 import { whisperThought } from './whisper';
+import { OP_4_11 } from './ops/bones';
 import { teach } from './teach';
 import { BloodPool, Embedded, Incision, Laceration, Rot } from '../surgery/entities';
 import { TinctureSite } from '../surgery/ailments/kilnrows';
@@ -618,6 +619,7 @@ export const CHAPTER_4: Chapter = {
     { kind: 'op', op: OP_4_2 },
     { kind: 'story', story: STORY_4_3 },
     { kind: 'op', op: OP_4_3 },
+    { kind: 'op', op: OP_4_11 },
     { kind: 'story', story: STORY_4_4 },
     { kind: 'op', op: OP_4_4 },
     { kind: 'story', story: STORY_4_5 },
