@@ -10,14 +10,33 @@ import { stitchArt } from '../../art/ailmentArt';
 import { hex, rgba } from '../color';
 import type { Gfx } from '../gfx';
 
-/** Soft-edged channel stroke into the surface layer: stacked widths approximate a falloff. */
+/** Soft-edged channel stroke into the surface layer: a smooth falloff across its width. */
 export function surfLine(g: Gfx, pts: Vec[], w: number, r: number, gc = 0, b = 0, a = 0): void {
-  for (const [k, f] of [
-    [1.8, 0.25],
-    [1.2, 0.35],
-    [0.7, 0.4],
-  ] as const)
-    g.polyline(pts, w * k, rgba(Math.round(r * f * 255), Math.round(gc * f * 255), Math.round(b * f * 255), a * f));
+  // Soft discs stamped along the path (the surface layer adds them up). Three stacked strokes did
+  // this before, and the flesh carved their steps as visible rings around every cut. The discs
+  // shrink toward the ends so the channel closes with the wound instead of overrunning its tips.
+  const R = w * 0.9;
+  const step = Math.max(1.5, R * 0.3);
+  const k = step / R;
+  const inner = rgba(Math.round(Math.min(1, r * k) * 255), Math.round(Math.min(1, gc * k) * 255), Math.round(Math.min(1, b * k) * 255), a * k);
+  const outer = rgba(0, 0, 0, 0);
+  let total = 0;
+  for (let i = 1; i < pts.length; i++) total += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y);
+  const taper = Math.min(R * 1.5, total / 2);
+  let at = 0;
+  for (let i = 1; i < pts.length; i++) {
+    const p0 = pts[i - 1];
+    const p1 = pts[i];
+    const len = Math.hypot(p1.x - p0.x, p1.y - p0.y);
+    const n = Math.max(1, Math.round(len / step));
+    for (let j = i === 1 ? 0 : 1; j <= n; j++) {
+      const t = j / n;
+      const d = Math.min(at + len * t, total - at - len * t);
+      const f = taper > 0 ? Math.sqrt(Math.min(1, Math.max(0, d / taper))) : 1;
+      g.circleGrad(p0.x + (p1.x - p0.x) * t, p0.y + (p1.y - p0.y) * t, R * (0.35 + 0.65 * f), inner, outer);
+    }
+    at += len;
+  }
 }
 
 /** Soft channel disc into the surface layer. */

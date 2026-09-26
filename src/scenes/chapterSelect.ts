@@ -14,7 +14,7 @@ import { CAMPAIGN } from '../content/campaign';
 import { VIEW_W } from '../ui/layout';
 import { Ui, type Rect, type UiNode } from '../ui/kit';
 import { drawTooltip, focusRing, menuEntry } from '../ui/controls';
-import { caps, glass, heading, INK, meter, numerals, rule, well } from '../ui/hudKit';
+import { caps, glass, heading, INK, meter, numerals, rule } from '../ui/hudKit';
 import { parchmentSheet, waxSeal } from '../ui/ornaments';
 import { MOTION, tween } from '../ui/motion';
 import { fitBlock, fitText } from '../ui/text';
@@ -126,24 +126,25 @@ export class ChapterSelectScene implements Scene {
     meter(g, { x: r.x + 22, y: r.y + 236, w: r.w - 44, h: 8 }, frac, INK.goldHi, INK.goldLo, 0, ink * a);
     // A seal per operation: pressed wax where a best exists, an empty ring where none.
     const ranks = chapterRanks(ci);
-    caps(g, t('ui.chapters.seals'), r.x + r.w / 2, r.y + 290, 12, hex(INK.dim, ink * a), 'center');
+    const earned = ranks.filter(Boolean).length;
+    // The tally shares the label's line so three rows of seals (chapters of 11+) still fit the card.
+    caps(g, `${t('ui.chapters.seals')}  ·  ${t('ui.chapters.seal_tally', { earned, total: ranks.length })}`, r.x + r.w / 2, r.y + 284, 12, hex(INK.dim, ink * a), 'center');
     const cols = Math.min(5, ranks.length);
-    const rows = Math.ceil(ranks.length / cols);
-    const sr = 17;
-    const pitch = 39;
+    const sr = ranks.length > 10 ? 14 : 17;
+    const pitch = sr * 2 + 6;
+    const rowPitch = sr * 2 + 8;
     ranks.forEach((rank, i) => {
       const row = Math.floor(i / cols);
       const inRow = Math.min(cols, ranks.length - row * cols);
       const x = r.x + r.w / 2 + (i % cols - (inRow - 1) / 2) * pitch;
-      const y = r.y + 330 + row * 44;
+      const y = r.y + 306 + sr + row * rowPitch;
       if (rank) rankSeal(g, x, y, sr, rank, ink * a);
       else {
-        well(g, { x: x - sr, y: y - sr, w: sr * 2, h: sr * 2 }, 0.7 * ink * a);
+        // An empty socket: a sunk disc with a faint gilt ring.
+        g.circle(x, y, sr - 2, hex('#000000', 0.4 * ink * a));
         g.arc(x, y, sr - 3, 1, hex(INK.gilt, 0.35 * ink * a));
       }
     });
-    const earned = ranks.filter(Boolean).length;
-    caps(g, t('ui.chapters.seal_tally', { earned, total: ranks.length }), r.x + r.w / 2, r.y + 330 + rows * 44 + 4, 12, hex(INK.gold, ink * a), 'center');
     const foot = !n.enabled ? t('ui.chapters.not_reached') : frac >= 1 ? t('ui.chapters.replay') : t('ui.chapters.continue');
     fitText(g, `chapters.${ci}.foot`, foot, r.x + r.w / 2, r.y + r.h - 22, r.w - 30, { size: 16, font: 'italic', color: hex(k > 0.5 ? INK.goldHi : INK.dim, ink * a), align: 'center', shadow: false });
     if (k > 0.01 && n.enabled) focusRing(g, r, k, g.time);

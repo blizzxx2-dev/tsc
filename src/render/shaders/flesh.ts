@@ -495,8 +495,16 @@ void main() {
   vec3 skinCol = u_skin * (0.86 + 0.18 * pores * u_hide.x);
   skinCol = mix(skinCol, skinCol * 0.55, stubble * 0.5);
   skinCol = mix(skinCol, mix(u_skin, vec3(0.9, 0.78, 0.72), 0.5) * 1.05, scar * 0.6);
-  // Light the collar like the drape (it curls away from the opening), with a thin sheen.
-  float skinLit = 0.3 + 0.8 * fdiff + 0.25 * pow(max(fdiff, 0.0), 12.0) * (1.0 - u_sheen * 3.0);
+  // The collar is hide rolled back over the retractors: a rounded cross-section that rises from
+  // the cut lip, crests, and tucks under the drape. Light it by that profile, not the drape's.
+  float cc = clamp((edge - 1.0) / collar, 0.0, 1.0);
+  vec2 rv = normalize(px - u_center + vec2(1e-3));
+  float roll = cos(3.14159 * cc);
+  vec3 cn = normalize(vec3(-rv * roll * 0.85, 0.55 + 0.45 * sin(3.14159 * cc)));
+  float cdiff = max(dot(cn, fl), 0.0);
+  float skinLit = 0.22 + 0.9 * cdiff + 0.28 * pow(cdiff, 14.0) * (1.0 - u_sheen * 3.0);
+  // Contact shadows: where it tucks under the linen, and down into the cut.
+  skinLit *= mix(0.5, 1.0, rsmooth(1.0, 0.72, cc)) * mix(0.72, 1.0, smoothstep(0.0, 0.22, cc));
   // The collar's pores catch the lamp too, and it carries the same mottled tone.
   if (u_maps > 0.5) {
     skinLit *= 1.0 + 0.35 * dot(skinMap.rg * 2.0 - 1.0, normalize(u_light - px));

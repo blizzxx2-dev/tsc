@@ -736,9 +736,9 @@ vec4 woundStrip(vec2 q) {
   vec3 ln = normalize(vec3(0.0, sign(q.y) * (1.0 - 2.0 * lt) * 0.8, 1.0));
   vec3 lc = lit(vec3(0.62, 0.26, 0.22), ln, 0.18, 25.0);
   vec4 acc = paint(lc, lip * (0.2 + 0.4 * op) * (1.0 - lt * 0.6));
-  // Outer ink line where the pinched lip meets flat skin.
-  float outer = abs(ay - hw - 0.8 - lipW) - 0.6;
-  acc = over(paint(vec3(0.16, 0.03, 0.03), fill(outer) * inX * step(0.05, op) * 0.55), acc);
+  // Soft crease where the pinched lip meets flat skin (an inked line read as a sticker outline).
+  float outer = abs(ay - hw - 0.8 - lipW);
+  acc = over(paint(vec3(0.24, 0.05, 0.04), rsmooth(2.2, 0.0, outer) * inX * step(0.05, op) * 0.3), acc);
   acc = over(paint(fc, fat * 0.75), acc);
   acc = over(paint(wc, gap), acc);
   acc = over(paint(vec3(0.1, 0.01, 0.02), fill(abs(ay - hw) - 0.7) * inX * step(0.05, op) * 0.85), acc);
@@ -845,16 +845,26 @@ vec4 silk(vec2 q) {
   vec4 acc = vec4(0.0);
   for (int i = 0; i < 5; i++) {
     float fi = float(i);
-    float off = (fi - 2.0) * 2.4 + sin(fi * 3.1 + u_seed) * 1.5;
+    // Strands pinch together at the anchors and fan apart mid-span, each with its own slow drift.
+    float span = sin(clamp(q.x / L + 0.5, 0.0, 1.0) * PI);
+    float off = ((fi - 2.0) * 2.8 + sin(fi * 3.1 + u_seed) * 2.0) * (0.25 + 0.75 * span)
+      + sin(q.x * (0.035 + fi * 0.011) + fi * 2.0 + u_seed + u_time * 0.4) * 1.6 * span;
     float sag = sin(clamp(q.x / L + 0.5, 0.0, 1.0) * PI) * (3.0 + fi);
     float gapX = cut * L * 0.35;
     // Recoiled ends curl back on themselves near the cut.
     float nearCut = rsmooth(L * 0.2, 0.0, abs(q.x) - gapX);
     float y = off * (1.0 + cut * nearCut * 1.5) + sag * (1.0 - cut * 0.6) - cut * nearCut * nearCut * 6.0;
-    float d = abs(q.y - y) - 0.55;
+    // Gossamer, not string: a fine translucent thread, thicker and thinner along its length,
+    // in a faint halo, with the odd dew bead catching the lamp.
+    float dy = abs(q.y - y);
     float inX = rsmooth(L * 0.5, L * 0.5 - 1.0, abs(q.x)) * step(gapX, abs(q.x));
+    float body = 0.4 + 0.45 * noise(vec2(q.x * 0.09 + fi * 7.0, u_seed));
     float glint = pow(max(0.0, sin(q.x * 0.15 + u_time * 1.5 + fi)), 8.0);
-    acc = over(paint(vec3(0.9, 0.88, 0.82) + glint * 0.5, fill(d) * inX * 0.8), acc);
+    vec3 tint = vec3(0.84, 0.86, 0.88) + glint * 0.4;
+    acc = over(paint(tint, rsmooth(2.4, 0.0, dy) * 0.07 * inX), acc);
+    acc = over(paint(tint, fill(dy - 0.3) * inX * body), acc);
+    float bead = step(0.93, hash(vec2(floor(q.x * 0.11), fi + u_seed))) * rsmooth(1.3, 0.3, length(vec2(fract(q.x * 0.11) - 0.5, (q.y - y) * 0.11) / vec2(0.11)));
+    acc = over(paint(vec3(1.0, 0.98, 0.94), bead * inX * 0.8), acc);
   }
   return acc;
 }

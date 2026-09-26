@@ -16,8 +16,8 @@ import { assistsOf } from '../../surgery/bosses/signals';
  * dark and unnotched — until the fight unlocks them. Elites (BOS-0151) get the
  * compact form: a thin bar and an italic name.
  */
-export const BOSS_BAR = { cx: 640, y: 112, w: 420, h: 10 };
-export const ELITE_BAR = { cx: 640, y: 110, w: 240, h: 6 };
+export const BOSS_BAR = { cx: 640, y: 128, w: 420, h: 10 };
+export const ELITE_BAR = { cx: 640, y: 124, w: 240, h: 6 };
 
 /** Bar geometry for a boss (exported for layout tests). */
 export function bossBarRect(b: MalisonBase): { x: number; y: number; w: number; h: number } {
@@ -40,7 +40,7 @@ export function drawBossHud(g: Gfx, op: Operation): void {
   const name = t(`boss.${b.bossId}.name`);
   if (b.elite) g.text(name, r.x + r.w / 2, r.y - 4, { size: 15, font: 'italic', color: hex('#e8d8c0', 0.9), align: 'center' });
   else {
-    g.text(name, r.x + r.w / 2, r.y - 6, { size: 24, font: 'display', color: hex('#e8d0ff'), color2: hex('#7a4aa8'), align: 'center', shadow: hex('#000000', 0.8) });
+    g.text(name, r.x + r.w / 2, r.y - 8, { size: 22, font: 'display', color: hex('#e8d0ff'), color2: hex('#7a4aa8'), align: 'center', shadow: hex('#000000', 0.8) });
     const phase = t(`boss.${b.bossId}.phase.${b.phase.key}`);
     g.text(phase, r.x + r.w, r.y - 6, { size: 13, font: 'italic', color: hex('#c8b8a0', 0.85), align: 'right', shadow: false });
   }

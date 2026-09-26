@@ -122,7 +122,8 @@ describe('campaign state helpers', () => {
     const story = CAMPAIGN[0].steps.findIndex((s) => s.kind === 'story');
     const opStep = CAMPAIGN[0].steps[op];
     expect(stepLabel({ chapter: 0, step: op })).toBe(opStep.kind === 'op' ? opStep.op.title : '');
-    if (story >= 0) expect(stepLabel({ chapter: 0, step: story })).toMatch(/scene/i);
+    const storyStep = CAMPAIGN[0].steps[story];
+    if (storyStep?.kind === 'story') expect(stepLabel({ chapter: 0, step: story })).toBe(storyStep.story.place);
     expect(stepLabel({ chapter: 99, step: 0 })).toBeTruthy();
   });
 

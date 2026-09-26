@@ -68,7 +68,9 @@ export class ExtrasScene implements Scene {
     const vr = g.viewRect();
     g.rect(vr.x, vr.y, vr.w, vr.h, hex('#050303', 0.5));
     const k = tween(this.t, MOTION.panel);
-    const r = { x: VIEW_W / 2 - 230, y: 120, w: 460, h: flag('challengeMode') ? 452 : 400 };
+    // The panel fits its entries: the last button's foot plus the same margin the heading has above.
+    const foot = Math.max(...this.ui.nodes.map((n) => n.rect.y + n.rect.h), 300);
+    const r = { x: VIEW_W / 2 - 230, y: 120, w: 460, h: foot - 120 + 46 };
     g.save();
     g.translate(0, (1 - k) * 24);
     glass(g, r, { alpha: k, strength: 1.1 });

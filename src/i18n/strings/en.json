@@ -806,7 +806,7 @@
   "ui.slots.last_played": "Last played",
   "ui.slots.never": "Never",
   "ui.slots.in_use": "Open this session",
-  "ui.slots.story_step": "A scene at {place}",
+  "ui.slots.story_step": "{place}",
   "ui.slots.campaign_done": "The Office is sung",
   "ui.damaged.title": "Your Records Are Damaged",
   "ui.damaged.body": "The journal could not be read, nor its backup. The damaged copy has been set aside beside it. You may resume from a ledger you saved, or begin a fresh journal.",

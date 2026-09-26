@@ -1,6 +1,7 @@
 import { packPose } from '../art/portraitRig';
 import '../render/surgery';
 import { drawEntity, drawEntityFluid, drawEntitySurface } from '../render/surgery/registry';
+import { drawRetractors } from '../render/surgery/retractors';
 import { drawSeal } from '../ui/seals';
 import { FACES, type Face } from '../content/story';
 import { curseSource, hourOf } from '../art/curse';
@@ -860,6 +861,8 @@ export class OperationScene implements Scene {
     g.fluidComposite(light, { blood, pus: colours.pus, bile: colours.bile, gore: presentation.gore });
     // Entities, particles and world FX go through the world camera (ENG-0045); endWorld resets it.
     g.setCamera(this.camera.isIdentity ? null : this.camera.matrix());
+    // Retractors hold the opening once the patient is actually opened (ENG-0098).
+    if (op.def.organ !== 'flesh' || op.entities.some((e) => e instanceof Incision && e.alive && e.openWound)) drawRetractors(g, light);
     this.drawGloss(g, op);
     this.film.draw(g, op.entities, op.elapsed);
     this.runes.draw(g, op.entities, op.elapsed, settings.reduceFlashing);

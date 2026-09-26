@@ -51,7 +51,7 @@ export function showNotice(message: string, kind: NoticeKind = 'info', ms = 6000
   if (!l) return;
   // Top-centre under the HUD's timer plate: the bottom of the screen belongs to the dialogue, the
   // callouts and the story controls, which a notice there would cover.
-  const place = anchor === 'top' ? `left:50%;transform:translateX(-50%);top:calc(17% + ${stack * 64}px);max-width:min(640px,70%);text-align:center` : `left:2.5%;bottom:calc(3% + ${stack * 64}px);max-width:min(460px,36%);text-align:left`;
+  const place = anchor === 'top' ? `left:50%;transform:translateX(-50%);top:calc(17% + ${stack * 64}px);max-width:min(640px,70%);text-align:center` : `left:2.5%;bottom:calc(6.5% + ${stack * 64}px);max-width:min(460px,36%);text-align:left`;
   const d = panel(`${place};transition:opacity .6s;${kind === 'warning' ? 'border-color:#b8401c;' : ''}`);
   d.setAttribute('role', 'status');
   d.textContent = message;

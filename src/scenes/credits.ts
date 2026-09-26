@@ -113,8 +113,8 @@ export class CreditsScene implements Scene {
     for (const r of this.rows) {
       const h = ROW_H[r.kind];
       if (y + h >= top && y <= bottom) {
-        // Fade rows in at the bottom edge and out at the top.
-        const fade = Math.min(1, (bottom - y) / 80, (y - top + h) / 80);
+        // Fade rows in above the footer (buttons and hint) and out at the top.
+        const fade = Math.min(1, (bottom - 96 - y) / 80, (y - top + h) / 80);
         const a = Math.max(0, Math.min(1, fade));
         this.row(g, r, cx, y, a);
       }
