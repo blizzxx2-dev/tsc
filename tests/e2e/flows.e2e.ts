@@ -24,6 +24,17 @@ const GL_COUNTER = `
 /** The results ledger draws immediate-mode buttons (no UI tree): centres from src/scenes/results.ts. */
 const RESULTS = { continue: { x: 860, y: 664 }, retry: (hasNext: boolean) => ({ x: hasNext ? 600 : 530, y: 664 }), leave: { x: 390, y: 664 } };
 
+type G = ReturnType<ReturnType<typeof useGame>>;
+/** Scrub in from the briefing: a case that brings a new instrument shows its card first, and a second Enter begins. */
+async function scrubIn(g: G) {
+  let s = await g.key('Enter');
+  if (s.scene === 'briefing') {
+    await g.step(40, 'all');
+    s = await g.key('Enter');
+  }
+  return s;
+}
+
 describe('new game flow', () => {
   const game = useGame();
 
@@ -49,7 +60,7 @@ describe('new game flow', () => {
     expect(s.scene).toBe('briefing');
     expect(s.save.progress).toEqual({ chapter: 0, step: 1 });
 
-    s = await g.key('Enter');
+    s = await scrubIn(g);
     expect(s.scene).toBe('operation');
     expect(s.op?.id).toBe('op1-1');
     const run = await playWithMouse(g, OP_1_1);
@@ -85,7 +96,7 @@ describe('continue / resume', () => {
     s = await g.clickNode('continue');
     expect(s.scene).toBe('briefing');
     expect(s.save.progress).toEqual(saved);
-    s = await g.key('Enter');
+    s = await scrubIn(g);
     expect(s.op?.id).toBe('op1-3');
   });
 
@@ -106,7 +117,7 @@ describe('continue / resume', () => {
     await g.boot('?preset=pre-matins');
     let s = await g.clickNode('continue');
     expect(s.scene).toBe('briefing');
-    s = await g.key('Enter');
+    s = await scrubIn(g);
     expect(s.op?.id).toBe('op1-5');
     await g.until('surgery', (st) => st.op?.status === 'running', 600);
     s = await g.key('Escape');
@@ -118,7 +129,7 @@ describe('continue / resume', () => {
     await g.reload();
     s = await g.clickNode('continue');
     expect(s.scene).toBe('briefing');
-    s = await g.key('Enter');
+    s = await scrubIn(g);
     expect(s.op?.id).toBe('op1-5');
     expect(s.op?.phase).toBe(-1);
   });
@@ -151,7 +162,7 @@ describe('retry and quit', () => {
     const loop = async () => {
       let s = await g.clickNode('continue'); // → op1-3 briefing
       expect(s.scene).toBe('briefing');
-      s = await g.key('Enter');
+      s = await scrubIn(g);
       expect(s.scene).toBe('operation');
       await g.until('surgery', (st) => st.op?.status === 'running', 600);
       s = await g.abandon();

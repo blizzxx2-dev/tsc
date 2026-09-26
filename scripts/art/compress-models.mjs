@@ -7,6 +7,11 @@
 // normal-map preset. Encodes run on a worker per core and are cached by content hash in
 // art-src/.cache/ktx2, so shared maps (the instruments' wood) encode once.
 // ktx2-encoder is pinned to 0.4.x: later releases cap sources at 12 Mpix, below one 4K map.
+//
+// Delivery builds (a download size cap) can size the maps to how the game shows them:
+//   node scripts/art/compress-models.mjs --max=512 --out=assets/models-lite tool-brand tool-lancet …
+// resizes every map to fit `max`² before encoding (the instruments are drawn into 256² icons, so
+// 512 loses nothing on screen) and writes to `out` instead of assets/models.
 import { NodeIO } from '@gltf-transform/core';
 import { ALL_EXTENSIONS, KHRTextureBasisu } from '@gltf-transform/extensions';
 import { createHash } from 'node:crypto';
@@ -17,9 +22,22 @@ import { Worker } from 'node:worker_threads';
 
 const SRC = 'art-src/.cache/models';
 const CACHE = 'art-src/.cache/ktx2';
-const OUT = 'assets/models';
-const only = process.argv.slice(2);
-const SETTINGS = 'uastc3-mips-zstd-nordo-v1';
+const argv = process.argv.slice(2);
+const flag = (name) => argv.find((a) => a.startsWith(`--${name}=`))?.split('=')[1];
+const MAX = Number(flag('max') ?? 0);
+const OUT = flag('out') ?? 'assets/models';
+const only = argv.filter((a) => !a.startsWith('--'));
+const SETTINGS = `uastc3-mips-zstd-nordo-v1${MAX ? `-max${MAX}` : ''}`;
+
+/** Fit a source map inside MAX² (PNG out), or pass it through at full size. */
+async function sized(image) {
+  if (!MAX) return image;
+  const { default: sharp } = await import('sharp');
+  const img = sharp(Buffer.from(image));
+  const meta = await img.metadata();
+  if ((meta.width ?? 0) <= MAX && (meta.height ?? 0) <= MAX) return image;
+  return new Uint8Array(await img.resize({ width: MAX, height: MAX, fit: 'inside' }).png().toBuffer());
+}
 
 function slotsOf(doc) {
   const slots = new Map();
@@ -101,7 +119,7 @@ await Promise.all(
     await Promise.all(
       texs.map(async (tex) => {
         const kind = slots.get(tex) ?? new Set(['data']);
-        tex.setImage(await compressed(tex.getImage(), kind.has('color'), kind.has('normal'))).setMimeType('image/ktx2');
+        tex.setImage(await compressed(await sized(tex.getImage()), kind.has('color'), kind.has('normal'))).setMimeType('image/ktx2');
       }),
     );
     if (texs.length) doc.createExtension(KHRTextureBasisu).setRequired(true);
