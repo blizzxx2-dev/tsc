@@ -777,7 +777,7 @@ export class Laceration extends Entity {
 /** Length of a fang-root left after its crown broke away (CON-0057). */
 const ROOT_LEN = 12;
 
-export type EmbeddedKind = 'arrow' | 'bolt' | 'shot' | 'tooth' | 'shard' | 'glass' | 'hexstone';
+export type EmbeddedKind = 'arrow' | 'bolt' | 'shot' | 'tooth' | 'shard' | 'glass' | 'hexstone' | 'token';
 
 export const EMBED_SPEC: Record<EmbeddedKind, { len: number; wound: number; drain: number; label: string; heavy: boolean }> = {
   arrow: { len: 90, wound: 56, drain: 0.45, label: 'Arrow', heavy: false },
@@ -787,7 +787,12 @@ export const EMBED_SPEC: Record<EmbeddedKind, { len: number; wound: number; drai
   shard: { len: 30, wound: 34, drain: 0.3, label: 'Shard', heavy: false },
   glass: { len: 24, wound: 28, drain: 0.25, label: 'Glass', heavy: false },
   hexstone: { len: 30, wound: 40, drain: 0.45, label: 'Hexstone', heavy: false },
+  // CON-0069: a swallowed hymn-token, taken from the stomach through an incision (no wound of its own).
+  token: { len: 0, wound: 0, drain: 0.1, label: 'Hymn-token', heavy: false },
 };
+
+/** How near an open incision a swallowed thing must lie for the tongs to reach it (CON-0069). */
+export const SWALLOWED_REACH = 70;
 
 /**
  * Anything lodged in the flesh. Seize with tongs and pull it clear off the body
@@ -920,6 +925,11 @@ export class Embedded extends Entity {
     if (tool !== 'tongs') return false;
     const target = this.spec.len > 0 ? pointSegment(ptr.pos, this.handle, this.origin).d : dist(ptr.pos, this.pos);
     if (target > op.tuning.tongs.grab + op.hitPad) return false;
+    // Swallowed (CON-0069): it lies in the stomach — the tongs reach it only through an open incision.
+    if (this.kind === 'token' && !this.reachable(op)) {
+      op.sayOnce('token-closed', 'It’s in his stomach, Doctor — open him along the line first.');
+      return false;
+    }
     this.grabbed = true;
     this.grabT = 0;
     this.stillT = 0;
@@ -927,6 +937,11 @@ export class Embedded extends Entity {
     this.target = { ...this.pos };
     op.cues.push('pluck');
     return true;
+  }
+
+  /** An open incision lies near enough to reach in through (swallowed things, CON-0069). */
+  reachable(op: Operation): boolean {
+    return op.entities.some((e) => e instanceof Incision && e.alive && e.openWound && e.project(this.origin).d < SWALLOWED_REACH);
   }
 
   override onDrag(op: Operation, ptr: Pointer, tool: ToolId, dt: number): void {
@@ -1027,7 +1042,11 @@ export class Embedded extends Entity {
       op.emit('blood', this.origin, 18, pull, 0.6, 220);
       op.stain(this.origin, 26, 0.4);
       if (!this.tore) op.rate(this.pull ?? 'good', ptr.pos, this.spec.label);
-      if (!this.tore || this.snapped) op.spawn(new Laceration(this.origin, this.angle + Math.PI / 2, this.spec.wound, 0.8));
+      if ((!this.tore || this.snapped) && this.spec.wound > 0) op.spawn(new Laceration(this.origin, this.angle + Math.PI / 2, this.spec.wound, 0.8));
+      if (this.kind === 'token') {
+        op.setStoryFlag('hymnToken');
+        op.sayOnce('token-out', 'A hymn-token — the Choir’s. He swallowed it rather than let the Tribunal find it on him.');
+      }
       if (this.kind === 'shot') this.leaveWadding(op);
     } else {
       // Not pulled clear of the body: it sinks back in, shallowly.
@@ -1125,6 +1144,13 @@ export class Embedded extends Entity {
         // Colour-blind safe (GAM-0236): hexstone wears a hexagon ring, so it never reads as a plain shard by hue alone.
         g.polyline(hexagon(this.origin, 17, op.elapsed * 0.6), 2, hex('#f8e0b0', 0.8));
         break;
+      case 'token': {
+        // A pewter hymn-token: a small disc stamped with the Choir's open mouth.
+        g.circle(x, y, 10, hex('#8a8878'));
+        g.circle(x, y, 8, hex('#b0ad98'));
+        g.arc(x, y, 4, 1.5, hex('#4a4838'), 0.7);
+        break;
+      }
       case 'shard': {
         const tail = { x: x - ca * this.spec.len, y: y - sa * this.spec.len };
         g.poly(

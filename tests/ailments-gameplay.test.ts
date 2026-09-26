@@ -19,6 +19,14 @@ import { LEAD_DISH, TRAY_DISH, WoundFever, type Operation } from '../src/surgery
 import { Anchor, at, Hand, OFF, running, testDef, wait } from './harness-gameplay';
 import { Operation as Op } from '../src/surgery/operation';
 
+/** An incision already opened across the origin (swallowed things are reached through it). */
+function openIncision(): Incision {
+  const inc = new Incision([at(-60, 20), at(60, 20)]);
+  inc.state = 'open';
+  inc.required = false;
+  return inc;
+}
+
 const lastRated = (op: Operation) => [...op.journal].reverse().find((e) => e.kind === 'rated') as { rating: string; label?: string } | undefined;
 const alive = (op: Operation, cls: new (...a: never[]) => unknown) => op.entities.filter((e) => e instanceof cls && e.alive);
 
@@ -174,7 +182,8 @@ describe('GAM-D Embedded objects', () => {
 
   it('GAM-0070: every embedded kind pays out with its own label when removed', () => {
     for (const kind of Object.keys(EMBED_SPEC) as EmbeddedKind[]) {
-      const op = running(() => [new Embedded(at(0, 0), kind, 0, false), new Anchor()]);
+      // A swallowed token is reached through an open incision (CON-0069).
+      const op = running(() => [new Embedded(at(0, 0), kind, 0, false), new Anchor(), ...(kind === 'token' ? [openIncision()] : [])]);
       const e = op.entities[0] as Embedded;
       const h = new Hand(op);
       if (kind === 'hexstone') {

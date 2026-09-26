@@ -360,7 +360,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### op2-4 "The Silenced Cantor" (lay-cantor of the Hollow Choir) — igniting sigils, swallowed object
 - [x] CON-0068 · Demo · P0 · S · Igniting sigils — each sigil ignites on a stagger (not all at once); untraced ignition causes hexfire burn
-- [ ] CON-0069 · Demo · P1 · S · Swallowed object phase — lens reveals a hymn-token in the stomach; incision + tongs extraction; item appears in codex
+- [x] CON-0069 · Demo · P1 · S · Swallowed object phase — lens reveals a hymn-token in the stomach; incision + tongs extraction; item appears in codex _(op2-4’s last phase: an incision line and a hidden `token` (Embedded kind) the Tongs reach only through the open incision; out, it sets `hymnToken` and Ilse names it. Codex “The Hymn-Token” (Orders) — scratched “Lauds. Standard.”, a thread to op2-5. Time limit 330 s; ranks recalibrated. tests/unit/content/hymnToken.test.ts)_
 - [x] CON-0070 · Demo · P1 · S · `cantorMercy` flag read — if Kreuzer chose to argue with Stroh, op starts with +10 vitals (Ilse prepared him); test
 
 ### op2-5 "The Hour of Lauds" (Jorg, standard-bearer) — antiphonal Malison boss

@@ -22,7 +22,7 @@ import { BiteChannel, DonorBowl } from '../src/surgery/ailments/vampire';
 import { MudSmear, RainDrips } from '../src/surgery/ailments/environment';
 import { WebSilk } from '../src/surgery/ailments/silk';
 import { GraveDirt } from '../src/surgery/ailments/graveDirt';
-import { SearedWord } from '../src/surgery/entities';
+import { Embedded, Incision, SearedWord } from '../src/surgery/entities';
 import { DT, drag, hold, raster, still, tap, zigzag, type Action, type BotContext, type Frame } from './bot';
 
 const ALPHA = [
@@ -125,6 +125,11 @@ export function botPlanAlpha(ctx: BotContext): Action | null {
   const find = <T extends Entity>(cls: new (...a: never[]) => T, pred: (e: T) => boolean = () => true) =>
     vis.find((e): e is T => e instanceof cls && pred(e as T));
   const has = ctx.has;
+
+  // A swallowed token (CON-0069): open the incision before reaching for it.
+  const token = find(Embedded, (e) => e.kind === 'token' && !e.reachable(op));
+  const cut = token && vis.find((e): e is Incision => e instanceof Incision && e.state === 'mark');
+  if (cut) return drag('lancet', [cut.pointAt(cut.progress), ...cut.points.slice(1)], 350);
 
   // Grave-dirt: leech it out before anything touches the wound (CON-0058).
   const dirt = find(GraveDirt, (d) => d.sealed < 0);

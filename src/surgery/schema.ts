@@ -36,7 +36,7 @@ const opt = <F extends Field>(f: F): F => ({ ...f, optional: true });
 const n = (p: Record<string, unknown>, k: string, d: number): number => (typeof p[k] === 'number' ? (p[k] as number) : d);
 const pts = (p: Record<string, unknown>, k: string): Vec[] => ((p[k] as [number, number][]) ?? []).map(([x, y]) => ({ x: FIELD.cx + x, y: FIELD.cy + y }));
 
-const EMBED_KINDS: readonly EmbeddedKind[] = ['arrow', 'bolt', 'shot', 'tooth', 'shard', 'glass', 'hexstone'];
+const EMBED_KINDS: readonly EmbeddedKind[] = ['arrow', 'bolt', 'shot', 'tooth', 'shard', 'glass', 'hexstone', 'token'];
 
 export const AILMENT_SCHEMA: Record<string, Kind> = {
   laceration: {

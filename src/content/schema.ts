@@ -135,7 +135,7 @@ export interface RegistryEntry<S extends EntitySpec = EntitySpec> {
 const P = (x: Pt): Vec => ({ x: FIELD.cx + x[0], y: FIELD.cy + x[1] });
 const num = (optional = false, range?: readonly [number, number]): Param => ({ type: 'number', optional, range });
 const COMMON: Record<string, Param> = { hidden: { type: 'boolean', optional: true }, guide: { type: 'boolean', optional: true }, required: { type: 'boolean', optional: true } };
-const EMBED_KINDS: readonly EmbeddedKind[] = ['arrow', 'bolt', 'shot', 'tooth', 'shard', 'glass', 'hexstone'];
+const EMBED_KINDS: readonly EmbeddedKind[] = ['arrow', 'bolt', 'shot', 'tooth', 'shard', 'glass', 'hexstone', 'token'];
 
 type Entry<K extends EntityId> = RegistryEntry<Extract<EntitySpec, { e: K }>>;
 

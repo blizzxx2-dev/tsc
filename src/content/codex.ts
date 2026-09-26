@@ -45,7 +45,7 @@ export interface CodexEntry {
 }
 
 /** Story flags the sim can set (`op.setStoryFlag`) that an unlock may name. */
-export const KNOWN_STORY_FLAGS: readonly string[] = ['thrallKept'];
+export const KNOWN_STORY_FLAGS: readonly string[] = ['thrallKept', 'hymnToken'];
 
 const start: CodexUnlock = { kind: 'start' };
 const op = (id: string, rank?: Rank): CodexUnlock => ({ kind: 'op', op: id, rank });
@@ -371,6 +371,15 @@ const ORDERS: CodexEntry[] = [
     unlock: op('op2-4'),
     image: 'wc-choir',
     body: 'A heretic congregation that believes the canonical hours, sung perfectly and into living flesh, make a curse that lives. They are not devil-worshippers; there is no god behind them. The hymns are the source. Cantors in grey robes with burn-scarred throats carry an Hour to a host and set it; lay-cantors sing to the dead in the barrow-fields, carry messages, and swallow them if caught. Silence-sigils on a lay-cantor’s chest ignite if he confesses. Somebody with money, candles and patient lists supplies them. The Doctor has a list for that too.',
+  },
+  {
+    // CON-0069: taken from the silenced cantor's stomach (op2-4; the op cannot be won without it).
+    id: 'choir-token',
+    title: 'The Hymn-Token',
+    category: 'Orders',
+    unlock: op('op2-4'),
+    image: 'wc-hymn-token',
+    body: 'A pewter disc no wider than a thumbnail, stamped on one face with an open mouth: the Hollow Choir’s mark. Kreuzer took it out of the cantor’s stomach in the Tribunal’s cells, where it had been swallowed rather than found. On the back, scratched with a pin, a line of neumes, and under them two words — “Lauds. Standard.” Ilse says a lay-cantor carries a message so that it goes into the grave with the carrier if taken. This one was meant to. Stroh has not asked for it. Kreuzer has not offered it. It sits in the dispensary drawer, under the ledger, with the other things he has not decided about.',
   },
   {
     id: 'merciful-order',

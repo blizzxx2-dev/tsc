@@ -179,13 +179,13 @@ export const OP_2_4 = defineOp({
   title: 'The Silenced Cantor',
   patient: 'A lay-cantor of the Hollow Choir',
   patientGender: 'unknown',
-  diagnosis: 'Silence-sigils igniting across the chest (hexfire). Self-administered poison. Prisoner of the Ash Tribunal.',
+  diagnosis: 'Silence-sigils igniting across the chest (hexfire). Self-administered poison; something else swallowed. Prisoner of the Ash Tribunal.',
   organ: 'flesh',
-  timeLimit: 300,
+  timeLimit: 330,
   baseDrain: 0.2,
   vitals: 80,
   tools: ALL,
-  ranks: { S: 5950, A: 4750, B: 3550 },
+  ranks: { S: 7000, A: 5600, B: 4200 },
   litany: true,
   seed: 24,
   phases: [
@@ -230,6 +230,15 @@ export const OP_2_4 = defineOp({
         { e: 'grub', at: [-40, 20], speed: 45 },
         { e: 'grub', at: [50, 30], speed: 45 },
         { e: 'rot', at: [0, 30], r: 50, spread: 0.4 },
+      ],
+    },
+    {
+      objective: 'Recover what he swallowed',
+      // CON-0069: the Scrying Lens finds a hymn-token in the stomach; the Tongs reach it only through the incision.
+      callout: ['One more thing — the Scrying Lens. He swallowed something the Tribunal wasn’t to find.', 'Open him along the line with the Lancet, then the Tongs.'],
+      spawn: [
+        { e: 'incision', path: [[-80, 55], [0, 45], [80, 55]] },
+        { e: 'embedded', at: [10, 85], kind: 'token', hidden: true },
       ],
     },
   ],

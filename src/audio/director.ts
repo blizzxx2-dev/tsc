@@ -98,7 +98,7 @@ const TOOL_KEYS: Record<string, ToolId> = { Digit1: 'lancet', Digit2: 'tongs', D
 const peek = <T>(o: object, k: string): T | undefined => (o as Record<string, unknown>)[k] as T | undefined;
 
 /** Relative weight of each embedded object (lead shot heaviest, glass lightest). */
-export const EMBED_WEIGHT: Record<EmbeddedKind, number> = { shot: 1, bolt: 0.85, arrow: 0.6, hexstone: 0.55, tooth: 0.4, shard: 0.35, glass: 0.15 };
+export const EMBED_WEIGHT: Record<EmbeddedKind, number> = { shot: 1, bolt: 0.85, arrow: 0.6, hexstone: 0.55, tooth: 0.4, shard: 0.35, glass: 0.15, token: 0.3 };
 
 /** Pitch of the tongs' clack on an embedded object: heavy things clack low, light ones high (GAM-0031). */
 export function clackPitch(kind: EmbeddedKind): number {

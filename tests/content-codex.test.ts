@@ -104,12 +104,12 @@ describe('codex content (NAR-0080…0085, NAR-0016, NAR-0048)', () => {
   });
 
   it('NAR-0083: seven places and orders', () => {
-    expect(byCat('Places').length + byCat('Orders').length).toBe(9); // 7 + the carriage (NAR-0048) + the Choir
+    expect(byCat('Places').length + byCat('Orders').length).toBe(10); // 7 + the carriage (NAR-0048) + the Choir + its token (CON-0069)
     expect(
       byCat('Orders')
         .map((e) => e.id)
         .sort(),
-    ).toEqual(['ash-tribunal', 'hollow-choir', 'merciful-order', 'watch']);
+    ).toEqual(['ash-tribunal', 'choir-token', 'hollow-choir', 'merciful-order', 'watch']);
   });
 
   it('NAR-0084: Matins and Lauds in full, six locked silhouettes titled with the hour names only', () => {

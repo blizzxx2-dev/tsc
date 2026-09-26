@@ -45,6 +45,7 @@ export const SCORING: readonly ScoringRule[] = [
   { label: 'Shard', action: 'Extract a shard', tools: ['tongs'], criteria: { cool: `±${S.tongs.coolAngle}°`, good: `±${S.tongs.goodAngle}°` } },
   { label: 'Glass', action: 'Extract glass', tools: ['tongs'], criteria: { cool: `±${S.tongs.coolAngle}° and slower than ${S.tongs.glassSpeed} px/s`, good: `±${S.tongs.goodAngle}°` } },
   { label: 'Hexstone', action: 'Extract hexstone into the lead dish', tools: ['tongs'], criteria: { cool: `±${S.tongs.coolAngle}°`, good: `±${S.tongs.goodAngle}°` } },
+  { label: 'Hymn-token', action: 'Draw a swallowed token out through the incision', tools: ['tongs'], criteria: { cool: `±${S.tongs.coolAngle}°`, good: `±${S.tongs.goodAngle}°` } },
   { label: 'Wadding', action: 'Remove cloth wadding', tools: ['tongs'], criteria: { good: 'dragged off the body' } },
   { label: 'Torn', action: 'Pull a barbed head without nicking', tools: ['tongs'], criteria: { bad: 'always; 1.6× bleed laceration' } },
   { label: 'Wrenched', action: 'Pull against the axis', tools: ['tongs'], criteria: { bad: `more than ${S.tongs.goodAngle}° off axis` } },
