@@ -78,5 +78,5 @@ export const n = (text: string, fx?: LineEffects): Line => ({ who: 'narrator', t
 export const say = (who: CharacterId, text: string, opts?: string | SayOpts): Line => (typeof opts === 'string' ? { who, text, as: opts } : { who, text, ...opts });
 /** A choice line: `who` frames the prompt `text`; the player picks one of 2–3 `options`. */
 export const choose = (who: CharacterId, text: string, options: readonly ChoiceOption[], as?: string): Line => ({ who, text, as, choice: options });
-/** Mark lines as conditional on the flags. Returns them for spreading into a `lines` array. */
-export const onlyIf = (cond: FlagCondition, ...lines: Line[]): Line[] => lines.map((l) => ({ ...l, if: cond }));
+/** Mark lines as conditional on the flags (nested: both must hold). Returns them for spreading into a `lines` array. */
+export const onlyIf = (cond: FlagCondition, ...lines: Line[]): Line[] => lines.map((l) => ({ ...l, if: l.if ? { all: [cond, l.if] } : cond }));

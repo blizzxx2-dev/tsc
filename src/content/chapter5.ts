@@ -19,6 +19,7 @@ import { at, closeIncision } from './chapter1';
 import type { Chapter } from './campaign';
 import { choose, n, onlyIf, say, type StoryDef } from './story';
 import { OP_5_6, OP_5_8 } from './ops/hours';
+import { mauerCount } from './mauerCount';
 export { OP_5_6, OP_5_8 };
 
 const ALL = ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture', 'brand', 'lens'] as const;
@@ -166,9 +167,12 @@ export const STORY_5_3: StoryDef = {
     ...onlyIf(
       verdictIs('rescued'),
       n('At midnight the guardroom door opens without a key. The Watch comes in wearing its own colours, and nobody stops it.'),
-      say('mauer', 'Thirty-five of mine, and the gaolers are having a very long supper. Move, Doctor.'),
+      ...mauerCount('Thirty-five of mine, and the gaolers are having a very long supper. Move, Doctor.', 'Thirty-two of mine, and the gaolers are having a very long supper. Move, Doctor.'),
       say('kreuzer', 'Captain — you’ll hang for this.'),
-      say('mauer', 'Then I’ll hang with thirty-five witnesses. Hollow Night is tomorrow, and you’re the surgeon the Choir fears.'),
+      ...mauerCount(
+        'Then I’ll hang with thirty-five witnesses. Hollow Night is tomorrow, and you’re the surgeon the Choir fears.',
+        'Then I’ll hang with thirty-two witnesses. Hollow Night is tomorrow, and you’re the surgeon the Choir fears.',
+      ),
       n('Behind them, the wall of the cell knocks. Twice, then once, then twice: dwarf courtesy, a minute late.'),
       say('patient', 'You are out already? I dug a whole tunnel. It is a very good tunnel. Nobody has even looked at it.', 'Orsa Flintvein'),
       say('mauer', 'Keep it open. The Choir went down under this court. We may want a back door.'),
@@ -180,7 +184,7 @@ export const STORY_5_3: StoryDef = {
     ),
     ...onlyIf(
       verdictIs('tunnelled'),
-      say('mauer', 'Thirty-five of mine at the other end, and not one of them saw a thing. Move, Doctor.'),
+      ...mauerCount('Thirty-five of mine at the other end, and not one of them saw a thing. Move, Doctor.', 'Thirty-two of mine at the other end, and not one of them saw a thing. Move, Doctor.'),
       say('kreuzer', 'Captain — you’ll hang for this. And you can barely stand.'),
       say('mauer', 'Then I’ll hang leaning on a crutch. Hollow Night is tomorrow; the Choir will finish its Office, and you’re the surgeon they fear.'),
     ),
@@ -300,7 +304,10 @@ export const STORY_5_9B: StoryDef = {
       say('kreuzer', 'I’ll see about the windows.'),
       n('She is asleep again before he can say anything more foolish.'),
     ),
-    say('mauer', 'The Choir went down under the Tribunal court. Orsa’s tunnel comes out right beneath it. Thirty-five, Doctor. All of us.'),
+    ...mauerCount(
+      'The Choir went down under the Tribunal court. Orsa’s tunnel comes out right beneath it. Thirty-five, Doctor. All of us.',
+      'The Choir went down under the Tribunal court. Orsa’s tunnel comes out right beneath it. Thirty-two, Doctor. All of us.',
+    ),
     n('In the cellars they find the Burgomaster’s guard captain, sewn through with every Hour so far: ink, fire, and something burrowing.'),
     ...onlyIf(
       hostIs('stroh'),

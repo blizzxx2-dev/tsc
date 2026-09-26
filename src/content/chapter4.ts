@@ -13,6 +13,7 @@ import { strohTrust } from './endings';
 import { FORENSIC_COACHMAN, FORENSIC_SALM } from './forensics';
 import { byBand, chapterAverageA, atLeast } from './flags';
 import { OP_4_7, OP_4_9 } from './ops/hours';
+import { mauerCount } from './mauerCount';
 export { OP_4_7, OP_4_9 };
 
 const ALL = ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture', 'brand', 'lens'] as const;
@@ -91,7 +92,10 @@ export const STORY_4_4: StoryDef = {
   backdrop: 'camp',
   lines: [
     n('A giant of the Ostrau company, Gutram, is brought in by eight men and a cart. He has eaten a strongbox.'),
-    say('mauer', 'Thirty-nine. The council’s pay-chest — strongbox, lock and all. He says he was keeping it safe. From whom, Gutram?'),
+    ...mauerCount(
+      'Thirty-nine. The council’s pay-chest — strongbox, lock and all. He says he was keeping it safe. From whom, Gutram?',
+      'Thirty-six. The council’s pay-chest — strongbox, lock and all. He says he was keeping it safe. From whom, Gutram?',
+    ),
     say('patient', 'From… thieves.', 'Gutram'),
     say('mauer', 'And where were the thieves?'),
     say('patient', 'Outside of me.', 'Gutram'),
@@ -166,7 +170,10 @@ export const STORY_4_7: StoryDef = {
   backdrop: 'camp',
   lines: [
     n('At noon a stillness comes over the camp. Men sit down where they stand. The sentries lean on their pikes and do not blink.'),
-    say('mauer', 'All… all in order, Doctor. Thirty-eight… thirty-seven. All quiet. Nothing to report. I’ll just sit a moment.'),
+    ...mauerCount(
+      'All… all in order, Doctor. Thirty-eight… thirty-seven. All quiet. Nothing to report. I’ll just sit a moment.',
+      'All… all in order, Doctor. Thirty-five… thirty-four. All quiet. Nothing to report. I’ll just sit a moment.',
+    ),
     say('ilse', 'Doctor, he’s grey. His pulse is steady as a clock, but look at his lips — he’s dying and his heart is lying about it.'),
     say('kreuzer', 'Sext. The noonday demon. Sister — watch his heart with the lens. Don’t trust anything else.'),
     say('ilse', 'And your own hands, Doctor. You’re moving like a man under water. If you slow, take a tincture yourself.'),
@@ -179,7 +186,10 @@ export const STORY_4_8: StoryDef = {
   backdrop: 'chapel',
   lines: [
     n('Mauer wakes at dusk, weak as a kitten and furious about it. The first thing he asks for is the strongbox papers.'),
-    say('mauer', 'Thirty-six, while I slept. The council roll, Doctor: every chartered office, signed at the new year. Inquisitor — here.'),
+    ...mauerCount(
+      'Thirty-six, while I slept. The council roll, Doctor: every chartered office, signed at the new year. Inquisitor — here.',
+      'Thirty-three, while I slept. The council roll, Doctor: every chartered office, signed at the new year. Inquisitor — here.',
+    ),
     say('mauer', 'The Ash Tribunal’s charter in Kessendorf. It is not on the roll. It was not renewed. It lapsed at the new year.'),
     say('stroh', 'That is a clerk’s error.'),
     say('mauer', 'With your name on every arrest since. No one struck it — someone simply didn’t sign. The Widow Reiss’s seat.'),
@@ -216,7 +226,10 @@ export const STORY_4_9: StoryDef = {
     n('Hanne the sutler’s daughter marries a Watch pikeman under a bower of wet ribbons. At the vow, her fingers turn to stone.'),
     say('patient', 'It’s climbing, Doctor. My hand, my wrist… I can’t feel the ring any more.', 'Hanne'),
     say('ilse', 'Petrification — the front is moving toward her heart. Crack the stone plates in the order they formed, then salve the margin.'),
-    say('mauer', 'Thirty-six. My pikeman’s getting married if I have to hold his bride together with my own hands. Get on with it.'),
+    ...mauerCount(
+      'Thirty-six. My pikeman’s getting married if I have to hold his bride together with my own hands. Get on with it.',
+      'Thirty-three. My pikeman’s getting married if I have to hold his bride together with my own hands. Get on with it.',
+    ),
     say('ilse', 'If it runs too fast, Doctor — the Litany will hold it still.'),
   ],
 };
@@ -266,7 +279,7 @@ export const STORY_4_11: StoryDef = {
     say('ilse', 'Doctor — it’s Pieter. Pieter, from the barbed arrow, the first week. He came east with the Watch.'),
     say('patient', 'Doctor… something went in with that arrow and it never came out. It’s been waiting. It’s going for my heart now.', 'Pieter'),
     say('ilse', 'A burrower — through the organs, toward the heart. If it reaches it, he’s gone in an instant. Track it with the lens!'),
-    say('mauer', 'Thirty-five. Not thirty-four, Doctor. Do you hear me? Thirty-five.'),
+    ...mauerCount('Thirty-five. Not thirty-four, Doctor. Do you hear me? Thirty-five.', 'Thirty-two. Not thirty-one, Doctor. Do you hear me? Thirty-two.'),
   ],
 };
 
@@ -276,8 +289,11 @@ export const STORY_4_END: StoryDef = {
   backdrop: 'street',
   lines: [
     n('Pieter lives. The companies are recalled; the Vennmark is quiet, as if something there has finished what it came to do.'),
-    say('mauer', 'Thirty-five. We marched out forty-one. Six in the ground at the Vennmark. I’ll say their names to the Burgomaster myself.'),
-    say('ilse', 'Six hours sung now. Only Vespers and Compline are left. And Hollow Night is in three days.'),
+    ...mauerCount(
+      'Thirty-five. We marched out forty-one. Six in the ground at the Vennmark. I’ll say their names to the Burgomaster myself.',
+      'Thirty-two. We marched out forty-one. Nine in the ground, three of them at the ford. I’ll say their names to the Burgomaster.',
+    ),
+    say('ilse', 'Six hours sung now. Only Vespers and Compline are left. And Hollow Night is in six days — four of them on the road.'),
     say('kreuzer', 'The Precentor spoke through Pieter. He wants me home for Hollow Night.'),
     say('stroh', 'He will have you. So will the council. A rider came this morning with a warrant for your arrest, Doctor.'),
     say('stroh', 'It is signed by the Widow Reiss for the council. It is sealed with the Tribunal seal. My seal, which I no longer have the right to use.'),

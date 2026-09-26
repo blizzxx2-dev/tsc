@@ -63,7 +63,7 @@ apart, or if a scene is missing. Operations happen between the scenes around the
 | s4-9 | 20 Saatmond | day | `The camp-followers’ lines — a wedding` |
 | s4-10 | 22 Saatmond | day | `The Vennmark camp — a letter from Kessendorf` |
 | s4-11 | 23 Saatmond | None (the ninth hour) | `The Vennmark camp — the ninth hour` |
-| s4-end | 27 Saatmond | morning (Hollow Night in three days) | `The road west — returning to Kessendorf` |
+| s4-end | 24 Saatmond | morning (Hollow Night in six days; four on the road) | `The road west — returning to Kessendorf` |
 
 *The Tribunal's charter lapsed on 1 Hartung, before the Prologue: by s4-8 Stroh has been acting without it for four months, including every Chapter I–III scene.*
 

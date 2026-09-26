@@ -157,9 +157,9 @@ export const PATIENT_BARKS_LATER: Record<string, Partial<Record<PatientTrigger, 
     closing: ['Tell him to wait. Tell him I’ll still come.'],
   },
   'op4-7': {
-    'first-cut': ['All quiet, Doctor. All quiet. Report all quiet.', 'Thirty-five men. I have to count them. Let me count.'],
+    'first-cut': ['All quiet, Doctor. All quiet. Report all quiet.', 'My men. I have to count them. Let me count.'],
     pain: ['Stone… in my chest. Is it noon? It feels like noon.'],
-    relief: ['…Thirty-five. Thirty-five. I can count again.'],
+    relief: ['…Every one of them. I can count again.'],
     closing: ['Close me up. The men will want to see me standing.'],
   },
   'op4-9': {

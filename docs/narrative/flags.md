@@ -25,6 +25,7 @@ Code: `src/content/flags.ts` (`flags.get / set / has / truthy / count`), conditi
 | `cantorMercy` | boolean | s2-4 choice (NAR-0062): `true` — Kreuzer treats the cantor as a patient, poppy for the pain; `false` — keeps him alive *and awake* for Stroh | s2-4 (Stroh's reply), s3-1 (the cantor's fate), Ch5 |
 | `litanySeenCount` | number | **engine** (`src/scenes/flow.ts`): +1 for every campaign operation *won* with the Litany spoken | s3-1 (Stroh's candles, ≥ 2), Ch5 |
 | `guildMarks`, `guildOps` | number | **engine** (`src/scenes/flow.ts`, `noteGuildRank`): each Chapter I–III campaign win adds its rank points (XS 4, S 3, A 2, B 1, C 0) and 1 | s3-9 licence vote (NAR-0126): average ≥ 2 (A) keeps the licence, below suspends it |
+| `unsungHeard` | boolean | **engine** (`src/scenes/flow.ts`): the Unsung Hour's hymn was heard | the Trials of the Guild's secret tier (CON-0222; challenge mode is post-release and flagged off) |
 | `ch1Marks`…`ch5Marks`, `ch1Ops`…`ch5Ops` | number | **engine** (`noteGuildRank`): each chapter's campaign wins, rank points and count | Ilse's side scenes (NAR-0097): the end of s3-end and s4-end, and s5-9b, on an A average for that chapter |
 | `hornchildFinding` | `'turned' \| 'natural'` | the Liesl interview's conclusion (CON-0233) | s3-2 (what the bone showed) |
 | `foundersVerdict` | `'lead' \| 'curse'` | the Founders' Guild inquiry (CON-0234) | op3-3 (`vitals` 75 on `'curse'`) |
@@ -32,7 +33,7 @@ Code: `src/content/flags.ts` (`flags.get / set / has / truthy / count`), conditi
 | `predecessorFinding` | `'prime' \| 'natural'` | the Registrar's predecessor examination (CON-0244) | — (record) |
 | `coachmanFinding` | `'choir' \| 'robbery'` | the Widow's coachman examination (CON-0245) | s4-8 (Stroh names the carriage) |
 | `kilnrowsSaved` | number | the Kilnrows blast triage (CON-0228, tr3-kilnrows): patients saved, of 8 | s3-4 (Ilse's day-book, 7+) |
-| `fordSaved` | number | the ford triage (CON-0228, tr4-ford): patients saved, of 8 | s4-2 (Mauer's count, 7+) |
+| `fordSaved` | number | the ford triage (CON-0228, tr4-ford): patients saved, of 8 | s4-2 (Mauer's count, 7+), and every head-count of his after it through s5-end: three fewer below 7 (`mauerCount`, NAR-0179) |
 | `hollowSaved` | number | the Penny Stair triage (CON-0228, tr5-hollow): patients saved, of 8 | s5-5 (the Stair behind them, 7+) |
 | `choice.s2-4` | `'mercy' \| 'awake'` | s2-4 pick record | tools, tests |
 | `hornchildCertificate` | `'natural' \| 'turned'` | s3-2 choice (NAR-0119): the kind lie or the true sentence | s3-2 (the rest of the scene), Ch4, Ch5 |
@@ -81,4 +82,13 @@ convicted and **rescued** by Mauer's Watch if the captain is hale, else **tunnel
 sentence — then **the Burgomaster**. s5-9b, s5-10 and s5-12 name the host; op5-8's patient string follows it
 (the fight is unchanged). With the Burgomaster on the table, Stroh comes down the crypt stair afterwards to
 arrest the Precentor. The pardon needs trust ≥ 1, so it always has Stroh as the host.
+
+## Story flags set in play (`op.setStoryFlag`)
+
+Recorded on the operation's result, not the campaign store; a codex unlock may name them (`KNOWN_STORY_FLAGS`, `src/content/codex.ts`).
+
+| Flag | Set by | Read by |
+|---|---|---|
+| `thrallKept` | op4-6: the bite-channel left open at Margit's asking (`src/surgery/ailments/vampire.ts`) | — |
+| `hymnToken` | op2-4: the swallowed hymn-token drawn out (CON-0069) | — (its codex page opens on op2-4, which cannot be won without it) |
 

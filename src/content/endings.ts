@@ -14,6 +14,7 @@
  * The Perfect End is the failure state: the finale lost, the Office completes, the city sleeps.
  */
 import type { FlagReader } from './flags';
+import { mauerCount } from './mauerCount';
 import { n, onlyIf, say, type StoryDef } from './story';
 import { whisperBand, whisperScore, type WhisperBand } from './whisper';
 
@@ -150,7 +151,10 @@ export const ENDING_PARDON: StoryDef = {
     say('stroh', 'I have written to the Tribunal that the matter of the Doctor’s hands is closed. I did not say how I closed it.'),
     say('kreuzer', 'You kept a ledger of every candle I put out.'),
     say('stroh', 'I did. I burned it this morning. It made a very small fire. I thought you would appreciate the irony.'),
-    say('mauer', 'Thirty-five. All thirty-five, Doctor. I said the names at the gate this morning, the six and the thirty-five.'),
+    ...mauerCount(
+      'Thirty-five. All thirty-five, Doctor. I said the names at the gate this morning, the six and the thirty-five.',
+      'Thirty-two. All thirty-two, Doctor. I said the names at the gate this morning, the nine and the thirty-two.',
+    ),
     say('mauer', 'The council wants to know who dug a tunnel under their court. I told them it was rats. Very large, very polite rats.'),
     say('patient', 'I have named a new mine for you. The Kreuzer Hope. It is a very good mine. It has not fallen in once.', 'Orsa Flintvein'),
     say('patient', 'Also, the tunnel. You may keep the tunnel. Every city should have one.', 'Orsa Flintvein'),

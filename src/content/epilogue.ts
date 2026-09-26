@@ -51,7 +51,7 @@ export const EPILOGUE: Record<string, EpilogueCard> = {
   mauer: {
     name: 'Captain Mauer',
     survives: 'CAPTAIN MAUER counted his men every morning for eleven more years. The number only ever went down by retirement.',
-    dies: 'CAPTAIN MAUER fell at the Penny Stair in a riot over bread. Thirty-five men carried him home.',
+    dies: 'CAPTAIN MAUER fell at the Penny Stair in a riot over bread. Every man he had left carried him home.',
     absent: 'CAPTAIN MAUER, his leg stiff from the stone, gave up the Watch and kept bees. He counts them too.',
     fate: (_e, f) => (f.get('mauerFate') === 'maimed' ? 'absent' : 'survives'),
   },
