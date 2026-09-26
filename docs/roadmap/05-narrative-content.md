@@ -368,7 +368,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0073 · Demo · P0 · S · Thread-sever option — lancet then gut thread on the light-thread splits the pair for 8 s
 - [x] CON-0074 · Demo · P1 · S · Dawn-flare hazard — every 20 s the field flares white and the lens is blinded 3 s; warned 1 s ahead
 - [x] CON-0075 · Demo · P1 · S · Phase 3 fusion — halves fuse into one body with a Voices ring; brand the Voices as currently implemented _(superseded by the Lauds redesign: split, then Dawn)_
-- [ ] CON-0076 · Demo · P1 · S · Litany synergy — during Litany both halves can be hit in one window; sim confirms Litany is not mandatory
+- [x] CON-0076 · Demo · P1 · S · Litany synergy — during Litany both halves can be hit in one window; sim confirms Litany is not mandatory _(the response window runs on boss time, which the Litany slows: a 2.5 s real gap is answered under it and heals without it (tests/hours.test.ts). With `litany: false`, steady wins 5/5 and novice ≥ 4/5 (tests/sim/lauds-no-litany.test.ts))_
 - [x] CON-0077 · Demo · P1 · S · Boss-fail tips (3) and phase checkpoint — on fail after phase 2, retry offers "start at the Choir" with rank capped at B _(GAM-0178: the checkpoint restart flags the run and blocks XS)_
 - [x] CON-0078 · Demo · P1 · S · Closing phase — LAUDS word seared over the heart; banner-cloth fibres to tweeze from the wound (tongs) as the final flourish
 

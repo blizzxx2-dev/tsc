@@ -2,7 +2,17 @@ import { describe, expect, it } from 'vitest';
 import { dist } from '../src/core/math';
 import { Laceration } from '../src/surgery/entities';
 import type { Entity } from '../src/surgery/entity';
-import { activeBoss, ADD_RATING_CAP, addRatingsOf, BossDeath, CINEMATIC_SECONDS, clampToField, DRAIN_BUDGET, drainAudit, spawnedByBoss } from '../src/surgery/bosses/base';
+import {
+  activeBoss,
+  ADD_RATING_CAP,
+  addRatingsOf,
+  BossDeath,
+  CINEMATIC_SECONDS,
+  clampToField,
+  DRAIN_BUDGET,
+  drainAudit,
+  spawnedByBoss,
+} from '../src/surgery/bosses/base';
 import { BOSS_TELLS, Cadence, TELL_MIN_LEAD, type BossEvent, type BossOpDef } from '../src/surgery/bosses/signals';
 import { bossBarRect, veiledBelow } from '../src/surgery/bosses/hud';
 import { Malison, MalisonShard, MATINS_DEFAULT, MATINS_PHASES } from '../src/surgery/malison';
@@ -247,7 +257,7 @@ describe('Matins — the Night Vigil', () => {
       let m!: Malison;
       const op = start((o) => [(m = new Malison(at(0, 0), o, 'matins', 100, { gazeEvery: 1 }))], boss({ skipCinematics: true }));
       m.damage(op, 45); // Vigil → Watchfire (one phase per blow)
-    m.damage(op, 40); // → The Eye
+      m.damage(op, 40); // → The Eye
       const h = new Hand(op);
       const aim = { x: m.pos.x + 150, y: m.pos.y };
       // Rest the hand on the flesh beside the eye until the gaze locks.
@@ -326,6 +336,30 @@ describe('Lauds — the Antiphon', () => {
     expect(l.hp).toBeCloseTo(hp1 - 8);
   });
 
+  it('CON-0076: under the Litany the response window stretches — both halves in one window, where without it the strike heals', () => {
+    let l!: LaudsMalison;
+    const op = start((o) => [(l = new LaudsMalison(at(0, 0), o))], boss({ skipCinematics: true }));
+    l.damage(op, 36);
+    const b = all(op, LaudsBody)[0];
+    // A real-time gap longer than the window: 2.5 s against 1.5 s.
+    const gap = LAUDS_DEFAULT.response + 1;
+    expect(op.invokeLitany()).toBe(true);
+    l.strike(op, 'core', 4, l.pos);
+    wait(op, gap);
+    expect(op.litanyTime).toBeGreaterThan(0);
+    expect(l.pending?.from).toBe('core');
+    const hp = l.hp;
+    l.strike(op, 'partner', 4, b.pos);
+    expect(l.hp).toBeCloseTo(hp - 4);
+    // Without the Litany the same gap is too long: the first strike heals itself.
+    let l2!: LaudsMalison;
+    const op2 = start((o) => [(l2 = new LaudsMalison(at(0, 0), o))], boss({ skipCinematics: true }));
+    l2.damage(op2, 36);
+    l2.strike(op2, 'core', 4, l2.pos);
+    wait(op2, gap);
+    expect(l2.pending).toBeNull();
+  });
+
   it('severance: the lancet across the dimmed thread unlinks for 8 s', () => {
     let l!: LaudsMalison;
     const op = start((o) => [(l = new LaudsMalison(at(0, 0), o))], boss({ skipCinematics: true }));
@@ -333,7 +367,14 @@ describe('Lauds — the Antiphon', () => {
     const th = all(op, LightThread)[0];
     for (let i = 0; !th.dimmed && i < 60 * 30; i++) wait(op, DT);
     const mid = th.pos;
-    new Hand(op).drag('lancet', [{ x: mid.x, y: mid.y - 30 }, { x: mid.x, y: mid.y + 30 }], 600);
+    new Hand(op).drag(
+      'lancet',
+      [
+        { x: mid.x, y: mid.y - 30 },
+        { x: mid.x, y: mid.y + 30 },
+      ],
+      600,
+    );
     expect(l.unlinked).toBe(true);
     wait(op, LAUDS_DEFAULT.unlink - 0.3);
     expect(l.unlinked).toBe(true);
@@ -363,7 +404,10 @@ describe('Lauds — the Antiphon', () => {
   });
 
   it('hymn: one laceration per verse on Surgeon, two on Master', () => {
-    for (const [diff, n] of [['surgeon', 1], ['master', 2]] as const) {
+    for (const [diff, n] of [
+      ['surgeon', 1],
+      ['master', 2],
+    ] as const) {
       let l!: LaudsMalison;
       const op = start((o) => [(l = new LaudsMalison(at(0, 0), o))], boss({ difficulty: diff }));
       wait(op, LAUDS_DEFAULT.hymnEvery * 3 + 2);
@@ -407,7 +451,12 @@ describe('Lauds — the Antiphon', () => {
 
 describe('Brood-Mother sacs', () => {
   it('hatch at 10 s with a 3 s swell; never more than 6 live spiderlings', () => {
-    const op = start((o) => [new EggSac(at(-100, 0), 5), new EggSac(at(100, 0), 5), new Laceration(at(0, 120), 0, 40, 0), o && new SpiderlingGrub(at(0, 0), o)].filter(Boolean) as Entity[]);
+    const op = start(
+      (o) =>
+        [new EggSac(at(-100, 0), 5), new EggSac(at(100, 0), 5), new Laceration(at(0, 120), 0, 40, 0), o && new SpiderlingGrub(at(0, 0), o)].filter(
+          Boolean,
+        ) as Entity[],
+    );
     const sac = all(op, EggSac)[0];
     wait(op, 7.5);
     expect(sac.swell).toBeGreaterThan(0.1); // the swell starts 3 s out
@@ -422,7 +471,10 @@ describe('Brood-Mother sacs', () => {
 
 describe('Demo elites', () => {
   const ring = (c: { x: number; y: number }, r: number, turns = 1.05) =>
-    Array.from({ length: Math.ceil(36 * turns) + 1 }, (_, i) => ({ x: c.x + Math.cos((i / 36) * Math.PI * 2) * r, y: c.y + Math.sin((i / 36) * Math.PI * 2) * r }));
+    Array.from({ length: Math.ceil(36 * turns) + 1 }, (_, i) => ({
+      x: c.x + Math.cos((i / 36) * Math.PI * 2) * r,
+      y: c.y + Math.sin((i / 36) * Math.PI * 2) * r,
+    }));
 
   it('egg-cluster: left alone all three hatch together; cut first they part', () => {
     let c!: EggCluster;
@@ -464,7 +516,14 @@ describe('Demo elites', () => {
 
   it('fang-nest: pulling out of order spreads rot', () => {
     let n!: FangNest;
-    const op = start((o) => (n = new FangNest(o, [[at(-60, 0), 0.9], [at(0, 0), 1.2], [at(60, 0), 0.6]])).all);
+    const op = start(
+      (o) =>
+        (n = new FangNest(o, [
+          [at(-60, 0), 0.9],
+          [at(0, 0), 1.2],
+          [at(60, 0), 0.6],
+        ])).all,
+    );
     const f = n.fangs[2];
     const grip = { x: f.origin.x + (f.handle.x - f.origin.x) * 0.7, y: f.origin.y + (f.handle.y - f.origin.y) * 0.7 };
     const d = { x: f.handle.x - f.origin.x, y: f.handle.y - f.origin.y };
