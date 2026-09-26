@@ -1,6 +1,7 @@
 import { teach } from './teach';
 import { TRIAGE_KILNROWS } from './triage';
 import { OP_3_12, OP_3_13 } from './ops/bones';
+import { OP_3_14 } from './ops/heads';
 import { BloodPool, Bubo, Burn, Embedded, Incision, Laceration, Rot } from '../surgery/entities';
 import { Agitation, Amputation, ClothFragment, DressedBud, HornBud, Jaw, leadDeposit, Molar, TinctureSite, Worm, woundFeverPhase } from '../surgery/ailments/kilnrows';
 import { Artery } from '../surgery/ailments/vennmark';
@@ -583,6 +584,7 @@ export const CHAPTER_3: Chapter = {
     { kind: 'discipline', discipline: { id: TRIAGE_KILNROWS.id, title: TRIAGE_KILNROWS.title, place: TRIAGE_KILNROWS.place, backdrop: 'street', mode: 'triage', triage: TRIAGE_KILNROWS, savedFlag: 'kilnrowsSaved' } },
     { kind: 'op', op: OP_3_4 },
     { kind: 'op', op: OP_3_12 },
+    { kind: 'op', op: OP_3_14 },
     { kind: 'story', story: STORY_3_4 },
     // CON-0234: the Founders' Guild asks for an opinion in writing before Ute Brandt reaches the table.
     { kind: 'discipline', discipline: { id: 'iv3-founders', title: INTERVIEW_FOUNDERS.title, place: INTERVIEW_FOUNDERS.place, backdrop: 'guildhall', mode: 'interview', interview: INTERVIEW_FOUNDERS } },

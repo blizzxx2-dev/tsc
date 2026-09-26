@@ -773,7 +773,7 @@ export class OperationScene implements Scene {
     presentation.gore = GORE_LEVEL[settings.goreLevel];
     presentation.flash = flashScale(settings);
     presentation.pulse = settings.reduceMotion ? 0 : this.pulse;
-    const pal = organPalette(op.def);
+    const pal = organPalette({ organ: op.fieldOrgan, race: op.def.race });
     const t = g.time;
     const sk = settings.reduceMotion ? 0 : op.shake * settings.shake;
     const sway = op.sway();
@@ -862,7 +862,7 @@ export class OperationScene implements Scene {
     // Entities, particles and world FX go through the world camera (ENG-0045); endWorld resets it.
     g.setCamera(this.camera.isIdentity ? null : this.camera.matrix());
     // Retractors hold the opening once the patient is actually opened (ENG-0098).
-    if (!['flesh', 'skin', 'muscle'].includes(op.def.organ) || op.entities.some((e) => e instanceof Incision && e.alive && e.openWound)) drawRetractors(g, light);
+    if (!['flesh', 'skin', 'muscle'].includes(op.fieldOrgan) || op.entities.some((e) => e instanceof Incision && e.alive && e.openWound)) drawRetractors(g, light);
     this.drawGloss(g, op);
     this.film.draw(g, op.entities, op.elapsed);
     this.runes.draw(g, op.entities, op.elapsed, settings.reduceFlashing);

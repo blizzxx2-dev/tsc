@@ -28,7 +28,7 @@ import { SextMalison } from '../surgery/bosses/sext';
 import { TerceMalison } from '../surgery/bosses/terce';
 import { VespersMalison } from '../surgery/bosses/vespers';
 import { CantorKnot, EggCluster, FangNest, MatinsHerald } from '../surgery/bosses/elites';
-import { FIELD, onBody, type DialogueLine, type Operation, type OperationDef, type PhaseDef } from '../surgery/operation';
+import { FIELD, onBody, type DialogueLine, type Operation, type OperationDef, type OrganKind, type PhaseDef } from '../surgery/operation';
 import type { ToolId } from '../surgery/types';
 
 export type Pt = readonly [number, number];
@@ -96,6 +96,8 @@ export interface PhaseData {
   callout?: string[];
   /** Short objective for the phase banner (UIX-0061). */
   objective?: string;
+  /** The tissue the field shows from this phase on (default: the operation's organ). */
+  organ?: OrganKind;
   /** Entities placed when the phase begins. */
   spawn?: readonly SpawnSpec[];
   /** Close the incision opened earlier with the thread (the shared final phase). */
@@ -385,6 +387,7 @@ function compilePhase(data: PhaseData): DataPhaseDef {
     interject: data.interject,
     callout: data.callout,
     objective: data.objective,
+    organ: data.organ,
     spawn(op: Operation): Entity[] {
       if (data.floor) new VitalsFloor(data.floor).attach(op);
       if (data.close) incisionOf(op)?.beginClosing();

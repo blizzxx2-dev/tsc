@@ -272,12 +272,30 @@ void main() {
     col *= 0.86 + 0.24 * fbm(uv * 0.45 + 12.0);
     col = mix(col, col * vec3(1.05, 0.92, 0.85), smoothstep(0.55, 0.8, fbm(uv * 0.9 + 4.0)) * 0.35);
   } else if (u_kind == 5) {
-    // Brain: gyri and sulci from warped ridged noise under a translucent meningeal veil.
-    vec2 w = uv * 0.9 + vec2(fbm(uv * 0.6), fbm(uv * 0.6 + 7.0)) * 2.2;
-    float ridge = 1.0 - abs(sin(fbm(w) * 16.0));
-    c = ridge;
-    col *= 0.6 + 0.45 * smoothstep(0.1, 0.8, ridge);
-    col = mix(col, vec3(0.85, 0.8, 0.82), 0.12 + 0.05 * sin(u_time * 1.1));
+    // Brain: rounded gyri as the contour bands of a smooth field — each lit across its width on
+    // the lamp side — parted by narrow dark sulci, with the pia's vessels lying in the sulci and a
+    // few larger veins crossing over, all under a faint translucent meningeal sheen.
+    float be = 0.012;
+    vec2 bq = q * 1.5 + 5.0;
+    float b0 = fbm(bq) + 0.35 * noise(q * 4.0);
+    float bx = fbm(bq + vec2(be * 1.5, 0.0)) + 0.35 * noise((q + vec2(be, 0.0)) * 4.0);
+    float by = fbm(bq + vec2(0.0, be * 1.5)) + 0.35 * noise((q + vec2(0.0, be)) * 4.0);
+    vec2 bg = vec2(bx - b0, by - b0) / be;
+    vec2 acr = bg / max(length(bg), 1e-3);
+    float gband = b0 * 8.0;
+    float gv = fract(gband);
+    float gyrus = sin(3.14159 * gv);
+    vec2 toLb = normalize(u_light - px + vec2(1e-3));
+    float gflank = cos(3.14159 * gv) * dot(acr, toLb);
+    float sulcus = rsmooth(0.13, 0.0, min(gv, 1.0 - gv));
+    c = gyrus;
+    col *= (0.55 + 0.5 * gyrus) * (1.0 + 0.32 * gflank);
+    col = mix(col, vec3(0.42, 0.16, 0.2), sulcus * 0.75);
+    // Pial vessels: fine red threads along the sulci; a few larger veins crossing the gyri.
+    col = mix(col, vec3(0.6, 0.1, 0.16), rsmooth(0.2, 0.0, min(gv, 1.0 - gv)) * 0.2);
+    float bvein = pow(1.0 - abs(fbm(q * 1.1 + 31.0) * 2.0 - 1.0), 22.0);
+    col = mix(col, vec3(0.42, 0.1, 0.22), bvein * 0.7);
+    col = mix(col, vec3(0.88, 0.84, 0.86), 0.08 + 0.03 * sin(u_time * 1.1));
   } else if (u_kind == 6) {
     // Bone: ivory cortex with fine lamellar grain running lengthwise, a thin periosteum film
     // flushed with blood in patches and threaded with its vessels, and small nutrient pits.
@@ -285,7 +303,6 @@ void main() {
     col = mix(col, vec3(0.86, 0.82, 0.7), 0.6) * (0.8 + 0.25 * c);
     float lam = noise(vec2(uv.x * 0.9, uv.y * 38.0 + noise(uv * 1.5) * 6.0));
     col *= 0.96 + 0.06 * smoothstep(0.3, 0.8, lam);
-    col *= 1.0 - (1.0 - smoothstep(0.0, 0.12, cells(uv * 9.0))) * 0.18;
     float peri = smoothstep(0.45, 0.75, fbm(uv * 0.8 + 21.0));
     col = mix(col, vec3(0.78, 0.44, 0.38), 0.08 + 0.2 * peri);
     float pv = pow(1.0 - abs(fbm(vec2(uv.x * 1.4, uv.y * 0.6) + 40.0) * 2.0 - 1.0), 18.0);
@@ -374,7 +391,7 @@ void main() {
   vec2 grad = vec2(fbm(hp + vec2(e, 0.0)) - h0, fbm(hp + vec2(0.0, e)) - h0) / e;
 #endif
   // The liver's capsule is taut and smooth: only broad swells, no crinkle.
-  if (u_kind == 4) grad *= 0.3;
+  if (u_kind == 4 || u_kind == 5) grad *= 0.3;
   // Dome the field so light wraps around the organ's bulk.
   grad += q * 0.9;
   // Wounds and swellings from the surface layer shape the normal: cuts read as carved channels.

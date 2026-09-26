@@ -74,7 +74,7 @@ drawer(Incision, {
       // bleeding edge over it, opening over 6 frames once the last layer is through.
       const open = e.openedAt < 0 ? 1 : Math.min(1, (op.elapsed - e.openedAt) / 0.5);
       // Deep-organ operations hold the incision wide with pinned skin flaps (ART-0189).
-      if (op.def.organ !== 'flesh' && op.def.organ !== 'skin' && op.def.organ !== 'muscle' && e.state === 'open') surgicalFlapArt(g, e.points, open, speciesOf(op.def.race).look.skin);
+      if (op.fieldOrgan !== 'flesh' && op.fieldOrgan !== 'skin' && op.fieldOrgan !== 'muscle' && e.state === 'open') surgicalFlapArt(g, e.points, open, speciesOf(op.def.race).look.skin);
       woundArt(g, e.points, 8, { open, bleed: e.state === 'open' ? 0.6 : 0.25, beat: beatPulse(op), seed: e.id, alpha: woundAlpha() });
       g.polyline(e.points, 2, hex('#ff9090', 0.15));
       if (e.state === 'closing') g.dashed(e.points, 2, hex('#ffebbe', 0.35 + 0.2 * Math.sin(op.elapsed * 4)), 6, 10, op.elapsed * 10);

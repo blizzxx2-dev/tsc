@@ -21,9 +21,25 @@ drawer(CollapsedLung, {
 
 drawer(Trepanation, {
   draw(g, e, op) {
-    g.circle(e.pos.x, e.pos.y, ORGAN.drillOuter - 10, hex(e.loose ? '#d8d0c0' : '#c8bca8'));
-    g.arc(e.pos.x, e.pos.y, ORGAN.drillOuter - 10, 3, hex('#6a4a30'), (e.turns + e.acc / TAU) / ORGAN.drillTurns);
-    if (op.guides && !e.loose) g.arc(e.pos.x, e.pos.y, (ORGAN.drillInner + ORGAN.drillOuter) / 2, 1, hex('#ffebbe', 0.4));
+    // A disc of skull marked out for the trephine: the groove darkens and deepens as the turns
+    // accumulate, pale bone dust thrown up at its lip; once cut through the disc sits loose in a
+    // dark ring, and lifts with a shadow under it.
+    const R = ORGAN.drillOuter - 10;
+    const k = Math.min(1, (e.turns + e.acc / TAU) / ORGAN.drillTurns);
+    const { x, y } = e.pos;
+    if (e.loose) {
+      g.circle(x, y, R + 3, hex('#1a0808', 0.85));
+      g.circle(x + 4, y + 6, R, hex('#000000', 0.35));
+    }
+    const lift = e.loose ? -2 : 0;
+    g.circleGrad(x - R * 0.25, y - R * 0.3 + lift, R * 1.05, hex('#efe6d2'), hex('#c8b89a'));
+    g.circle(x, y + lift, R * 0.35, hex('#b8a584', 0.35));
+    if (!e.loose) {
+      // The groove: a darker band round the rim, as far round as the cutting has gone.
+      g.arc(x, y, R, 3 + 3 * k, hex('#5a3a28', 0.35 + 0.5 * k), Math.max(0.02, k));
+      g.arc(x, y, R + 4, 2, hex('#f4ecd8', 0.5 * k), Math.max(0.02, k));
+      if (op.guides) g.arc(x, y, (ORGAN.drillInner + ORGAN.drillOuter) / 2, 1, hex('#ffebbe', 0.4));
+    } else g.arc(x, y + lift, R, 1.5, hex('#8a7050', 0.8));
   },
 });
 

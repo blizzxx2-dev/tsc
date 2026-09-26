@@ -174,6 +174,13 @@ export const PATIENT_BARKS_LATER: Record<string, Partial<Record<PatientTrigger, 
     relief: ['Oh. Oh, that’s — it’s straight. I can feel it’s straight.'],
     closing: ['Tell the yard I’ll be back. Tell the horse too.'],
   },
+  'op3-14': {
+    // Out cold until the clot is off: he mumbles, then surfaces.
+    'first-cut': ['…mind the slates… they’re loose, mind…'],
+    pain: ['Nnh — not the ear —'],
+    relief: ['…Mm. Who’s — is it Sunday?'],
+    closing: ['Where’s my ladder? I left my ladder on the roof.', 'There was a noise. Was there a noise?'],
+  },
   'op3-13': {
     'first-cut': ['Don’t look at the bone. I’ve looked. Don’t.', 'Two storeys. The timber gave. It wasn’t my footing.'],
     pain: ['Hnnh — mind the wrist, that’s my trowel hand —'],

@@ -53,6 +53,11 @@ export interface PhaseDef {
   callout?: string[];
   /** Short objective shown with the phase banner and kept under the timer (UIX-0061), e.g. "Close the wounds". */
   objective?: string;
+  /**
+   * The tissue the field shows from this phase on (default: the operation's organ), for work that
+   * goes down through the layers — scalp, then skull, then brain. It also sets how hard harm lands.
+   */
+  organ?: OrganKind;
   spawn(op: Operation): Entity[];
 }
 
@@ -610,12 +615,21 @@ export class Operation {
     return true;
   }
 
-  /** The organ under a point (regions first, then the op's organ). */
+  /** The organ under a point (regions first, then the tissue the field shows now). */
   organAt(p: Vec): OrganKind {
     for (const r of this.def.regions ?? []) {
       const dx = (p.x - r.x) / r.rx;
       const dy = (p.y - r.y) / r.ry;
       if (dx * dx + dy * dy <= 1) return r.kind;
+    }
+    return this.fieldOrgan;
+  }
+
+  /** The tissue the field shows now: the latest phase so far that names one, else the op's organ. */
+  get fieldOrgan(): OrganKind {
+    for (let i = Math.min(this.phase, this.def.phases.length - 1); i >= 0; i--) {
+      const o = this.def.phases[i]?.organ;
+      if (o) return o;
     }
     return this.def.organ;
   }

@@ -51,6 +51,7 @@ export const RANK_TABLE: Record<string, { S: number; A: number; B: number }> = {
   'op5-9': { S: 8950, A: 7160, B: 5370 },
   'op3-12': { S: 5310, A: 4250, B: 3190 }, // steady won 5534
   'op3-13': { S: 6420, A: 5140, B: 3850 }, // steady won 6688
+  'op3-14': { S: 5860, A: 4690, B: 3520 }, // steady won 6102
   'op4-11': { S: 5390, A: 4310, B: 3230 }, // steady won 5618
   'op5-10': { S: 8830, A: 7060, B: 5300 }, // steady won 9202 (candle-lit)
   // The Trials of the Guild (CON-0203): calibrated by tests/sim/trials.test.ts.
