@@ -236,13 +236,15 @@ export class FangNest extends MalisonBase {
   /** Out-of-order pulls (tests). */
   spreads = 0;
 
-  constructor(op: Operation, spots: readonly [Vec, number][]) {
+  constructor(op: Operation, spots: readonly [Vec, number][], opts: { broken?: number } = {}) {
     const c = spots.reduce((a, [p]) => ({ x: a.x + p.x / spots.length, y: a.y + p.y / spots.length }), { x: 0, y: 0 });
     super(c, op, 100);
     this.elite = true;
     this.required = false;
     this.layer = -1;
     this.fangs = spots.map(([p, a]) => new Embedded(p, 'tooth', a, false));
+    // CON-0057: one fang broken at the crown — the tongs must go in twice.
+    if (opts.broken !== undefined && this.fangs[opts.broken]) this.fangs[opts.broken].crowns = 1;
   }
 
   get all(): Entity[] {

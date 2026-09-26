@@ -774,6 +774,9 @@ export class Laceration extends Entity {
 
 // ============================================================ embedded objects
 
+/** Length of a fang-root left after its crown broke away (CON-0057). */
+const ROOT_LEN = 12;
+
 export type EmbeddedKind = 'arrow' | 'bolt' | 'shot' | 'tooth' | 'shard' | 'glass' | 'hexstone';
 
 export const EMBED_SPEC: Record<EmbeddedKind, { len: number; wound: number; drain: number; label: string; heavy: boolean }> = {
@@ -813,6 +816,10 @@ export class Embedded extends Entity {
   private calmT = 0;
   private whisperT = 0;
   shallow = false;
+  /** A broken tooth (CON-0057): pulls that bring only the crown away before the root will come. */
+  crowns = 0;
+  /** The crown is off; the root is still in. */
+  rootOnly = false;
   noun: string;
 
   constructor(
@@ -840,7 +847,7 @@ export class Embedded extends Entity {
 
   /** The graspable end of the object (shaft end or the object itself). */
   get handle(): Vec {
-    const l = this.spec.len * 0.7;
+    const l = (this.rootOnly ? ROOT_LEN : this.spec.len) * 0.7;
     return { x: this.pos.x - Math.cos(this.angle) * l, y: this.pos.y - Math.sin(this.angle) * l };
   }
 
@@ -1001,6 +1008,19 @@ export class Embedded extends Entity {
       this.shallow = true;
       return;
     }
+    if (off && this.crowns > 0) {
+      // Broken at the crown (CON-0057): it comes away, and the root is still there to pull.
+      this.crowns--;
+      this.rootOnly = true;
+      this.noun = 'the fang-root';
+      op.emit('blood', this.origin, 8, undefined, 0.4, 160);
+      op.cues.push('squelch');
+      op.sayOnce('fang-crown', 'That one was broken — only the crown came. The root’s still in; tongs again.');
+      this.pos = { ...this.origin };
+      this.target = { ...this.origin };
+      this.pull = null;
+      return;
+    }
     if (off) {
       this.kill();
       const pull = Math.atan2(this.pos.y - this.origin.y, this.pos.x - this.origin.x);
@@ -1087,7 +1107,9 @@ export class Embedded extends Entity {
       case 'tooth': {
         // Gravehound canine, or a brood-spider fang with a venom-stained root on spider cases.
         const spider = /spider|brood/i.test(op.def.diagnosis ?? '');
-        fangArt(g, { x, y }, this.angle, Math.max(20, this.spec.len), entry, { spider, venom: spider || /venom/i.test(op.def.diagnosis ?? ''), seed: this.id });
+        // A root left behind (CON-0057) is a short stub; a broken fang still whole wears a crack.
+        fangArt(g, { x, y }, this.angle, this.rootOnly ? ROOT_LEN : Math.max(20, this.spec.len), entry, { spider, venom: spider || /venom/i.test(op.def.diagnosis ?? ''), seed: this.id });
+        if (this.crowns > 0) g.line({ x: x - ca * 8 - sa * 5, y: y - sa * 8 + ca * 5 }, { x: x - ca * 12 + sa * 5, y: y - sa * 12 - ca * 5 }, 1.5, hex('#3a2a1a', 0.9));
         break;
       }
       case 'glass':

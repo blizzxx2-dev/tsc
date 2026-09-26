@@ -67,7 +67,7 @@ export type EntitySpec =
   | ({ e: 'malison-compline'; at: Pt } & Common)
   | ({ e: 'elite-broodcluster'; at: Pt; hatchIn?: number; brood?: number } & Common)
   | ({ e: 'elite-cantor'; at: Pt; every?: number } & Common)
-  | ({ e: 'elite-fangnest'; path: readonly Pt[]; angles: readonly number[] } & Common)
+  | ({ e: 'elite-fangnest'; path: readonly Pt[]; angles: readonly number[]; optional?: number; broken?: number } & Common)
   | ({ e: 'elite-matriarch'; at: Pt; segments?: number } & Common)
   | ({ e: 'elite-sellsword'; path: readonly Pt[] } & Common)
   | ({ e: 'elite-deadpulse'; path: readonly Pt[]; sigil: Pt; period?: number } & Common)
@@ -261,9 +261,14 @@ export const ENTITY_REGISTRY: { [K in EntityId]: Entry<K> } = {
     make: (s, op) => new CantorKnot(P(s.at), op, s.every).all,
   },
   'elite-fangnest': {
-    params: { path: { type: 'path' }, angles: { type: 'numbers' } },
+    params: { path: { type: 'path' }, angles: { type: 'numbers' }, optional: num(true, [0, 3]), broken: num(true, [0, 5]) },
     needs: () => [['tongs']],
-    make: (s, op) => new FangNest(op, s.path.map((p, i) => [P(p), s.angles[i] ?? 0] as [Vec, number])).all,
+    make: (s, op) => {
+      // The last `optional` spots are each there on a coin-flip of the op's seed (CON-0057: 3–4 fangs).
+      const keep = s.path.length - (s.optional ?? 0);
+      const spots = s.path.map((p, i) => [P(p), s.angles[i] ?? 0] as [Vec, number]).filter((_, i) => i < keep || op.rng.next() < 0.5);
+      return new FangNest(op, spots, { broken: s.broken }).all;
+    },
   },
   // Alpha elites (BOS-0153, BOS-0157..0161).
   'elite-matriarch': {

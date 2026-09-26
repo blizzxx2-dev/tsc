@@ -23,7 +23,7 @@ export const OP_2_1 = defineOp({
   organ: 'flesh',
   timeLimit: 240,
   tools: ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture'],
-  ranks: { S: 4900, A: 3920, B: 2940 },
+  ranks: { S: 4920, A: 3940, B: 2950 },
   litany: true,
   seed: 21,
   phases: [
@@ -37,6 +37,7 @@ export const OP_2_1 = defineOp({
       objective: 'Pull the fangs',
 
       callout: ['Now the fangs. Tongs — pull each one clear.'],
+      // CON-0057: three or four fangs by seed; the second is broken and comes out crown first, then root.
       spawn: [
         {
           e: 'elite-fangnest',
@@ -44,8 +45,11 @@ export const OP_2_1 = defineOp({
             [-150, -50],
             [-100, -10],
             [-80, -60],
+            [-140, 30],
           ],
-          angles: [0.9, 1.2, 0.6],
+          angles: [0.9, 1.2, 0.6, 1.0],
+          optional: 1,
+          broken: 1,
         },
       ],
     },

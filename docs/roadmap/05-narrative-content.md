@@ -342,7 +342,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ### op2-1 "Gravehound" (Tomas, scout) — claw rakes, lodged teeth, venom
 - [x] CON-0055 · Demo · P0 · S · Venom-on-bite tincture interaction — tincture held on bite for 1.5 s neutralises venom; wrong spot gives MISS (test)
 - [x] CON-0056 · Demo · P1 · S · Claw-rake lacerations as parallel triples — stitch zig-zag detection works on parallel close wounds (no cross-stitch mis-assignment)
-- [ ] CON-0057 · Demo · P1 · S · Tooth count 3–4 — one tooth broken (tongs twice) for variety
+- [x] CON-0057 · Demo · P1 · S · Tooth count 3–4 — one tooth broken (tongs twice) for variety _(`elite-fangnest` takes `optional` (trailing spots on a seeded coin-flip) and `broken` (an Embedded with `crowns`: the first pull brings the crown, the root stays for a second). op2-1: 3–4 fangs, the second broken. tests/unit/content/fangNest.test.ts)_
 - [x] CON-0058 · Demo · P2 · S · Grave-dirt contamination — 2 dirt spots must be drained before salve or salve rates BAD _(`gravedirt` (src/surgery/ailments/graveDirt.ts): the Leech-Pipe draws it out in 1.2 s; Saint’s Salve over it rates BAD "Dirt sealed in", harms, and festers into rot 5 s later. op2-1 carries two in with the claw rakes. tests/unit/content/graveDirt.test.ts)_
 
 ### op2-2 "The Green Seam" → rename "The Black Seam" (Orsa Flintvein) — scrying lens intro
