@@ -33,11 +33,13 @@ Code: `src/content/flags.ts` (`flags.get / set / has / truthy / count`), conditi
 | `thirstChoice` | `'salve' \| 'brand'` | s4-6 choice (NAR-0137) | Ch5 |
 | `strohToothFine` | boolean | winning op3-9 at XS/S (NAR-0102) | Ch5 (Stroh's trust) |
 | `mauerFate` | `'hale' \| 'maimed'` | winning op4-7 by rank: C → `maimed`, else `hale` (NAR-0105) | Ch5 (ending matrix) |
+| `deadManVerdict` | `'entranced' \| 'dead'` | s4-5 choice (NAR-0136): restart von Salm's heart, or certify him dead for the Tribunal | op4-5 step (closed on `'dead'`), Stroh's trust |
+| `choice.s4-5` | `'entranced' \| 'dead'` | s4-5 pick record | tools, tests |
 | `choice.s4-6` | `'salve' \| 'brand'` | s4-6 pick record | tools, tests |
 
 Derived, not stored (src/content/whisper.ts, src/content/endings.ts):
 - **Whisper band** (NAR-0093): `litanySeenCount` + 2 for `hornchildCertificate` = `'natural'`; 0 Unremarked, 1–2 Noted, 3–4 Suspected, 5+ Accused.
-- **`strohTrust`** (NAR-0104): `cantorMercy` false +1; certificate `'turned'` +1 / `'natural'` −2; `strohTooth` +1; `strohToothFine` +1; −1 per 2 of `litanySeenCount`.
+- **`strohTrust`** (NAR-0104): `cantorMercy` false +1; certificate `'turned'` +1 / `'natural'` −2; `strohTooth` +1; `strohToothFine` +1; `deadManVerdict` = `'dead'` +1; −1 per 2 of `litanySeenCount`. Read by the ending and, at ≥ 1, by s4-8 (the charter lapse) and s4-end (Stroh's own protective warrant instead of the council's).
 - **Ending** (NAR-0158), for a won finale: *pardon* if trust ≥ 2, or trust ≥ 1 with the Whisper short of Accused and no lie on the certificate; else *pyre refused* if the Whisper is short of Accused and `mauerFate` is `hale` or `hallerFate` is `hands`; else *exile*. Losing the finale plays *the Perfect End*.
 
 Derived, not stored: the **demo total rank** Chapter III cares about (NAR-0116) is computed from `Profile.best`

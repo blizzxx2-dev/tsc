@@ -8,7 +8,8 @@ import { SextMalison } from '../surgery/bosses/sext';
 import type { Operation, OperationDef } from '../surgery/operation';
 import { at, closeIncision } from './chapter1';
 import type { Chapter } from './campaign';
-import { choose, n, say, type StoryDef } from './story';
+import { choose, n, onlyIf, say, type StoryDef } from './story';
+import { strohTrust } from './endings';
 
 const ALL = ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture', 'brand', 'lens'] as const;
 
@@ -90,7 +91,24 @@ export const STORY_4_5: StoryDef = {
     say('ilse', 'There are fang fragments in the neck. Bite-trance, not death. The heart is stilled, not stopped.'),
     say('kreuzer', 'Then I can restart it. A tincture, but only on the beat — between beats it will simply pool.'),
     say('stroh', 'And if you are wrong, you will have raised a dead man in a camp of four hundred soldiers.'),
-    say('kreuzer', 'If I am wrong, Inquisitor, you may burn us both.'),
+    // NAR-0136: the verdict is the surgeon's. Writes `deadManVerdict`; 'dead' closes op4-5.
+    choose('narrator', 'The grey chest rises once, a minute apart. Stroh waits with the Tribunal’s ledger open, pen wet.', [
+      { id: 'entranced', text: 'Entranced. He is alive, Inquisitor, and I will prove it with my hands. Clear the tent.', set: { deadManVerdict: 'entranced' } },
+      { id: 'dead', text: 'Dead. A beat a minute is not a life. Write it down, and let the company bury its patron.', set: { deadManVerdict: 'dead' } },
+    ]),
+    ...onlyIf(
+      { flag: 'deadManVerdict', is: 'entranced' },
+      say('kreuzer', 'If I am wrong, Inquisitor, you may burn us both.'),
+    ),
+    ...onlyIf(
+      { flag: 'deadManVerdict', is: 'dead' },
+      say('stroh', 'Dead, by the surgeon’s verdict. The Tribunal is obliged to you, Doctor. It is not often obliged to anyone.'),
+      n('They burn Lord von Salm at dusk, as the Tribunal prescribes for a corpse that will not lie still. The company stands bareheaded.'),
+      n('In the heat, the grey body arches once and draws a long breath. The smoke takes the sound. Only Ilse is close enough to hear it.'),
+      say('ilse', 'Doctor. He breathed.'),
+      say('kreuzer', 'The fire draws the air out of a body. It happens. It happens on every pyre.'),
+      say('ilse', 'Then why are your hands shaking?'),
+    ),
   ],
 };
 
@@ -145,6 +163,19 @@ export const STORY_4_8: StoryDef = {
     say('stroh', 'Are held on nothing. I know. I am not a fool, Doctor, only a man who did not read his own warrant.'),
     say('mauer', 'You’ll do what, then?'),
     say('stroh', 'What I have always done. Find the truth, and act on it. It is only that no one has to let me any more.'),
+    // NAR-0139: how Stroh takes the lapse depends on how far he has come to trust the Doctor.
+    ...onlyIf(
+      (f) => strohTrust(f) >= 1,
+      say('stroh', 'Doctor. You keep the only honest ledger in this camp. When we reach the city, I will want to read it.'),
+      say('kreuzer', 'You may. Skip the pages about candles. They are mostly complaints about the price.'),
+      say('stroh', 'I have read those already. Every one.'),
+    ),
+    ...onlyIf(
+      (f) => strohTrust(f) < 1,
+      say('stroh', 'And the first truth I mean to find is how a hospice surgeon came to share a patron with the Choir.'),
+      say('kreuzer', 'The Widow pays for candles, Inquisitor. Not for surgeons.'),
+      say('stroh', 'So you say. I keep a ledger of your candles too, Doctor. I have kept it longer than you think.'),
+    ),
   ],
 };
 
@@ -205,8 +236,20 @@ export const STORY_4_END: StoryDef = {
     say('kreuzer', 'The Precentor spoke through Pieter. He wants me home for Hollow Night.'),
     say('stroh', 'He will have you. So will the council. A rider came this morning with a warrant for your arrest, Doctor.'),
     say('stroh', 'It is signed by the Widow Reiss for the council. It is sealed with the Tribunal seal. My seal, which I no longer have the right to use.'),
-    say('kreuzer', 'And will you serve it?'),
-    say('stroh', 'I will ride beside you to the city gate. What happens after the gate is not in my gift. It never was.'),
+    // NAR-0143: with Stroh's trust, the warrant that takes Kreuzer home is Stroh's own; without it, the council's.
+    ...onlyIf(
+      (f) => strohTrust(f) >= 1,
+      say('stroh', 'So I have written another. Mine. You are a prisoner of the Ash Tribunal, Doctor, from this morning.'),
+      say('kreuzer', 'You are arresting me.'),
+      say('stroh', 'The council cannot burn a Tribunal prisoner without a Tribunal hearing. It is the one rule the Widow cannot sign away.'),
+      say('stroh', 'Whether I have the right to write it is a question for the court. It will be a long question. I intend it to be.'),
+    ),
+    ...onlyIf(
+      (f) => strohTrust(f) < 1,
+      say('kreuzer', 'And will you serve it?'),
+      say('stroh', 'I will. Not because she signed it. Because I have watched you for a year, and I still do not know what you are.'),
+      say('stroh', 'You will ride in front of me to the city gate, Doctor. Your hands where I can see them.'),
+    ),
     n('END OF CHAPTER IV — SEXT AND NONE'),
   ],
 };
@@ -552,9 +595,12 @@ export const CHAPTER_4: Chapter = {
   id: 'ch4',
   numeral: 'IV',
   title: 'Sext and None',
-  // NAR-0131: reads Chapter III's outcomes; writes `thirstChoice` (s4-6). `mauerFate`, `charterRevealed`,
-  // `deadManVerdict` and `strohTrust` are not authored yet — see docs/narrative/flags.md.
-  flags: { reads: ['hallerFate', 'hornchildCertificate', 'litanySeenCount'], writes: ['thirstChoice', 'mauerFate'] },
+  // NAR-0131: reads Chapter III's outcomes and Stroh's trust (s4-8, s4-end); writes `deadManVerdict` (s4-5),
+  // `thirstChoice` (s4-6) and `mauerFate` (op4-7). See docs/narrative/flags.md.
+  flags: {
+    reads: ['hallerFate', 'hornchildCertificate', 'litanySeenCount', 'cantorMercy', 'strohTooth', 'strohToothFine', 'deadManVerdict'],
+    writes: ['deadManVerdict', 'thirstChoice', 'mauerFate'],
+  },
   steps: [
     { kind: 'story', story: STORY_4_1 },
     { kind: 'op', op: OP_4_1 },
@@ -566,7 +612,7 @@ export const CHAPTER_4: Chapter = {
     { kind: 'story', story: STORY_4_4 },
     { kind: 'op', op: OP_4_4 },
     { kind: 'story', story: STORY_4_5 },
-    { kind: 'op', op: OP_4_5 },
+    { kind: 'op', op: OP_4_5, if: { not: { flag: 'deadManVerdict', is: 'dead' } } },
     { kind: 'story', story: STORY_4_6 },
     { kind: 'op', op: OP_4_6 },
     { kind: 'story', story: STORY_4_7 },

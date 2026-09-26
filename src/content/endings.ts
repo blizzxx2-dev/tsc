@@ -40,6 +40,8 @@ export function strohTrust(f: Reader): number {
   else if (cert === 'natural') t -= 2;
   if (f.get('strohTooth')) t += 1;
   if (f.get('strohToothFine')) t += 1;
+  // The dead man's verdict (NAR-0136): siding with the Tribunal's reading of von Salm.
+  if (f.get('deadManVerdict') === 'dead') t += 1;
   t -= Math.floor(Number(f.get('litanySeenCount') ?? 0) / 2);
   return t;
 }

@@ -216,14 +216,14 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] NAR-0133 · Alpha · P1 · S · s4-2 Rain in the tents — Ilse and Kreuzer on the Litany's nature; first hint it is a hymn fragment
 - [x] NAR-0134 · Alpha · P1 · M · s4-3 Orsa returns — her crew poisoned by crystal dust; mountain-folk customs (don't shave the beard) as a plot constraint
 - [x] NAR-0135 · Alpha · P1 · S · s4-4 The giant mercenary — a tithe-eater swallowed stolen council documents; comic interrogation by Mauer
-- [ ] NAR-0136 · Alpha · P0 · M · s4-5 The dead man's pulse — a noble's "corpse" with one heartbeat a minute; Stroh demands a verdict; branch into forensic op or save-op
+- [x] NAR-0136 · Alpha · P0 · M · s4-5 The dead man's pulse — a noble's "corpse" with one heartbeat a minute; Stroh demands a verdict; branch into forensic op or save-op
 - [x] NAR-0137 · Alpha · P1 · M · s4-6 The thirsted courtesan — Margit, bitten repeatedly; she begs Kreuzer not to end the bond; player choice `thirstChoice`
 - [x] NAR-0138 · Alpha · P0 · M · s4-7 Sext — noon lethargy sweeps the camp; Mauer collapses reporting calm while dying (fake-calm vitals foreshadowed)
-- [ ] NAR-0139 · Alpha · P0 · M · s4-8 Charter lapse — the council roll shows Stroh's mandate expired at the new year; Stroh's reaction varies by `strohTrust`
+- [x] NAR-0139 · Alpha · P0 · M · s4-8 Charter lapse — the council roll shows Stroh's mandate expired at the new year; Stroh's reaction varies by `strohTrust`
 - [x] NAR-0140 · Alpha · P1 · S · s4-9 The stone bride — a camp-follower's wedding interrupted by petrification
 - [x] NAR-0141 · Alpha · P0 · M · s4-10 Patron betrayal — Widow Aldegund Reiss, the hospice's benefactor, revealed as Choir acolyte; the crestless carriage (Ch1 plant) was hers
 - [x] NAR-0142 · Alpha · P0 · M · s4-11 None — Pieter (Ch1 militiaman) carries the burrower toward his heart; the Precentor speaks through him for the first time
-- [ ] NAR-0143 · Alpha · P0 · S · s4-end — return to Kessendorf; Hollow Night is three days off; Stroh (or the council, if trust is low) issues a warrant for Kreuzer
+- [x] NAR-0143 · Alpha · P0 · S · s4-end — return to Kessendorf; Hollow Night is three days off; Stroh (or the council, if trust is low) issues a warrant for Kreuzer
 
 ## NAR · Epic 8 — Chapter V "Vespers and Compline" (Hollow Night)
 

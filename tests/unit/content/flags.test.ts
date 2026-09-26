@@ -7,6 +7,8 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { FULL_CAMPAIGN, nextOpenStep, stepId, stepOpen, type Chapter, type Step } from '../../../src/content/campaign';
 import { CHAPTER_2, STORY_2_4 } from '../../../src/content/chapter2';
 import { STORY_3_1, STORY_3_2, STORY_3_9 } from '../../../src/content/chapter3';
+import { CHAPTER_4, STORY_4_5, STORY_4_8, STORY_4_END } from '../../../src/content/chapter4';
+import { strohTrust } from '../../../src/content/endings';
 import { describeLine, lineShown, lineShownNow, resolveStory } from '../../../src/content/conditions';
 import {
   applyOpFlags,
@@ -281,9 +283,9 @@ describe('campaign branch nodes (CON-0007)', () => {
     expect(stepOpen(ch.steps[3], f)).toBe(true);
   });
 
-  it('every shipped chapter is linear except the endings: only the three ending scenes carry a condition', () => {
+  it('only the dead man’s pulse (NAR-0136) and the three ending scenes carry a step condition', () => {
     const conditional = FULL_CAMPAIGN.flatMap((c) => c.steps.filter((s) => (s as Step).if).map(stepId));
-    expect(conditional).toEqual(['s5-end', 's5-end-pyre', 's5-end-exile']);
+    expect(conditional).toEqual(['op4-5', 's5-end', 's5-end-pyre', 's5-end-exile']);
   });
 });
 
@@ -549,5 +551,37 @@ describe('NAR-0126 licence vote', () => {
     expect(k).not.toContain('suspended');
     expect(l).toContain('suspended');
     expect(l).not.toContain('The licence stands');
+  });
+});
+
+describe('Chapter IV verdict and trust branches (NAR-0136, NAR-0139, NAR-0143)', () => {
+  const shown = (st: StoryDef, f: FlagStore) =>
+    st.lines
+      .filter((l) => lineShown(l, {}, f))
+      .map((l) => l.text)
+      .join(' ');
+  const op45 = CHAPTER_4.steps.find((s) => stepId(s) === 'op4-5')!;
+
+  it('certifying von Salm dead closes op4-5, burns him, and moves Stroh’s trust', () => {
+    const dead = new FlagStore();
+    dead.set('deadManVerdict', 'dead');
+    const alive = new FlagStore();
+    alive.set('deadManVerdict', 'entranced');
+    expect(stepOpen(op45, dead)).toBe(false);
+    expect(stepOpen(op45, alive)).toBe(true);
+    expect(shown(STORY_4_5, dead)).toContain('He breathed');
+    expect(shown(STORY_4_5, alive)).not.toContain('He breathed');
+    expect(strohTrust(dead) - strohTrust(alive)).toBe(1);
+  });
+
+  it('Stroh takes the charter lapse and serves the warrant by trust', () => {
+    const high = new FlagStore();
+    high.set('strohTooth', true);
+    const low = new FlagStore();
+    expect(shown(STORY_4_8, high)).toContain('honest ledger');
+    expect(shown(STORY_4_8, low)).toContain('share a patron');
+    expect(shown(STORY_4_END, high)).toContain('prisoner of the Ash Tribunal');
+    expect(shown(STORY_4_END, high)).not.toContain('hands where I can see');
+    expect(shown(STORY_4_END, low)).toContain('hands where I can see');
   });
 });
