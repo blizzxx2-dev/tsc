@@ -78,7 +78,7 @@ describe('demo continuity (NAR-0175)', () => {
     };
     walk(FULL_CAMPAIGN);
     const defined = [C3, C4, C5]
-      .flatMap((m) => Object.values(m))
+      .flatMap((m) => Object.values(m) as unknown[])
       .filter(
         (v): v is { id: string; lines: unknown[] } =>
           !!v && typeof v === 'object' && typeof (v as { id?: unknown }).id === 'string' && Array.isArray((v as { lines?: unknown }).lines),
