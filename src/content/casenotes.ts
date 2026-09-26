@@ -6,6 +6,7 @@
  */
 import { rankBand, type RankBand } from './conditions';
 import type { Rank } from '../surgery/types';
+import { CASE_NOTES_LATER } from './casenotesLater';
 
 export interface CaseNote {
   /** Operation id (op1-1 … op2-5). */
@@ -22,7 +23,7 @@ export interface CaseNote {
   observation: string;
 }
 
-export const CASE_NOTES: readonly CaseNote[] = [
+const DEMO_NOTES: readonly CaseNote[] = [
   {
     op: 'op1-1',
     patient: 'Jost, drover. Pays in turnips.',
@@ -144,6 +145,9 @@ export const CASE_NOTES: readonly CaseNote[] = [
     observation: 'Every candle in the tent stood still. Stroh counted eight; so did I.',
   },
 ];
+
+/** Every operation's note: the demo's, then Chapters III–V (NAR-0170). */
+export const CASE_NOTES: readonly CaseNote[] = [...DEMO_NOTES, ...CASE_NOTES_LATER];
 
 export const caseNote = (opId: string): CaseNote | undefined => CASE_NOTES.find((n) => n.op === opId);
 

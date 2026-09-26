@@ -13,6 +13,11 @@ import { playOperation, save } from './flow';
 import { TitleScene } from './title';
 import { CodexScene } from './codex';
 import { ManualScene } from './manual';
+import { caseNote, renderCaseNote } from '../content/casenotes';
+
+/** Row height and the clipped list area (UIX-0089). */
+const ROW = 58;
+const LIST = { x: 236, y: 150, w: 808, h: 440 };
 
 /** Replay any operation already reached in the campaign, chasing better ranks. */
 export class OperationsScene implements Scene {
@@ -31,8 +36,20 @@ export class OperationsScene implements Scene {
     );
   }
 
+  /** Scroll offset of the list, in px (UIX-0089): the full campaign runs to forty operations. */
+  private scroll = 0;
+
+  private maxScroll(): number {
+    return Math.max(0, this.list.length * ROW - LIST.h);
+  }
+
   update(_dt: number, game: Game): void {
-    if (game.input.actPressed('ui.back')) game.go(new TitleScene());
+    const i = game.input;
+    if (i.actPressed('ui.back')) game.go(new TitleScene());
+    if (i.wheel) this.scroll += i.wheel * ROW;
+    if (i.actPressed('ui.down')) this.scroll += ROW;
+    if (i.actPressed('ui.up')) this.scroll -= ROW;
+    this.scroll = Math.max(0, Math.min(this.maxScroll(), this.scroll));
   }
 
   render(g: Gfx, game: Game): void {
@@ -41,10 +58,14 @@ export class OperationsScene implements Scene {
     g.endWorld({ litany: 0, danger: 0, shake: { x: 0, y: 0 }, bloom: 'menu', defocus: 8 });
     panel(g, { x: 200, y: 40, w: 880, h: 640 });
     heading(g, t('ui.theatre.title'), VIEW_W / 2, 96, 420, 1, 30);
+    let hovered: OperationDef | null = null;
+    g.pushClip(LIST);
     this.list.forEach(({ chapter, def }, i) => {
-      const y = 180 + i * 64;
-      const r = { x: 240, y: y - 34, w: 800, h: 54 };
-      const hover = inRect(game.input.pos, r);
+      const y = LIST.y + 30 + i * ROW - this.scroll;
+      if (y < LIST.y - ROW || y > LIST.y + LIST.h + ROW) return;
+      const r = { x: 240, y: y - 34, w: 800, h: ROW - 6 };
+      const hover = inRect(game.input.pos, r) && inRect(game.input.pos, LIST);
+      if (hover) hovered = def;
       if (hover) g.rect(r.x, r.y, r.w, r.h, hex(PALETTE.blood, 0.3));
       g.text(t('ui.theatre.entry', { chapter, index: i + 1 }), 260, y, { size: 24, color: hex(PALETTE.inkDim) });
       g.text(def.title, 340, y, { size: 28, color: hex(hover ? PALETTE.gold : PALETTE.ink) });
@@ -60,6 +81,19 @@ export class OperationsScene implements Scene {
         playOperation(game, def, back, back, false, ta ? { timeAttack: true } : {});
       }
     });
+    g.popClip();
+    // Scroll bar, when the list is longer than the page.
+    const max = this.maxScroll();
+    if (max > 0) {
+      const h = Math.max(40, (LIST.h * LIST.h) / (LIST.h + max));
+      g.rect(LIST.x + LIST.w + 8, LIST.y, 4, LIST.h, hex(PALETTE.inkDim, 0.25));
+      g.rect(LIST.x + LIST.w + 8, LIST.y + (LIST.h - h) * (this.scroll / max), 4, h, hex(PALETTE.gold, 0.8));
+    }
+    // The day-book page for a cleared operation (NAR-0170): its outcome at the best rank so far.
+    const hov = hovered as OperationDef | null;
+    const best = hov ? save.best[hov.id] : undefined;
+    const note = hov && best ? caseNote(hov.id) : undefined;
+    if (note && best) g.textBlock(t('ui.theatre.daybook', { note: renderCaseNote(note, best.rank).outcome }), 250, 606, 780, { size: 17, font: 'italic', color: hex(PALETTE.inkDim), shadow: false }, 1.2);
     const mode = t(OperationsScene.timeAttack ? 'ui.theatre.mode_timeattack' : 'ui.theatre.mode_standard');
     if (button(g, game.input, mode, VIEW_W / 2, 132, 20)) OperationsScene.timeAttack = !OperationsScene.timeAttack;
     if (button(g, game.input, t('ui.codex.open'), VIEW_W / 2 - 250, 650, 24)) game.go(new CodexScene(() => game.go(new OperationsScene())));

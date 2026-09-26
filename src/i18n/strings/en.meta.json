@@ -9097,5 +9097,12 @@
     "size": 20,
     "maxPx": 1000,
     "context": "Credits row: a character's name, then their title in the story. {name}, {title}."
+  },
+  "ui.theatre.daybook": {
+    "scene": "theatre",
+    "font": "italic",
+    "size": 17,
+    "maxPx": 780,
+    "context": "Operating Theatre footer: the day-book (case note) outcome for the hovered operation. {note} is a full sentence."
   }
 }

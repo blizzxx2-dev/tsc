@@ -1,3 +1,4 @@
+import { allCampaignOperations } from '../src/content/campaign';
 import { describe, expect, it } from 'vitest';
 import { CHAPTER_1 } from '../src/content/chapter1';
 import { CHAPTER_2 } from '../src/content/chapter2';
@@ -10,9 +11,11 @@ const demoOps = [...CHAPTER_1.steps, ...CHAPTER_2.steps].flatMap((s) => (s.kind 
 const RANKS: Rank[] = ['XS', 'S', 'A', 'B', 'C'];
 
 describe('case notes (NAR-0087, NAR-0088)', () => {
-  it('one note per demo operation, op1-1 … op2-5, naming the patient the op names', () => {
-    expect(CASE_NOTES.map((n) => n.op)).toEqual(demoOps.map((d) => d.id));
-    for (const d of demoOps) {
+  it('one note per campaign operation, demo first, naming the patient the op names (NAR-0170)', () => {
+    const ops = allCampaignOperations();
+    expect(CASE_NOTES.slice(0, demoOps.length).map((n) => n.op)).toEqual(demoOps.map((d) => d.id));
+    expect(new Set(CASE_NOTES.map((n) => n.op))).toEqual(new Set(ops.map((d) => d.id)));
+    for (const d of ops) {
       const n = caseNote(d.id)!;
       const first = d.patient.split(/[, ]/)[0];
       expect(n.patient, d.id).toContain(first === 'A' ? 'lay-cantor' : first);
