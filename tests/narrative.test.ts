@@ -8,6 +8,7 @@ import { LATER_AFTERMATH } from '../src/content/aftermath-later';
 import { conditionOf, lineShown, rankBand, resolveStory, type StoryContext } from '../src/content/conditions';
 import type { StoryDef } from '../src/content/story';
 import { lint, literals, SCRIPT_FILES, STRING_TABLES } from '../scripts/narrative-lint.mjs';
+import { longestVariant } from './helpers/storyVariants';
 import { resolvePrompt, TUTORIALS } from '../src/content/tutorials';
 import { TOOL_INFO } from '../src/surgery/types';
 import { dragGlyphFor, glyphFor } from '../src/input/glyphs';
@@ -41,6 +42,22 @@ describe('narrative style rules', () => {
     }
   });
 
+  it('NAR-0178: Ch3–5 scene budgets — ≤ 14 lines in the longest variant any flags allow; the crypt and the three endings ≤ 24', () => {
+    const FINALE = new Set(['s5-10', 's5-end', 's5-end-pyre', 's5-end-exile']);
+    for (const ch of FULL_CAMPAIGN.slice(2))
+      for (const s of storiesOf(ch.steps)) expect(longestVariant(s), s.id).toBeLessThanOrEqual(FINALE.has(s.id) ? 24 : 14);
+  });
+
+  it('NAR-0178: Kreuzer’s voice — never exclaims; spoken lines stay short (monologue and journal aside)', () => {
+    const lines = FULL_CAMPAIGN.flatMap((ch) => storiesOf(ch.steps)).flatMap((s) => s.lines.map((l) => ({ id: s.id, l })));
+    const his = lines.filter(({ l }) => l.who === 'kreuzer' && !l.choice);
+    expect(his.length).toBeGreaterThan(80);
+    for (const { id, l } of his) {
+      expect(l.text, `${id}: ${l.text}`).not.toMatch(/!/);
+      if (!l.text.startsWith('(') && id !== 's5-journal') expect(l.text.length, `${id}: ${l.text}`).toBeLessThanOrEqual(130);
+    }
+  });
+
   it('NAR-0038/0056: aftermath scenes after op1-1…op1-4 and op2-1…op2-4 are 2–4 lines in every variant; failures 1–2', () => {
     for (const id of ['op1-1', 'op1-2', 'op1-3', 'op1-4', 'op2-1', 'op2-2', 'op2-3', 'op2-4', ...Object.keys(LATER_AFTERMATH)]) {
       const a = AFTERMATH[id] ?? LATER_AFTERMATH[id];
@@ -51,7 +68,8 @@ describe('narrative style rules', () => {
         expect(n).toBeLessThanOrEqual(4);
       }
     }
-    for (const c of [CHAPTER_1, CHAPTER_2]) for (const s of c.steps) if (s.kind === 'op') expect(FAILURE[s.op.id]?.lines.length, s.op.id).toBeGreaterThanOrEqual(1);
+    for (const c of [CHAPTER_1, CHAPTER_2])
+      for (const s of c.steps) if (s.kind === 'op') expect(FAILURE[s.op.id]?.lines.length, s.op.id).toBeGreaterThanOrEqual(1);
     for (const f of Object.values(FAILURE)) expect(f.lines.length).toBeLessThanOrEqual(2);
   });
 
@@ -84,7 +102,10 @@ describe('narrative conditions', () => {
 
   it('NAR-0047: s1-end shows the "time obliging you" beat only after a Litany in op1-5, the alternate otherwise', () => {
     const end = storiesOf(CHAPTER_1.steps).find((s) => s.id === 's1-end')!;
-    const said = (ctx: StoryContext) => resolveStory(end, ctx).lines.map((l) => l.text).join(' ');
+    const said = (ctx: StoryContext) =>
+      resolveStory(end, ctx)
+        .lines.map((l) => l.text)
+        .join(' ');
     expect(said({ litanyUsed: true })).toMatch(/time itself were… obliging you/);
     expect(said({ litanyUsed: true })).not.toMatch(/almost disappointing/);
     expect(said({ litanyUsed: false })).not.toMatch(/obliging you/);
@@ -95,7 +116,10 @@ describe('narrative conditions', () => {
 
   it('NAR-0065: s2-end candle beat after a Litany in op2-5; "shook, for once" otherwise; both end on "After Prime"', () => {
     const end = storiesOf(CHAPTER_2.steps).find((s) => s.id === 's2-end')!;
-    const said = (ctx: StoryContext) => resolveStory(end, ctx).lines.map((l) => l.text).join(' ');
+    const said = (ctx: StoryContext) =>
+      resolveStory(end, ctx)
+        .lines.map((l) => l.text)
+        .join(' ');
     expect(said({ litanyUsed: true })).toMatch(/eight heartbeats/);
     expect(said({ litanyUsed: false })).toMatch(/They shook, Doctor\. For once\./);
     expect(said({ litanyUsed: false })).not.toMatch(/eight heartbeats/);
@@ -104,7 +128,10 @@ describe('narrative conditions', () => {
 
   it('NAR-0039: Haller’s comment after op1-1 varies between XS/S, A/B and C', () => {
     const a = AFTERMATH['op1-1'];
-    const haller = (rank: 'XS' | 'S' | 'A' | 'C') => resolveStory(a, { rank }).lines.filter((l) => l.who === 'haller').map((l) => l.text);
+    const haller = (rank: 'XS' | 'S' | 'A' | 'C') =>
+      resolveStory(a, { rank })
+        .lines.filter((l) => l.who === 'haller')
+        .map((l) => l.text);
     expect(haller('XS')).toEqual(haller('S'));
     expect(haller('XS')[0]).toMatch(/simple work/);
     expect(haller('C')[0]).toMatch(/simple work/);
@@ -112,13 +139,23 @@ describe('narrative conditions', () => {
   });
 
   it('every conditional line is reachable by some context', () => {
-    for (const s of allStories) for (const l of s.lines) if (conditionOf(l)) expect(CONTEXTS.some((c) => lineShown(l, c)), `${s.id}: ${l.text}`).toBe(true);
+    for (const s of allStories)
+      for (const l of s.lines)
+        if (conditionOf(l))
+          expect(
+            CONTEXTS.some((c) => lineShown(l, c)),
+            `${s.id}: ${l.text}`,
+          ).toBe(true);
   });
 });
 
 describe('tutorial prompts (NAR-0051, NAR-0052)', () => {
   it('every instrument and the Litany has a prompt, first taught in a demo op', () => {
-    for (const t of [...TOOL_INFO.map((x) => x.id), 'litany']) expect(TUTORIALS.some((u) => u.id === t), t).toBe(true);
+    for (const t of [...TOOL_INFO.map((x) => x.id), 'litany'])
+      expect(
+        TUTORIALS.some((u) => u.id === t),
+        t,
+      ).toBe(true);
     for (const u of TUTORIALS) expect(u.firstOp).toMatch(/^op[12]-[1-5]$/);
   });
 
@@ -139,7 +176,11 @@ describe('tutorial prompts (NAR-0051, NAR-0052)', () => {
   });
 
   it('story lines keep flavour: Ch1 scenes no longer carry step-by-step tool instructions', () => {
-    const text = storiesOf(CHAPTER_1.steps).flatMap((s) => s.lines.map((l) => l.text)).join('\n');
-    expect(text).not.toMatch(/Stitch him, drain him, salve him|hold it to the flesh and let it take|Hold it on them until they stop wriggling|twice — to free the barbs/);
+    const text = storiesOf(CHAPTER_1.steps)
+      .flatMap((s) => s.lines.map((l) => l.text))
+      .join('\n');
+    expect(text).not.toMatch(
+      /Stitch him, drain him, salve him|hold it to the flesh and let it take|Hold it on them until they stop wriggling|twice — to free the barbs/,
+    );
   });
 });

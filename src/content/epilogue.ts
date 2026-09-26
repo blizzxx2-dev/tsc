@@ -86,7 +86,7 @@ export const EPILOGUE: Record<string, EpilogueCard> = {
   emmerich: {
     name: 'Emmerich',
     survives: 'EMMERICH, the page-boy, became a clerk at the Hall of Records, and sleeps with a candle lit to this day.',
-    dies: 'EMMERICH died young, of an ordinary fever, which his mother said was the most ordinary thing he ever did.',
+    dies: 'EMMERICH died young, of an ordinary fever. His mother keeps the candle he slept by, and lights it every Hollow Night.',
     absent: 'EMMERICH went to sea, as far from any choir as a boy can get.',
     fate: () => 'survives',
   },

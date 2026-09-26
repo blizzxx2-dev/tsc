@@ -68,7 +68,7 @@ making the joke, or the joke is about something they chose. Pain, fear, disfigur
 and death are never the punchline. Supporting rules:
 - The laugh goes *up* (guilds, councils, Tribunal, Burgomaster) or *sideways* (folk cures, superstitions, pie-men), never *down*.
 - A joke may sit next to horror but not inside it: no quips during a patient's death (failure scenes are never funny).
-- Kreuzer's humour is dry and defensive; Haller's is contempt for institutions; Ilse's is ledger-dry; Mauer's is military exasperation; Orsa's is bluster; Stroh's is not humour.
+- Kreuzer's humour is dry and defensive; Haller's is contempt for institutions; Ilse's is ledger-dry; Mauer's is military exasperation; Orsa's is bluster; Stroh's is not humour — until Chapter III thaws him into the odd dry line at his own expense.
 
 ### Audit — every Chapter I–II joke line (re-run after each script change)
 
@@ -105,6 +105,52 @@ and death are never the punchline. Supporting rules:
 | *rejected* | *“Try not to scream, he said, and the drover screamed.”* | The patient's pain | **Fail — cut** |
 | *rejected* | *Vagrant: “Unknown vagrant”* as a punchline to the queue | The poor | **Fail — replaced by Matthis Kolb (NAR-0030)** |
 
+### Audit — every Chapter III–V joke line (NAR-0178)
+
+| Id | Line (abridged) | Target | Verdict |
+|---|---|---|---|
+| s3-3.001 | Windows “bow inward and then, politely, stay whole” | The building (next to the blast, not inside anyone’s death) | Pass |
+| s3-3.004–.006 | Anno: master thinks he’s shirking; crooked eyebrows | Anno, about himself | Pass |
+| s3-4.008–.009 | Founders’ Guild invoices for the lead; “collect it from the privy” | Guild | Pass |
+| s3-5.003 | Vapour-wardens’ beef “stolen by noon” | Folk cure | Pass |
+| s3-6.001–.003 | The pie-shop “is not happy”; “They were not eel” | Pie vendor (Frieda’s worms are not the joke) | Pass |
+| s3-6b.002 | Mother Agathe: “Clean lancet, boy” | Agathe’s own bluster | Pass |
+| s3-8.001–.002 | Stroh’s jaw “like a plum”; “You are what remains” | The Tribunal needing its suspect (the laugh goes up) | Pass |
+| s3-8.005, .007 | “Open wider, Inquisitor”; “even a man of the Tribunal” | Tribunal | Pass |
+| s3-9.010, .012 | “Practically a garland”; “stop being paid for it” | Guild | Pass |
+| s3-10.005 | “You’ll want it for shouting at me afterwards” | Haller’s temper (bedside comfort, not his burns) | Pass |
+| s3-end.002, .012 | “Honest, which is inconvenient”; “badly, and with a great deal of advice” | Haller, about himself | Pass |
+| s3-end.017, .022 | “Not a lie if you are looking at the lamp”; “It will worry him” | Tribunal | Pass |
+| s4-1.015 | Ushkar: “It pulled back” | Ushkar, about himself | Pass |
+| s4-2.012 | Wendel: “the rude bastard” | The one raider who gored him — not the horned folk as a people (bible §7) | **Pass with note** |
+| s4-3.001–.003 | The Kreuzer Deep fell in; “Very like you, on your first day” | Orsa’s bluster / Kreuzer | Pass |
+| s4-4.002–.005 | Gutram ate the strongbox “from… thieves” | Something Gutram chose (not his pain) | Pass |
+| s4-6.001 | “The chaplain pretends not to know” | The chaplaincy | Pass |
+| s4-8.013–.014 | “Mostly complaints about the price” | Hospice poverty / the Tribunal’s reading | Pass |
+| s4-9.004 | “Hold his bride together with my own hands” | Mauer’s exasperation (not Hanne’s stone) | Pass |
+| s4-10.001, .011–.012 | Capital letters; “Do not tell the Guild”; “Ink will have to do” | Haller, about his own hands | Pass |
+| s4-end.020 | “A very rude drawing of the Precentor” | The villain | Pass |
+| s5-1.007–.009 | The drover drives “very slowly” | The bailiff and the warrant | Pass |
+| s5-2.001, .012 | “The Widow Reiss chose the judges”; “saved the trouble” | Council / court | Pass |
+| s5-2.015 | Orsa: “Witchcraft? Pah.” | Tribunal | Pass |
+| s5-3.007, .017 | “A very long supper”; “hang leaning on a crutch” | Gaolers / Mauer about himself | Pass |
+| s5-3.010–.014, s5-end.012–.013, s5-end-exile.010 | The very good tunnel; the Kreuzer Hope | Orsa’s bluster | Pass |
+| s5-6.001–.004 | The cyst “has opinions” | The curse (Dietmar’s own line .005 is played straight) | **Pass with note** |
+| s5-9b.008–.011 | “Your most irritating quality”; “anything more foolish” | Kreuzer | Pass |
+| s5-end.004–.005 | “I had rather got used to the idea / the damp” | Kreuzer, about his own sentence | Pass |
+| s5-end.009, s5-end-pyre.012 | Stroh’s “very small fire”; “a very Kessendorf solution” | The law, and Stroh himself — see §5 on Stroh’s thaw | Pass |
+| s5-end.011, .015 | “Very large, very polite rats”; Voss voted against | Council / Guild | Pass |
+| s5-end-pyre.009, .016 | “The Watch declines to do anything about it”; “a very sharp knife” | Watch / licensing | Pass |
+| s5-end-exile.006, .016 | “She is always furious”; the new surgeon “is terrible” | The Order / Haller | Pass |
+| s5-epilogue.008 | “He would have hated the fuss” | Haller’s temper and the Guild’s bell, beside his death | **Pass with note** |
+| s5-epilogue.035 | “A surfeit of Thursday dinners… several cooks” | The Burgomaster’s gluttony (the laugh goes up) | **Pass with note** |
+| a3-1.001 | Liesl asks to keep the bits of horn | Liesl’s own delight | Pass |
+| a3-3.002–.003 | The privy basket; “lightly used” | Guild | Pass |
+| a3-5.001–.002 | Berthold’s horse “the right way round”; “hold you to the cushion” | Berthold, about his own leg | Pass |
+| a3-9.002–.003 | Stroh: “So, very nearly, did I” | Stroh, about his own tooth | Pass |
+| a3-10.003 | “Read something with a happy ending” | Kreuzer’s bedside manner | Pass |
+| *rewritten* | *s5-epilogue.029: Emmerich’s fever “the most ordinary thing he ever did”* | His death as the punchline | **Fail — rewritten**: his mother keeps his candle |
+
 ---
 
 ## 3. Diction (NAR-0003)
@@ -131,6 +177,7 @@ slightly formal sentences; contractions are fine in speech (“don’t”, “he
 | Bark | ≤ 60 characters | `tests/barks.test.ts` |
 | Callout label (rating/popup text over the field: `label.*`, `popup.*`) | ≤ 28 characters | `tests/narrative.test.ts` |
 | Scene (Ch1–2) | chapter opener and end ≤ 14 lines, mid-chapter ≤ 10 (NAR-0036) | `tests/narrative.test.ts` |
+| Scene (Ch3–5) | ≤ 14 lines in the longest variant any flags allow; the crypt (s5-10) and the three endings ≤ 24 (NAR-0178) | `tests/narrative.test.ts` |
 | Codex body | ≤ 180 words | `tests/codex.test.ts` |
 | Case note | ≤ 120 words | `tests/codex.test.ts` |
 
@@ -138,10 +185,10 @@ slightly formal sentences; contractions are fine in speech (“don’t”, “he
 
 | Speaker | Sounds like | Never |
 |---|---|---|
-| Kreuzer | Short, dry, deflecting; kind in deeds, curt in words | Speeches; boasting; theology |
+| Kreuzer | Short, dry, deflecting; kind in deeds, curt in words. Never exclaims; spoken lines ≤ 130 characters (NAR-0178, tested) | Speeches; boasting; theology |
 | Ilse | Precise, ledger-minded, faith spoken plainly | Hysteria; sermonising |
 | Haller | Gruff contempt for letters and guilds; love shown as insult | Warmth said aloud (until Ch3) |
-| Stroh | Courteous, patient, legal; counts everything | Shouting; cartoon cruelty |
+| Stroh | Courteous, patient, legal; counts everything. From his tooth (Ch3) a rare dry line, always at himself or the law | Shouting; cartoon cruelty; a joke at a prisoner |
 | Mauer | Counts his men; impatient; loyal downward | Cowardice; eloquence |
 | Orsa | Loud, proud, generous; mountain customs stated as facts | Grudges, runes, oaths of vengeance (see `bible.md` §Mountain-folk) |
 | The Malison / Choir | Liturgical, soft, second person; short lines | Thee/thou; gloating monologues over 4 lines |

@@ -180,13 +180,10 @@ export const STORY_4_8: StoryDef = {
   lines: [
     n('Mauer wakes at dusk, weak as a kitten and furious about it. The first thing he asks for is the strongbox papers.'),
     say('mauer', 'Thirty-six, while I slept. The council roll, Doctor: every chartered office, signed at the new year. Inquisitor — here.'),
-    say('stroh', 'Captain.'),
     say('mauer', 'The Ash Tribunal’s charter in Kessendorf. It is not on the roll. It was not renewed. It lapsed at the new year.'),
     say('stroh', 'That is a clerk’s error.'),
-    say('mauer', 'Then it is a clerk’s error with your name on every arrest since. Whoever sat on the council this winter let you lapse.'),
-    say('stroh', 'Who struck it?'),
-    say('mauer', 'No one struck it. Someone simply didn’t sign. The Widow Reiss’s seat. She sits for the charities.'),
-    say('ilse', 'The Widow Reiss. The hospice’s patron. She pays for the candles in our ward.'),
+    say('mauer', 'With your name on every arrest since. No one struck it — someone simply didn’t sign. The Widow Reiss’s seat.'),
+    say('ilse', 'The Widow Reiss sits for the charities. She is the hospice’s patron. She pays for the candles in our ward.'),
     ...onlyIf(
       { flag: 'coachmanFinding', is: 'choir' },
       say('stroh', 'And her coachman is in a ditch on the east road with a Choir mark in his palm and our candle-bill in his pocket.'),
@@ -194,8 +191,7 @@ export const STORY_4_8: StoryDef = {
     say('stroh', '…Then for four months I have been a private man with a hat and a sword, making arrests.'),
     say('kreuzer', 'And your prisoners?'),
     say('stroh', 'Are held on nothing. I know. I am not a fool, Doctor, only a man who did not read his own warrant.'),
-    say('mauer', 'You’ll do what, then?'),
-    say('stroh', 'What I have always done. Find the truth, and act on it. It is only that no one has to let me any more.'),
+    say('stroh', 'So I will do what I have always done. Find the truth, and act on it. Only now no one has to let me.'),
     // NAR-0139: how Stroh takes the lapse depends on how far he has come to trust the Doctor.
     ...onlyIf(
       (f) => strohTrust(f) >= 1,
