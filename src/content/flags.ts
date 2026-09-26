@@ -160,7 +160,7 @@ export const OP_FLAG_WRITES: Readonly<Record<string, (rank: Rank) => FlagRecord>
 };
 
 /** Flags written by the engine rather than by content, so the flag audit knows their source. */
-export const ENGINE_FLAG_WRITES: readonly string[] = ['litanySeenCount', 'guildMarks', 'guildOps', 'rank.op1-1', 'rank.op1-2', 'rank.op1-3', 'rank.op1-5', 'rank.op2-1', ...[1, 2, 3, 4, 5].flatMap((n) => [`ch${n}Marks`, `ch${n}Ops`])];
+export const ENGINE_FLAG_WRITES: readonly string[] = ['litanySeenCount', 'unsungHeard', 'guildMarks', 'guildOps', 'rank.op1-1', 'rank.op1-2', 'rank.op1-3', 'rank.op1-5', 'rank.op2-1', ...[1, 2, 3, 4, 5].flatMap((n) => [`ch${n}Marks`, `ch${n}Ops`])];
 
 /** Rank points toward the Guild's licence vote (NAR-0126): XS 4, S 3, A 2, B 1, C 0. */
 const GUILD_POINTS: Readonly<Record<Rank, number>> = { XS: 4, S: 3, A: 2, B: 1, C: 0 };

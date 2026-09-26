@@ -1112,5 +1112,7 @@
   "label.bud_dressed": "Bud dressed",
   "label.left_in_peace": "Left in peace",
   "label.cut_a_natural_growth": "Cut a natural growth",
-  "ui.credits.section_textures": "Textures"
+  "ui.credits.section_textures": "Textures",
+  "ui.credits.section_cast": "Dramatis Personae",
+  "ui.credits.cast_line": "{name} — {title}"
 }

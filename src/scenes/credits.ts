@@ -21,6 +21,7 @@ import { drawBackdrop } from './backdrop';
 import { CREDIT_SECTIONS, fontCredits, softwareCredits, TEXTURE_CREDITS } from './creditsData';
 import { NOTICES } from './noticesData';
 import { TitleScene } from './title';
+import { CAST } from '../content/characters';
 
 type Row = { kind: 'heading' | 'role' | 'name' | 'gap' | 'title' | 'note'; text: string; role?: string };
 
@@ -30,6 +31,10 @@ const FAST = 4;
 /** The credits as one flat list of rows, built once per scene (strings resolve for the current locale). */
 export function creditRows(): Row[] {
   const rows: Row[] = [{ kind: 'title', text: t('ui.game.title') }, { kind: 'note', text: t('ui.game.subtitle') }, { kind: 'gap', text: '' }];
+  // The full cast (UIX-0198): everyone the story names, with the title they carry in it.
+  rows.push({ kind: 'heading', text: t('ui.credits.section_cast') });
+  for (const c of Object.values(CAST)) if (c.name && c.title) rows.push({ kind: 'name', text: t('ui.credits.cast_line', { name: c.name, title: c.title }) });
+  rows.push({ kind: 'gap', text: '' });
   for (const s of CREDIT_SECTIONS) {
     rows.push({ kind: 'heading', text: t(s.headingKey) });
     for (const l of s.lines) {

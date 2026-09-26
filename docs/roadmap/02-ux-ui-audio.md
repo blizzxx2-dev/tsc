@@ -564,12 +564,12 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] UIX-0191 · Alpha · P1 · M · Diagnosis UI — patient interview panel (question list, answers into a symptom checklist), examination findings sheet, diagnosis selection with confirm seal
 - [ ] UIX-0192 · Alpha · P2 · M · Forensic/inquisition evidence board — pinned clues, connect-the-string interaction, verdict parchment; keyboard/gamepad navigable
 - [ ] UIX-0193 · Alpha · P2 · M · Bone-setting HUD — joint alignment gauge, rotation guide arc, splint placement ghost
-- [ ] UIX-0194 · Alpha · P1 · S · Chapter select for five chapters — Ch III–V cards unlocked progressively; demo "locked" cards removed in full builds
+- [x] UIX-0194 · Alpha · P1 · S · Chapter select for five chapters — Ch III–V cards unlocked progressively; demo "locked" cards removed in full builds
 - [ ] UIX-0195 · Beta · P1 · M · Final UI art pass for Ch3–5 — chapter cards, title cards and discipline HUDs match the style guide; signed off by the art director
 
 ### Extras & meta
 - [ ] UIX-0196 · Beta · P2 · M · Extras menu — art gallery (unlocked CGs and portraits), music room (unlocked tracks with loop toggle), statistics (operations played, total stitches, Litanies cast, XS count)
-- [ ] UIX-0198 · Release · P1 · M · Epilogue and ending credits — final credits sequence with full cast, post-credits scene hook, unlocks New Game+ entry on title
+- [x] UIX-0198 · Release · P1 · M · Epilogue and ending credits — final credits sequence with full cast, post-credits scene hook, unlocks New Game+ entry on title
 
 ## Epic AUD-G · Full-game audio: Chapters 3–5, hours & voice (Alpha–Beta)
 

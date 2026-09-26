@@ -256,3 +256,21 @@ export const ENDING_PERFECT: StoryDef = {
 
 /** Every ending scene by id, for the loc export and tests. */
 export const ENDING_STORIES: Record<Ending, StoryDef> = { pardon: ENDING_PARDON, pyre: ENDING_PYRE, exile: ENDING_EXILE, perfect: ENDING_PERFECT };
+
+/**
+ * After the credits of a won campaign (NAR-0160): a fragment of the hymn nobody wrote into the Office.
+ * Hearing it (`unsungHeard`) opens the Unsung Hour in the Trials of the Guild (CON-0222).
+ */
+export const POST_CREDITS: StoryDef = {
+  id: 's5-post',
+  place: 'The Hospice of Saint Ildra — some weeks later',
+  backdrop: 'hospice',
+  lines: [
+    n('The ward is quiet. It has windows now; the council paid for them, and pretends it did not.'),
+    n('On the shelf, in the lead dish where the hexstones were kept, something hums. Nine notes. There were only ever eight Hours.'),
+    say('ilse', 'Doctor. Do you hear that?'),
+    say('kreuzer', 'Every patient we could not keep. It is singing their names.'),
+    n('An Hour nobody wrote into the Office. The Unsung Hour. It waits in the Trials of the Guild.'),
+  ],
+};
+

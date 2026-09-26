@@ -21,6 +21,9 @@ import { finishChapter, finishOperation } from '../surgery/session';
 import type { OperationOptions } from '../surgery/operation';
 import { lastOutcome, noteOutcome, resolveStory } from '../content/conditions';
 import { aftermathFor, failureFor } from '../content/narrative';
+import { CreditsScene } from './credits';
+import { POST_CREDITS } from '../content/endings';
+import { IS_DEMO } from '../platform/build';
 
 export const save: SaveData = load();
 // Campaign flags live on the profile (CON-0008): New Game replaces the profile, so bind through a getter.
@@ -93,10 +96,22 @@ const noted = new Set<string>();
 
 export function playStep(game: Game, chapter: number, step: number, loaded = false): void {
   const ch = CAMPAIGN[chapter];
-  // Past the last chapter of the demo: the thank-you / wishlist screen.
+  // Past the last chapter: the demo's thank-you / wishlist screen; the full game's credits, then the
+  // post-credits sting that opens the Unsung Hour (UIX-0198, NAR-0160).
   if (!ch) {
     emitGameEvent({ type: 'edition-complete' });
-    return game.go(new DemoEndScene());
+    if (IS_DEMO) return game.go(new DemoEndScene());
+    return game.go(
+      new CreditsScene((g) =>
+        g.go(
+          new StoryScene(POST_CREDITS, () => {
+            flags.set('unsungHeard', true);
+            store(save);
+            g.go(new TitleScene());
+          }),
+        ),
+      ),
+    );
   }
   // A chapter whose art isn't resident yet shows the loading vignette first (ART-0061).
   const bundle = `chapter${chapter + 1}` as BundleId;

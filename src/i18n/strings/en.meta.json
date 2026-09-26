@@ -9083,5 +9083,19 @@
     "size": 24,
     "maxPx": 700,
     "context": "Credits section heading: third-party surface textures."
+  },
+  "ui.credits.section_cast": {
+    "scene": "credits",
+    "font": "display",
+    "size": 24,
+    "maxPx": 700,
+    "context": "Credits section heading: the characters of the story (dramatis personae)."
+  },
+  "ui.credits.cast_line": {
+    "scene": "credits",
+    "font": "body",
+    "size": 20,
+    "maxPx": 1000,
+    "context": "Credits row: a character's name, then their title in the story. {name}, {title}."
   }
 }
