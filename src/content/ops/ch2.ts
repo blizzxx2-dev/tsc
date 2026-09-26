@@ -106,12 +106,14 @@ export const OP_2_3 = defineOp({
   patient: 'Ilvaren, elf forager',
   patientGender: 'm',
   race: 'elf',
-  diagnosis: 'Web-spinner bite. Neurotoxic venom spreading from the neck; several egg sacs laid beneath the skin.',
+  diagnosis: 'Web-spinner bite, a day old. Neurotoxic venom spreading from the neck; several egg sacs laid beneath the skin.',
   organ: 'flesh',
   timeLimit: 240,
-  baseDrain: 0.15,
+  baseDrain: 0.1,
+  // GAM-0197/0199: the venom has had a day in him — he comes in weak, so the brood needn't bite so hard.
+  vitals: 85,
   tools: ALL,
-  ranks: { S: 6750, A: 5400, B: 4050 },
+  ranks: { S: 8320, A: 6660, B: 4990 },
   litany: true,
   seed: 23,
   phases: [
@@ -134,17 +136,18 @@ export const OP_2_3 = defineOp({
       objective: 'Lance the egg sacs',
 
       callout: ['The sacs — lance each with one touch, then sear the hatchlings with the Cautery Brand.', 'Mind the ones that are close to hatching.'],
+      // GAM-0197: one hatchling to a lanced sac, on a slower stagger, so the steady drain peaks under 1.2/s.
       spawn: [
-        { e: 'eggsac', at: [-170, 30], brood: 3, hatchIn: 16 },
-        { e: 'eggsac', at: [0, 70], brood: 3, hatchIn: 22 },
-        { e: 'eggsac', at: [170, 10], brood: 3, hatchIn: 28 },
+        { e: 'eggsac', at: [-170, 30], brood: 1, hatchIn: 22 },
+        { e: 'eggsac', at: [0, 70], brood: 1, hatchIn: 32 },
+        { e: 'eggsac', at: [170, 10], brood: 1, hatchIn: 42 },
       ],
     },
     {
       objective: 'Cut the brood-cluster free',
 
       callout: ['Her brood-cluster — three sacs under one skin.', 'Cut the membrane right around them with the Lancet first, or they’ll wake as one.'],
-      spawn: [{ e: 'elite-broodcluster', at: [-20, 20], hatchIn: 26 }],
+      spawn: [{ e: 'elite-broodcluster', at: [-20, 20], hatchIn: 34, brood: 1 }],
     },
     {
       objective: 'Find the last sac',

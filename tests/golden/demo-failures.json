@@ -319,16 +319,16 @@
    "status": "lost",
    "lostCause": "vitals",
    "lostReason": "The patient has died.",
-   "score": 405,
+   "score": 360,
    "vitals": 0,
-   "timeLeft": 221717,
-   "elapsed": 20300,
-   "frames": 1218,
+   "timeLeft": 223367,
+   "elapsed": 18650,
+   "frames": 1119,
    "phase": 0,
    "counts": {
     "cool": 0,
     "good": 0,
-    "bad": 27,
+    "bad": 24,
     "miss": 0
    },
    "litanyUses": 0,
@@ -340,19 +340,19 @@
    "lostCause": "time",
    "lostReason": "Time has run out.",
    "score": 0,
-   "vitals": 51000,
+   "vitals": 82750,
    "timeLeft": 0,
    "elapsed": 242017,
    "frames": 14521,
    "phase": 0,
    "counts": {
     "cool": 0,
-    "good": 0,
+    "good": 1,
     "bad": 0,
     "miss": 0
    },
    "litanyUses": 0,
-   "maxCombo": 0
+   "maxCombo": 1
   }
  },
  "op2-4": {

@@ -61,7 +61,7 @@ export type EntitySpec =
   | ({ e: 'malison-none' } & Common)
   | ({ e: 'malison-vespers'; at: Pt } & Common)
   | ({ e: 'malison-compline'; at: Pt } & Common)
-  | ({ e: 'elite-broodcluster'; at: Pt; hatchIn?: number } & Common)
+  | ({ e: 'elite-broodcluster'; at: Pt; hatchIn?: number; brood?: number } & Common)
   | ({ e: 'elite-cantor'; at: Pt; every?: number } & Common)
   | ({ e: 'elite-fangnest'; path: readonly Pt[]; angles: readonly number[] } & Common)
   | ({ e: 'elite-matriarch'; at: Pt; segments?: number } & Common)
@@ -242,9 +242,9 @@ export const ENTITY_REGISTRY: { [K in EntityId]: Entry<K> } = {
   },
   // Demo elites (BOS-0147..0150): each spawns its core with the wounds it binds.
   'elite-broodcluster': {
-    params: { at: { type: 'pt' }, hatchIn: num(true, [4, 9999]) },
+    params: { at: { type: 'pt' }, hatchIn: num(true, [4, 9999]), brood: num(true, [1, 6]) },
     needs: () => [['lancet'], ['brand']],
-    make: (s, op) => new EggCluster(P(s.at), op, s.hatchIn).all,
+    make: (s, op) => new EggCluster(P(s.at), op, s.hatchIn, s.brood).all,
   },
   'elite-cantor': {
     params: { at: { type: 'pt' }, every: num(true, [2, 30]) },

@@ -37,11 +37,11 @@ exports[`EggSac > lancing with 8 s or less left is GOOD "Lanced" 1`] = `
 12.52 spawn SpiderlingGrub @(674,410)
 12.52 spawn SpiderlingGrub @(653,422)
 12.52 spawn SpiderlingGrub @(653,398)
-12.52 spawn Laceration source=blade length=38 bleed=0.6 @(660,410)
+12.52 spawn Laceration source=blade length=18 bleed=0.2 @(660,410)
 "
 `;
 
-exports[`EggSac > lancing with more than 8 s before hatching is COOL "Lanced"; spiderlings spill out with a 38 px laceration 1`] = `
+exports[`EggSac > lancing with more than 8 s before hatching is COOL "Lanced"; spiderlings spill out, leaving an 18 px nick (GAM-0197) 1`] = `
 "2.02 initial EggSac brood=3 @(660,410)
 2.02 cue squelch
 2.02 rate COOL "Lanced" +105 combo=1
@@ -51,7 +51,7 @@ exports[`EggSac > lancing with more than 8 s before hatching is COOL "Lanced"; s
 2.02 spawn SpiderlingGrub @(674,410)
 2.02 spawn SpiderlingGrub @(653,422)
 2.02 spawn SpiderlingGrub @(653,398)
-2.02 spawn Laceration source=blade length=38 bleed=0.6 @(660,410)
+2.02 spawn Laceration source=blade length=18 bleed=0.2 @(660,410)
 2.05 -- lanced: status=running vitals=99 score=105 combo=1 counts=1/0/0/0 live=[SpiderlingGrub,SpiderlingGrub,SpiderlingGrub,Laceration]
 "
 `;

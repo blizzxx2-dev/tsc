@@ -96,13 +96,13 @@ describe('Sigil', () => {
 });
 
 describe('EggSac', () => {
-  it('lancing with more than 8 s before hatching is COOL "Lanced"; spiderlings spill out with a 38 px laceration', () => {
+  it('lancing with more than 8 s before hatching is COOL "Lanced"; spiderlings spill out, leaving an 18 px nick (GAM-0197)', () => {
     const { op, ents, trace } = scenario(() => [new EggSac(at(0, 0), 3, 18)]);
     tap(op, 'lancet', ents[0].pos);
     trace.note('lanced');
     expect(op.counts.cool).toBe(1);
     expect(live(op, SpiderlingGrub)).toHaveLength(3);
-    expect(live(op, Laceration).map((l) => l.length)).toEqual([38]);
+    expect(live(op, Laceration).map((l) => l.length)).toEqual([18]);
     expect(trace.text()).toMatchSnapshot();
   });
 

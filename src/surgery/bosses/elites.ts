@@ -41,13 +41,14 @@ export class EggCluster extends MalisonBase {
     pos: Vec,
     op: Operation,
     public hatchIn = 26,
+    brood = 2,
   ) {
     super(pos, op, 100);
     this.elite = true;
     this.layer = 1;
     for (let i = 0; i < 3; i++) {
       const a = -Math.PI / 2 + (i * TAU) / 3;
-      this.sacs.push(new EggSac({ x: pos.x + Math.cos(a) * 30, y: pos.y + Math.sin(a) * 26 }, 2, hatchIn));
+      this.sacs.push(new EggSac({ x: pos.x + Math.cos(a) * 30, y: pos.y + Math.sin(a) * 26 }, brood, hatchIn));
     }
   }
 

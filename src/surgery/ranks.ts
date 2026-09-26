@@ -15,7 +15,7 @@ export const RANK_TABLE: Record<string, { S: number; A: number; B: number }> = {
   'op1-5': { S: 4100, A: 3280, B: 2460 },
   'op2-1': { S: 4840, A: 3870, B: 2900 },
   'op2-2': { S: 5660, A: 4530, B: 3400 },
-  'op2-3': { S: 8510, A: 6810, B: 5110 },
+  'op2-3': { S: 8320, A: 6660, B: 4990 },
   'op2-4': { S: 6100, A: 4880, B: 3660 },
   'op2-5': { S: 5390, A: 4310, B: 3230 },
   // Chapters III–V (GAM-0156), calibrated 2026-09-26 with the late Hours as data.

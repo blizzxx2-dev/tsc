@@ -747,6 +747,9 @@ export class ChoirVoice extends Entity {
   }
 }
 
+/** GAM-0197: a clean lance leaves a nick; a sac left to hatch tears the skin open. */
+export const EGGSAC_WOUND = { lanced: { len: 18, bleed: 0.15 }, hatched: { len: 38, bleed: 0.6 } } as const;
+
 /** A spider's egg sac under the skin. Lance it and sear what spills out — or it hatches on its own. */
 export class EggSac extends Entity {
   /** Small and numerous: indexed by position on crowded fields (ENG-0246). */
@@ -796,7 +799,8 @@ export class EggSac extends Entity {
       const a = (i / n) * TAU;
       op.spawn(new SpiderlingGrub({ x: this.pos.x + Math.cos(a) * 14, y: this.pos.y + Math.sin(a) * 14 }, op));
     }
-    op.spawn(new Laceration(this.pos, op.rng.range(0, TAU), 38, 0.6));
+    const w = hatched ? EGGSAC_WOUND.hatched : EGGSAC_WOUND.lanced;
+    op.spawn(new Laceration(this.pos, op.rng.range(0, TAU), w.len, w.bleed));
     if (hatched) {
       op.rate('miss', this.pos, 'Hatched');
       op.hurt(6, this.pos);
