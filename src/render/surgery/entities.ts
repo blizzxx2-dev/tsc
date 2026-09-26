@@ -54,7 +54,7 @@ drawer(Incision, {
   surface(g, e) {
     if (e.state === 'mark') {
       if (e.progress > 0 || e.depth > 0) surfLine(g, e.depth > 0 ? e.points : tracedPoints(e), 10 + e.depth * 4, 0.9, 0.3);
-    } else surfLine(g, e.points, 16, 1, 0.45, 0, 0.15);
+    } else surfLine(g, e.points, 12, 1, 0.45, 0, 0.15);
   },
   draw(g, e, op) {
     if (e.state === 'mark') {
@@ -133,7 +133,8 @@ drawer(BloodPool, {
 
 drawer(Laceration, {
   surface(g, e) {
-    surfLine(g, e.edge(), e.small ? 8 : 13, 1, 0.5, 0, 0.1);
+    // The carved channel stays inside the painted lips, so its bevel never shows as a ring outside them.
+    surfLine(g, e.edge(), e.small ? 6 : 9, 1, 0.5, 0, 0.1);
   },
   draw(g, e, op) {
     // Carved by the flesh shader; the cut-edge art paints its lips and bleeding edge in three widths,
