@@ -183,6 +183,8 @@ export interface OperationOptions {
   practice?: boolean;
   /** Time attack (GAM-0217): a cleared op against the clock, raced by the personal-best ghost. */
   timeAttack?: boolean;
+  /** Which try at this op this is (1 = first; the save's run of failures + 1). */
+  attempt?: number;
 }
 
 /** Seconds a pinned grip holds before it lets go (INP-0107). */
@@ -260,6 +262,9 @@ export function strokeCrosses(p1: Vec, p2: Vec, a: Vec, b: Vec): boolean {
 export const TINCTURE_HEX: Record<TinctureColor, string> = { red: '#e05060', green: '#80d070', blue: '#70a0f0', amber: '#f0b040' };
 
 /** Tools that are held down to work, for the hold-to-toggle assist. */
+/** From this attempt on (the second retry), sigils hide their stroke numbers (CON-0051). */
+export const STROKE_NUMBERS_UNTIL = 3;
+
 const HELD_TOOLS: readonly ToolId[] = ['leech', 'brand', 'tincture', 'lens'];
 
 /** One recorded call into the simulation, for exact replays. */
@@ -566,6 +571,15 @@ export class Operation {
   /** Guides (dotted lines, numbered nodes, pull axes) are shown. */
   get guides(): boolean {
     return DIFFICULTIES[this.difficulty].guides || this.assists.guides;
+  }
+
+  /**
+   * Stroke-order numbers on sigils (CON-0051): shown on the first try and the first retry, then the
+   * surgeon is trusted to remember — unless Novice or the Guides assist keeps them.
+   */
+  get strokeNumbers(): boolean {
+    if (!this.guides) return false;
+    return this.difficulty === 'novice' || this.assists.guides || (this.opts.attempt ?? 1) < STROKE_NUMBERS_UNTIL;
   }
 
   /** Extra hit radius from the larger-targets assist. */

@@ -2171,7 +2171,7 @@ export class Sigil extends Entity {
       op.rate('bad', ptr.pos, 'Wrong stroke');
       op.harm(S.wrongHurt, ptr.pos);
       op.spawnPenalty(new Laceration({ ...ptr.pos }, op.rng.range(0, TAU), 30, 0.5));
-      op.sayOnce('sigil-order', `In order, Doctor! Stroke ${cur + 1} first — follow the numbers.`);
+      op.sayOnce('sigil-order', op.strokeNumbers ? `In order, Doctor! Stroke ${cur + 1} first — follow the numbers.` : 'In order, Doctor! Start where it glows.');
       return;
     }
     if (!hit) return;
@@ -2238,9 +2238,11 @@ export class Sigil extends Entity {
     this.nodes.forEach((nd, i) => {
       if (this.strokeDone(i)) return;
       const next = i === cur;
-      if (!op.guides && !next) return;
+      // Numbered ink dots on the first tries only (CON-0051); after that, only the next stroke's node pulses.
+      const numbers = op.strokeNumbers;
+      if (!numbers && !next) return;
       g.circle(nd.x, nd.y, next ? 9 : 6, hex(next ? '#ffe0ff' : '#c8a0e0', next ? 0.5 + 0.4 * Math.sin(op.elapsed * 6) : 0.35));
-      if (op.guides) g.text(String(i + 1), nd.x, nd.y + 5, { size: 13, color: hex('#20082a'), align: 'center', shadow: false });
+      if (numbers) g.text(String(i + 1), nd.x, nd.y + 5, { size: 13, color: hex('#20082a'), align: 'center', shadow: false });
       if (next && this.nodeT > 0) g.arc(nd.x, nd.y, 13, 3, hex('#ff9040'), this.nodeT / 1);
     });
     g.arc(this.pos.x, this.pos.y, this.size * 0.25, 3, hex('#c88cff', 0.5), this.lashT / this.lashEvery); // curse-violet: curse sigil

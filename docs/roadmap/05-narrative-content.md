@@ -332,7 +332,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ### op1-5 "The Hour of Matins" (Emmerich, page-boy) — sigils, Malison boss, Litany intro
 - [x] CON-0049 · Demo · P0 · M · Matins boss phase review — eye-open rhythm telegraphed 0.8 s before opening (audio + visual), brand damage only while open
 - [x] CON-0050 · Demo · P0 · S · Litany teaching beat — first Malison enrage forces a callout prompting the star gesture; op still winnable without Litany (perfect bot test)
-- [ ] CON-0051 · Demo · P1 · S · Sigil trace phase — stroke order shown as numbered ink dots on first attempt, hidden on retry ≥ 2
+- [x] CON-0051 · Demo · P1 · S · Sigil trace phase — stroke order shown as numbered ink dots on first attempt, hidden on retry ≥ 2 _(`op.strokeNumbers`: the attempt is the save’s run of failures + 1; from attempt 3 only the next node pulses. Novice and the Guides assist keep the numbers. tests/unit/content/sigilNumbers.test.ts)_
 - [x] CON-0052 · Demo · P1 · S · Mote spawn cap — ≤ 6 alive; so the field never becomes unreadable
 - [x] CON-0053 · Demo · P1 · S · Final phase — MATINS word seared into flesh as a visual when boss dies (matches s1-end)
 - [x] CON-0054 · Demo · P1 · S · Boss-fail tips — 3 context tips cycling on retry ("Brand only when the eye is open", etc.) _(BOS-0009: Ilse’s tip for the phase it was lost in)_

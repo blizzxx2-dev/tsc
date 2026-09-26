@@ -24,6 +24,7 @@ export function operationOptions(def: OperationDef, extra: OperationOptions = {}
     tinctures: progress.tincture !== 'red' ? [progress.tincture] : [],
     hintsSeen: [...progress.hintsSeen],
     tutorial: !!TUTORIALS[def.id] && !progress.tutorialSkip && !progress.best[def.id],
+    attempt: (progress.fails[def.id] ?? 0) + 1,
     ...extra,
   };
 }
