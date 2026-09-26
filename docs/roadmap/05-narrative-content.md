@@ -490,8 +490,8 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0153 · Alpha · P1 · S · Author `op4-4` data file — callouts, thresholds, checklist pass
 
 ### op4-5 "The Dead Man's Pulse" (Lord Eckbert von Salm) — forensic/save branch
-- [ ] CON-0154 · Alpha · P0 · S · Design spec — lens shows one heartbeat per minute; branch A (save): extract bite-trance fang fragments and restart pulse with tincture; branch B (forensic): documented in forensic discipline
-- [ ] CON-0155 · Alpha · P0 · M · Implement slow-pulse vitals mode — vitals only tick on heartbeat; and branch routing via `deadManVerdict`
+- [x] CON-0154 · Alpha · P0 · S · Design spec — lens shows one heartbeat per minute; branch A (save): extract bite-trance fang fragments and restart pulse with tincture; branch B (forensic): documented in forensic discipline
+- [x] CON-0155 · Alpha · P0 · M · Implement slow-pulse vitals mode — vitals only tick on heartbeat; and branch routing via `deadManVerdict`
 - [x] CON-0156 · Alpha · P1 · S · Author `op4-5` data file — callouts, thresholds, checklist pass for branch A
 
 ### op4-6 "The Thirsted Neck" (Margit, courtesan)

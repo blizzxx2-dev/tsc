@@ -448,9 +448,11 @@ export const OP_4_5: OperationDef = {
   baseDrain: 0.1,
   vitals: 60,
   tools: ALL,
-  ranks: { S: 4340, A: 3470, B: 2600 },
+  ranks: { S: 4430, A: 3540, B: 2660 },
   litany: true,
   seed: 45,
+  // CON-0154/0155: one beat in six seconds until the trance breaks; the vitals only move on a beat.
+  slowPulse: 6,
   phases: [
     {
       callout: ['Fang fragments, deep. The lens will show them; pull every one.'],

@@ -478,6 +478,12 @@ export class StilledHeart extends Entity {
     return 0.3;
   }
   override update(op: Operation, dt: number): void {
+    // In a slow-pulse operation (CON-0155) the stilled heart beats with the patient's own pulse.
+    if (op.slowPulseEvery > 0) {
+      this.every = op.slowPulseEvery;
+      this.beatT = op.slowPulseClock;
+      return;
+    }
     this.beatT += dt;
     if (this.beatT >= this.every) {
       this.beatT = 0;
@@ -500,6 +506,7 @@ export class StilledHeart extends Entity {
       op.rate('cool', this.pos, 'Caught the beat');
       if (this.restarts >= this.need) {
         this.kill();
+        op.endSlowPulse();
         op.say('A second beat — and a third, on its own! The trance is broken.');
       }
     } else {

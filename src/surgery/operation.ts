@@ -104,6 +104,11 @@ export interface OperationDef {
   outcomes?: (op: Operation) => string[];
   /** Short strategy tips per failure cause, offered after repeated losses. */
   tips?: Partial<Record<string, string>>;
+  /**
+   * Slow-pulse vitals (CON-0155): the heart beats once every this many seconds, and the vitals only
+   * move on a beat — the drain between beats lands all at once. Ends when `op.endSlowPulse()` is called.
+   */
+  slowPulse?: number;
   /** Stages inside a multi-stage Hour a retry may resume at (e.g. Compline's [2, 3]; CON-0200). */
   bossCheckpoints?: readonly number[];
   /** Tincture colours this operation supplies besides red. */
@@ -396,6 +401,10 @@ export class Operation {
   /** Deterministic heartbeat (drives ECG, beat-synced hazards). */
   beatPhase = 0;
   private beatT = 0;
+  /** Seconds between beats while the pulse is slowed (0 = a normal heart), and the drain held for the next beat. */
+  slowPulseEvery = 0;
+  private slowPulseT = 0;
+  private heldDrain = 0;
   /** Seconds since the last R-wave. */
   sinceBeat = 0;
   /** Displayed (possibly false) vitals for Sext. */
@@ -425,6 +434,7 @@ export class Operation {
     readonly opts: OperationOptions = {},
   ) {
     this.rng = new Rng(opts.seed ?? def.seed ?? 1);
+    this.slowPulseEvery = def.slowPulse ?? 0;
     this.difficulty = opts.difficulty ?? 'surgeon';
     this.assists = { ...NO_ASSISTS, ...(opts.challenge ? {} : opts.assists), ...(opts.practice ? { noFail: true } : {}) };
     this.mods = combineMods(NO_MODS, opts.mods ?? {});
@@ -1366,7 +1376,18 @@ export class Operation {
       const total = drain + (this.def.baseDrain ?? 0);
       // A patient already at 0 is lost below — recovery never revives them.
       if (drain === 0 && this.vitals > 0) this.heal(T.vitals.passiveRecovery * wdt);
-      this.hurt(total * wdt);
+      if (this.slowPulseEvery > 0) {
+        // Slow pulse: the harm between beats is held, and lands on the beat.
+        this.heldDrain += total * wdt;
+        this.slowPulseT += wdt;
+        if (this.slowPulseT >= this.slowPulseEvery) {
+          this.slowPulseT -= this.slowPulseEvery;
+          this.hurt(this.heldDrain);
+          this.heldDrain = 0;
+          this.cues.push('heartbeat');
+          this.event({ kind: 'hint', key: 'pulse', text: 'beat' });
+        }
+      } else this.hurt(total * wdt);
       if (this.vitals2 !== null) {
         const total2 = drain2 + (this.def.baseDrain ?? 0);
         if (drain2 === 0 && this.vitals2 > 0) this.vitals2 = Math.min(this.maxVitals, this.vitals2 + T.vitals.passiveRecovery * wdt);
@@ -1417,8 +1438,21 @@ export class Operation {
     } else this.inBreather = false;
   }
 
+  /** Seconds since the last slow-pulse beat (entities that beat with the heart read it). */
+  get slowPulseClock(): number {
+    return this.slowPulseT;
+  }
+
+  /** The heart takes up its own rhythm again: any held drain lands now (CON-0155). */
+  endSlowPulse(): void {
+    if (this.slowPulseEvery <= 0) return;
+    this.slowPulseEvery = 0;
+    if (this.heldDrain > 0) this.hurt(this.heldDrain);
+    this.heldDrain = 0;
+  }
+
   private heartbeat(dt: number): void {
-    const bpm = this.status === 'lost' ? 0 : 58 + (this.maxVitals - this.vitals) * 0.9;
+    const bpm = this.status === 'lost' ? 0 : this.slowPulseEvery > 0 ? 60 / this.slowPulseEvery : 58 + (this.maxVitals - this.vitals) * 0.9;
     this.beatT += (dt * bpm) / 60;
     this.sinceBeat += dt;
     if (this.beatT >= 1) {
