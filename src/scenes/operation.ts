@@ -190,7 +190,7 @@ export class OperationScene implements Scene {
   /** Seeded presentation noise (ECG jitter) so screenshots are reproducible (ENG-0251). */
   private presRng = new Rng(1);
   /** Floating rating/damage text, built from the operation's `popup` events (ENG-0243). */
-  private popups: (Popup & { lift?: number })[] = [];
+  private popups: (Popup & { lift?: number; repeat?: number })[] = [];
   /** Vitals damage feedback (UIX-0039): a pale bar trailing losses, a green sweep on heals, shaking digits on big hits. */
   private lagV = 100;
   private lagHold = 0;
@@ -1082,7 +1082,15 @@ export class OperationScene implements Scene {
   }
 
   /** New popups stack above recent neighbours instead of printing over them (UIX-0047). */
-  private addPopup(p: Popup & { lift?: number }): void {
+  private addPopup(p: Popup & { lift?: number; repeat?: number }): void {
+    // The same message again close by (a curse lashing out each beat) refreshes the one already
+    // showing and counts up, instead of stacking identical lines up the field.
+    const same = !p.rating && this.popups.find((q) => !q.rating && q.text === p.text && q.t < 0.9 && Math.hypot(q.pos.x - p.pos.x, q.pos.y - p.pos.y) < 220);
+    if (same) {
+      same.t = Math.min(same.t, 0.1);
+      same.repeat = (same.repeat ?? 1) + 1;
+      return;
+    }
     stackPopup(this.popups, p);
     this.popups.push(p);
   }
@@ -1789,7 +1797,7 @@ export class OperationScene implements Scene {
       const { x, y } = clearOfHud(p.pos.x, p.pos.y - 26 - rise - (p.lift ?? 0), hud);
       if (!p.rating) {
         if (/^[+\-×\d]/.test(p.text)) giltNumerals(g, p.text, x, y, 20, a);
-        else g.text(tSource(p.text), x, y, { size: 20, color: withAlpha(hex(p.color), a), align: 'center' });
+        else g.text(p.repeat && p.repeat > 1 ? `${tSource(p.text)} ×${p.repeat}` : tSource(p.text), x, y, { size: 20, color: withAlpha(hex(p.color), a), align: 'center' });
         continue;
       }
       const pop = still ? 1 : 1 + Math.max(0, 0.22 - p.t) * 2.2;

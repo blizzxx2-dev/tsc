@@ -1879,6 +1879,62 @@ export class Gfx {
     if (closed && pts.length > 2) this.line(pts[pts.length - 1], pts[0], w, c);
   }
 
+  /**
+   * A translucent open path of uniform width with mitred joints and round end caps: no area is
+   * covered twice, so glows and soft strokes stay even along their length (a `polyline` of
+   * capped segments doubles its alpha at every joint).
+   */
+  strokePath(pts: Vec[], w: number, c: RGBA): void {
+    const n = pts.length;
+    if (n < 2) return;
+    const h = w / 2;
+    // Offset of the path's edge at each point: the average of the adjacent segment normals,
+    // lengthened so the edge keeps its width across the bend (clamped so sharp turns don't spike).
+    const off = pts.map((p, i) => {
+      const a = pts[Math.max(0, i - 1)];
+      const b = pts[Math.min(n - 1, i + 1)];
+      const n0 = i > 0 ? norm(pts[i - 1], p) : norm(p, b);
+      const n1 = i < n - 1 ? norm(p, pts[i + 1]) : norm(a, p);
+      let mx = n0.x + n1.x;
+      let my = n0.y + n1.y;
+      const ml = Math.hypot(mx, my) || 1;
+      mx /= ml;
+      my /= ml;
+      const k = Math.min(2.5, 1 / Math.max(0.4, mx * n1.x + my * n1.y));
+      return { x: mx * h * k, y: my * h * k };
+    });
+    for (let i = 1; i < n; i++) {
+      const a = pts[i - 1];
+      const b = pts[i];
+      const oa = off[i - 1];
+      const ob = off[i];
+      this.colorQuad(a.x + oa.x, a.y + oa.y, b.x + ob.x, b.y + ob.y, b.x - ob.x, b.y - ob.y, a.x - oa.x, a.y - oa.y, c, c, c, c);
+    }
+    if (w > 3) {
+      this.arcFill(pts[0], norm(pts[0], pts[1]), h, c);
+      this.arcFill(pts[n - 1], norm(pts[n - 2], pts[n - 1]), h, c, true);
+    }
+    function norm(p: Vec, q: Vec): Vec {
+      const dx = q.x - p.x;
+      const dy = q.y - p.y;
+      const l = Math.hypot(dx, dy) || 1;
+      return { x: -dy / l, y: dx / l };
+    }
+  }
+
+  /** A half-disc cap at `p` on the outer side of a path end (`nrm` is the path's normal there). */
+  private arcFill(p: Vec, nrm: Vec, r: number, c: RGBA, forward = false): void {
+    const dir = forward ? { x: nrm.y, y: -nrm.x } : { x: -nrm.y, y: nrm.x };
+    const steps = 8;
+    for (let i = 0; i < steps; i++) {
+      const a0 = -Math.PI / 2 + (Math.PI * i) / steps;
+      const a1 = -Math.PI / 2 + (Math.PI * (i + 1)) / steps;
+      const q0 = { x: p.x + (dir.x * Math.cos(a0) - dir.y * Math.sin(a0)) * r, y: p.y + (dir.y * Math.cos(a0) + dir.x * Math.sin(a0)) * r };
+      const q1 = { x: p.x + (dir.x * Math.cos(a1) - dir.y * Math.sin(a1)) * r, y: p.y + (dir.y * Math.cos(a1) + dir.x * Math.sin(a1)) * r };
+      this.colorQuad(p.x, p.y, q0.x, q0.y, q1.x, q1.y, p.x, p.y, c, c, c, c);
+    }
+  }
+
   dashed(pts: Vec[], w: number, c: RGBA, dash: number, gap: number, offset = 0): void {
     let phase = ((offset % (dash + gap)) + dash + gap) % (dash + gap);
     for (let i = 1; i < pts.length; i++) {

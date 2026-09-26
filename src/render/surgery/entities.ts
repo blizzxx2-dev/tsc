@@ -429,29 +429,36 @@ drawer(Sigil, {
     const drain = 0.5 + 0.5 * Math.sin(op.elapsed * (6 + lashNear * 10));
     g.glow(e.pos.x, e.pos.y, e.size * 1.4, hex('#b060ff', 0.12 * glow + 0.18 * lashNear * drain)); // curse-violet: curse sigil
     const cur = e.current;
+    // Each stroke is a brand scored into the flesh: a bruised, sunken groove drawn whole (not as
+    // dashes), with violet heat glowing up out of it; seared cells are drawn over it as they burn.
+    // Whole strokes as one polyline each, so the joints don't stack caps into bright beads.
+    for (let si = 0; si < e.strokeCount; si++) {
+      const segs = e.segs.filter((sg) => sg.stroke === si);
+      if (!segs.length) continue;
+      const path = [segs[0].a, ...segs.map((sg) => sg.b)];
+      const dormant = si > cur;
+      const draining = si === cur;
+      const k = draining ? 0.55 + 0.45 * drain : dormant ? 0.35 * glow + 0.3 * lashNear * drain : glow;
+      g.strokePath(path, 9, hex('#2a0a24', 0.45));
+      g.strokePath(path.map((p) => ({ x: p.x + 0.8, y: p.y + 1.2 })), 3.4, hex('#12040e', 0.7));
+      g.setBlend('add');
+      g.strokePath(path, draining ? 12 : 8, hex('#7a30d0', (draining ? 0.3 : 0.14) * k)); // curse-violet: curse sigil glow
+      g.strokePath(path, 2, hex('#d8a8ff', (draining ? 0.85 : 0.45) * k)); // curse-violet: curse sigil core
+      g.setBlend('alpha');
+    }
     for (const s of e.segs) {
       const n = s.burned.length;
-      const dormant = s.stroke > cur;
-      const draining = s.stroke === cur;
       for (let i = 0; i < n; i++) {
+        if (!s.burned[i]) continue;
         const p0 = { x: s.a.x + ((s.b.x - s.a.x) * i) / n, y: s.a.y + ((s.b.y - s.a.y) * i) / n };
         const p1 = { x: s.a.x + ((s.b.x - s.a.x) * (i + 1)) / n, y: s.a.y + ((s.b.y - s.a.y) * (i + 1)) / n };
-        if (s.burned[i]) {
-          const cool = s.searedAt[i] < 0 ? 1 : Math.min(1, (op.elapsed - s.searedAt[i]) / 0.8);
-          g.line(p0, p1, 6, hex('#1e120c'));
-          g.line(p0, p1, 2.2, hex(cool < 1 ? '#fff0b0' : '#b8862a', 0.55 + 0.45 * (1 - cool)));
-          if (cool < 1) {
-            g.setBlend('add');
-            g.line(p0, p1, 12 * (1 - cool) + 4, hex('#ffb040', 0.5 * (1 - cool)));
-            g.setBlend('alpha');
-          }
-        } else if (dormant) {
-          g.line(p0, p1, 7, hex('#9040ff', 0.12 * glow)); // curse-violet: curse sigil (dormant)
-          g.line(p0, p1, 3, hex('#d0a0ff', 0.35 * glow + 0.3 * lashNear * drain)); // curse-violet: curse sigil (dormant)
-        } else {
-          const k = draining ? 0.55 + 0.45 * drain : glow;
-          g.line(p0, p1, 10, hex('#9040ff', 0.3 * k)); // curse-violet: curse sigil (draining)
-          g.line(p0, p1, 4, hex('#e0b8ff', k)); // curse-violet: curse sigil (draining)
+        const cool = s.searedAt[i] < 0 ? 1 : Math.min(1, (op.elapsed - s.searedAt[i]) / 0.8);
+        g.line(p0, p1, 7, hex('#1e120c'));
+        g.line(p0, p1, 2.2, hex(cool < 1 ? '#fff0b0' : '#b8862a', 0.55 + 0.45 * (1 - cool)));
+        if (cool < 1) {
+          g.setBlend('add');
+          g.line(p0, p1, 12 * (1 - cool) + 4, hex('#ffb040', 0.5 * (1 - cool)));
+          g.setBlend('alpha');
         }
       }
     }
@@ -462,8 +469,10 @@ drawer(Sigil, {
       // Numbered ink dots on the first tries only (CON-0051); after that, only the next stroke's node pulses.
       const numbers = op.strokeNumbers;
       if (!numbers && !next) return;
-      g.circle(nd.x, nd.y, next ? 9 : 6, hex(next ? '#ffe0ff' : '#c8a0e0', next ? 0.5 + 0.4 * Math.sin(op.elapsed * 6) : 0.35));
-      if (numbers) g.text(String(i + 1), nd.x, nd.y + 5, { size: 13, color: hex('#20082a'), align: 'center', shadow: false });
+      // A small ink-ringed node; the next one glows, the rest stay quiet.
+      g.circle(nd.x, nd.y, next ? 8 : 6, hex('#1a0816', 0.6));
+      g.circle(nd.x, nd.y, next ? 6.5 : 4.5, hex(next ? '#f0d0ff' : '#b890d0', next ? 0.55 + 0.35 * Math.sin(op.elapsed * 6) : 0.4));
+      if (numbers) g.text(String(i + 1), nd.x + 10, nd.y - 7, { size: 13, font: 'italic', color: hex('#e8d0f0', 0.75), align: 'center', shadow: hex('#000000', 0.7) });
       if (next && e.nodeT > 0) g.arc(nd.x, nd.y, 13, 3, hex('#ff9040'), e.nodeT / 1);
     });
     g.arc(e.pos.x, e.pos.y, e.size * 0.25, 3, hex('#c88cff', 0.5), e.lashT / e.lashEvery); // curse-violet: curse sigil
