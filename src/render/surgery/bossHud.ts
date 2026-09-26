@@ -1,14 +1,14 @@
 import { spoolArt } from '../../art/ailmentArt';
 import { t } from '../../i18n';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
+import { hex } from '../color';
+import type { Gfx } from '../gfx';
 import type { Vec } from '../../core/math';
-import type { Operation } from '../operation';
-import type { ToolId } from '../types';
-import { activeBoss, bossesOf, type MalisonBase } from './base';
-import { currentLag } from './common';
-import { SextMalison } from './sext';
-import { assistsOf } from './signals';
+import type { Operation } from '../../surgery/operation';
+import type { ToolId } from '../../surgery/types';
+import { activeBoss, bossesOf, type MalisonBase } from '../../surgery/bosses/base';
+import { currentLag } from '../../surgery/bosses/common';
+import { SextMalison } from '../../surgery/bosses/sext';
+import { assistsOf } from '../../surgery/bosses/signals';
 
 /**
  * The boss HP bar (BOS-0002): the Hour's name in Fraktur over a bar notched at

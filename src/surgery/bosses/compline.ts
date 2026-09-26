@@ -1,13 +1,11 @@
 import { dist, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
 import { Entity } from '../entity';
-import { Embedded, Grub, surfDisc } from '../entities';
+import { Embedded, Grub } from '../entities';
 import { LaudsMalison } from '../lauds';
 import { Malison, MalisonShard } from '../malison';
 import { FIELD, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
-import { BrandNode, distortion, drawBossRing, Muffler, randomOnBody, stepToward, TAU } from './common';
+import { BrandNode, distortion, Muffler, randomOnBody, stepToward, TAU } from './common';
 import { Voice } from './voices';
 import { attack, bossSound, leadFor, tell } from './signals';
 import { burrowPath, BurrowSegment } from './none';
@@ -112,14 +110,6 @@ export class SilenceNode extends BrandNode {
     op.rate('cool', this.pos, 'Silence broken');
     this.owner?.nodeBroken(op);
   }
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    g.glow(x, y, 44, hex('#8090c0', 0.25 + 0.1 * Math.sin(op.elapsed * 2 + this.id)));
-    g.circle(x, y, 15, hex('#202438'));
-    g.arc(x, y, 15, 2, hex('#c0c8f0', 0.8));
-    g.line({ x: x - 8, y }, { x: x + 8, y }, 2, hex('#c0c8f0', 0.8));
-    if (this.heat > 0) g.arc(x, y, 22, 3, hex('#ff9040'), this.heat / this.holdTime);
-  }
 }
 
 /**
@@ -156,7 +146,7 @@ export class ComplineMalison extends Entity {
   private interruptT = 0;
   private interruptIx = 0;
   private target: Vec;
-  private hurtFlash = 0;
+  hurtFlash = 0;
   private musicT = 0;
   readonly echoes: readonly EchoKind[] = ['matins', 'lauds', 'prime'];
 
@@ -439,32 +429,5 @@ export class ComplineMalison extends Entity {
     op.shake = 16;
     op.emit('mote', this.pos, 70, undefined, undefined, 160);
     op.say('…Listen. He’s breathing. It isn’t quiet any more.');
-  }
-
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, this.radius * 2, 0, 0.1, 0.25, 0.6);
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    const t = op.elapsed;
-    const r = this.radius;
-    g.glow(x, y, r * 2.6, hex(this.comboOpen ? '#ffd080' : '#6070a0', 0.25));
-    g.circleGrad(x, y, r, this.hurtFlash > 0 ? hex('#e0e8ff') : hex('#303a58'), hex('#080a14', 0.6));
-    // A closed, sleeping eye, and a shroud of still air.
-    g.line({ x: x - r * 0.5, y }, { x: x + r * 0.5, y }, 3, hex('#c0c8f0', 0.8));
-    for (let i = 0; i < 10; i++) {
-      const a = (i / 10) * TAU + t * 0.1;
-      g.arc(x + Math.cos(a) * r * 0.2, y + Math.sin(a) * r * 0.2, r * (1.3 + 0.1 * i), 1, hex('#8090c0', 0.08));
-    }
-    if (this.comboOpen) g.arc(x, y, r + 14, 3, hex('#ffd080'), 1 - (op.elapsed - this.comboOpenAt) / this.comboWindow(op));
-    if (this.stage === 1 && this.echo) g.arc(x, y, r + 20, 2, hex('#b478ff', 0.6), this.echoT / this.tune.echoTime);
-    if (this.litanyStolen) {
-      // The stolen star, cracked and black.
-      const pts = [0, 2, 4, 1, 3, 0].map((i) => ({ x: x + Math.cos(-Math.PI / 2 + (i * TAU) / 5) * (r + 32), y: y + Math.sin(-Math.PI / 2 + (i * TAU) / 5) * (r + 32) }));
-      g.polyline(pts, 2, hex(this.stolenT > 0 ? '#f5d76e' : '#202020', 0.6));
-    }
-    if (this.muted) g.text('[silence]', x, y - r - 40, { size: 18, font: 'italic', color: hex('#c0c8f0', 0.8), align: 'center' });
-    drawBossRing(g, this.pos, r + 8, this.hp / this.maxHp, [0.7, 0.35], '#a0b0e0');
   }
 }

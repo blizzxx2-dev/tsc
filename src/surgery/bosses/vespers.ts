@@ -1,18 +1,12 @@
-import { tallowClotArt } from '../../art/lateAilmentArt';
+
 import { fxRandom } from '../fxRandom';
 import { dist, pointSegment, segmentsIntersect, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
 import { Entity } from '../entity';
-import { surfDisc, surfLine } from '../entities';
 import { FIELD, onBody, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
-import { drawBossRing, InjectionWatch, randomOnBody, samplePath, stepToward, TAU } from './common';
+import { InjectionWatch, randomOnBody, samplePath, stepToward, TAU } from './common';
 import { Voice } from './voices';
-import { assistsOf, attack, bossSound, leadFor, tell } from './signals';
-
-/** Shade of a dark quadrant under the minimum-brightness assist (keeps ≥ 45 % brightness). */
-export const VESPERS_MIN_BRIGHT_SHADE = 0.55;
+import { attack, bossSound, leadFor, tell } from './signals';
 
 export interface VespersTuning {
   hp: number;
@@ -88,16 +82,6 @@ export class LampNode extends Entity {
       else op.popup('Trimmed', this.pos, '#f5d76e');
     }
   }
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    const f = this.light;
-    const lean = this.gutterT > 0 ? Math.sin(op.elapsed * 30) * 6 : 0;
-    g.glow(x, y - 10, 30 + 90 * f, hex('#ffc060', 0.1 + 0.3 * f));
-    g.ellipse(x, y + 6, 14, 6, 0, hex('#6a5030'));
-    g.rect(x - 3, y - 6, 6, 12, hex('#e8dcc0'));
-    if (f > 0) g.ellipse(x + lean, y - 14, 4 + 3 * f, 7 + 7 * f, lean * 0.03, hex('#ffe0a0', 0.5 + 0.5 * f), hex('#ff8030', 0.3));
-    g.arc(x, y, 22, 2, hex('#ffc060', 0.6), f);
-  }
 }
 
 /** A wick-filament threaded through a vessel. Sever it with a lancet stroke across; it bleeds tallow. */
@@ -126,13 +110,6 @@ export class WickFilament extends Entity {
     op.rate('cool', this.pos, 'Wick severed');
     op.spawn(new TallowClot({ ...this.pos }));
     this.owner?.severed(op);
-  }
-  override drawSurface(g: Gfx): void {
-    surfLine(g, [this.a, this.b], 6, 0, 0.2, 0.1, 0.4);
-  }
-  draw(g: Gfx, op: Operation): void {
-    g.line(this.a, this.b, 3, hex('#e8d8a0', 0.8));
-    g.line(this.a, this.b, 7, hex('#ffe0a0', 0.12 + 0.08 * Math.sin(op.elapsed * 5 + this.id)));
   }
 }
 
@@ -184,13 +161,6 @@ export class TallowClot extends Entity {
       }
     }
   }
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, this.r * 1.6, 0, 0.3, 0, 0.5);
-  }
-  draw(g: Gfx, op: Operation): void {
-    // Waxy clot that softens, glosses and runs under the Brand (ART-0194).
-    tallowClotArt(g, this.pos, this.r, { soft: this.softened ? Math.min(1, 0.5 + this.heat) : Math.min(0.45, this.heat * 1.5), drawn: this.draw_ / 0.9, t: op.elapsed, seed: this.id, scorched: this.scorched });
-  }
 }
 
 /**
@@ -215,12 +185,12 @@ export class VespersMalison extends Entity {
   private snuffT = 0;
   private hymnT = 0;
   private target: Vec;
-  private hurtFlash = 0;
+  hurtFlash = 0;
   private watch = new InjectionWatch();
   /** Phase 3: the wick back to the root, and how much of it has been traced. */
   wick: Vec[] = [];
-  private wickSamples: Vec[] = [];
-  private traced: boolean[] = [];
+  wickSamples: Vec[] = [];
+  traced: boolean[] = [];
   private tracing = false;
   rootBare = false;
 
@@ -434,48 +404,5 @@ export class VespersMalison extends Entity {
     op.emit('smoke', this.root, 20);
     op.emit('mote', this.pos, 40, undefined, undefined, 120);
     op.say('The root is out. The lamps… the ward’s own lamps are catching again.');
-  }
-
-  override drawSurface(g: Gfx): void {
-    if (this.stage >= 2) surfDisc(g, this.pos, this.radius * 1.8, 0, 0.3, 0.1, 0.6);
-    if (this.stage === 3) surfLine(g, this.wick, 8, 0, 0.3, 0.2, 0.4);
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    const t = op.elapsed;
-    const { x, y } = this.pos;
-    if (this.stage >= 2) {
-      const lit = this.bodyLit;
-      g.glow(x, y, this.radius * 2.2, hex(lit ? '#ffb060' : '#403020', 0.25));
-      g.circleGrad(x, y, this.radius, this.hurtFlash > 0 ? hex('#fff0c0') : hex(lit ? '#d8c8a0' : '#3a3024'), hex('#201810', 0.6));
-      for (let i = 0; i < 6; i++) {
-        const a = (i / 6) * TAU + t * 0.4;
-        g.line({ x, y }, { x: x + Math.cos(a) * this.radius * 1.5, y: y + Math.sin(a) * this.radius * 1.5 }, 2, hex('#e8d8a0', lit ? 0.6 : 0.1));
-      }
-      drawBossRing(g, this.pos, this.radius + 8, this.hp / this.maxHp, [0.6, 0.25], '#ffc060');
-    }
-    if (this.stage === 3) {
-      const wickLit = this.litAt(this.wick[0]) || this.litAt(this.root);
-      g.polyline(this.wick, 3, hex('#f0e0b0', wickLit ? 0.8 : 0.15));
-      this.wickSamples.forEach((p, k) => this.traced[k] && g.circle(p.x, p.y, 3, hex('#ffd080')));
-      g.circle(this.root.x, this.root.y, 10, hex(this.rootBare ? '#ff9040' : '#6a5030', wickLit || this.rootBare ? 1 : 0.3));
-    }
-    // The dark: unlit quadrants fall to a fifth of their light (or, with the
-    // minimum-brightness assist, never below 45 %, with Vespers outlined — BOS-0112).
-    const minBright = !!assistsOf(op).minBrightness;
-    const shade = minBright ? VESPERS_MIN_BRIGHT_SHADE : 0.8;
-    const dark = (q: number) => {
-      const qx = q % 2 === 0 ? FIELD.cx - FIELD.rx - 20 : FIELD.cx;
-      const qy = q < 2 ? FIELD.cy - FIELD.ry - 20 : FIELD.cy;
-      g.rect(qx, qy, FIELD.rx + 20, FIELD.ry + 20, hex('#000000', shade));
-    };
-    if (this.stage < 3) {
-      for (let q = 0; q < 4; q++) if (!this.lamps.some((l) => l.alive && l.lit && l.quadrant === q)) dark(q);
-    } else {
-      const l = this.lamps.find((o) => o.alive);
-      g.rect(FIELD.cx - FIELD.rx - 20, FIELD.cy - FIELD.ry - 20, (FIELD.rx + 20) * 2, (FIELD.ry + 20) * 2, hex('#000000', l && l.lit ? 0.45 : shade));
-      if (l && l.lit) g.glow(l.pos.x, l.pos.y, 200, hex('#ffc060', 0.12));
-    }
-    if (minBright && this.stage >= 2) g.arc(x, y, this.radius + 4, 2, hex('#f0e0b0', 0.8));
   }
 }

@@ -1,12 +1,9 @@
 import { fxRandom } from '../fxRandom';
 import { clamp, dist, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
 import { Entity } from '../entity';
-import { surfDisc } from '../entities';
 import { FIELD, MAX_VITALS, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
-import { BrandNode, distortion, drawBossRing, InjectionWatch, TAU } from './common';
+import { BrandNode, distortion, InjectionWatch, TAU } from './common';
 import { Voice } from './voices';
 import { bossSound, type BossOpDef } from './signals';
 
@@ -60,16 +57,6 @@ export class CrustPlate extends Entity {
     }
     return true;
   }
-  draw(g: Gfx): void {
-    const { x, y } = this.pos;
-    const pts = [0, 1, 2, 3, 4].map((i) => {
-      const a = this.angle + (i / 5) * TAU;
-      const r = 17 - (i % 2) * 3;
-      return { x: x + Math.cos(a) * r, y: y + Math.sin(a) * r };
-    });
-    g.poly(pts, hex('#8c8478'), hex('#b8b0a0'));
-    if (this.hits > 0) g.line({ x: x - 10, y: y - 6 }, { x: x + 8, y: y + 9 }, 2, hex('#2a2620'));
-  }
 }
 
 /** Petrification (BOS-0080): px/s the stone front spreads from Sext while any crust plate stands. */
@@ -100,26 +87,6 @@ export class OrganGlyph extends Entity {
   override hitTest(): boolean {
     return false;
   }
-  draw(g: Gfx): void {
-    const { x, y } = this.pos;
-    const ink = hex(this.petrified ? '#8c8478' : '#d8b870', this.petrified ? 0.9 : 0.55);
-    if (this.petrified) g.circle(x, y, 13, hex('#6c665c', 0.85));
-    g.arc(x, y, 14, 1.6, ink);
-    // The organ's sign: a heart's lobes, the lung's paired leaves, the liver's single wedge.
-    if (this.organ === 'heart') {
-      g.circle(x - 3.5, y - 2, 3.5, ink);
-      g.circle(x + 3.5, y - 2, 3.5, ink);
-      g.tri(x - 7, y - 1, x + 7, y - 1, x, y + 7, ink);
-    } else if (this.organ === 'lung') {
-      g.line({ x, y: y - 8 }, { x, y: y + 2 }, 1.4, ink);
-      g.circle(x - 4, y + 2, 3.5, ink);
-      g.circle(x + 4, y + 2, 3.5, ink);
-    } else g.tri(x - 8, y - 4, x + 8, y - 4, x - 2, y + 7, ink);
-    if (this.petrified) {
-      g.line({ x: x - 9, y: y - 6 }, { x: x + 2, y: y + 1 }, 1.2, hex('#2a2620'));
-      g.line({ x: x + 2, y: y + 1 }, { x: x + 8, y: y + 8 }, 1.2, hex('#2a2620'));
-    }
-  }
 }
 
 /** A sun-dial node holding Sext's Stillness together. Hold the brand on it to break it. */
@@ -136,13 +103,6 @@ export class SunDial extends BrandNode {
   protected broken(op: Operation): void {
     op.rate('cool', this.pos, 'Dial broken');
     this.owner.dialBroken(op);
-  }
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    g.glow(x, y, 40, hex('#ffe080', 0.3));
-    g.circle(x, y, 16, hex('#d8c070'));
-    g.line({ x, y }, { x: x + Math.cos(op.elapsed * 0.3) * 14, y: y + Math.sin(op.elapsed * 0.3) * 14 }, 2, hex('#3a2a10'));
-    if (this.heat > 0) g.arc(x, y, 22, 3, hex('#ff9040'), this.heat / this.holdTime);
   }
 }
 
@@ -161,7 +121,6 @@ export class HeartTruth extends Entity {
   }
   /** Not a thing to be found: the heart's truth is a reading, and the Lens must keep reading it (so the auto-lens assist leaves it be). */
   override reveal(): void {}
-  draw(): void {}
 }
 
 /**
@@ -189,14 +148,14 @@ export class SextMalison extends Entity {
   /** True vitals while the false reading holds (null otherwise). */
   trueVitals: number | null = null;
   private shown = 0;
-  private truthT = 0;
+  truthT = 0;
   /** Last true reading the surgeon saw through the lens, and when. */
   lastSeen: number = MAX_VITALS;
   lastSeenAt = 0;
   private falseT = 0;
   private cycleStart = 0;
   private recast = 0;
-  private hurtFlash = 0;
+  hurtFlash = 0;
   private droneT = 0;
   private watch = new InjectionWatch();
   private truth: HeartTruth;
@@ -416,36 +375,5 @@ export class SextMalison extends Entity {
     op.emit('dust', this.pos, 40);
     op.emit('mote', this.pos, 40, undefined, undefined, 120);
     op.say('Noon has passed. His breath is quickening again.');
-  }
-
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, this.radius * 2, 0, 0.1, 0.1, 0.6);
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    const t = op.elapsed;
-    const r = this.radius;
-    // The stone front (BOS-0080): a grey crust creeping out over the flesh.
-    if (this.stone > r) {
-      g.circleGrad(x, y, this.stone, hex('#6c665c', 0.28), hex('#6c665c', 0.12));
-      g.arc(x, y, this.stone, 2, hex('#a8a090', 0.5));
-    }
-    g.glow(x, y, r * 2.4, hex(this.exposed ? '#ffd060' : '#a09070', 0.22));
-    g.circleGrad(x, y, r, this.hurtFlash > 0 ? hex('#fff0c0') : hex('#c8a860'), hex('#504020', 0.6));
-    // A heavy-lidded sun-face, dozing.
-    const lid = this.stillborn ? 0.05 : 0.15 + 0.1 * Math.sin(t * 0.8);
-    g.ellipse(x, y - 2, r * 0.5, r * lid, 0, hex('#2a1a08'));
-    for (let i = 0; i < 12; i++) {
-      const a = (i / 12) * TAU + t * 0.05;
-      g.line({ x: x + Math.cos(a) * r * 1.05, y: y + Math.sin(a) * r * 1.05 }, { x: x + Math.cos(a) * r * 1.4, y: y + Math.sin(a) * r * 1.4 }, 3, hex('#d8b870', 0.6));
-    }
-    if (this.stillborn) g.arc(x, y, r + 20, 4, hex('#fff0a0', 0.5 + 0.3 * Math.sin(t * 3)));
-    if (this.stunT > 0) g.arc(x, y, r + 14, 3, hex('#f5d76e'), this.stunT / 4);
-    // Torpor tell: a slow ring that fills as the lag grows.
-    const lagF = this.lag / Math.max(this.tune.lagMax, this.tune.stillLag);
-    if (lagF > 0.05) g.arc(x, y, r + 26, 2, hex('#8ab8ff', 0.3 + 0.4 * lagF), lagF);
-    if (this.truthT > 0 && this.trueVitals !== null) g.text(`true pulse ${Math.ceil(this.trueVitals)}`, this.heart.x, this.heart.y - 40, { size: 18, color: hex('#ff6050'), align: 'center' });
-    drawBossRing(g, this.pos, r + 8, this.hp / this.maxHp, [0.6, 0.3], '#e0c060');
   }
 }

@@ -1,9 +1,5 @@
 import { fxRandom } from '../fxRandom';
-import { MATINS_DEATH_FRAMES, matinsDeathEye, matinsUnravel } from '../../art/bossVfx';
-import { FPS, frameOf } from '../../art/timing';
 import type { Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
 import { Entity } from '../entity';
 import { Laceration, Rot } from '../entities';
 import { FIELD, type Operation } from '../operation';
@@ -287,8 +283,8 @@ export class BossDeath extends Entity {
   t = 0;
   constructor(
     pos: Vec,
-    private look: [number, number],
-    private ghosts: Vec[],
+    public look: [number, number],
+    public ghosts: Vec[],
   ) {
     super(pos);
     this.required = false;
@@ -299,20 +295,6 @@ export class BossDeath extends Entity {
     if (this.t < DEATH_SECONDS && fxRandom() < dt * 30) op.emit('mote', { x: this.pos.x + (fxRandom() - 0.5) * 80, y: this.pos.y + (fxRandom() - 0.5) * 80 }, 1, -Math.PI / 2, 0.8, 40);
     for (const g of this.ghosts) if (this.t < WITHER_SECONDS && fxRandom() < dt * 4) op.emit('smoke', g, 1);
     if (this.t >= Math.max(DEATH_SECONDS, WITHER_SECONDS)) this.kill();
-  }
-  draw(g: Gfx): void {
-    const [mode, size] = this.look;
-    if (mode === 0 && this.t < DEATH_SECONDS) {
-      // Matins (ART-0233): 24 stepped frames — the shroud unravels into threads and motes, then the eye closes.
-      const f = frameOf(this.t, FPS.woodcut, MATINS_DEATH_FRAMES);
-      g.creature(0, this.pos.x, this.pos.y, size, { seed: this.id, dissolve: f / (MATINS_DEATH_FRAMES - 1), open: matinsDeathEye(f), health: 0.6 });
-      matinsUnravel(g, this.pos.x, this.pos.y, size, f, this.id);
-    } else if (this.t < DEATH_SECONDS) g.creature(mode, this.pos.x, this.pos.y, size, { seed: this.id, dissolve: Math.min(1, this.t / DEATH_SECONDS), health: 0.6 });
-    const w = Math.max(0, 1 - this.t / WITHER_SECONDS);
-    for (const p of this.ghosts) {
-      g.circle(p.x, p.y, 3 + 7 * w, hex('#2a2018', 0.7 * w));
-      g.arc(p.x, p.y, 10 * w + 2, 1.5, hex('#8a7a60', 0.5 * w));
-    }
   }
 }
 

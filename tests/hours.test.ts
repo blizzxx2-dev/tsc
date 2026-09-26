@@ -14,7 +14,7 @@ import {
   spawnedByBoss,
 } from '../src/surgery/bosses/base';
 import { BOSS_TELLS, Cadence, TELL_MIN_LEAD, type BossEvent, type BossOpDef } from '../src/surgery/bosses/signals';
-import { bossBarRect, veiledBelow } from '../src/surgery/bosses/hud';
+import { bossBarRect, veiledBelow } from '../src/render/surgery/bossHud';
 import { Malison, MalisonShard, MATINS_DEFAULT, MATINS_PHASES } from '../src/surgery/malison';
 import { ChoirVoice, EggSac, LaudsBody, LaudsMalison, LAUDS_DEFAULT, LightThread, SPIDERLING_CAP, SpiderlingGrub, VOICE_SIGIL } from '../src/surgery/lauds';
 import { CantorKnot, EggCluster, FangNest, HERALD_BONUS, MatinsHerald } from '../src/surgery/bosses/elites';

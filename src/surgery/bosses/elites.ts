@@ -1,15 +1,13 @@
 import { fxRandom } from '../fxRandom';
 import { dist, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
 import { Entity } from '../entity';
-import { Embedded, Sigil, SIGILS, surfDisc } from '../entities';
+import { Embedded, Sigil, SIGILS } from '../entities';
 import { EggSac } from '../lauds';
 import { onBody, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
 import { BossRot, MalisonBase, type BossPhase } from './base';
 import { attack, bossSound, Cadence, leadFor, tell } from './signals';
-import { fxRange, TAU } from './common';
+import { TAU } from './common';
 
 /**
  * Demo elites (BOS-0147..0150) on the elite frame (BOS-0162): MalisonBase with
@@ -31,7 +29,7 @@ export class EggCluster extends MalisonBase {
   readonly sacs: EggSac[] = [];
   /** Angular bins the current lancet stroke has swept around the cluster. */
   private bins: boolean[] = [];
-  private stroking = false;
+  stroking = false;
   /** Once cut, the sacs no longer hatch together. */
   cut = false;
   /** Seconds between each freed sac's hatching. */
@@ -131,24 +129,6 @@ export class EggCluster extends MalisonBase {
     op.say('The membrane’s cut — they’ll ripen one by one now. Lance them!');
     this.die(op);
   }
-
-  override drawSurface(g: Gfx): void {
-    if (!this.cut) surfDisc(g, this.pos, 70, 0, 0.12, 0, 0.5);
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    if (this.cut) return;
-    const { x, y } = this.pos;
-    g.arc(x, y, 62, 2, hex('#d8d0b8', 0.35 + 0.1 * Math.sin(op.elapsed * 2)));
-    g.dashed(
-      Array.from({ length: 41 }, (_, i) => ({ x: x + Math.cos((i / 40) * TAU) * 85, y: y + Math.sin((i / 40) * TAU) * 85 })),
-      1.5,
-      hex('#f0e0c0', 0.3),
-      6,
-      8,
-    );
-    if (this.stroking) g.arc(x, y, 85, 3, hex('#ffb080', 0.8), this.encircled);
-  }
 }
 
 // ------------------------------------------------------------------ Cantor's Knot
@@ -214,12 +194,6 @@ export class CantorKnot extends MalisonBase {
   protected override onDeath(op: Operation): void {
     op.say('The knot is undone. He can breathe — and sing no more of theirs.');
   }
-
-  draw(g: Gfx, op: Operation): void {
-    if (!this.humming) return;
-    const k = 0.5 + 0.5 * Math.sin(op.elapsed * 18);
-    g.glow(this.pos.x, this.pos.y, 90, hex('#c080ff', 0.2 + 0.2 * k));
-  }
 }
 
 // ------------------------------------------------------------------ Gravehound fang-nest
@@ -274,22 +248,6 @@ export class FangNest extends MalisonBase {
     const left = this.fangs.filter((f) => f.alive).length;
     this.hp = (this.maxHp * left) / this.fangs.length;
     if (left === 0 && !this.dying) this.die(op);
-  }
-
-  override drawSurface(g: Gfx): void {
-    for (const f of this.fangs) if (f.alive) surfDisc(g, f.origin, 30, 0, 0.2, 0.1, 0.2);
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    const live = this.fangs.filter((f) => f.alive);
-    for (let i = 0; i < live.length; i++)
-      for (let j = i + 1; j < live.length; j++) g.line(live[i].origin, live[j].origin, 2, hex('#6a7a30', 0.45 + 0.1 * Math.sin(op.elapsed * 3 + i)));
-    const numerals = ['I', 'II', 'III', 'IV'];
-    this.fangs.forEach((f, i) => {
-      if (!f.alive) return;
-      const due = i === this.fangs.indexOf(this.due as Embedded);
-      g.text(numerals[i] ?? '', f.origin.x + 16, f.origin.y - 14, { size: due ? 18 : 14, font: 'display', color: hex(due ? '#f0e0a0' : '#a09070', 0.9), align: 'center' });
-    });
   }
 }
 
@@ -355,20 +313,5 @@ export class MatinsHerald extends Entity {
       op.emit('mote', this.pos, 20, undefined, undefined, 100);
       op.say('It screamed like a choir as it burned… Doctor, I think that was a herald.');
     }
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    const flick = 0.6 + 0.4 * Math.sin(op.elapsed * 15 + this.id);
-    const fade = Math.min(1, this.life / 3);
-    g.glow(x, y, 36, hex('#b060ff', 0.35 * fade));
-    const pts: Vec[] = [];
-    for (let i = 0; i < 6; i++) {
-      const a = (i / 6) * TAU + op.elapsed * 2;
-      const rr = i % 2 ? 7 : 14;
-      pts.push({ x: x + Math.cos(a) * rr + fxRange(-0.5, 0.5), y: y + Math.sin(a) * rr });
-    }
-    g.poly(pts, hex('#8c3cc8', flick * fade), hex('#ffe0ff', flick * fade));
-    if (this.heat > 0) g.arc(x, y, 20, 3, hex('#ff9040'), this.heat / 0.5);
   }
 }

@@ -1,6 +1,4 @@
 import type { Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
 import { Entity } from '../entity';
 import type { Operation } from '../operation';
 
@@ -105,7 +103,7 @@ export type VoiceHour = keyof typeof MALISON_VOICES;
 
 /** One spoken line, rising and fading beside the curse. */
 export class VoiceLine extends Entity {
-  private t = 0;
+  t = 0;
   constructor(
     pos: Vec,
     public text: string,
@@ -119,10 +117,6 @@ export class VoiceLine extends Entity {
   override update(_op: Operation, dt: number): void {
     this.t += dt;
     if (this.t >= this.life) this.kill();
-  }
-  draw(g: Gfx): void {
-    const a = Math.min(1, this.t * 3, (this.life - this.t) * 2);
-    g.text(this.text, this.pos.x, this.pos.y - this.t * 8, { size: 18, font: 'italic', color: hex(this.color, 0.85 * a), align: 'center' });
   }
 }
 

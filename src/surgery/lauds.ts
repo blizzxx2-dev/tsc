@@ -1,18 +1,14 @@
 import { fxRandom } from './fxRandom';
 import { dist, pointSegment, segmentsIntersect, type Vec } from '../core/math';
-import { eggSacArt } from '../art/ailmentArt';
-import { drawBlotch, presentation } from '../render/presentation';
-import { hex } from '../render/color';
-import type { Gfx } from '../render/gfx';
-import { dawnFlare, flareIntensity, laudsChoir, lightThread, THREAD_SEVER_S, THREAD_TIE_S, type ChoirState } from '../art/bossVfx';
+import { type ChoirState } from '../art/bossVfx';
 import { Entity } from './entity';
-import { Embedded, Laceration, Rot, SearedWord, surfDisc } from './entities';
+import { Embedded, Laceration, Rot, SearedWord } from './entities';
 import { FIELD, onBody, type Operation } from './operation';
 import type { Pointer, ToolId } from './types';
 import { BossRot, BossWound, clampToField, MalisonBase, rateAdd, type BossPhase } from './bosses/base';
 import { attack, bossSound, Cadence, difficultyOf, leadFor, tell } from './bosses/signals';
 
-const TAU = Math.PI * 2;
+export const TAU = Math.PI * 2;
 /** Cosmetic randomness only — never the simulation RNG, so effects can't change outcomes. */
 const fxRange = (lo: number, hi: number): number => lo + fxRandom() * (hi - lo);
 
@@ -114,7 +110,7 @@ export class LaudsMalison extends MalisonBase {
   /** Presentation only: which body last sang the other's wound closed, and when (ART-0236 heal-answer). */
   lastHeal: { at: 'core' | 'partner'; time: number } | null = null;
   /** Phase 3: the dawn flare and the surfaced window. */
-  private flare: Cadence;
+  flare: Cadence;
   flareT = 0;
   surfacedT = 0;
   private ambT = 0;
@@ -455,61 +451,17 @@ export class LaudsMalison extends MalisonBase {
     return [1, this.radius * 4];
   }
 
-  override drawSurface(g: Gfx): void {
-    if (!this.submerged) surfDisc(g, this.pos, this.radius * 1.9, 0.05, 0.35, 0.1, 0.7);
-    else surfDisc(g, this.pos, 46, 0, 0.1, 0.05, 0.9);
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    if (this.hymnTelling) {
-      // Hymn tell: the ring's outline shimmers before it expands.
-      const k = 0.5 + 0.5 * Math.sin(op.elapsed * 30);
-      g.arc(x, y, this.tune.ringRadius * 0.35, 2, hex('#f0d8ff', 0.25 + 0.35 * k));
-    }
-    if (this.hymnR >= 0) {
-      const a = Math.max(0, 1 - this.hymnR / (this.tune.ringRadius * 2.1));
-      g.arc(x, y, this.hymnR, 14, hex('#d8b0ff', 0.1 * a));
-      g.arc(x, y, this.hymnR, 3, hex('#f0d8ff', 0.7 * a));
-    }
-    const bare = this.phase.key !== 'call' || this.livingVoices.length === 0;
-    g.glow(x, y, this.radius * 2.8, hex(bare ? '#ff9050' : '#c0a0ff', 0.25));
-    g.creature(1, x, y, this.radius * 4, { seed: this.id, open: bare ? 1 : 0, health: this.frac, flash: this.hurtFlash });
-    if (this.phase.key === 'call' && bare) g.arc(x, y, this.radius + 16, 3, hex('#ff8040'), 1 - this.bareT / this.tune.exposure);
-    if (this.phase.key === 'response' && this.partner) laudsChoir(g, x, y, this.radius, this.choirState('core', op), op.elapsed, this.partner.pos);
-    if (this.pending && this.pending.from === 'core') g.arc(x, y, this.radius + 20, 3, hex('#ffe0a0'), this.pending.t / this.tune.response);
-    g.arc(x, y, this.radius + 10, 3, hex('#b478ff', 0.7), this.frac);
-  }
-
-  /** Dawn flare and its horizon glow (drawn even while the core is hidden, by the thread-less overlay). */
-  drawDawn(g: Gfx, op: Operation): void {
-    if (this.phase.key !== 'dawn') return;
-    // Flash intensity slider (GAM-0239, BOS-0038): the dawn flare and its horizon glow scale with it.
-    const soften = presentation.flash;
-    // The dawn flare (ART-0238, docs/art/vfx/dawn-flare.md): a horizon glow foretells it, then a gold bloom burst whites out the Lens.
-    const tellK = this.flare.telling ? Math.min(1, (this.flare.t - (this.tune.flareEvery - this.flare.lead)) / this.flare.lead) : 0;
-    const k = this.flareT > 0 ? flareIntensity(this.tune.flareFor - this.flareT, this.tune.flareFor) : 0;
-    if (tellK > 0 || k > 0) dawnFlare(g, { x: -400, y: -400, w: 2080, h: 1520 }, { x: FIELD.cx, y: FIELD.cy - FIELD.ry }, k, tellK, soften, op.tool === 'lens' ? op.pointer : undefined);
-    // Ripples where it swims (the Lens finds them).
-    if (this.submerged && op.tool === 'lens' && !this.blinded) {
-      const r = 20 + ((op.elapsed * 30) % 30);
-      g.arc(this.pos.x, this.pos.y, r, 1.5, hex('#b9d7ff', 0.25 * (1 - (r - 20) / 30)));
-    }
-  }
 }
 
 /** Draws Lauds's dawn overlay above everything (the core may be hidden). */
 export class DawnOverlay extends Entity {
-  constructor(private core: LaudsMalison) {
+  constructor(public core: LaudsMalison) {
     super({ ...core.pos });
     this.required = false;
     this.layer = 9;
   }
   override update(): void {
     if (!this.core.alive) this.kill();
-  }
-  draw(g: Gfx, op: Operation): void {
-    this.core.drawDawn(g, op);
   }
 }
 
@@ -541,14 +493,6 @@ export class LaudsBody extends Entity {
     if (fxRandom() < dt * 20) op.emit('spark', ptr.pos, 2);
     this.core.strike(op, 'partner', this.core.tune.dpsResponse * dt, ptr.pos);
   }
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    g.glow(x, y, this.radius * 2.6, hex('#ffb070', 0.22));
-    g.creature(1, x, y, this.radius * 4, { seed: this.id + 7, open: 1, health: this.core.frac, flash: this.core.hurtFlash });
-    laudsChoir(g, x, y, this.radius, this.core.choirState('partner', op), op.elapsed + 0.37, this.core.pos);
-    const p = this.core.pending;
-    if (p && p.from === 'partner') g.arc(x, y, this.radius + 20, 3, hex('#ffe0a0'), p.t / this.core.tune.response);
-  }
 }
 
 /**
@@ -556,7 +500,7 @@ export class LaudsBody extends Entity {
  * seconds; a lancet drawn across it on the dim beat unlinks the bodies.
  */
 export class LightThread extends Entity {
-  private dim: Cadence;
+  dim: Cadence;
   dimT = 0;
   unlinkT = 0;
   private stroke: Vec | null = null;
@@ -620,36 +564,6 @@ export class LightThread extends Entity {
   override onRelease(): void {
     this.stroke = null;
   }
-  draw(g: Gfx, op: Operation): void {
-    const pa = this.a.pos;
-    const pb = this.b.pos;
-    if (this.unlinkT > 0) {
-      // Severed (ART-0237): the halves recoil, a ghost line waits, then the ends reach back and knot.
-      const k = this.unlinkT / this.a.tune.unlink;
-      const since = this.a.tune.unlink - this.unlinkT;
-      g.dashed([pa, pb], 1.5, hex('#e0c0ff', 0.25 * (1 - k) + 0.05), 6, 10);
-      if (since < THREAD_SEVER_S) lightThread(g, pa, pb, op.elapsed, { bright: 0.75, sever: since / THREAD_SEVER_S, tie: null });
-      else if (this.unlinkT < THREAD_TIE_S) lightThread(g, pa, pb, op.elapsed, { bright: 0.75, sever: null, tie: 1 - this.unlinkT / THREAD_TIE_S });
-      return;
-    }
-    const tellK = this.dim.telling ? 0.5 + 0.5 * Math.sin(op.elapsed * 20) : 0;
-    const bright = this.dimmed ? 0.18 : 0.75 - 0.3 * tellK;
-    lightThread(g, pa, pb, op.elapsed, { bright, sever: null, tie: null });
-    // The response window, as an arc filling between the bodies.
-    const p = this.a.pending;
-    if (p) {
-      const k = 1 - p.t / this.a.tune.response;
-      const from = p.from === 'core' ? pa : pb;
-      const to = p.from === 'core' ? pb : pa;
-      const mid = { x: (from.x + to.x) / 2, y: (from.y + to.y) / 2 - 60 };
-      const pts: Vec[] = [];
-      for (let i = 0; i <= 16 * k; i++) {
-        const t = i / 16;
-        pts.push({ x: (1 - t) ** 2 * from.x + 2 * (1 - t) * t * mid.x + t * t * to.x, y: (1 - t) ** 2 * from.y + 2 * (1 - t) * t * mid.y + t * t * to.y });
-      }
-      if (pts.length > 1) g.polyline(pts, 3, hex('#ffe0a0', 0.8));
-    }
-  }
 }
 
 /** The sigil each Voice wears: a closed triangle, traced with the brand (local coordinates). */
@@ -657,7 +571,7 @@ export const VOICE_SIGIL: readonly Vec[] = [0, 1, 2, 3].map((i) => {
   const a = -Math.PI / 2 + (i * TAU) / 3;
   return { x: Math.cos(a) * 20, y: Math.sin(a) * 20 };
 });
-const VOICE_SAMPLES: Vec[] = (() => {
+export const VOICE_SAMPLES: Vec[] = (() => {
   const out: Vec[] = [];
   for (let i = 1; i < VOICE_SIGIL.length; i++) {
     const a = VOICE_SIGIL[i - 1];
@@ -735,16 +649,6 @@ export class ChoirVoice extends Entity {
       bossSound(op, 'call', this.pos, 0.5, 0.5 + this.core.livingVoices.length * 0.25);
     }
   }
-
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    const glow = 0.6 + 0.4 * Math.sin(op.elapsed * 8 + this.id);
-    g.glow(x, y, 38, hex('#c890ff', 0.35 * glow));
-    const pts = VOICE_SIGIL.map((p) => ({ x: x + p.x, y: y + p.y }));
-    g.polyline(pts, 3, hex('#e0c0ff', glow));
-    for (let i = 0; i < VOICE_SAMPLES.length; i++) if (this.covered[i]) g.circle(x + VOICE_SAMPLES[i].x, y + VOICE_SAMPLES[i].y, 2.5, hex('#ffb060', 0.95));
-    g.circle(x, y, 3 + 2 * glow, hex('#20082a'));
-  }
 }
 
 /** GAM-0197: a clean lance leaves a nick; a sac left to hatch tears the skin open. */
@@ -755,7 +659,7 @@ export class EggSac extends Entity {
   /** Small and numerous: indexed by position on crowded fields (ENG-0246). */
   override pickReach = 32;
   hatchT: number;
-  private readonly hatchIn: number;
+  readonly hatchIn: number;
   constructor(
     pos: Vec,
     public brood = 3,
@@ -815,21 +719,6 @@ export class EggSac extends Entity {
     this.burst(op, this.brood, false);
     return true;
   }
-
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, 34 + 8 * this.swell, 0, 0.1, 0, 0.8 + 0.2 * this.swell);
-  }
-
-  draw(g: Gfx): void {
-    const { x, y } = this.pos;
-    const urgency = Math.max(0, 1 - this.hatchT / this.hatchIn);
-    if (presentation.creatureFilter) return drawBlotch(g, x, y, 22);
-    const s = 1 + 0.25 * this.swell;
-    // Painted sac (ART-0216): translucent, embryos stirring, pulsing faster as it swells; the last
-    // 0.6 s before hatching plays the 8-frame hatch as the brood breaks through.
-    eggSacArt(g, this.pos, 22 * s, { swell: this.swell, hatch: Math.max(0, Math.min(1, 1 - this.hatchT / 0.6)), seed: this.id });
-    g.arc(x, y, 30 * s, 2, hex('#e05040', 0.3 + 0.5 * urgency), Math.max(0, this.hatchT) / this.hatchIn);
-  }
 }
 
 /** A hatchling: faster than a grub, same cure. It makes for the nearest open wound. */
@@ -885,18 +774,6 @@ export class SpiderlingGrub extends Entity {
       op.emit('smoke', this.pos, 3);
       op.rate('cool', this.pos, 'Seared');
     }
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    if (presentation.creatureFilter) return drawBlotch(g, x, y, 9);
-    for (let i = 0; i < 8; i++) {
-      const a = (i / 8) * TAU + Math.sin(op.elapsed * 20 + i) * 0.2;
-      g.line({ x, y }, { x: x + Math.cos(a) * 11, y: y + Math.sin(a) * 11 }, 1.5, hex('#1a1410'));
-    }
-    g.circle(x, y, 6, hex('#2a2018'));
-    g.circle(x, y - 2, 2, hex('#e04030', 0.8));
-    if (this.heat > 0) g.arc(x, y, 15, 3, hex('#ff9040'), this.heat / 0.25);
   }
 }
 

@@ -7,7 +7,7 @@ import { FINAL_LITANY, HOURS, OfficeMalison } from '../src/surgery/bosses/office
 import { REDUCED_LAG_CAP, SextMalison } from '../src/surgery/bosses/sext';
 import { TerceMalison, TERCE_DEFAULT } from '../src/surgery/bosses/terce';
 import { LampNode, VespersMalison } from '../src/surgery/bosses/vespers';
-import { calmWave, ecgCalm, hudFlag } from '../src/surgery/bosses/hud';
+import { calmWave, ecgCalm, hudFlag } from '../src/render/surgery/bossHud';
 import { debriefBand, debriefKey, CODEX_BOSSES, watchEncounters } from '../src/surgery/bosses/codex';
 import { hasKey } from '../src/i18n';
 import type { Operation, OperationDef } from '../src/surgery/operation';

@@ -1,12 +1,10 @@
 import { fxRandom } from '../fxRandom';
 import { dist, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
 import { Entity } from '../entity';
-import { Laceration, surfDisc, surfLine } from '../entities';
+import { Laceration } from '../entities';
 import { FIELD, onBody, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
-import { drawBossRing, pathLength, pointAlong, TAU } from './common';
+import { pathLength, pointAlong, TAU } from './common';
 import { Voice, VoiceLine } from './voices';
 import { attack, bossSound, leadFor, tell } from './signals';
 
@@ -79,7 +77,7 @@ export function burrowPath(op: Operation, from: Vec, organs: number, speed: numb
 
 /** A length of abandoned tunnel: it caves in and opens as a cut ten seconds later. */
 export class TunnelScar extends Entity {
-  private t = 10;
+  t = 10;
   constructor(
     pos: Vec,
     public angle: number,
@@ -98,17 +96,11 @@ export class TunnelScar extends Entity {
       }
     }
   }
-  override drawSurface(g: Gfx): void {
-    surfLine(g, [{ x: this.pos.x - Math.cos(this.angle) * 22, y: this.pos.y - Math.sin(this.angle) * 22 }, { x: this.pos.x + Math.cos(this.angle) * 22, y: this.pos.y + Math.sin(this.angle) * 22 }], 10, 0.2, 0.2, 0, 0.3);
-  }
-  draw(g: Gfx): void {
-    if (this.t < 2) g.circle(this.pos.x, this.pos.y, 3, hex('#ff5040', 0.6));
-  }
 }
 
 /** The skin ripple over the burrowing head: a tell visible without the lens. */
 export class BurrowRipple extends Entity {
-  constructor(private owner: NoneMalison) {
+  constructor(public owner: NoneMalison) {
     super({ ...owner.pos });
     this.required = false;
     this.layer = -1;
@@ -116,23 +108,6 @@ export class BurrowRipple extends Entity {
   override update(): void {
     if (!this.owner.alive) return this.kill();
     this.pos = { ...this.owner.pos };
-  }
-  override drawSurface(g: Gfx, op: Operation): void {
-    if (!this.owner.hidden) return;
-    if (this.owner.surfacingT > 0) {
-      // The bulge swells where the core will break through.
-      const k = 1 - this.owner.surfacingT;
-      surfDisc(g, this.pos, 30 + 26 * Math.max(0, k), 0, 0.2, 0, 1);
-      return;
-    }
-    surfDisc(g, this.pos, 34 + 6 * Math.sin(op.elapsed * 6), 0, 0.15, 0, 0.9);
-  }
-  draw(g: Gfx, op: Operation): void {
-    // Ninth-hour gloom over the field.
-    if (this.owner.gloom) g.rect(0, 0, 1320, 820, hex('#05040c', 0.22));
-    if (this.owner.surfacingT > 0) g.arc(this.pos.x, this.pos.y, 40, 2, hex('#e0a0a0', 0.6), 1 - this.owner.surfacingT);
-    if (!this.owner.hidden || this.owner.stage !== 1) return;
-    g.arc(this.pos.x, this.pos.y, 26 + 8 * ((op.elapsed * 1.5) % 1), 2, hex('#e0b0b0', 0.25 * (1 - ((op.elapsed * 1.5) % 1))));
   }
 }
 
@@ -186,16 +161,6 @@ export class BurrowSegment extends Entity {
       this.owner?.segmentDone(op, true);
     }
   }
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, 26, 0.1, 0.25, 0.1, 0.8);
-  }
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    const a = op.elapsed * 12;
-    for (let i = 0; i < 4; i++) g.circle(x - Math.cos(a + i) * i * 3, y - Math.sin(a + i) * i * 3, 7 - i, hex('#3a1020', 0.9));
-    g.circle(x, y, 3, hex('#e04060'));
-    if (this.heat > 0) g.arc(x, y, 16, 3, hex('#ff9040'), this.heat / 0.7);
-  }
 }
 
 /**
@@ -229,7 +194,7 @@ export class NoneMalison extends Entity {
   private scarS = 0;
   private scars = 0;
   segments: BurrowSegment[] = [];
-  private hurtFlash = 0;
+  hurtFlash = 0;
   private beatT = 1;
   /** Seconds of skin-bulge tell left before the phase-3 core surfaces. */
   surfacingT = 0;
@@ -477,32 +442,5 @@ export class NoneMalison extends Entity {
     op.emit('blood', this.pos, 20);
     op.emit('mote', this.pos, 40, undefined, undefined, 120);
     op.say('Out. The ninth hour is out of him.');
-  }
-
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, 30, 0.15, 0.2, 0, this.hidden ? 0.9 : 0.5);
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    const t = op.elapsed;
-    // The heart, and how near the burrower is to it.
-    const eta = Math.min(this.stage === 2 ? Math.min(...this.segments.filter((s) => s.alive).map((s) => s.eta), 99) : this.eta, 30);
-    const near = 1 - eta / 30;
-    g.glow(this.heart.x, this.heart.y, 50, hex('#ff3040', 0.15 + 0.25 * near * (0.5 + 0.5 * Math.sin(t * (4 + near * 12)))));
-    g.arc(this.heart.x, this.heart.y, 34, 3, hex(near > 0.8 ? '#ff4040' : '#e0a0a0', 0.8), near);
-    const { x, y } = this.pos;
-    if (this.stage === 2) return;
-    const r = this.stage === 3 ? 10 + this.size * 6 : 20;
-    if (this.stage === 1 && this.hidden) return;
-    g.glow(x, y, r * 2.5, hex(this.exposed ? '#ff9050' : '#b04060', 0.25));
-    g.circleGrad(x, y, r, this.hurtFlash > 0 ? hex('#ffc080') : hex('#5a1828'), hex('#1a0408', 0.6));
-    for (let i = 0; i < 8; i++) {
-      const a = (i / 8) * TAU + t * 3;
-      g.line({ x: x + Math.cos(a) * r * 0.5, y: y + Math.sin(a) * r * 0.5 }, { x: x + Math.cos(a) * r * 1.3, y: y + Math.sin(a) * r * 1.3 }, 2, hex('#e8c0c8', 0.7));
-    }
-    if (this.exposed) g.arc(x, y, r + 10, 3, hex('#ff8040'), this.exposedT / 3);
-    if (this.trackedT > 0) g.arc(x, y, r + 10, 2, hex('#b9d7ff'), this.trackedT / 4);
-    if (this.stage === 3 && this.size === 0) g.arc(x, y, r + 12, 3, hex('#f5d76e'), this.pullT / this.tune.pullWindow);
-    drawBossRing(g, this.pos, r + 4, this.hp / this.maxHp, [0.7, 0.35], '#e06080');
   }
 }

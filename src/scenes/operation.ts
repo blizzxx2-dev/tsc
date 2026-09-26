@@ -83,7 +83,7 @@ import { drawGraspOutline } from '../input/hover';
 import { HoldToRetry } from '../input/retry';
 import { bindings } from '../input/bindings';
 import { dragGlyphFor, glyphFor, toolKeyLabel } from '../input/glyphs';
-import { bossBarRect, calmWave, drawBossHud, drawLitanyTheft, drawTorpor, ecgCalm, toolBlinded } from '../surgery/bosses/hud';
+import { bossBarRect, calmWave, drawBossHud, drawLitanyTheft, drawTorpor, ecgCalm, toolBlinded } from '../render/surgery/bossHud';
 import { activeBoss } from '../surgery/bosses/base';
 import { BossAudio, withBossContext } from './bossAudio';
 import { BOSS_OPS, watchEncounters } from '../surgery/bosses/codex';

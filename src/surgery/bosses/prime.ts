@@ -1,12 +1,10 @@
 import { fxRandom } from '../fxRandom';
 import { dist, pointSegment, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
 import { Entity } from '../entity';
-import { BloodPool, Laceration, surfDisc, surfLine } from '../entities';
+import { BloodPool, Laceration } from '../entities';
 import { FIELD, onBody, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
-import { distortion, drawBossRing, fxRange, randomOnBody, samplePath, stepToward, TAU } from './common';
+import { distortion, fxRange, randomOnBody, samplePath, stepToward } from './common';
 import { Voice } from './voices';
 import { bossSound, type BossOpDef } from './signals';
 
@@ -59,13 +57,13 @@ const strokeRatings = new WeakMap<Operation, number>();
  */
 export class NameSigil extends Entity {
   readonly strokes: Vec[][] = [];
-  private samples: Vec[][] = [];
+  samples: Vec[][] = [];
   written = 0;
   writeT = 0;
   /** After an erasure the quill recoils before it writes again. */
   recoil = 0;
   tracing = -1;
-  private covered: boolean[] = [];
+  covered: boolean[] = [];
   private traceStart = 0;
   onErased: ((op: Operation, n: NameSigil) => void) | null = null;
   onWritten: ((op: Operation, n: NameSigil) => void) | null = null;
@@ -225,41 +223,6 @@ export class NameSigil extends Entity {
       this.onErased?.(op, this);
     }
   }
-
-  override drawSurface(g: Gfx): void {
-    for (let i = 0; i < this.written; i++) surfLine(g, this.strokes[i], 7, 0.25, 0, 0.9);
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    const ink = this.red ? '#8a0a14' : '#140a1c';
-    for (let i = 0; i < this.count; i++) {
-      const s = this.strokes[i];
-      if (i < this.written) {
-        g.polyline(s, 5, hex(ink, 0.95));
-        if (i === this.written - 1) g.polyline(s, 9, hex(this.red ? '#ff4040' : '#b478ff', 0.18 + 0.12 * Math.sin(op.elapsed * 8)));
-      } else if (i === this.written) {
-        // The stroke being written, and a faint indentation of the path it will take.
-        g.dashed(s, 1.5, hex('#e8dcc0', 0.25), 4, 5);
-        const total = samplePath(s, 4);
-        // The write-on runs as a 20-frame woodcut flipbook (ART-0222).
-        const upto = Math.max(1, Math.floor(total.length * (Math.floor(this.writeT * NAME_WRITE_FRAMES) / NAME_WRITE_FRAMES)));
-        if (upto > 1) g.polyline(total.slice(0, upto), 5, hex(ink, 0.9));
-        const nib = total[Math.min(total.length - 1, upto)];
-        g.circle(nib.x, nib.y, 3, hex('#f0e0ff', 0.8));
-      } else if (i === this.written + 1 && (1 - this.writeT) * this.strokeTime < 0.8) {
-        // Nib glint where the next stroke will begin.
-        g.glow(s[0].x, s[0].y, 18, hex('#f0e0ff', 0.7));
-      } else g.dashed(s, 1, hex('#e8dcc0', 0.12), 3, 6);
-    }
-    if (this.tracing >= 0) {
-      const ss = this.samples[this.tracing];
-      ss.forEach((p, k) => this.covered[k] && g.circle(p.x, p.y, 2.5, hex('#ffd080', 0.9)));
-    }
-    const pr = this.written / this.count;
-    // Completion warning: the whole name glows as its last stroke is written.
-    if (this.written === this.count - 1) g.glow(this.pos.x, this.pos.y, 110, hex('#ff5040', 0.12 + 0.08 * Math.sin(op.elapsed * 10)));
-    g.text(this.name, this.pos.x, this.pos.y + 44, { size: 15, font: 'italic', color: hex(this.red ? '#ff9080' : '#d8c8f0', 0.5 + 0.5 * pr), align: 'center' });
-  }
 }
 
 /** Ink spilled by Prime: draw it off with the leech-pipe, or in 8 s it becomes a new name. */
@@ -267,7 +230,7 @@ export class InkBlot extends BloodPool {
   age = 0;
   constructor(
     pos: Vec,
-    private prime: PrimeMalison,
+    public prime: PrimeMalison,
   ) {
     super(pos, 24, 'blackbile');
   }
@@ -293,10 +256,6 @@ export class InkBlot extends BloodPool {
       op.say('The ink is writing by itself!');
       this.prime.adopt(op, new NameSigil({ ...this.pos }, op.rng.pick(primeRoll(op)), op, 1.6, 3, 12));
     }
-  }
-  override draw(g?: Gfx, op?: Operation): void {
-    const writes = this.prime.tune.inkWrites ?? 8;
-    if (g && op && this.age > writes - 3) g.arc(this.pos.x, this.pos.y, this.r + 6, 2, hex('#b478ff', 0.4 + 0.3 * Math.sin(op.elapsed * 10)), 1 - (this.age - (writes - 3)) / 3);
   }
 }
 
@@ -337,7 +296,7 @@ export class PrimeMalison extends Entity {
   names: NameSigil[] = [];
   private spawnT = 1;
   private blotT = 4;
-  private hurtFlash = 0;
+  hurtFlash = 0;
   private target: Vec;
   private wroteKreuzer = false;
   readonly heart: Vec;
@@ -517,26 +476,5 @@ export class PrimeMalison extends Entity {
     op.shake = 14;
     op.emit('mote', this.pos, 60, undefined, undefined, 140);
     op.say('The quill has snapped. The roll is closed.');
-  }
-
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, this.radius * 1.8, 0.05, 0.3, 0.3, 0.5);
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    const r = this.radius;
-    const t = op.elapsed;
-    g.glow(x, y, r * 2.4, hex(this.exposed ? '#ff9050' : '#9060d0', 0.22));
-    // A feathered quill-mass: vanes around a dark nib.
-    for (let i = 0; i < 14; i++) {
-      const a = (i / 14) * TAU + t * 0.3;
-      const l = r * (1.2 + 0.25 * Math.sin(t * 3 + i));
-      g.line({ x, y }, { x: x + Math.cos(a) * l, y: y + Math.sin(a) * l * 0.8 }, 3, hex('#2a1838', 0.8));
-    }
-    g.circleGrad(x, y, r, this.hurtFlash > 0 ? hex('#ffc080') : hex('#3c2450'), hex('#0e0616', 0.5));
-    g.tri(x - 6, y - r * 0.7, x + 6, y - r * 0.7, x, y + r * 0.9, hex(this.exposed ? '#ffb070' : '#d8c8f0'));
-    if (this.exposed) g.arc(x, y, r + 12, 3, hex('#ff8040'), this.exposedT / this.tune.exposure);
-    drawBossRing(g, this.pos, r + 6, this.hp / this.maxHp, [0.6, 0.25]);
   }
 }

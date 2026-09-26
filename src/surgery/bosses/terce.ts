@@ -1,15 +1,13 @@
 import { fxRandom } from '../fxRandom';
 import { dist, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
 import { Coverage } from '../coverage';
 import { Entity } from '../entity';
-import { Burn, surfDisc } from '../entities';
+import { Burn } from '../entities';
 import { FIELD, onBody, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
-import { distortion, drawBossRing, fxRange, TAU } from './common';
+import { distortion, fxRange, TAU } from './common';
 import { Voice } from './voices';
-import { assistsOf, attack, bossSound, leadFor, tell } from './signals';
+import { attack, bossSound, leadFor, tell } from './signals';
 
 /** The pitch of each tongue's syllable; together, the word the merged core sings. */
 export const TERCE_WORD: readonly number[] = [0.8, 1.0, 1.25];
@@ -116,29 +114,6 @@ export class FlameTongue extends Entity {
     this.owner?.hit(op, 10);
     return true;
   }
-
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, this.radius * 1.6, 0, 0.2, 0.5 * (1 - this.cov.fraction), 0.4);
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    const t = op.elapsed;
-    if (this.state === 'flame') {
-      const live = 1 - this.cov.fraction * 0.8;
-      g.glow(x, y, this.radius * 2.2, hex('#c060ff', 0.3 * live));
-      for (let i = 0; i < 7; i++) {
-        const a = -Math.PI / 2 + (i - 3) * 0.35;
-        const h = this.radius * (1 + 0.5 * Math.sin(t * 9 + i * 1.7)) * live;
-        g.quadCurve({ x: x + (i - 3) * 5, y }, { x: x + Math.cos(a) * h * 0.5 + Math.sin(t * 6 + i) * 4, y: y - h * 0.6 }, { x: x + Math.cos(a) * h * 0.3, y: y - h * 1.2 }, 4, hex(i % 2 ? '#e080ff' : '#ffb0f0', 0.7 * live));
-      }
-      for (const c of this.cov.cells) if (c.done) g.circleGrad(x + c.x, y + c.y, 10, hex('#bff0c8', 0.3), hex('#bff0c8', 0));
-    } else {
-      g.glow(x, y, 26, hex('#ff7040', 0.35 + 0.2 * Math.sin(t * 7)));
-      g.circle(x, y, 7, hex('#ffb060'));
-      g.circle(x, y, 3, hex('#fff0c0'));
-    }
-  }
 }
 
 /**
@@ -170,8 +145,8 @@ export class TerceMalison extends Entity {
   private circling = false;
   private circleSum = 0;
   private circleLast = 0;
-  private hurtFlash = 0;
-  private stage: 1 | 2 | 3 = 1;
+  hurtFlash = 0;
+  stage: 1 | 2 | 3 = 1;
   private sungT = 2;
 
   constructor(
@@ -402,44 +377,5 @@ export class TerceMalison extends Entity {
     op.emit('mote', this.pos, 50, undefined, undefined, 140);
     op.emit('smoke', this.pos, 20);
     op.say('The fire is out. Saints… it’s out.');
-  }
-
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, this.radius * 2, 0, 0.15, 0.6, 0.5);
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    const t = op.elapsed;
-    if (this.tellZone >= 0) {
-      const z = this.zones[this.tellZone];
-      g.glow(z.x, z.y, 80, hex('#ff8020', 0.35 + 0.25 * Math.sin(t * 20)));
-    }
-    const { x, y } = this.pos;
-    if (this.stage < 3) {
-      // Hidden in the organ: only a sullen glow beneath the flesh.
-      g.glow(x, y, 70, hex('#a040ff', 0.15 + 0.08 * Math.sin(t * 4)));
-      return;
-    }
-    if (this.hazed) {
-      if (assistsOf(op).hazeOutline) {
-        // Accessible haze (BOS-0069): an orange outline instead of shimmer, and a ghost of where the instrument really lands.
-        g.arc(x, y, 150, 2, hex('#ff9040', 0.7));
-        g.circle(op.pointer.x, op.pointer.y, 6, hex('#ffb070', 0.5));
-        g.arc(op.pointer.x, op.pointer.y, 10, 1.5, hex('#ffb070', 0.8));
-      } else for (let i = 0; i < 5; i++) g.glow(x + Math.sin(t * 2 + i) * 60, y - 30 - i * 14, 70, hex('#ffa060', 0.06));
-    }
-    g.glow(x, y, this.radius * 2.6, hex('#ff6020', 0.3));
-    g.circleGrad(x, y, this.radius, this.hurtFlash > 0 ? hex('#fff0c0') : hex('#ff9040'), hex('#801000', 0.6));
-    g.circle(x, y, this.radius * 0.4, hex('#fff8e0', 0.9));
-    g.dashed(
-      Array.from({ length: 33 }, (_, i) => ({ x: x + Math.cos((i / 32) * TAU) * 70, y: y + Math.sin((i / 32) * TAU) * 70 })),
-      2,
-      hex('#ffd0a0', 0.35),
-      8,
-      8,
-      t * 20,
-    );
-    if (this.hazeClearT > 0) g.arc(x, y, this.radius + 16, 2, hex('#b9d7ff', 0.7), this.hazeClearT / 4);
-    drawBossRing(g, this.pos, this.radius + 8, this.hp / this.maxHp, [0.65, 0.3], '#ff9040');
   }
 }

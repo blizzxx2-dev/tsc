@@ -3,7 +3,7 @@ import { computeView } from '../../../src/render/viewport';
 import { viewRect } from '../../../src/ui/layout';
 import { clearOfHud, operationHud, overlaps, popupBox } from '../../../src/ui/popupPlacement';
 import { FIELD } from '../../../src/surgery/operation';
-import { BOSS_BAR } from '../../../src/surgery/bosses/hud';
+import { BOSS_BAR } from '../../../src/render/surgery/bossHud';
 
 /** The Hours' HP bar, with room for its Fraktur name above. */
 const bossBar = { x: BOSS_BAR.cx - BOSS_BAR.w / 2, y: BOSS_BAR.y - 24, w: BOSS_BAR.w, h: BOSS_BAR.h + 28 };

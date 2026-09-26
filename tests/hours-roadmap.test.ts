@@ -1,5 +1,8 @@
 /** Boss roadmap checks (BOS-*) that sit between the sim and the scenes: lost-patient names, story flags, assists, op tuning. */
 import { describe, expect, it } from 'vitest';
+import '../src/render/surgery';
+import { drawDawn } from '../src/render/surgery/lauds';
+import { drawEntity } from '../src/render/surgery/registry';
 import { allCampaignOperations } from '../src/content/campaign';
 import { bossStoryFlags, FlagStore } from '../src/content/flags';
 import { NameSigil, patientName, PrimeMalison, PRIME_NAMES, primeRoll } from '../src/surgery/bosses/prime';
@@ -96,7 +99,7 @@ describe('GAM-0239: shake and flash sliders reach the boss effects', () => {
     let m!: Malison;
     const op2 = start((o) => [(m = new Malison(at(0, 0), o))]);
     m.open = true;
-    const sample = () => [...glowAlphas((g) => l.drawDawn(g, op)), ...glowAlphas((g) => m.draw(g, op2))];
+    const sample = () => [...glowAlphas((g) => drawDawn(g, l, op)), ...glowAlphas((g) => drawEntity(g, m, op2))];
     presentation.flash = 1;
     const full = sample();
     presentation.flash = 0.5;

@@ -2,17 +2,13 @@ import { fxRandom } from './fxRandom';
 import { TIMING } from './timing';
 import { dist, pointSegment, type Vec } from '../core/math';
 import { Entity } from './entity';
-import { hex } from '../render/color';
-import { presentation } from '../render/presentation';
-import type { Gfx } from '../render/gfx';
-import { Laceration, SearedWord, surfDisc } from './entities';
-import { threadKnotArt } from '../art/ailmentArt';
+import { Laceration, SearedWord } from './entities';
 import { FIELD, onBody, type Operation } from './operation';
 import type { Pointer, ToolId } from './types';
 import { BossWound, clampToField, MalisonBase, rateAdd, type BossPhase } from './bosses/base';
 import { attack, bossSound, Cadence, leadFor, panOf, tell } from './bosses/signals';
 
-const TAU = Math.PI * 2;
+export const TAU = Math.PI * 2;
 /** Cosmetic randomness only — never the simulation RNG, so effects can't change outcomes. */
 const fxRange = (lo: number, hi: number): number => lo + fxRandom() * (hi - lo);
 
@@ -91,7 +87,7 @@ export class Malison extends MalisonBase {
   private offBeat = -1;
   /** The gaze lash: locked direction and time left before it fires (null = none). */
   gaze: { dir: Vec; t: number; from: Vec } | null = null;
-  private opening: Cadence;
+  opening: Cadence;
   private ambT = 0;
   /** Shards shed by each veil close (for tests). */
   shedLog: number[] = [];
@@ -401,11 +397,6 @@ export class Malison extends MalisonBase {
     return [0, this.radius * 4.4];
   }
 
-  override drawSurface(g: Gfx): void {
-    // The curse's corruption spreads through the flesh as it is wounded (BOS-0019).
-    surfDisc(g, this.pos, this.radius * 1.8 + (1 - this.frac) * 140, 0.1, 0.4, 0.15, 0.6);
-  }
-
   /**
    * The watching rhythm (ART-0232), 0..1: the room darkens in a pulse on each beat of the eye while
    * it is out, holds dim while the shroud is open, and barely breathes otherwise. The operation
@@ -416,51 +407,6 @@ export class Malison extends MalisonBase {
     if (this.open) return 0.4;
     return 0.1 * (0.5 + 0.5 * Math.sin(elapsed * 1.2));
   }
-
-  draw(g: Gfx, op: Operation): void {
-    const r = this.radius;
-    // Opening tell: the shroud trembles, and peels to an inner red glow.
-    const tellK = !this.open && this.opening.telling ? Math.min(1, (this.opening.t - (this.tune.veil - this.opening.lead)) / this.opening.lead) : 0;
-    const x = this.pos.x + (tellK > 0 ? Math.sin(op.elapsed * 55) * 2.5 * tellK : 0);
-    const y = this.pos.y + (tellK > 0 ? Math.cos(op.elapsed * 47) * 1.5 * tellK : 0);
-    let openness = this.open ? Math.min(1, this.cycleT * 4) : tellK * 0.25;
-    if (this.eyeOut) {
-      const b = this.beat;
-      const within = this.eyeT % this.tune.beat;
-      openness = b === 3 ? 1 : b === 0 ? 0.1 : 0.3 + 0.3 * Math.exp(-within * 6) * b;
-      if (this.gaze) openness *= 0.6 + 0.4 * (this.gaze.t / 1); // the iris contracts
-    }
-    // The opening flash follows the flash-intensity slider (GAM-0239); shakes go through op.shake × the shake slider.
-    const fl = presentation.flash;
-    g.glow(x, y, r * 2.6, hex(this.vulnerable ? '#ff6030' : '#8030c0', 0.22 * (this.vulnerable ? fl : 1)));
-    if (tellK > 0) g.glow(x, y, r * 1.6, hex('#ff2010', 0.35 * tellK * fl));
-    g.creature(0, x, y, r * 4.4, { seed: this.id * 1.3, open: openness, health: this.frac, flash: this.hurtFlash });
-    // Rend tell: the shroud's edge sharpens into hooks.
-    if (this.rendTelling) {
-      const k = Math.min(1, (this.rendT - (this.rendEvery - 0.8)) / 0.3);
-      for (let i = 0; i < 9; i++) {
-        const a = (i / 9) * TAU + op.elapsed * 0.6;
-        const p0 = { x: x + Math.cos(a) * r * 0.9, y: y + Math.sin(a) * r * 0.9 };
-        const p1 = { x: x + Math.cos(a + 0.18) * (r + 16 * k), y: y + Math.sin(a + 0.18) * (r + 16 * k) };
-        const p2 = { x: x + Math.cos(a + 0.34) * (r + 8 * k), y: y + Math.sin(a + 0.34) * (r + 8 * k) };
-        g.polyline([p0, p1, p2], 2.5, hex('#1a0820', 0.9 * k));
-      }
-    }
-    // The gaze line, tightening as it locks.
-    if (this.gaze) {
-      const end = this.gazeEnd()!;
-      const k = 1 - this.gaze.t;
-      g.dashed([this.pos, end], 2 + 3 * k, hex('#ff3020', 0.35 + 0.5 * k), 10, 8, op.elapsed * 60);
-    }
-    // Beats of the eye: three pips, the third gilt.
-    if (this.eyeOut) {
-      for (let i = 1; i <= 3; i++) {
-        const lit = this.beat >= i || this.beat === 0 ? this.beat !== 0 && this.beat >= i : false;
-        g.circle(x - 16 + (i - 1) * 16, y - r - 22, lit ? 5 : 3.5, hex(i === 3 ? '#ffd070' : '#e08060', lit ? 0.95 : 0.35));
-      }
-    }
-    g.arc(x, y, r + 14, 3, this.vulnerable ? hex('#ff8040', 0.9) : hex('#b478ff', 0.5), this.frac);
-  }
 }
 
 /**
@@ -470,7 +416,7 @@ export class Malison extends MalisonBase {
  */
 export class MalisonShard extends Entity {
   private grabbed = false;
-  private life = 9;
+  life = 9;
   /** A crawler first worms about for a moment before it scents a wound. */
   emerge = 2.5;
   private vel: Vec;
@@ -581,24 +527,15 @@ export class MalisonShard extends Entity {
       else op.rate('cool', ptr.pos, 'Cast out');
     }
   }
-
-  draw(g: Gfx, op: Operation): void {
-    const { x, y } = this.pos;
-    const flick = 0.6 + 0.4 * Math.sin(op.elapsed * 15 + this.id);
-    g.glow(x, y, 40, hex(this.mode === 'crawler' ? '#ff5060' : '#b060ff', 0.3 + 0.1 * flick));
-    // A knot of curse-thread (ART-0228): three knot shapes, drifting; its burst plays in the scene's VanishFx.
-    threadKnotArt(g, this.pos, 14, { shape: this.id % 3, crawler: this.mode === 'crawler', seed: this.id });
-    if (this.mode === 'fragment') g.arc(x, y, 24, 3, hex('#ffc878', 0.7), this.life / 9);
-  }
 }
 
 /** Death animation: the ink body dissolves into embers and ash (cosmetic, not required). */
 export class MalisonAsh extends Entity {
-  private t = 0;
+  t = 0;
   constructor(
     pos: Vec,
-    private r: number,
-    private mode = 0,
+    public r: number,
+    public mode = 0,
   ) {
     super(pos);
     this.required = false;
@@ -608,9 +545,5 @@ export class MalisonAsh extends Entity {
   override update(_op: Operation, dt: number): void {
     this.t += dt;
     if (this.t > 1.4) this.kill();
-  }
-
-  draw(g: Gfx): void {
-    g.creature(this.mode, this.pos.x, this.pos.y, this.r * 4.4, { seed: this.id, dissolve: Math.min(1, this.t / 1.2), health: 0.6 });
   }
 }

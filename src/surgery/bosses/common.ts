@@ -1,7 +1,5 @@
 import { fxRandom } from '../fxRandom';
 import { dist, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
 import { Entity } from '../entity';
 import { FIELD, onBody, type Operation } from '../operation';
 import type { Pointer } from '../types';
@@ -164,7 +162,6 @@ export class Muffler extends Entity {
     op.cues.muteFrame();
     this.kill();
   }
-  draw(): void {}
 }
 
 /** Detects that the surgeon has just completed a tincture injection (the cooldown jumps up). */
@@ -175,15 +172,6 @@ export class InjectionWatch {
     const fired = now > this.last + 0.5;
     this.last = now;
     return fired;
-  }
-}
-
-/** Boss health ring with phase notches. */
-export function drawBossRing(g: Gfx, p: Vec, r: number, frac: number, notches: number[], color = '#b478ff'): void {
-  g.arc(p.x, p.y, r, 3, hex(color, 0.75), Math.max(0, frac));
-  for (const n of notches) {
-    const a = -Math.PI / 2 + TAU * n;
-    g.line({ x: p.x + Math.cos(a) * (r - 5), y: p.y + Math.sin(a) * (r - 5) }, { x: p.x + Math.cos(a) * (r + 5), y: p.y + Math.sin(a) * (r + 5) }, 2, hex('#f0e0c0', 0.8));
   }
 }
 

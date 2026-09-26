@@ -12,6 +12,8 @@ const ALLOWED = [
   /surgery[\\/]bosses[\\/]/,
   /surgery[\\/]malison\.ts$/,
   /surgery[\\/]lauds\.ts$/,
+  // Their drawing, moved out of the simulation (GAM-0012): the boss and Malison drawers.
+  /render[\\/]surgery[\\/](alphaElites|base|bossHud|bossRing|compline|elites|lauds|malison|none|office|prime|sext|terce|vespers|voices)\.ts$/,
   /ui[\\/](layout|theme)\.ts$/,
   /render[\\/]shaders[\\/]creature\.ts$/,
   /content[\\/]characters\.ts$/,
