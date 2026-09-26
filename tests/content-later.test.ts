@@ -50,7 +50,8 @@ describe('Chapters III–V script', () => {
   for (const def of LATER_CHAPTERS.flatMap((c) => c.steps.flatMap((s) => (s.kind === 'op' ? [s.op] : [])))) {
     it(`${def.id}: an idle surgeon loses before time + 5 s; two runs on one seed are identical`, () => {
       const idle = new Operation(def);
-      for (let t = 0; t < def.timeLimit + 5 && (idle.status === 'intro' || idle.status === 'running'); t += 1 / 60) idle.update(1 / 60);
+      // Dialogue inserts (CON-0128) stop the clock while they read themselves out: allow them 30 s.
+      for (let t = 0; t < def.timeLimit + 35 && (idle.status === 'intro' || idle.status === 'running'); t += 1 / 60) idle.update(1 / 60);
       expect(idle.status).toBe('lost');
       const a = playWithBot(def, { think: 1 }).op;
       const b = playWithBot(def, { think: 1 }).op;

@@ -489,11 +489,29 @@ export const OP_3_9: OperationDef = {
       spawn: () => [new Jaw(at(0, 0)), new Bubo(at(-60, 20), 20, 40)],
     },
     {
-      callout: ['“Why did the names stop, Doctor?” — Tongs on the molar. Rock it, three times, then draw it.'],
+      // CON-0128: the Inquisitor interrogates between phases, whatever the state of his mouth.
+      interject: [
+        { who: 'stroh', text: 'Mmh. Why did the names stop, Doctor? The Registrar’s skin. They stopped mid-word.' },
+        { who: 'kreuzer', text: 'Because I stopped them. Open wider, Inquisitor.' },
+        { who: 'stroh', text: 'That is not an answer. That is a dentist’s instruction.' },
+      ],
+      callout: ['Tongs on the molar. Rock it, three times, then draw it.'],
       spawn: () => [new Molar(at(40, -10))],
     },
     {
-      callout: ['“And the founder’s child…” — Salve the socket, Doctor. And perhaps the Inquisitor’s temper.'],
+      interject: () => [
+        { who: 'stroh', text: 'And the founder’s child. Liesl. What did you write on her certificate?' },
+        ...(flags.get('hornchildCertificate') === 'natural'
+          ? [
+              { who: 'kreuzer', text: 'What the bone told me.' },
+              { who: 'stroh', text: 'Bone is very rarely that polite, Doctor. I shall read it again.' },
+            ]
+          : [
+              { who: 'kreuzer', text: 'That she was turned. You read it. You signed under it.' },
+              { who: 'stroh', text: 'I did. I wanted to know whether you would flinch. You did not. Noted.' },
+            ]),
+      ],
+      callout: ['Salve the socket, Doctor. And perhaps the Inquisitor’s temper.'],
       spawn: () => [new Laceration(at(40, 10), 0.2, 34, 0.4)],
     },
   ],

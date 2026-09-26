@@ -446,7 +446,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ### op3-9 "The Most Hated Avocation" (Inquisitor Stroh) — dentistry
 - [x] CON-0126 · Alpha · P0 · S · Design spec — mouth field; abscess drain, rocking the rotten molar with tongs (root breaks if pulled too fast), VN interruption lines between phases; patient bites if lancet lingers
 - [x] CON-0127 · Alpha · P0 · M · Implement Tooth/Root entity — with rock-and-pull input and bite hazard (tests)
-- [ ] CON-0128 · Alpha · P1 · S · Mid-op VN interjection support (op pauses for 2–3 lines between phases) — used here and in op5-2
+- [x] CON-0128 · Alpha · P1 · S · Mid-op VN interjection support (op pauses for 2–3 lines between phases) — used here and in op5-2
 - [x] CON-0129 · Alpha · P1 · S · Author `op3-9` data file — callouts, thresholds, `strohTooth` flag write, checklist pass
 
 ### op3-10 "The Hour of Prime" (Registrar Oswin Tallert) — boss
@@ -526,7 +526,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ### op5-2 "The Mouth Beneath" (Dietmar, tanner)
 - [x] CON-0174 · Alpha · P0 · S · Design spec — talking abdominal cyst bargains mid-op (VN interjections), must be removed whole; rupture spawns a crawling remnant mini-boss
 - [x] CON-0175 · Alpha · P0 · M · Implement Cyst — integrity meter; and Remnant mini-boss entities (tests)
-- [ ] CON-0176 · Alpha · P1 · S · Cyst dialogue lines keyed to Whisper band — threatens to tell Stroh specific evidence
+- [x] CON-0176 · Alpha · P1 · S · Cyst dialogue lines keyed to Whisper band — threatens to tell Stroh specific evidence
 - [x] CON-0177 · Alpha · P1 · S · Author `op5-2` data file — callouts, thresholds, checklist pass
 
 ### op5-3 "Blood of Tallow" (Greta, chandler's daughter)

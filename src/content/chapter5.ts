@@ -1,7 +1,8 @@
 import { JOURNAL_STORY } from './journal';
 import { EPILOGUE_STORY } from './epilogue';
 import { ENDING_EXILE, ENDING_PARDON, ENDING_PYRE, endingIs, hostIs, strohTrust, trialVerdict, verdictIs } from './endings';
-import { whisperThought } from './whisper';
+import { whisperBand, whisperScore, whisperThought, type WhisperBand } from './whisper';
+import { flags } from './flags';
 import { Embedded, Incision, Laceration, Rot } from '../surgery/entities';
 import { TinctureSite, Vessel } from '../surgery/ailments/kilnrows';
 import { Bud, Cyst, HexBall, Infant, VocalFold } from '../surgery/ailments/hollownight';
@@ -409,6 +410,14 @@ export const OP_5_1: OperationDef = {
   ],
 };
 
+/** The talking cyst's threat (CON-0176), by the Whisper band: the evidence it would carry to Stroh. */
+const CYST_THREAT: Record<WhisperBand, string> = {
+  unremarked: 'Nobody watches you, surgeon. Nobody at all. How lonely. Let me out, and I will watch you.',
+  noted: 'The Inquisitor keeps a ledger of candles. I could tell him what the candles did while your lips moved.',
+  suspected: 'Eight heartbeats in the muster tent. A founder’s child. I know every page of his ledger, and the one he hasn’t written.',
+  accused: 'They already know, surgeon. I would only tell them where you keep the star. Just under your breath.',
+};
+
 export const OP_5_2: OperationDef = {
   id: 'op5-2',
   title: 'The Mouth Beneath',
@@ -423,6 +432,12 @@ export const OP_5_2: OperationDef = {
   seed: 52,
   phases: [
     {
+      // CON-0128 / CON-0176: the cyst talks, and what it threatens to tell Stroh is what the city has seen.
+      interject: () => [
+        { name: 'Dietmar, tanner', text: 'It isn’t me talking, Doctor. I swear on my mother it isn’t me.' },
+        { name: 'The cyst', text: CYST_THREAT[whisperBand(whisperScore(flags))] },
+        { who: 'kreuzer', text: 'I know it isn’t you, Dietmar. Hold still, and don’t listen to it.' },
+      ],
       callout: ['Cut all the way round it, clear of the wall. Don’t touch the cyst itself with the blade.'],
       spawn: () => [new Cyst(at(10, 10), 30)],
     },

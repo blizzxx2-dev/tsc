@@ -34,7 +34,24 @@ export interface OrganRegion {
   ry: number;
 }
 
+/** A line of a mid-operation dialogue insert (CON-0128): who speaks (a cast id, or a shown name) and what. */
+export interface DialogueLine {
+  text: string;
+  /** Cast id (src/content/characters.ts) — its name and colour label the line. */
+  who?: string;
+  /** Shown name when the speaker is not in the cast (a patient, a cyst). */
+  name?: string;
+}
+
+/** Seconds an unread dialogue line stays before moving on by itself (CON-0128). */
+export const readingTime = (l: DialogueLine): number => Math.min(6, Math.max(2.5, 1.2 + l.text.length * 0.045));
+
 export interface PhaseDef {
+  /**
+   * A dialogue insert before the phase (CON-0128): the operation pauses for these lines — the clock
+   * and the drain stand still — and the phase's callout and spawns follow once they are read.
+   */
+  interject?: readonly DialogueLine[] | ((op: Operation) => readonly DialogueLine[]);
   /** Lines the assistant says when the phase begins. */
   callout?: string[];
   /** Short objective shown with the phase banner and kept under the timer (UIX-0061), e.g. "Close the wounds". */
@@ -221,7 +238,8 @@ export type LogOp =
   | ['h']
   | ['w', number]
   | ['k']
-  | ['r'];
+  | ['r']
+  | ['d'];
 
 export interface Telemetry {
   opId: string;
@@ -411,7 +429,10 @@ export class Operation {
   shownVitals: number;
   paused = false;
   /** Dialogue insert pausing the simulation (mid-op talking patient). */
-  dialogue: string[] = [];
+  dialogue: DialogueLine[] = [];
+  private dialogueT = 0;
+  /** A phase whose callout and spawns wait for its dialogue insert to be read. */
+  private pendingPhase: PhaseDef | null = null;
   private graceT = 0;
   private ilseUsed = false;
   private feverDone = false;
@@ -1286,7 +1307,13 @@ export class Operation {
       this.freezeT = Math.max(0, this.freezeT - dt);
       return;
     }
-    if (this.dialogue.length || this.litanyPractice) return;
+    if (this.dialogue.length) {
+      // An unread line moves on by itself after a reading time, so an unattended insert never stalls.
+      this.dialogueT += dt;
+      if (this.dialogueT >= readingTime(this.dialogue[0])) this.advanceDialogue(false);
+      return;
+    }
+    if (this.litanyPractice) return;
 
     this.injectCooldown = Math.max(0, this.injectCooldown - dt);
     this.tremorT = Math.max(0, this.tremorT - dt);
@@ -1533,6 +1560,16 @@ export class Operation {
     }
     this.event({ kind: 'phaseStart', phase: this.phase });
     this.events.emit('phase', { index: this.phase, count: this.def.phases.length });
+    const lines = typeof def.interject === 'function' ? def.interject(this) : def.interject;
+    if (lines?.length) {
+      this.interrupt(lines);
+      this.pendingPhase = def;
+      return;
+    }
+    this.beginPhase(def);
+  }
+
+  private beginPhase(def: PhaseDef): void {
     if (def.callout) this.say(...def.callout);
     this.spawn(...def.spawn(this));
   }
@@ -1561,8 +1598,8 @@ export class Operation {
   }
 
   /** Pause the simulation for a mid-operation dialogue insert. */
-  interrupt(lines: string[]): void {
-    this.dialogue.push(...lines);
+  interrupt(lines: readonly (string | DialogueLine)[]): void {
+    this.dialogue.push(...lines.map((l) => (typeof l === 'string' ? { text: l } : l)));
   }
 
   /** Freeze all drain for a while (resume grace; dev cheat). */
@@ -1576,9 +1613,18 @@ export class Operation {
   }
 
   /** Advance the dialogue insert; resumes with a short drain-free grace. */
-  advanceDialogue(): void {
+  advanceDialogue(manual = true): void {
+    if (!this.dialogue.length) return;
+    // Only the player's advance is input; the reading-time advance replays from the clock.
+    if (manual) this.log?.push(['d']);
+    this.dialogueT = 0;
     this.dialogue.shift();
-    if (!this.dialogue.length) this.graceT = 1;
+    if (this.dialogue.length) return;
+    this.graceT = 1;
+    // The phase that waited on the insert begins now.
+    const def = this.pendingPhase;
+    this.pendingPhase = null;
+    if (def) this.beginPhase(def);
   }
 
   /** Record a story flag (branching outcomes). Scoring never depends on these. */

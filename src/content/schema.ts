@@ -24,7 +24,7 @@ import { SextMalison } from '../surgery/bosses/sext';
 import { TerceMalison } from '../surgery/bosses/terce';
 import { VespersMalison } from '../surgery/bosses/vespers';
 import { CantorKnot, EggCluster, FangNest, MatinsHerald } from '../surgery/bosses/elites';
-import { FIELD, onBody, type Operation, type OperationDef, type PhaseDef } from '../surgery/operation';
+import { FIELD, onBody, type DialogueLine, type Operation, type OperationDef, type PhaseDef } from '../surgery/operation';
 import type { ToolId } from '../surgery/types';
 
 export type Pt = readonly [number, number];
@@ -81,6 +81,8 @@ export interface PickSpec {
 export type SpawnSpec = EntitySpec | PickSpec;
 
 export interface PhaseData {
+  /** A dialogue insert before the phase (CON-0128); the phase follows once it is read. */
+  interject?: readonly DialogueLine[];
   /** Lines the assistant says when the phase begins. */
   callout?: string[];
   /** Short objective for the phase banner (UIX-0061). */
@@ -344,6 +346,7 @@ const incisionOf = (op: Operation): Incision | undefined => op.entities.find((e)
 function compilePhase(data: PhaseData): DataPhaseDef {
   return {
     data,
+    interject: data.interject,
     callout: data.callout,
     objective: data.objective,
     spawn(op: Operation): Entity[] {

@@ -53,6 +53,9 @@ export function replay(def: OperationDef, log: InputLog): Operation {
       case 'r':
         op.toggleLeechReverse();
         break;
+      case 'd':
+        op.advanceDialogue();
+        break;
     }
   }
   return op;

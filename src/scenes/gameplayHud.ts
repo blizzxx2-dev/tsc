@@ -17,7 +17,8 @@ import { humming } from '../surgery/ailments/organs';
 import { LarynxFold } from '../surgery/ailments/organs';
 import { VIEW_W } from '../ui/layout';
 import { UI } from '../ui/ornaments';
-import { band, glass, heading, INK } from '../ui/hudKit';
+import { band, caps, glass, heading, INK } from '../ui/hudKit';
+import { CAST, type CharacterId } from '../content/characters';
 import { button, type Rect } from '../ui/widgets';
 import { TOOL_INFO } from '../surgery/types';
 import { glyphFor } from '../input/glyphs';
@@ -115,9 +116,15 @@ export function drawLitanyPractice(g: Gfx, op: Operation, input: Input): boolean
 export function drawDialogue(g: Gfx, op: Operation, input: Input): boolean {
   const line = op.dialogue[0];
   if (!line) return false;
-  const r = { x: 240, y: 510, w: 800, h: 80 };
+  const who = line.who ? CAST[line.who as CharacterId] : undefined;
+  const name = line.name ?? who?.name;
+  const size = 21;
+  const lines = g.wrap(line.text, 744, size).length;
+  const h = Math.max(80, 50 + lines * size * 1.3 + (name ? 18 : 0));
+  const r = { x: 240, y: 590 - h, w: 800, h };
   glass(g, r, { strength: 1.12 });
-  g.text(line, r.x + 28, r.y + 40, { size: 21, color: hex(INK.text), shadow: hex('#000000', 0.8), soft: true });
+  if (name) caps(g, name, r.x + 28, r.y + 26, 12, hex(who?.color ?? INK.gold));
+  g.textBlock(line.text, r.x + 28, r.y + (name ? 52 : 40), 744, { size, color: hex(INK.text), shadow: hex('#000000', 0.8), soft: true }, 1.3);
   g.text(t('hud.dialogue.continue'), r.x + r.w - 24, r.y + r.h - 14, { size: 16, font: 'italic', color: hex(INK.dim), align: 'right', shadow: false });
   return input.pressed || input.actPressed('litany.key') || input.actPressed('ui.confirm');
 }
