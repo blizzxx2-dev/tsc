@@ -531,7 +531,9 @@ vec4 rot(vec2 q) {
   float R = u_a.x;
   float stage = (floor(clamp(u_a.y, 0.0, 1.0) * 3.99) + 1.0) / 4.0;
   float deb = u_a.z;
-  float r = length(q) / (R * (0.4 + 0.6 * stage)) + (fbm(q * 0.04 + u_seed) - 0.5) * 0.45;
+  // The edge wanders at the patch's own scale (noise sized to its radius), with lobes and inlets.
+  float rs = R * (0.4 + 0.6 * stage);
+  float r = length(q) / rs + (fbm(q / rs * 1.7 + u_seed) - 0.5) * 0.6 + (noise(q / rs * 4.0 + u_seed * 3.0) - 0.5) * 0.12;
   float m = rsmooth(1.0, 0.72, r);
   // Necrotic bed: black-green at the heart, bruised violet-brown and dusky toward the margin.
   vec3 bed = mix(vec3(0.05, 0.08, 0.03), vec3(0.24, 0.28, 0.1), fbm(q * 0.1 + 3.0));
@@ -554,7 +556,10 @@ vec4 rot(vec2 q) {
   vec3 clean = lit(vec3(0.72, 0.14, 0.14), bumpN(q * 0.05, 1.0), 1.1, 50.0);
   float db = step(fbm(q * 0.07 + 5.0) + 0.15, deb * 1.2) * rsmooth(1.0, 0.8, r);
   c = mix(c, clean, db);
-  return over(paint(c, max(m, crust)), paint(vec3(0.6, 0.12, 0.12), margin));
+  // Satellite mottles: small dusky spots breaking out just beyond the margin as it spreads.
+  float sat = smoothstep(0.8, 0.86, noise(q / rs * 5.0 + u_seed * 7.0)) * rsmooth(1.6, 1.05, r) * step(1.0, r) * stage;
+  vec4 spots = paint(vec3(0.3, 0.12, 0.14), sat * 0.7);
+  return over(over(paint(c, max(m, crust)), spots), paint(vec3(0.6, 0.12, 0.12), margin));
 }
 
 vec4 pox(vec2 q) {
@@ -611,29 +616,42 @@ vec4 grub(vec2 q) {
   float sf = frame(10.0, 4.0);
   float curl = squirm * (sf < 2.0 ? sf - 0.5 : 2.5 - sf) * 0.9;
   vec4 acc = vec4(0.0);
-  float segs = 7.0;
+  // One soft, tapering body along a spine of 7 points (not a chain of beads): the nearest spine
+  // segment gives the distance, the radius and how far along the body a pixel is.
+  vec2 pts[7];
+  float rad[7];
   for (int i = 0; i < 7; i++) {
-    float fi = float(i);
-    float t = fi / (segs - 1.0);           // 0 head .. 1 tail
+    float t = float(i) / 6.0;           // 0 head .. 1 tail
     float wave = sin((t * 8.0 - f) / 8.0 * 2.0 * PI);
-    float x = L * 0.5 - t * L + wave * 1.4 * (1.0 - squirm);
-    float y = sin(t * PI * 1.5 + curl * 2.0) * curl * L * 0.18;
-    float rs = L * (0.13 - 0.05 * t * t) * (1.0 + 0.12 * wave) * (1.0 + heat * 0.25);
-    vec2 d = q - vec2(x, y);
-    float sd = length(d * vec2(0.9, 1.0)) - rs;
-    vec3 body = mix(vec3(0.9, 0.86, 0.7), vec3(0.78, 0.72, 0.56), t);
-    // The gut shows through the translucent body as a dark streak.
-    body = mix(body, vec3(0.35, 0.28, 0.2), rsmooth(rs * 0.35, 0.0, abs(d.y)) * 0.45 * step(0.5, fi));
-    body = mix(body, vec3(0.25, 0.1, 0.05), heat * 0.7);
-    vec3 c = lit(body, domeN(d, rs), 0.7, 30.0);
-    // Head capsule and mandibles.
-    if (i == 0) {
-      c = lit(vec3(0.22, 0.13, 0.08), domeN(d, rs), 0.9, 40.0);
-      float mand = min(sdSeg(q, vec2(x + rs * 0.8, y - rs * 0.35), vec2(x + rs * 1.4, y - rs * 0.1)), sdSeg(q, vec2(x + rs * 0.8, y + rs * 0.35), vec2(x + rs * 1.4, y + rs * 0.1))) - 0.8;
-      acc = over(acc, paint(vec3(0.1, 0.05, 0.03), fill(mand)));
-    }
-    acc = over(acc, paint(c, fill(sd)));
+    pts[i] = vec2(L * 0.5 - t * L + wave * 1.4 * (1.0 - squirm), sin(t * PI * 1.5 + curl * 2.0) * curl * L * 0.18);
+    rad[i] = L * (0.12 - 0.07 * t * t) * (1.0 + 0.1 * wave) * (1.0 + heat * 0.25);
   }
+  float best = 1e9, bt = 0.0, br = 1.0;
+  vec2 bn = vec2(0.0, 1.0);
+  for (int i = 0; i < 6; i++) {
+    vec2 a = pts[i], b = pts[i + 1];
+    vec2 pa = q - a, ba = b - a;
+    float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    float r = mix(rad[i], rad[i + 1], h);
+    float d = length(pa - ba * h) - r;
+    if (d < best) { best = d; bt = (float(i) + h) / 6.0; br = r; bn = (pa - ba * h) / max(r, 0.01); }
+  }
+  // Segment creases ring the body; the gut shows through the translucent flesh as a dark streak.
+  float crease = rsmooth(0.12, 0.0, abs(fract(bt * 9.0 + 0.5) - 0.5)) * step(0.12, bt);
+  vec3 body = mix(vec3(0.93, 0.89, 0.76), vec3(0.82, 0.76, 0.6), bt);
+  body = mix(body, vec3(0.5, 0.42, 0.3), rsmooth(0.3, 0.0, abs(bn.y)) * 0.2 * step(0.15, bt));
+  body *= 1.0 - crease * 0.25;
+  body = mix(body, vec3(0.25, 0.1, 0.05), heat * 0.7);
+  vec3 n = normalize(vec3(bn * 0.85, sqrt(max(0.05, 1.0 - dot(bn, bn) * 0.7))));
+  vec3 c = lit(body, n, 0.6, 28.0);
+  acc = paint(c, fill(best));
+  // Head capsule and mandibles.
+  vec2 hd = q - pts[0];
+  float head = length(hd) - rad[0] * 0.85;
+  acc = over(paint(lit(vec3(0.22, 0.13, 0.08), domeN(hd, rad[0] * 0.85), 0.9, 40.0), fill(head)), acc);
+  float x = pts[0].x, y = pts[0].y, rs = rad[0];
+  float mand = min(sdSeg(q, vec2(x + rs * 0.7, y - rs * 0.35), vec2(x + rs * 1.3, y - rs * 0.1)), sdSeg(q, vec2(x + rs * 0.7, y + rs * 0.35), vec2(x + rs * 1.3, y + rs * 0.1))) - 0.8;
+  acc = over(paint(vec3(0.1, 0.05, 0.03), fill(mand)), acc);
   // Burrowing: the body disappears head-first into a puckered hole in the flesh.
   float line = L * 0.62 - bur * L * 1.35;
   float hole = length((q - vec2(line, 0.0)) * vec2(1.3, 1.0)) - L * 0.16;
@@ -806,26 +824,27 @@ vec4 gutStitch(vec2 q) {
   float u = clamp(dx / R, -1.0, 1.0);
   vec3 n = normalize(vec3(u * 0.9, 0.0, sqrt(max(0.0, 1.0 - u * u)) + 0.15));
   float twist = 0.5 + 0.5 * sin(y * 2.4 + u * 2.2);
-  vec3 gut = vec3(0.86, 0.74, 0.5) * (0.72 + 0.35 * twist);
+  vec3 gut = vec3(0.86, 0.76, 0.54) * (0.84 + 0.18 * twist);
   vec3 c = lit(gut, n, 0.85, 40.0);
-  acc = over(paint(vec3(0.12, 0.06, 0.03), fill(d - 0.7)), acc);
+  acc = over(paint(vec3(0.2, 0.1, 0.06), fill(d - 0.6) * 0.7), acc);
   acc = over(paint(c, fill(d)), acc);
   // Puncture holes and a bead of blood welling where the needle went in.
   for (int i = 0; i < 2; i++) {
     float s = i == 0 ? -1.0 : 1.0;
     vec2 hq = q - vec2(0.0, s * S);
-    float bead = length(hq - vec2(1.2, 0.0)) - (i == 0 ? 2.2 : 1.6);
-    vec3 bc = lit(vec3(0.42, 0.02, 0.03), domeN(hq - vec2(1.2, 0.0), 2.2), 1.0, 70.0);
-    acc = over(paint(vec3(0.08, 0.0, 0.01), fill(bead - 0.6)), acc);
-    acc = over(paint(bc, fill(bead)), acc);
+    // A small flat bead of blood where the needle went in, not a pin-head.
+    float bead = length((hq - vec2(1.0, 0.0)) * vec2(1.0, 1.4)) - (i == 0 ? 1.5 : 1.1);
+    vec3 bc = lit(vec3(0.46, 0.04, 0.05), normalize(domeN(hq - vec2(1.0, 0.0), 1.5) * vec3(0.5, 0.5, 1.0)), 0.8, 70.0);
+    acc = over(paint(bc, fill(bead) * 0.85), acc);
   }
   // The knot: a lumpy double throw with two short tails.
-  vec2 kq = q - vec2(0.0, S + 0.5);
-  float knot = length(kq * vec2(1.0, 1.3)) - 2.6;
-  float tails = min(sdSeg(kq, vec2(0.0), vec2(4.5, 3.5)), sdSeg(kq, vec2(0.0), vec2(-4.0, 4.0))) - 0.7;
+  // The knot: a small lumpy throw off to one side, its two cut tails lying along the wound.
+  vec2 kq = q - vec2(2.2, S - 0.5);
+  float knot = length(kq * vec2(1.2, 1.0)) - 2.0;
+  float tails = min(sdSeg(kq, vec2(0.0), vec2(4.5, 1.2)), sdSeg(kq, vec2(0.0), vec2(3.8, -1.6))) - 0.55;
   float kd = min(knot, tails);
-  acc = over(paint(vec3(0.12, 0.06, 0.03), fill(kd - 0.7)), acc);
-  acc = over(paint(lit(gut * 0.95, domeN(kq, 2.6), 0.85, 40.0), fill(kd)), acc);
+  acc = over(paint(vec3(0.2, 0.1, 0.06), fill(kd - 0.6) * 0.7), acc);
+  acc = over(paint(lit(gut * 0.95, domeN(kq, 2.0), 0.85, 40.0), fill(kd)), acc);
   float sh = rsmooth(2.5, 0.0, abs(dx - 1.6)) * step(abs(y), S) * 0.3;
   return over(acc, vec4(0.0, 0.0, 0.0, sh));
 }
@@ -857,23 +876,31 @@ vec4 salvePaste(vec2 q) {
 
 vec4 spurt(vec2 q) {
   float L = u_a.x;
-  // Arterial spurt flipbook (6 frames): a jet leaves the vessel, breaks into droplets and falls.
+  // Arterial spurt flipbook (6 frames): a tapered jet leaves the vessel on a falling arc, its tip
+  // breaking into a stream of droplets that thin out along the path, with a fine mist about it.
   float f = floor(clamp(u_a.y, 0.0, 1.0) * 5.99) / 5.0;
-  float reach = L * (0.3 + 0.7 * f);
-  float t = clamp(q.x / reach, 0.0, 1.0);
-  float arc = -sin(t * PI) * L * 0.18 * (0.5 + f);
-  float w = mix(3.5, 1.5, t) * (1.0 - f * 0.5);
-  float jet = fill(abs(q.y - arc) - w) * step(0.0, q.x) * step(q.x, reach * (1.0 - f * 0.5));
-  vec4 acc = paint(lit(vec3(0.62, 0.02, 0.04), normalize(vec3(0.0, (q.y - arc) / max(w, 0.1) * 0.7, 0.7)), 1.0, 50.0), jet);
-  for (int i = 0; i < 6; i++) {
+  float reach = L * (0.35 + 0.65 * f);
+  float solid = reach * (0.55 - 0.35 * f);
+  // Path: y(x) is a shallow parabola (lifted off the flesh, falling back).
+  float drop0 = L * 0.22;
+  float yAt = -drop0 * (q.x / L) * (2.0 - q.x / L) * 0.8 + drop0 * (q.x / L) * (q.x / L) * 0.9;
+  float t = clamp(q.x / max(solid, 1.0), 0.0, 1.0);
+  float w = mix(3.2, 1.2, t);
+  float jet = fill(abs(q.y - yAt) - w) * step(0.0, q.x) * step(q.x, solid);
+  vec3 jn = normalize(vec3(0.0, (q.y - yAt) / max(w, 0.1) * 0.7, 0.7));
+  vec4 acc = paint(lit(vec3(0.6, 0.03, 0.05), jn, 1.0, 60.0), jet);
+  for (int i = 0; i < 12; i++) {
     float fi = float(i);
-    float dx = reach * (0.45 + fi * 0.12) + hash(vec2(fi, u_seed)) * 8.0;
-    float dy = -sin(clamp(dx / reach, 0.0, 1.0) * PI) * L * 0.18 * (0.5 + f) + (hash(vec2(fi + 3.0, u_seed)) - 0.5) * 10.0 * f;
-    float dr = mix(2.8, 1.2, fi / 6.0) * step(0.25, f);
-    float drop = length(q - vec2(dx, dy)) - dr;
-    acc = over(acc, paint(lit(vec3(0.55, 0.02, 0.04), domeN(q - vec2(dx, dy), dr), 1.0, 50.0), fill(drop)));
+    float u = solid + (reach - solid) * (fi + hash(vec2(fi, u_seed))) / 12.0;
+    float dy = -drop0 * (u / L) * (2.0 - u / L) * 0.8 + drop0 * (u / L) * (u / L) * 0.9;
+    vec2 c = vec2(u, dy + (hash(vec2(fi + 3.0, u_seed)) - 0.5) * 7.0 * (0.3 + f));
+    float dr = mix(2.4, 0.9, fi / 12.0) * (0.7 + 0.5 * hash(vec2(fi, u_seed + 9.0)));
+    float dd = length((q - c) * vec2(0.75, 1.0)) - dr;
+    acc = over(acc, paint(lit(vec3(0.55, 0.02, 0.04), domeN(q - c, dr), 1.0, 60.0), fill(dd) * step(0.001, reach - solid)));
   }
-  return acc;
+  // Mist: a faint red haze along the broken stream.
+  float mist = rsmooth(8.0, 0.0, abs(q.y - yAt)) * smoothstep(solid * 0.7, solid, q.x) * rsmooth(reach * 1.05, reach * 0.7, q.x) * 0.18;
+  return over(acc, paint(vec3(0.5, 0.05, 0.06), mist));
 }
 
 vec4 silk(vec2 q) {
