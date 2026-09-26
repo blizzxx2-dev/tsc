@@ -106,7 +106,12 @@ Field conditions: `RainDrip` (op4-1) drips a small blood pool somewhere on the f
 - Three hidden fang fragments; `StilledHeart` beats every 6 s with a 0.9 s beat window. A 0.8 s
   tincture hold that completes inside a beat restarts it (COOL); outside a beat it is BAD. Two
   restarts break the trance.
-- Deviations: no slow-pulse vitals mode or forensic branch B (needs the forensic discipline).
+- **Slow-pulse vitals** (CON-0155, `slowPulse: 6`): the vitals only move on a beat — the harm between beats
+  lands at once, so the monitor steps down instead of sliding. The stilled heart beats with the patient's own
+  pulse, and restarting it returns a normal heart.
+- **Branch** (CON-0154, NAR-0136): s4-5 asks for the verdict. `deadManVerdict = 'entranced'` runs this op;
+  `'dead'` closes it — von Salm is burned, and breathes on the pyre.
+- Deviation: branch B as a forensic examination needs the forensic discipline (CON-0243).
 
 ### op4-6 "The Thirsted Neck" (Margit, courtesan)
 - Tooth fragments, anaemia (base drain 0.25, blood-restoring draught), old bites.
