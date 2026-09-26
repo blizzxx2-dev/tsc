@@ -1,7 +1,4 @@
 import { dist, pointSegment, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
-import { surfDisc } from '../entities';
 import { Entity } from '../entity';
 import { analyseLoop, loopRating } from '../gesture';
 import { onBody, strokeCrosses, type Operation } from '../operation';
@@ -39,7 +36,7 @@ interface Vessel {
 export class Growth extends Entity {
   excised = false;
   vessels: Vessel[] = [];
-  private path: Vec[] = [];
+  path: Vec[] = [];
   private pressT = 0;
   private grabbed = false;
   private offset: Vec = { x: 0, y: 0 };
@@ -146,31 +143,6 @@ export class Growth extends Entity {
       for (const v of this.vessels) v.tied = true;
     }
   }
-
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, this.r * 1.6, 0, 0.2, 0, 0.6);
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    const pulse = 1 + Math.sin(op.elapsed * 3 + this.id) * 0.05;
-    const r = this.r * pulse;
-    for (const v of this.vessels) g.line(v.a, v.b, 4, hex(v.tied ? '#6a4a40' : '#8a1020'));
-    for (const v of this.vessels) if (v.tied) g.circle((v.a.x + v.b.x) / 2, (v.a.y + v.b.y) / 2, 3, hex('#efe6c4'));
-    g.circleGrad(this.pos.x, this.pos.y, r, hex('#b06868'), hex('#6a2a30'));
-    if (this.variant === 'tooth') g.tri(this.pos.x - 5, this.pos.y + 4, this.pos.x + 5, this.pos.y + 4, this.pos.x, this.pos.y - 10, hex('#efe8d8'));
-    if (this.variant === 'finger') g.line(this.pos, { x: this.pos.x + r * 0.6, y: this.pos.y - r * 0.5 }, 7, hex('#d8a898'));
-    if (this.variant === 'eye') {
-      // The eye-bud follows the surgeon's hand.
-      const dx = op.cursor.x - this.pos.x;
-      const dy = op.cursor.y - this.pos.y;
-      const l = Math.hypot(dx, dy) || 1;
-      g.circle(this.pos.x, this.pos.y, r * 0.45, hex('#f0ece0'));
-      g.circle(this.pos.x + (dx / l) * r * 0.2, this.pos.y + (dy / l) * r * 0.2, r * 0.18, hex('#2a1a10'));
-    }
-    if (this.excised) g.arc(this.pos.x, this.pos.y, r + 6, 2, hex('#ffebbe', 0.6));
-    else if (op.guides) g.arc(this.pos.x, this.pos.y, r + 14, 1.5, hex('#ffebbe', 0.25));
-    if (this.path.length > 1) g.polyline(this.path, 2, hex('#ff9090', 0.6));
-  }
 }
 
 /**
@@ -179,7 +151,7 @@ export class Growth extends Entity {
  */
 export class MutationBud extends Entity {
   looped = false;
-  private path: Vec[] = [];
+  path: Vec[] = [];
   private brandT = 0;
   noun = 'the mutation bud';
 
@@ -239,13 +211,5 @@ export class MutationBud extends Entity {
       op.cues.push('burn');
       op.rate('good', this.pos, 'Root seared');
     }
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    const r = GROWTH.budR * (1 + Math.sin(op.elapsed * 5 + this.id) * 0.08);
-    g.circleGrad(this.pos.x, this.pos.y, r, hex(this.rooted ? '#a06020' : '#d0a040'), hex('#5a3010'));
-    if (!this.rooted) g.arc(this.pos.x, this.pos.y, r + 6, 2, hex('#ff8040', 0.6), 1 - this.age / GROWTH.budRoot);
-    if (this.rooted) for (let i = 0; i < 4; i++) g.line(this.pos, { x: this.pos.x + Math.cos(i * 1.6) * r * 2, y: this.pos.y + Math.sin(i * 1.6) * r * 2 }, 2, hex('#5a3010', 0.7));
-    if (this.path.length > 1) g.polyline(this.path, 2, hex('#ff9090', 0.6));
   }
 }

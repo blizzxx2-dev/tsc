@@ -13,6 +13,8 @@ import type { Operation, OperationDef } from '../../src/surgery/operation';
 import type { Gfx } from '../../src/render/gfx';
 import { playWithBot } from '../bot';
 import { recorder } from '../helpers/drawTrace';
+import '../../src/render/surgery';
+import { drawEntity, drawEntityFluid, drawEntitySurface } from '../../src/render/surgery/registry';
 import { at, DT, start } from '../harness';
 import { X_OPS, xOpDef, loomOp } from '../../src/content/challenge';
 import { LATER_X_BASES } from '../../src/content/challengeLater';
@@ -37,11 +39,11 @@ import { TunnelScar } from '../../src/surgery/bosses/none';
 
 const GOLDEN = 'tests/golden/draw-trace.json';
 
-/** The three layers an entity draws into (one place to change when the drawing moves). */
+/** The three layers an entity draws into, through the drawer registry (src/render/surgery). */
 function drawLayers(g: Gfx, e: Entity, op: Operation): void {
-  e.drawSurface(g, op);
-  e.drawFluid(g, op);
-  e.draw(g, op);
+  drawEntitySurface(g, e, op);
+  drawEntityFluid(g, e, op);
+  drawEntity(g, e, op);
 }
 
 const group = (x: Entity): Entity[] => (x as Entity & { all?: Entity[] }).all ?? [x];

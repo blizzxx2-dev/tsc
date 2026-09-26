@@ -1,7 +1,5 @@
 import { dist, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
-import { Embedded, surfDisc, type EmbeddedKind } from '../entities';
+import { Embedded, type EmbeddedKind } from '../entities';
 import { Entity } from '../entity';
 import type { Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
@@ -122,23 +120,6 @@ export class RegenWound extends Entity {
       op.rate('cool', this.pos, 'Rim seared');
       op.sayOnce('regen-sealed', 'That’ll hold it open. Now the shard.');
     }
-  }
-
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, REGEN.rimR * 1.4, this.open ? 0.8 : 0, 0.3, 0, this.open ? 0.1 : 0.9);
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    if (!this.open) {
-      g.circleGrad(this.pos.x, this.pos.y, REGEN.rimR, hex('#6a8050'), hex('#3a4a28'));
-      return;
-    }
-    for (let i = 0; i < REGEN.bins; i++) {
-      const a0 = (i / REGEN.bins) * Math.PI * 2;
-      const p = { x: this.pos.x + Math.cos(a0) * REGEN.rimR, y: this.pos.y + Math.sin(a0) * REGEN.rimR };
-      g.circle(p.x, p.y, 4, hex(this.rim[i] ? '#2a1a14' : '#90c070', this.rim[i] ? 1 : 0.7));
-    }
-    if (!this.sealed) g.arc(this.pos.x, this.pos.y, REGEN.rimR + 10, 3, hex('#90c070'), 1 - this.closeT / this.closeTime(op));
   }
 }
 

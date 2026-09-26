@@ -1,7 +1,4 @@
 import { dist, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
-import { surfDisc } from '../entities';
 import { Entity } from '../entity';
 import { SimpleBurn, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
@@ -96,20 +93,6 @@ export class FrostPatch extends Entity {
       this.kill();
     }
   }
-
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, this.radius * 1.4, 0, 0.05, 0.25 * (1 - this.thaw), 0.1);
-  }
-
-  draw(g: Gfx): void {
-    const a = 1 - this.thaw;
-    g.circleGrad(this.pos.x, this.pos.y, this.radius, hex('#d8ecff', 0.55 * a), hex('#90b8e0', 0.2 * a));
-    for (let i = 0; i < 6; i++) {
-      const ang = (i / 6) * Math.PI * 2;
-      g.line(this.pos, { x: this.pos.x + Math.cos(ang) * this.radius * 0.8, y: this.pos.y + Math.sin(ang) * this.radius * 0.8 }, 1.5, hex('#f0f8ff', 0.6 * a));
-    }
-    g.arc(this.pos.x, this.pos.y, this.radius + 5, 3, hex('#ff9040', 0.8), this.thaw);
-  }
 }
 
 /**
@@ -148,13 +131,6 @@ export class IceCrystal extends Entity {
       this.kill();
       op.cues.push('squelch');
       op.rate('good', this.pos, 'Crystals drawn');
-    }
-  }
-
-  draw(g: Gfx): void {
-    for (let i = 0; i < 3; i++) {
-      const x = this.pos.x + (i - 1) * 7;
-      g.tri(x, this.pos.y - 7, x - 4, this.pos.y + 4, x + 4, this.pos.y + 4, hex('#e8f6ff', 0.9));
     }
   }
 }

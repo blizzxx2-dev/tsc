@@ -6,8 +6,6 @@
 import { pointSegment, segmentsIntersect, type Vec } from '../../core/math';
 
 const TAU = Math.PI * 2;
-import { silkArt } from '../../art/ailmentArt';
-import type { Gfx } from '../../render/gfx';
 import { Entity } from '../entity';
 import type { Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
@@ -18,9 +16,6 @@ export interface Strand {
   /** World time it was cut (−1 while whole). */
   cutAt: number;
 }
-
-/** Seconds a cut strand takes to spring apart and fade. */
-export const SILK_PART_S = 0.6;
 
 export class WebSilk extends Entity {
   readonly strands: Strand[] = [];
@@ -68,12 +63,5 @@ export class WebSilk extends Entity {
       this.kill();
       op.rate('cool', this.pos, 'Web cut away');
     }
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    this.strands.forEach((s, i) => {
-      const cut = s.cutAt < 0 ? 0 : Math.min(1, (op.elapsed - s.cutAt) / SILK_PART_S);
-      if (cut < 1) silkArt(g, s.a, s.b, cut, this.id * 7 + i);
-    });
   }
 }

@@ -1,9 +1,6 @@
-import { spurtArt } from '../../art/ailmentArt';
-import { presentation } from '../../render/presentation';
+
 import { dist, pointSegment, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
-import { Embedded, feedPool, surfDisc } from '../entities';
+import { Embedded, feedPool } from '../entities';
 import { Entity } from '../entity';
 import { onBody, strokeCrosses, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
@@ -49,7 +46,7 @@ export const ORGAN = {
   arteryPoolGrow: 7,
 };
 
-const TAU = Math.PI * 2;
+export const TAU = Math.PI * 2;
 
 /** Is the heart between beats right now (the rhythm assist doubles the window)? */
 export function betweenBeats(op: Operation): boolean {
@@ -85,9 +82,6 @@ export class Arrhythmia extends Entity {
   override blocksTool(op: Operation, p: Vec, tool: ToolId): string | null {
     if (tool !== 'lancet' || dist(p, this.heart) > ORGAN.heartR || betweenBeats(op)) return null;
     return 'Between beats!';
-  }
-  draw(g: Gfx, op: Operation): void {
-    g.arc(this.heart.x, this.heart.y, ORGAN.heartR, 2, hex(betweenBeats(op) ? '#9fd3a8' : '#ff5040', 0.35));
   }
 }
 
@@ -138,11 +132,6 @@ export class CollapsedLung extends Entity {
       }
     } else if (tool === 'thread' && !this.drawn && pointSegment(ptr.pos, this.a, this.b).d < 20) op.sayOnce('lung-air', 'Draw the air off first, or the seal won’t hold.');
   }
-
-  draw(g: Gfx): void {
-    g.circleGrad(this.pos.x, this.pos.y, 34, hex(this.drawn ? '#c07070' : '#e0c0c0', 0.6), hex('#a05050', 0));
-    g.line(this.a, this.b, 2, hex('#6a1010'));
-  }
 }
 
 /**
@@ -155,7 +144,7 @@ export class Trepanation extends Entity {
   loose = false;
   private lastAng: number | null = null;
   private turnT = 0;
-  private acc = 0;
+  acc = 0;
   private grabbed = false;
   private nicked = -1;
   noun = 'the skull';
@@ -227,12 +216,6 @@ export class Trepanation extends Entity {
       op.rate('good', ptr.pos, 'Disc lifted');
     }
   }
-
-  draw(g: Gfx, op: Operation): void {
-    g.circle(this.pos.x, this.pos.y, ORGAN.drillOuter - 10, hex(this.loose ? '#d8d0c0' : '#c8bca8'));
-    g.arc(this.pos.x, this.pos.y, ORGAN.drillOuter - 10, 3, hex('#6a4a30'), (this.turns + this.acc / TAU) / ORGAN.drillTurns);
-    if (op.guides && !this.loose) g.arc(this.pos.x, this.pos.y, (ORGAN.drillInner + ORGAN.drillOuter) / 2, 1, hex('#ffebbe', 0.4));
-  }
 }
 
 /** Is the Choir-throat humming a verse right now (vs a silent gap)? */
@@ -285,12 +268,6 @@ export class LarynxFold extends Entity {
       this.kill();
       op.rate('cool', this.pos, 'Fold cut');
     }
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    const h = humming(op);
-    g.line(this.a, this.b, 8, hex(h ? '#c07080' : '#a05060'));
-    if (h) for (let i = 0; i < 3; i++) g.arc(this.pos.x, this.pos.y, 16 + i * 8 + ((op.elapsed * 30) % 8), 1, hex('#e0c0ff', 0.4));
   }
 }
 
@@ -368,17 +345,6 @@ export class StomachLock extends Entity {
     op.spawn(new Embedded({ ...this.pos }, 'shard', -Math.PI / 2, false));
     op.say('It’s open — draw it out!');
   }
-
-  draw(g: Gfx): void {
-    g.rect(this.pos.x - 64, this.pos.y - 22, 128, 44, hex('#5a4a30'));
-    for (const t of this.tumblers) {
-      g.circle(t.pos.x, t.pos.y, 14, hex(t.locked ? '#c8a040' : '#8a7a60'));
-      const a = (t.angle * Math.PI) / 180;
-      g.line(t.pos, { x: t.pos.x + Math.cos(a) * 12, y: t.pos.y + Math.sin(a) * 12 }, 2, hex('#1a1008'));
-      const m = (t.target * Math.PI) / 180;
-      g.circle(t.pos.x + Math.cos(m) * 17, t.pos.y + Math.sin(m) * 17, 2, hex('#ffebbe'));
-    }
-  }
 }
 
 /**
@@ -444,10 +410,6 @@ export class WaxClot extends Entity {
       op.rate('good', this.pos, 'Clot drawn');
     }
   }
-
-  draw(g: Gfx): void {
-    g.circleGrad(this.pos.x, this.pos.y, 18, hex(this.soft ? '#e0b080' : '#f0e0c0'), hex('#8a6a40'));
-  }
 }
 
 /**
@@ -509,20 +471,6 @@ export class Artery extends Entity {
       this.required = false;
       op.cues.push('pluck');
       op.rate('good', this.pos, 'Clamped');
-    }
-  }
-
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, 20, 0.6, 0.2);
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    g.circle(this.pos.x, this.pos.y, 9, hex(this.clamped ? '#6a3030' : '#d02030'));
-    if (this.clamped) g.rect(this.pos.x - 12, this.pos.y - 2, 24, 4, hex('#9aa0a6'));
-    else {
-      g.arc(this.pos.x, this.pos.y, 14, 2, hex('#ff5050', 0.5 + 0.4 * Math.sin(op.elapsed * 8)));
-      // The severed vessel spurts on every heartbeat (ART-0192): 6 frames, one of three directions.
-      if (presentation.gore < 2) spurtArt(g, this.pos, -Math.PI / 2 + ((this.id % 3) - 1) * 0.75, 70, op.beatPhase, this.id);
     }
   }
 }

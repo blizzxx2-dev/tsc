@@ -1,7 +1,5 @@
 import { dist, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
-import { pointAlong, polyLength, surfDisc } from '../entities';
+import { pointAlong, polyLength } from '../entities';
 import { Entity } from '../entity';
 import { analyseLoop, loopRating } from '../gesture';
 import type { Operation } from '../operation';
@@ -112,18 +110,6 @@ export class InfectionLine extends Entity {
       }
     } else if (tool === 'tincture') op.sayOnce('node-leech', 'Draw the node off with the leech-pipe first, then the tincture.');
   }
-
-  draw(g: Gfx): void {
-    g.polyline(this.path, 2, hex('#3a1a2a', 0.3));
-    const pts: Vec[] = [this.path[0]];
-    for (let s = 10; s < this.front; s += 10) pts.push(pointAlong(this.path, s));
-    pts.push(pointAlong(this.path, this.front));
-    g.polyline(pts, 5, hex('#200818', 0.9));
-    for (const n of this.nodes) {
-      const p = this.nodePos(n);
-      g.circle(p.x, p.y, 7, hex(n.treated ? '#9fd3a8' : n.leeched >= INFECTION.nodeLeech ? '#f0c060' : '#6a2a4a'));
-    }
-  }
 }
 
 /**
@@ -131,7 +117,7 @@ export class InfectionLine extends Entity {
  * across it scatters spores that seed new crust nearby.
  */
 export class SporeCrust extends Entity {
-  private path: Vec[] = [];
+  path: Vec[] = [];
   noun = 'the spore crust';
 
   constructor(pos: Vec) {
@@ -179,16 +165,6 @@ export class SporeCrust extends Entity {
       op.rate(loopRating(l), this.pos, 'Crust excised');
     }
   }
-
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, INFECTION.crustR * 1.5, 0, 0.2, 0.2, 0);
-  }
-
-  draw(g: Gfx): void {
-    g.circleGrad(this.pos.x, this.pos.y, INFECTION.crustR, hex('#8a8a50'), hex('#4a4a20'));
-    for (let i = 0; i < 6; i++) g.circle(this.pos.x + Math.cos(i * 1.1) * 10, this.pos.y + Math.sin(i * 1.7) * 9, 2, hex('#e0e0a0'));
-    if (this.path.length > 1) g.polyline(this.path, 2, hex('#ff9090', 0.6));
-  }
 }
 
 /**
@@ -227,9 +203,5 @@ export class DungZone extends Entity {
       this.kill();
       op.rate('good', this.pos, 'Irrigated');
     }
-  }
-
-  draw(g: Gfx): void {
-    g.circleGrad(this.pos.x, this.pos.y, INFECTION.dungR, hex('#4a3a18', 0.7), hex('#4a3a18', 0));
   }
 }

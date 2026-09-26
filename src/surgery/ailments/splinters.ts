@@ -1,6 +1,4 @@
 import { dist, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
 import { angleDiff, Laceration } from '../entities';
 import { Entity } from '../entity';
 import { onBody, type Operation } from '../operation';
@@ -103,18 +101,6 @@ export class GlassCluster extends Entity {
     op.rate(batch.length === SPLINTER.glassPerGrab ? 'cool' : 'good', ptr.pos, 'Glass cleared');
     if (!this.left.length) this.kill();
   }
-
-  draw(g: Gfx, op: Operation): void {
-    for (const s of this.slivers) {
-      if (s.taken) continue;
-      if (s.seen) {
-        g.tri(s.pos.x, s.pos.y - 4, s.pos.x - 3, s.pos.y + 3, s.pos.x + 3, s.pos.y + 2, hex('#e0f4ff', 0.9));
-        g.glow(s.pos.x, s.pos.y, 8, hex('#ffffff', 0.3 + 0.3 * Math.sin(op.elapsed * 9 + s.pos.x)));
-      } else if (op.tool === 'lens' && dist(s.pos, op.cursor) < op.tuning.lens.radius) {
-        g.circle(s.pos.x, s.pos.y, 2, hex('#b9d7ff', 0.5 + 0.5 * Math.sin(op.elapsed * 12 + s.pos.y)));
-      }
-    }
-  }
 }
 
 /**
@@ -182,16 +168,5 @@ export class WoodSplinter extends Entity {
       op.rate('cool', ptr.pos, 'Splinter');
       if (this.len > 30) op.spawn(new Laceration(this.origin, this.grain + Math.PI / 2, 22, 0.4));
     } else this.pos = { ...this.origin };
-  }
-
-  draw(g: Gfx): void {
-    const tail = { x: this.pos.x + Math.cos(this.grain) * this.len, y: this.pos.y + Math.sin(this.grain) * this.len };
-    g.line(this.pos, tail, 5, hex('#8a6a40'));
-    // Grain lines.
-    for (let i = 1; i < 4; i++) {
-      const t = i / 4;
-      const p = { x: this.pos.x + (tail.x - this.pos.x) * t, y: this.pos.y + (tail.y - this.pos.y) * t };
-      g.line(p, { x: p.x + Math.cos(this.grain) * 5, y: p.y + Math.sin(this.grain) * 5 }, 1, hex('#4a3420'));
-    }
   }
 }

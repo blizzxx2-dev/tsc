@@ -1,9 +1,7 @@
 import { dist, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
-import { pointAlong, polyLength, surfDisc, Venom } from '../entities';
+import { pointAlong, polyLength, Venom } from '../entities';
 import { Entity } from '../entity';
-import { TINCTURE_HEX, type Operation } from '../operation';
+import { type Operation } from '../operation';
 import type { TinctureColor } from '../progress';
 import type { Pointer, ToolId } from '../types';
 
@@ -83,15 +81,6 @@ export class AlchemicalAcid extends Entity {
     if (this.neutralised || c !== 'amber' || dist(p, this.pos) > this.r) return;
     this.neutralised = true;
     op.rate('good', this.pos, 'Neutralised');
-  }
-
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, this.r * 1.4, 0.3, 0.4, 0.2, 0);
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    g.circleGrad(this.pos.x, this.pos.y, this.r, hex(this.neutralised ? '#a0a070' : '#c0f040', 0.8), hex('#406010', 0.3));
-    if (!this.neutralised) for (let i = 0; i < 4; i++) g.circle(this.pos.x + Math.sin(op.elapsed * 3 + i * 2) * this.r * 0.5, this.pos.y + Math.cos(op.elapsed * 2 + i) * this.r * 0.4, 3, hex('#f0ffb0', 0.7));
   }
 }
 
@@ -178,16 +167,6 @@ export class CompoundPoison extends Entity {
     }
     return true;
   }
-
-  draw(g: Gfx): void {
-    g.polyline(this.vein, 2, hex('#140a1e', 0.4));
-    for (const m of this.motes) {
-      const p = this.motePos(m);
-      g.glow(p.x, p.y, 14, hex(TINCTURE_HEX[m.colour], 0.5));
-      g.circle(p.x, p.y, 5, hex(TINCTURE_HEX[m.colour]));
-    }
-    g.circle(this.pos.x, this.pos.y, 8, hex('#2a1030'));
-  }
 }
 
 /**
@@ -232,10 +211,5 @@ export class GasPocket extends Entity {
       op.sayOnce('gas', 'Gas! Vent those with the leech-pipe before you cut.', 'danger');
     }
     return true;
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    const s = 1 + Math.sin(op.elapsed * 2 + this.id) * 0.06;
-    g.circleGrad(this.pos.x, this.pos.y, ALCHEMY.gasR * s * (this.vented ? 0.6 : 1), hex('#c8d890', 0.6), hex('#6a7a40', 0.2));
   }
 }

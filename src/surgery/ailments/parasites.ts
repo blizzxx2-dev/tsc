@@ -1,7 +1,5 @@
-import { wormArt } from '../../art/wormArt';
+
 import { dist, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
 import { Entity } from '../entity';
 import { isOpenWound, onBody, type Operation } from '../operation';
 import type { TinctureColor } from '../progress';
@@ -27,10 +25,10 @@ export const PARASITE = {
  * and grows a new head in 6 s.
  */
 export class GutWorm extends Entity {
-  private grabbed = false;
+  grabbed = false;
   /** Length drawn out so far. */
   pulled = 0;
-  private regrowT = -1;
+  regrowT = -1;
   readonly origin: Vec;
   noun = 'the worm';
 
@@ -93,12 +91,6 @@ export class GutWorm extends Entity {
     } else this.pos = { ...this.origin };
   }
 
-  draw(g: Gfx, op: Operation): void {
-    // The painted parasite worm (ART-0218): banded body, travelling ripple, hooked head; a torn one is a stump.
-    wormArt(g, { origin: this.origin, head: this.pos, t: op.elapsed, torn: this.headless, held: this.grabbed, seed: this.id, width: 6.5 });
-    if (this.headless) g.arc(this.origin.x, this.origin.y, 12, 2, hex('#c8c050'), this.regrowT / PARASITE.wormRegrow);
-  }
-
 }
 
 /**
@@ -152,11 +144,6 @@ export class Tick extends Entity {
     op.rate(this.burrowed ? 'good' : 'cool', this.pos, 'Tick plucked');
     return true;
   }
-
-  draw(g: Gfx): void {
-    g.circle(this.pos.x, this.pos.y, 5, hex('#3a2014'));
-    for (let i = 0; i < 4; i++) g.line(this.pos, { x: this.pos.x + (i < 2 ? -7 : 7), y: this.pos.y + ((i % 2) * 2 - 1) * 5 }, 1, hex('#1a0e08'));
-  }
 }
 
 /** Ticks emerge from an open wound over time. */
@@ -188,8 +175,6 @@ export class TickNest extends Entity {
     }
     if (this.count === 0) this.kill();
   }
-
-  draw(): void {}
 }
 
 /**
@@ -222,6 +207,4 @@ export class Larvae extends Entity {
     op.endBonusMult *= PARASITE.finishPenalty;
     op.say('Larvae left in him… he’ll be back with a fever. The green tincture clears them.');
   }
-
-  draw(): void {}
 }

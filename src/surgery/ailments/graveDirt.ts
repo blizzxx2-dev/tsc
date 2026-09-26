@@ -1,6 +1,4 @@
 import { dist, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
 import { Rot } from '../entities';
 import { Entity } from '../entity';
 import type { Operation } from '../operation';
@@ -20,7 +18,7 @@ export class GraveDirt extends Entity {
   /** Seconds since the salve sealed it in (−1: not sealed). */
   sealed = -1;
   noun = 'the grave-dirt';
-  private readonly clumps: { x: number; y: number; r: number }[] = [];
+  readonly clumps: { x: number; y: number; r: number }[] = [];
 
   constructor(pos: Vec, op: Operation) {
     super(pos);
@@ -68,15 +66,5 @@ export class GraveDirt extends Entity {
       this.kill();
       op.rate('good', this.pos, 'Dirt drawn');
     }
-  }
-
-  draw(g: Gfx): void {
-    const { x, y } = this.pos;
-    // Sealed under the salve: a dull bruise that darkens toward the fester.
-    if (this.sealed >= 0) return g.circle(x, y, GRAVE_DIRT.r * 0.8, hex('#4a3a2a', 0.3 + 0.4 * Math.min(1, this.sealed / GRAVE_DIRT.festerAfter)));
-    const left = 1 - Math.min(1, this.drawn / GRAVE_DIRT.leech);
-    g.circle(x, y, GRAVE_DIRT.r, hex('#2a2218', 0.25 * left));
-    for (const c of this.clumps) g.circle(x + c.x, y + c.y, c.r * (0.5 + 0.5 * left), hex('#3b3326', 0.85));
-    if (this.drawn > 0) g.arc(x, y, GRAVE_DIRT.r + 4, 2, hex('#b04040', 0.8), 1 - left);
   }
 }

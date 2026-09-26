@@ -1,8 +1,6 @@
-import { bloodOf } from '../species';
+
 import { dist, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
-import { Embedded, surfDisc } from '../entities';
+import { Embedded } from '../entities';
 import { Entity } from '../entity';
 import { FIELD, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
@@ -80,18 +78,6 @@ export class BiteChannel extends Entity {
   override onOperationEnd(op: Operation): void {
     op.setStoryFlag('thrallKept');
   }
-
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, 40, 0, 0.3, 0.1, 0.1);
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    g.line(this.punctures[0], this.punctures[1], 2, hex('#6a0a30', 0.5 + 0.3 * Math.sin(op.elapsed * 3)));
-    this.punctures.forEach((p, i) => {
-      g.circle(p.x, p.y, 5, hex('#1a0005'));
-      if (this.seared[i] > 0) g.arc(p.x, p.y, 10, 2, hex('#ff9040'), Math.min(1, this.seared[i] / BITE.sear));
-    });
-  }
 }
 
 /** Fang tips lodged under a bite (hidden: the lens finds them). */
@@ -139,10 +125,5 @@ export class DonorBowl extends Entity {
     this.volume -= amt;
     op.bloodVolume = Math.min(100, op.bloodVolume + amt);
     if (this.volume <= 0) op.rate('good', this.pos, 'Transfused');
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    g.circleGrad(this.pos.x, this.pos.y, 34, hex('#c0b090'), hex('#6a5a40'));
-    g.circle(this.pos.x, this.pos.y, 26 * (this.volume / BITE.bowlVolume), hex(bloodOf(op.def.race, '#8a0a10'), 0.9));
   }
 }

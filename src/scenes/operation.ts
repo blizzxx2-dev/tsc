@@ -1,4 +1,6 @@
 import { packPose } from '../art/portraitRig';
+import '../render/surgery';
+import { drawEntity, drawEntityFluid, drawEntitySurface } from '../render/surgery/registry';
 import { drawSeal } from '../ui/seals';
 import { FACES, type Face } from '../content/story';
 import { curseSource, hourOf } from '../art/curse';
@@ -799,7 +801,7 @@ export class OperationScene implements Scene {
       surfLine(g, sc, 12, 0, 0, 0, 0.2);
     }
     for (const st of op.stains) surfDisc(g, st, st.r, 0, st.a);
-    for (const e of ents) e.drawSurface(g, op);
+    for (const e of ents) drawEntitySurface(g, e, op);
     // Parasites under the skin raise travelling bulges (ENG-0265).
     for (const b of underSkinBulges(op.entities, op.elapsed)) surfDisc(g, b, b.r, 0, 0, 0, b.h);
     if (game.input.down && onBody(game.input.pos)) surfDisc(g, game.input.pos, 16, 0.28);
@@ -807,7 +809,7 @@ export class OperationScene implements Scene {
     g.endLayer();
     g.beginLayer('fluid');
     pushWarp(g, FIELD.cx, FIELD.cy, warp);
-    for (const e of ents) e.drawFluid(g, op);
+    for (const e of ents) drawEntityFluid(g, e, op);
     this.particles.drawFluid(g);
     g.restore();
     g.endLayer();
@@ -870,7 +872,7 @@ export class OperationScene implements Scene {
     // Claw rakes read as one blow (ART-0187): a shared torn band under each group of parallel claw cuts.
     const claws = ents.filter((e): e is Laceration => e instanceof Laceration && e.source === 'claw');
     for (const grp of rakeGroups(claws)) clawRakeArt(g, grp, 0, grp[0].id);
-    drawInterpolated(ents, settings.reduceMotion ? 1 : alpha, (e) => e.draw(g, op));
+    drawInterpolated(ents, settings.reduceMotion ? 1 : alpha, (e) => drawEntity(g, e, op));
     // High contrast: a 2 px ring around everything that takes an instrument.
     if (highContrast()) for (const e of ents) if (e.required) g.arc(e.pos.x, e.pos.y, 28, 2, hex('#ffffff', 0.85), 1);
     // Tongs in hand: outline the graspable the next press would seize (INP-0042).

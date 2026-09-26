@@ -1,8 +1,5 @@
 import { dist, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
 import { Coverage } from '../coverage';
-import { drawCoverage, surfDisc } from '../entities';
 import { Entity } from '../entity';
 import type { Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
@@ -166,38 +163,6 @@ export class Petrification extends Entity {
         p.healed = true;
         op.rate('good', p.center, 'Margin salved');
       }
-    }
-  }
-
-  override drawSurface(g: Gfx): void {
-    for (const p of this.plates) if (!p.healed) surfDisc(g, p.center, STONE.plateR * 1.5, 0, 0.1, 0.35, 0.2);
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    for (const p of this.plates) {
-      if (p.healed) continue;
-      if (!p.lifted) {
-        g.circleGrad(p.center.x, p.center.y, STONE.plateR, hex('#9a968c'), hex('#5a5850'));
-        for (let i = 1; i < p.nodes.length; i++) g.line(p.nodes[i - 1], p.nodes[i], 2, hex('#2a2824'));
-        p.nodes.forEach((n, i) => {
-          if (i < p.chipped) return;
-          const next = i === p.chipped;
-          g.circle(n.x, n.y, next ? 5 : 3, hex(next ? '#ffebbe' : '#d8d0c0', next ? 0.6 + 0.3 * Math.sin(op.elapsed * 6) : 0.5));
-          if (op.guides) g.text(String(i + 1), n.x, n.y - 8, { size: 11, color: hex('#ffebbe', 0.8), align: 'center', shadow: false });
-        });
-      } else if (p.cov) {
-        g.circleGrad(p.center.x, p.center.y, STONE.plateR, hex('#c04040', 0.5), hex('#c04040', 0));
-        g.arc(p.center.x, p.center.y, STONE.plateR + 4, 2, hex('#ffebbe'), 1 - p.marginT / STONE.marginTime);
-        drawCoverage(g, p.cov);
-      }
-    }
-    // The organ glyph and, under the lens, the true front.
-    g.circle(this.organ.x, this.organ.y, 9, hex('#c0182a', 0.7));
-    if (op.tool === 'lens' && dist(op.cursor, this.pos) < op.tuning.lens.radius * 2) {
-      const d = dist(this.pos, this.organ) || 1;
-      const t = 1 - (this.front + STONE.lensAhead) / d;
-      const f = { x: this.pos.x + (this.organ.x - this.pos.x) * t, y: this.pos.y + (this.organ.y - this.pos.y) * t };
-      g.arc(this.pos.x, this.pos.y, dist(this.pos, f), 2, hex('#b0b0a8', 0.6));
     }
   }
 }

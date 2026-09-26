@@ -1,6 +1,4 @@
 import { dist, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
 import { Coverage } from '../coverage';
 import { BloodPool } from '../entities';
 import { Entity } from '../entity';
@@ -37,8 +35,6 @@ export class RainDrips extends Entity {
     const p = { x: FIELD.cx + op.rng.range(-RAIN.spread, RAIN.spread) * FIELD.rx, y: FIELD.cy + op.rng.range(-RAIN.spread, RAIN.spread) * FIELD.ry };
     op.spawnPenalty(new BloodPool(p, RAIN.poolR));
   }
-
-  draw(): void {}
 }
 
 /**
@@ -72,9 +68,6 @@ export class MudSmear extends Entity {
       this.kill();
       op.rate('good', this.pos, 'Mud cleaned');
     }
-  }
-  draw(g: Gfx): void {
-    for (const c of this.cov.cells) if (!c.done) g.circle(this.pos.x + c.x, this.pos.y + c.y, 7, hex('#4a3a22', 0.75));
   }
 }
 

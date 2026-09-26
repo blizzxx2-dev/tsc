@@ -1,7 +1,5 @@
 import { dist, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
-import { BloodPool, Laceration, Rot, surfDisc } from '../entities';
+import { BloodPool, Laceration, Rot } from '../entities';
 import { Entity } from '../entity';
 import type { Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
@@ -106,19 +104,6 @@ export class Ulcer extends Entity {
       } else op.popup(`Ring ${this.healed} healed`, this.pos, '#bff0c8');
     }
   }
-
-  override drawSurface(g: Gfx): void {
-    surfDisc(g, this.pos, this.radius * 1.2, 0.6, 0.3, 0.1, 0.1);
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    for (let i = 0; i < ULCER.rings; i++) {
-      const r = this.radius - i * ULCER.ringW;
-      const done = i < this.healed;
-      g.circle(this.pos.x, this.pos.y, r, hex(done ? '#c89888' : i === 0 ? '#8a3a30' : i === 1 ? '#6a2020' : '#3a0a0a', done ? 0.5 : 0.9));
-    }
-    if (this.healed < ULCER.rings) g.arc(this.pos.x, this.pos.y, this.radius - this.healed * ULCER.ringW - ULCER.ringW / 2, 2, hex('#bff0c8', 0.4 + 0.3 * Math.sin(op.elapsed * 4)));
-  }
 }
 
 /**
@@ -157,10 +142,5 @@ export class Spill extends Entity {
       op.cues.push('squelch');
       op.rate('good', this.pos, 'Spill drained');
     }
-  }
-
-  draw(g: Gfx): void {
-    g.circleGrad(this.pos.x, this.pos.y, 26, hex('#304010', 0.8), hex('#304010', 0));
-    g.arc(this.pos.x, this.pos.y, 28, 2, hex('#d0c040', 0.8), 1 - this.age / ULCER.spillRot);
   }
 }

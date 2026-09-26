@@ -1,10 +1,6 @@
-import { bloodOf } from '../species';
-import { drawDrape } from '../../art/drape';
+
 import { dist, pointSegment, type Vec } from '../../core/math';
-import { hex } from '../../render/color';
-import type { Gfx } from '../../render/gfx';
 import { Coverage } from '../coverage';
-import { drawCoverage, surfLine } from '../entities';
 import { Entity } from '../entity';
 import { strokeCrosses, type Operation } from '../operation';
 import type { Pointer, ToolId } from '../types';
@@ -40,7 +36,7 @@ export class Gangrene extends Entity {
   front: number;
   debrided = false;
   private cut = 0;
-  private cov: Coverage | null = null;
+  cov: Coverage | null = null;
   readonly limbLen: number;
   noun = 'the gangrene';
 
@@ -57,7 +53,7 @@ export class Gangrene extends Entity {
     this.limbLen = dist(tip, root);
   }
 
-  private along(d: number): Vec {
+  along(d: number): Vec {
     const t = Math.min(1, d / this.limbLen);
     return { x: this.tip.x + (this.root.x - this.tip.x) * t, y: this.tip.y + (this.root.y - this.tip.y) * t };
   }
@@ -118,21 +114,6 @@ export class Gangrene extends Entity {
       op.rate('good', this.pos, 'Limb saved');
     }
   }
-
-  override drawSurface(g: Gfx): void {
-    surfLine(g, [this.tip, this.frontPos], GANGRENE.width, 0, 0.2, 0.6, 0);
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    if (!this.debrided) g.line(this.tip, this.frontPos, GANGRENE.width * 0.8, hex('#140c10', 0.8));
-    else if (this.cov) drawCoverage(g, this.cov);
-    // The demarcation line: the lens shows where hope ends.
-    if (op.tool === 'lens' && dist(op.cursor, this.along(this.line)) < op.tuning.lens.radius) {
-      const c = this.along(this.line);
-      const a = Math.atan2(this.root.y - this.tip.y, this.root.x - this.tip.x) + Math.PI / 2;
-      g.dashed([{ x: c.x - Math.cos(a) * 40, y: c.y - Math.sin(a) * 40 }, { x: c.x + Math.cos(a) * 40, y: c.y + Math.sin(a) * 40 }], 2, hex('#b9d7ff', 0.8), 6, 5, 0);
-    }
-  }
 }
 
 /**
@@ -149,7 +130,7 @@ export class Amputation extends Entity {
   private lastDir = 0;
   private lastTurn = -1;
   private strokeLen = 0;
-  private sealT = 0;
+  sealT = 0;
   private brandT = 0;
   noun = 'the limb';
 
@@ -260,18 +241,5 @@ export class Amputation extends Entity {
         op.rate('good', this.pos, 'Stump seared');
       }
     }
-  }
-
-  draw(g: Gfx, op: Operation): void {
-    // Tone guard (GAM-0126): the limb stays under the drapes; only the strip being sawn shows.
-    drawDrape(g, this.sawA, this.sawB, { window: 40, overhang: 40, material: op.def.drape });
-    if (!this.sawn) {
-      g.dashed([this.sawA, this.sawB], 3, hex('#ffebbe', 0.7), 8, 6, -op.elapsed * 10);
-      g.arc(this.pos.x, this.pos.y, 18, 3, hex('#ffebbe'), this.strokes / GANGRENE.strokes);
-      return;
-    }
-    g.line(this.sawA, this.sawB, 18, hex(bloodOf(op.def.race, '#7a1a1a')));
-    for (const v of this.vessels) g.line(v.a, v.b, 4, hex(v.tied ? '#efe6c4' : '#c02030'));
-    if (this.sealT <= GANGRENE.ligatureWindow) g.arc(this.pos.x, this.pos.y, 60, 2, hex('#efe6c4', 0.5), 1 - this.sealT / GANGRENE.ligatureWindow);
   }
 }
