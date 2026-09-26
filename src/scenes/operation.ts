@@ -1196,10 +1196,19 @@ export class OperationScene implements Scene {
     glass(g, S, { strength: plateK });
     caps(g, tr('hud.score'), S.x + S.w - 18, S.y + 22, 11, hex(INK.dim), 'right');
     // A long patient name is cut with an ellipsis before it reaches the SCORE label (never shrunk below 16 px).
+    // The name on the first line, their trade under it (the panel's lower-left is otherwise bare);
+    // either is cut with an ellipsis before it reaches the SCORE label or the score itself.
     const nameRoom = S.w - 36 - g.measure(tr('hud.score').toUpperCase(), 11, 'display', 0.2) - 14;
-    let patient = op.def.patient;
-    while (patient.length > 4 && g.measure(patient, 16, 'italic') > nameRoom) patient = patient.slice(0, -2).trimEnd() + '…';
-    g.text(patient, S.x + 18, S.y + 24, { size: 16, font: 'italic', color: hex(INK.dim), shadow: false });
+    const cut = (s: string, room: number, size: number): string => {
+      while (s.length > 4 && g.measure(s, size, 'italic') > room) s = s.slice(0, -2).trimEnd() + '…';
+      return s;
+    };
+    const comma = op.def.patient.indexOf(', ');
+    const who = comma > 0 ? op.def.patient.slice(0, comma) : op.def.patient;
+    const trade = comma > 0 ? op.def.patient.slice(comma + 2) : '';
+    g.text(cut(who, nameRoom, 16), S.x + 18, S.y + 24, { size: 16, font: 'italic', color: hex(INK.text, 0.82), shadow: false });
+    const scoreW = g.measure(formatNumber(Math.round(this.shownScore)), 30, 'display');
+    if (trade) g.text(cut(trade, S.w - 54 - scoreW, 16), S.x + 18, S.y + 52, { size: 16, font: 'italic', color: hex(INK.dim, 0.7), shadow: false });
     const rolling = Math.abs(op.score - this.shownScore) >= 1;
     numerals(g, formatNumber(Math.round(this.shownScore)), S.x + S.w - 18, S.y + 58, 30, rolling ? '#ffffff' : INK.goldHi, INK.gold, 'right');
     if (op.combo > 1) {

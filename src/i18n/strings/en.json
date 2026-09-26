@@ -70,6 +70,8 @@
   "ui.theatre.entry": "{chapter}-{index}",
   "ui.theatre.best": "{rank}   {score, number}",
   "hud.vitals": "VITALS",
+  "hud.dish": "INSTRUMENT DISH",
+  "hud.lead_dish": "LEAD DISH",
   "hud.chain": "chain",
   "hud.chain_combo": "chain ×{combo, number}",
   "hud.op_complete": "Operation Complete",

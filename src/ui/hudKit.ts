@@ -294,7 +294,10 @@ export function heartIcon(g: Gfx, x: number, y: number, r: number, state: 'good'
 /** A phase seal (UIX-0045): pressed gold once done, lit while current, an empty ring to come. */
 export function phaseSeal(g: Gfx, x: number, y: number, r: number, state: 'done' | 'current' | 'todo', time: number): void {
   if (state === 'todo') {
-    g.arc(x, y, r, 1.2, hex('#5a4a34', 0.9));
+    // An unpressed seal: a dark wax disc with a brass rim, legible against the field's shadow.
+    g.circle(x, y, r + 1.5, hex('#000000', 0.45));
+    g.circle(x, y, r, hex('#1e1812', 0.95));
+    g.arc(x, y, r, 1.4, hex('#8a7048', 0.95));
     return;
   }
   if (state === 'current') g.glow(x, y, r * 3, hex(INK.gold, 0.22 + 0.08 * Math.sin(time * 3)));

@@ -9,7 +9,8 @@ import type { NoticeKind } from './notify';
 const INK = '#e8dcc0';
 const PANEL = 'rgba(20,12,8,0.92)';
 const BORDER = '#8a6a3a';
-const FONT = '"IM Fell English", Georgia, serif';
+/** The game's own body face (loaded into document.fonts with the other assets), as the canvas text uses. */
+const FONT = '"EB Garamond", "Palatino Linotype", "Book Antiqua", Georgia, serif';
 
 let root: HTMLDivElement | null = null;
 
@@ -25,7 +26,8 @@ function layer(): HTMLDivElement | null {
 
 function panel(css: string): HTMLDivElement {
   const d = document.createElement('div');
-  d.style.cssText = `position:absolute;background:${PANEL};border:1px solid ${BORDER};padding:10px 16px;box-shadow:0 4px 18px rgba(0,0,0,.6);${css}`;
+  // The canvas's gilt panel in CSS: a dark glass ground, a brass rule and a fainter inner line.
+  d.style.cssText = `position:absolute;background:linear-gradient(${PANEL},rgba(12,8,5,0.94));border:1px solid ${BORDER};outline:1px solid rgba(138,106,58,.35);outline-offset:-5px;padding:12px 22px;box-shadow:0 6px 22px rgba(0,0,0,.65);font-style:italic;letter-spacing:.01em;${css}`;
   return d;
 }
 
@@ -42,7 +44,9 @@ let stack = 0;
 export function showNotice(message: string, kind: NoticeKind = 'info', ms = 6000): void {
   const l = layer();
   if (!l) return;
-  const d = panel(`left:50%;transform:translateX(-50%);bottom:${24 + stack * 56}px;max-width:70%;text-align:center;transition:opacity .6s;${kind === 'warning' ? 'border-color:#b8401c;' : ''}`);
+  // Top-centre under the HUD's timer plate: the bottom of the screen belongs to the dialogue, the
+  // callouts and the story controls, which a notice there would cover.
+  const d = panel(`left:50%;transform:translateX(-50%);top:calc(17% + ${stack * 64}px);max-width:min(640px,70%);text-align:center;transition:opacity .6s;${kind === 'warning' ? 'border-color:#b8401c;' : ''}`);
   d.setAttribute('role', 'status');
   d.textContent = message;
   l.appendChild(d);

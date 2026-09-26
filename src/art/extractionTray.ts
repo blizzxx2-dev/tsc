@@ -10,6 +10,8 @@ import type { Gfx } from '../render/gfx';
 import type { Entity } from '../surgery/entity';
 import { Embedded, Wadding, type EmbeddedKind } from '../surgery/entities';
 import { LEAD_DISH, onBody, TRAY_DISH } from '../surgery/operation';
+import { t } from '../i18n';
+import { caps } from '../ui/hudKit';
 import { dishArt, fangArt, glassArt, hexstoneArt, missileArt, shotArt } from './ailmentArt';
 
 type Item = EmbeddedKind | 'wadding';
@@ -52,14 +54,22 @@ export class ExtractionTray {
   /** The dishes are shown only in cases that use them. */
   draw(g: Gfx, now: number, show: { tray: boolean; lead: boolean }): void {
     if (show.tray || this.tray.length) {
+      dishSetting(g, TRAY_DISH, TRAY_DISH.r, t('hud.dish'));
       dishArt(g, TRAY_DISH, TRAY_DISH.r, false, 1);
       for (const d of this.tray) drawItem(g, d, now);
     }
     if (show.lead || this.lead.length) {
+      dishSetting(g, LEAD_DISH, LEAD_DISH.r * 0.8, t('hud.lead_dish'));
       dishArt(g, LEAD_DISH, LEAD_DISH.r * 0.8, true, 2);
       for (const d of this.lead) drawItem(g, d, now);
     }
   }
+}
+
+/** The dish's place at the table edge: a pool of lamplight to lift the steel off the dark, and its name under it. */
+function dishSetting(g: Gfx, at: Vec, r: number, label: string): void {
+  g.glow(at.x, at.y + 4, r * 2.1, hex('#e8c890', 0.2));
+  caps(g, label, at.x, at.y + r * 0.62, 10, hex('#e8d4a8', 0.92), 'center');
 }
 
 function drawItem(g: Gfx, d: Dropped, now: number): void {

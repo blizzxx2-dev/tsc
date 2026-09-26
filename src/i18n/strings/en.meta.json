@@ -525,6 +525,22 @@
     "context": "Operation replay list.",
     "screenshot": "docs/loc/screens/theatre.png"
   },
+  "hud.dish": {
+    "scene": "operation",
+    "font": "body",
+    "size": 10,
+    "maxPx": 150,
+    "context": "Small caption under the pewter kidney dish at the screen edge where extracted objects are dropped.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
+  "hud.lead_dish": {
+    "scene": "operation",
+    "font": "body",
+    "size": 10,
+    "maxPx": 150,
+    "context": "Small caption under the lead-lined dish where hexstone must be dropped.",
+    "screenshot": "docs/loc/screens/operation.png"
+  },
   "hud.vitals": {
     "scene": "operation",
     "font": "body",

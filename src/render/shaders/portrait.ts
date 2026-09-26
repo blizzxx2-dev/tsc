@@ -121,8 +121,8 @@ float map(vec3 p, out float m) {
   float neck = sdCyl(p - vec3(0.0, 0.28, -0.02), 0.09, 0.1);
   // Shoulders and chest, rising with breath.
   vec3 bp = p - vec3(0.0, -0.05 + breathe, -0.05);
-  float body = sdEll(bp, vec3(0.62, 0.26, 0.26));
-  body = smin(body, sdEll(p - vec3(0.0, -0.45, -0.05), vec3(0.64, 0.42, 0.3)), 0.12);
+  float body = sdEll(bp, vec3(0.5, 0.22, 0.24));
+  body = smin(body, sdEll(p - vec3(0.0, -0.45, -0.05), vec3(0.54, 0.42, 0.28)), 0.14);
   // Collar.
   body = smin(body, sdEll(p - vec3(0.0, 0.17, 0.0), vec3(0.2, 0.06, 0.16)), 0.05);
   float skin = smin(head, neck, 0.06);
@@ -131,8 +131,8 @@ float map(vec3 p, out float m) {
   if (eyes < d) { d = eyes; m = 5.0; }
   // Hair and beards (material 6).
   float hair = 1e5;
-  if (u_style == 5 || u_style == 2) hair = max(sdEll(hp - vec3(0.0, 0.05, -0.03), vec3(0.215, 0.27, 0.23)), -(hp.z - 0.06 + hp.y * 0.4)) - 0.012 * noise(hp.xy * 60.0);
-  if (u_beard == 1) hair = min(hair, sdEll(hp - vec3(0.0, -0.17, 0.1), vec3(0.15, 0.14, 0.12)) - 0.015 * noise(hp.xy * 50.0));
+  if (u_style == 5 || u_style == 2) hair = max(sdEll(hp - vec3(0.0, 0.05, -0.03), vec3(0.215, 0.27, 0.23)), -(hp.z - 0.06 + hp.y * 0.4)) - 0.008 * noise(hp.xy * 22.0);
+  if (u_beard == 1) hair = min(hair, sdEll(hp - vec3(0.0, -0.17, 0.1), vec3(0.15, 0.14, 0.12)) - 0.01 * noise(hp.xy * 20.0));
   if (u_beard == 2) hair = min(hair, sdEll(hp - vec3(0.0, -0.21, 0.17), vec3(0.045, 0.07, 0.04)));
   if (u_beard == 2) hair = min(hair, sdCap(hp, vec3(-0.06, -0.1, 0.215), vec3(0.06, -0.1, 0.215), 0.012));
   if (u_beard == 3) hair = min(hair, sdEll(hp - vec3(0.0, -0.14, 0.09), vec3(0.155, 0.12, 0.13)) + 0.004);
@@ -209,8 +209,15 @@ void main() {
   else if (m == 2.0) { alb = u_cloth * (0.75 + 0.35 * fbm(vec2(p.x * 8.0 + p.y * 3.0, p.y * 20.0))); }
   else if (m == 3.0) { alb = u_style == 1 ? vec3(0.8, 0.78, 0.72) : u_cloth * 0.8; }
   else if (m == 4.0) { alb = vec3(0.5, 0.5, 0.52); rough = 0.25; }
-  else if (m == 5.0) { alb = vec3(0.9, 0.88, 0.85); rough = 0.1; }
-  else if (m == 6.0) { alb = u_hair * (0.7 + 0.5 * noise(vec2(p.x * 200.0, p.y * 40.0))); rough = 0.6; }
+  else if (m == 5.0) {
+    // A dark iris looking out, and whites that sit in the socket's shadow (never bright goggles).
+    vec3 fwd = normalize(vec3(0.0, 0.0, 1.0));
+    float iris = smoothstep(0.86, 0.93, dot(n, fwd));
+    alb = mix(vec3(0.62, 0.58, 0.54), u_hair * 0.55 + vec3(0.06, 0.04, 0.03), iris);
+    alb = mix(alb, vec3(0.03, 0.02, 0.02), smoothstep(0.975, 0.99, dot(n, fwd)));
+    rough = 0.15;
+  }
+  else if (m == 6.0) { alb = u_hair * (0.55 + 0.6 * fbm(vec2(p.x * 48.0 + p.y * 6.0, p.y * 9.0)) + 0.18 * noise(vec2(p.x * 90.0, p.y * 12.0))); rough = 0.97; }
   // Candle key (warm, left-front), coloured rim (behind), faint fill.
   vec3 kl = normalize(vec3(-0.7, 0.45, 0.8));
   vec3 rl = normalize(vec3(0.8, 0.3, -0.7));
@@ -220,14 +227,25 @@ void main() {
   float ao = 0.0;
   for (int k = 1; k <= 5; k++) { float hk = 0.012 * float(k); ao += (hk - mapD(p + n * hk)) / hk; }
   ao = clamp(1.0 - ao * 0.22, 0.25, 1.0);
-  vec3 col = alb * vec3(1.0, 0.72, 0.45) * (m == 1.0 ? wrap : key) * 1.25 * flick * ao;
+  // Chiaroscuro: a hard candle key that turns the far cheek into shadow (a little wrap on skin only).
+  float lamb = m == 1.0 ? mix(key, wrap, 0.35) : key;
+  lamb = smoothstep(0.0, 0.9, lamb);
+  vec3 col = alb * vec3(1.0, 0.74, 0.48) * lamb * 1.3 * flick * ao;
+  // The shadow side is cool and dim, as in candlelit oils.
+  col += alb * vec3(0.05, 0.065, 0.1) * (1.0 - lamb) * ao;
   // Subsurface warmth on skin.
-  if (m == 1.0) col += alb * vec3(0.6, 0.15, 0.08) * pow(1.0 - key, 2.0) * 0.35;
+  if (m == 1.0) col += alb * vec3(0.45, 0.12, 0.07) * pow(1.0 - key, 2.0) * 0.18 * smoothstep(-0.2, 0.3, dot(n, kl));
   float rim = pow(1.0 - max(dot(n, -rd), 0.0), 3.0) * max(dot(n, rl) + 0.3, 0.0);
   col += u_rim * rim * 1.6;
   col += alb * vec3(0.05, 0.06, 0.09) * ao;
   vec3 h = normalize(kl - rd);
   col += vec3(1.0, 0.85, 0.7) * pow(max(dot(n, h), 0.0), mix(12.0, 90.0, 1.0 - rough)) * (1.0 - rough) * 0.8;
+  // Forms turn away into shadow at their edges, as a painter models volume.
+  col *= mix(0.55, 1.0, smoothstep(0.0, 0.55, dot(n, -rd)));
+  // A catchlight in each eye: the candle, one bright point.
+  if (m == 5.0) col += vec3(1.0, 0.9, 0.75) * pow(max(dot(n, h), 0.0), 220.0) * 1.6;
+  // The body sinks into the dark below the collar, like a painted half-length.
+  if (m == 2.0) col *= mix(0.25, 1.0, smoothstep(-0.55, 0.12, p.y));
   // Effects layer: sweat beads on a pale or pained brow catch the candle.
   float sweat = clamp(abs(EB.z) * 1.6 - 0.3, 0.0, 1.0);
   if (m == 1.0 && sweat > 0.0 && p.y > 0.6) {
