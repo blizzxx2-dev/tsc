@@ -2,7 +2,8 @@
 import { drawer } from './registry';
 import type { Vec } from '../../core/math';
 import { hex } from '../color';
-import { pointAlong, surfDisc } from '../../surgery/entities';
+import { pointAlong } from '../../surgery/entities';
+import { surfDisc } from './paint';
 import { InfectionLine, INFECTION, SporeCrust, DungZone } from '../../surgery/ailments/infection';
 
 drawer(InfectionLine, {

@@ -1,7 +1,7 @@
 /** How the entities of `surgery/bosses/compline.ts` draw (GAM-0012: moved out of the simulation). */
 import { drawer } from './registry';
 import { hex } from '../color';
-import { surfDisc } from '../../surgery/entities';
+import { surfDisc } from './paint';
 import { TAU } from '../../surgery/bosses/common';
 import { drawBossRing } from './bossRing';
 import { SilenceNode, ComplineMalison } from '../../surgery/bosses/compline';

@@ -1,7 +1,8 @@
 /** How the entities of `surgery/ailments/hollownight.ts` draw (GAM-0012: moved out of the simulation). */
 import { drawer, drawAs } from './registry';
 import { hex } from '../color';
-import { Embedded, surfDisc } from '../../surgery/entities';
+import { Embedded } from '../../surgery/entities';
+import { surfDisc } from './paint';
 import { LEAD_DISH } from '../../surgery/operation';
 import { VocalFold, Remnant, TAU, Cyst, Infant, HexBall, Bud } from '../../surgery/ailments/hollownight';
 

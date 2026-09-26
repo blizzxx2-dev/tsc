@@ -1,7 +1,7 @@
 /** How the entities of `surgery/ailments/frost.ts` draw (GAM-0012: moved out of the simulation). */
 import { drawer } from './registry';
 import { hex } from '../color';
-import { surfDisc } from '../../surgery/entities';
+import { surfDisc } from './paint';
 import { FrostPatch, IceCrystal } from '../../surgery/ailments/frost';
 
 drawer(FrostPatch, {

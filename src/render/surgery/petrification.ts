@@ -2,7 +2,7 @@
 import { drawer } from './registry';
 import { dist } from '../../core/math';
 import { hex } from '../color';
-import { drawCoverage, surfDisc } from '../../surgery/entities';
+import { drawCoverage, surfDisc } from './paint';
 import { Petrification, STONE } from '../../surgery/ailments/petrification';
 
 drawer(Petrification, {

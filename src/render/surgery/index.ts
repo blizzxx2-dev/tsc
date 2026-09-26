@@ -35,3 +35,5 @@ import './voices';
 import './lauds';
 import './malison';
 import './base';
+import './entities';
+import './opWounds';

@@ -18,9 +18,10 @@ Reports: `reports/mutation/index.html` and `mutation.json`. Target: **≥ 75 % o
 | `operation.ts` — after the gap tests below | 435 | 413 | 6 | 15 | 1 | **96.32 %** | 96.54 % |
 | `entities.ts` | 1625 | 857 | 20 | 179 | 569 | 53.97 % | 83.05 % |
 
-The `entities.ts` "no coverage" mutants are almost all in `draw()` / `drawSurface()` / `drawFluid()` (rendering, which
-the headless suites deliberately do not run); the visual suite covers those. The score of covered code (83 %) is the
-number to track for entities.
+The `entities.ts` "no coverage" mutants were almost all in its drawing (rendering, which the headless suites
+deliberately do not run). Since GAM-0012 that drawing lives in `src/render/surgery/`, pinned call-for-call by
+`tests/sim/draw-trace.test.ts`, so a re-run of this table will show the simulation's own score. Until then the score of
+covered code (83 %) is the number to track for entities.
 
 ## Surviving mutants in scoring code → test gaps
 

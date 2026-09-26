@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import '../../../src/render/surgery';
+import { drawEntity } from '../../../src/render/surgery/registry';
 import { POISONS, poisonFor } from '../../../src/content/poisons';
 import { makeEntity, validateSpec } from '../../../src/content/schema';
 import type { Gfx } from '../../../src/render/gfx';
@@ -25,7 +27,7 @@ describe('poison variants (ENG-0267)', () => {
           },
       },
     ) as unknown as Gfx;
-    v.draw(g, op);
+    drawEntity(g, v, op);
     const spider = makeEntity({ e: 'venom', at: [0, 0] }, op) as Venom;
     const other: string[] = [];
     const g2 = new Proxy(
@@ -38,7 +40,7 @@ describe('poison variants (ENG-0267)', () => {
           },
       },
     ) as unknown as Gfx;
-    spider.draw(g2, op);
+    drawEntity(g2, spider, op);
     expect(colours).not.toEqual(other);
   });
 });

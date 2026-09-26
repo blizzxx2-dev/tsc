@@ -30,16 +30,11 @@ export function drawer<E extends Entity>(cls: Ctor<E>, d: Drawer<E>): void {
   CACHE.clear();
 }
 
-/** TRANSITIONAL (GAM-0012): the entity methods a class may still carry until its drawing moves here. */
-const LEGACY: Record<HookName, string> = { draw: 'draw', surface: 'drawSurface', fluid: 'drawFluid' };
-
 /** The nearest hook, starting at `proto` and walking up the class chain. */
 function find(proto: object | null, k: HookName): Hook<Entity> | null {
   for (let p = proto; p && p !== Object.prototype; p = Object.getPrototypeOf(p) as object | null) {
     const h = DRAWERS.get((p as { constructor: unknown }).constructor)?.[k];
     if (h) return h;
-    const own = Object.prototype.hasOwnProperty.call(p, LEGACY[k]) ? (p as Record<string, unknown>)[LEGACY[k]] : undefined;
-    if (typeof own === 'function') return (g, e, op) => (own as (g: Gfx, op: Operation) => void).call(e, g, op);
   }
   return null;
 }

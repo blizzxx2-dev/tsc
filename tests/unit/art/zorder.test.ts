@@ -23,13 +23,11 @@ describe('z-order (ART-0362)', () => {
   });
 
   it('a blood pool draws no liquid of its own over sprites (only bone dust)', () => {
-    const ents = readFileSync(join(SRC, 'surgery/entities.ts'), 'utf8');
-    const pool = ents.slice(
-      ents.indexOf('export class BloodPool'),
-      ents.indexOf('// ============================================================ lacerations'),
-    );
-    const draw = pool.slice(pool.indexOf('  draw(g: Gfx'));
-    expect(draw).toMatch(/bonedust/);
+    // Its drawer (GAM-0012: drawing lives in src/render/surgery): the body hook, not the fluid layer.
+    const src = readFileSync(join(SRC, 'render/surgery/entities.ts'), 'utf8');
+    const pool = src.slice(src.indexOf('drawer(BloodPool'));
+    const body = pool.slice(pool.indexOf('  draw('), pool.indexOf('\n});'));
+    expect(body).toMatch(/bonedust/);
   });
 });
 

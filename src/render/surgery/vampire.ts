@@ -2,7 +2,7 @@
 import { drawer } from './registry';
 import { bloodOf } from '../../surgery/species';
 import { hex } from '../color';
-import { surfDisc } from '../../surgery/entities';
+import { surfDisc } from './paint';
 import { BiteChannel, BITE, DonorBowl } from '../../surgery/ailments/vampire';
 
 drawer(BiteChannel, {

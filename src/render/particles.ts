@@ -11,7 +11,8 @@ import { PARTICLE_SHAPES, PARTICLE_SIZE_RANGE } from './shaders/particle';
 export const BLOOD_EMITTERS = ['blood', 'arterial', 'arterialMist', 'spatter'] as const;
 
 /** Built-in effect kinds the simulation emits (`op.emit`); every one is an entry in fx/emitters.json. */
-export type FxKind = 'blood' | 'pus' | 'spark' | 'smoke' | 'mote' | 'gold' | 'dust' | 'curl' | 'knot' | 'suck' | 'leaf' | 'ember';
+import type { FxKind, FxEvent } from '../surgery/fx';
+export type { FxKind, FxEvent };
 
 /** Seconds of the knot-tie flourish when a stitch line is finished (GAM-0039). */
 export const KNOT_SECONDS = 0.6;
@@ -37,15 +38,6 @@ interface Flourish {
   seed: number;
 }
 
-export interface FxEvent {
-  kind: FxKind;
-  pos: Vec;
-  n: number;
-  /** Preferred direction in radians; omitted = radial burst. */
-  dir?: number;
-  spread?: number;
-  speed?: number;
-}
 
 /** Particle budget per quality tier (ENG-0128). */
 export const PARTICLE_BUDGET: Record<Quality, number> = { high: 16000, medium: 8000, low: 4000 };

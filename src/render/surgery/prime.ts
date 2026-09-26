@@ -1,7 +1,7 @@
 /** How the entities of `surgery/bosses/prime.ts` draw (GAM-0012: moved out of the simulation). */
 import { drawer } from './registry';
 import { hex } from '../color';
-import { surfDisc, surfLine } from '../../surgery/entities';
+import { surfDisc, surfLine } from './paint';
 import { samplePath, TAU } from '../../surgery/bosses/common';
 import { drawBossRing } from './bossRing';
 import { NameSigil, NAME_WRITE_FRAMES, InkBlot, PrimeMalison } from '../../surgery/bosses/prime';

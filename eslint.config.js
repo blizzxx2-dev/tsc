@@ -109,6 +109,23 @@ export default tseslint.config(
     },
   },
   {
+    // GAM-0012: entities expose state only; how they look lives in src/render/surgery.
+    files: ['src/surgery/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/render/*', '**/render/**', '**/art/*', '**/art/**'],
+              message: 'The simulation draws nothing (GAM-0012): put drawing in src/render/surgery.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ['**/*.js', '**/*.mjs'],
     languageOptions: {
       ecmaVersion: 2022,

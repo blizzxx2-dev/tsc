@@ -1,6 +1,5 @@
 import { fxRandom } from './fxRandom';
 import { dist, pointSegment, segmentsIntersect, type Vec } from '../core/math';
-import { type ChoirState } from '../art/bossVfx';
 import { Entity } from './entity';
 import { Embedded, Laceration, Rot, SearedWord } from './entities';
 import { FIELD, onBody, type Operation } from './operation';
@@ -9,6 +8,10 @@ import { BossRot, BossWound, clampToField, MalisonBase, rateAdd, type BossPhase 
 import { attack, bossSound, Cadence, difficultyOf, leadFor, tell } from './bosses/signals';
 
 export const TAU = Math.PI * 2;
+
+/** How one linked body of the Response looks this moment (ART-0236), for its drawer. */
+export type ChoirState = 'idle' | 'call' | 'answer' | 'hurt' | 'heal';
+
 /** Cosmetic randomness only — never the simulation RNG, so effects can't change outcomes. */
 const fxRange = (lo: number, hi: number): number => lo + fxRandom() * (hi - lo);
 

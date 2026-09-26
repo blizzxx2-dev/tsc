@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import '../../../src/render/surgery';
+import { drawEntity } from '../../../src/render/surgery/registry';
 import type { Gfx } from '../../../src/render/gfx';
 import { AILMENT_MARKS, BloodPool, Embedded, Rot, Venom } from '../../../src/surgery/entities';
 import { at, start } from '../../harness';
@@ -81,13 +83,13 @@ describe('GAM-0236: colour-blind safe ailments', () => {
     const pus = new BloodPool(at(0, -100), 30, 'pus');
     const blood = new BloodPool(at(0, -100), 30, 'blood');
     for (const e of [venom, hex, shard, rot, pus, blood]) op.spawn(e);
-    const v = record((g) => venom.draw(g, op));
+    const v = record((g) => drawEntity(g, venom, op));
     expect(v.filter((c) => c.startsWith('polyline:7')).length).toBeGreaterThanOrEqual(3); // branching veins
     expect(v.filter((c) => c === 'circle::3').length).toBe(2); // twin punctures
-    expect(record((g) => hex.draw(g, op)).some((c) => c.startsWith('polyline:7'))).toBe(true);
-    expect(record((g) => shard.draw(g, op)).some((c) => c.startsWith('polyline:7'))).toBe(false);
-    expect(record((g) => rot.draw(g, op)).filter((c) => c === 'circle::3').length).toBeGreaterThan(0);
-    expect(record((g) => pus.draw(g)).filter((c) => c.startsWith('arc')).length).toBeGreaterThanOrEqual(3);
-    expect(record((g) => blood.draw(g)).length).toBe(0);
+    expect(record((g) => drawEntity(g, hex, op)).some((c) => c.startsWith('polyline:7'))).toBe(true);
+    expect(record((g) => drawEntity(g, shard, op)).some((c) => c.startsWith('polyline:7'))).toBe(false);
+    expect(record((g) => drawEntity(g, rot, op)).filter((c) => c === 'circle::3').length).toBeGreaterThan(0);
+    expect(record((g) => drawEntity(g, pus, op)).filter((c) => c.startsWith('arc')).length).toBeGreaterThanOrEqual(3);
+    expect(record((g) => drawEntity(g, blood, op)).length).toBe(0);
   });
 });

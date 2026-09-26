@@ -10,7 +10,7 @@ import { HOUR_CURSE, type Hour } from './curse';
 import { hex } from '../render/color';
 import type { Gfx } from '../render/gfx';
 import { organPalette } from '../render/organs';
-import { surfDisc, surfLine } from '../surgery/entities';
+import { surfDisc, surfLine } from '../render/surgery/paint';
 import { FIELD, type OperationDef, type OrganKind } from '../surgery/operation';
 import { VIEW_H, VIEW_W } from '../ui/layout';
 import { giltText, oakPanel, UI } from '../ui/ornaments';

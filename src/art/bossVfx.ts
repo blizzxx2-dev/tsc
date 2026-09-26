@@ -123,7 +123,8 @@ export function dawnFlare(g: Gfx, view: { x: number; y: number; w: number; h: nu
 }
 
 /** Lauds body states (ART-0236). */
-export type ChoirState = 'idle' | 'call' | 'answer' | 'hurt' | 'heal';
+import type { ChoirState } from '../surgery/lauds';
+export type { ChoirState };
 /** Mouths in each body's choir, and frames in the call/answer flipbooks. */
 export const CHOIR_MOUTHS = 7;
 export const CHOIR_FRAMES = 8;

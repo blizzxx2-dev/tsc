@@ -3,7 +3,7 @@ import { drawer } from './registry';
 import { spurtArt } from '../../art/ailmentArt';
 import { presentation } from '../presentation';
 import { hex } from '../color';
-import { surfDisc } from '../../surgery/entities';
+import { surfDisc } from './paint';
 import { Arrhythmia, ORGAN, betweenBeats, CollapsedLung, Trepanation, TAU, LarynxFold, humming, StomachLock, WaxClot, Artery } from '../../surgery/ailments/organs';
 
 drawer(Arrhythmia, {

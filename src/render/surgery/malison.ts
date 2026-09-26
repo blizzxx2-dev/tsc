@@ -2,7 +2,7 @@
 import { drawer } from './registry';
 import { hex } from '../color';
 import { presentation } from '../presentation';
-import { surfDisc } from '../../surgery/entities';
+import { surfDisc } from './paint';
 import { threadKnotArt } from '../../art/ailmentArt';
 import { Malison, TAU, MalisonShard, MalisonAsh } from '../../surgery/malison';
 

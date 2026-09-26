@@ -4,7 +4,7 @@ import { bloodOf } from '../../surgery/species';
 import { drawDrape } from '../../art/drape';
 import { dist } from '../../core/math';
 import { hex } from '../color';
-import { drawCoverage, surfLine } from '../../surgery/entities';
+import { drawCoverage, surfLine } from './paint';
 import { Gangrene, GANGRENE, Amputation } from '../../surgery/ailments/gangrene';
 
 drawer(Gangrene, {

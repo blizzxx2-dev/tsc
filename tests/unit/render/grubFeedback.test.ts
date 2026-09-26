@@ -1,5 +1,6 @@
 /** GAM-0031 / GAM-0039 / GAM-0085: tongs, stitch and grub feedback — the thread's tension and knot, the grub's squeal and death-curl. */
 import { describe, expect, it } from 'vitest';
+import { drawStitch } from '../../../src/render/surgery/paint';
 import { clackPitch, EMBED_WEIGHT, squealVariant } from '../../../src/audio/director';
 import { drawTongsJaws } from '../../../src/art/hud';
 import { EVENTS } from '../../../src/audio/events';
@@ -66,7 +67,7 @@ describe('GAM-0039 thread tension and the knot', () => {
     const calls: string[] = [];
     const g = new Proxy({}, { get: (_t, k) => () => void calls.push(String(k)) }) as unknown as Gfx;
     op.cursor = at(0, 30);
-    lac.stitch.draw(g, op);
+    drawStitch(g, lac.stitch, op);
     expect(lac.stitch.count).toBeGreaterThan(0);
     // Each stitch is painted (ART-0188 stitch art: curves and strokes), plus the taut line to the needle.
     expect(calls.filter((c) => c === 'line' || c === 'quadCurve' || c === 'polyline' || c === 'ailment').length).toBeGreaterThanOrEqual(lac.stitch.count);

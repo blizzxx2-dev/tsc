@@ -1,9 +1,10 @@
 /** How the entities of `surgery/ailments/vennmark.ts` draw (GAM-0012: moved out of the simulation). */
+import { drawStitch } from './paint';
 import { drawer } from './registry';
 import { petrifyCrustArt, petrifyPlateArt } from '../../art/lateAilmentArt';
 import { dist, type Vec } from '../../core/math';
 import { hex } from '../color';
-import { surfDisc, surfLine } from '../../surgery/entities';
+import { surfDisc, surfLine } from './paint';
 import { FIELD } from '../../surgery/operation';
 import { pointAlong } from '../../surgery/bosses/common';
 import { Artery, Tick, TAU, Contamination, Nodule, NoCutZone, Lockbox, Retractor, StilledHeart, BiteChannel, PetrifyFront, RainDrip } from '../../surgery/ailments/vennmark';
@@ -17,7 +18,7 @@ drawer(Artery, {
     const pulse = 0.7 + 0.3 * Math.sin(op.elapsed * 7);
     g.line(a, b, 9, hex('#a01020', 0.9));
     g.line(a, b, 4, hex('#ff5060', 0.5 * pulse));
-    e.stitch.draw(g);
+    drawStitch(g, e.stitch);
     if (e.clamped) {
       const { x, y } = e.pos;
       g.line({ x: x - 12, y: y - 12 }, { x: x + 12, y: y + 12 }, 3, hex('#c8c8d0'));

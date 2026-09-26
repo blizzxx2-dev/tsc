@@ -4,7 +4,8 @@ import { dist } from '../../core/math';
 import { boneChipsArt, boneFragmentArt, drawBoneView, splintArt } from '../../art/boneView';
 import { hex } from '../color';
 import type { Gfx } from '../gfx';
-import { angleDiff, surfDisc } from '../../surgery/entities';
+import { angleDiff } from '../../surgery/entities';
+import { surfDisc } from './paint';
 import { PIN_HOLD } from '../../surgery/operation';
 import { Fracture, FRACTURE, RAD, BoneSplinter, Splint, SplintWrap } from '../../surgery/ailments/fracture';
 

@@ -7,7 +7,7 @@ import { eggSacArt } from '../../art/ailmentArt';
 import { drawBlotch, presentation } from '../presentation';
 import { hex } from '../color';
 import { dawnFlare, flareIntensity, laudsChoir, lightThread, THREAD_SEVER_S, THREAD_TIE_S } from '../../art/bossVfx';
-import { surfDisc } from '../../surgery/entities';
+import { surfDisc } from './paint';
 import { LaudsMalison, DawnOverlay, LaudsBody, LightThread, ChoirVoice, VOICE_SIGIL, VOICE_SAMPLES, EggSac, SpiderlingGrub, TAU } from '../../surgery/lauds';
 
 

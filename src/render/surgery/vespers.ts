@@ -2,7 +2,7 @@
 import { drawer } from './registry';
 import { tallowClotArt } from '../../art/lateAilmentArt';
 import { hex } from '../color';
-import { surfDisc, surfLine } from '../../surgery/entities';
+import { surfDisc, surfLine } from './paint';
 import { FIELD } from '../../surgery/operation';
 import { TAU } from '../../surgery/bosses/common';
 import { drawBossRing } from './bossRing';

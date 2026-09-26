@@ -1,10 +1,9 @@
 import { SpatialGrid, SPATIAL_THRESHOLD } from './spatial';
-import { bloodOf } from './species';
 import { seedFx } from './fxRandom';
 import { clamp, dist, pointSegment, Rng, side, type Vec } from '../core/math';
 import { EventBus } from '../core/events';
 import { Entity, type Origin } from './entity';
-import type { FxKind } from '../render/particles';
+import type { FxKind } from './fx';
 import { toolInfo, type Pointer, type Rank, type Rating, type ToolId } from './types';
 import { DEFAULT_TUNING, mergeTuning, type Tuning, type TuningOverride } from './tuning';
 import { applySpecies, type Species } from './species';
@@ -15,8 +14,6 @@ import { rankThresholds } from './ranks';
 import { upgradeTuning, type TinctureColor } from './progress';
 import { OP_TUNING } from './optuning';
 import { FIRST_HINTS, TUTORIALS, type TutorialStep } from './tutorial';
-import { hex } from '../render/color';
-import type { Gfx } from '../render/gfx';
 
 export type OrganKind = 'flesh' | 'heart' | 'lung' | 'gut' | 'liver' | 'brain' | 'bone' | 'muscle' | 'skin';
 
@@ -1986,9 +1983,6 @@ export class SimpleBurn extends Entity {
       op.rate('good', this.pos, 'Soothed');
     }
   }
-  draw(g: Gfx): void {
-    g.circleGrad(this.pos.x, this.pos.y, 16, hex('#3a1408', 0.7), hex('#3a1408', 0));
-  }
 }
 
 /** A suture cut open again: behaves like a fresh laceration (see entities.ts), registered lazily to avoid an import cycle. */
@@ -1998,7 +1992,7 @@ export class Reopened extends Entity {
   readonly a: Vec;
   readonly b: Vec;
   private stitches = 0;
-  private marks: Vec[] = [];
+  marks: Vec[] = [];
   constructor(
     center: Vec,
     angle: number,
@@ -2034,15 +2028,11 @@ export class Reopened extends Entity {
       op.rate('good', this.pos, 'Restitched');
     }
   }
-  draw(g: Gfx, op: Operation): void {
-    g.line(this.a, this.b, 3, hex(bloodOf(op.def.race), 0.9));
-    for (const m of this.marks) g.rect(m.x - 2, m.y - 2, 4, 4, hex('#efe6c4'));
-  }
 }
 
 /** Wound-fever from something left inside at closing: survive it. */
 export class WoundFever extends Entity {
-  private left: number;
+  left: number;
   noun = 'the fever';
   constructor(
     pos: Vec,
@@ -2064,10 +2054,6 @@ export class WoundFever extends Entity {
   }
   get remaining(): number {
     return Math.max(0, this.left);
-  }
-  draw(g: Gfx, op: Operation): void {
-    g.glow(FIELD.cx, FIELD.cy, 300, hex('#ff6020', 0.06 + 0.03 * Math.sin(op.elapsed * 3)));
-    g.arc(FIELD.cx, FIELD.cy - FIELD.ry - 20, 18, 3, hex('#ff8040'), this.left / DEFAULT_TUNING.fever.duration);
   }
 }
 

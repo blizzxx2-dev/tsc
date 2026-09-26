@@ -2,7 +2,8 @@
 import { drawer } from './registry';
 import type { Vec } from '../../core/math';
 import { hex } from '../color';
-import { Embedded, surfDisc } from '../../surgery/entities';
+import { Embedded } from '../../surgery/entities';
+import { surfDisc } from './paint';
 import { fxRange, TAU } from '../../surgery/bosses/common';
 import { EggCluster, CantorKnot, FangNest, MatinsHerald } from '../../surgery/bosses/elites';
 

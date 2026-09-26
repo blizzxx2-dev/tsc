@@ -4,7 +4,7 @@ import { dist, type Vec } from '../../core/math';
 import { hex } from '../color';
 import type { Gfx } from '../gfx';
 import { wormArt } from '../../art/wormArt';
-import { surfDisc } from '../../surgery/entities';
+import { surfDisc } from './paint';
 import { TAU } from '../../surgery/bosses/common';
 import { WormMatriarch, Sellsword, DeadPulse, DEAD_PULSE, FrostWight, GhoulClaw, GHOUL, ChoirMagus, MAGUS } from '../../surgery/bosses/alphaElites';
 

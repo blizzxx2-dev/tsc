@@ -1,7 +1,7 @@
 import type { Cue } from '../core/audio';
 import { EventBus } from '../core/events';
 import type { Vec } from '../core/math';
-import type { FxEvent } from '../render/particles';
+import type { FxEvent } from './fx';
 import type { Entity } from './entity';
 import type { BossEvent } from './bosses/signals';
 import type { Rating, ToolId } from './types';

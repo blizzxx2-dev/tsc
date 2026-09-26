@@ -1,7 +1,7 @@
 /** How the entities of `surgery/bosses/none.ts` draw (GAM-0012: moved out of the simulation). */
 import { drawer } from './registry';
 import { hex } from '../color';
-import { surfDisc, surfLine } from '../../surgery/entities';
+import { surfDisc, surfLine } from './paint';
 import { TAU } from '../../surgery/bosses/common';
 import { drawBossRing } from './bossRing';
 import { TunnelScar, BurrowRipple, BurrowSegment, NoneMalison } from '../../surgery/bosses/none';

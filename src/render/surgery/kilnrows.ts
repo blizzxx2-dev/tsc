@@ -1,9 +1,10 @@
 /** How the entities of `surgery/ailments/kilnrows.ts` draw (GAM-0012: moved out of the simulation). */
+import { drawStitch } from './paint';
 import { drawer } from './registry';
 import { drawDrape } from '../../art/drape';
 import { wormArt } from '../../art/wormArt';
 import { hex } from '../color';
-import { surfDisc, surfLine } from '../../surgery/entities';
+import { surfDisc, surfLine } from './paint';
 import { TinctureSite, TAU, DressedBud, HornBud, ClothFragment, Vessel, Amputation, Worm, Agitation, Molar } from '../../surgery/ailments/kilnrows';
 
 drawer(TinctureSite, {
@@ -75,7 +76,7 @@ drawer(Vessel, {
     const { x, y } = e.pos;
     g.circle(x, y, 8, hex('#8a1020'));
     g.circle(x, y, 4, hex('#300408'));
-    e.stitch.draw(g);
+    drawStitch(g, e.stitch);
     if (e.heat > 0) g.arc(x, y, 14, 3, hex('#ff9040'), e.heat / 0.5);
   },
 });
