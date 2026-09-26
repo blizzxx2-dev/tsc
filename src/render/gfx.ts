@@ -956,6 +956,16 @@ export class Gfx {
     return handle;
   }
 
+  /** Free an image's texture and forget it, so a later `image(url)` loads it afresh (ART-0367 set swaps). */
+  releaseImage(url: string): void {
+    const h = this.images.get(url);
+    if (!h) return;
+    this.images.delete(url);
+    this.imageSources.delete(h);
+    this.registry.release(h.tex);
+    Object.assign(h, { tex: null, ready: false });
+  }
+
   private uploadImage(handle: ImageHandle, img: TexImageSource): void {
     const gl = this.gl;
     const tex = this.registry.createTexture('image');

@@ -27,6 +27,8 @@ jobs:
         env: { ELECTRON_SKIP_BINARY_DOWNLOAD: '1' }
       - name: Typecheck (game + desktop shell)
         run: npx tsc --noEmit && npx tsc -p desktop/tsconfig.json
+      - name: Asset lint (ART-0354 — naming, sizes, power-of-two, premultiplied alpha, budgets, orphans)
+        run: npm run assets:lint
       - name: Unit tests (incl. balance bot, save-compatibility fixtures, fuzz)
         run: npx vitest run
       - name: Licence allow-list and audit of shipped dependencies

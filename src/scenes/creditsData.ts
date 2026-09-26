@@ -76,6 +76,5 @@ export const softwareCredits = (): { name: string; licence: string }[] => NOTICE
 /** Surface textures shipped in assets/textures (see its README for sources and packing). */
 export const TEXTURE_CREDITS: readonly { name: string; licence: string }[] = [
   { name: 'Material Pack Skin 01 — Julio Sillet 3D Art', licence: 'CC-BY' },
-  { name: 'Rope001 — ambientCG', licence: 'CC0' },
   { name: 'Rough Linen, Dark Wood — Poly Haven', licence: 'CC0' },
 ];

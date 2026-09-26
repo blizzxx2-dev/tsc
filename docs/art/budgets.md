@@ -58,9 +58,20 @@ budget stays open.
 
 | Task | Status | Notes |
 | --- | --- | --- |
-| ART-0367 flesh texture budget | Not applicable today | The flesh is procedural. It samples two baked 512² noise textures (ENG-0081), with no KTX2 organ sets resident. The budget applies when painted detail maps land (pipeline.md flesh input spec). |
+| ART-0367 flesh texture budget | Met | One surface set is resident at a time: skin detail and linen/wood at 512², the low-frequency tone mottle at 256², **4.5 MB** with mips against a 5.3 MB cap. Entering an operation with another species' set releases the maps it doesn't share (`SurfaceSetCache`, src/render/surfaceSets.ts). The Low tier loads no maps and keeps the procedural detail. Tested in tests/unit/art/surfaceSets.test.ts. |
 | ART-0369 overdraw ≤ 4× | Needs a Steam Deck | Measure on the Deck with the GPU overdraw view while the Litany, motes and sparks are all active. |
 | ART-0370 download size | Met | `npm run assets` prints demo art MB against the 400 MB budget and lists the 20 largest assets. |
 | ART-0371 background layers | Not applicable today | Story backgrounds are shader scenes with no WebP layers. The rule applies when painted layers are added. |
 | ART-0372 portraits | Not applicable today | Portraits are raymarched busts (PORTRAIT_FS) with no texture pages. |
 | ART-0373 particle caps | Met | `PARTICLE_CAPS` in src/render/particles.ts, tested in tests/unit/art/vfx.test.ts. |
+
+## Asset lint (ART-0354)
+
+`npm run assets:lint` (`build-assets --check`, a CI step) fails on: non-kebab-case names; images over
+4096 px; sprite pages and tiling surface maps that aren't square powers of two; loose PNGs stored with
+straight alpha (colour above coverage); LUTs that aren't 1024×32; files over their type's byte budget
+(image 4 MB, sheet 8 MB, font 256 KB, JSON 1 MB, shader 64 KB, LUT 256 KB, audio 8 MB, text 256 KB,
+surface maps 512 KB); and **orphaned manifest entries**, that is, any asset not loaded wholesale by type
+(fonts, LUTs, sheets, models) whose id is never named in src/. Models are built locally, uncommitted,
+and governed by `art:compress-models` and the download budget.
+

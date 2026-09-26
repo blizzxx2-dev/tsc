@@ -17,7 +17,6 @@ export type AssetId =
   | 'textures/rot-mottle'
   | 'textures/skin-detail'
   | 'textures/skin-mottle'
-  | 'textures/suture-rope'
   | 'textures/wood-table';
 
 export type BundleId = 'boot' | 'title' | 'story-common' | 'ops-common' | 'chapter1' | 'chapter2' | 'chapter3' | 'chapter4' | 'chapter5';
@@ -150,14 +149,18 @@ export const MANIFEST: Record<AssetId, AssetEntry> = {
     "bytes": 200055,
     "bundle": "ops-common",
     "hash": "f424a2e0d2",
+    "w": 512,
+    "h": 512,
     "status": "final"
   },
   "textures/hide-mottle": {
     "type": "image",
-    "url": "assets/textures_hide-mottle.378e063c10.jpg",
-    "bytes": 94657,
+    "url": "assets/textures_hide-mottle.250284fb6f.jpg",
+    "bytes": 28143,
     "bundle": "ops-common",
-    "hash": "378e063c10",
+    "hash": "250284fb6f",
+    "w": 256,
+    "h": 256,
     "status": "final"
   },
   "textures/linen-detail": {
@@ -166,14 +169,18 @@ export const MANIFEST: Record<AssetId, AssetEntry> = {
     "bytes": 49469,
     "bundle": "ops-common",
     "hash": "babec6e2f2",
+    "w": 512,
+    "h": 512,
     "status": "final"
   },
   "textures/rot-mottle": {
     "type": "image",
-    "url": "assets/textures_rot-mottle.c961c59ee1.jpg",
-    "bytes": 96175,
+    "url": "assets/textures_rot-mottle.ada9723ef8.jpg",
+    "bytes": 31726,
     "bundle": "ops-common",
-    "hash": "c961c59ee1",
+    "hash": "ada9723ef8",
+    "w": 256,
+    "h": 256,
     "status": "final"
   },
   "textures/skin-detail": {
@@ -182,22 +189,18 @@ export const MANIFEST: Record<AssetId, AssetEntry> = {
     "bytes": 125592,
     "bundle": "ops-common",
     "hash": "2ac51dc8ae",
+    "w": 512,
+    "h": 512,
     "status": "final"
   },
   "textures/skin-mottle": {
     "type": "image",
-    "url": "assets/textures_skin-mottle.7d657edc2c.jpg",
-    "bytes": 43634,
+    "url": "assets/textures_skin-mottle.1b3c87b3f1.jpg",
+    "bytes": 13455,
     "bundle": "ops-common",
-    "hash": "7d657edc2c",
-    "status": "final"
-  },
-  "textures/suture-rope": {
-    "type": "image",
-    "url": "assets/textures_suture-rope.a96472dc0c.jpg",
-    "bytes": 21668,
-    "bundle": "ops-common",
-    "hash": "a96472dc0c",
+    "hash": "1b3c87b3f1",
+    "w": 256,
+    "h": 256,
     "status": "final"
   },
   "textures/wood-table": {
@@ -206,6 +209,8 @@ export const MANIFEST: Record<AssetId, AssetEntry> = {
     "bytes": 55854,
     "bundle": "ops-common",
     "hash": "e48af6e2f2",
+    "w": 512,
+    "h": 512,
     "status": "final"
   }
 };
@@ -231,7 +236,6 @@ export const BUNDLES: Record<BundleId, readonly AssetId[]> = {
     "textures/rot-mottle",
     "textures/skin-detail",
     "textures/skin-mottle",
-    "textures/suture-rope",
     "textures/wood-table"
   ],
   "chapter1": [],

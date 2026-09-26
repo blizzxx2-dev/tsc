@@ -18,6 +18,7 @@ import { underSkinBulges } from '../render/underSkin';
 import { hourCard } from '../art/hourMiniatures';
 import { MANIFEST, type AssetId } from '../assets/manifest.gen';
 import type { SurfaceMaps } from '../render/gfx';
+import { SurfaceSetCache, surfaceSetFor } from '../render/surfaceSets';
 import { clawRakeArt, rakeGroups } from '../art/clawRake';
 import { drawGrime, drawRain, VENUE_ID, venueLights } from '../render/venues';
 import { BloodPool, Bubo, Burn, Embedded, Incision, Laceration, Sigil, surfDisc, surfLine } from '../surgery/entities';
@@ -119,6 +120,9 @@ export const CURSE_REACH = 360;
 export const FROST_GROW_S = 1.5;
 /** Tray tips stay above this line, clear of the callout plate (UIX-0051). */
 const TIP_FLOOR = 612;
+
+/** The surface set resident across operation scenes (ART-0367). */
+const SURFACE_SETS = new SurfaceSetCache();
 
 export class OperationScene implements Scene {
   op: Operation;
@@ -1332,16 +1336,23 @@ export class OperationScene implements Scene {
 
   /** Real-surface detail maps (CC0 scans): loaded once, tiled; the flesh pass waits until they are ready. */
   private maps: SurfaceMaps | null = null;
-  private surfaceMaps(g: Gfx, race: string, venue: string): SurfaceMaps {
-    const url = (id: AssetId) => import.meta.env.BASE_URL + MANIFEST[id].url;
-    // Orc, hornfolk and giant patients get a thick scarred hide (Skin 09); a corpse, rot marbling (Skin 05).
-    const hide = race === 'orc' || race === 'hornfolk' || race === 'giant';
-    return (this.maps ??= {
-      skin: g.image(url(hide ? 'textures/hide-detail' : 'textures/skin-detail'), { repeat: true }),
-      tone: g.image(url(venue === 'forensic' ? 'textures/rot-mottle' : hide ? 'textures/hide-mottle' : 'textures/skin-mottle'), { repeat: true }),
-      linen: g.image(url('textures/linen-detail'), { repeat: true }),
-      wood: g.image(url('textures/wood-table'), { repeat: true }),
-    });
+  private mapsKey = '';
+  /** One surface set resident (ART-0367): entering an op with another species' set frees the last one. */
+  private surfaceMaps(g: Gfx, race: string, venue: string): SurfaceMaps | undefined {
+    const set = surfaceSetFor(race, venue, g.shaderQuality);
+    const key = set ? Object.values(set).join('|') : 'none';
+    if (key !== this.mapsKey) {
+      this.mapsKey = key;
+      const urls = set ? Object.values(set).map((id: AssetId) => import.meta.env.BASE_URL + MANIFEST[id].url) : [];
+      SURFACE_SETS.swap(urls, (u) => g.releaseImage(u));
+      this.maps = set && {
+        skin: g.image(urls[0], { repeat: true }),
+        tone: g.image(urls[1], { repeat: true }),
+        linen: g.image(urls[2], { repeat: true }),
+        wood: g.image(urls[3], { repeat: true }),
+      };
+    }
+    return this.maps ?? undefined;
   }
 
   /** Heat shimmer over hot dragon-breath burns (ENG-0263), fading as they cool. */

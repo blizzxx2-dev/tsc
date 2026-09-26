@@ -14,7 +14,20 @@ const OUT = join(ROOT, 'public', 'assets');
 const MANIFEST = join(ROOT, 'src', 'assets', 'manifest.gen.ts');
 const CHECK = process.argv.includes('--check');
 const MAX_TEX = 4096;
-const UNUSED_LIMIT = 50 * 1024;
+// Per-file size budgets by asset type (ART-0354); tiling surface maps have their own, tighter cap.
+// Models are built locally, uncommitted, and governed by art:compress-models and the download budget.
+const KB = 1024;
+const BYTE_BUDGET: Record<string, number> = {
+  image: 4096 * KB,
+  sheet: 8192 * KB,
+  font: 256 * KB,
+  json: 1024 * KB,
+  shader: 64 * KB,
+  lut: 256 * KB,
+  audio: 8192 * KB,
+  text: 256 * KB,
+};
+const SURFACE_MAP_BUDGET = 512 * KB;
 
 interface Rules {
   bundles: string[];
@@ -95,6 +108,20 @@ function emit(id: string, ext: string, data: Buffer): { url: string; h: string }
   return { url: `assets/${name}`, h };
 }
 
+/** Pixel size from a JPEG's first start-of-frame marker (baseline or progressive). */
+function jpegSize(b: Buffer): { w: number; h: number } | null {
+  if (b[0] !== 0xff || b[1] !== 0xd8) return null;
+  let i = 2;
+  while (i + 9 < b.length) {
+    if (b[i] !== 0xff) return null;
+    const m = b[i + 1];
+    const len = b.readUInt16BE(i + 2);
+    if (m >= 0xc0 && m <= 0xcf && m !== 0xc4 && m !== 0xc8 && m !== 0xcc) return { h: b.readUInt16BE(i + 5), w: b.readUInt16BE(i + 7) };
+    i += 2 + len;
+  }
+  return null;
+}
+
 function walk(dir: string): string[] {
   const out: string[] = [];
   for (const f of readdirSync(dir).sort()) {
@@ -142,7 +169,15 @@ for (const p of walk(SRC)) {
   const rel = posix(relative(SRC, p));
   const base = rel.split('/').pop()!;
   // assets/manifest.json is the art-export record (ART-0035), not a shipped asset.
-  if (rel === 'bundles.json' || rel === 'manifest.json' || rel.startsWith('sprites/') || base.startsWith('.') || base.startsWith('_') || /^(README|OFL|LICENSE)/i.test(base)) continue;
+  if (
+    rel === 'bundles.json' ||
+    rel === 'manifest.json' ||
+    rel.startsWith('sprites/') ||
+    base.startsWith('.') ||
+    base.startsWith('_') ||
+    /^(README|OFL|LICENSE)/i.test(base)
+  )
+    continue;
   const ext = extname(rel).toLowerCase();
   const id = rel.slice(0, rel.length - ext.length);
   const dir = rel.split('/')[0];
@@ -154,8 +189,29 @@ for (const p of walk(SRC)) {
     e.w = img.w;
     e.h = img.h;
     if (img.w > MAX_TEX || img.h > MAX_TEX) errors.push(`${id}: ${img.w}×${img.h} exceeds ${MAX_TEX} px`);
+    // Loose PNGs with alpha must be stored premultiplied (colour ≤ coverage), like the atlas pages (ART-0037).
+    if (type !== 'lut') {
+      let straight = 0;
+      for (let i = 0; i < img.data.length; i += 4) {
+        const a = img.data[i + 3];
+        if (a < 255 && (img.data[i] > a || img.data[i + 1] > a || img.data[i + 2] > a)) straight++;
+      }
+      if (straight > 0) errors.push(`${id}: ${straight} texels are not premultiplied (colour exceeds alpha) — export premultiplied`);
+    }
     if (type === 'lut' && !(img.w === 1024 && img.h === 32)) errors.push(`${id}: LUT must be a 1024×32 strip of 32³ (got ${img.w}×${img.h})`);
   }
+  if (ext === '.jpg') {
+    const size = jpegSize(data);
+    if (!size) errors.push(`${id}: unreadable JPEG header`);
+    else {
+      e.w = size.w;
+      e.h = size.h;
+      if (size.w > MAX_TEX || size.h > MAX_TEX) errors.push(`${id}: ${size.w}×${size.h} exceeds ${MAX_TEX} px`);
+    }
+  }
+  // Tiling surface maps (ART-0367) must be square powers of two so REPEAT wrap and mipmaps are exact.
+  if (id.startsWith('textures/') && e.w !== undefined && e.h !== undefined && (e.w !== e.h || (e.w & (e.w - 1)) !== 0))
+    errors.push(`${id}: surface maps must be square powers of two (got ${e.w}×${e.h})`);
   if (type === 'font') {
     const name = base.replace(/\.[^.]+$/, '');
     const f = rules.fonts[name];
@@ -197,9 +253,12 @@ for (const m of srcText.matchAll(/(?:assetUrl|assets\.load|assets\.get)\(\s*'([^
   if (!entries[m[1]]) errors.push(`src references missing asset '${m[1]}'`);
 for (const [id, e] of Object.entries(entries)) {
   if (!rules.bundles.includes(e.bundle)) errors.push(`${id}: unknown bundle '${e.bundle}'`);
+  // Orphans (ART-0354/0376): every entry that isn't loaded wholesale by type must be named in src/.
   const autoUsed = e.type === 'font' || e.type === 'lut' || e.type === 'sheet' || e.type === 'model';
-  if (!autoUsed && e.bytes > UNUSED_LIMIT && !srcText.includes(`'${id}'`))
-    errors.push(`${id}: ${Math.round(e.bytes / 1024)} KB and never referenced from src/`);
+  if (!autoUsed && !srcText.includes(`'${id}'`))
+    errors.push(`${id}: ${Math.round(e.bytes / 1024)} KB and never referenced from src/ (orphaned manifest entry)`);
+  const cap = id.startsWith('textures/') ? SURFACE_MAP_BUDGET : BYTE_BUDGET[e.type];
+  if (cap !== undefined && e.bytes > cap) errors.push(`${id}: ${Math.round(e.bytes / KB)} KB exceeds the ${e.type} budget of ${Math.round(cap / KB)} KB`);
 }
 
 // ---- size report (ENG-0207/0217). No size budget: asset quality is never traded for install size.
@@ -252,7 +311,9 @@ for (const b of rules.bundles)
 // surprise is visible in every build log. Reported, never enforced by recompressing (see above).
 const DEMO_ART_BUDGET = 400 * 2 ** 20;
 const demoBytes = sized.filter((e) => DEMO_BUNDLES.has(e.bundle)).reduce((a, e) => a + e.bytes, 0);
-console.log(`  demo art ${(demoBytes / 2 ** 20).toFixed(1)} MB of the ${DEMO_ART_BUDGET / 2 ** 20} MB budget${demoBytes > DEMO_ART_BUDGET ? '  — OVER BUDGET' : ''}`);
+console.log(
+  `  demo art ${(demoBytes / 2 ** 20).toFixed(1)} MB of the ${DEMO_ART_BUDGET / 2 ** 20} MB budget${demoBytes > DEMO_ART_BUDGET ? '  — OVER BUDGET' : ''}`,
+);
 console.log('  20 largest assets:');
 for (const e of [...sized].sort((a, b) => b.bytes - a.bytes).slice(0, 20))
   console.log(`    ${(e.bytes / 1024).toFixed(1).padStart(9)} KB  ${e.id}  (${e.bundle})`);

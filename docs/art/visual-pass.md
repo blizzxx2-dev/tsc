@@ -2,7 +2,7 @@
 
 Direction: Trauma Center-style readability (clean painted shapes, bold outlined ailments, a well-lit
 field) in a grim palette. Not PBR realism. Source textures: Julio Sillet Material Pack Skin 01
-(CC-BY, credited) and CC0 ambientCG / Poly Haven maps — see `assets/textures/README.md`.
+(CC-BY, credited) and CC0 Poly Haven maps — see `assets/textures/README.md`.
 
 ## Done
 - Flesh base calmed (fewer veins/cells), skin scan as fine grain, wetter speculars, brighter hospice lamp.
@@ -19,7 +19,7 @@ field) in a grim palette. Not PBR realism. Source textures: Julio Sillet Materia
   how far the oblique eye shifts (`Vs` in the ailment shader `main`).
 - Live parallax: feed the eye offset from the pointer/camera instead of the fixed `Vs`.
 - Check the stitch tube, orc hide and corpse rot in-game (never screenshotted).
-- `suture-rope.jpg` is packed but unused — sample it in `gutStitch` or drop it.
+- The rope scan (ambientCG Rope001) was dropped as unused; the thread twist is procedural in `gutStitch`.
 - Unused pack skins: Skin 06 (gangrene) for rot ailments, Skin 08 (abrasions) for road rash / drag wounds.
 - Wounds are small at 1280×720 compared with Trauma Center — layout/scale change, not a shader one.
 - Grim grade pass on the post chain (per-chapter tint) once the field is final.

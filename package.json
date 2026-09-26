@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "node scripts/build-assets.ts && vite",
     "assets": "node scripts/build-assets.ts",
+    "assets:lint": "node scripts/build-assets.ts --check",
     "build": "node scripts/build-assets.ts --check && tsc --noEmit && vite build",
     "build:release": "node scripts/build-assets.ts --check && tsc --noEmit && vite build --mode release && node scripts/check-release.mjs",
     "preview": "vite preview",
