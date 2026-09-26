@@ -22,8 +22,8 @@ describe('the hornchild branch', () => {
     flags.set('hornchildCertificate', 'natural');
     const care = playWithBot(OP_3_1, { profile: 'steady' }).op;
     expect(care.status).toBe('won');
-    expect(care.labels.has('Cut a natural growth')).toBe(false);
-    expect(care.labels.get('Bud dressed')).toBe(1);
+    expect(care.labelCount('Cut a natural growth')).toBe(0);
+    expect(care.labelCount('Bud dressed')).toBe(1);
     expect(Math.abs(care.score - cut.score) / cut.score).toBeLessThan(0.15);
   });
 });
