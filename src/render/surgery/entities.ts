@@ -98,28 +98,28 @@ drawer(BloodPool, {
       py = ((e.drawFrom.y - e.pos.y) / d) * r * 0.35;
     }
     const lobe = (dx: number, dy: number, rad: number, pull: number) => g.circleGrad(e.pos.x + dx + px * pull, e.pos.y + dy + py * pull, rad, c, z);
-    lobe(0, 0, r * 1.9, 0.3);
-    const wob = (i: number) => Math.sin(op.elapsed * 0.7 + i) * 0.3;
-    switch (e.id % 4) {
-      case 0: // round, with satellites
-        for (let i = 0; i < 3; i++) {
-          const a = e.id * 1.7 + i * 2.1 + wob(i);
-          lobe(Math.cos(a) * r * 0.55, Math.sin(a) * r * 0.44, r * 1.1, 1);
-        }
-        break;
-      case 1: // a run: the pool has crept downhill
-        for (let i = 1; i <= 3; i++) lobe(Math.sin(e.id + i) * r * 0.15, i * r * 0.45, r * (1.2 - i * 0.2), 1);
-        break;
-      case 2: // a splash: many small droplets round the rim
-        for (let i = 0; i < 6; i++) {
-          const a = e.id * 0.9 + i * 1.05 + wob(i) * 0.5;
-          lobe(Math.cos(a) * r * (1 + 0.25 * Math.sin(i * 2.3 + e.id)), Math.sin(a) * r * 0.85, r * 0.34, 1.2);
-        }
-        break;
-      default: {
-        // a pair of pools that have met
-        const a = e.id * 2.3;
-        lobe(Math.cos(a) * r * 0.75, Math.sin(a) * r * 0.6, r * 1.45, 1);
+    // An irregular spill, not a disc: a smaller core with lobes of varied size scattered round it
+    // (hashed per pool so each keeps its shape), and a run creeping downhill on most pools.
+    const h = (i: number) => Math.abs(Math.sin(e.id * 91.7 + i * 17.3) * 43758.5453) % 1;
+    const wob = (i: number) => Math.sin(op.elapsed * 0.7 + i) * 0.15;
+    lobe(0, 0, r * 1.45, 0.3);
+    const n = 5 + Math.floor(h(0) * 3);
+    for (let i = 0; i < n; i++) {
+      const a = h(i + 1) * Math.PI * 2 + wob(i);
+      const d = r * (0.45 + 0.5 * h(i + 11));
+      lobe(Math.cos(a) * d, Math.sin(a) * d * 0.85, r * (0.55 + 0.5 * h(i + 21)), 1);
+    }
+    if (e.id % 4 !== 0) {
+      // The run: a narrowing trickle downhill, bending a little.
+      const bend = (h(40) - 0.5) * 0.6;
+      for (let i = 1; i <= 4; i++) lobe(Math.sin(bend * i) * r * 0.5 * i * 0.35, r * (0.55 + 0.42 * i), r * (0.75 - i * 0.13), 1);
+    }
+    if (e.id % 4 === 2) {
+      // A splash: fine droplets flung round the rim.
+      for (let i = 0; i < 7; i++) {
+        const a = h(i + 50) * Math.PI * 2;
+        const d = r * (1.35 + 0.5 * h(i + 60));
+        lobe(Math.cos(a) * d, Math.sin(a) * d * 0.85, r * (0.22 + 0.12 * h(i + 70)), 1.2);
       }
     }
   },
