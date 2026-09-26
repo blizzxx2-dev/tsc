@@ -8,6 +8,7 @@ import type { Chapter } from './campaign';
 import { choose, n, onlyIf, say, type StoryDef } from './story';
 import { whisperThought } from './whisper';
 import { INTERVIEW_FOUNDERS, INTERVIEW_LIESL } from './interviews';
+import { FORENSIC_PREDECESSOR } from './forensics';
 import { byBand, chapterAverageA, flags, licenceKept } from './flags';
 import { OP_3_10, OP_3_11 } from './ops/hours';
 export { OP_3_10, OP_3_11 };
@@ -557,7 +558,7 @@ export const CHAPTER_3: Chapter = {
   // NAR-0116: reads the demo's choice and Litany count; writes the certificate, Stroh's tooth (op3-9) and Haller's fate (op3-11).
   flags: {
     reads: ['cantorMercy', 'litanySeenCount', 'hornchildCertificate', 'guildMarks', 'guildOps', 'hornchildFinding', 'foundersVerdict'],
-    writes: ['hornchildCertificate', 'strohTooth', 'strohToothFine', 'hallerFate', 'hornchildFinding', 'foundersVerdict'],
+    writes: ['hornchildCertificate', 'strohTooth', 'strohToothFine', 'hallerFate', 'hornchildFinding', 'foundersVerdict', 'predecessorFinding'],
   },
   steps: [
     { kind: 'story', story: STORY_3_1 },
@@ -578,6 +579,8 @@ export const CHAPTER_3: Chapter = {
     { kind: 'op', op: OP_3_6 },
     { kind: 'story', story: STORY_3_6B },
     { kind: 'op', op: OP_3_7 },
+    // CON-0244: the old registrar in the record cellar, before Prime wakes in the new one.
+    { kind: 'discipline', discipline: { id: 'fo3-predecessor', title: FORENSIC_PREDECESSOR.title, place: FORENSIC_PREDECESSOR.place, backdrop: 'chapel', mode: 'forensic', interview: FORENSIC_PREDECESSOR } },
     { kind: 'op', op: OP_3_8 },
     { kind: 'story', story: STORY_3_7 },
     { kind: 'op', op: OP_3_10 },

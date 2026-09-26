@@ -37,6 +37,7 @@ export class InterviewScene implements Scene {
 
   update(dt: number, game: Game): void {
     this.t += dt;
+    this.session.tick(dt);
     const i = game.input;
     if (i.actPressed('ui.back')) this.presenting = null;
   }
@@ -120,6 +121,16 @@ export class InterviewScene implements Scene {
       g.text(`— ${reg.label}`, NOTES.x + 20, y, { size: 16, font: 'italic', color: hex(PALETTE.inkDim) });
       if (hover && input.pressed) this.presenting = picked ? null : id;
       y += 28;
+    }
+
+    // Forensics: the candle, burning down (CON-0241).
+    if (def.candle) {
+      const k = s.candle / def.candle;
+      const cx = VIEW_W - 60;
+      g.rect(cx - 6, 30, 12, 60, hex('#2a2018', 0.8));
+      g.rect(cx - 6, 30 + 60 * (1 - k), 12, 60 * k, hex('#e8dcc0'));
+      if (!s.result && k > 0) g.glow(cx, 26 + 60 * (1 - k), 16 + Math.sin(this.t * 9) * 2, hex('#ffc070', 0.7));
+      if (s.guttered && !s.result) g.text(t('ui.forensic.guttered'), VIEW_W / 2, 560, { size: 18, font: 'italic', color: hex('#d07050'), align: 'center' });
     }
 
     // The transcript: the last thing said.

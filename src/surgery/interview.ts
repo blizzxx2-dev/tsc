@@ -71,7 +71,15 @@ export interface InterviewDef {
   conclusions: readonly InterviewConclusion[];
   /** Findings + contradictions needed before a conclusion may be drawn. */
   needed: number;
+  /**
+   * Forensics (CON-0241): the examination runs by candle-light — this many seconds of candle, burning
+   * down in real time and faster for each thing done. When it gutters, a conclusion must be drawn.
+   */
+  candle?: number;
 }
+
+/** Candle seconds each action burns (forensics). */
+export const CANDLE_COST = { examine: 6, ask: 4, present: 5 };
 
 export interface InterviewResult {
   conclusion: InterviewConclusion;
@@ -99,8 +107,11 @@ export class InterviewSession {
   readonly log: { speaker: string; text: string }[] = [];
   private wasted = 0;
   result: InterviewResult | null = null;
+  /** Candle left, in seconds (forensics); Infinity without one. */
+  candle: number;
 
   constructor(readonly def: InterviewDef) {
+    this.candle = def.candle ?? Infinity;
     for (const e of def.evidence ?? []) this.held.push(e.id);
     this.log.push({ speaker: '', text: def.intro });
   }
@@ -111,7 +122,21 @@ export class InterviewSession {
   }
 
   get canConclude(): boolean {
-    return !this.result && this.progress >= this.def.needed;
+    return !this.result && (this.progress >= this.def.needed || this.guttered);
+  }
+
+  /** The candle is out: nothing more may be examined, only concluded. */
+  get guttered(): boolean {
+    return this.candle <= 0;
+  }
+
+  /** Burn the candle (real time, in the scene). */
+  tick(dt: number): void {
+    if (!this.result && Number.isFinite(this.candle)) this.candle = Math.max(0, this.candle - dt);
+  }
+
+  private burn(cost: number): void {
+    if (Number.isFinite(this.candle)) this.candle = Math.max(0, this.candle - cost);
   }
 
   /** A finding examined, evidence held, or (for a topic's `requires`) a question already asked. */
@@ -126,7 +151,8 @@ export class InterviewSession {
 
   examine(regionId: string): InterviewRegion | null {
     const r = this.def.regions?.find((x) => x.id === regionId);
-    if (!r || this.result) return null;
+    if (!r || this.result || this.guttered) return null;
+    this.burn(CANDLE_COST.examine);
     if (this.examined.includes(r.id)) {
       this.wasted++;
       return r;
@@ -138,7 +164,8 @@ export class InterviewSession {
 
   ask(topicId: string): InterviewTopic | null {
     const t = this.topics().find((x) => x.id === topicId);
-    if (!t || this.result) return null;
+    if (!t || this.result || this.guttered) return null;
+    this.burn(CANDLE_COST.ask);
     if (this.asked.includes(t.id)) this.wasted++;
     else this.asked.push(t.id);
     this.log.push({ speaker: t.speaker, text: t.answer });
@@ -149,7 +176,8 @@ export class InterviewSession {
   /** Present evidence against an answered statement; true when it exposes a contradiction. */
   present(evidenceId: string, topicId: string): boolean {
     // Anything in the notebook may be presented: evidence held, or a finding examined.
-    if (this.result || !this.has(evidenceId) || !this.asked.includes(topicId)) return false;
+    if (this.result || this.guttered || !this.has(evidenceId) || !this.asked.includes(topicId)) return false;
+    this.burn(CANDLE_COST.present);
     const c = this.def.contradictions?.find((x) => x.topic === topicId && x.evidence === evidenceId);
     if (!c || this.exposed.includes(topicId)) {
       this.wasted++;
@@ -168,8 +196,10 @@ export class InterviewSession {
     if (!c) return null;
     const correct = !!c.correct;
     const P = INTERVIEW_POINTS;
-    const score = Math.max(0, this.examined.length * P.finding + this.exposed.length * P.contradiction + (correct ? P.correct : 0) - this.wasted * P.wasted);
-    const max = (this.def.regions?.length ?? 0) * P.finding + (this.def.contradictions?.length ?? 0) * P.contradiction + P.correct;
+    // Forensics: candle left over is worth up to 500 — efficient examinations rank higher.
+    const candleBonus = this.def.candle ? Math.round((this.candle / this.def.candle) * 500) : 0;
+    const score = Math.max(0, this.examined.length * P.finding + this.exposed.length * P.contradiction + (correct ? P.correct : 0) - this.wasted * P.wasted + candleBonus);
+    const max = (this.def.regions?.length ?? 0) * P.finding + (this.def.contradictions?.length ?? 0) * P.contradiction + P.correct + (this.def.candle ? 250 : 0);
     const frac = max > 0 ? score / max : 0;
     const rank: Rank = !correct ? 'C' : frac >= 0.98 && this.wasted === 0 ? 'XS' : frac >= 0.85 ? 'S' : frac >= 0.65 ? 'A' : 'B';
     this.log.push({ speaker: '', text: c.text });

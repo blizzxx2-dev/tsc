@@ -29,6 +29,8 @@ Code: `src/content/flags.ts` (`flags.get / set / has / truthy / count`), conditi
 | `hornchildFinding` | `'turned' \| 'natural'` | the Liesl interview's conclusion (CON-0233) | s3-2 (what the bone showed) |
 | `foundersVerdict` | `'lead' \| 'curse'` | the Founders' Guild inquiry (CON-0234) | op3-3 (`vitals` 75 on `'curse'`) |
 | `trialRebuttals` | number | the trial's cross-examination (CON-0235): charges rebutted | `trialEvidence` (−1 each) |
+| `predecessorFinding` | `'prime' \| 'natural'` | the Registrar's predecessor examination (CON-0244) | — (record) |
+| `coachmanFinding` | `'choir' \| 'robbery'` | the Widow's coachman examination (CON-0245) | s4-8 (Stroh names the carriage) |
 | `choice.s2-4` | `'mercy' \| 'awake'` | s2-4 pick record | tools, tests |
 | `hornchildCertificate` | `'natural' \| 'turned'` | s3-2 choice (NAR-0119): the kind lie or the true sentence | s3-2 (the rest of the scene), Ch4, Ch5 |
 | `choice.s3-2` | `'natural' \| 'turned'` | s3-2 pick record | tools, tests |
@@ -37,7 +39,7 @@ Code: `src/content/flags.ts` (`flags.get / set / has / truthy / count`), conditi
 | `thirstChoice` | `'salve' \| 'brand'` | s4-6 choice (NAR-0137) | Ch5 |
 | `strohToothFine` | boolean | winning op3-9 at XS/S (NAR-0102) | Ch5 (Stroh's trust) |
 | `mauerFate` | `'hale' \| 'maimed'` | winning op4-7 by rank: C → `maimed`, else `hale` (NAR-0105) | Ch5 (ending matrix) |
-| `deadManVerdict` | `'entranced' \| 'dead'` | s4-5 choice (NAR-0136): restart von Salm's heart, or certify him dead for the Tribunal | op4-5 step (closed on `'dead'`), Stroh's trust |
+| `deadManVerdict` | `'entranced' \| 'dead'` | s4-5 choice (NAR-0136): restart von Salm's heart, or certify him dead for the Tribunal; a dead verdict is examined by candle (fo4-salm, CON-0243), which can overturn it | op4-5 step (closed on `'dead'`), Stroh's trust |
 | `choice.s4-5` | `'entranced' \| 'dead'` | s4-5 pick record | tools, tests |
 | `trialAnswer` | `'confess' \| 'deny'` | s5-2 choice (NAR-0147): owning the Litany under oath, or denying it | s5-2 (the prosecutor's reply), Stroh's trust (+1 on confess), the trial evidence and verdict (s5-3, the pardon ending) |
 | `choice.s5-2` | `'confess' \| 'deny'` | s5-2 pick record | tools, tests |

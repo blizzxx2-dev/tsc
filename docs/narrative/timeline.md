@@ -56,6 +56,7 @@ apart, or if a scene is missing. Operations happen between the scenes around the
 | s4-3 | 2 Saatmond | day | `The field hospital — a wagon of miners` |
 | s4-4 | 9 Saatmond | day | `The field hospital — the quartermaster’s wagon` |
 | s4-5 | 12 Saatmond | dawn | `The field hospital — the officers’ tent` |
+| s4-5b | 12 Saatmond | dusk | `The field hospital — dusk` |
 | s4-6 | 14 Saatmond (new moon) | night | `The camp-followers’ lines — night` |
 | s4-7 | 18 Saatmond | Sext (noon) | `The Vennmark camp — noon` |
 | s4-8 | 18 Saatmond | Vespers | `The captain’s tent — evening` |

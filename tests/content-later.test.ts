@@ -24,9 +24,9 @@ describe('Chapters III–V script', () => {
     expect(new Set(opIds).size).toBe(opIds.length);
   });
 
-  it('the campaign runs to five chapters, 12 + 12 + 18 scenes (three alternative endings, the epilogue and the journal) and 11 + 10 + 9 operations after the demo', () => {
+  it('the campaign runs to five chapters, 12 + 13 + 18 scenes (the pyre if von Salm stays dead; three alternative endings, the epilogue and the journal) and 11 + 10 + 9 operations after the demo', () => {
     expect(CAMPAIGN.length).toBe(5);
-    expect(LATER_CHAPTERS.map((c) => c.steps.filter((s) => s.kind === 'story').length)).toEqual([12, 12, 18]);
+    expect(LATER_CHAPTERS.map((c) => c.steps.filter((s) => s.kind === 'story').length)).toEqual([12, 13, 18]);
     expect(LATER_CHAPTERS.map((c) => c.steps.filter((s) => s.kind === 'op').length)).toEqual([11, 10, 9]);
   });
 

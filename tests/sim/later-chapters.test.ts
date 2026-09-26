@@ -112,12 +112,15 @@ for (const [ci, ch] of LATER_CHAPTERS.map((c, i) => [i + 2, c] as const)) {
           const f = new FlagStore();
           f.set(flag, value);
           for (let i = 0; i < ch.steps.length; i++)
-            if (!ENDING_IDS.includes(stepId(ch.steps[i]))) expect(nextOpenStep(ch, i, f), `${ch.id} step ${i} with ${flag}=${value}`).toBe(i);
+            if (!BRANCH_IDS.includes(stepId(ch.steps[i]))) expect(nextOpenStep(ch, i, f), `${ch.id} step ${i} with ${flag}=${value}`).toBe(i);
         }
       }
     });
   });
 }
+
+/** Steps that branch on a flag: the endings, and the dead man's pulse (op4-5 or its examination and pyre). */
+const BRANCH_IDS = ['s5-end', 's5-end-pyre', 's5-end-exile', 'fo4-salm', 's4-5b', 'op4-5'];
 
 /** The three alternative endings (NAR-0158): exactly one of them opens. */
 const ENDING_IDS = ['s5-end', 's5-end-pyre', 's5-end-exile'];

@@ -9139,5 +9139,12 @@
     "size": 17,
     "maxPx": 380,
     "context": "Interview result line: rank seal letter, then counts."
+  },
+  "ui.forensic.guttered": {
+    "scene": "interview",
+    "font": "italic",
+    "size": 18,
+    "maxPx": 800,
+    "context": "Forensic examination: the candle has burned out; the player must now give a verdict."
   }
 }

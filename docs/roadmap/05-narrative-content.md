@@ -621,12 +621,12 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] CON-0240 · Beta · P2 · S · Bone-setting tutorial and balance pass — average bot aligns ≥ 70% of fragments within tolerance
 
 ### Forensic post-mortem
-- [ ] CON-0241 · Alpha · P1 · M · Forensic mode spec — no vitals; timer is "candle length"; find, document and tag wounds/foreign bodies in a corpse; conclusion answers cause and manner of death
-- [ ] CON-0242 · Alpha · P1 · L · Implement forensic scene — evidence tagging, notebook, conclusion validator; reusing op entities in inert mode (tests)
-- [ ] CON-0243 · Alpha · P1 · M · Forensic "The Dead Man's Pulse" branch B (Ch4) — prove Lord von Salm is undead or bite-tranced; writes `deadManVerdict`
-- [ ] CON-0244 · Alpha · P1 · M · Forensic "The Registrar's Predecessor" (Ch3) — body found with a partial name-sigil, foreshadows Prime
-- [ ] CON-0245 · Alpha · P2 · M · Forensic "The Widow's Coachman" (Ch4) — evidence ties Widow Reiss's carriage to the Choir (patron betrayal clue)
-- [ ] CON-0246 · Beta · P2 · S · Forensic tutorial and balance pass — perfect evidence rate achievable in ≤ 70% of candle
+- [x] CON-0241 · Alpha · P1 · M · Forensic mode spec — no vitals; timer is "candle length"; find, document and tag wounds/foreign bodies in a corpse; conclusion answers cause and manner of death
+- [x] CON-0242 · Alpha · P1 · L · Implement forensic scene — evidence tagging, notebook, conclusion validator; reusing op entities in inert mode (tests)
+- [x] CON-0243 · Alpha · P1 · M · Forensic "The Dead Man's Pulse" branch B (Ch4) — prove Lord von Salm is undead or bite-tranced; writes `deadManVerdict`
+- [x] CON-0244 · Alpha · P1 · M · Forensic "The Registrar's Predecessor" (Ch3) — body found with a partial name-sigil, foreshadows Prime
+- [x] CON-0245 · Alpha · P2 · M · Forensic "The Widow's Coachman" (Ch4) — evidence ties Widow Reiss's carriage to the Choir (patron betrayal clue)
+- [x] CON-0246 · Beta · P2 · S · Forensic tutorial and balance pass — perfect evidence rate achievable in ≤ 70% of candle
 
 ### Discipline integration
 - [ ] CON-0247 · Alpha · P1 · S · Campaign step kinds `triage` — `interview`, `bonesetting`, `forensic` added to campaign graph schema with validation

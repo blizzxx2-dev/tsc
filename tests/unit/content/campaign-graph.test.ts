@@ -66,7 +66,9 @@ describe('QAT-0155: campaign reachability', () => {
   it('walking the step model from a fresh save visits every step of every chapter and clears them in order', () => {
     const { visited, progress, cleared } = walkCampaign(FULL_CAMPAIGN);
     // The endings branch (NAR-0158): a fresh save, with no choices made, takes the exile.
-    const all = FULL_CAMPAIGN.flatMap((c) => c.steps.map(stepId)).filter((id) => id !== 's5-end' && id !== 's5-end-pyre');
+    // The dead man's pulse (CON-0243): with no verdict given, von Salm goes to the table, not the pyre.
+    const closed = new Set(['s5-end', 's5-end-pyre', 'fo4-salm', 's4-5b']);
+    const all = FULL_CAMPAIGN.flatMap((c) => c.steps.map(stepId)).filter((id) => !closed.has(id));
     expect(visited).toEqual(all);
     expect(cleared).toEqual([1, 2, 3, 4, 5]);
     expect(progress.chaptersCleared).toBe(5);
@@ -76,7 +78,7 @@ describe('QAT-0155: campaign reachability', () => {
   it('every step of every chapter is open on the default path (no branch strands a fresh player)', () => {
     const flags = new FlagStore();
     // Only the endings branch (NAR-0158); on the default path the exile is the ending that opens.
-    const branch = new Set(['s5-end', 's5-end-pyre']);
+    const branch = new Set(['s5-end', 's5-end-pyre', 'fo4-salm', 's4-5b']);
     for (const c of FULL_CAMPAIGN)
       for (let i = 0; i < c.steps.length; i++) if (!branch.has(stepId(c.steps[i]))) expect(nextOpenStep(c, i, flags), `${c.id} step ${i}`).toBe(i);
   });

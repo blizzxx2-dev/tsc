@@ -1120,5 +1120,6 @@
   "ui.interview.present_to": "Present it against…",
   "ui.interview.progress": "Found {n} of {needed}",
   "ui.interview.conclude": "Conclude",
-  "ui.interview.result": "{rank} — {found} findings, {contradictions} contradictions"
+  "ui.interview.result": "{rank} — {found} findings, {contradictions} contradictions",
+  "ui.forensic.guttered": "The candle gutters. Give your verdict."
 }

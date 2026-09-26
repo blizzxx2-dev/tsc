@@ -26,7 +26,7 @@ export interface DisciplineStepDef {
   title: string;
   place: string;
   backdrop: Backdrop;
-  mode: 'interview';
+  mode: 'interview' | 'forensic';
   interview: InterviewDef | ((f: FlagReader) => InterviewDef);
   /** Flags to write from the finished session, beyond the conclusion's own. */
   after?: (result: InterviewResult, session: InterviewSession) => FlagRecord;

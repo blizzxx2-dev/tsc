@@ -8,6 +8,7 @@ import { at, closeIncision } from './chapter1';
 import type { Chapter } from './campaign';
 import { choose, n, onlyIf, say, type StoryDef } from './story';
 import { strohTrust } from './endings';
+import { FORENSIC_COACHMAN, FORENSIC_SALM } from './forensics';
 import { byBand, chapterAverageA } from './flags';
 import { OP_4_7, OP_4_9 } from './ops/hours';
 export { OP_4_7, OP_4_9 };
@@ -116,12 +117,22 @@ export const STORY_4_5: StoryDef = {
     ...onlyIf(
       { flag: 'deadManVerdict', is: 'dead' },
       say('stroh', 'Dead, by the surgeon’s verdict. The Tribunal is obliged to you, Doctor. It is not often obliged to anyone.'),
-      n('They burn Lord von Salm at dusk, as the Tribunal prescribes for a corpse that will not lie still. The company stands bareheaded.'),
-      n('In the heat, the grey body arches once and draws a long breath. The smoke takes the sound. Only Ilse is close enough to hear it.'),
-      say('ilse', 'Doctor. He breathed.'),
-      say('kreuzer', 'The fire draws the air out of a body. It happens. It happens on every pyre.'),
-      say('ilse', 'Then why are your hands shaking?'),
+      say('stroh', 'The law requires the body examined before it burns. You will do it. I will hold the candle.'),
     ),
+  ],
+};
+
+/** If the examination left him dead (CON-0243): the pyre. */
+export const STORY_4_5B: StoryDef = {
+  id: 's4-5b',
+  place: 'The field hospital — dusk',
+  backdrop: 'camp',
+  lines: [
+    n('They burn Lord von Salm at dusk, as the Tribunal prescribes for a corpse that will not lie still. The company stands bareheaded.'),
+    n('In the heat, the grey body arches once and draws a long breath. The smoke takes the sound. Only Ilse is close enough to hear it.'),
+    say('ilse', 'Doctor. He breathed.'),
+    say('kreuzer', 'The fire draws the air out of a body. It happens. It happens on every pyre.'),
+    say('ilse', 'Then why are your hands shaking?'),
   ],
 };
 
@@ -171,6 +182,10 @@ export const STORY_4_8: StoryDef = {
     say('stroh', 'Who struck it?'),
     say('mauer', 'No one struck it. Someone simply didn’t sign. The Widow Reiss’s seat. She sits for the charities.'),
     say('ilse', 'The Widow Reiss. The hospice’s patron. She pays for the candles in our ward.'),
+    ...onlyIf(
+      { flag: 'coachmanFinding', is: 'choir' },
+      say('stroh', 'And her coachman is in a ditch on the east road with a Choir mark in his palm and our candle-bill in his pocket.'),
+    ),
     say('stroh', '…Then for four months I have been a private man with a hat and a sword, making arrests.'),
     say('kreuzer', 'And your prisoners?'),
     say('stroh', 'Are held on nothing. I know. I am not a fool, Doctor, only a man who did not read his own warrant.'),
@@ -592,8 +607,8 @@ export const CHAPTER_4: Chapter = {
   // NAR-0131: reads Chapter III's outcomes and Stroh's trust (s4-8, s4-end); writes `deadManVerdict` (s4-5),
   // `thirstChoice` (s4-6) and `mauerFate` (op4-7). See docs/narrative/flags.md.
   flags: {
-    reads: ['hallerFate', 'hornchildCertificate', 'litanySeenCount', 'cantorMercy', 'strohTooth', 'strohToothFine', 'deadManVerdict'],
-    writes: ['deadManVerdict', 'thirstChoice', 'mauerFate'],
+    reads: ['hallerFate', 'hornchildCertificate', 'litanySeenCount', 'cantorMercy', 'strohTooth', 'strohToothFine', 'deadManVerdict', 'coachmanFinding'],
+    writes: ['deadManVerdict', 'thirstChoice', 'mauerFate', 'coachmanFinding'],
   },
   steps: [
     { kind: 'story', story: STORY_4_1 },
@@ -606,11 +621,16 @@ export const CHAPTER_4: Chapter = {
     { kind: 'story', story: STORY_4_4 },
     { kind: 'op', op: OP_4_4 },
     { kind: 'story', story: STORY_4_5 },
+    // CON-0243: certified dead, examined for the Tribunal — a careful examination can overturn it.
+    { kind: 'discipline', discipline: { id: 'fo4-salm', title: FORENSIC_SALM.title, place: FORENSIC_SALM.place, backdrop: 'tent', mode: 'forensic', interview: FORENSIC_SALM }, if: { flag: 'deadManVerdict', is: 'dead' } },
+    { kind: 'story', story: STORY_4_5B, if: { flag: 'deadManVerdict', is: 'dead' } },
     { kind: 'op', op: OP_4_5, if: { not: { flag: 'deadManVerdict', is: 'dead' } } },
     { kind: 'story', story: STORY_4_6 },
     { kind: 'op', op: OP_4_6 },
     { kind: 'story', story: STORY_4_7 },
     { kind: 'op', op: OP_4_7 },
+    // CON-0245: the coachman in the ditch, before Mauer names the Widow's seat.
+    { kind: 'discipline', discipline: { id: 'fo4-coachman', title: FORENSIC_COACHMAN.title, place: FORENSIC_COACHMAN.place, backdrop: 'tent', mode: 'forensic', interview: FORENSIC_COACHMAN } },
     { kind: 'story', story: STORY_4_8 },
     { kind: 'story', story: STORY_4_9 },
     { kind: 'op', op: OP_4_8 },
