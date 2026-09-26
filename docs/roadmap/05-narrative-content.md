@@ -136,38 +136,38 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ## NAR · Epic 5 — Character arcs (full game)
 
 ### Dr. Kreuzer
-- [ ] NAR-0090 · Alpha · P0 · M · Kreuzer arc doc — from sworn craftsman hiding the Litany to open defiance at trial; 5 chapter-by-chapter turning points with the scene id carrying each
+- [x] NAR-0090 · Alpha · P0 · M · Kreuzer arc doc — from sworn craftsman hiding the Litany to open defiance at trial; 5 chapter-by-chapter turning points with the scene id carrying each
 - [x] NAR-0091 · Alpha · P1 · S · Backstory reveal — why he left Weissburg (a patient he lost to a guild rule); revealed in Ch3 to Haller during licence vote
 - [x] NAR-0092 · Alpha · P1 · S · Litany origin — Kreuzer learns in Ch4 that the Litany is itself a sung office fragment, linking his gift to the Choir; codex "The Litany, Reconsidered"
 - [x] NAR-0093 · Alpha · P1 · S · Whisper-meter narrative states — 4 bands (Unremarked, Noted, Suspected, Accused) each with 3 unique Kreuzer interior lines
 - [x] NAR-0094 · Beta · P2 · S · Kreuzer journal epilogue — one page per ending written in his voice
 
 ### Sister Ilse
-- [ ] NAR-0095 · Alpha · P0 · M · Ilse arc doc — faith vs. what she sees; she lies to Stroh for Kreuzer in Ch3, is taken as Vespers host in Ch5
+- [x] NAR-0095 · Alpha · P0 · M · Ilse arc doc — faith vs. what she sees; she lies to Stroh for Kreuzer in Ch3, is taken as Vespers host in Ch5
 - [x] NAR-0096 · Alpha · P1 · S · Ilse's order politics — the Merciful Order has no political weight; Ch3 scene where the Mother Superior orders her to leave the hospice and she refuses
 - [x] NAR-0097 · Alpha · P1 · S · Ilse personal side-scene per chapter — Ch3–5; unlocked by high average rank, 8–12 lines each
 
 ### Master Haller
-- [ ] NAR-0098 · Alpha · P0 · M · Haller arc doc — mentor who once struck the Precentor from the guild rolls; guilt; licence vote in Ch3; hexfire host in Terce; survives or dies by player rank
+- [x] NAR-0098 · Alpha · P0 · M · Haller arc doc — mentor who once struck the Precentor from the guild rolls; guilt; licence vote in Ch3; hexfire host in Terce; survives or dies by player rank
 - [x] NAR-0099 · Alpha · P1 · S · Haller confession scene (Ch3) — reveals he knew the Precentor as his pupil, Aurel Vennholt; 12–16 lines
 - [x] NAR-0100 · Alpha · P1 · S · Haller fate branch — Terce op rank ≥ A: he lives, retires with burned hands and becomes Ch4–5 advisor by letter; < A: he survives maimed and bitter (no death to keep op fail distinct)
 
 ### Inquisitor Stroh
-- [ ] NAR-0101 · Alpha · P0 · M · Stroh arc doc — chartered agent of the council; his charter has lapsed (Ch4 reveal); trust meter drives whether he defends or prosecutes Kreuzer in Ch5
+- [x] NAR-0101 · Alpha · P0 · M · Stroh arc doc — chartered agent of the council; his charter has lapsed (Ch4 reveal); trust meter drives whether he defends or prosecutes Kreuzer in Ch5
 - [x] NAR-0102 · Alpha · P1 · S · Stroh dental op scene "The Most Hated Avocation" (Ch3) — interrogation between groans; trust +1 on S rank
 - [x] NAR-0103 · Alpha · P1 · S · Charter-lapse reveal scene (Ch4) — Mauer produces the council roll; Stroh's authority is now void; 14 lines
 - [x] NAR-0104 · Alpha · P1 · S · Stroh trust flags list — every choice that moves it (cantorMercy, certificate signing, Stroh's tooth rank, Litany seen count) with deltas
 
 ### Captain Mauer
-- [ ] NAR-0105 · Alpha · P1 · M · Mauer arc doc — loyal to his men over the council; Sext host in Ch4; leads the Watch against the Tribunal on Hollow Night if saved at rank ≥ B
+- [x] NAR-0105 · Alpha · P1 · M · Mauer arc doc — loyal to his men over the council; Sext host in Ch4; leads the Watch against the Tribunal on Hollow Night if saved at rank ≥ B
 - [x] NAR-0106 · Alpha · P2 · S · Mauer's roll-call motif — he counts his men in every scene; count falls across Ch4; payoff line in Ch5
 
 ### Orsa Flintvein
-- [ ] NAR-0107 · Alpha · P1 · M · Orsa arc doc — returns in Ch4 with her miners (Delver's Lung), then in Ch5 digs the tunnel under the Tribunal court
+- [x] NAR-0107 · Alpha · P1 · M · Orsa arc doc — returns in Ch4 with her miners (Delver's Lung), then in Ch5 digs the tunnel under the Tribunal court
 - [x] NAR-0108 · Alpha · P2 · S · Orsa's mine-name running gag — names a bad mine after Kreuzer (Ch2), reports its collapse (Ch4), names a better one (epilogue)
 
 ### The Precentor
-- [ ] NAR-0109 · Alpha · P0 · M · Precentor arc doc — Aurel Vennholt, struck-off surgeon; motive: end all suffering with a perfect Compline; appears only as voice until Ch4, in person in Ch5
+- [x] NAR-0109 · Alpha · P0 · M · Precentor arc doc — Aurel Vennholt, struck-off surgeon; motive: end all suffering with a perfect Compline; appears only as voice until Ch4, in person in Ch5
 - [x] NAR-0110 · Alpha · P1 · S · Precentor's letters — 5 intercepted letters (one per chapter, Ch1–2 letters added to demo codex as locked stubs) building his case in his own voice
 - [x] NAR-0111 · Alpha · P1 · S · Precentor/Kreuzer mirror scene (Ch5) — both claim to stop pain; 20 lines; no villain monologue beyond 4 consecutive lines
 - [x] NAR-0112 · Alpha · P2 · S · Hollow Choir hierarchy — Precentor, cantors, lay-cantors, acolytes; the hospice patron (Widow Aldegund Reiss) as secret acolyte; bible entry
