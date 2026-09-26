@@ -24,6 +24,7 @@ export const STORY_4_1: StoryDef = {
   id: 's4-1',
   place: 'The Vennmark road — four days east of Kessendorf',
   backdrop: 'camp',
+  lighting: 'day',
   lines: [
     n('CHAPTER IV — SEXT AND NONE'),
     n('Sext is the noon office; None, the ninth hour, when the old books say the heart of the world stopped.'),
@@ -76,6 +77,7 @@ export const STORY_4_3: StoryDef = {
   id: 's4-3',
   place: 'The field hospital — a wagon of miners',
   backdrop: 'camp',
+  lighting: 'day',
   lines: [
     say('patient', 'DOCTOR! You’re alive! Good. I told the Kreuzer Deep you would be. Collapsed, the Kreuzer Deep. Last month. Very sad.', 'Orsa Flintvein'),
     say('kreuzer', 'You named a mine after me and it fell in.'),
@@ -90,6 +92,7 @@ export const STORY_4_4: StoryDef = {
   id: 's4-4',
   place: 'The field hospital — the quartermaster’s wagon',
   backdrop: 'camp',
+  lighting: 'day',
   lines: [
     n('A giant of the Ostrau company, Gutram, is brought in by eight men and a cart. He has eaten a strongbox.'),
     ...mauerCount(
@@ -107,7 +110,8 @@ export const STORY_4_4: StoryDef = {
 export const STORY_4_5: StoryDef = {
   id: 's4-5',
   place: 'The field hospital — the officers’ tent',
-  backdrop: 'chapel',
+  backdrop: 'tent',
+  lighting: 'day',
   lines: [
     n('Lord Eckbert von Salm, patron of the Ostrau company, was found at dawn in his tent, cold and grey. His valet says he still has a pulse.'),
     say('stroh', 'One beat a minute. The Tribunal has a word for a corpse with a heartbeat, Doctor. I want your verdict.'),
@@ -168,6 +172,7 @@ export const STORY_4_7: StoryDef = {
   id: 's4-7',
   place: 'The Vennmark camp — noon',
   backdrop: 'camp',
+  lighting: 'day',
   lines: [
     n('At noon a stillness comes over the camp. Men sit down where they stand. The sentries lean on their pikes and do not blink.'),
     ...mauerCount(
@@ -183,7 +188,8 @@ export const STORY_4_7: StoryDef = {
 export const STORY_4_8: StoryDef = {
   id: 's4-8',
   place: 'The captain’s tent — evening',
-  backdrop: 'chapel',
+  backdrop: 'tent',
+  lighting: 'dusk',
   lines: [
     n('Mauer wakes at dusk, weak as a kitten and furious about it. The first thing he asks for is the strongbox papers.'),
     ...mauerCount(
@@ -222,6 +228,7 @@ export const STORY_4_9: StoryDef = {
   id: 's4-9',
   place: 'The camp-followers’ lines — a wedding',
   backdrop: 'camp',
+  lighting: 'day',
   lines: [
     n('Hanne the sutler’s daughter marries a Watch pikeman under a bower of wet ribbons. At the vow, her fingers turn to stone.'),
     say('patient', 'It’s climbing, Doctor. My hand, my wrist… I can’t feel the ring any more.', 'Hanne'),
@@ -237,7 +244,8 @@ export const STORY_4_9: StoryDef = {
 export const STORY_4_10: StoryDef = {
   id: 's4-10',
   place: 'The Vennmark camp — a letter from Kessendorf',
-  backdrop: 'hospice',
+  backdrop: 'tent',
+  lighting: 'day',
   lines: [
     // NAR-0100: how Terce left Haller's hands decides how he writes to the Doctor.
     ...onlyIf(
@@ -273,7 +281,8 @@ export const STORY_4_10: StoryDef = {
 export const STORY_4_11: StoryDef = {
   id: 's4-11',
   place: 'The Vennmark camp — the ninth hour',
-  backdrop: 'night',
+  backdrop: 'camp',
+  lighting: 'day',
   lines: [
     n('At the ninth hour, a militiaman of Kessendorf falls in the mud without a sound.'),
     say('ilse', 'Doctor — it’s Pieter. Pieter, from the barbed arrow, the first week. He came east with the Watch.'),
@@ -287,6 +296,7 @@ export const STORY_4_END: StoryDef = {
   id: 's4-end',
   place: 'The road west — returning to Kessendorf',
   backdrop: 'street',
+  lighting: 'day',
   lines: [
     n('Pieter lives. The companies are recalled; the Vennmark is quiet, as if something there has finished what it came to do.'),
     ...mauerCount(

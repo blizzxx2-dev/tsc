@@ -134,7 +134,8 @@ export class ResultsScene implements Scene {
     rows.forEach(([k, v], i) => {
       const ra = Math.max(0, Math.min(1, (this.t - 0.25 - i * 0.1) * 5));
       if (ra <= 0) return;
-      const y = r.y + 186 + i * 27 + (1 - ra) * 6;
+      // Clear of the verdict line above (it sat on the COOL row).
+      const y = r.y + 204 + i * 26 + (1 - ra) * 6;
       caps(g, k, lx, y, 12, hex(INK.dim, ra));
       if (i < 4) tallyMarks(g, lx + 120, y - 9, Math.min(25, counts[i]), hex(i < 2 ? INK.gold : '#c05040', 0.85 * ra));
       numerals(g, v, lx + lw, y + 2, 20, '#ffffff', '#d8ccb4', 'right', ra);

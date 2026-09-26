@@ -47,6 +47,7 @@ export const STORY_1_2: StoryDef = {
   id: 's1-2',
   place: 'The Hospice — the next morning',
   backdrop: 'hospice',
+  lighting: 'day',
   lines: [
     n('The next morning the Watch arrives before the bread does.'),
     say('mauer', 'Make way! Make way, damn you! Surgeon! Where’s the surgeon?'),
@@ -64,6 +65,7 @@ export const STORY_1_3: StoryDef = {
   id: 's1-3',
   place: 'The Hospice — noon',
   backdrop: 'hospice',
+  lighting: 'day',
   lines: [
     n('Noon. A second sack of turnips arrives at the gate. The drover has told his friends about us.'),
     say('ilse', 'Doctor, the gunsmiths’ quarter. An apprentice was proving a new handgun barrel and it burst in his hands.'),

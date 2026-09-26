@@ -9,6 +9,7 @@ export const STORY_2_1: StoryDef = {
   id: 's2-1',
   place: 'The Timber Road — the Watch’s muster camp, three leagues east of Kessendorf',
   backdrop: 'camp',
+  lighting: 'day',
   lines: [
     n('CHAPTER II — THE HOUR OF LAUDS'),
     // The transition card (NAR-0057): a week passes, and the writ itself is shown.
@@ -29,6 +30,7 @@ export const STORY_2_2: StoryDef = {
   id: 's2-2',
   place: 'The muster camp — afternoon',
   backdrop: 'camp',
+  lighting: 'day',
   lines: [
     say('patient', 'Put me down, you long-legged oafs! I can walk! I can… mostly walk.', 'Orsa Flintvein'),
     say('mauer', 'Dwarf prospector. Her crew was working a seam in the hills when it caved in.'),
@@ -68,6 +70,7 @@ export const STORY_2_4: StoryDef = {
   id: 's2-4',
   place: 'The muster camp — before midnight',
   backdrop: 'camp',
+  lighting: 'night',
   lines: [
     say('stroh', 'Doctor. I have brought you a gift.'),
     n('Two of the Inquisitor’s men drag a thin, grey-robed figure into the light. His chest is a lattice of glowing sigils.'),
@@ -89,6 +92,7 @@ export const STORY_2_5: StoryDef = {
   id: 's2-5',
   place: 'The muster camp — dawn',
   backdrop: 'camp',
+  lighting: 'dusk',
   lines: [
     say('patient', 'Lauds… is sung at dawn… with the muster… under the banner…', 'The cantor'),
     say('mauer', 'The dawn muster? That’s now—'),
@@ -106,7 +110,8 @@ export const STORY_2_5: StoryDef = {
 export const STORY_2_END: StoryDef = {
   id: 's2-end',
   place: 'The muster camp — morning',
-  backdrop: 'chapel',
+  backdrop: 'tent',
+  lighting: 'day',
   lines: [
     n('The singing stops. The standard-bearer breathes. In the flesh over his heart, a single word: LAUDS.'),
     say('ilse', 'And beside it — Doctor, look. An eye with a stroke through it. The same mark the page-boy carried.'),

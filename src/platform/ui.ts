@@ -40,13 +40,19 @@ function button(label: string, onClick: () => void): HTMLButtonElement {
 }
 
 let stack = 0;
-/** Non-blocking notice, bottom-centre, fades after `ms`. */
+/** Where notices sit: under the timer during an operation, bottom-left elsewhere (clear of the location card, the dialogue and the story controls). */
+let anchor: 'top' | 'corner' = 'corner';
+export function setNoticeAnchor(a: 'top' | 'corner'): void {
+  anchor = a;
+}
+/** Non-blocking notice; fades after `ms`. */
 export function showNotice(message: string, kind: NoticeKind = 'info', ms = 6000): void {
   const l = layer();
   if (!l) return;
   // Top-centre under the HUD's timer plate: the bottom of the screen belongs to the dialogue, the
   // callouts and the story controls, which a notice there would cover.
-  const d = panel(`left:50%;transform:translateX(-50%);top:calc(17% + ${stack * 64}px);max-width:min(640px,70%);text-align:center;transition:opacity .6s;${kind === 'warning' ? 'border-color:#b8401c;' : ''}`);
+  const place = anchor === 'top' ? `left:50%;transform:translateX(-50%);top:calc(17% + ${stack * 64}px);max-width:min(640px,70%);text-align:center` : `left:2.5%;bottom:calc(3% + ${stack * 64}px);max-width:min(460px,36%);text-align:left`;
+  const d = panel(`${place};transition:opacity .6s;${kind === 'warning' ? 'border-color:#b8401c;' : ''}`);
   d.setAttribute('role', 'status');
   d.textContent = message;
   l.appendChild(d);

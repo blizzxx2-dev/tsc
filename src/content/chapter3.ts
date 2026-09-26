@@ -23,6 +23,7 @@ export const STORY_3_1: StoryDef = {
   id: 's3-1',
   place: 'Kessendorf — the Hospice of Saint Ildra, the morning after the muster returns',
   backdrop: 'hospice',
+  lighting: 'day',
   lines: [
     n('CHAPTER III — PRIME AND TERCE'),
     n('Prime: the first work of the day. In the old offices, it is when the roll of the dead is read aloud.'),
@@ -85,6 +86,7 @@ export const STORY_3_3: StoryDef = {
   id: 's3-3',
   place: 'The Kilnrows — the foundry quarter, noon',
   backdrop: 'street',
+  lighting: 'day',
   lines: [
     n('At noon the powder-mill on Saltpetre Lane goes up. The windows of the hospice bow inward and then, politely, stay whole.'),
     say('mauer', 'Doctor! Three dead in the mill yard, a dozen more coming. The guild’s own guard took a ball when the magazine cooked off.'),
@@ -122,6 +124,7 @@ export const STORY_3_5: StoryDef = {
   id: 's3-5',
   place: 'The Iron Bridge — morning',
   backdrop: 'street',
+  lighting: 'day',
   lines: [
     n('Overnight the council raises the bridges. The Kilnrows are quarantined: the fever that came with the smoke has a name now.'),
     say('mauer', 'Plague on the Saltpetre side. Nobody crosses. Council’s orders, and my lads have to enforce them on their own cousins.'),
@@ -137,6 +140,7 @@ export const STORY_3_6: StoryDef = {
   id: 's3-6',
   place: 'The quarantine side — the Penny Stair',
   backdrop: 'street',
+  lighting: 'day',
   lines: [
     n('Inside the quarantine, the hospice keeps a second ward in a requisitioned pie-shop. The pie-shop is not happy about it.'),
     say('patient', 'It’s not the pies! Everyone who ate my pies is perfectly well! Apart from the ones who aren’t!', 'Gottfried, pie-man'),
@@ -168,6 +172,7 @@ export const STORY_3_7: StoryDef = {
   id: 's3-7',
   place: 'The Hall of Records — dawn, the hour of Prime',
   backdrop: 'chapel',
+  lighting: 'dusk',
   lines: [
     n('Every dawn of the quarantine, Registrar Oswin Tallert reads the roll of the plague dead from the steps of the Hall of Records.'),
     n('This dawn he reads on after the roll is finished. Names nobody knows. Names nobody has lost yet.'),
@@ -238,6 +243,7 @@ export const STORY_3_END: StoryDef = {
   id: 's3-end',
   place: 'The hospice — the morning after Terce',
   backdrop: 'hospice',
+  lighting: 'day',
   lines: [
     n('The Guildhall is ash. The vote is never counted. Master Haller lies in the hospice with both hands wrapped to the wrist.'),
     say('haller', 'Kreuzer. Sit. I have kept something from you, and the fire has made me honest, which is inconvenient.'),

@@ -116,8 +116,6 @@ export class BriefingScene implements Scene {
     const rk = rankThresholds(d);
     caps(g, t('ui.briefing.targets'), lx, r.y + 296, 12);
     g.text(t('ui.briefing.targets_value', { s: rk.S, a: rk.A, b: rk.B }), vx, r.y + 300, { size: 17, color: hex(INK.dim), shadow: false });
-    // What XS asks beyond the score (CON-0087): no Bad or Miss, and the vitals never below the floor.
-    g.text(t('ui.briefing.xs_goal', { xs: Math.round(rk.S * 1.05), floor: DEFAULT_TUNING.scoring.xsVitalsFloor }), vx + 330, r.y + 300, { size: 16, font: 'italic', color: hex(INK.dim, 0.8), shadow: false });
     caps(g, t('ui.briefing.time_allowed'), lx, r.y + 326, 12);
     numerals(g, formatClock(d.timeLimit), vx, r.y + 330, 22, '#ffffff', '#d8ccb4');
     // The Litany is sealed for this patient (GAM-0170): a red tag beside the clock, so the player knows before the star fails.
@@ -155,11 +153,15 @@ export class BriefingScene implements Scene {
       g.text(t(`ui.briefing.prognosis.${k}`), bx + 24, r.y + 370, { size: 18, color: hex(on ? '#ffb0a8' : INK.dim), shadow: false });
     });
     caps(g, t('ui.briefing.instruments'), lx, r.y + 420, 12);
+    // Eight instruments would run under Sister Ilse's note: a full kit packs a little tighter.
+    const full = d.tools.length > 6;
+    const pitch = full ? 61 : 84;
+    const ps = full ? 54 : 64;
     d.tools.forEach((tool, i) => {
-      const x = lx + 34 + i * 84;
+      const x = lx + ps / 2 + 2 + i * pitch;
       const fresh = TOOL_INTRODUCED[tool] === d.id;
-      g.plate(x - 32, r.y + 436, 64, 64, { radius: 3, top: hex('#16110d', 0.95), bottom: hex('#0a0806', 0.95), border: hex(fresh ? INK.gold : '#5a4a34', 0.8), borderW: fresh ? 1.4 : 1, bevel: 0.5, shadow: [0.5, 6, 2], glow: fresh ? hex(INK.gold, 0.2) : undefined, glowR: 10 });
-      toolIcon(g, tool, x, r.y + 470, 0.8, g.time);
+      g.plate(x - ps / 2, r.y + 436 + (64 - ps) / 2, ps, ps, { radius: 3, top: hex('#16110d', 0.95), bottom: hex('#0a0806', 0.95), border: hex(fresh ? INK.gold : '#5a4a34', 0.8), borderW: fresh ? 1.4 : 1, bevel: 0.5, shadow: [0.5, 6, 2], glow: fresh ? hex(INK.gold, 0.2) : undefined, glowR: 10 });
+      toolIcon(g, tool, x, r.y + 468, (0.8 * ps) / 64, g.time);
       // Binding glyph from the live bindings, and a NEW ribbon on an instrument this case introduces.
       keycap(g, glyphFor(`tool.select.${TOOL_INFO.findIndex((ti) => ti.id === tool) + 1}` as ActionId), x - 12, r.y + 508, 11, 1);
       if (fresh) {
@@ -170,13 +172,16 @@ export class BriefingScene implements Scene {
     // Sister Ilse's note (UIX-0110): the first instruction of the case, in her hand.
     const note = d.phases[0]?.callout?.[0];
     if (note) {
-      const nr = { x: r.x + r.w - 236, y: r.y + 404, w: 200, h: 96 };
+      // The box grows to hold her whole note (it spilled out of a fixed 96 px).
+      const lines = g.wrap(tSource(note), 176, 16, 'italic').length;
+      const nr = { x: r.x + r.w - 236, y: r.y + 404, w: 200, h: Math.max(96, 46 + lines * 20) };
       g.plate(nr.x, nr.y, nr.w, nr.h, { radius: 2, top: hex('#1a1411', 0.9), bottom: hex('#0e0b09', 0.9), border: hex(INK.gilt, 0.35), borderW: 1, bevel: 0.3, shadow: [0.3, 4, 1] });
       caps(g, t('ui.briefing.ilse_note'), nr.x + 12, nr.y + 18, 10, hex(INK.gold));
       g.textBlock(tSource(note), nr.x + 12, nr.y + 38, nr.w - 24, { size: 16, font: 'italic', color: hex(INK.text, 0.9), shadow: false }, 1.25);
     }
-    this.notes ??= briefingNotes(d);
-    this.notes.forEach((n, i) => g.text(n, lx, r.y + 548 + i * 18, { size: 16, font: 'italic', color: hex(INK.dim), shadow: false }));
+    // What XS asks beyond the score (CON-0087) heads the notes: no Bad or Miss, the vitals never below the floor.
+    this.notes ??= [t('ui.briefing.xs_goal', { xs: Math.round(rk.S * 1.05), floor: DEFAULT_TUNING.scoring.xsVitalsFloor }), ...briefingNotes(d)];
+    this.notes.forEach((n, i) => g.text(n, lx, r.y + 530 + i * 19, { size: 16, font: 'italic', color: hex(INK.dim), shadow: false }));
     if (button(g, game.input, t('ui.briefing.begin'), r.x + r.w - 140, r.y + 568, 30, !this.card, false)) this.begin();
     if (button(g, game.input, t('ui.common.back'), r.x + r.w - 330, r.y + 568, 24, !this.card, false)) this.onBack();
     if (this.card) this.drawCard(g, game);

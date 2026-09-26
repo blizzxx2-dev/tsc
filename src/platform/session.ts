@@ -37,7 +37,7 @@ import { veilItem, type OverlayHost } from '../ui/overlayHost';
 import { exportSupportBundle, inputBuffer, InputBufferHook } from './support';
 import { bindings } from '../input/bindings';
 import { presenceFor, type Activity } from './richpresence';
-import { prompt, SaveIndicator, showNotice, showWatermark } from './ui';
+import { prompt, SaveIndicator, setNoticeAnchor, showNotice, showWatermark } from './ui';
 import { stepId } from '../content/campaign';
 
 /** Idle longer than this stops the playtime clock (PLT-0090). */
@@ -388,6 +388,8 @@ function bufferSceneChanged(s: Scene): void {
 
 export function sceneChanged(s: Scene): void {
   scene = s;
+  // In an operation the bottom holds the callouts and the tray: notices go under the timer.
+  setNoticeAnchor('op' in (s as object) ? 'top' : 'corner');
   bufferSceneChanged(s);
   updateActivity();
   if (!started) {

@@ -207,7 +207,7 @@ void main() {
     rough = 0.5;
   }
   else if (m == 2.0) { alb = u_cloth * (0.75 + 0.35 * fbm(vec2(p.x * 8.0 + p.y * 3.0, p.y * 20.0))); }
-  else if (m == 3.0) { alb = u_style == 1 ? vec3(0.8, 0.78, 0.72) : u_cloth * 0.8; }
+  else if (m == 3.0) { alb = u_style == 1 ? vec3(0.64, 0.61, 0.55) * (0.9 + 0.15 * fbm(vec2(p.x * 14.0, p.y * 30.0))) : u_cloth * 0.8; rough = 0.95; }
   else if (m == 4.0) { alb = vec3(0.5, 0.5, 0.52); rough = 0.25; }
   else if (m == 5.0) {
     // A dark iris looking out, and whites that sit in the socket's shadow (never bright goggles).

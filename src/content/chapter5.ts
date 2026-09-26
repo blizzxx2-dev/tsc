@@ -33,6 +33,7 @@ export const STORY_5_1: StoryDef = {
   id: 's5-1',
   place: 'Kessendorf — the Hospice of Saint Ildra, two days before Hollow Night',
   backdrop: 'hospice',
+  lighting: 'day',
   lines: [
     n('CHAPTER V — VESPERS AND COMPLINE'),
     n('Vespers is the lamp-lighting, sung as the day fails. Compline is the last office: the prayer for a quiet night and a perfect end.'),
@@ -199,6 +200,7 @@ export const STORY_5_4: StoryDef = {
   id: 's5-4',
   place: 'Kessendorf — Hollow Night',
   backdrop: 'street',
+  lighting: 'night',
   lines: [
     n('Hollow Night. The streets empty at dusk. Charms of iron nails and dried rue hang on every door. Only the Choir walks abroad.'),
     n('For the first time, they sing openly: grey-robed lines of them, lanterns high, walking the city toward the hospice.'),
@@ -214,6 +216,7 @@ export const STORY_5_5: StoryDef = {
   id: 's5-5',
   place: 'The Cathedral Steps — Hollow Night',
   backdrop: 'street',
+  lighting: 'night',
   lines: [
     n('On the cathedral steps a chorister boy, Jakob, sings the Choir’s hymn in a voice that is not his own, and cannot stop.'),
     // CON-0228: the Penny Stair (tr5-hollow).

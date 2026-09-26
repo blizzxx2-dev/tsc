@@ -368,7 +368,8 @@ export class StoryScene implements Scene {
 
   private drawCard(g: Gfx, a: number): void {
     const vr = g.viewRect();
-    const cy = 214;
+    // High in the frame, clear of the portraits' heads (their tops sit near y 215).
+    const cy = 140;
     const place = this.story.place;
     const when = this.story.when;
     const h = when ? 132 : 104;
@@ -376,10 +377,13 @@ export class StoryScene implements Scene {
     g.rectGrad(vr.x, cy - h / 2 - 30, vr.w, 30, hex('#000000', 0), hex('#050303', 0.62 * a));
     g.rect(vr.x, cy - h / 2, vr.w, h, hex('#050303', 0.62 * a));
     g.rectGrad(vr.x, cy + h / 2, vr.w, 30, hex('#050303', 0.62 * a), hex('#000000', 0));
-    const w = Math.min(760, g.measure(place.toUpperCase(), 26, 'display', 0.16) + 120);
+    // A long place name steps its lettering down until it fits the frame (never below 18 px).
+    let size = 26;
+    while (size > 18 && g.measure(place.toUpperCase(), size, 'display', 0.16) > VIEW_W - 160) size -= 1;
+    const w = Math.min(VIEW_W - 80, g.measure(place.toUpperCase(), size, 'display', 0.16) + 120);
     rule(g, VIEW_W / 2, cy - h / 2 + 14, w, hex(INK.gilt, 0.8 * a));
     diamond(g, VIEW_W / 2, cy - h / 2 + 14, 3, hex(INK.goldHi, a));
-    g.text(place.toUpperCase(), VIEW_W / 2, cy + (when ? -2 : 10), { size: 26, font: 'display', color: hex(INK.goldHi, a), color2: hex(INK.gold, a), align: 'center', tracking: 0.16, shadow: hex('#000000', 0.9 * a), soft: true });
+    g.text(place.toUpperCase(), VIEW_W / 2, cy + (when ? -2 : 10), { size, font: 'display', color: hex(INK.goldHi, a), color2: hex(INK.gold, a), align: 'center', tracking: 0.16, shadow: hex('#000000', 0.9 * a), soft: true });
     if (when) g.text(when, VIEW_W / 2, cy + 36, { size: 20, font: 'italic', color: hex('#d8c8a8', 0.9 * a), align: 'center', shadow: hex('#000000', 0.8 * a), soft: true });
     rule(g, VIEW_W / 2, cy + h / 2 - 16, w, hex(INK.gilt, 0.8 * a));
     diamond(g, VIEW_W / 2, cy + h / 2 - 16, 3, hex(INK.goldHi, a));
