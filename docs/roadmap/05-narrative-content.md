@@ -323,7 +323,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0043 · Demo · P2 · S · Burst-barrel shrapnel pattern — radial; instead of random scatter
 
 ### op1-4 "Pestilent Humours" (named vagrant, Tanners' Rows) — buboes, rot, grubs, brand intro
-- [ ] CON-0044 · Demo · P0 · S · Rot regrowth timer shown as a creeping edge — regrowth rate tuned so average bot clears it in ≤ 2 passes
+- [x] CON-0044 · Demo · P0 · S · Rot regrowth timer shown as a creeping edge — regrowth rate tuned so average bot clears it in ≤ 2 passes _(regrowth now takes salved cells beside live rot first (`Rot.frontier`), and those cells darken as `Rot.creep` comes due. Steady bot: 1.3 passes per purge across the demo (tests/sim/rot-passes.test.ts); tests/unit/content/rotCreep.test.ts)_
 - [x] CON-0045 · Demo · P1 · S · Bubo lancing — sloppy lance (angle > 30° off axis) leaves a festering wound; clean lance COOL (test) _(superseded by the Overcut rule: a cut longer than the bubo spills it)_
 - [x] CON-0046 · Demo · P1 · S · Pus-on-open-cut rule — pus contacting an unstitched laceration spawns rot (test)
 - [x] CON-0047 · Demo · P1 · S · Brand intro — grubs flee from brand heat; searing healthy flesh gives MISS and −2 vitals

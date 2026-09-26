@@ -1647,10 +1647,30 @@ export class Rot extends Entity {
     this.regrowAcc += (this.spread + rotten * op.tuning.salve.regrowFrac) * dt;
     while (this.regrowAcc >= 1 && done.length) {
       this.regrowAcc -= 1;
-      const i = Math.floor(op.rng.next() * done.length);
-      done[i].done = false;
-      done.splice(i, 1);
+      // CON-0044: it creeps back from its edge — a salved cell beside the rot goes first.
+      const front = this.frontier();
+      const pool = front.length ? front : done;
+      const c = pool[Math.floor(op.rng.next() * pool.length)];
+      c.done = false;
+      done.splice(done.indexOf(c), 1);
     }
+  }
+
+  /** Separate salve strokes that have touched it (CON-0044 counts passes to clear). */
+  get passes(): number {
+    return this.strokes.size;
+  }
+
+  /** Progress (0–1) of the next salved cell's regrowth: drawn as the creeping edge. */
+  get creep(): number {
+    return Math.min(1, this.regrowAcc);
+  }
+
+  /** Salved cells touching live rot: where the regrowth creeps in next. */
+  frontier(): { x: number; y: number; done: boolean }[] {
+    const reach = (this.cov.step * 1.5) ** 2;
+    const rotten = this.cov.cells.filter((c) => !c.done && this.active(c));
+    return this.cov.cells.filter((c) => c.done && this.active(c) && rotten.some((r) => (r.x - c.x) ** 2 + (r.y - c.y) ** 2 <= reach));
   }
 
   override onSweep(op: Operation, ptr: Pointer, tool: ToolId): void {
@@ -1691,6 +1711,9 @@ export class Rot extends Entity {
       if (c.done || !this.active(c) || (c.x + c.y) % 3 !== 0) continue;
       g.circle(x + c.x, y + c.y, 3, hex('#1e280f', 0.7));
     }
+    // The creeping edge (CON-0044): salved flesh beside the rot darkens as its regrowth comes due.
+    const k = this.creep;
+    if (k > 0.05) for (const c of this.frontier()) g.circleGrad(x + c.x, y + c.y, 4 + 8 * k, hex('#46582a', 0.55 * k), hex('#46582a', 0));
   }
 }
 
