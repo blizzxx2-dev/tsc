@@ -554,7 +554,7 @@ export class OperationScene implements Scene {
       this.hintT = 2.5;
       this.idleT = 0;
     }
-    this.hintT = Math.max(0, this.hintT - dt);
+    if (!this.bannerUp()) this.hintT = Math.max(0, this.hintT - dt);
     if (this.banner) {
       // Decide on the first frame whether a Malison arrived with the phase.
       if (this.banner.boss === null) this.banner.boss = op.entities.some((e) => e.alive && e.boss);
@@ -1250,6 +1250,12 @@ export class OperationScene implements Scene {
     }
   }
 
+  /** Whether the phase (or Malison) banner is still on screen. */
+  private bannerUp(): boolean {
+    const b = this.banner;
+    return !!b && b.t <= (b.boss ? 3 : 2);
+  }
+
   private drawBanner(g: Gfx): void {
     const b = this.banner;
     if (!b) return;
@@ -1660,7 +1666,8 @@ export class OperationScene implements Scene {
     if (hover >= 0 && op.def.tools[hover] !== op.tool && op.status === 'running' && !this.paused) {
       const s = this.slot(hover);
       this.drawToolTip(g, op.def.tools[hover]!, { x: s.x + (mirrored ? -3 : 3), y: s.y, w: s.w, h: s.h }, 1);
-    } else if (this.hintT > 0) {
+    } else if (this.hintT > 0 && !this.bannerUp()) {
+      // The selected tool's reminder waits while a phase banner is up; it would cover the banner.
       const s = this.slot(op.def.tools.indexOf(op.tool));
       this.drawToolTip(g, op.tool, { x: s.x + (mirrored ? -8 : 8), y: s.y, w: s.w, h: s.h }, Math.min(1, this.hintT));
     }

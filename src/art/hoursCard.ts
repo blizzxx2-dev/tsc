@@ -117,7 +117,19 @@ export function bookOfHoursCard(g: Gfx, r: Rect, hour: Hour, o: { title: string;
 
   // The Hour's name and its rubric.
   const ty = win.y + win.h + 44 * s;
-  g.text(o.title, cx, ty, { size: Math.max(28, 30 * s), font: 'display', color: hex('#8a1a14'), color2: hex('#4a0a08'), align: 'center', shadow: false });
+  // The name fits the page: shrunk to its width, and broken at the dash onto two lines when a
+  // small card would otherwise shrink it past reading.
+  const room = r.w - 28 * s;
+  const want = Math.max(28, 30 * s);
+  const fit = (t: string) => Math.min(want, (want * room) / Math.max(1, g.measure(t, want, 'display')));
+  const style = { font: 'display' as const, color: hex('#8a1a14'), color2: hex('#4a0a08'), align: 'center' as const, shadow: false as const };
+  const parts = o.title.split(/\s+[—–-]\s+/);
+  if (fit(o.title) >= 18 || parts.length < 2) g.text(o.title, cx, ty, { ...style, size: Math.max(16, fit(o.title)) });
+  else {
+    const size = Math.max(16, Math.min(fit(parts[0]), fit(parts.slice(1).join(' — '))));
+    g.text(parts[0], cx, ty - size * 0.55, { ...style, size });
+    g.text(parts.slice(1).join(' — '), cx, ty + size * 0.45, { ...style, size });
+  }
   if (o.sub) g.text(o.sub, cx, ty + 26 * s, { size: Math.max(16, 16 * s), font: 'italic', color: hex('#3a2a18'), align: 'center', shadow: false });
 }
 

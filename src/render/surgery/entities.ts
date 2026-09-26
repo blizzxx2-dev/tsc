@@ -334,11 +334,19 @@ drawer(Rot, {
     for (const c of e.cov.cells) {
       if (c.done || !e.active(c)) continue;
       const w = Math.sin(op.elapsed * speed + c.x * 0.1 + c.y * 0.13) * 1.5;
-      g.circleGrad(x + c.x, y + c.y, 11 + w, hex('#46582a', 0.6), hex('#46582a', 0));
+      g.circleGrad(x + c.x, y + c.y, 16 + w, hex('#46582a', 0.35), hex('#46582a', 0));
     }
+    // Sparse bubbles at jittered spots (not on the cell grid): each swells, glints and pops.
     for (const c of e.cov.cells) {
-      if (c.done || !e.active(c) || (c.x + c.y) % 3 !== 0) continue;
-      g.circle(x + c.x, y + c.y, 3, hex('#1e280f', 0.7));
+      if (c.done || !e.active(c)) continue;
+      const h = Math.abs(Math.sin(c.x * 12.9898 + c.y * 78.233 + e.id) * 43758.5453) % 1;
+      if (h > 0.3) continue;
+      const life = (op.elapsed * (0.4 + 0.6 * h) * Math.max(0.2, speed / 2) + h * 7) % 1;
+      const r = 1.5 + 3.5 * life * (0.6 + h);
+      const bx = x + c.x + (h * 37 % 1 - 0.5) * 12;
+      const by = y + c.y + (h * 53 % 1 - 0.5) * 12;
+      g.circle(bx, by, r, hex('#2a3414', 0.55 * (1 - life * 0.5)));
+      g.circle(bx - r * 0.35, by - r * 0.35, r * 0.3, hex('#d8e0a0', 0.5 * (1 - life)));
     }
     // The creeping edge (CON-0044): salved flesh beside the rot darkens as its regrowth comes due.
     const k = e.creep;
