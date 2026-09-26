@@ -182,7 +182,6 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ## ENG-F · GPU particle system (Demo)
 
 ### Core system
-- [ ] ENG-0123 · Demo · P0 · M · Spike — CPU-simulated instanced particles vs WebGL2 transform-feedback simulation at 20k particles on Intel UHD 620 and Steam Deck; pick one and record the decision (ADR) with measurements
 - [x] ENG-0124 · Demo · P0 · L · Instanced particle renderer — per-instance position, velocity, life, size, rotation, colour, frame; quad expanded in the vertex shader; alpha and additive batches; one draw per blend per layer
 - [ ] ENG-0125 · Demo · P1 · L · Transform-feedback simulation path — ping-pong buffers, gravity, drag, curl-noise turbulence (if chosen by the spike), CPU fallback when the capability probe fails
 - [x] ENG-0126 · Demo · P0 · M · Emitter definitions as data (JSON) — rate/burst, spawn shape (point, line, arc, ellipse, path), velocity cone, gravity, drag, size/colour/alpha-over-life curves, frame sequence, blend, layer
@@ -236,7 +235,6 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ### Safety & settings plumbing
 - [x] ENG-0163 · Demo · P0 · M · Photosensitivity flash limiter: full-screen luminance changes limited to <3 flashes/s (Harding-style check) — unit test feeds worst-case post-param timelines (Malison + damage + Litany)
 - [x] ENG-0164 · Demo · P0 · S · Post settings plumbed to uniforms — screen shake, chromatic aberration, grain, flicker, bloom (0–100%) and reduce-flashing
-- [ ] ENG-0165 · Demo · P1 · S · Post budget — all passes ≤2.0 ms at 1080p on Intel UHD 620 measured with GPU timer queries in the perf replay
 
 ## ENG-H · Text rendering: MSDF upgrade (Demo)
 
@@ -255,8 +253,6 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0175 · Demo · P1 · S · Typewriter reveal for the story VN — per-glyph timing with punctuation pauses, skip-to-end, layout computed once
 - [x] ENG-0176 · Demo · P1 · S · Grapheme-cluster iteration (`Intl.Segmenter`) and precomposed/combining diacritics for German, French, Polish, Spanish — render test string passes visual check
 - [x] ENG-0177 · Demo · P2 · S · Static text cache: unchanged labels reuse baked vertex runs (no per-frame layout) — CPU text cost on the results screen drops ≥50%
-- [ ] ENG-0178 · Beta · P1 · M · Script fallback fonts — subset Noto Serif MSDF pages for Cyrillic and CJK loaded per language when Fell/Fraktur lack the glyphs
-- [ ] ENG-0179 · Beta · P2 · M · CJK dynamic MSDF generation or pre-baked frequency subsets (≤4k glyphs) with on-demand extra glyphs — memory ≤32 MB per CJK language
 
 ## ENG-I · Resolution, DPI & aspect ratio (Demo)
 
@@ -269,7 +265,6 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0186 · Demo · P1 · S · `ResizeObserver` with `devicePixelContentBoxSize` for exact backbuffer sizing — re-evaluate DPR when the window moves between monitors of different scale
 - [x] ENG-0187 · Demo · P1 · S · Minimum supported window 1024×576 — below that the UI scales down uniformly and remains usable (test at 800×450)
 - [x] ENG-0188 · Demo · P1 · S · UI scale setting — 80–130% applied to HUD and menu panels within the safe area for large monitors and Steam Deck legibility
-- [ ] ENG-0189 · Demo · P1 · M · Multi-resolution screenshot regression — 1280×720, 1920×1080, 2560×1440, 3840×2160, 2560×1080, 3440×1440, 5120×1440, 1280×800 goldens in CI (SwiftShader)
 
 ## ENG-J · GPU capabilities, fallbacks & context loss (Demo)
 
@@ -279,8 +274,6 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0192 · Demo · P1 · S · Driver quirks table — renderer regex → forced tier/workarounds shipped as JSON so fixes need no code change
 - [x] ENG-0193 · Demo · P0 · M · Fallback matrix implemented and tested — no float RT → RGBA8 bloom; no MSAA → FXAA; `MAX_TEXTURE_SIZE` 4096 → split atlas pages; no timer query → CPU-only profiler; mediump-only FS → simplified flesh variant
 - [x] ENG-0194 · Demo · P1 · S · Software-rendering detection — SwiftShader/llvmpipe renderer strings force Low tier and show a one-time "hardware acceleration is off" notice with help link
-- [ ] ENG-0195 · Demo · P1 · S · Request the discrete GPU on hybrid laptops (`powerPreference: 'high-performance'` + desktop wrapper switch) — verified on an Optimus laptop via renderer string
-- [ ] ENG-0196 · Demo · P1 · M · ANGLE backend test matrix for the desktop build (D3D11 on Windows, Metal on macOS, GL/Vulkan on Linux/Deck) — documented defaults and a `--gl-backend` override for support
 - [ ] ENG-0197 · Demo · P1 · S · Desktop-build fatal screen when WebGL2 fails — GPU/driver info, "update your graphics driver" guidance, log folder button, safe-mode relaunch button
 
 ### Context loss & resource registry
@@ -298,7 +291,6 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0205 · Demo · P0 · M · Build-generated asset manifest (id → hashed path, bytes, type, bundle) plus a generated `AssetId` union type — referencing a missing asset is a compile error
 - [ ] ENG-0206 · Demo · P0 · M · Vite plugin for `.glsl` files — `#include` resolution, `#define` variants, `#line` mapping for error messages; shaders move out of template strings in `shaders.ts`
 - [ ] ENG-0207 · Demo · P1 · S · Image optimisation in the build — oxipng lossless (optional lossy for backdrops) with a per-bundle size report printed by `npm run build`
-- [ ] ENG-0208 · Demo · P1 · S · Font subsetting of shipped fonts to supported-language coverage (Latin-1 + Latin Extended-A for demo) — size delta reported
 - [x] ENG-0209 · Demo · P0 · S · Asset validation step in CI — referenced ids exist, no unused asset >50 KB, textures within 4096 px, atlas pages power-of-two, LUTs correct size
 - [x] ENG-0210 · Demo · P1 · S · Missing/failed asset fallback: magenta checker texture and silent audio with a logged warning — never an exception in release builds
 
@@ -318,8 +310,6 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] ENG-0219 · Demo · P0 · M · Profiler overlay (F3) — CPU scopes per system, GPU pass timings via `EXT_disjoint_timer_query_webgl2`, draw calls, vertices, texture MB, JS heap, frame-time graph with budget lines
 - [x] ENG-0220 · Demo · P1 · S · Frame capture — dump the last 600 frames of scope timings to CSV (dev key) for offline analysis
 - [ ] ENG-0221 · Demo · P0 · M · Automated perf benchmark — scripted playback of the op1-5 Matins fight and the Lauds fight in a real-GPU runner, recording mean/p99 frame time; CI job flags regressions >10%
-- [ ] ENG-0222 · Demo · P0 · M · Integrated-GPU pass on the reference Intel UHD 620 laptop — every Ch1–2 operation holds 60 fps at Medium, with captures attached to the ticket
-- [ ] ENG-0223 · Demo · P0 · M · Steam Deck pass — 60 fps at 1280×800 Medium across Ch1–2; 40 fps preset holds with ≥25% lower APU power (Deck performance overlay readings)
 - [x] ENG-0224 · Demo · P1 · S · Hitch audit: no frame >50 ms during any operation (shader first use, atlas upload, GC, save write) — asserted by the perf benchmark
 
 ### CPU & memory
@@ -394,25 +384,10 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 
 ## ENG-Q · Final art integration & rendering polish (Beta)
 
-- [ ] ENG-0277 · Beta · P0 · M · Painted story backdrops — layered with parallax and light overlays, replacing procedural `drawBackdrop()` placeholders for all locations
-- [ ] ENG-0278 · Beta · P1 · M · Spike: skeletal 2D animation runtime (Spine vs DragonBones vs custom mesh rig) for VN portraits and Malisons — license, bundle size, draw-call cost; decision recorded
-- [ ] ENG-0279 · Beta · P0 · M · VN portrait renderer — layered expression sprites with blink and mouth-flap cycles, crossfade on expression change, speaker highlight/dim
 - [ ] ENG-0280 · Beta · P1 · M · Final tool sprites — state animation (lancet glint, brand heat ramp, tongs grip, lens shimmer) replacing vector-drawn `toolIcon`
 - [ ] ENG-0281 · Beta · P1 · S · Final LUTs for Chapters 3–5 — every location and per-Malison arena graded and signed off
 - [ ] ENG-0282 · Beta · P1 · M · sRGB-correct pipeline — `SRGB8_ALPHA8` textures and linear blending in the HDR target, with art sign-off that final art matches the source files
 - [ ] ENG-0283 · Beta · P0 · S · Full-campaign VRAM audit with final art — per-chapter atlas pages unloaded on chapter exit, peak within budget on Low
-- [ ] ENG-0284 · Beta · P1 · S · Credits renderer — long scrolling rich-text with section art, skippable, 60 fps on Deck
-
-## ENG-R · Release performance & stability (Release)
-
-- [ ] ENG-0285 · Release · P0 · M · Minimum-spec validation matrix (Intel HD 520, UHD 620, Vega 8, GTX 750 Ti, Apple M1, Steam Deck) — every operation ≥60 fps at its tier preset, ≥30 fps on HD 520 Low; results published as the store min/recommended spec
-- [ ] ENG-0286 · Release · P0 · S · Full-campaign hitch audit via golden replays — no frame >50 ms in any operation or story scene
-- [ ] ENG-0287 · Release · P0 · M · Driver workaround sweep from Beta crash/telemetry reports — each workaround added to the quirks table with a regression test where reproducible
-- [ ] ENG-0288 · Release · P0 · S · Release-branch perf gate — benchmark regression >5% blocks the release candidate
-- [ ] ENG-0289 · Release · P1 · M · Full-campaign soak — 5 hours on Windows, macOS and Deck with no leaks and context-loss recovery verified
-
-## ENG-S · Post-launch engine (Post)
-
 
 ---
 
@@ -425,9 +400,6 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 
 ## PLT-B · Desktop runtime evaluation spike: Electron vs Tauri (Demo)
 
-- [ ] PLT-0005 · Demo · P0 · M · Build the current game in Electron (latest stable) and Tauri 2 shells on Windows 11, macOS 14 (arm64) and Ubuntu 22.04 — record install size, cold start, idle RAM, frame pacing on op1-5
-- [ ] PLT-0006 · Demo · P0 · S · WebGL2 compatibility check per shell: WebView2 (Windows), WKWebView (macOS), WebKitGTK (Linux) — flesh shader compiles, MSAA/float RT availability, fps vs Chromium
-- [ ] PLT-0007 · Demo · P0 · M · Steam integration feasibility per shell — steamworks.js (napi) under Electron vs the Rust `steamworks` crate under Tauri; overlay renders and receives input on Windows fullscreen and windowed
 - [ ] PLT-0009 · Demo · P1 · S · Audio behaviour per shell — WebAudio latency, autoplay policy, device change and suspend/resume measured and recorded
 - [x] PLT-0010 · Demo · P0 · S · ADR-001 "Desktop runtime" — scored matrix (GPU compat, Steam overlay, size, startup, dev velocity, update story) and decision; Electron is the default unless Tauri wins on compat and overlay
 - [x] PLT-0011 · Demo · P1 · S · Runtime version policy — pinned major, security-patch bumps within 2 weeks, major upgrades only between milestones with full regression pass
@@ -460,9 +432,6 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 
 ## PLT-E · Code signing & notarisation (Demo)
 
-- [ ] PLT-0034 · Demo · P0 · M · Windows Authenticode signing — executables and native modules signed in CI (OV/EV certificate or Azure Trusted Signing) with RFC 3161 timestamps
-- [ ] PLT-0037 · Demo · P0 · S · Signing credentials stored only in the CI secret store (or cloud HSM) — documented rotation and revocation procedure; no keys on developer machines
-- [ ] PLT-0038 · Demo · P0 · S · Post-build verification in CI — `signtool verify /pa /v`, `codesign --verify --deep --strict`, `spctl -a -t exec`; failure blocks upload
 - [x] PLT-0039 · Release · P2 · S · DRM-free checksums — SHA-256 with detached GPG signatures published for every download
 
 ## PLT-F · Steamworks core integration (Demo)
@@ -470,29 +439,19 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ### SDK & lifecycle
 - [x] PLT-0040 · Demo · P0 · M · Integrate the chosen Steamworks binding behind `platform.steam` (init, callbacks pumped each frame, shutdown) — no-op implementation when Steam is absent
 - [x] PLT-0041 · Demo · P0 · S · `RestartAppIfNecessary` in release builds so launching the exe outside Steam relaunches through Steam — `steam_appid.txt` only in dev builds
-- [ ] PLT-0042 · Demo · P0 · M · Steam overlay works in fullscreen, borderless and windowed on Windows, Linux and macOS — `GameOverlayActivated` pauses the game and suspends input
 - [x] PLT-0043 · Demo · P1 · S · Steam language default — `GetCurrentGameLanguage` sets the game language on first launch
 - [x] PLT-0044 · Demo · P1 · S · Steam user persona and SteamID available to save namespacing — never displayed in screenshots by default
 
 ### Features
-- [ ] PLT-0045 · Demo · P1 · M · Rich presence — localisation tokens file with `#Status_Story`, `#Status_Operating` (patient + chapter), `#Status_Menu`; updated on scene changes; verified in friends list
-- [ ] PLT-0046 · Demo · P0 · M · Steam Cloud via Auto-Cloud — root overrides for `WinAppDataRoaming`, `MacAppSupport`, `LinuxXdgDataHome` matching the save paths; quota 10 MB / 50 files; round-trip between two machines tested
-- [ ] PLT-0047 · Demo · P1 · S · Cloud conflict behaviour tested (edit offline on two machines) — Steam conflict dialog appears and either choice loads cleanly
-- [ ] PLT-0048 · Demo · P1 · M · Screenshots — Steam's screenshot key captures the game frame on every OS (fallback: `HookScreenshots` + readPixels via `AddScreenshotToLibrary`); F12 in-game path shared
 - [x] PLT-0049 · Demo · P1 · M · Achievement framework: data-driven definitions, `unlock(id)` from sim events, offline queue flushed when Steam connects, dev "reset all" command — used by demo (if enabled) and full game
-- [ ] PLT-0050 · Demo · P2 · S · Steam Timeline markers — operation start, Malison fight, patient lost, XS rank, so Game Recording clips are labelled
-- [ ] PLT-0051 · Demo · P1 · S · Overlay web/store links — `ActivateGameOverlayToWebPage`/`ToStore` with default-browser fallback when the overlay is disabled
 
 ### SteamPipe & branches
 - [x] PLT-0052 · Demo · P0 · M · SteamPipe scripts (`app_build_<id>.vdf`, `depot_build_<id>.vdf`) per edition and OS generated from one config — `steamcmd` upload from CI
 - [x] PLT-0053 · Demo · P0 · S · Branch strategy — `qa` (password, nightly), `beta` (release candidates), `default` (manually promoted); promotion checklist in `docs/release.md`
-- [ ] PLT-0054 · Demo · P0 · S · Dedicated Steam build account with minimal permissions and Steam Guard handled via stored `config.vdf` secret — documented recovery
-- [ ] PLT-0055 · Demo · P0 · S · Steam launch options — per-OS executable and arguments plus a secondary "Launch in safe mode" option
 
 ## PLT-G · Steam demo app, content gating & Next Fest (Demo)
 
 ### Demo app & build flavour
-- [ ] PLT-0056 · Demo · P0 · S · Separate Steam demo app ID — Steamworks "Demo" app linked to the base game with its own depots, branches, Cloud settings and store association
 - [x] PLT-0057 · Demo · P0 · M · Build flavour `VITE_EDITION=demo|full` as a compile-time constant — demo bundles contain no Chapter 3–5 code modules; CI inspects `dist/` chunks and fails on any `chapter3+` module
 - [x] PLT-0058 · Demo · P0 · M · Content gating — campaign, chapter select, challenge mode and extras expose only Chapters 1–2 in the demo; unit test that no reachable route or save field references non-demo content ids
 - [x] PLT-0059 · Demo · P0 · S · Asset manifest filter excludes non-demo bundles from demo packages — package size check in CI
@@ -507,18 +466,12 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ### Demo → full-game carry-over
 - [x] PLT-0065 · Demo · P0 · M · Carry-over contract — demo saves carry `edition`, build version and stable content ids (`ch1.op3`); full game maps demo ids to full-game ids through a versioned table (unit tests with fixture demo saves)
 - [x] PLT-0066 · Demo · P0 · M · Shared save location (`…/suture-and-steel/demo/`) readable by the full game (Steam Cloud cannot cross app ids) — full game detects demo saves on first launch and offers import
-- [ ] PLT-0067 · Demo · P1 · S · Carry-over import QA — tested on Windows, macOS, Linux and Deck, including when the demo is uninstalled but its save folder remains
 - [x] PLT-0068 · Demo · P2 · S · Carry-over limitation documented — demo progress imports only on the machine where it was played; stated in the FAQ and the import dialog
-- [ ] PLT-0069 · Demo · P1 · S · Demo save format frozen — at demo 1.0, covered by the save-compatibility CI suite for every later full-game build
 
 ### Next Fest readiness
-- [ ] PLT-0070 · Demo · P0 · S · Next Fest checklist with dates — demo build live and reviewed ≥2 weeks before the festival, store page demo section, broadcast/press build, known-issues list
-- [ ] PLT-0071 · Demo · P0 · M · Festival hotfix pipeline rehearsed — fix → CI build → signed → `beta` branch → smoke on 3 OSes + Deck → `default` in ≤4 hours
 - [x] PLT-0072 · Demo · P1 · M · Opt-in anonymous demo telemetry — operations started/finished/failed, fail phase, session length, quit point, settings tier; first-run consent, options toggle, published data policy
 - [x] PLT-0073 · Demo · P1 · S · "Send feedback" link — form/Discord prefilled with build id, OS and GPU tier
 - [x] PLT-0074 · Demo · P2 · M · Kiosk/booth mode (`--kiosk`) — no saves, auto-return to title after 90 s idle, quit disabled, operation select for show floors
-- [ ] PLT-0075 · Demo · P0 · M · Clean-machine demo QA via the Steam client (no dev tools installed) on Windows 10, Windows 11, macOS arm64, Ubuntu and Steam Deck — install, play Ch1–2 end to end, Cloud sync, uninstall
-- [ ] PLT-0076 · Demo · P1 · S · Demo Deck compatibility review — requested once the Deck checklist items pass
 
 ## PLT-H · Save system v2 (Demo)
 
@@ -543,7 +496,6 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] PLT-0092 · Demo · P0 · M · Save-compatibility CI suite — fixture saves from every released demo/full build load and migrate correctly on each commit
 - [x] PLT-0093 · Demo · P2 · S · Support export — "Copy save folder" / zip of saves + logs from the options screen for bug reports
 - [ ] PLT-0094 · Alpha · P1 · S · Full-game profile fields — Chapters 3–5, challenge mode, disciplines, New Game+ and extras unlocks added via migration with no demo-save breakage
-- [ ] PLT-0095 · Beta · P1 · S · Save data privacy review — only SteamID/local id and gameplay data stored; documented in the privacy policy
 
 ## PLT-I · Settings system (Demo)
 
@@ -566,26 +518,21 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 - [x] PLT-0109 · Demo · P0 · S · Persist window size, position, mode and monitor — on launch clamp to the visible work area if that monitor is gone
 - [x] PLT-0110 · Demo · P1 · S · Fullscreen monitor selection — display list with names and resolutions on multi-monitor setups
 - [ ] PLT-0111 · Demo · P1 · M · VSync on/off — Chromium has no runtime toggle, so apply `--disable-gpu-vsync`/`--disable-frame-rate-limit` on next launch with a restart prompt; verified with a tear test pattern
-- [ ] PLT-0112 · Demo · P1 · S · High-refresh displays: rAF runs at the display rate (144/165 Hz) in the desktop build on Windows and macOS ProMotion — verified with the refresh estimator
 - [x] PLT-0113 · Demo · P0 · S · Focus loss — auto-pause operations, optionally mute, release captured mouse buttons (no stuck lancet drag after Alt+Tab)
 - [ ] PLT-0114 · Demo · P1 · M · Hardware cursor option — OS cursor with custom image (menus and operation reticle) instead of the software-drawn reticle with `cursor: none`; input-to-photon latency compared and the lower-latency path is default
 - [ ] PLT-0115 · Demo · P2 · S · Cursor confinement option — keep the cursor inside the window in fullscreen/borderless on multi-monitor setups so fast strokes cannot leave it
 - [ ] PLT-0116 · Demo · P0 · S · Alt+Tab/minimise/restore in fullscreen on Windows returns to a correct frame (no black screen, context intact) — tested on NVIDIA, AMD and Intel
-- [ ] PLT-0119 · Demo · P2 · S · Windows HDR desktop mode — SDR output not washed out or over-bright (visual check on an HDR monitor)
 
 ## PLT-K · Logging & crash reporting (Demo)
 
 - [x] PLT-0120 · Demo · P0 · M · Structured logger (levels, categories, timestamps, frame number) shared by renderer and main process — in-memory ring buffer of the last 2,000 lines
 - [x] PLT-0121 · Demo · P0 · S · Log files with rotation (5 × 5 MB) in the OS log directory — header records build id, OS, locale, GPU caps and settings tier
 - [x] PLT-0122 · Demo · P0 · S · Renderer error capture — `window.onerror` and `unhandledrejection` routed to the logger and the error boundary screen
-- [ ] PLT-0123 · Demo · P0 · M · Native crash reporting — Crashpad minidumps uploaded to a chosen backend (Sentry, BugSplat or Backtrace; decision recorded), symbols (PDB/dSYM/debug) uploaded from CI for every shipped build
-- [ ] PLT-0124 · Demo · P0 · M · JavaScript error reporting — same backend as native crashes, source maps uploaded from CI and never shipped in the package
 - [x] PLT-0125 · Demo · P0 · S · Crash/telemetry consent — first-run notice, options toggle, respected before any upload; privacy policy section
 - [x] PLT-0126 · Demo · P0 · M · Renderer/GPU process gone handling — auto-reload the renderer back to the last autosave, count crashes, offer safe mode after 2 in 10 minutes
 - [x] PLT-0127 · Demo · P1 · S · Crash dialog — "Suture & Steel has stopped" with report id, Open log folder and Restart buttons
 - [x] PLT-0128 · Demo · P1 · S · Hang watchdog — renderer unresponsive >10 s triggers a capture and a restart offer
 - [x] PLT-0129 · Demo · P0 · S · PII scrubbing — usernames in file paths, SteamID and machine name removed from logs and reports (unit test on sample paths)
-- [ ] PLT-0130 · Demo · P1 · S · Crash-free-session dashboard — demo launch gate of ≥99.5% crash-free sessions on the `beta` branch
 - [x] PLT-0131 · Demo · P1 · M · QA bug-report key (F8 in QA builds) — screenshot, last 2,000 log lines, replay, save and settings zipped into the support folder or uploaded with a ticket id
 
 ## PLT-L · OS file paths & filesystem (Demo)
@@ -602,75 +549,38 @@ Phase tags: `Demo` = required for the release-quality Chapters 1–2 Steam demo;
 ### Continuous integration
 - [ ] PLT-0138 · Demo · P0 · M · GitHub Actions PR pipeline — typecheck, lint, Vitest, production build, Playwright smoke (SwiftShader) and visual regression; all required for merge
 - [ ] PLT-0139 · Demo · P0 · S · ESLint + Prettier baseline — `no-floating-promises`, `no-misused-promises`, consistent type imports; applied repo-wide and enforced in CI (sim-purity rules live in ENG)
-- [ ] PLT-0140 · Demo · P0 · M · Build matrix — `windows-latest`, `macos-14` (arm64, universal output), `ubuntu-22.04`, each producing signed demo and full packages as artifacts
 - [x] PLT-0141 · Demo · P1 · S · CI caching — npm, runtime downloads and atlas/MSDF outputs cached so the PR pipeline stays ≤15 minutes
-- [ ] PLT-0142 · Demo · P1 · S · Nightly job — build all flavours, upload to the Steam `qa` branch, post the build id and changelog to the team channel
 - [ ] PLT-0143 · Demo · P1 · S · Coverage gate — ≥80% line coverage for `src/surgery` and `src/core/save`
 - [x] PLT-0144 · Demo · P1 · S · Dependency hygiene — Renovate/Dependabot, `npm audit` failing on high severity, licence allowlist check (MIT/BSD/Apache/ISC/OFL/CC-BY)
 - [x] PLT-0145 · Demo · P0 · S · Third-party notices — runtime/Chromium, npm deps and OFL fonts generated, shipped in the package and viewable from the credits
 
 ### Versioning & releases
 - [x] PLT-0146 · Demo · P0 · S · Versioning scheme — SemVer per edition (`demo 1.0.x`, full `0.x` until 1.0); build id `version+sha.date` shown on the title screen corner, in logs and crash reports
-- [ ] PLT-0147 · Demo · P0 · S · Branching — `main` for development, `release/demo-1.x` for demo hotfixes (cherry-picks only), tags `demo-v1.0.0`; protected branches with required reviews
 - [x] PLT-0148 · Demo · P1 · S · Changelog generation — conventional commits turned into a Steam patch-notes draft per release
-- [ ] PLT-0149 · Demo · P0 · M · One-command release job — version bump, tag, build matrix, sign/notarise, symbol upload, SteamPipe upload to `beta`, smoke on each OS
-- [ ] PLT-0150 · Demo · P1 · S · Artifact and symbol retention — every shipped build kept for ≥2 years
 - [x] PLT-0151 · Demo · P1 · S · Feature-flag system — build-time constants + runtime overrides in QA builds to gate unfinished features out of the demo
-- [ ] PLT-0152 · Release · P0 · S · `release/1.x` branch — cut at Release Candidate with the demo hotfix rules and a code-freeze policy
 
 ## PLT-N · Controllers & Steam Deck (Demo → Release)
 
 ### Controller platform layer
 - [ ] PLT-0153 · Demo · P0 · M · Gamepad API backend (standard mapping) feeding the input abstraction, with hot-plug and per-frame polling in the fixed step — works in the desktop shell on all OSes
-- [ ] PLT-0154 · Demo · P0 · M · Steam Input integration — action manifest with action sets Menu, Operation, Litany; default configurations for Xbox, PlayStation, Switch Pro and Steam Deck; Gamepad API fallback when Steam Input is off
 - [x] PLT-0155 · Demo · P0 · S · Glyph sets (Xbox, PlayStation, Switch, Deck, keyboard/mouse) switched by last-used device — Steam Input glyph lookup when available
-- [ ] PLT-0156 · Demo · P1 · S · Deck touchscreen input — tap = press, drag = stroke, usable for full operations
 - [x] PLT-0157 · Demo · P1 · S · Controller disconnect handling — operation auto-pauses with a "reconnect controller" prompt
 
 ### Steam Deck
 - [x] PLT-0158 · Demo · P0 · S · Deck preset — `IsSteamRunningOnSteamDeck` selects 1280×800, Medium, 60 fps cap, UI scale 115%
-- [ ] PLT-0159 · Demo · P0 · M · Deck default layout uses the right trackpad as the surgical cursor with triggers for press/hold — every Ch1–2 operation completable at A rank or better by a tester on Deck
 - [x] PLT-0160 · Demo · P0 · S · Legibility: all text ≥9 px tall at 1280×800 (Deck Verified guideline) — automated check over layout dumps
-- [ ] PLT-0161 · Demo · P0 · S · Suspend/resume on Deck mid-operation — game auto-pauses, audio resumes, no context-loss crash (10 cycles)
-- [ ] PLT-0162 · Demo · P0 · S · No keyboard required anywhere — text input fields use `ShowFloatingGamepadTextInput`
-- [ ] PLT-0164 · Demo · P1 · S · Deck Verified self-review — Valve's checklist (input, display, seamlessness, system support) passed for the demo
-- [ ] PLT-0165 · Release · P0 · S · Deck Verified for the full game — review submitted and passed
 
 ## PLT-O · Data-driven content loading (Alpha)
 
 - [ ] PLT-0166 · Alpha · P0 · L · Content formats — chapters, operations, phases, story scripts and dialogue as JSON/YAML with JSON Schema, compiled and validated at build (replacing TS modules with spawn closures such as `chapter1.ts`)
 - [x] PLT-0167 · Alpha · P0 · M · Declarative phase spawn DSL — `{type: 'Laceration', at: [x, y], length, severity}` plus a registry of named scripted hooks for bespoke behaviour (bosses, tutorials)
-- [ ] PLT-0168 · Alpha · P0 · S · Stable namespaced content ids (`ch1.op3`, `ch2.lauds`) used by saves, achievements, telemetry and replays — CI fails on duplicate or renamed ids without a migration entry
 - [ ] PLT-0169 · Alpha · P1 · S · Validation errors point to file, line and field — the build prints all errors at once
 - [ ] PLT-0170 · Alpha · P1 · S · Content hot reload in dev — editing an operation file restarts that operation with new data in place
 - [ ] PLT-0171 · Alpha · P1 · M · Per-chapter content packs — data + asset bundle loaded lazily on chapter entry, keeping boot content minimal
 - [x] PLT-0172 · Alpha · P1 · S · Localisation string tables — key → string per language loaded as content, missing-key detection and pseudo-localisation mode for the loc workstream
 - [x] PLT-0173 · Alpha · P2 · S · Chapter 1–2 content migration — moved to the data format with golden-run replays proving identical outcomes
 
-## PLT-P · Full-game Steam & platform features (Beta)
-
-- [ ] PLT-0174 · Beta · P0 · S · Full-game app configuration — depots per OS, branches, launch options, Cloud quotas and paths mirrored from the demo config; no DRM wrapper (decision recorded)
-- [ ] PLT-0175 · Beta · P0 · M · Full achievement set (~40) — defined in data with locked/unlocked icons and localised text, unlock tests driven by golden replays
-- [ ] PLT-0176 · Beta · P1 · M · Steam stats — operations completed, Malisons purged, XS ranks, patients saved, backing progress achievements with offline caching
-- [ ] PLT-0177 · Beta · P1 · M · Challenge-mode leaderboards — per operation (score, time), uploaded on completion, friends/global views
-- [ ] PLT-0178 · Beta · P1 · S · Localised rich presence — token files for every shipped language
-- [ ] PLT-0179 · Beta · P2 · S · Remote Play and Steam Link — input latency acceptable and cursor behaves in a streaming session (manual test)
-- [ ] PLT-0180 · Beta · P0 · M · Demo → full carry-over retested against the final full build — demo Chapter 1–2 progress unlocks Chapter 3 start and keeps ranks
-- [ ] PLT-0181 · Beta · P1 · S · Steam Families and offline mode — game fully playable offline after first launch; achievements sync later
-- [ ] PLT-0182 · Beta · P1 · M · External compatibility pass — min-spec and varied GPUs/drivers, non-English Windows locales (Turkish, German), non-admin accounts, 4K at 125/150% scaling
-
 ## PLT-Q · Auto-update & alternate storefronts (Release)
 
 - [x] PLT-0183 · Release · P1 · S · Platform abstraction build variant `PLATFORM=none` — no Steam binaries linked, all Steam calls no-op, verified by a CI package inspection
-- [ ] PLT-0184 · Release · P1 · M · GOG build — DRM-free offline installers, GOG Galaxy integration evaluated (achievements/cloud) with a decision recorded
-- [ ] PLT-0185 · Release · P1 · M · itch.io build — `butler push` channels for Windows/macOS/Linux and `.itch.toml` launch config, plus the browser demo channel
-- [ ] PLT-0186 · Release · P1 · M · Auto-updater for direct-download builds only (signed update feed, differential downloads, rollback on failed start) — disabled in Steam/GOG builds
 - [x] PLT-0187 · Release · P2 · S · Storefront-aware links — "rate / wishlist" URLs resolved per storefront build
-- [ ] PLT-0188 · Release · P0 · S · Storefront clean-machine checklist — each build passes install/play/uninstall on all target OSes
-
-## PLT-R · Launch readiness & compliance (Release)
-
-
-## PLT-S · Post-launch platform (Post)
-
-

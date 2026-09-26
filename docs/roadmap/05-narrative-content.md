@@ -44,22 +44,14 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] NAR-0017 · Demo · P1 · S · Review "dwarf" usage for Orsa (STORY_2_2) — keep generic word, strip any grudge/rune/slayer/beard-oath tropes; add original "debt-knots in the beard" detail
 - [x] NAR-0018 · Demo · P1 · S · Review "Gravehound" and "corpse-eaters" (STORY_2_1) — confirm not GW unit names; document in names.csv
 - [x] NAR-0019 · Demo · P1 · S · Collision check for place names Kessendorf, Weissburg, Grauwald, Tanners' Rows, Gilded Goose — search games/novels; rename any exact fantasy-IP hit
-- [ ] NAR-0020 · Demo · P1 · S · Trademark search for "Hollow Choir" (novel + itch.io supplement noted) — decision recorded; fallback "the Unsung" pre-approved for a single find-and-replace
 - [x] NAR-0021 · Demo · P1 · S · Trauma Center term sweep — no GUILT, Healing Touch, Caduceus, Delphi, strain names, "Angie" in any string or code comment shipped to players
-- [ ] NAR-0022 · Demo · P1 · S · Title/subtitle/tagline check — "Suture & Steel: The Malison Hours" and store tagline searched for trademark conflicts; no "Grim World of Perilous Adventure" echo
 - [x] NAR-0023 · Demo · P2 · S · Saint names register — Saint Ildra plus any saint invoked in barks; emblem is a candle-and-key, never dove or bleeding heart
 - [x] NAR-0024 · Alpha · P0 · M · IP review of all Ch3–5 names — Kilnrows, Vennmark, Precentor Aurel Vennholt, Registrar Tallert, etc.; logged in names.csv before VO recording
-- [ ] NAR-0025 · Beta · P0 · S · Final IP pass over localised strings (DE/FR/ES/PL/PT-BR) — translated names re-checked against the avoid-list in each language
-- [ ] NAR-0026 · Release · P0 · S · Legal sign-off record — names.csv frozen, reviewer and date recorded, attached to release checklist
 
 ### Sensitivity review
 - [x] NAR-0027 · Demo · P1 · M · Sensitivity brief — rules for depicting plague, children in peril (Emmerich), religious persecution, torture (never shown on-screen, only implied), disability and amputation
-- [ ] NAR-0028 · Demo · P1 · S · Ch1–2 sensitivity read — external reader reviews all scenes; each note triaged (accept/decline + reason) in a tracked sheet
 - [x] NAR-0029 · Demo · P1 · S · Content descriptor text for Steam page — blood/gore, body horror, religious persecution, implied torture; matches what the demo shows
 - [x] NAR-0030 · Demo · P2 · S · Vagrant patient (op1-4) — give him a name and one line of dignity in STORY_1_4 instead of "Unknown vagrant"
-- [ ] NAR-0031 · Alpha · P1 · M · Sensitivity read for Ch3 — flagellants and penitential self-harm treated without glamour; plague quarantine class politics
-- [ ] NAR-0032 · Alpha · P1 · M · Sensitivity read for Ch4 — war violence, the thirst/blood-debt courtesan (consent and agency in her choice)
-- [ ] NAR-0033 · Beta · P0 · M · Sensitivity read for Ch5 — obstetric operation (consult with a midwife/obstetrician), trial/witch-pricking scene, assisted-death themes of Compline
 - [x] NAR-0034 · Beta · P1 · S · Content-warning toggles text — per-chapter warnings shown before Ch4 and Ch5 when "Show content notes" option is on
 
 ## NAR · Epic 2 — Chapter I "The Hour of Matins": demo-quality rewrite
@@ -271,31 +263,11 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ## NAR · Epic 10 — Script passes, VO prep and localisation readiness
 
 ### Script passes
-- [ ] NAR-0173 · Demo · P0 · S · Demo script lock — Ch1–2 text frozen by hash; post-lock edits require changelog entry and loc re-send
 - [ ] NAR-0174 · Demo · P1 · S · Demo proofread pass — spelling, punctuation (typographic quotes/dashes consistent), speaker names; zero issues in second read
 - [ ] NAR-0175 · Demo · P1 · S · Demo continuity pass — injuries, names, times of day and item names consistent across scenes, briefings, codex and case notes
-- [ ] NAR-0176 · Demo · P1 · S · Read-aloud table read of Ch1–2 — recorded, lines flagged as unspeakable rewritten
 - [ ] NAR-0177 · Alpha · P0 · L · Ch3–5 second draft — incorporates playtest notes and ending matrix; all scene ids wired in campaign data
 - [ ] NAR-0178 · Beta · P0 · M · Ch3–5 polish pass — pacing budget enforced, jokes audited against humour rule, Kreuzer voice consistent
 - [ ] NAR-0179 · Beta · P1 · S · Full-game continuity pass — timeline, flags and callbacks verified against the bible; issues tracked to zero
-- [ ] NAR-0180 · Beta · P0 · S · Full-game script lock — before VO and loc final send
-- [ ] NAR-0181 · Release · P1 · S · Final proofread of shipped build strings — extracted from build, not source
-
-### Voice-over preparation
-- [ ] NAR-0182 · Demo · P1 · S · Demo VO scope decision — barks + Malison voices voiced; VN scenes text-only with vocal "grunts" per speaker; documented
-- [ ] NAR-0183 · Demo · P1 · M · Demo VO script export — per-actor sheets with line id, context, direction, pronunciation for proper nouns
-- [ ] NAR-0184 · Demo · P1 · S · Casting sides — 1-page character brief + 5 audition lines for Kreuzer, Ilse, Haller, Stroh, Mauer, Orsa, Malison voice
-- [ ] NAR-0185 · Beta · P0 · M · Full VO script export — all voiced lines Ch1–5; with takes tracking columns
-- [ ] NAR-0186 · Beta · P1 · S · Pronunciation guide — every proper noun with IPA and audio reference
-
-### Localisation readiness
-- [ ] NAR-0187 · Demo · P0 · M · Move all Ch1–2 story — briefing, bark, codex strings to string-table keys; `chapter1.ts`/`chapter2.ts` reference keys only
-- [ ] NAR-0188 · Demo · P1 · S · Translator context notes — per-line comments for jokes, puns, archaic terms, and hymn verses (meter vs. meaning priority)
-- [ ] NAR-0189 · Demo · P1 · S · Glossary for translators — 80 locked terms (tool names, Hours, orders, places) with do-not-translate flags
-- [ ] NAR-0190 · Beta · P1 · M · Ch3–5 string extraction — all Ch3–5 strings keyed, with translator context notes per joke, pun and hymn verse
-- [ ] NAR-0191 · Beta · P1 · S · LQA pass on narrative strings — reviewer per language checks tone and hymn verses in-game
-
-## NAR · Epic 11 — Post-launch narrative
 
 ---
 
@@ -307,7 +279,6 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0003 · Demo · P0 · S · Schema validation — Zod (or hand-rolled) validator rejects unknown entity ids, out-of-field positions, tools missing for required entities; runs in Vitest over all ops
 - [x] CON-0004 · Demo · P1 · S · Tool-requirement check — test asserts every spawned entity is resolvable with the op's `tools` list (e.g. Embedded needs tongs, Grub needs brand)
 - [x] CON-0005 · Demo · P1 · S · Remove non-setting `race` values `'elf' | 'halfling' | 'orc'` from OperationDef — replace with `'human' | 'mountainfolk' | 'hornfolk' | 'giant'` flesh tints
-- [ ] CON-0006 · Demo · P1 · S · Callout text moved to string keys — `callout` arrays reference loc keys; missing-key test
 - [x] CON-0007 · Demo · P1 · M · Campaign graph data — chapters as ordered step lists with optional branch nodes (`if flag`), replacing the hard-coded `CAMPAIGN` array; demo graph = Ch1+Ch2 only
 - [x] CON-0008 · Demo · P1 · S · Flag store — named boolean/int campaign flags (cantorMercy, litanySeenCount) persisted in save; unit tests for set/get/serialise
 - [x] CON-0009 · Demo · P1 · S · Story script conditionals — `Line` gains optional `if` (flag expression) so s1-end/s2-end Litany-conditional lines work; parser tested
@@ -318,7 +289,6 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] CON-0012 · Demo · P1 · M · Dev op-sandbox scene — pick any op/phase, jump to phase N, toggle invulnerable vitals, freeze timer; available only in dev builds
 - [ ] CON-0013 · Demo · P1 · M · Placement overlay — in sandbox, shows field grid in `at(x,y)` units and entity bounds; click copies coordinates to clipboard
 - [ ] CON-0014 · Demo · P1 · S · Headless op simulator CLI — `npm run sim op2-3 --bot perfect|average|poor` runs the op with a scripted bot and prints score, time, rank, vitals min
-- [ ] CON-0015 · Demo · P1 · M · Reference bots — perfect/average/poor bots that act on each entity type with rating distributions matching playtest data (±10%)
 - [x] CON-0016 · Demo · P1 · S · Rank-threshold report — sim runs every op with 3 bots × 20 seeds and outputs a CSV of scores vs S/A/B thresholds
 - [ ] CON-0017 · Alpha · P1 · M · Phase timeline visualiser — renders per-op phase durations and entity counts from sim runs as an HTML report
 - [ ] CON-0018 · Alpha · P2 · M · Story scene previewer — dev scene renders any StoryDef with a flag override panel
@@ -330,10 +300,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] CON-0022 · Demo · P1 · S · Difficulty curve targets — Ch1 op average-bot win rate 95→80%, Ch2 85→65% (op2-5 boss lowest); sim report checked in CI
 - [ ] CON-0023 · Demo · P1 · S · Time budget rule — perfect-bot clear time ≤ 55% of timeLimit, average-bot ≤ 85%; violations fail report
 - [x] CON-0024 · Demo · P1 · S · Tool-introduction ledger — table of which op first requires each tool and the Litany; demo introduces each at most once per op, lens last (op2-2)
-- [ ] CON-0025 · Demo · P1 · S · Playtest survey form for ops — per op: clarity 1–5, fairness 1–5, fun 1–5, "what killed you"; results stored per build
-- [ ] CON-0026 · Demo · P1 · M · Two external playtest rounds on Ch1–2 — ≥ 8 players each; every op scoring < 3.5 fairness gets a fix ticket
 - [x] CON-0027 · Alpha · P1 · S · Apply checklist — softlock and determinism tests to every Ch3–5 op (CI gate for the content folder)
-- [ ] CON-0028 · Beta · P1 · M · Full-campaign balance pass — per-op thresholds retuned from telemetry of ≥ 30 playtesters
 - [ ] CON-0029 · Beta · P1 · S · Difficulty modes content — Easy (+40% time, −30% drain) and Hard (−20% time, stricter COOL window) values set per op and validated by sim
 
 ## CON · Epic 3 — Chapter I operations: demo polish
@@ -353,7 +320,6 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### op1-3 "Powder Burns" (Anno, gunsmith's apprentice) — tongs on eschar, incision, tincture intro
 - [ ] CON-0039 · Demo · P0 · S · Eschar-before-salve rule enforced — salving over eschar gives BAD and a festering rot spawn after 10 s (test)
-- [ ] CON-0040 · Demo · P1 · S · Inked incision line follows chest contour — COOL tolerance ±8 px verified in playtest
 - [ ] CON-0041 · Demo · P1 · S · Tincture intro moment — scripted vitals dip to 30 at shot extraction with callout, guaranteed once
 - [ ] CON-0042 · Demo · P1 · S · Lead-fragment count 3–5 by seed — lens not available so all fragments visible
 - [ ] CON-0043 · Demo · P2 · S · Burst-barrel shrapnel pattern — radial; instead of random scatter
@@ -414,7 +380,6 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0080 · Demo · P1 · S · Ch1 briefings rewritten for op1-1…op1-5 — diagnosis strings match the scenes (vagrant renamed), objective list matches phases
 - [ ] CON-0081 · Demo · P1 · S · Ch2 briefings rewritten for op2-1…op2-5 — "The Black Seam" retitle, Lauds described as "two voices beneath the sternum"
 - [ ] CON-0082 · Demo · P1 · S · Objective-to-phase test — every briefing objective maps to at least one phase id; test fails on orphans
-- [ ] CON-0083 · Demo · P1 · M · Woodcut briefing plates for 10 demo ops commissioned — art spec per op: patient pose, wound locations, one period prop
 - [ ] CON-0084 · Demo · P2 · S · Patient ages and trades consistent between briefing — scene text and case note (content test cross-references ids)
 
 ### Demo retry and replay content
@@ -426,13 +391,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ## CON · Epic 5 — Demo end flow, wishlist hook and demo extras
 
 ### End-of-demo flow
-- [ ] CON-0089 · Demo · P0 · S · End-flow sequence spec — s2-end → "END OF CHAPTER II" card → demo results summary → Ch3 teaser → wishlist screen → main menu; each step skippable after first view
-- [ ] CON-0090 · Demo · P0 · M · Demo results summary content — total score, ranks per op (10 rows), best combo, Litany uses, patients saved; "Your ledger carries into the full game" line
-- [ ] CON-0091 · Demo · P0 · S · Wishlist screen content — key art, 3 bullet promises (5 chapters, 8 Hours, other disciplines), Steam overlay wishlist button, "Follow development" link
-- [ ] CON-0092 · Demo · P1 · S · Ch3 teaser content — 4 woodcut stills (Kilnrows smoke, raised bridges, hornchild, Guildhall) with teaser VN lines
 - [x] CON-0093 · Demo · P1 · S · Demo save carry-over contract — flags and ranks saved in a documented format the full game imports (cantorMercy, litanySeenCount, per-op best rank)
-- [ ] CON-0094 · Demo · P1 · S · Main-menu "Wishlist" entry and post-demo title screen variant — Lauds sigil burned into the title woodcut
-- [ ] CON-0095 · Demo · P2 · S · Idle attract mode — after 60 s on title, replays a recorded op1-5 boss input log (Next Fest booth use)
 
 ### Demo challenge set
 - [ ] CON-0096 · Demo · P1 · S · Unlock rule — demo "Trials of the Guild" menu unlocks after completing Ch2; 3 X-ops
@@ -578,7 +537,6 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ### op5-4 "Under the Hollow Moon" (Rosina, labouring mother) — field obstetrics
 - [x] CON-0181 · Alpha · P0 · S · Design spec — caesarean on a living mother (historical Nufer account in codex); layered incision, lift the child with tongs (gentle-hold meter), ligate, close; no gore escalation, hope-giving tone
 - [x] CON-0182 · Alpha · P0 · M · Implement gentle-hold tongs mode — grip pressure from hold duration; and dual-vitals (mother + child) (tests)
-- [ ] CON-0183 · Alpha · P0 · S · Obstetric sensitivity sign-off — consultant approves op5-4 visuals and text before Beta
 - [x] CON-0184 · Alpha · P1 · S · Author `op5-4` data file — callouts, thresholds, checklist pass
 
 ### op5-5 "Hexstone Shot" (Sergeant Lotte Harrach, Watch)
@@ -676,12 +634,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ## CON · Epic 11 — Content integration (Beta) and release checks
 - [ ] CON-0249 · Beta · P0 · M · Final-art integration audit — every op's entities use final sprites/shaders; no placeholder flagged assets remain (asset manifest check)
-- [ ] CON-0250 · Beta · P0 · M · VO integration audit — every voiced line id in content has an audio file; missing-file test
 - [ ] CON-0251 · Beta · P1 · S · Op briefing images — woodcut briefing plate per op (37 campaign ops) referenced in data
 - [ ] CON-0252 · Beta · P1 · S · Codex/case-note unlock audit across full campaign graph — all branches
 - [ ] CON-0253 · Beta · P1 · S · Full-campaign playthrough script — QA route covering each ending with flag setup; 4 routes documented
-- [ ] CON-0254 · Release · P0 · S · Content freeze — content folder tagged; only bug fixes after freeze
-- [ ] CON-0255 · Release · P1 · S · Demo-to-full save import verified — with 3 real demo saves (flags and ranks carried)
-- [ ] CON-0256 · Release · P1 · S · Achievement content list — 40 achievements mapped to content events (every boss, XS per chapter, all endings, all disciplines)
-
 

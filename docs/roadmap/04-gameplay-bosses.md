@@ -250,7 +250,6 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 ### Ranks
 - [x] GAM-0151 · Demo · P0 · S · Rank thresholds recalibrated after farming fix via `CALIBRATE=1` — committed per op with calibration date comment
 - [x] GAM-0152 · Demo · P0 · S · XS rank requires S score + no BAD/MISS + vitals never < 50 + Litany either unused or used at a scripted peak — documented in results tooltip
-- [ ] GAM-0153 · Demo · P1 · S · Human playtest validation — 5 playtesters' median rank on each demo op falls in B–A; outliers logged as tuning tasks
 - [x] GAM-0154 · Demo · P1 · S · Results breakdown — ratings histogram, max combo, vitals bonus, time bonus, penalties, final rank with the next-rank delta ("312 to A")
 - [x] GAM-0155 · Demo · P1 · S · Best rank/score per op persisted per difficulty in save — results shows NEW BEST
 - [ ] GAM-0156 · Alpha · P1 · S · Ch3–5 rank thresholds — every op calibrated via `CALIBRATE=1` bot run and signed off by designer in PR
@@ -269,7 +268,6 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 
 ## GAM-H · Litany of Stillness
 
-- [ ] GAM-0166 · Demo · P0 · S · Star recognition tolerance tuned from 200 recorded human stars (≥ 92 % accept, ≤ 2 % false-positive on zig-zag stitch paths) — test data committed
 - [x] GAM-0167 · Demo · P0 · S · Litany does not slow the player's cursor or tool timers (hold durations use real time) — only entity time; unit test
 - [x] GAM-0168 · Demo · P1 · S · Litany drawn anywhere including off-body — right mouse draws in gold ink with fade trail; failed star shows "The words falter" and does not consume use
 - [x] GAM-0169 · Demo · P1 · S · Litany extended by COOL chain — each COOL during Litany adds 0.25 s up to +3 s
@@ -315,7 +313,6 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] GAM-0200 · Alpha · P1 · S · Ch3 op tuning — every Ch3 op passes 20-seed steady/novice sweep and has committed thresholds
 - [x] GAM-0201 · Alpha · P1 · S · Ch4 op tuning — every Ch4 op passes 20-seed steady/novice sweep and has committed thresholds
 - [x] GAM-0202 · Beta · P1 · S · Ch5 op tuning — every Ch5 op passes 20-seed steady/novice sweep and has committed thresholds
-- [ ] GAM-0203 · Beta · P1 · M · Human telemetry balance pass — opt-in beta telemetry (fail rate per op); any op with > 35 % first-attempt fail on Surgeon gets a tuning task
 
 ## GAM-K · Tutorialisation (Demo)
 
@@ -433,7 +430,6 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0022 · Demo · P0 · S · Farming regression — `farm` bot Matins score ≤ steady score (depends on GAM farming fix)
 - [x] BOS-0023 · Demo · P1 · S · Unit tests — rhythm timings per phase, eye beat damage multiplier, shard spawn count per veil
 - [x] BOS-0024 · Demo · P1 · S · Checkpoint at phases 2 and 3 verified — retry resumes with correct HP and no leftover adds
-- [ ] BOS-0025 · Demo · P1 · S · Playtest gate — 5 new players: ≥ 4 clear Matins within 3 attempts on Surgeon
 - [x] BOS-0026 · Demo · P2 · S · Matins codex & debrief — codex entry unlocked on first encounter; 3 Ilse debrief lines keyed to rank (XS/S, A/B, C)
 
 ## BOS-C · Lauds — The Antiphon (Chapter 2 boss, Demo polish)
@@ -459,7 +455,6 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0042 · Demo · P0 · S · Farming regression — `farm` bot Lauds score ≤ steady score
 - [x] BOS-0043 · Demo · P1 · S · Unit tests — heal-on-unanswered strike, severance unlink duration, flare blind duration, rekindle partial trace
 - [x] BOS-0044 · Demo · P1 · S · Lauds checkpoints — retry at phases 2 and 3 resumes with correct HP, linked-body state, and no leftover adds (test)
-- [ ] BOS-0045 · Demo · P1 · S · Playtest gate — ≥ 4/5 players clear Lauds in ≤ 4 attempts on Surgeon; median attempt time logged
 - [x] BOS-0046 · Demo · P2 · S · Lauds codex, debrief lines, and end-of-demo tease of Prime — (name-sigil flicker in final frame)
 
 ## BOS-D · Prime — The Roll of the Dead (Chapter 3)
@@ -480,7 +475,6 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [ ] BOS-0057 · Alpha · P0 · S · Bot strategy: erase names in heart-proximity priority — steady bot clears in 260–340 s; novice 20/20
 - [x] BOS-0058 · Alpha · P1 · S · Unit tests — reverse-order erase rule, parallel write speeds, ink-to-stroke conversion timer
 - [x] BOS-0059 · Alpha · P1 · S · Farming guard — erased-stroke points count as boss-add (capped)
-- [ ] BOS-0060 · Beta · P1 · S · Prime final pass — playtest gate (≥ 4/5 clear in ≤ 4 attempts) and retune with final art/audio
 - [x] BOS-0061 · Beta · P2 · S · Prime codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
 
 ## BOS-E · Terce — Tongues of Fire (Chapter 3 finale)
@@ -500,7 +494,6 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [ ] BOS-0071 · Alpha · P0 · S · Bot strategy: salve fronts, excise roots, synchronized douse in phase 2 — steady clears 280–360 s
 - [x] BOS-0072 · Alpha · P1 · S · Unit tests — brand heals Terce, re-merge window, haze cursor offset applied to tool pos not visual cursor
 - [x] BOS-0073 · Alpha · P1 · S · Fire-spread cap — ≤ 6 hexfire patches at once; drain budget assertion holds
-- [ ] BOS-0074 · Beta · P1 · S · Terce final pass — playtest gate (≥ 4/5 clear in ≤ 4 attempts) and retune with final art/audio
 - [x] BOS-0075 · Beta · P2 · S · Terce codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
 
 ## BOS-F · Sext — The Noonday Demon (Chapter 4)
@@ -520,7 +513,6 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 ### Tuning & tests
 - [ ] BOS-0086 · Alpha · P0 · S · Bot strategy: Tincture(blue) when lag > 150 ms, periodic Lens on heart in phase 2 — steady clears 280–360 s
 - [x] BOS-0087 · Alpha · P1 · S · Unit tests — input-lag queue applied deterministically, false vitals never shown when Lens hovers heart, clash stun
-- [ ] BOS-0088 · Beta · P1 · S · Playtest — confirm torpor reads as boss mechanic not game lag (survey question ≥ 80 % correct)
 - [x] BOS-0089 · Beta · P2 · S · Sext codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
 
 ## BOS-G · None — The Hour of Death (Chapter 4 finale)
@@ -541,7 +533,6 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0100 · Alpha · P0 · S · Bot strategy: intercept prediction along known path — novice bot wins ≥ 19/20 (instant-loss boss needs margin)
 - [x] BOS-0101 · Alpha · P0 · S · Fairness test — no seed spawns the head closer than 8 s travel from the heart at any phase start
 - [x] BOS-0102 · Alpha · P1 · S · Unit tests — split segment count, heart-contact outcomes by phase, extraction window regrowth
-- [ ] BOS-0103 · Beta · P1 · S · Playtest — instant-loss frustration check; checkpoint per phase mandatory
 - [x] BOS-0104 · Beta · P2 · S · None codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
 
 ## BOS-H · Vespers — The Lamp-Lighting (Chapter 5)
@@ -560,8 +551,6 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 ### Tuning & tests
 - [ ] BOS-0114 · Alpha · P0 · S · Bot strategy: lamp maintenance loop + filament cutting — steady clears 300–380 s
 - [x] BOS-0115 · Alpha · P1 · S · Unit tests — lamp dim timer, quadrant visibility masking of entity hit-tests, silhouette damage rule
-- [ ] BOS-0116 · Alpha · P1 · S · Perf check — dynamic lighting mask ≤ 0.5 ms GPU at 1080p on min-spec
-- [ ] BOS-0117 · Beta · P1 · S · Vespers final pass — playtest gate (≥ 4/5 clear in ≤ 4 attempts) and retune with final art/audio
 - [x] BOS-0118 · Beta · P2 · S · Vespers codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
 
 ## BOS-I · Compline — The Great Silence (Chapter 5)
@@ -582,7 +571,6 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [ ] BOS-0129 · Alpha · P0 · S · Bot strategy covers stolen-Litany slow, node breaking, two-tool combo — steady clears 380–480 s; novice ≥ 19/20
 - [x] BOS-0130 · Alpha · P1 · S · Unit tests — Litany ownership transfer and restore, mute windows never overlap a lethal attack without visual tell, combo window
 - [x] BOS-0131 · Alpha · P1 · S · Module reuse test — Compline's Matins/Lauds/Prime sub-phases pass their original boss unit tests in isolation
-- [ ] BOS-0132 · Beta · P1 · S · Playtest + final tuning — checkpoint per phase
 - [x] BOS-0133 · Beta · P2 · S · Compline codex & debrief — codex entry + 3 rank-keyed Ilse debrief lines
 
 ## BOS-J · The Office — the Malison's final form (Chapter 5 finale)
@@ -601,7 +589,6 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [ ] BOS-0142 · Beta · P0 · S · Bot completion on 50 seeds all difficulties — steady clears 480–600 s; op timeLimit 720 s
 - [x] BOS-0143 · Beta · P0 · S · Pairing validator — every allowed pair of Hours tested for tool conflicts and drain budget ≤ 2.2/s
 - [x] BOS-0144 · Beta · P1 · S · Checkpoint after each extinguished hour-sigil in phase 1 on Novice/Surgeon — per phase on Master
-- [ ] BOS-0145 · Beta · P1 · S · Playtest gate — ≥ 70 % of playtesters clear within 5 attempts on Surgeon
 - [x] BOS-0146 · Release · P2 · S · Office codex — ending debrief variants by rank and story flags
 
 ## BOS-K · Mid-bosses & elite ailments
@@ -637,13 +624,11 @@ Phase tags: `M0` shipped prototype · `Demo` required for the release-quality Ch
 - [x] BOS-0169 · Beta · P1 · S · X6 None remix — 5 split segments; heart contact always instant loss
 - [x] BOS-0170 · Beta · P1 · S · X7 Vespers remix — only 3 lamps, dim over 9 s
 - [x] BOS-0171 · Beta · P1 · S · X8 Compline remix — no silence nodes; Litany permanently stolen; two-tool combo window 0.4 s
-- [ ] BOS-0172 · Beta · P1 · S · X-op remix validation — each remix cleared by expert bot on ≥ 18/20 seeds and by a designer by hand (recorded replay committed)
 
 ## BOS-M · Boss release polish & post-launch
 
 - [ ] BOS-0173 · Beta · P1 · S · Boss consistency pass — all 8 Hours + Office share tell lead-time rules, HUD, checkpoint behaviour, results "Hour defeated" stamp
 - [ ] BOS-0174 · Beta · P1 · S · Boss audio mix pass — tells audible over music at all volume presets (loudness test −3 dB margin)
-- [ ] BOS-0175 · Release · P0 · S · Final bot sweep — all bosses/elites × 3 difficulties × 50 seeds pass on release candidate build
 - [x] BOS-0176 · Release · P1 · S · Replay-verified boss speedrun leaderboards — (fastest clear per Hour) enabled
 - [x] BOS-0177 · Release · P1 · S · Crash/soft-lock audit — each boss run with random-input fuzz bot for 10 min × 20 seeds; no exceptions, no stuck phases
 

@@ -1,0 +1,531 @@
+# 09 — Parked
+
+Open tasks that are **not the game's work right now**. Nothing here is cancelled: each keeps its id, phase and
+acceptance line, and can move back to its workstream file when its time comes. What they have in common is that
+they need a store listing, a release date, other people (players, reviewers, vendors, actors, translators),
+hardware we don't have, or art we don't commission — none of which exists until the full game plays end to end.
+
+Current priorities: [docs/ROADMAP.md](../ROADMAP.md#priorities) (tiers in `priorities.json`).
+
+## Steam, store & storefront (116)
+
+- [ ] ART-0069 · Beta · P2 · S · Achievement icon set (Steam 64×64 + 256×256, colour and greyed) as wax medallions — one per achievement in the design list
+- [ ] ART-0316 · Demo · P0 · M · Header capsule 920×430 and small capsule 462×174: logo legible at thumbnail size (tested at 50% downscale)
+- [ ] ART-0317 · Demo · P0 · S · Main capsule 1232×706 and vertical capsule 748×896
+- [ ] ART-0318 · Demo · P0 · S · Library capsule 600×900, library hero 3840×1240 (logo-free) and library logo PNG with transparent background
+- [ ] ART-0320 · Demo · P0 · S · Demo-specific capsule variants with a "FREE DEMO" banner that is compliant with Steam's text rules
+- [ ] ART-0321 · Demo · P0 · S · Steam capsule compliance check: no review quotes, award laurels or discount text on base capsules — checklist signed before upload
+- [ ] ART-0322 · Demo · P1 · S · Next Fest event capsule and a festival page banner
+- [ ] ART-0324 · Demo · P1 · S · 5 animated GIF/WebM clips (≤ 3 MB each) for the store description: arrow extraction, Litany, Matins eye, Lauds thread sever and the rank seal
+- [ ] ART-0327 · Release · P1 · S · Seasonal/sale capsule overlays (template) for the Steam sale calendar
+- [ ] ART-0364 · Release · P1 · S · Final IP audit of every shipped asset (Games Workshop and other third-party look-alike check) signed off by the producer
+- [ ] AUD-0101 · Demo · P0 · S · Performer contracts — usage covers demo, full game, trailers and store pages; credit names; pickup rates; union/non-union status recorded
+- [ ] AUD-0135 · Alpha · P1 · S · Full-game VO decision — full VN VO vs extended grunt-style for Chapters 3–5, based on demo wishlist conversion and budget; decision recorded with line count and cost
+- [ ] CON-0089 · Demo · P0 · S · End-flow sequence spec — s2-end → "END OF CHAPTER II" card → demo results summary → Ch3 teaser → wishlist screen → main menu; each step skippable after first view
+- [ ] CON-0091 · Demo · P0 · S · Wishlist screen content — key art, 3 bullet promises (5 chapters, 8 Hours, other disciplines), Steam overlay wishlist button, "Follow development" link
+- [ ] CON-0094 · Demo · P1 · S · Main-menu "Wishlist" entry and post-demo title screen variant — Lauds sigil burned into the title woodcut
+- [ ] CON-0095 · Demo · P2 · S · Idle attract mode — after 60 s on title, replays a recorded op1-5 boss input log (Next Fest booth use)
+- [ ] INP-0081 · Demo · P1 · M · Glyph sets — Xbox, PlayStation, Steam Deck, Nintendo and generic glyph atlases in the woodcut UI style; auto-detected from `Gamepad.id` / Steam Input controller type; manual override in Options
+- [ ] INP-0090 · Demo · P0 · M · Steam Input action manifest — `game_actions_X.vdf` with action sets Menu, Operation, Story; default configurations for Xbox, PlayStation, generic and Deck; uploaded via Steamworks and tested with the Steam Input configurator
+- [ ] INP-0096 · Demo · P2 · S · Deck trackpad ticks — stitch crossings and incision checkpoints trigger a light trackpad haptic pulse via Steam Input (steamworks.js), rate-limited to 30/s
+- [ ] INP-0115 · Beta · P1 · M · Steam Input native integration — when running under Steam, read actions through steamworks.js Steam Input instead of the Gamepad API (action origins give exact glyphs); Gamepad API remains the fallback outside Steam
+- [ ] INP-0116 · Beta · P2 · M · Gyro cursor — gyro-as-mouse for Deck, DualSense and Switch Pro via Steam Input, enabled while touching the right trackpad or holding R1 (ratchet); sensitivity setting; off by default
+- [ ] INP-0123 · Release · P1 · S · Steam Remote Play check — mouse, gamepad and Litany drawing work over Remote Play (host PC → Deck/phone); latency overlay numbers recorded
+- [ ] LOC-0003 · Demo · P1 · S · Spanish variant — Spain vs Latin-American Spanish chosen from Steam traffic by country on the coming-soon page; the other variant listed as a Post option
+- [ ] LOC-0004 · Demo · P1 · S · Supported-languages matrix — Interface/Subtitles per language, Full Audio English only (AUD VO plan); mirrored exactly in Steamworks for the demo and full-game apps
+- [ ] LOC-0039 · Demo · P1 · S · Proper-name policy — names untranslated in Latin-script languages; approved transliterations for RU/ZH/JA/KO (e.g. Kreuzer → Кройцер / 克罗伊策 / クロイツァー / 크로이처) recorded once in the termbase and reused on store pages
+- [ ] LOC-0051 · Demo · P1 · S · Continuous loc builds — nightly build with the latest approved translations pushed to a password-protected Steam `loc` branch for reviewers
+- [ ] LOC-0054 · Demo · P0 · S · Per-language demo sign-off — lead reviewer signs `docs/loc/signoff/<lang>-demo.md`; languages without sign-off are hidden from the language menu and the Steamworks language list
+- [ ] LOC-0070 · Demo · P0 · M · Localised full-game store page — short description, About This Game, feature bullets and content-descriptor text in every demo language, reviewed by the same LQA reviewer
+- [ ] LOC-0071 · Demo · P0 · S · Localised demo store page — demo description ("Chapters I–II, 10 operations, two Malison hours") and the full-game wishlist call to action in every demo language
+- [ ] LOC-0072 · Demo · P1 · S · Localised "FREE DEMO" capsule banner text — per-language strings with length limits delivered to ART for the localised capsule variants Steam supports
+- [ ] LOC-0073 · Demo · P1 · S · Trailer subtitles — SRT files for the announce and Next Fest trailers in every demo language, uploaded where Steam/YouTube support per-language captions
+- [ ] LOC-0074 · Demo · P1 · S · Localised press releases — announce and Next Fest releases in DE, FR, ES, PL and PT-BR
+- [ ] LOC-0076 · Demo · P1 · S · Steam rich-presence tokens — the PLT rich-presence token file translated for every demo language; checked in a friends list per language
+- [ ] LOC-0077 · Demo · P2 · S · Steam event and announcement posts — Next Fest, demo-live and patch-note posts published in every demo language from one template
+- [ ] LOC-0099 · Beta · P1 · S · Achievement text — names and descriptions translated for every shipped language and entered in Steamworks; length-checked in the Steam overlay
+- [ ] LOC-0102 · Release · P0 · S · Full-game store page localisation — every shipped language, with ART screenshots showing localised UI for DE, FR, RU, ZH-Hans and JA
+- [ ] NAR-0020 · Demo · P1 · S · Trademark search for "Hollow Choir" (novel + itch.io supplement noted) — decision recorded; fallback "the Unsung" pre-approved for a single find-and-replace
+- [ ] NAR-0022 · Demo · P1 · S · Title/subtitle/tagline check — "Suture & Steel: The Malison Hours" and store tagline searched for trademark conflicts; no "Grim World of Perilous Adventure" echo
+- [ ] OPS-0013 · Demo · P0 · S · Account security — 2FA on GitHub, Steamworks, domain registrar, email and social accounts; shared credentials only in a team password manager; two admins on every critical account
+- [ ] OPS-0019 · Demo · P0 · S · Demo go/no-go gate — QA sign-off, legal clearance, store readiness, content survey and Next Fest registration reviewed 3 weeks before the press preview; outcome and fallback edition recorded
+- [ ] OPS-0022 · Release · P0 · S · Release-candidate gate — 0 open S1/S2, certification checklist passed, rating certificates on file, store page approved, launch comms scheduled; RC build SHA recorded
+- [ ] OPS-0027 · Demo · P1 · S · Next Fest fallback plan — criteria for moving to the following Next Fest edition, pre-written team and community messaging, and what the extra weeks are spent on; approved before the go/no-go gate
+- [ ] OPS-0029 · Alpha · P1 · S · Post-demo re-plan — demo telemetry, wishlists and playtest findings used to re-estimate Ch3–5; schedule and budget re-baselined and the burn-up reset
+- [ ] OPS-0038 · Demo · P2 · S · Funding route — self-funding vs publisher vs regional games funds; pitch deck with the demo, wishlist data and budget; decision and application deadlines in the decision log
+- [ ] OPS-0044 · Demo · P1 · S · Trailer editor — portfolio review and quote; cuts the announce and Next Fest trailers from the ART storyboards; delivery dates tied to the store-page launch
+- [ ] OPS-0045 · Demo · P2 · S · PR/marketing support — freelance PR vs self-run decision with cost; if hired, scope covers the press list, outreach waves and the Next Fest campaign
+- [ ] OPS-0058 · Demo · P0 · M · Counsel trademark clearance — "Suture & Steel", "Suture and Steel" and "The Malison Hours" searched in USPTO Trademark Search, EUIPO eSearch, UKIPO, WIPO Global Brand Database, J-PlatPat and KIPRIS (Nice classes 9, 28, 41) plus Steam, itch.io and console stores; written clearance opinion on file (the NAR title search is the first pass)
+- [ ] OPS-0061 · Demo · P1 · S · Domains & handles — suture-and-steel domains (.com plus chosen ccTLDs), Steam developer/publisher names, X, Bluesky, YouTube, TikTok, Reddit and a Discord vanity URL registered to the company account
+- [ ] OPS-0062 · Demo · P0 · S · Rebrand audit outside code — documents, store drafts, press assets, social bios and the Steamworks app name all read "Suture & Steel — The Malison Hours"; no "Grim Apothecary" or "grim-surgeon" in public material (code identifiers are PLT's task)
+- [ ] OPS-0063 · Demo · P0 · S · Steam AI-content disclosure — Steamworks content survey answered from the ART and AUD provenance logs (pre-generated and live-generated content); re-checked at every milestone gate
+- [ ] OPS-0065 · Demo · P0 · S · Legal entity & Steamworks onboarding — company entity confirmed, Steamworks partner agreement signed, tax interview and bank verified, Steam Direct fee paid for the full-game app; all IP assigned to the entity
+- [ ] OPS-0067 · Demo · P0 · M · EULA decision — Steam Subscriber Agreement only vs custom EULA (telemetry, conduct, future mods); if custom, drafted by counsel, shown on first launch and linked on the store page
+- [ ] OPS-0070 · Demo · P1 · S · Website consent — no analytics or tracking cookies without consent; Steam wishlist widget and newsletter form checked against the privacy policy
+- [ ] OPS-0075 · Demo · P0 · S · Steamworks mature-content survey — completed for the demo and full-game apps (surgical gore, frequent violence, occult themes, no sexual content) using the NAR descriptor text; matches what the demo shows
+- [ ] OPS-0083 · Demo · P0 · S · Coming-soon page live ≥ 3 months before Next Fest — release window "2027", UTM-tagged links used in every channel from day one
+- [ ] OPS-0091 · Demo · P0 · M · Announce trailer (60–75 s) — edited from the ART storyboard and deterministic replay captures, cleared music, 1080p60 and 4K masters, uploaded to YouTube and the Steam page
+- [ ] OPS-0092 · Demo · P0 · M · Next Fest demo trailer (45–60 s) — Ch1–2 highlights, Lauds reveal, "Play the free demo" end slate; subtitles from LOC; live on the page before the press preview
+- [ ] OPS-0093 · Demo · P0 · M · Press kit page — presskit()-style: fact sheet, description, features, trailers, ART press folder, team, contact, one-click zip; linked from Steam, website and Discord
+- [ ] OPS-0094 · Demo · P1 · S · Website — landing page with Steam wishlist widget, trailer, newsletter signup, press kit and privacy policy; Lighthouse performance and accessibility ≥ 90
+- [ ] OPS-0095 · Demo · P1 · S · Newsletter — provider with double opt-in; welcome email; sends at announce, Next Fest and launch; subscriber count in the weekly note
+- [ ] OPS-0100 · Demo · P2 · S · Steam themed events — join fitting Steam events (e.g. horror-themed festivals) with the demo when dates allow; participation rules checked per event
+- [ ] OPS-0104 · Demo · P0 · S · Choose the edition — target Next Fest picked from Valve's published dates against the master schedule (with the following edition as fallback); registration deadline and press-preview date added
+- [ ] OPS-0105 · Demo · P0 · S · Confirm current rules — eligibility (unreleased game, one Next Fest per game, public store page, demo availability) read from Steamworks docs and recorded
+- [ ] OPS-0106 · Demo · P0 · S · Next Fest registration — completed in Steamworks before the deadline; confirmation and listing stored in `docs/production/`
+- [ ] OPS-0110 · Demo · P1 · M · Festival livestreams — a pre-recorded 20–30 min dev playthrough plus 2 live sessions scheduled via Steam broadcasting; moderators assigned
+- [ ] OPS-0112 · Demo · P1 · S · Festival event posts — demo-live, livestream and thank-you events scheduled in Steamworks in every demo language
+- [ ] OPS-0113 · Demo · P1 · S · Post-fest retrospective — wishlist delta, demo players, median playtime, funnel conversion and top feedback; decisions for Ch3–5 and a demo update within 2 weeks
+- [ ] OPS-0115 · Demo · P0 · M · Discord server — #announcements, #demo-feedback, #bug-reports, #screenshots, #lore, #loc-feedback; roles, AutoMod and spam bot, verification gate, rules; linked from game, website and Steam
+- [ ] OPS-0117 · Demo · P1 · S · Steam discussions — pinned FAQ, bug-report template, known-issues thread and moderators assigned for both apps
+- [ ] OPS-0118 · Demo · P1 · S · Community FAQ — platforms, Deck, languages, release window, demo carry-over, accessibility, content warnings; kept on the website and Steam
+- [ ] OPS-0130 · Demo · P1 · S · Two-week demo review — players, median playtime, completion, wishlist conversion and demo reviews compared to targets; actions recorded in the decision log
+- [ ] OPS-0132 · Demo · P2 · S · Steam Playtest vs demo — decide whether Beta testing uses a Steam Playtest app separate from the demo; access waves configured if yes
+- [ ] OPS-0133 · Beta · P0 · S · Release date — chosen to avoid major genre launches and Steam sale conflicts; set in Steamworks with the page live as "coming soon" for at least the 2 weeks Valve requires (target ≥ 8 weeks)
+- [ ] OPS-0138 · Release · P1 · S · Launch-week analytics review — daily sales, refunds, review score, wishlist conversion and top issues; a day-7 report with actions
+- [ ] OPS-0141 · Release · P2 · S · First payout reconciliation — first Steam payout matched against sales reports and the revenue forecast; variances explained in the monthly review
+- [ ] PLT-0007 · Demo · P0 · M · Steam integration feasibility per shell — steamworks.js (napi) under Electron vs the Rust `steamworks` crate under Tauri; overlay renders and receives input on Windows fullscreen and windowed
+- [ ] PLT-0042 · Demo · P0 · M · Steam overlay works in fullscreen, borderless and windowed on Windows, Linux and macOS — `GameOverlayActivated` pauses the game and suspends input
+- [ ] PLT-0046 · Demo · P0 · M · Steam Cloud via Auto-Cloud — root overrides for `WinAppDataRoaming`, `MacAppSupport`, `LinuxXdgDataHome` matching the save paths; quota 10 MB / 50 files; round-trip between two machines tested
+- [ ] PLT-0047 · Demo · P1 · S · Cloud conflict behaviour tested (edit offline on two machines) — Steam conflict dialog appears and either choice loads cleanly
+- [ ] PLT-0048 · Demo · P1 · M · Screenshots — Steam's screenshot key captures the game frame on every OS (fallback: `HookScreenshots` + readPixels via `AddScreenshotToLibrary`); F12 in-game path shared
+- [ ] PLT-0050 · Demo · P2 · S · Steam Timeline markers — operation start, Malison fight, patient lost, XS rank, so Game Recording clips are labelled
+- [ ] PLT-0054 · Demo · P0 · S · Dedicated Steam build account with minimal permissions and Steam Guard handled via stored `config.vdf` secret — documented recovery
+- [ ] PLT-0055 · Demo · P0 · S · Steam launch options — per-OS executable and arguments plus a secondary "Launch in safe mode" option
+- [ ] PLT-0056 · Demo · P0 · S · Separate Steam demo app ID — Steamworks "Demo" app linked to the base game with its own depots, branches, Cloud settings and store association
+- [ ] PLT-0070 · Demo · P0 · S · Next Fest checklist with dates — demo build live and reviewed ≥2 weeks before the festival, store page demo section, broadcast/press build, known-issues list
+- [ ] PLT-0075 · Demo · P0 · M · Clean-machine demo QA via the Steam client (no dev tools installed) on Windows 10, Windows 11, macOS arm64, Ubuntu and Steam Deck — install, play Ch1–2 end to end, Cloud sync, uninstall
+- [ ] PLT-0142 · Demo · P1 · S · Nightly job — build all flavours, upload to the Steam `qa` branch, post the build id and changelog to the team channel
+- [ ] PLT-0149 · Demo · P0 · M · One-command release job — version bump, tag, build matrix, sign/notarise, symbol upload, SteamPipe upload to `beta`, smoke on each OS
+- [ ] PLT-0154 · Demo · P0 · M · Steam Input integration — action manifest with action sets Menu, Operation, Litany; default configurations for Xbox, PlayStation, Switch Pro and Steam Deck; Gamepad API fallback when Steam Input is off
+- [ ] PLT-0174 · Beta · P0 · S · Full-game app configuration — depots per OS, branches, launch options, Cloud quotas and paths mirrored from the demo config; no DRM wrapper (decision recorded)
+- [ ] PLT-0176 · Beta · P1 · M · Steam stats — operations completed, Malisons purged, XS ranks, patients saved, backing progress achievements with offline caching
+- [ ] PLT-0178 · Beta · P1 · S · Localised rich presence — token files for every shipped language
+- [ ] PLT-0179 · Beta · P2 · S · Remote Play and Steam Link — input latency acceptable and cursor behaves in a streaming session (manual test)
+- [ ] PLT-0181 · Beta · P1 · S · Steam Families and offline mode — game fully playable offline after first launch; achievements sync later
+- [ ] PLT-0184 · Release · P1 · M · GOG build — DRM-free offline installers, GOG Galaxy integration evaluated (achievements/cloud) with a decision recorded
+- [ ] PLT-0185 · Release · P1 · M · itch.io build — `butler push` channels for Windows/macOS/Linux and `.itch.toml` launch config, plus the browser demo channel
+- [ ] PLT-0186 · Release · P1 · M · Auto-updater for direct-download builds only (signed update feed, differential downloads, rollback on failed start) — disabled in Steam/GOG builds
+- [ ] QAT-0091 · Demo · P1 · S · Known-issues list — maintained for each public build and pinned in the Steam discussions and Discord
+- [ ] QAT-0093 · Demo · P1 · S · Community bug intake — Discord #bug-reports and Steam forum reports triaged weekly into GitHub issues with the `community` label and a reply linking the fix version
+- [ ] QAT-0102 · Demo · P0 · M · Demo funnel dashboard — drop-off per step with daily cohorts by build, OS and locale; a Next Fest daily snapshot exported to the production channel
+- [ ] QAT-0107 · Demo · P1 · S · Wishlist attribution — demo wishlist clicks correlated daily with Steamworks wishlist additions and UTM-tagged store visits
+- [ ] QAT-0117 · Demo · P0 · S · Access channels — private Steam branch for moderated rounds and a Steam Playtest app for unmoderated waves; access waves and revocation documented
+- [ ] QAT-0119 · Demo · P1 · S · Session survey — SUS score, "would you wishlist" intent, session length and "most confusing moment", complementing the CON per-op survey; identical across rounds for comparison
+- [ ] QAT-0122 · Demo · P0 · M · Release-candidate round — 30 unmoderated players on the demo RC; gates ≥ 85 % reach Lauds, median session ≥ 40 min, wishlist intent ≥ 60 %, 0 crashes
+- [ ] QAT-0127 · Beta · P1 · M · Beta round — 50+ players via Steam Playtest across every shipped language; content-complete survey and fail-point review for the Ch3–5 bosses
+- [ ] QAT-0149 · Demo · P1 · S · Next Fest QA rota — daily crash and forum sweep during the festival week; each hotfix verified inside the PLT 4-hour pipeline
+- [ ] UIX-0143 · Demo · P0 · M · Fresh-player playtest — 8 players new to Trauma Center: record time-to-first-success and attempts per mechanic through Ch1; any mechanic where > 25 % need > 3 attempts gets a tutorial or tuning fix before Next Fest
+- [ ] UIX-0165 · Demo · P0 · S · Demo build flag — `__DEMO__` (Vite `define`) gates demo-only UI (DEMO ribbon, wishlist seals, locked Ch3–5 cards, demo-complete scene); CI builds and smoke-tests both flavours
+- [ ] UIX-0169 · Demo · P0 · M · Wishlist call-to-action — wax-seal "Wishlist on Steam" button opens the full game's store page via steamworks.js overlay (`overlay.activateToStore(appId)`), falling back to `steam://store/<appid>` via `shell.openExternal` when the overlay is disabled; tested with overlay on and off and on Deck
+- [ ] UIX-0171 · Demo · P2 · S · Community row — Discord and newsletter links (small woodcut icons) under the wishlist button; hidden in kiosk builds
+- [ ] UIX-0174 · Demo · P1 · S · Title wishlist seal — always visible on the demo title (not a pop-up nag); click-through tracked in the local stats file
+- [ ] UIX-0175 · Demo · P2 · M · Event kiosk mode — `--kiosk` flag: returns to title after 90 s idle, disables Quit and save slots, resets progress each session, shows controls card on title (for Next Fest streams and conventions)
+- [ ] UIX-0176 · Demo · P0 · M · Demo-complete E2E test — Playwright drives the demo build via debug `skipTo` hooks through the Lauds operation to `DemoCompleteScene`, asserts the summary values and that the wishlist handler is invoked (mocked steamworks)
+- [ ] UIX-0188 · Beta · P2 · M · Leaderboard UI — Steam leaderboard per challenge: global/friends/around-me tabs, rank, score, time, "Assisted" filter; offline state message
+- [ ] UIX-0197 · Beta · P2 · S · In-game achievement list — mirrors Steam achievements with locked/unlocked state and hidden descriptions for story achievements
+- [ ] UIX-0208 · Release · P1 · M · Final accessibility audit — full game re-checked against the demo accessibility table; any regressions fixed; accessibility feature list published on the store page
+
+## Achievements (7)
+
+- [ ] CON-0256 · Release · P1 · S · Achievement content list — 40 achievements mapped to content events (every boss, XS per chapter, all endings, all disciplines)
+- [ ] LOC-0088 · Beta · P0 · L · Italian, full game — full game (Ch1–5, UI, challenge mode, disciplines, achievements) translated
+- [ ] OPS-0021 · Beta · P0 · S · Beta Definition of Done & gate — content complete, final art/audio/VO in, all shipped languages in, balance signed off, achievements/Cloud/Deck integrated, 0 open S1
+- [ ] OPS-0090 · Release · P0 · S · 1.0 page update — price, release date, launch trailer, refreshed ART screenshots, achievements count, Deck status; submitted for review ≥ 2 weeks before launch
+- [ ] PLT-0168 · Alpha · P0 · S · Stable namespaced content ids (`ch1.op3`, `ch2.lauds`) used by saves, achievements, telemetry and replays — CI fails on duplicate or renamed ids without a migration entry
+- [ ] PLT-0175 · Beta · P0 · M · Full achievement set (~40) — defined in data with locked/unlocked icons and localised text, unlock tests driven by golden replays
+- [ ] UIX-0161 · Demo · P1 · S · Assist transparency — assists never block achievements or progress; the report shows which assists were active; Operating Theatre filter "Unassisted bests only"
+
+## Marketing, press & trailers (17)
+
+- [ ] ART-0309 · Demo · P0 · S · Logo variants: full-colour, one-colour (black and parchment), on-dark, a stacked version and an icon-only ampersand mark
+- [ ] ART-0312 · Demo · P0 · L · Key art: Kreuzer over a Wound-Man patient, with Ilse at his side, Stroh in shadow and the Malison eye above — 6000×3375 master, layered so it can be recomposed
+- [ ] ART-0314 · Demo · P1 · M · Title-screen composition derived from the key art with room for menu items (in-engine at 1920×1080)
+- [ ] ART-0315 · Beta · P2 · L · Launch key art v2 (Compline-teaser version) for 1.0
+- [ ] ART-0319 · Demo · P0 · S · Page background 1438×810 (darkened key art) and a community icon 184×184
+- [ ] ART-0329 · Demo · P1 · S · Press kit art folder: logo pack, key art, 10 screenshots and character renders on transparent backgrounds
+- [ ] ART-0331 · Beta · P2 · M · Physical/merch-ready art: a print-resolution (300 dpi, CMYK proof) key art and an A2 poster layout
+- [ ] ART-0333 · Demo · P0 · M · Announce trailer storyboard: ≥ 30 panels with shot duration, camera move and the in-engine capture setup per panel
+- [ ] LOC-0103 · Release · P1 · S · Launch press text — launch press release and launch-trailer subtitles in every shipped language
+- [ ] OPS-0051 · Demo · P0 · S · Marketing-reference rules — counsel-approved guidance: never "Warhammer" or GW names, logos or art; no Atlus footage, screenshots or logos; whether "for fans of surgery-action games" copy may name *Trauma Center* in press only; checklist attached to every store/press/trailer review
+- [ ] OPS-0052 · Demo · P0 · S · Counsel review of the NAR name register — every character, faction, place, saint and boss name in the NAR register and blocklist reviewed by counsel against GW and Atlus/SEGA marks; written sign-off before the announce
+- [ ] OPS-0057 · Demo · P2 · S · Errors-and-omissions insurance — quotes for IP-infringement cover obtained and a buy/no-buy decision logged before the announce
+- [ ] OPS-0059 · Demo · P1 · S · Fallback title shortlist — 3 alternates pre-screened with the same knock-out search so a late conflict does not stall the announce
+- [ ] OPS-0096 · Demo · P1 · S · Social cadence — 3 posts a week (operation GIF, lore snippet, dev note) using the ART social kit; #screenshotsaturday weekly; scheduled 2 weeks ahead
+- [ ] OPS-0114 · Demo · P2 · S · Post-fest demo update — patch addressing the top 5 feedback items plus a thank-you announcement
+- [ ] OPS-0119 · Demo · P0 · M · Press list — 120 outlets and journalists covering PC indie, horror and dark fantasy in EN, DE, FR, ES, PL and PT-BR; CRM sheet with contact status
+- [ ] OPS-0139 · Release · P2 · S · Launch streams — co-stream schedule with creators and two dev streams in launch week
+
+## Release engineering & the demo build (18)
+
+- [ ] CON-0090 · Demo · P0 · M · Demo results summary content — total score, ranks per op (10 rows), best combo, Litany uses, patients saved; "Your ledger carries into the full game" line
+- [ ] CON-0092 · Demo · P1 · S · Ch3 teaser content — 4 woodcut stills (Kilnrows smoke, raised bridges, hornchild, Guildhall) with teaser VN lines
+- [ ] NAR-0173 · Demo · P0 · S · Demo script lock — Ch1–2 text frozen by hash; post-lock edits require changelog entry and loc re-send
+- [ ] PLT-0034 · Demo · P0 · M · Windows Authenticode signing — executables and native modules signed in CI (OV/EV certificate or Azure Trusted Signing) with RFC 3161 timestamps
+- [ ] PLT-0037 · Demo · P0 · S · Signing credentials stored only in the CI secret store (or cloud HSM) — documented rotation and revocation procedure; no keys on developer machines
+- [ ] PLT-0051 · Demo · P1 · S · Overlay web/store links — `ActivateGameOverlayToWebPage`/`ToStore` with default-browser fallback when the overlay is disabled
+- [ ] PLT-0069 · Demo · P1 · S · Demo save format frozen — at demo 1.0, covered by the save-compatibility CI suite for every later full-game build
+- [ ] PLT-0095 · Beta · P1 · S · Save data privacy review — only SteamID/local id and gameplay data stored; documented in the privacy policy
+- [ ] PLT-0140 · Demo · P0 · M · Build matrix — `windows-latest`, `macos-14` (arm64, universal output), `ubuntu-22.04`, each producing signed demo and full packages as artifacts
+- [ ] PLT-0147 · Demo · P0 · S · Branching — `main` for development, `release/demo-1.x` for demo hotfixes (cherry-picks only), tags `demo-v1.0.0`; protected branches with required reviews
+- [ ] PLT-0150 · Demo · P1 · S · Artifact and symbol retention — every shipped build kept for ≥2 years
+- [ ] PLT-0162 · Demo · P0 · S · No keyboard required anywhere — text input fields use `ShowFloatingGamepadTextInput`
+- [ ] PLT-0177 · Beta · P1 · M · Challenge-mode leaderboards — per operation (score, time), uploaded on completion, friends/global views
+- [ ] PLT-0180 · Beta · P0 · M · Demo → full carry-over retested against the final full build — demo Chapter 1–2 progress unlocks Chapter 3 start and keeps ranks
+- [ ] QAT-0144 · Demo · P1 · S · Idle soak — 8 h each on the title, a paused operation and the demo-end summary; no crash, memory growth < 50 MB, audio still plays
+- [ ] QAT-0147 · Demo · P0 · S · Demo RC sign-off — `docs/qa/signoff/demo-rc.md` with build SHA, suite results, exit-criteria status and the open-issue list; required before the build is set live
+- [ ] UIX-0167 · Demo · P0 · M · "Here the demo ends" sequence — illuminated card, teaser of the next Malison hour (Prime) as a silhouette with "The Hours are not yet done…", music sting, then the summary; skippable after first view
+- [ ] UIX-0172 · Demo · P1 · S · Save-carry message — "Your progress and seals will carry over to the full game" shown only once carry-over is verified by the fixture test
+
+## Release & post-launch (17)
+
+- [ ] ART-0261 · Release · P2 · L · Unsung Hour sprites and VFX assembled from the other Hours' atlases plus 1 unique core sprite set
+- [ ] ART-0376 · Release · P1 · S · Final art-size optimisation pass: unused assets removed (manifest reference check), and recompression tuned to hit the 1.0 download budget
+- [ ] AUD-0141 · Release · P0 · M · Final mix — full-campaign mix pass on the four reference playback systems; loudness spec met for every chapter capture; sign-off note in `docs/audio/loudness.md`
+- [ ] BOS-0175 · Release · P0 · S · Final bot sweep — all bosses/elites × 3 difficulties × 50 seeds pass on release candidate build
+- [ ] CON-0254 · Release · P0 · S · Content freeze — content folder tagged; only bug fixes after freeze
+- [ ] CON-0255 · Release · P1 · S · Demo-to-full save import verified — with 3 real demo saves (flags and ranks carried)
+- [ ] ENG-0286 · Release · P0 · S · Full-campaign hitch audit via golden replays — no frame >50 ms in any operation or story scene
+- [ ] ENG-0288 · Release · P0 · S · Release-branch perf gate — benchmark regression >5% blocks the release candidate
+- [ ] INP-0124 · Release · P1 · S · Final input regression — the recorded input corpus replays green on the release candidate across all operations, and the star benchmark still meets 95 %/1 %
+- [ ] INP-0125 · Release · P1 · S · Default bindings freeze — defaults locked two weeks before launch; any later change requires a bindings version bump with migration test
+- [ ] NAR-0181 · Release · P1 · S · Final proofread of shipped build strings — extracted from build, not source
+- [ ] OPS-0023 · Release · P0 · S · Gold-master go/no-go — build locked, day-one patch contents frozen, rollback build identified, launch rota staffed; signed by the owner and the QA lead
+- [ ] OPS-0125 · Release · P0 · M · Review-copy wave — full-game keys to press 2 weeks before launch and to creators 1 week before, under embargo
+- [ ] PLT-0152 · Release · P0 · S · `release/1.x` branch — cut at Release Candidate with the demo hotfix rules and a code-freeze policy
+- [ ] PLT-0188 · Release · P0 · S · Storefront clean-machine checklist — each build passes install/play/uninstall on all target OSes
+- [ ] QAT-0166 · Release · P0 · M · Release-candidate regression — full test plan on every matrix OS; results in `docs/qa/signoff/1.0-rc.md` with build SHA
+- [ ] QAT-0167 · Release · P0 · S · Day-one patch verification — patch build passes the RC regression subset and upgrades a 1.0 save and a demo carry-over save without loss
+
+## Human playtests, surveys & telemetry (41)
+
+- [ ] ART-0265 · Demo · P0 · S · Silhouette test: all 8 icons distinguishable in pure black at 48 px (5-tester hallway test, ≥ 95% correct)
+- [ ] BOS-0025 · Demo · P1 · S · Playtest gate — 5 new players: ≥ 4 clear Matins within 3 attempts on Surgeon
+- [ ] BOS-0045 · Demo · P1 · S · Playtest gate — ≥ 4/5 players clear Lauds in ≤ 4 attempts on Surgeon; median attempt time logged
+- [ ] BOS-0060 · Beta · P1 · S · Prime final pass — playtest gate (≥ 4/5 clear in ≤ 4 attempts) and retune with final art/audio
+- [ ] BOS-0074 · Beta · P1 · S · Terce final pass — playtest gate (≥ 4/5 clear in ≤ 4 attempts) and retune with final art/audio
+- [ ] BOS-0088 · Beta · P1 · S · Playtest — confirm torpor reads as boss mechanic not game lag (survey question ≥ 80 % correct)
+- [ ] BOS-0103 · Beta · P1 · S · Playtest — instant-loss frustration check; checkpoint per phase mandatory
+- [ ] BOS-0117 · Beta · P1 · S · Vespers final pass — playtest gate (≥ 4/5 clear in ≤ 4 attempts) and retune with final art/audio
+- [ ] BOS-0132 · Beta · P1 · S · Playtest + final tuning — checkpoint per phase
+- [ ] BOS-0145 · Beta · P1 · S · Playtest gate — ≥ 70 % of playtesters clear within 5 attempts on Surgeon
+- [ ] BOS-0172 · Beta · P1 · S · X-op remix validation — each remix cleared by expert bot on ≥ 18/20 seeds and by a designer by hand (recorded replay committed)
+- [ ] CON-0015 · Demo · P1 · M · Reference bots — perfect/average/poor bots that act on each entity type with rating distributions matching playtest data (±10%)
+- [ ] CON-0025 · Demo · P1 · S · Playtest survey form for ops — per op: clarity 1–5, fairness 1–5, fun 1–5, "what killed you"; results stored per build
+- [ ] CON-0026 · Demo · P1 · M · Two external playtest rounds on Ch1–2 — ≥ 8 players each; every op scoring < 3.5 fairness gets a fix ticket
+- [ ] CON-0028 · Beta · P1 · M · Full-campaign balance pass — per-op thresholds retuned from telemetry of ≥ 30 playtesters
+- [ ] CON-0040 · Demo · P1 · S · Inked incision line follows chest contour — COOL tolerance ±8 px verified in playtest
+- [ ] ENG-0287 · Release · P0 · M · Driver workaround sweep from Beta crash/telemetry reports — each workaround added to the quirks table with a regression test where reproducible
+- [ ] GAM-0153 · Demo · P1 · S · Human playtest validation — 5 playtesters' median rank on each demo op falls in B–A; outliers logged as tuning tasks
+- [ ] GAM-0166 · Demo · P0 · S · Star recognition tolerance tuned from 200 recorded human stars (≥ 92 % accept, ≤ 2 % false-positive on zig-zag stitch paths) — test data committed
+- [ ] GAM-0203 · Beta · P1 · M · Human telemetry balance pass — opt-in beta telemetry (fail rate per op); any op with > 35 % first-attempt fail on Surgeon gets a tuning task
+- [ ] INP-0026 · Demo · P1 · M · Trace playtest calibration — log per-incision mean deviation from 10 mouse + 4 trackpad + 3 gamepad testers on op1-2 and Ch2 ops; set thresholds so ≥ 80 % of first attempts rate GOOD or better on mouse and ≥ 65 % on trackpad; record histogram in the tuning PR
+- [ ] INP-0055 · Demo · P0 · M · Star corpus — capture ≥ 300 positive star strokes (mouse, trackpad, pen, gamepad stick; ≥ 15 people) and ≥ 300 negatives (circles, checks, scribbles, zig-zags, stitching strokes) into `tests/fixtures/stars/*.json` via the record tool
+- [ ] INP-0088 · Demo · P1 · M · Gamepad gesture calibration — 5 testers complete every Ch1–2 operation on an Xbox pad; any mechanic with < 80 % first-try success gets a gamepad-specific tuning entry (radius, speed, assisted stitching default) in `tuning.ts`
+- [ ] INP-0114 · Beta · P1 · M · Gesture tuning pass for Chapters 3–5 — corpus recordings and first-try success ≥ 80 % (mouse) and ≥ 70 % (gamepad) for every new mechanic, tuning committed to `tuning.ts`
+- [ ] LOC-0075 · Demo · P0 · S · Legal text translation — EULA (if custom), privacy notice, telemetry consent and content warnings translated by a legal translator for every demo language
+- [ ] NAR-0028 · Demo · P1 · S · Ch1–2 sensitivity read — external reader reviews all scenes; each note triaged (accept/decline + reason) in a tracked sheet
+- [ ] NAR-0176 · Demo · P1 · S · Read-aloud table read of Ch1–2 — recorded, lines flagged as unspeakable rewritten
+- [ ] OPS-0066 · Demo · P1 · S · NDA template — mutual NDA for playtesters, contractors and press previews with e-signature; signed copies stored per person
+- [ ] OPS-0068 · Demo · P0 · M · Privacy policy — GDPR/UK GDPR/CCPA: opt-in telemetry, crash reports, newsletter and Discord; controller identity, processors, 90-day raw-event retention, deletion by install id, contact address; hosted at a stable URL that PLT links in-game
+- [ ] OPS-0069 · Demo · P1 · S · Data processing agreements — DPAs signed with the telemetry, crash-reporting and newsletter processors; record of processing activities kept in `docs/legal/`
+- [ ] OPS-0085 · Demo · P0 · S · Store settings — supported languages (LOC matrix), content descriptors (OPS survey), controller support and Deck status fields set for both apps
+- [ ] QAT-0014 · Demo · P1 · M · Nightly QA workflow — sim/characterisation suites, E2E flows, localised and pseudo-loc captures, playtest-replay re-sims; summary posted to the job summary and the team Discord webhook; failures open an issue labelled `nightly`
+- [ ] QAT-0055 · Demo · P1 · M · Human replay corpus — playtest builds record replays (with consent); one human run per op per playtest round is added to `tests/replays/human/` and re-simulated every nightly
+- [ ] QAT-0087 · Demo · P0 · S · Labels & board — severity, area (sim, render, audio, ui, story, loc, input, save, platform, perf, legal), `found-in`, `fixed-in`, `repro-rate`, `playtest`, `community`, `regression`; columns New → Triaged → In progress → Fixed → Verified
+- [ ] QAT-0098 · Demo · P1 · S · Remote kill switch — a config endpoint disables all telemetry or single events without a new build; the client re-reads it at session start
+- [ ] QAT-0099 · Demo · P1 · S · Staging dataset — dev, QA and playtest builds report to a separate dataset; dashboards exclude them by build flavour
+- [ ] QAT-0116 · Demo · P0 · S · Tester pool & screener — form captures genre familiarity, prior *Trauma Center* experience, hardware, language and accessibility needs; ≥ 60 opted-in testers with signed NDAs (OPS template)
+- [ ] QAT-0118 · Demo · P0 · S · Round plan — the CON external rounds, UIX fresh-player study, BOS boss gates and GAM rank validation scheduled as 3 dated demo rounds sharing one build and one survey (no duplicate sessions)
+- [ ] QAT-0121 · Demo · P1 · S · Findings pipeline — each finding filed with the `playtest` label, round and frequency (n/N); round report lists what changed since the previous round
+- [ ] UIX-0144 · Demo · P1 · S · First-operation friction target — median new player completes op1-1 in ≤ 4 min with ≤ 1 retry; tracked in the playtest sheet
+- [ ] UIX-0170 · Demo · P1 · S · Feedback link — "Tell us what you think" opens the survey URL with build id and play time as query parameters
+
+## Telemetry, crash reporting & live ops (17)
+
+- [ ] PLT-0123 · Demo · P0 · M · Native crash reporting — Crashpad minidumps uploaded to a chosen backend (Sentry, BugSplat or Backtrace; decision recorded), symbols (PDB/dSYM/debug) uploaded from CI for every shipped build
+- [ ] PLT-0124 · Demo · P0 · M · JavaScript error reporting — same backend as native crashes, source maps uploaded from CI and never shipped in the package
+- [ ] PLT-0130 · Demo · P1 · S · Crash-free-session dashboard — demo launch gate of ≥99.5% crash-free sessions on the `beta` branch
+- [ ] QAT-0096 · Demo · P0 · M · Ingest backend — Cloudflare Worker + database (or self-hosted PostHog) with EU storage, per-install rate limiting, no IP address stored, install id resettable from Options
+- [ ] QAT-0100 · Demo · P1 · S · Retention job — raw events deleted after 90 days by a scheduled job, aggregates kept; deletion-by-install-id endpoint tested end to end
+- [ ] QAT-0103 · Demo · P1 · M · Fail-point dashboard — per op: loss reason split (vitals/timer), phase of loss, live entity kinds at loss, retries before first win; top-3 fail phases highlighted for GAM tuning
+- [ ] QAT-0104 · Demo · P1 · M · Tool-usage heatmaps — per op and tool, density of COOL/GOOD/BAD/MISS positions drawn over a capture of that op's operating field
+- [ ] QAT-0105 · Demo · P1 · S · Rank distribution vs bot prediction — per op rank histogram from players beside the GAM steady/novice bot results; ops deviating > 1 rank band filed as tuning tickets
+- [ ] QAT-0106 · Demo · P1 · S · Performance buckets — p50/p95 frame time by GPU family, resolution and quality tier; hardware below budget listed for ENG
+- [ ] QAT-0108 · Demo · P2 · S · Settings & assists report — share of players using each assist, gore level, reduced flashing and language; sent to UIX and LOC monthly
+- [ ] QAT-0109 · Beta · P1 · S · Full-game funnel — chapter start/complete for Ch1–5, challenge-mode entry, discipline-mode usage and Ch3–5 fail points
+- [ ] QAT-0112 · Demo · P1 · M · Demo lab sweep — contracted lab or tester pool runs the demo smoke + one boss on ≥ 15 configs (NVIDIA GTX 900–RTX 40, AMD Polaris–RDNA3, Intel UHD/Iris Xe/Arc, hybrid-graphics laptops); results merged into the matrix
+- [ ] QAT-0115 · Demo · P1 · S · Desktop security verification — Electronegativity scan and a checklist confirming the PLT hardening (context isolation, no Node integration, CSP, devtools off) in the packaged demo; no high findings
+- [ ] QAT-0120 · Demo · P1 · S · Session recordings — consented OBS captures with an input overlay; confusion timestamps tagged in a shared sheet within 48 h of each session
+- [ ] QAT-0124 · Demo · P1 · S · Accessibility round — ≥ 3 players using a one-handed setup, trackball or with colour-vision deficiency; findings fed to the UIX accessibility table
+- [ ] QAT-0126 · Alpha · P1 · M · Alpha round — 10 players play Ch1–5 end to end with placeholder art; chapter completion and session length per chapter measured
+- [ ] QAT-0150 · Alpha · P1 · S · Post-demo bug review — every community-reported demo bug fixed or deferred with a reason before the Alpha gate
+
+## Hardware & non-Windows platforms (44)
+
+- [ ] ART-0356 · Demo · P0 · S · Resolution pass: every demo screen checked at 1280×720, 1920×1080, 2560×1440, 3840×2160, 1280×800 (Steam Deck) and ultrawide 3440×1440 letterboxed — no blurry upscales, no cropped UI
+- [ ] ART-0369 · Demo · P0 · S · Overdraw budget: additive VFX ≤ 4× overdraw on the hot area at peak (Litany + motes + sparks), verified on the Steam Deck
+- [ ] ART-0374 · Demo · P1 · M · Low/Medium/High art quality tiers: texture resolution, particle density, parallax layers and animated background FX per tier, reviewed on the Steam Deck (target 60 fps at Medium)
+- [ ] AUD-0109 · Demo · P0 · M · Mix passes — full Ch1–2 mix review on studio monitors, laptop speakers, Steam Deck speakers and headphones; issues logged and closed; final capture measured against the loudness spec
+- [ ] AUD-0142 · Release · P1 · S · Audio performance budget — audio thread ≤ 3 % CPU on Steam Deck and zero underruns during a 30-minute soak with the busiest boss replay looping
+- [ ] BOS-0116 · Alpha · P1 · S · Perf check — dynamic lighting mask ≤ 0.5 ms GPU at 1080p on min-spec
+- [ ] ENG-0123 · Demo · P0 · M · Spike — CPU-simulated instanced particles vs WebGL2 transform-feedback simulation at 20k particles on Intel UHD 620 and Steam Deck; pick one and record the decision (ADR) with measurements
+- [ ] ENG-0165 · Demo · P1 · S · Post budget — all passes ≤2.0 ms at 1080p on Intel UHD 620 measured with GPU timer queries in the perf replay
+- [ ] ENG-0189 · Demo · P1 · M · Multi-resolution screenshot regression — 1280×720, 1920×1080, 2560×1440, 3840×2160, 2560×1080, 3440×1440, 5120×1440, 1280×800 goldens in CI (SwiftShader)
+- [ ] ENG-0195 · Demo · P1 · S · Request the discrete GPU on hybrid laptops (`powerPreference: 'high-performance'` + desktop wrapper switch) — verified on an Optimus laptop via renderer string
+- [ ] ENG-0196 · Demo · P1 · M · ANGLE backend test matrix for the desktop build (D3D11 on Windows, Metal on macOS, GL/Vulkan on Linux/Deck) — documented defaults and a `--gl-backend` override for support
+- [ ] ENG-0222 · Demo · P0 · M · Integrated-GPU pass on the reference Intel UHD 620 laptop — every Ch1–2 operation holds 60 fps at Medium, with captures attached to the ticket
+- [ ] ENG-0223 · Demo · P0 · M · Steam Deck pass — 60 fps at 1280×800 Medium across Ch1–2; 40 fps preset holds with ≥25% lower APU power (Deck performance overlay readings)
+- [ ] ENG-0284 · Beta · P1 · S · Credits renderer — long scrolling rich-text with section art, skippable, 60 fps on Deck
+- [ ] ENG-0285 · Release · P0 · M · Minimum-spec validation matrix (Intel HD 520, UHD 620, Vega 8, GTX 750 Ti, Apple M1, Steam Deck) — every operation ≥60 fps at its tier preset, ≥30 fps on HD 520 Low; results published as the store min/recommended spec
+- [ ] ENG-0289 · Release · P1 · M · Full-campaign soak — 5 hours on Windows, macOS and Deck with no leaks and context-loss recovery verified
+- [ ] INP-0021 · Demo · P1 · M · Click-to-photon measurement — measure with a 240 fps camera on 3 reference PCs (low/mid/high) and a Steam Deck, windowed and fullscreen, VSync on/off; record results in `docs/qa/latency.md`; release gate ≤ 70 ms on mid PC, ≤ 90 ms on Deck
+- [ ] INP-0091 · Demo · P0 · M · Deck default layout — right trackpad = mouse (click = primary, soft-press haptic), R2 = primary hold, L2 = Litany draw, left trackpad = radial tool menu, D-pad left/right = quick-swap, Menu = pause, gyro off by default; documented in the Controls screen
+- [ ] INP-0092 · Demo · P0 · S · Deck touchscreen basics — touch `pointerType === 'touch'` taps and drags act as primary mouse input in menus and operations; two-finger tap opens pause; tested on device
+- [ ] INP-0093 · Demo · P0 · M · Deck Verified input checklist — all functionality reachable with Deck controls, correct Deck glyphs everywhere, no external keyboard needed, no launcher; pass recorded on retail Deck (LCD + OLED)
+- [ ] INP-0094 · Demo · P1 · S · Deck suspend/resume — suspending the Deck mid-operation resumes into the pause menu with timer intact and audio context resumed (manual test ×10)
+- [ ] INP-0099 · Demo · P1 · M · Device matrix sign-off — 5 mice (incl. 1 kHz and 8 kHz), Windows Precision trackpad, MacBook trackpad, Wacom Intuos (as mouse), Xbox Series pad, DualSense, Switch Pro, Steam Deck; pass sheet per Ch1–2 op in `docs/qa/input-matrix.md`
+- [ ] INP-0118 · Beta · P2 · M · Touch play — full touch layout for touchscreen laptops and Deck handheld: on-screen tool strip, two-finger drag draws the Litany star, tap-and-hold as hold tools; toggled automatically on first touch input
+- [ ] INP-0122 · Release · P0 · M · Steam Deck Verified submission — full-game pass of Valve's Deck compatibility checklist (input, glyphs, text size ≥ 9 px physical at 1280×800, default config, no launcher); issues fixed before review
+- [ ] OPS-0037 · Demo · P1 · S · Test hardware — Steam Deck (LCD + OLED), Intel UHD 620 laptop, a hybrid-graphics laptop, an older NVIDIA GTX and an AMD RDNA card, plus an Apple-silicon Mac if a Mac build is greenlit; inventory with owner and location
+- [ ] OPS-0084 · Demo · P0 · S · Demo system requirements — minimum/recommended OS, CPU, GPU (WebGL2/D3D11 class), RAM and disk from the ENG perf targets and the QAT lab sweep; Windows and Linux (macOS only if shipped)
+- [ ] OPS-0120 · Demo · P0 · M · Creator list — 200 YouTube/Twitch/TikTok creators (horror, indie showcases, handheld-era nostalgia, medical sim) segmented by size and language
+- [ ] PLT-0005 · Demo · P0 · M · Build the current game in Electron (latest stable) and Tauri 2 shells on Windows 11, macOS 14 (arm64) and Ubuntu 22.04 — record install size, cold start, idle RAM, frame pacing on op1-5
+- [ ] PLT-0006 · Demo · P0 · S · WebGL2 compatibility check per shell: WebView2 (Windows), WKWebView (macOS), WebKitGTK (Linux) — flesh shader compiles, MSAA/float RT availability, fps vs Chromium
+- [ ] PLT-0038 · Demo · P0 · S · Post-build verification in CI — `signtool verify /pa /v`, `codesign --verify --deep --strict`, `spctl -a -t exec`; failure blocks upload
+- [ ] PLT-0067 · Demo · P1 · S · Carry-over import QA — tested on Windows, macOS, Linux and Deck, including when the demo is uninstalled but its save folder remains
+- [ ] PLT-0071 · Demo · P0 · M · Festival hotfix pipeline rehearsed — fix → CI build → signed → `beta` branch → smoke on 3 OSes + Deck → `default` in ≤4 hours
+- [ ] PLT-0076 · Demo · P1 · S · Demo Deck compatibility review — requested once the Deck checklist items pass
+- [ ] PLT-0112 · Demo · P1 · S · High-refresh displays: rAF runs at the display rate (144/165 Hz) in the desktop build on Windows and macOS ProMotion — verified with the refresh estimator
+- [ ] PLT-0119 · Demo · P2 · S · Windows HDR desktop mode — SDR output not washed out or over-bright (visual check on an HDR monitor)
+- [ ] PLT-0156 · Demo · P1 · S · Deck touchscreen input — tap = press, drag = stroke, usable for full operations
+- [ ] PLT-0159 · Demo · P0 · M · Deck default layout uses the right trackpad as the surgical cursor with triggers for press/hold — every Ch1–2 operation completable at A rank or better by a tester on Deck
+- [ ] PLT-0161 · Demo · P0 · S · Suspend/resume on Deck mid-operation — game auto-pauses, audio resumes, no context-loss crash (10 cycles)
+- [ ] PLT-0164 · Demo · P1 · S · Deck Verified self-review — Valve's checklist (input, display, seamlessness, system support) passed for the demo
+- [ ] PLT-0165 · Release · P0 · S · Deck Verified for the full game — review submitted and passed
+- [ ] PLT-0182 · Beta · P1 · M · External compatibility pass — min-spec and varied GPUs/drivers, non-English Windows locales (Turkish, German), non-admin accounts, 4K at 125/150% scaling
+- [ ] QAT-0123 · Demo · P1 · S · Steam Deck round — 5 Deck owners play Ch1–2 on default controls; stitching precision and star-gesture success recorded per op
+- [ ] UIX-0164 · Demo · P1 · M · Accessibility audit — demo checked against Game Accessibility Guidelines (basic + key intermediate items) and Xbox Accessibility Guidelines 101–107, 112, 114, 117; gaps logged with owners; results table in `docs/qa/accessibility.md`
+- [ ] UIX-0206 · Release · P1 · S · UI performance budget — HUD + menus ≤ 1.0 ms CPU and ≤ 150 draw-batch flushes per frame on Steam Deck; measured in the heaviest boss fight
+
+## External reviews: legal, IP, sensitivity, ratings (16)
+
+- [ ] ART-0308 · Demo · P0 · M · Game logo "Suture & Steel": a blackletter wordmark with a crossed lancet and suture-needle ampersand; subtitle "The Malison Hours" in IM Fell SC — vector master (SVG) plus a trademark-search note
+- [ ] ART-0353 · Demo · P0 · S · Art QA checklist per asset class (resolution, naming, alpha edges, palette, IP check, readability, scale) — every Demo asset gets a ticked checklist
+- [ ] ART-0359 · Demo · P1 · S · Gore-level review against the rating target, with the flagged assets listed and resolved before the ratings submission
+- [ ] CON-0183 · Alpha · P0 · S · Obstetric sensitivity sign-off — consultant approves op5-4 visuals and text before Beta
+- [ ] NAR-0025 · Beta · P0 · S · Final IP pass over localised strings (DE/FR/ES/PL/PT-BR) — translated names re-checked against the avoid-list in each language
+- [ ] NAR-0026 · Release · P0 · S · Legal sign-off record — names.csv frozen, reviewer and date recorded, attached to release checklist
+- [ ] NAR-0031 · Alpha · P1 · M · Sensitivity read for Ch3 — flagellants and penitential self-harm treated without glamour; plague quarantine class politics
+- [ ] NAR-0032 · Alpha · P1 · M · Sensitivity read for Ch4 — war violence, the thirst/blood-debt courtesan (consent and agency in her choice)
+- [ ] NAR-0033 · Beta · P0 · M · Sensitivity read for Ch5 — obstetric operation (consult with a midwife/obstetrician), trial/witch-pricking scene, assisted-death themes of Compline
+- [ ] OPS-0035 · Demo · P1 · S · Localisation budget — word counts per scope (Ch1–2 story, callouts, UI, store, legal) × per-language vendor rates + 20 % for LQA and late changes; approved before vendor contracts
+- [ ] OPS-0060 · Demo · P1 · M · Trademark filings — "Suture & Steel" word mark (and the ART logo if distinctive) filed with EUIPO and USPTO in classes 9 and 41 before the public announce; receipts in `docs/legal/`
+- [ ] OPS-0064 · Demo · P1 · S · Open-source & font notices legal review — the PLT-generated third-party notices (runtime, npm, OFL fonts) checked by counsel before the demo RC; gaps filed to PLT
+- [ ] OPS-0073 · Release · P0 · S · Counsel sign-off letter for 1.0 — title, trade dress, EULA/privacy and store copy; filed with the NAR name-register sign-off and the ART asset IP audit before the RC gate
+- [ ] OPS-0077 · Demo · P1 · S · Germany rating path — USK/IARC rating obtained if required for store visibility in Germany before the demo goes public; occult and violence content checked against indexing risk
+- [ ] UIX-0074 · Demo · P0 · S · Boot sequence — studio logo (2 s, skippable), then photosensitivity notice and content warning (gore, plague, body horror, religious violence) on first launch only, with a link to comfort options
+- [ ] UIX-0207 · Release · P0 · S · Store-compliance text review — no placeholder text ("prototype", "being written", lorem), all legal/credit/licence screens complete, age-rating content descriptors matched by in-game warnings
+
+## Hiring, vendors, budgets & schedule admin (52)
+
+- [ ] ART-0009 · M0 · P0 · M · Art bible v1 (PDF + `docs/art/bible/`): the pillars, a public-domain reference board per pillar (Dürer, Bruegel, Bosch, Holbein, Gersdorff), and do/don't pairs — signed off by the art director
+- [ ] ART-0014 · M0 · P1 · S · Value-structure rule: every story background passes a 5-value greyscale thumbnail test with the character zone at least 2 value steps from the background
+- [ ] ART-0030 · Demo · P1 · S · Demo art-lock date set, with the list of assets still placeholder at lock reviewed weekly until empty
+- [ ] ART-0161 · Demo · P0 · M · Painted-flesh style guide: how far from photoreal (no photo textures; woodcut hatching in the cavity channel), 6 approved swatches
+- [ ] ART-0310 · Demo · P1 · S · Studio/publisher boot splash layout using the logo kit
+- [ ] ART-0342 · Demo · P0 · M · Outsourcing brief pack: art bible, style frames, naming/export specs, a sample finished asset per class and the IP-avoidance checklist — one zip per asset class
+- [ ] ART-0343 · Demo · P0 · M · Paid test task for 3 candidate vendors/freelancers (1 portrait with 3 expressions + 1 ailment sprite set), scored on a rubric (style match, turnaround, revisions needed)
+- [ ] ART-0347 · Demo · P1 · S · Shared delivery folder with automated naming/format validation (the CI script from ART-C run on upload)
+- [ ] ART-0348 · Alpha · P1 · M · Chapter 3–5 outsourcing plan: asset counts, vendor allocation and budget per chapter, with the portrait and background vendors locked
+- [ ] ART-0349 · Alpha · P2 · S · Vendor style-drift check: every 20th delivered asset placed next to the style frames in a monthly review
+- [ ] ART-0351 · Alpha · P1 · M · Full-game art budget re-forecast after demo actuals (cost per asset vs estimate)
+- [ ] AUD-0068 · Demo · P0 · S · Music direction brief — early-modern instrumentation (viol consort, hurdy-gurdy, sackbut, shawm, crumhorn, frame drum, positive organ, plainchant voices, church bells), modal harmony (Phrygian/Dorian), Hollow Choir leitmotif, reference tracks; approved by the owner
+- [ ] AUD-0069 · Demo · P0 · M · Composer contract & schedule — ≈ 30 min of stemmed music for the demo (list below), stems delivered at 48 kHz/24-bit with tempo, key and loop-point metadata; rights cover demo, full game, trailers and soundtrack release
+- [ ] LOC-0036 · Demo · P0 · S · Instrument names per language — Lancet, Tongs, Leech-Pipe, Gut Thread, Saint's Salve, Tincture, Cautery Brand, Scrying Lens translated within the tool-tray width, keeping the period flavour; approved by each lead translator
+- [ ] LOC-0045 · Demo · P0 · M · Localisation vendor selection — RFP to 3 games-specialised LSPs; paid 500-word test (prologue + op1-2 callouts) per demo language scored blind by independent native reviewers; contract with NDA, IP assignment and LQA scope
+- [ ] LOC-0055 · Demo · P2 · S · Translation-memory ownership — TM and termbase exported monthly from the TMS into the repo (TMX/TBX) so the studio owns them regardless of vendor
+- [ ] OPS-0008 · Demo · P0 · S · GitHub Project views — by phase, by workstream, by priority, and a "Demo critical path" view filtered to `Demo` + `P0`; saved views linked from the README
+- [ ] OPS-0011 · Demo · P0 · S · Cross-file dependency map — every cross-workstream dependency in the roadmap files (e.g. LOC needs the UIX string extraction and PLT string tables at Demo, not Beta) listed with both owners; phase conflicts resolved and the source tasks re-tagged
+- [ ] OPS-0015 · M0 · P0 · S · M0 gate review — Chapter 1 (op1-1…op1-5 + Matins) playable from the title, bot winnability tests and smoke green, prototype retro held; go/no-go and carry-over list recorded
+- [ ] OPS-0020 · Alpha · P0 · S · Alpha Definition of Done & gate — all core systems feature-complete, Ch1–5 playable end-to-end with placeholder art/audio, every operation has a golden replay and calibrated ranks; gate review recorded
+- [ ] OPS-0028 · Alpha · P0 · S · Chapters 3–5 scope lock — ≈5 operations per chapter, the six remaining Malison hours (Prime, Terce, Sext, None, Vespers, Compline) two per chapter, and which disciplines ship at 1.0; recorded before Alpha kickoff
+- [ ] OPS-0033 · Beta · P1 · S · Cut-line review — at Beta start remaining features are ranked; everything below the line moves to `Post` and is reflected in the public roadmap
+- [ ] OPS-0039 · Demo · P0 · M · Company-wide contractor agreement (counsel-reviewed) — work-for-hire/IP assignment, moral-rights waiver where lawful, confidentiality, originality warranty (no third-party IP), generative-AI disclosure; the ART and AUD contract checklists become schedules to it
+- [ ] OPS-0042 · Demo · P0 · S · Composer sourcing — shortlist of 5 from the AUD music brief, paid 60 s test cue, selection recorded; the chosen composer then goes through the AUD music contract
+- [ ] OPS-0043 · Demo · P1 · M · Narrative editor — archaic-register English editor contracted for the NAR proofread/continuity passes on Ch1–2 (paid sample edit of the prologue); Ch3–5 availability agreed
+- [ ] OPS-0046 · Demo · P1 · S · QA contractors — quote from a compatibility lab or freelance tester pool for the demo matrix; booked 6 weeks before the demo RC
+- [ ] OPS-0047 · Alpha · P1 · S · Ch3–5 capacity booking — writing, music, loc vendor and QA capacity for Alpha→Beta booked against the re-baselined schedule; gaps logged as risks
+- [ ] OPS-0048 · Demo · P0 · S · Games-IP counsel retained — engagement letter covering title clearance, the *Trauma Center* expression memo, contract template, EULA and privacy policy; budget line in the studio model
+- [ ] OPS-0049 · Demo · P0 · M · *Trauma Center* expression & trade-dress review — HUD layout, vitals meter, tool tray, COOL/GOOD/BAD/MISS words, "XS" rank label, star-gesture presentation, assistant-portrait framing and story beats compared side by side with the Atlus DS/Wii games; counsel memo lists required changes as tickets
+- [ ] OPS-0050 · Demo · P0 · S · Rating & rank wording decision — keep or replace COOL/GOOD/BAD/MISS and "XS" per the counsel memo; decision logged and pushed to the GAM scoring spec, the UIX HUD and the LOC termbase
+- [ ] OPS-0053 · Demo · P0 · S · Character-likeness sign-off — final portraits of Kreuzer, Ilse, Stroh, Haller, Mauer and the Choir compared with the *Trauma Center* cast (e.g. Derek Stiles, Angie Thompson) and GW characters; producer and counsel sign-off recorded before the portraits ship
+- [ ] OPS-0054 · Demo · P0 · S · Resolve the `warpshard` rename conflict — GAM proposes id `hexstone`, NAR proposes `hexshard`; one id and display name chosen, both tasks updated, save/replay migration owner named
+- [ ] OPS-0055 · Demo · P1 · S · Independent-creation archive — dated design docs, `docs/research/`, sketches, story drafts and commit history snapshotted at each milestone into write-once storage, to rebut copying claims
+- [ ] OPS-0056 · Demo · P1 · S · IP-claim response procedure — who receives notices, counsel contact, response SLA, takedown handling; DMCA designated agent registered before any user-generated content ships
+- [ ] OPS-0071 · Demo · P1 · S · Streaming & monetisation policy — public statement that creators may stream and monetise videos; composer and SFX-library licences confirmed to allow it (no Content ID claims on gameplay music)
+- [ ] OPS-0072 · Alpha · P1 · S · Trade-dress re-review for new UI — challenge mode, discipline screens and the Ch3–5 HUD additions checked against the counsel memo before Beta art lock
+- [ ] OPS-0079 · Beta · P1 · S · Korea rating — GRAC path completed before Korean-language release or Korean store visibility
+- [ ] OPS-0080 · Beta · P0 · S · Full-game rating update — questionnaires re-answered with Ch3–5 content (inquisition trial, obstetric operation, later Malison forms) and certificates updated before release
+- [ ] OPS-0086 · Demo · P0 · S · Demo page publishing — demo description and screenshots uploaded, "Download Demo" button visible on the main page, demo release date set, both pages pass Valve store review
+- [ ] OPS-0087 · Demo · P1 · S · Capsule people test — 30 people shown the ART small capsule for 3 s among 8 competitor capsules; ≥ 70 % name "surgery" or "dark fantasy"; iterate with ART otherwise
+- [ ] OPS-0089 · Demo · P2 · S · Curator Connect — ~50 curators (horror, indie, medical sim, dark fantasy) sent demo access and later full-game keys; coverage tracked
+- [ ] OPS-0099 · Demo · P2 · S · Showcase applications — ≥ 5 digital showcases/festivals fitting dark fantasy, horror or indie; deadlines in the master schedule, outcomes logged
+- [ ] OPS-0101 · Demo · P1 · S · Press preview builds — watermarked PLT press build distributed by key with an embargo date; recipients tracked
+- [ ] OPS-0108 · Demo · P0 · S · Press & creator preview — outreach sent 10 days before the press preview with access to the demo; follow-ups on day 3
+- [ ] OPS-0116 · Demo · P1 · S · Moderation policy & team — community guidelines, escalation for harassment and NSFW posts, 2 volunteer moderators with documented permissions and a weekly sync
+- [ ] OPS-0121 · Demo · P1 · S · Key platform — Keymailer, Lurkit or Woovit campaign that verifies creators; demo and full-game access tracked per recipient
+- [ ] OPS-0124 · Demo · P2 · S · Community events — screenshot and fan-art contests with written rules, prize terms and IP licence for submissions
+- [ ] OPS-0134 · Beta · P0 · S · Pricing — comparables research (surgery-action and dark-fantasy indies), base USD price, regional prices from Valve's recommended table, launch-discount (10–20 %) decision
+- [ ] OPS-0140 · Release · P1 · S · Final credits check — in-game credits compared line by line with the credit obligations register and every contract
+- [ ] QAT-0089 · Demo · P1 · S · Triage cadence — twice-weekly triage; S1 acknowledged within 24 h and S2 within 72 h; weekly bug trend chart in the sprint review
+- [ ] QAT-0114 · Demo · P1 · S · Antivirus false positives — each RC scanned on VirusTotal; any detection gets a vendor submission (e.g. Microsoft Defender portal) and a clean re-scan before release
+- [ ] UIX-0017 · Demo · P0 · M · UI style guide — one-page guide + reference board: parchment sheets for documents (chart, report, codex, options), dark oak + brass for in-operation HUD, woodcut hatching for icons, wax seals for primary actions, blackletter (UnifrakturMaguntia) only for titles ≥ 36 px, IM Fell English for body; semantic colour tokens (`ok`, `warn`, `danger`, `curse`, `litany`, `inkOnParchment`) added to `PALETTE`
+
+## Voice-over recording (15)
+
+- [ ] AUD-0095 · Demo · P0 · S · VO scope decision — demo ships fully voiced Sister Ilse operation barks (gameplay-critical) + grunt-style emotive snippets for VN lines (all speaking characters); full VN VO decided at Alpha by budget; decision recorded with cost estimate
+- [ ] AUD-0100 · Demo · P0 · M · Casting briefs & auditions — Sister Ilse (warm, steady alto, calm under pressure), Dr. Kreuzer (weary baritone; efforts and Litany whisper), Inquisitor Stroh (cold, precise bass-baritone), Master Haller (gravelly elder), Captain Mauer (gruff soldier), Hollow Choir (whispered ensemble); 3 auditions per role; human performers only, no synthetic voices
+- [ ] AUD-0106 · Demo · P1 · S · VO mastering — per-line loudness −24 LUFS integrated (±1), true peak ≤ −3 dBTP, consistent room tone; batch script verifies all delivered files
+- [ ] AUD-0136 · Beta · P1 · L · Chapter 3–5 VO recording — Ilse barks for all new operations and disciplines, VN VO or grunt sets for all characters, new patients; pickups for any Ch1–2 lines changed since the demo
+- [ ] AUD-0138 · Beta · P2 · M · Portrait lip-flap — mouth frames driven by VO amplitude envelope (precomputed at build time) for voiced characters
+- [ ] CON-0250 · Beta · P0 · M · VO integration audit — every voiced line id in content has an audio file; missing-file test
+- [ ] NAR-0180 · Beta · P0 · S · Full-game script lock — before VO and loc final send
+- [ ] NAR-0182 · Demo · P1 · S · Demo VO scope decision — barks + Malison voices voiced; VN scenes text-only with vocal "grunts" per speaker; documented
+- [ ] NAR-0183 · Demo · P1 · M · Demo VO script export — per-actor sheets with line id, context, direction, pronunciation for proper nouns
+- [ ] NAR-0184 · Demo · P1 · S · Casting sides — 1-page character brief + 5 audition lines for Kreuzer, Ilse, Haller, Stroh, Mauer, Orsa, Malison voice
+- [ ] NAR-0185 · Beta · P0 · M · Full VO script export — all voiced lines Ch1–5; with takes tracking columns
+- [ ] NAR-0186 · Beta · P1 · S · Pronunciation guide — every proper noun with IPA and audio reference
+- [ ] OPS-0025 · Demo · P0 · S · Demo MoSCoW — Must/Should/Could/Won't list for demo features (challenge mode, alternate disciplines and full VN VO default to Won't) published to the team and mirrored as board labels
+- [ ] OPS-0102 · Release · P0 · M · Launch trailer (≈90 s) — edited from the ART launch storyboard with final art and VO, release-date card, LOC subtitles
+- [ ] QAT-0157 · Beta · P1 · M · Final-content regression — Ch3–5 re-run with final art, audio and VO against the Alpha suites; visual/readability regressions filed to ART/ENG
+
+## Recorded audio & commissioned music (9)
+
+- [ ] AUD-0029 · Demo · P0 · S · SFX direction brief — period-authentic palette (steel, horn, wood, glass, wax, wet leather, embers, church bronze; no modern beeps), grim but not gratuitous gore level, reference clips; approved before recording
+- [ ] AUD-0030 · Demo · P0 · M · Foley session — record flesh (cabbage, wet chamois, raw meat, gelatine), antique steel instruments, glass vials/jars, wax seals, parchment, quill, thread through leather, embers/cautery iron in water; 48 kHz/24-bit, slate log, ≥ 5 takes per action
+- [ ] AUD-0031 · Demo · P1 · S · Library licensing — licences for bell, choir and ambience libraries recorded in `docs/licences/audio.md` with per-file provenance in the manifest
+- [ ] AUD-0102 · Demo · P0 · M · Ilse bark session — ≈ 150 lines (phase callouts for 10 ops, tips, vitals warnings at 60/30/15, praise at chain 5/10/20, loss sympathy, Litany reaction, Matins/Lauds reactions) with 3 takes; 48 kHz/24-bit; edited, de-noised, named by line id
+- [ ] AUD-0103 · Demo · P1 · M · Grunt-style VN set — per speaking character 3–6 short vocalisations per emotion (neutral, surprised, angry, sad, amused, pained) triggered at line start by an `emotion` tag; random non-repeating selection
+- [ ] AUD-0104 · Demo · P1 · S · Kreuzer efforts — strained breaths on long pulls, whispered "Be still" on Litany, relieved exhale on success, shaken breath on loss
+- [ ] AUD-0120 · Beta · P1 · L · Malison of Prime and Terce themes — final stemmed boss tracks, one liturgical character each (Prime: morning office in plainsong; Terce: bright brass turned sour), with phase sections and outros
+- [ ] AUD-0121 · Beta · P1 · L · Malison of Sext and None themes — final stemmed boss tracks (Sext: midday heat, droning shawms; None: the hour of death, funereal organ)
+- [ ] AUD-0122 · Beta · P1 · L · Malison of Vespers and Compline themes — final stemmed boss tracks (Vespers: evening Magnificat inverted; Compline: final night office, full Hollow Choir), Compline as the finale with extended phases
+
+## Translation & localisation QA (74)
+
+- [ ] ART-0085 · Beta · P1 · M · CJK and Cyrillic font pairing (OFL) styled to sit with IM Fell — sample sheets approved for each loc language
+- [ ] CON-0006 · Demo · P1 · S · Callout text moved to string keys — `callout` arrays reference loc keys; missing-key test
+- [ ] ENG-0178 · Beta · P1 · M · Script fallback fonts — subset Noto Serif MSDF pages for Cyrillic and CJK loaded per language when Fell/Fraktur lack the glyphs
+- [ ] ENG-0179 · Beta · P2 · M · CJK dynamic MSDF generation or pre-baked frequency subsets (≤4k glyphs) with on-demand extra glyphs — memory ≤32 MB per CJK language
+- [ ] ENG-0208 · Demo · P1 · S · Font subsetting of shipped fonts to supported-language coverage (Latin-1 + Latin Extended-A for demo) — size delta reported
+- [ ] INP-0120 · Beta · P2 · S · Key-name localisation — bindings screen shows localised key names for FR/DE/ES/IT/PL/RU keyboards
+- [ ] LOC-0002 · Demo · P0 · S · Re-phase sibling localisation tasks to Demo — UIX string extraction, pseudo-localisation build and runtime language switch plus PLT string tables move from Alpha/Beta to Demo (the demo ships localised); owners' sign-off on the board
+- [ ] LOC-0019 · Beta · P1 · S · CJK line-break rules on top of the UIX character breaking — no line starts with 、。，」）！？ or ends with 「（; Korean wraps between eojeol only; test strings per language
+- [ ] LOC-0021 · Beta · P2 · S · Readable-font option per script — the UIX readable-font option (Latin-only face) maps RU to a Cyrillic sans and ZH/JA/KO to the matching Noto Sans CJK subset
+- [ ] LOC-0026 · Beta · P1 · S · CJK size floor — Chinese/Japanese/Korean body text ≥ 20 px and callouts ≥ 22 px at 1280×800 (the Latin floor stays with the PLT legibility check); enforced by per-locale layout constants and verified in localised captures
+- [ ] LOC-0027 · Beta · P0 · S · Japanese glyph set — kana, every kanji used, JIS punctuation and a 1,000-kanji safety set for the Source Han Serif JP/Noto Serif JP subset; size reported
+- [ ] LOC-0028 · Beta · P0 · S · Korean glyph set — every Hangul syllable used plus the 2,350-syllable KS X 1001 safety set for the Noto Serif KR subset; size reported
+- [ ] LOC-0034 · Demo · P0 · M · Multilingual termbase in the TMS — seeded from the NAR translator glossary (80 locked terms): approved target term, part of speech, grammatical gender, plural forms and do-not-translate flag per language
+- [ ] LOC-0035 · Demo · P0 · S · Canonical-hours equivalents — Matins, Lauds, Prime, Terce, Sext, None, Vespers, Compline mapped to each language's established liturgical term (FR Matines…Complies, DE Matutin…Komplet, ES Maitines…Completas; PL/PT-BR/IT/RU/JA/KO supplied by the lead translators), noting each is also a boss name and chapter title
+- [ ] LOC-0037 · Demo · P0 · S · Rating-word translations — COOL/GOOD/BAD/MISS (or their replacements after the OPS wording decision) and the combo "×N" pattern approved per language; must stay ≤ 6 characters where possible for popup legibility
+- [ ] LOC-0038 · Demo · P0 · M · Archaic-register localisation style guide `docs/loc/style-guide.md` — translator-facing summary of the NAR English diction rules plus per-language register targets with 15 approved sample lines each for DE, FR, ES, PL, PT-BR (e.g. FR vouvoiement throughout, DE Ihr-forms for Stroh)
+- [ ] LOC-0043 · Alpha · P1 · S · Termbase extension for Chapters 3–5 — new characters, places, the remaining Malison hours, disciplines and ailments added before Ch3–5 translation starts
+- [ ] LOC-0044 · Beta · P1 · M · Register sections for RU, ZH-Hans, JA, KO and IT — added to the style guide (e.g. RU Church-Slavonic colour for the Choir only, ZH 半文半白 narration, JA 時代劇 speech, KO 사극체) with 15 approved sample lines each
+- [ ] LOC-0046 · Demo · P0 · M · TMS setup (Crowdin or Lokalise) — GitHub integration syncs `strings/en.json` + `en.meta.json`; translations return as PRs; termbase, style guide and screenshots attached; reviewer role per language
+- [ ] LOC-0047 · Demo · P1 · S · Context screenshots in the TMS — QAT localised captures uploaded automatically and linked to the keys visible in each capture
+- [ ] LOC-0050 · Demo · P1 · S · Translator query sheet — Q&A in the TMS with a 48 h answer SLA; answers promoted into key notes so the question is not asked twice
+- [ ] LOC-0053 · Demo · P1 · S · LQA navigation — console commands (`lang <code>`, `story <id>`, `op <id>`, `phase <n>`) and the pause-menu language switch let a reviewer reach any Ch1–2 line in ≤ 30 s (timed on 10 random keys)
+- [ ] LOC-0056 · Demo · P0 · M · French, Chapters 1–2 — Ch1–2 story, callouts, barks, UI and codex translated; renderer post-processor applies French spacing (U+202F before ; ! ?, U+00A0 before : and inside « ») so translators type plain spaces
+- [ ] LOC-0057 · Demo · P0 · M · French demo LQA — native reviewer plays every demo op and story scene in the `loc` build; 0 open S1/S2 loc bugs, termbase score 100 %
+- [ ] LOC-0058 · Demo · P0 · M · German, Chapters 1–2 — Ch1–2 translated; soft hyphens (U+00AD) placed in compounds longer than 14 letters and honoured by the text wrapper; ß/ẞ verified in every font role
+- [ ] LOC-0059 · Demo · P0 · M · German demo LQA — native reviewer pass on every demo screen, op and scene; Ihr/Sie register checked against the style guide; 0 open S1/S2
+- [ ] LOC-0060 · Demo · P0 · M · Spanish (Spain), Chapters 1–2 — Ch1–2 translated; opening ¿ ¡ present, gendered agreement for patients via `patientGender`
+- [ ] LOC-0061 · Demo · P0 · M · Spanish demo LQA — native reviewer pass on every demo screen, op and scene; 0 open S1/S2
+- [ ] LOC-0062 · Demo · P0 · M · Polish, Chapters 1–2 — Ch1–2 translated; plural forms one/few/many/other verified for every counted string (stitches, shards, seconds)
+- [ ] LOC-0063 · Demo · P0 · M · Polish demo LQA — native reviewer pass including the Latin-extended display-font fallback on titles; 0 open S1/S2
+- [ ] LOC-0064 · Demo · P0 · M · Brazilian Portuguese, Chapters 1–2 — Ch1–2 translated; register and gendered agreement per the style guide
+- [ ] LOC-0065 · Demo · P0 · M · Brazilian Portuguese demo LQA — native reviewer pass on every demo screen, op and scene; gendered agreement spot-checked on all patient callouts; 0 open S1/S2
+- [ ] LOC-0066 · Demo · P2 · M · Russian, Chapters 1–2 — Ch1–2 translated; one/few/many/other plurals; Cyrillic body, italic and display roles resolved through the font-role map
+- [ ] LOC-0067 · Demo · P2 · M · Russian demo LQA — native reviewer pass including Cyrillic font legibility at 1280×800; 0 open S1/S2
+- [ ] LOC-0068 · Demo · P2 · L · Simplified Chinese, Chapters 1–2 — Ch1–2 translated; full-width punctuation, Kai/Mincho face for the italic role, glyph list regenerated for baking
+- [ ] LOC-0069 · Demo · P2 · M · Simplified Chinese demo LQA — native reviewer pass including line breaks, CJK size floor and fallback-glyph highlighter review; 0 open S1/S2
+- [ ] LOC-0078 · Beta · P0 · L · French, Chapters 3–5 — Ch3–5 story, callouts, barks, codex, challenge mode and discipline UI translated
+- [ ] LOC-0079 · Beta · P0 · M · French full-game LQA — in-context pass over Ch3–5 and a regression pass over Ch1–2; 0 open S1/S2
+- [ ] LOC-0080 · Beta · P0 · L · German, Chapters 3–5 — Ch3–5 translated
+- [ ] LOC-0081 · Beta · P0 · M · German full-game LQA — Ch3–5 in context plus Ch1–2 regression; 0 open S1/S2
+- [ ] LOC-0082 · Beta · P0 · L · Spanish (Spain), Chapters 3–5 — Ch3–5 translated
+- [ ] LOC-0083 · Beta · P0 · M · Spanish full-game LQA — Ch3–5 in context plus Ch1–2 regression; 0 open S1/S2
+- [ ] LOC-0084 · Beta · P0 · L · Polish, Chapters 3–5 — Ch3–5 translated
+- [ ] LOC-0085 · Beta · P0 · M · Polish full-game LQA — Ch3–5 in context plus Ch1–2 regression; 0 open S1/S2
+- [ ] LOC-0086 · Beta · P0 · L · Brazilian Portuguese, Chapters 3–5 — Ch3–5 translated
+- [ ] LOC-0087 · Beta · P0 · M · Brazilian Portuguese full-game LQA — Ch3–5 in context plus Ch1–2 regression; 0 open S1/S2
+- [ ] LOC-0089 · Beta · P0 · M · Italian full-game LQA — full in-context pass; 0 open S1/S2
+- [ ] LOC-0090 · Beta · P0 · L · Russian, full game — full game translated (Ch3–5 only if the demo stretch shipped Ch1–2)
+- [ ] LOC-0091 · Beta · P0 · M · Russian full-game LQA — full in-context pass; 0 open S1/S2
+- [ ] LOC-0092 · Beta · P0 · L · Simplified Chinese, full game — full game translated (Ch3–5 only if the demo stretch shipped Ch1–2)
+- [ ] LOC-0093 · Beta · P0 · M · Simplified Chinese full-game LQA — full in-context pass including line breaking and glyph coverage; 0 open S1/S2
+- [ ] LOC-0094 · Beta · P0 · L · Japanese, full game — full game translated; name katakana from the termbase, Mincho display face
+- [ ] LOC-0095 · Beta · P0 · M · Japanese full-game LQA — full in-context pass including kinsoku line breaks and size floor; 0 open S1/S2
+- [ ] LOC-0096 · Beta · P0 · L · Korean, full game — full game translated with the particle helper for inserted names
+- [ ] LOC-0097 · Beta · P0 · M · Korean full-game LQA — full in-context pass including eojeol wrapping and particles; 0 open S1/S2
+- [ ] LOC-0100 · Beta · P1 · S · Credits localisation — role headings translated; translator and LSP credits added per the credit obligations register
+- [ ] LOC-0101 · Beta · P1 · S · Rich-presence tokens for the new languages — IT, RU, ZH-Hans, JA, KO token files checked in a friends list
+- [ ] NAR-0187 · Demo · P0 · M · Move all Ch1–2 story — briefing, bark, codex strings to string-table keys; `chapter1.ts`/`chapter2.ts` reference keys only
+- [ ] NAR-0188 · Demo · P1 · S · Translator context notes — per-line comments for jokes, puns, archaic terms, and hymn verses (meter vs. meaning priority)
+- [ ] NAR-0189 · Demo · P1 · S · Glossary for translators — 80 locked terms (tool names, Hours, orders, places) with do-not-translate flags
+- [ ] NAR-0190 · Beta · P1 · M · Ch3–5 string extraction — all Ch3–5 strings keyed, with translator context notes per joke, pun and hymn verse
+- [ ] NAR-0191 · Beta · P1 · S · LQA pass on narrative strings — reviewer per language checks tone and hymn verses in-game
+- [ ] OPS-0103 · Release · P1 · S · Launch press release — written and counsel-checked, translated by LOC, embargoed to launch hour and sent from the press CRM at launch
+- [ ] OPS-0123 · Demo · P1 · S · Outreach templates — pitch, follow-up and embargo notice, localised for the demo languages
+- [ ] PLT-0045 · Demo · P1 · M · Rich presence — localisation tokens file with `#Status_Story`, `#Status_Operating` (patient + chapter), `#Status_Menu`; updated on scene changes; verified in friends list
+- [ ] QAT-0065 · Demo · P1 · S · Language-switch flow — each demo language selected mid-story; text re-lays out, no missing-key markers, the same line stays on screen
+- [ ] QAT-0068 · Demo · P1 · S · Localised capture set — each demo language × title, options, briefing, HUD, results and demo-end captured nightly and on every LOC PR; uploaded to the TMS for translator context
+- [ ] QAT-0069 · Demo · P1 · S · Pseudo-loc capture set — `qps` and `qps-long` captures of every demo screen nightly, compared against the previous night to catch new overflow
+- [ ] QAT-0125 · Demo · P1 · S · Localisation round — 2 native players per demo language play Ch1 and report tone and clarity issues through the LQA template
+- [ ] QAT-0145 · Demo · P0 · S · Localisation functional pass — per demo language: switching, fonts, no missing keys or fallback glyphs, no clipped text on any demo screen (linguistic quality stays with LOC LQA)
+- [ ] QAT-0164 · Beta · P0 · M · Full-game localisation functional pass — every shipped language across all chapters, disciplines and challenge mode; fonts, keys, clipping
+- [ ] UIX-0200 · Beta · P0 · S · Pseudo-localisation build — `?lang=pseudo` expands strings +40 % with accented characters; every screen reviewed for overflow/clipping with the dev overflow log empty
+- [ ] UIX-0201 · Beta · P1 · M · CJK text support — dynamic glyph atlas pages for Simplified Chinese and Japanese (Noto Serif CJK subset per language), line breaking by character, blackletter titles fall back to a matching CJK display face
+- [ ] UIX-0205 · Release · P0 · M · Screenshot regression suite — Playwright captures every scene and modal at 1280×720, 1280×800 and 2560×1440 in English and one CJK language; diffs reviewed on each RC
+
+## Commissioned painted art (the game draws its art procedurally) (38)
+
+- [ ] ART-0015 · M0 · P1 · M · Costume guide: Landsknecht slashed doublets, mercy-order habits, Pyre inquisitors, Watch halberdiers, guild surgeons, the Hollow Choir — 1 turnaround sheet per faction
+- [ ] ART-0016 · M0 · P1 · M · Material library sheet: brass, pewter, tallow, waxed linen, gut thread, leech skin, vellum, stained glass — painted swatch + lighting notes each
+- [ ] ART-0021 · M0 · P0 · L · Style frame 1: operation screen at 1920×1080 (painted flesh field, a lodged barbed arrow, the brass tool tray, the vitals meter) — the target every in-game op is measured against
+- [ ] ART-0022 · M0 · P0 · M · Style frame 2: VN scene in the hospice ward (Kreuzer + Ilse portraits, dialogue parchment, background)
+- [ ] ART-0023 · M0 · P1 · M · Style frame 3: Malison Matins fight mid-phase (eye open, curse motes, Litany ripple)
+- [ ] ART-0024 · M0 · P1 · M · Style frame 4: results screen as a Holbein-style woodcut plate showing the rank seal
+- [ ] ART-0025 · Demo · P1 · M · Style frame 5: the Chapter 2 war camp at dusk (Bruegel crowd, pike-and-shot tents) to lock the Chapter 2 palette
+- [ ] ART-0026 · M0 · P0 · S · In-engine proof of style frame 1: the captured frame matches the paintover within the agreed tolerance (palette and value check) and is reviewed with ENG
+- [ ] ART-0027 · Alpha · P2 · M · Style frames for Chapters 3, 4 and 5 (one each) before any Chapter 3–5 production starts
+- [ ] ART-0044 · Demo · P0 · M · Portrait layer format: base body + expression overlay + blink + mouth frames as named layers, loaded by a `PortraitRig` in the story scene, replacing `drawPortrait()`
+- [ ] ART-0087 · M0 · P0 · M · Cast line-up sheet: all principal characters side by side at the same scale, with silhouette-readability test (each identifiable as solid black)
+- [ ] ART-0088 · Demo · P0 · S · Expression guide: the 8 base expressions demonstrated on a neutral head, with brow, mouth and eye rules in woodcut shorthand
+- [ ] ART-0090 · Demo · P0 · M · Kreuzer concept: 3 thumbnail options → chosen design with a turnaround (front, ¾, profile), surgeon's cap, leather apron and a lancet roll
+- [ ] ART-0091 · Demo · P0 · M · Kreuzer portrait base + 8 base expressions + blink + mouth layers, in-engine
+- [ ] ART-0095 · Demo · P0 · M · Ilse concept and turnaround: mercy-order coif and habit, a sun-in-palm pendant, rolled sleeves and a satchel of salves
+- [ ] ART-0096 · Demo · P0 · M · Ilse portrait base + 8 base expressions + blink + mouth, in-engine
+- [ ] ART-0100 · Demo · P0 · M · Haller concept: elderly retired guild surgeon, bare-headed, guild chain of office, ink-stained fingers, a brandy flask
+- [ ] ART-0101 · Demo · P0 · M · Haller portrait base + 8 expressions + blink + mouth
+- [ ] ART-0103 · Demo · P0 · M · Stroh concept: Order of the Pyre inquisitor with a wide-brim hat, ash-grey coat, a pyre-brand badge (original design, IP-checked) and a wheel-lock pistol
+- [ ] ART-0104 · Demo · P0 · M · Stroh portrait base + 8 expressions + blink + mouth
+- [ ] ART-0107 · Demo · P0 · M · Mauer concept: Kessendorf Watch captain, morion helm, city-arms tabard, halberd, a broken nose
+- [ ] ART-0108 · Demo · P0 · M · Mauer portrait base + 8 expressions + blink + mouth
+- [ ] ART-0129 · Alpha · P2 · M · Species reference sheet: human, dwarf, elf, halfling, orc skin tones, proportions and ear/tusk rules, with skin tones matched to `RACE_TINT`
+- [ ] ART-0130 · Demo · P1 · M · 6 CG illustrations for Chapters 1–2 key beats (prologue arrival, Matins revealed, Stroh's first accusation, the camp at dawn, Lauds' twin bodies, the chapel epilogue) at 1920×1080
+- [ ] ART-0131 · Alpha · P2 · L · 9 CG illustrations for Chapters 3–5 key beats
+- [ ] ART-0235 · Demo · P0 · M · Lauds concept: two antiphonal bodies (a "choir" of mouths each) joined by a light-thread, with a fused phase-3 form — callout sheet
+- [ ] ART-0241 · Alpha · P1 · M · Prime concept: a scribe-thing with quill fingers that reads the roll of the dead — callout sheet
+- [ ] ART-0244 · Alpha · P1 · M · Terce concept: a pentecostal hexfire crown with tongues that leap between organs — callout sheet
+- [ ] ART-0247 · Alpha · P1 · M · Sext concept: the noonday demon of acedia, a slumped stone-lidded torpor with a false-calm halo — callout sheet
+- [ ] ART-0250 · Alpha · P1 · M · None concept: a heart-seeking burrower (hourglass-segmented) — callout sheet with 4 size stages
+- [ ] ART-0253 · Alpha · P1 · M · Vespers concept: a lamp-lighter of wick-filaments that turns blood to tallow — callout sheet
+- [ ] ART-0256 · Alpha · P0 · M · Compline concept: a veiled sleeper made of every Hour's motif, with a "Great Silence" form — callout sheet with 3 phases
+- [ ] ART-0260 · Release · P2 · M · Unsung Hour concept: a patchwork of every lost patient's wound motifs — callout sheet
+- [ ] CON-0083 · Demo · P1 · M · Woodcut briefing plates for 10 demo ops commissioned — art spec per op: patient pose, wound locations, one period prop
+- [ ] ENG-0277 · Beta · P0 · M · Painted story backdrops — layered with parallax and light overlays, replacing procedural `drawBackdrop()` placeholders for all locations
+- [ ] ENG-0278 · Beta · P1 · M · Spike: skeletal 2D animation runtime (Spine vs DragonBones vs custom mesh rig) for VN portraits and Malisons — license, bundle size, draw-call cost; decision recorded
+- [ ] ENG-0279 · Beta · P0 · M · VN portrait renderer — layered expression sprites with blink and mouth-flap cycles, crossfade on expression change, speaker highlight/dim
+- [ ] UIX-0129 · Demo · P0 · M · Layered portraits — base + expression + effects layers per character (Kreuzer, Ilse, Stroh, Haller, Mauer, patients, Choir hood); script tag `say('ilse', text, { face: 'worried' })`; missing expression falls back to neutral with a dev warning

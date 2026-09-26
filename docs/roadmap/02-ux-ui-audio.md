@@ -37,14 +37,12 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] INP-0018 · Demo · P1 · S · Inter-phase grace — during the 0.8 s `phaseDelay` between phases and the 1.2 s intro, empty Lancet presses are ignored (no MISS, no 3-vital hurt) (unit test on `Operation.emptyPress`)
 - [x] INP-0019 · Demo · P1 · S · Tool-key-before-click ordering — a tool hotkey pressed up to 100 ms before a click in the same or previous frame applies before the press is dispatched (test: `Digit2` then click on a shard grabs it with the Tongs)
 - [ ] INP-0020 · Demo · P1 · M · Latency overlay — dev overlay (F3) shows input-event→next-rAF and input-event→present latency p50/p95 over the last 300 events plus current frame time; target p95 ≤ 50 ms at 60 Hz in the Electron build
-- [ ] INP-0021 · Demo · P1 · M · Click-to-photon measurement — measure with a 240 fps camera on 3 reference PCs (low/mid/high) and a Steam Deck, windowed and fullscreen, VSync on/off; record results in `docs/qa/latency.md`; release gate ≤ 70 ms on mid PC, ≤ 90 ms on Deck
 - [ ] INP-0022 · Demo · P2 · S · Low-latency canvas experiment — compare `desynchronized: true` WebGL context and Electron `--disable-frame-rate-limit`/VSync-off settings against baseline with the latency overlay; adopt only if p95 improves ≥ 8 ms without tearing complaints
 - [ ] INP-0023 · Demo · P2 · S · High-polling mice — with the existing 64-sample cap, an 8 kHz mouse keeps input handling plus per-sample `handlePointer` replay under 0.5 ms/frame on the low-spec PC (profile capture attached to the PR)
 
 ### Gesture translation — trace (Lancet incisions)
 - [x] INP-0024 · M0 · P0 · M · Incision tracing — press at the head or last progress point (22 px / 30 px windows), follow the dashed guide; mean deviation < 6 px COOL, < 13 px GOOD, else BAD; > 34 px slip = BAD + 2 vitals (`Incision`)
 - [x] INP-0025 · Demo · P1 · S · Trace tuning table — move incision constants (start radius 22, resume window 30, slip 34, COOL/GOOD 6/13) into `src/surgery/tuning.ts` with comments; entities read from it; no magic numbers left in `Incision`
-- [ ] INP-0026 · Demo · P1 · M · Trace playtest calibration — log per-incision mean deviation from 10 mouse + 4 trackpad + 3 gamepad testers on op1-2 and Ch2 ops; set thresholds so ≥ 80 % of first attempts rate GOOD or better on mouse and ≥ 65 % on trackpad; record histogram in the tuning PR
 - [ ] INP-0027 · Demo · P1 · S · Backwards/late-start feedback — pressing on the guide but > 30 px from the progress point pulses the start node and shows the one-time hint "Begin at the glowing mark" instead of silently ignoring the press
 - [ ] INP-0028 · Demo · P2 · S · Trace smoothing — optional 1€ filter (tunable min-cutoff/beta) applied to pointer samples during Lancet traces only; default off for mouse, on for gamepad virtual cursor and touch (unit test: noisy line deviation reduced ≥ 40 %)
 - [ ] INP-0029 · Demo · P1 · S · Rating bands scale with Target Size — the COOL/GOOD mean-deviation bands (6/13 px) are multiplied by the assist factor (1.0/1.25/1.5×) so larger targets also forgive wobble (unit test at 1.5×)
@@ -83,7 +81,6 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 ### Litany of Stillness input
 - [x] INP-0053 · M0 · P0 · M · Star recogniser `isStar` — resample to 80 points, closed within 35 % of size, 4–8 self-crossings, ≥ 3 sharp corners; tests accept clean/sloppy pentagrams and reject circle, zig-zag, tiny scribble
 - [x] INP-0054 · M0 · P1 · S · Star trail & denial popups — right-drag trail rendered additively; failures show "The sign falters…", "The Litany is spent." or "Not now."
-- [ ] INP-0055 · Demo · P0 · M · Star corpus — capture ≥ 300 positive star strokes (mouse, trackpad, pen, gamepad stick; ≥ 15 people) and ≥ 300 negatives (circles, checks, scribbles, zig-zags, stitching strokes) into `tests/fixtures/stars/*.json` via the record tool
 - [x] INP-0056 · Demo · P0 · S · Recogniser benchmark test — Vitest runs `isStar` over the corpus; CI fails if true-positive rate < 95 % or false-positive rate > 1 %
 - [x] INP-0057 · Demo · P1 · M · Recogniser tuning — accept any starting vertex, either winding direction, rotation ±45° and aspect down to 0.6; minimum size 60 px scales with UI scale; new unit tests for each case, corpus benchmark still green
 - [ ] INP-0058 · Demo · P2 · M · $P point-cloud recogniser spike — implement a $P matcher with 5 star templates, compare F1 against the heuristic on the corpus, keep the better one (or AND/OR combine) and record the numbers in the PR
@@ -117,7 +114,6 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] INP-0078 · Demo · P0 · S · Stick deadzones — radial inner deadzone 0.15, outer 0.95, rescaled; per-stick settings in Options → Controls; test: 0.1 drift produces no cursor motion
 - [x] INP-0079 · Demo · P0 · M · Menu navigation actions — `ui.up/down/left/right/confirm/back/tabPrev/tabNext` from arrows/WASD, D-pad and left stick with 180 ms initial repeat delay and 80 ms repeat rate; A/Cross confirm, B/Circle back (Nintendo layout swap option)
 - [x] INP-0080 · Demo · P1 · S · Last-used device tracking — prompts switch between mouse/keyboard and gamepad glyphs within one frame of input from the other device, with hysteresis (mouse must move > 4 px) so resting hands don't cause flicker
-- [ ] INP-0081 · Demo · P1 · M · Glyph sets — Xbox, PlayStation, Steam Deck, Nintendo and generic glyph atlases in the woodcut UI style; auto-detected from `Gamepad.id` / Steam Input controller type; manual override in Options
 
 ### Virtual cursor & gamepad surgery
 - [x] INP-0083 · Demo · P0 · M · Virtual cursor — left stick moves the reticle with an acceleration curve (max 900 px/s, response exponent 2.0, 80 ms ramp), RT/R2 = primary press/hold, cursor clamped to the view; "Cursor speed" setting 0.5–2.0×
@@ -125,24 +121,14 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] INP-0085 · Demo · P1 · M · Aim assist (gamepad only) — cursor speed ×0.5 within 30 px of an interactable valid for the current tool; with the Lancet the cursor gently snaps to the incision progress node on press; toggle "Aim assist" (default on for gamepad)
 - [x] INP-0086 · Demo · P1 · S · Gamepad tool switching — LB/RB cycle tools (firing on release so the LB+RB Litany chord never cycles), hold Y/Triangle opens the radial menu selected with the right stick, D-pad left/right = quick-swap; all rebindable
 - [x] INP-0087 · Demo · P0 · M · Gamepad Litany — hold LT/L2 and trace the star with the virtual cursor (stick strokes use the gamepad threshold profile from the corpus), release LT to cast; chord fallback LB+RB held 0.6 s
-- [ ] INP-0088 · Demo · P1 · M · Gamepad gesture calibration — 5 testers complete every Ch1–2 operation on an Xbox pad; any mechanic with < 80 % first-try success gets a gamepad-specific tuning entry (radius, speed, assisted stitching default) in `tuning.ts`
 - [x] INP-0089 · Demo · P1 · S · Virtual cursor in menus — in list/menus the stick drives focus navigation, not the cursor; in free-cursor screens (operation, codex art) the cursor appears; switching modes never strands focus
-
-### Steam Input & Steam Deck
-- [ ] INP-0090 · Demo · P0 · M · Steam Input action manifest — `game_actions_X.vdf` with action sets Menu, Operation, Story; default configurations for Xbox, PlayStation, generic and Deck; uploaded via Steamworks and tested with the Steam Input configurator
-- [ ] INP-0091 · Demo · P0 · M · Deck default layout — right trackpad = mouse (click = primary, soft-press haptic), R2 = primary hold, L2 = Litany draw, left trackpad = radial tool menu, D-pad left/right = quick-swap, Menu = pause, gyro off by default; documented in the Controls screen
-- [ ] INP-0092 · Demo · P0 · S · Deck touchscreen basics — touch `pointerType === 'touch'` taps and drags act as primary mouse input in menus and operations; two-finger tap opens pause; tested on device
-- [ ] INP-0093 · Demo · P0 · M · Deck Verified input checklist — all functionality reachable with Deck controls, correct Deck glyphs everywhere, no external keyboard needed, no launcher; pass recorded on retail Deck (LCD + OLED)
-- [ ] INP-0094 · Demo · P1 · S · Deck suspend/resume — suspending the Deck mid-operation resumes into the pause menu with timer intact and audio context resumed (manual test ×10)
 
 ### Haptics
 - [ ] INP-0095 · Demo · P2 · M · Rumble patterns — `vibrationActuator.playEffect('dual-rumble')` for BAD (short low), MISS (double), heavy hurt (≥ 8 vitals), Malison hit and critical heartbeat (< 30 vitals, synced to beat); "Vibration" 0–100 % setting; zero when app unfocused
-- [ ] INP-0096 · Demo · P2 · S · Deck trackpad ticks — stitch crossings and incision checkpoints trigger a light trackpad haptic pulse via Steam Input (steamworks.js), rate-limited to 30/s
 
 ### Input QA
 - [x] INP-0097 · M0 · P0 · M · Bot surgeon — `tests/bot.ts` plays every Ch1–2 operation through the `Pointer` API at steady and novice pace; `operations.test.ts`/`balance.test.ts` assert each is winnable and calibrate rank thresholds
 - [ ] INP-0098 · Demo · P0 · M · Bot assist & device profiles — extend the bot with assist combinations (time ×2, target 1.5×, toggle-hold, assisted stitching, auto-Litany) and a gamepad profile (capped cursor speed, smoothed path); every Ch1–2 operation stays winnable under each
-- [ ] INP-0099 · Demo · P1 · M · Device matrix sign-off — 5 mice (incl. 1 kHz and 8 kHz), Windows Precision trackpad, MacBook trackpad, Wacom Intuos (as mouse), Xbox Series pad, DualSense, Switch Pro, Steam Deck; pass sheet per Ch1–2 op in `docs/qa/input-matrix.md`
 - [x] INP-0100 · Demo · P1 · S · Input fuzz test — random press/move/release/key streams for 10 000 frames per operation never throw, never leave `captured` set after release, and never produce NaN positions
 - [ ] INP-0101 · Demo · P2 · S · Bug-report hook — F8 saves the last 30 s of input recording + settings + build id to the logs folder and shows the path, for tester reports
 
@@ -169,7 +155,6 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] UIX-0016 · Demo · P1 · S · Window modes — windowed/borderless/fullscreen and window size persisted; restore on next launch; DPR cap 2 retained with a "Render scale" option (50–100 %) for low-end GPUs
 
 ### Art direction & assets
-- [ ] UIX-0017 · Demo · P0 · M · UI style guide — one-page guide + reference board: parchment sheets for documents (chart, report, codex, options), dark oak + brass for in-operation HUD, woodcut hatching for icons, wax seals for primary actions, blackletter (UnifrakturMaguntia) only for titles ≥ 36 px, IM Fell English for body; semantic colour tokens (`ok`, `warn`, `danger`, `curse`, `litany`, `inkOnParchment`) added to `PALETTE`
 - [ ] UIX-0018 · Demo · P0 · M · 9-slice frames — textured oak panel, parchment sheet, iron-banded frame and torn-edge note replace procedural `panel()`/`parchment()`; single UI atlas ≤ 2048², crisp at 1× and 2× DPR
 - [ ] UIX-0019 · Demo · P0 · L · Woodcut icon set — 8 tool icons, 4 rating stamps, heart, hourglass, Litany star, wax seal, rank seals XS/S/A/B/C, and ailment icons for Ch1–2 (knife wound, bite, arrow, bolt, lead shot, fire/acid/hexfire burn, bubo, rot, venom, grub, egg sac, spiderling, curse-sigil, hexstone, Malison); 32/64/128 px exports in the UI atlas
 - [ ] UIX-0020 · Demo · P1 · M · Tool cursor sprites — per-tool cursor art with the hotspot at the working tip (blade point, tong jaws, pipe mouth…) replacing the procedural `toolIcon` beside the reticle; reticle kept as optional overlay
@@ -246,7 +231,6 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ### Boot & first launch
 - [x] UIX-0073 · M0 · P1 · S · WebGL2 failure message — shown in-page instead of a blank canvas (`boot()` fallback)
-- [ ] UIX-0074 · Demo · P0 · S · Boot sequence — studio logo (2 s, skippable), then photosensitivity notice and content warning (gore, plague, body horror, religious violence) on first launch only, with a link to comfort options
 - [ ] UIX-0075 · Demo · P0 · M · First-launch setup — language (English only in demo, list ready), brightness calibration, input device check ("Mouse detected" / "Controller detected"), subtitle size, and "Would you like gentler timings?" assist prompt; every step skippable; runs once per settings file
 - [x] UIX-0076 · Demo · P1 · S · Brightness calibration screen — woodcut symbol barely visible at correct gamma; slider adjusts the post-process gamma uniform; also in Display options
 - [x] UIX-0077 · Demo · P1 · S · Loading indicator — spinning wax-seal indicator during font/atlas/audio bank loads over 150 ms; no blank frames between boot and title
@@ -321,7 +305,6 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] UIX-0128 · Demo · P1 · S · Text-box readability — optional box opacity 60–100 %, line spacing 1.3, max 3 lines at 125 % text scale without overflow on 1280×800
 
 ### Portraits & presentation
-- [ ] UIX-0129 · Demo · P0 · M · Layered portraits — base + expression + effects layers per character (Kreuzer, Ilse, Stroh, Haller, Mauer, patients, Choir hood); script tag `say('ilse', text, { face: 'worried' })`; missing expression falls back to neutral with a dev warning
 - [x] UIX-0130 · Demo · P1 · M · Two-slot staging — left/right portrait slots, speaker lit, listener darkened 40 %, enter/exit slide 250 ms, cross-fade on expression change 120 ms
 - [x] UIX-0131 · Demo · P1 · S · First-appearance title — name plate shows the character's `title` ("Inquisitor Stroh — Order of the Pyre") the first time they speak in a save
 - [x] UIX-0132 · Demo · P1 · S · Location card — scene opens with "Kessendorf — Hospice of Saint Ildra — before Matins" lettered card and fade (replaces the plain `place` caption)
@@ -341,8 +324,6 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] UIX-0142 · Demo · P1 · S · Tutorial skipping — "Skip tutorials" setting and per-prompt "Don't show again"; skipped tutorials remain viewable from the controls card
 
 ### FTUE validation
-- [ ] UIX-0143 · Demo · P0 · M · Fresh-player playtest — 8 players new to Trauma Center: record time-to-first-success and attempts per mechanic through Ch1; any mechanic where > 25 % need > 3 attempts gets a tutorial or tuning fix before Next Fest
-- [ ] UIX-0144 · Demo · P1 · S · First-operation friction target — median new player completes op1-1 in ≤ 4 min with ≤ 1 retry; tracked in the playtest sheet
 - [ ] UIX-0145 · Demo · P1 · S · Tooltips on first appearance — the first time each ailment appears (bubo, rot, venom, grub, egg sac, spiderling, sigil, hexstone, Malison, Choir Voice) a short Ilse callout plus codex-style card explains it (2 lines max)
 
 ## Epic UIX-F · Accessibility, comfort & assists (Demo)
@@ -367,30 +348,19 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] UIX-0158 · M0 · P1 · S · Time-allowed assist — ×1 / ×1.5 / ×2 time limit applied when the operation is created (`OperationScene.create`); assisted runs detected via `assisted()`
 - [ ] UIX-0159 · Demo · P0 · M · Assist menu — Time allowed (existing ×1/×1.5/×2), Vitals drain (100/75/50 %), Target size (1.0/1.25/1.5×), Toggle-hold, Assisted stitching, Auto-Litany, Tutorial hints; applied through an `Assists` object read by `Operation` (unit tests per assist)
 - [ ] UIX-0160 · Demo · P1 · S · Auto-Litany — when enabled, the Litany triggers automatically the first time vitals fall below 25 or the Malison bar reaches its last notch; still once per operation (unit test)
-- [ ] UIX-0161 · Demo · P1 · S · Assist transparency — assists never block achievements or progress; the report shows which assists were active; Operating Theatre filter "Unassisted bests only"
 - [ ] UIX-0162 · Demo · P1 · S · Skip after failures — after 3 losses on the same operation, "Let Sister Ilse steady your hand" offers enabling assists or continuing the story with the operation marked "Passed with aid"
 - [ ] UIX-0163 · Demo · P1 · S · Accessibility presets — "Vision", "Motor", "Hearing", "Comfort" one-click presets on first launch and in Options, each listing what it changes
-- [ ] UIX-0164 · Demo · P1 · M · Accessibility audit — demo checked against Game Accessibility Guidelines (basic + key intermediate items) and Xbox Accessibility Guidelines 101–107, 112, 114, 117; gaps logged with owners; results table in `docs/qa/accessibility.md`
 
 ## Epic UIX-G · Demo-complete flow & wishlist (Demo)
 
 ### Demo build gating
-- [ ] UIX-0165 · Demo · P0 · S · Demo build flag — `__DEMO__` (Vite `define`) gates demo-only UI (DEMO ribbon, wishlist seals, locked Ch3–5 cards, demo-complete scene); CI builds and smoke-tests both flavours
 - [x] UIX-0166 · Demo · P0 · S · Demo campaign end — `playStep` past the last Chapter II step routes to `DemoCompleteScene` in demo builds (today it falls back to `TitleScene`); unit test with a two-chapter campaign stub
 
 ### Demo-complete scene
-- [ ] UIX-0167 · Demo · P0 · M · "Here the demo ends" sequence — illuminated card, teaser of the next Malison hour (Prime) as a silhouette with "The Hours are not yet done…", music sting, then the summary; skippable after first view
 - [x] UIX-0168 · Demo · P0 · M · Demo summary — grid of rank seals for all 10 operations, total play time, XS count, longest chain, Litany uses; "Replay operations for better seals" button to the Operating Theatre
-- [ ] UIX-0169 · Demo · P0 · M · Wishlist call-to-action — wax-seal "Wishlist on Steam" button opens the full game's store page via steamworks.js overlay (`overlay.activateToStore(appId)`), falling back to `steam://store/<appid>` via `shell.openExternal` when the overlay is disabled; tested with overlay on and off and on Deck
-- [ ] UIX-0170 · Demo · P1 · S · Feedback link — "Tell us what you think" opens the survey URL with build id and play time as query parameters
-- [ ] UIX-0171 · Demo · P2 · S · Community row — Discord and newsletter links (small woodcut icons) under the wishlist button; hidden in kiosk builds
-- [ ] UIX-0172 · Demo · P1 · S · Save-carry message — "Your progress and seals will carry over to the full game" shown only once carry-over is verified by the fixture test
 
 ### After the demo
 - [x] UIX-0173 · Demo · P0 · S · Post-demo title state — after completion the title shows a "Demo complete" banner and Wishlist seal, Continue becomes Chapter Select, and the demo-complete scene is replayable from Extras
-- [ ] UIX-0174 · Demo · P1 · S · Title wishlist seal — always visible on the demo title (not a pop-up nag); click-through tracked in the local stats file
-- [ ] UIX-0175 · Demo · P2 · M · Event kiosk mode — `--kiosk` flag: returns to title after 90 s idle, disables Quit and save slots, resets progress each session, shows controls card on title (for Next Fest streams and conventions)
-- [ ] UIX-0176 · Demo · P0 · M · Demo-complete E2E test — Playwright drives the demo build via debug `skipTo` hooks through the Lauds operation to `DemoCompleteScene`, asserts the summary values and that the wishlist handler is invoked (mocked steamworks)
 
 ## Epic AUD-A · Audio engine, mixer & pipeline (Demo)
 
@@ -431,9 +401,6 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 ## Epic AUD-B · Designed SFX for Chapters 1–2 (Demo)
 
 ### Sourcing & direction
-- [ ] AUD-0029 · Demo · P0 · S · SFX direction brief — period-authentic palette (steel, horn, wood, glass, wax, wet leather, embers, church bronze; no modern beeps), grim but not gratuitous gore level, reference clips; approved before recording
-- [ ] AUD-0030 · Demo · P0 · M · Foley session — record flesh (cabbage, wet chamois, raw meat, gelatine), antique steel instruments, glass vials/jars, wax seals, parchment, quill, thread through leather, embers/cautery iron in water; 48 kHz/24-bit, slate log, ≥ 5 takes per action
-- [ ] AUD-0031 · Demo · P1 · S · Library licensing — licences for bell, choir and ambience libraries recorded in `docs/licences/audio.md` with per-file provenance in the manifest
 - [x] AUD-0032 · Demo · P0 · M · SFX event list — spreadsheet of every Ch1–2 event (id, trigger in code, variations, loop?, bus, priority, caption text, status) generated from `events.ts` and reviewed weekly
 - [x] AUD-0033 · Demo · P0 · S · Procedural → designed migration — each of the 16 current `Cue`s mapped to designed events (e.g. `cut` splits into lancet cut, barb nick, Malison rend; `pluck` into tongs grab, burn debride, grub pluck); after migration the synth only runs as fallback (dev report shows 0 fallback plays in a full Ch1–2 replay)
 
@@ -486,8 +453,6 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 ## Epic AUD-C · Adaptive music (Demo)
 
 ### Direction & production
-- [ ] AUD-0068 · Demo · P0 · S · Music direction brief — early-modern instrumentation (viol consort, hurdy-gurdy, sackbut, shawm, crumhorn, frame drum, positive organ, plainchant voices, church bells), modal harmony (Phrygian/Dorian), Hollow Choir leitmotif, reference tracks; approved by the owner
-- [ ] AUD-0069 · Demo · P0 · M · Composer contract & schedule — ≈ 30 min of stemmed music for the demo (list below), stems delivered at 48 kHz/24-bit with tempo, key and loop-point metadata; rights cover demo, full game, trailers and soundtrack release
 - [x] AUD-0070 · Demo · P0 · S · Music cue sheet — every demo cue with state, length, stems, loop points and owner, kept alongside the SFX event list
 
 ### Adaptive system
@@ -527,27 +492,19 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 ## Epic AUD-E · Voice (Demo)
 
 ### Plan & pipeline
-- [ ] AUD-0095 · Demo · P0 · S · VO scope decision — demo ships fully voiced Sister Ilse operation barks (gameplay-critical) + grunt-style emotive snippets for VN lines (all speaking characters); full VN VO decided at Alpha by budget; decision recorded with cost estimate
 - [ ] AUD-0096 · Demo · P0 · M · Line IDs — every speakable string gets a stable id: story lines (`s1-2.014`), phase callouts (`op1-2.p0.1`), `sayOnce` tips in `entities.ts`/`malison.ts`/`operation.ts` (`bark.flooded`, `bark.barbs`, `bark.lowVitals`…); `op.say` accepts ids; a test fails if any inline literal remains in `say()`/`sayOnce()` calls
 - [x] AUD-0097 · Demo · P0 · S · Script export — `npm run vo:export` writes a CSV (id, character, line, context, emotion, max duration, variant count) from content and barks; re-export diff highlights changed lines needing pickups
 - [x] AUD-0098 · Demo · P0 · S · VO runtime — `vo.play(id)` on the vo bus with ducking; text-only fallback when audio is missing; a new urgent bark interrupts a playing tip with a 60 ms fade; callout panel timing follows VO length when present
 - [x] AUD-0099 · Demo · P1 · S · Bark variants & cooldowns — repeated barks (low vitals, praise, flooded, brand on flesh) have 3 variants and per-bark cooldowns (≥ 20 s) so they never repeat back-to-back
 
 ### Casting & recording
-- [ ] AUD-0100 · Demo · P0 · M · Casting briefs & auditions — Sister Ilse (warm, steady alto, calm under pressure), Dr. Kreuzer (weary baritone; efforts and Litany whisper), Inquisitor Stroh (cold, precise bass-baritone), Master Haller (gravelly elder), Captain Mauer (gruff soldier), Hollow Choir (whispered ensemble); 3 auditions per role; human performers only, no synthetic voices
-- [ ] AUD-0101 · Demo · P0 · S · Performer contracts — usage covers demo, full game, trailers and store pages; credit names; pickup rates; union/non-union status recorded
-- [ ] AUD-0102 · Demo · P0 · M · Ilse bark session — ≈ 150 lines (phase callouts for 10 ops, tips, vitals warnings at 60/30/15, praise at chain 5/10/20, loss sympathy, Litany reaction, Matins/Lauds reactions) with 3 takes; 48 kHz/24-bit; edited, de-noised, named by line id
-- [ ] AUD-0103 · Demo · P1 · M · Grunt-style VN set — per speaking character 3–6 short vocalisations per emotion (neutral, surprised, angry, sad, amused, pained) triggered at line start by an `emotion` tag; random non-repeating selection
-- [ ] AUD-0104 · Demo · P1 · S · Kreuzer efforts — strained breaths on long pulls, whispered "Be still" on Litany, relieved exhale on success, shaken breath on loss
 - [ ] AUD-0105 · Demo · P0 · M · Malison voices — layered choir + creature voice for Matins and Lauds with processing chain (granular smear, reversed whispers, pitch −5 st) documented so later hours stay consistent
-- [ ] AUD-0106 · Demo · P1 · S · VO mastering — per-line loudness −24 LUFS integrated (±1), true peak ≤ −3 dBTP, consistent room tone; batch script verifies all delivered files
 
 ## Epic AUD-F · Loudness, audio options & visual sound cues (Demo)
 
 ### Loudness & mix
 - [x] AUD-0107 · Demo · P0 · S · Loudness spec — gameplay integrated −18 LUFS ±2 over a 10-minute capture, true peak ≤ −1 dBTP; music stems −20 LUFS; SFX peaks ≤ −3 dBFS; VO sits ≈ 6 LU above the music bed; documented in `docs/audio/loudness.md`
 - [x] AUD-0108 · Demo · P0 · S · Loudness CI — script runs ffmpeg `ebur128` over every audio asset and fails the build when a file is outside its category tolerance
-- [ ] AUD-0109 · Demo · P0 · M · Mix passes — full Ch1–2 mix review on studio monitors, laptop speakers, Steam Deck speakers and headphones; issues logged and closed; final capture measured against the loudness spec
 - [x] AUD-0110 · Demo · P1 · S · Dynamic range setting — Full / Reduced / Night: Reduced adds bus compression (3:1), Night (6:1) with raised VO; default Reduced on Steam Deck
 
 ### Audio options
@@ -577,14 +534,9 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [ ] INP-0111 · Alpha · P1 · M · Timing-window input for rhythmic Malison gimmicks (Ch3–5 hours) — windows ±60 ms (COOL) / ±120 ms (GOOD) measured from event timestamps, compensated by an audio-latency offset from a calibration screen (Options → Audio → Calibrate)
 - [ ] INP-0112 · Alpha · P1 · S · Petrification chip gesture — rapid repeated short Lancet strokes on stone crust register as chips (min 3 per second) with an assist that accepts holding instead
 - [x] INP-0113 · Alpha · P2 · S · Challenge-mode instant retry — hold `R` (gamepad Back) for 1 s to restart; ring fills on the reticle; not active in story mode
-- [ ] INP-0114 · Beta · P1 · M · Gesture tuning pass for Chapters 3–5 — corpus recordings and first-try success ≥ 80 % (mouse) and ≥ 70 % (gamepad) for every new mechanic, tuning committed to `tuning.ts`
 
 ### Advanced devices
-- [ ] INP-0115 · Beta · P1 · M · Steam Input native integration — when running under Steam, read actions through steamworks.js Steam Input instead of the Gamepad API (action origins give exact glyphs); Gamepad API remains the fallback outside Steam
-- [ ] INP-0116 · Beta · P2 · M · Gyro cursor — gyro-as-mouse for Deck, DualSense and Switch Pro via Steam Input, enabled while touching the right trackpad or holding R1 (ratchet); sensitivity setting; off by default
 - [ ] INP-0117 · Beta · P2 · M · Pen tablet support — `pointerType === 'pen'`: hover moves the cursor, tip = primary, barrel button = Litany draw; Windows Ink press-and-hold right-click suppressed; tested on Wacom and XP-Pen
-- [ ] INP-0118 · Beta · P2 · M · Touch play — full touch layout for touchscreen laptops and Deck handheld: on-screen tool strip, two-finger drag draws the Litany star, tap-and-hold as hold tools; toggled automatically on first touch input
-- [ ] INP-0120 · Beta · P2 · S · Key-name localisation — bindings screen shows localised key names for FR/DE/ES/IT/PL/RU keyboards
 - [x] INP-0121 · Beta · P2 · S · Opt-in gesture telemetry — anonymous per-mechanic success/attempt counts (no raw strokes) sent only with consent, to guide post-demo tuning
 
 ## Epic UIX-H · Full-game UI: codex, dossier, challenge mode, disciplines (Alpha–Beta)
@@ -605,7 +557,6 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 ### Challenge mode
 - [ ] UIX-0186 · Alpha · P1 · M · Challenge list — challenge cards (patient, modifiers such as "No Litany", "Half time", "Blood never stops", target medals), locked/unlocked states, best results
 - [ ] UIX-0187 · Alpha · P1 · S · Modifier display — active modifiers shown as seals on the briefing chart and in a HUD corner during play
-- [ ] UIX-0188 · Beta · P2 · M · Leaderboard UI — Steam leaderboard per challenge: global/friends/around-me tabs, rank, score, time, "Assisted" filter; offline state message
 - [ ] UIX-0189 · Beta · P2 · S · Medal results — bronze/silver/gold/"Saint's" medals on the challenge report with next-medal target
 
 ### Disciplines & Chapters 3–5 screens
@@ -618,16 +569,12 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ### Extras & meta
 - [ ] UIX-0196 · Beta · P2 · M · Extras menu — art gallery (unlocked CGs and portraits), music room (unlocked tracks with loop toggle), statistics (operations played, total stitches, Litanies cast, XS count)
-- [ ] UIX-0197 · Beta · P2 · S · In-game achievement list — mirrors Steam achievements with locked/unlocked state and hidden descriptions for story achievements
 - [ ] UIX-0198 · Release · P1 · M · Epilogue and ending credits — final credits sequence with full cast, post-credits scene hook, unlocks New Game+ entry on title
 
 ## Epic AUD-G · Full-game audio: Chapters 3–5, hours & voice (Alpha–Beta)
 
 ### Music
 - [x] AUD-0119 · Alpha · P1 · M · Placeholder boss themes — temp-stemmed tracks for Prime, Terce, Sext, None, Vespers and Compline wired into the state machine so every boss is playable with adaptive music at Alpha
-- [ ] AUD-0120 · Beta · P1 · L · Malison of Prime and Terce themes — final stemmed boss tracks, one liturgical character each (Prime: morning office in plainsong; Terce: bright brass turned sour), with phase sections and outros
-- [ ] AUD-0121 · Beta · P1 · L · Malison of Sext and None themes — final stemmed boss tracks (Sext: midday heat, droning shawms; None: the hour of death, funereal organ)
-- [ ] AUD-0122 · Beta · P1 · L · Malison of Vespers and Compline themes — final stemmed boss tracks (Vespers: evening Magnificat inverted; Compline: final night office, full Hollow Choir), Compline as the finale with extended phases
 - [x] AUD-0123 · Beta · P1 · M · Chapter 3–5 operation themes — two additional 4-stem operation tracks plus variations for later chapters' higher stakes
 - [x] AUD-0124 · Beta · P2 · M · Discipline music — field triage (distant pike-and-shot battle drums), diagnosis (sparse viol), forensic/inquisition (tense low strings), bone-setting (rhythmic, percussive)
 - [x] AUD-0125 · Beta · P2 · S · Challenge-mode remixes — faster variants of two operation themes for challenge mode
@@ -644,17 +591,12 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 - [x] AUD-0134 · Beta · P1 · M · Ch3–5 ambiences — witch-hunter pyre square, cathedral, catacombs, army camp at night, flooded lower city; 60–120 s loops with emitters
 
 ### Voice
-- [ ] AUD-0135 · Alpha · P1 · S · Full-game VO decision — full VN VO vs extended grunt-style for Chapters 3–5, based on demo wishlist conversion and budget; decision recorded with line count and cost
-- [ ] AUD-0136 · Beta · P1 · L · Chapter 3–5 VO recording — Ilse barks for all new operations and disciplines, VN VO or grunt sets for all characters, new patients; pickups for any Ch1–2 lines changed since the demo
 - [ ] AUD-0137 · Beta · P1 · M · Remaining Malison voices — Hollow Choir and Malison voices for Prime through Compline using the documented processing chain
-- [ ] AUD-0138 · Beta · P2 · M · Portrait lip-flap — mouth frames driven by VO amplitude envelope (precomputed at build time) for voiced characters
 
 ## Epic UIX-I · Localisation-ready UI & audio (Beta)
 
 ### Strings, fonts, captions & subtitles
 - [x] UIX-0199 · Beta · P0 · M · String extraction — every hard-coded UI string in `src/scenes/*.ts` and `src/ui/*.ts` ("Respite", "Begin Again", "Scrub In", "The Patient Lives"…) and `TOOL_INFO` names/hints moves to `strings/en.json` with ids; a lint rule rejects new string literals passed to `g.text` outside the string table
-- [ ] UIX-0200 · Beta · P0 · S · Pseudo-localisation build — `?lang=pseudo` expands strings +40 % with accented characters; every screen reviewed for overflow/clipping with the dev overflow log empty
-- [ ] UIX-0201 · Beta · P1 · M · CJK text support — dynamic glyph atlas pages for Simplified Chinese and Japanese (Noto Serif CJK subset per language), line breaking by character, blackletter titles fall back to a matching CJK display face
 - [x] UIX-0202 · Beta · P1 · S · Blackletter fallback — languages with glyphs outside UnifrakturMaguntia (Polish, Russian) use a Cyrillic/Latin-Extended display face for titles, chosen in the style guide
 - [x] UIX-0203 · Beta · P1 · S · Language switch at runtime — Options → Language reloads strings, fonts and captions without restarting; persisted in settings
 - [x] UIX-0204 · Beta · P1 · S · Localised text in art — title cards, wax seals and rank stamps with words are rendered from text over art, not baked into textures
@@ -663,29 +605,9 @@ Operations, `flow.ts`), `src/ui/widgets.ts` / `layout.ts` (`panel`, `button`, `t
 
 ## Epic REL · Release readiness (Release)
 
-### Input
-- [ ] INP-0122 · Release · P0 · M · Steam Deck Verified submission — full-game pass of Valve's Deck compatibility checklist (input, glyphs, text size ≥ 9 px physical at 1280×800, default config, no launcher); issues fixed before review
-- [ ] INP-0123 · Release · P1 · S · Steam Remote Play check — mouse, gamepad and Litany drawing work over Remote Play (host PC → Deck/phone); latency overlay numbers recorded
-- [ ] INP-0124 · Release · P1 · S · Final input regression — the recorded input corpus replays green on the release candidate across all operations, and the star benchmark still meets 95 %/1 %
-- [ ] INP-0125 · Release · P1 · S · Default bindings freeze — defaults locked two weeks before launch; any later change requires a bindings version bump with migration test
-
 ### UI
-- [ ] UIX-0205 · Release · P0 · M · Screenshot regression suite — Playwright captures every scene and modal at 1280×720, 1280×800 and 2560×1440 in English and one CJK language; diffs reviewed on each RC
-- [ ] UIX-0206 · Release · P1 · S · UI performance budget — HUD + menus ≤ 1.0 ms CPU and ≤ 150 draw-batch flushes per frame on Steam Deck; measured in the heaviest boss fight
-- [ ] UIX-0207 · Release · P0 · S · Store-compliance text review — no placeholder text ("prototype", "being written", lorem), all legal/credit/licence screens complete, age-rating content descriptors matched by in-game warnings
-- [ ] UIX-0208 · Release · P1 · M · Final accessibility audit — full game re-checked against the demo accessibility table; any regressions fixed; accessibility feature list published on the store page
 - [x] UIX-0209 · Release · P1 · S · Demo → full upgrade flow — launching the full game with a demo save present offers "Continue from the demo" and skips replaying Chapters 1–2 if chosen
 
 ### Audio
-- [ ] AUD-0141 · Release · P0 · M · Final mix — full-campaign mix pass on the four reference playback systems; loudness spec met for every chapter capture; sign-off note in `docs/audio/loudness.md`
-- [ ] AUD-0142 · Release · P1 · S · Audio performance budget — audio thread ≤ 3 % CPU on Steam Deck and zero underruns during a 30-minute soak with the busiest boss replay looping
 - [x] AUD-0143 · Release · P1 · S · Fallback purge — release build contains no procedural fallback plays in a full campaign replay (report checked in CI) and the dev-only synth is tree-shaken out
 - [x] AUD-0144 · Release · P1 · S · Asset licence audit — every audio file in the manifest has provenance and licence recorded; unlicensed or temp files block the build
-
-## Epic POST · Post-launch (Post)
-
-### Input
-
-### UI
-
-### Audio

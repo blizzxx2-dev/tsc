@@ -8,7 +8,8 @@ You are completing tasks from `docs/roadmap/0*.md` for **Suture & Steel: The Mal
   in parallel; touching their files causes merge conflicts. If a task needs a small hook in a shared
   file (e.g. `src/main.ts`, `src/scenes/operation.ts`, `src/surgery/operation.ts`), keep that edit
   minimal and additive (new import + one call), never reformat or reorder shared files.
-- Work in task order within your phases: `Demo` first, then `Alpha`, `Beta`, `Release`, `Post`.
+- Work in **priority-tier order** (`docs/roadmap/priorities.json`, rendered in `docs/ROADMAP.md#priorities`),
+  not by phase tag. Tasks in `09-parked.md` are out of scope until moved back to their workstream file.
 
 ## Definition of done for a task
 1. The acceptance criterion in the task line is actually met in code/content/tests/docs.
