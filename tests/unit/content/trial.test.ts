@@ -1,9 +1,9 @@
 /** NAR-0147/0148: the trial reads the campaign, and the verdict routes stay consistent with the endings. */
 import { describe, expect, it } from 'vitest';
-import { STORY_5_2, STORY_5_3 } from '../../../src/content/chapter5';
+import { OP_5_8, STORY_5_10, STORY_5_12, STORY_5_2, STORY_5_3, STORY_5_9B } from '../../../src/content/chapter5';
 import { lineShown } from '../../../src/content/conditions';
-import { endingFor, endingInputs, strohTrust, trialEvidence, trialVerdict, ENDING_PARDON } from '../../../src/content/endings';
-import { FlagStore } from '../../../src/content/flags';
+import { complineHost, endingFor, endingInputs, strohTrust, trialEvidence, trialVerdict, ENDING_PARDON } from '../../../src/content/endings';
+import { flags, FlagStore } from '../../../src/content/flags';
 import type { FlagValue } from '../../../src/core/save/schema';
 import type { StoryDef } from '../../../src/content/story';
 
@@ -97,5 +97,25 @@ describe('the verdict (NAR-0148)', () => {
     };
     walk(0, {});
     expect(acquittals).toBeGreaterThan(0);
+  });
+});
+
+describe('Compline’s host (NAR-0155, CON-0199)', () => {
+  it('is Stroh unless he stood with the prosecution, then the Burgomaster — in every scene and on the table', () => {
+    const ally = store(ALLY);
+    const lost = store({ litanySeenCount: 4 });
+    expect([complineHost(ally), complineHost(lost)]).toEqual(['stroh', 'burgomaster']);
+    const text = (f: FlagStore) => [STORY_5_9B, STORY_5_10, STORY_5_12].flatMap((st) => shown(st, f)).join(' ');
+    expect(text(ally)).toContain('beside Inquisitor Stroh');
+    expect(text(ally)).not.toContain('beside the Burgomaster');
+    expect(text(lost)).toContain('beside the Burgomaster');
+    expect(text(lost)).toContain('come down to arrest the wrong man');
+    flags.clear();
+    flags.setAll({ ...ALLY });
+    expect(OP_5_8.patient).toBe('Inquisitor Stroh, Ash Tribunal');
+    flags.clear();
+    flags.set('litanySeenCount', 4);
+    expect(OP_5_8.patient).toBe('The Burgomaster of Kessendorf');
+    flags.clear();
   });
 });

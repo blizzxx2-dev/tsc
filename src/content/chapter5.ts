@@ -1,7 +1,8 @@
 import { JOURNAL_STORY } from './journal';
 import { EPILOGUE_STORY } from './epilogue';
-import { ENDING_EXILE, ENDING_PARDON, ENDING_PYRE, endingIs, strohTrust, trialVerdict, verdictIs } from './endings';
+import { ENDING_EXILE, ENDING_PARDON, ENDING_PYRE, endingIs, complineHost, hostIs, strohTrust, trialVerdict, verdictIs } from './endings';
 import { whisperThought } from './whisper';
+import { flags } from './flags';
 import { Embedded, Incision, Laceration, Rot } from '../surgery/entities';
 import { TinctureSite, Vessel } from '../surgery/ailments/kilnrows';
 import { Bud, Cyst, HexBall, Infant, VocalFold } from '../surgery/ailments/hollownight';
@@ -267,7 +268,14 @@ export const STORY_5_9B: StoryDef = {
     n('Ilse lives. She sleeps under Orsa’s coat. The last lamp in the ward burns clean.'),
     say('mauer', 'The Choir went down under the Tribunal court. Orsa’s tunnel comes out right beneath it. Thirty-five, Doctor. All of us.'),
     n('In the cellars they find the Burgomaster’s guard captain, sewn through with every Hour so far: ink, fire, and something burrowing.'),
-    say('patient', 'He… he’s below. The Precentor. He took the Inquisitor. He said… he needed a strong heart for the last one.', 'Guard-captain Ebner'),
+    ...onlyIf(
+      hostIs('stroh'),
+      say('patient', 'He… he’s below. The Precentor. He took the Inquisitor. He said… he needed a strong heart for the last one.', 'Guard-captain Ebner'),
+    ),
+    ...onlyIf(
+      hostIs('burgomaster'),
+      say('patient', 'He… he’s below. The Precentor. He took the Burgomaster. He said… a city should go to sleep with its father.', 'Guard-captain Ebner'),
+    ),
     say('kreuzer', 'Prime, Terce and None, all at once. Orsa — call them as they come.'),
   ],
 };
@@ -277,10 +285,22 @@ export const STORY_5_10: StoryDef = {
   place: 'The crypt beneath the Tribunal Court',
   backdrop: 'chapel',
   lines: [
-    n('In a crypt lit by the Widow’s candles, a thin grey man in a surgeon’s apron sits beside Inquisitor Stroh, who is not moving.'),
+    // NAR-0155 / CON-0199: the host is Stroh, or the Burgomaster if Stroh stood with the prosecution.
+    ...onlyIf(
+      hostIs('stroh'),
+      n('In a crypt lit by the Widow’s candles, a thin grey man in a surgeon’s apron sits beside Inquisitor Stroh, who is not moving.'),
+    ),
+    ...onlyIf(
+      hostIs('burgomaster'),
+      n('In a crypt lit by the Widow’s candles, a thin grey man in a surgeon’s apron sits beside the Burgomaster, who is not moving.'),
+    ),
     say('choir', 'Doctor Kreuzer. Haller’s last pupil. Sit, please. You look as though you have been standing for a week.', 'The Precentor'),
     say('kreuzer', 'Aurel Vennholt. Let him go.'),
     say('choir', 'He is not in pain. That is more than you have ever managed for anyone. Look at his face.', 'The Precentor'),
+    ...onlyIf(
+      hostIs('burgomaster'),
+      say('choir', 'I wanted your Inquisitor. But he sits with the council tonight, drafting your sentence. The Burgomaster came when called.', 'The Precentor'),
+    ),
     say('kreuzer', 'I stop pain so that people can go on living with the rest of it.'),
     say('choir', 'And they do go on. To the next wound, the next plague, the next war the council hires. You mend them for that.', 'The Precentor'),
     say('kreuzer', 'I mend them because they asked me to. Emmerich asked. Jorg asked. Liesl’s mother asked. Did anyone ask you?'),
@@ -295,7 +315,8 @@ export const STORY_5_10: StoryDef = {
     say('choir', 'You would save me too. Haller never could stand you, I expect. You are what he hoped I would be.', 'The Precentor'),
     say('kreuzer', 'Haller stands me fine. He shouts at me by letter. You could have had letters, Aurel.'),
     say('choir', 'I had a Choir instead. They listen better.', 'The Precentor'),
-    n('The Precentor smiles, and lays a hand on Stroh’s chest, and begins the last office.'),
+    ...onlyIf(hostIs('stroh'), n('The Precentor smiles, and lays a hand on Stroh’s chest, and begins the last office.')),
+    ...onlyIf(hostIs('burgomaster'), n('The Precentor smiles, and lays a hand on the Burgomaster’s chest, and begins the last office.')),
     say('choir', 'Now let your servant depart in peace.', 'The Precentor'),
   ],
 };
@@ -318,7 +339,15 @@ export const STORY_5_12: StoryDef = {
   place: 'The crypt — after Compline',
   backdrop: 'chapel',
   lines: [
-    n('Stroh breathes. The Precentor staggers, and the grey robe falls open. Beneath it, burned into his skin, a clock-face of eight sigils.'),
+    ...onlyIf(
+      hostIs('stroh'),
+      n('Stroh breathes. The Precentor staggers, and the grey robe falls open. Beneath it, burned into his skin, a clock-face of eight sigils.'),
+    ),
+    ...onlyIf(
+      hostIs('burgomaster'),
+      n('The Burgomaster breathes, and complains. The Precentor staggers; the grey robe falls open on a clock-face of eight burned sigils.'),
+      n('Boots on the crypt stair: Inquisitor Stroh, with a council lantern and a drawn sword, come down to arrest the wrong man.'),
+    ),
     say('choir', 'It will not stop. It was never mine to stop. The Office sings itself now — through me, and then through the city.', 'The Precentor'),
     say('stroh', 'Doctor. Let it take him. Let it end in him and go no further. No court on earth would blame you.'),
     say('kreuzer', 'I would. He’s a patient, Inquisitor. On the table.'),
@@ -516,7 +545,10 @@ export const OP_5_7: OperationDef = {
 export const OP_5_8: OperationDef = {
   id: 'op5-8',
   title: 'The Hour of Compline',
-  patient: 'Inquisitor Stroh, Ash Tribunal',
+  // CON-0199: the host follows the campaign (complineHost); patient string only — the fight is the same.
+  get patient() {
+    return complineHost(flags) === 'stroh' ? 'Inquisitor Stroh, Ash Tribunal' : 'The Burgomaster of Kessendorf';
+  },
   diagnosis: 'Compline, sung into him by the Precentor. His heart slows toward “a perfect end”. The Litany has been stolen.',
   organ: 'heart',
   timeLimit: 480,

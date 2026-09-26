@@ -66,3 +66,10 @@ Stroh's trust ≤ 0 +2 (he enters his ledger), ≥ 2 −2 (he testifies for the 
 ending; the council holds him under the court anyway, and Stroh lets Orsa's tunnel take him); otherwise
 convicted and **rescued** by Mauer's Watch if the captain is hale, else **tunnelled** out by Orsa.
 
+## Compline's host (NAR-0155, CON-0199)
+
+`complineHost`: **Stroh**, unless his trust is ≤ 0 — he prosecuted, and sits with the council drafting the
+sentence — then **the Burgomaster**. s5-9b, s5-10 and s5-12 name the host; op5-8's patient string follows it
+(the fight is unchanged). With the Burgomaster on the table, Stroh comes down the crypt stair afterwards to
+arrest the Precentor. The pardon needs trust ≥ 1, so it always has Stroh as the host.
+

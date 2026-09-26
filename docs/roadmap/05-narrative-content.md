@@ -233,7 +233,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] NAR-0152 · Alpha · P1 · S · s5-7 The chandler's daughter — blood setting like wax; leads into Vespers
 - [x] NAR-0153 · Alpha · P1 · M · s5-8 Under the Hollow Moon — midwives delay a birth for superstition; Kreuzer overrules; hope-giving scene before the finale
 - [x] NAR-0154 · Alpha · P0 · M · s5-9 Vespers — Ilse is the host; the lamps of the ward go out one by one
-- [ ] NAR-0155 · Alpha · P0 · M · s5-10 The Precentor — meeting under the Tribunal court; mirror scene; he sings Compline into Stroh (or into the Burgomaster if Stroh was lost)
+- [x] NAR-0155 · Alpha · P0 · M · s5-10 The Precentor — meeting under the Tribunal court; mirror scene; he sings Compline into Stroh (or into the Burgomaster if Stroh was lost)
 - [x] NAR-0156 · Alpha · P0 · M · s5-11 Compline — the Litany stolen; last lines before the final op
 - [x] NAR-0157 · Alpha · P0 · L · Endings — 4 endings (The Quiet Night averted with Stroh's pardon; Exile with Ilse; The Pyre Refused; The Perfect End — failure-state bad ending) each 20–40 lines plus epilogue cards per surviving character
 
@@ -560,7 +560,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [x] CON-0196 · Alpha · P0 · L · Implement ComplineMalison phases 1–2 — mixed-hour attacks, audio mute, Litany inversion; with tests
 - [x] CON-0197 · Alpha · P0 · L · Implement ComplineMalison phases 3–4 — silence nodes, Litany recovery, two-hand combo finale; with tests
 - [ ] CON-0198 · Alpha · P0 · S · Two-hand combo accessibility — toggle mode (tap to hold) and controller mapping verified
-- [ ] CON-0199 · Alpha · P1 · S · Host swap — if Stroh was lost, host is the Burgomaster (patient string and barks only)
+- [x] CON-0199 · Alpha · P1 · S · Host swap — if Stroh was lost, host is the Burgomaster (patient string and barks only)
 - [ ] CON-0200 · Alpha · P1 · S · Author `op5-8` data file — callouts, boss-fail tips, thresholds, checklist pass; phase checkpoints after phase 2 and 3
 
 ## CON · Epic 9 — Challenge mode ("Trials of the Guild") and X-ops

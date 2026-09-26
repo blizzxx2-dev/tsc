@@ -87,6 +87,18 @@ export const verdictIs =
   (f: FlagReader): boolean =>
     trialVerdict(f) === v;
 
+/**
+ * Who the Precentor sings Compline into (NAR-0155, CON-0199). An Inquisitor who prosecuted the Doctor
+ * (trust ≤ 0) is up in the council chamber, not under the court with him; the Precentor takes the
+ * Burgomaster instead. The pardon needs trust ≥ 1, so it always follows Stroh as the host.
+ */
+export type ComplineHost = 'stroh' | 'burgomaster';
+export const complineHost = (f: Reader): ComplineHost => (strohTrust(f) <= 0 ? 'burgomaster' : 'stroh');
+export const hostIs =
+  (h: ComplineHost) =>
+  (f: FlagReader): boolean =>
+    complineHost(f) === h;
+
 /** The inputs the ending reads, for the matrix test and the docs. */
 export interface EndingInputs {
   trust: number;
