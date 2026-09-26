@@ -2,7 +2,7 @@ import { JOURNAL_STORY } from './journal';
 import { EPILOGUE_STORY } from './epilogue';
 import { ENDING_EXILE, ENDING_PARDON, ENDING_PYRE, endingIs, hostIs, strohTrust, trialVerdict, verdictIs } from './endings';
 import { whisperBand, whisperScore, whisperThought, type WhisperBand } from './whisper';
-import { flags } from './flags';
+import { chapterAverageA, flags } from './flags';
 import { Embedded, Incision, Laceration, Rot } from '../surgery/entities';
 import { TinctureSite, Vessel } from '../surgery/ailments/kilnrows';
 import { Bud, Cyst, HexBall, Infant, VocalFold } from '../surgery/ailments/hollownight';
@@ -267,6 +267,20 @@ export const STORY_5_9B: StoryDef = {
   backdrop: 'night',
   lines: [
     n('Ilse lives. She sleeps under Orsa’s coat. The last lamp in the ward burns clean.'),
+    // NAR-0097: Ilse's side scene, for a Chapter V averaging A or better.
+    ...onlyIf(
+      (f) => chapterAverageA(5, f),
+      n('For a moment, before they go down into the cellars, she wakes.'),
+      say('ilse', 'The lamps. Did you keep the lamps?'),
+      say('kreuzer', 'Every one. Orsa relit the last with her pipe.'),
+      say('ilse', 'I could hear it, Doctor. Vespers. It sang the way the convent sings at evening, and I wanted to go with it.'),
+      say('ilse', 'That is the worst of it. I wanted to.'),
+      say('kreuzer', 'You didn’t go.'),
+      say('ilse', 'You would not let me. You never let anyone go. It is your most irritating quality.'),
+      say('ilse', 'When this is over I want a ward with windows. And a surgeon who sleeps. One of those, at least.'),
+      say('kreuzer', 'I’ll see about the windows.'),
+      n('She is asleep again before he can say anything more foolish.'),
+    ),
     say('mauer', 'The Choir went down under the Tribunal court. Orsa’s tunnel comes out right beneath it. Thirty-five, Doctor. All of us.'),
     n('In the cellars they find the Burgomaster’s guard captain, sewn through with every Hour so far: ink, fire, and something burrowing.'),
     ...onlyIf(

@@ -159,16 +159,27 @@ export const OP_FLAG_WRITES: Readonly<Record<string, (rank: Rank) => FlagRecord>
 };
 
 /** Flags written by the engine rather than by content, so the flag audit knows their source. */
-export const ENGINE_FLAG_WRITES: readonly string[] = ['litanySeenCount', 'guildMarks', 'guildOps'];
+export const ENGINE_FLAG_WRITES: readonly string[] = ['litanySeenCount', 'guildMarks', 'guildOps', ...[1, 2, 3, 4, 5].flatMap((n) => [`ch${n}Marks`, `ch${n}Ops`])];
 
 /** Rank points toward the Guild's licence vote (NAR-0126): XS 4, S 3, A 2, B 1, C 0. */
 const GUILD_POINTS: Readonly<Record<Rank, number>> = { XS: 4, S: 3, A: 2, B: 1, C: 0 };
 
 /** Chapters I–III campaign wins feed the Guild's view of the Doctor: a running rank tally. */
 export function noteGuildRank(opId: string, rank: Rank, store: FlagStore = flags): void {
-  if (!/^op[1-3]-/.test(opId)) return;
+  const ch = /^op([1-5])-/.exec(opId)?.[1];
+  if (!ch) return;
+  // Each chapter's own tally (NAR-0097: Ilse's side scenes open on a good chapter).
+  store.count(`ch${ch}Marks`, GUILD_POINTS[rank]);
+  store.count(`ch${ch}Ops`);
+  if (Number(ch) > 3) return;
   store.count('guildMarks', GUILD_POINTS[rank]);
   store.count('guildOps');
+}
+
+/** A chapter's campaign wins so far average A or better (XS 4, S 3, A 2…); false before any. */
+export function chapterAverageA(chapter: number, f: Pick<FlagReader, 'get'>): boolean {
+  const ops = Number(f.get(`ch${chapter}Ops`) ?? 0);
+  return ops > 0 && Number(f.get(`ch${chapter}Marks`) ?? 0) / ops >= GUILD_POINTS.A;
 }
 
 /** The licence vote carries when the Chapters I–III average is A or better (NAR-0126). */

@@ -588,3 +588,34 @@ describe('Chapter IV verdict and trust branches (NAR-0136, NAR-0139, NAR-0143)',
     expect(shown(STORY_4_END, low)).toContain('hands where I can see');
   });
 });
+
+describe('NAR-0097 Ilse side scenes', () => {
+  it('open in each late chapter only on an A average for that chapter', async () => {
+    const { STORY_3_END } = await import('../../../src/content/chapter3');
+    const { STORY_4_END: END4 } = await import('../../../src/content/chapter4');
+    const { STORY_5_9B } = await import('../../../src/content/chapter5');
+    const { chapterAverageA } = await import('../../../src/content/flags');
+    const cases: [number, StoryDef, string][] = [
+      [3, STORY_3_END, 'boiling bandages'],
+      [4, END4, 'company roll'],
+      [5, STORY_5_9B, 'Did you keep the lamps'],
+    ];
+    for (const [ch, scene, cue] of cases) {
+      const good = new FlagStore();
+      noteGuildRank(`op${ch}-1`, 'S', good);
+      noteGuildRank(`op${ch}-2`, 'A', good);
+      const poor = new FlagStore();
+      noteGuildRank(`op${ch}-1`, 'B', poor);
+      noteGuildRank(`op${ch}-2`, 'C', poor);
+      expect(chapterAverageA(ch, good), `ch${ch}`).toBe(true);
+      const text = (f: FlagStore) =>
+        scene.lines
+          .filter((l) => lineShown(l, {}, f))
+          .map((l) => l.text)
+          .join(' ');
+      expect(text(good), `ch${ch}`).toContain(cue);
+      expect(text(poor), `ch${ch}`).not.toContain(cue);
+      expect(text(new FlagStore()), `ch${ch}`).not.toContain(cue);
+    }
+  });
+});

@@ -7,7 +7,7 @@ import { at, closeIncision } from './chapter1';
 import type { Chapter } from './campaign';
 import { choose, n, onlyIf, say, type StoryDef } from './story';
 import { whisperThought } from './whisper';
-import { flags, licenceKept } from './flags';
+import { chapterAverageA, flags, licenceKept } from './flags';
 import { OP_3_10, OP_3_11 } from './ops/hours';
 export { OP_3_10, OP_3_11 };
 
@@ -231,6 +231,19 @@ export const STORY_3_END: StoryDef = {
     say('mauer', 'Orders from the council, Doctor. The hired companies march east to the Vennmark tomorrow. The surgeon marches with them.'),
     say('haller', 'Go. My hands are done for a while. Write to me. I will answer — badly, and with a great deal of advice.'),
     n('END OF CHAPTER III — PRIME AND TERCE'),
+    // NAR-0097: Ilse's side scene, for a Chapter III averaging A or better.
+    ...onlyIf(
+      (f) => chapterAverageA(3, f),
+      n('Later, in the laundry yard, Ilse is boiling bandages that do not need boiling.'),
+      say('ilse', 'Stroh asked me this morning whether you drew a star over Master Haller. I said I was holding the lamp and saw nothing.'),
+      say('kreuzer', 'You lied to an Inquisitor.'),
+      say('ilse', 'I held the lamp very carefully. It is not a lie if you are looking at the lamp.'),
+      say('ilse', 'The Mother Superior taught us that God is in the work of the hands. I have watched your hands for a year.'),
+      say('ilse', 'I have not seen God in them. I have seen a man who is very tired and will not stop. I am not sure which is holier.'),
+      say('kreuzer', 'Neither. The bandages are clean, Sister. They have been clean for an hour.'),
+      say('ilse', 'I know. It is the only thing in this city I can make clean by boiling it.'),
+      say('ilse', 'Go and sleep, Doctor. I will tell Stroh you are praying. It will worry him.'),
+    ),
   ],
 };
 

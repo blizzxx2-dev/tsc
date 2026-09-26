@@ -25,6 +25,7 @@ Code: `src/content/flags.ts` (`flags.get / set / has / truthy / count`), conditi
 | `cantorMercy` | boolean | s2-4 choice (NAR-0062): `true` — Kreuzer treats the cantor as a patient, poppy for the pain; `false` — keeps him alive *and awake* for Stroh | s2-4 (Stroh's reply), s3-1 (the cantor's fate), Ch5 |
 | `litanySeenCount` | number | **engine** (`src/scenes/flow.ts`): +1 for every campaign operation *won* with the Litany spoken | s3-1 (Stroh's candles, ≥ 2), Ch5 |
 | `guildMarks`, `guildOps` | number | **engine** (`src/scenes/flow.ts`, `noteGuildRank`): each Chapter I–III campaign win adds its rank points (XS 4, S 3, A 2, B 1, C 0) and 1 | s3-9 licence vote (NAR-0126): average ≥ 2 (A) keeps the licence, below suspends it |
+| `ch1Marks`…`ch5Marks`, `ch1Ops`…`ch5Ops` | number | **engine** (`noteGuildRank`): each chapter's campaign wins, rank points and count | Ilse's side scenes (NAR-0097): the end of s3-end and s4-end, and s5-9b, on an A average for that chapter |
 | `choice.s2-4` | `'mercy' \| 'awake'` | s2-4 pick record | tools, tests |
 | `hornchildCertificate` | `'natural' \| 'turned'` | s3-2 choice (NAR-0119): the kind lie or the true sentence | s3-2 (the rest of the scene), Ch4, Ch5 |
 | `choice.s3-2` | `'natural' \| 'turned'` | s3-2 pick record | tools, tests |

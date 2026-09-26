@@ -145,7 +145,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ### Sister Ilse
 - [ ] NAR-0095 · Alpha · P0 · M · Ilse arc doc — faith vs. what she sees; she lies to Stroh for Kreuzer in Ch3, is taken as Vespers host in Ch5
 - [x] NAR-0096 · Alpha · P1 · S · Ilse's order politics — the Merciful Order has no political weight; Ch3 scene where the Mother Superior orders her to leave the hospice and she refuses
-- [ ] NAR-0097 · Alpha · P1 · S · Ilse personal side-scene per chapter — Ch3–5; unlocked by high average rank, 8–12 lines each
+- [x] NAR-0097 · Alpha · P1 · S · Ilse personal side-scene per chapter — Ch3–5; unlocked by high average rank, 8–12 lines each
 
 ### Master Haller
 - [ ] NAR-0098 · Alpha · P0 · M · Haller arc doc — mentor who once struck the Precentor from the guild rolls; guilt; licence vote in Ch3; hexfire host in Terce; survives or dies by player rank
@@ -154,7 +154,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### Inquisitor Stroh
 - [ ] NAR-0101 · Alpha · P0 · M · Stroh arc doc — chartered agent of the council; his charter has lapsed (Ch4 reveal); trust meter drives whether he defends or prosecutes Kreuzer in Ch5
-- [ ] NAR-0102 · Alpha · P1 · S · Stroh dental op scene "The Most Hated Avocation" (Ch3) — interrogation between groans; trust +1 on S rank
+- [x] NAR-0102 · Alpha · P1 · S · Stroh dental op scene "The Most Hated Avocation" (Ch3) — interrogation between groans; trust +1 on S rank
 - [x] NAR-0103 · Alpha · P1 · S · Charter-lapse reveal scene (Ch4) — Mauer produces the council roll; Stroh's authority is now void; 14 lines
 - [x] NAR-0104 · Alpha · P1 · S · Stroh trust flags list — every choice that moves it (cantorMercy, certificate signing, Stroh's tooth rank, Litany seen count) with deltas
 

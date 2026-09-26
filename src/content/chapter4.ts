@@ -8,6 +8,7 @@ import { at, closeIncision } from './chapter1';
 import type { Chapter } from './campaign';
 import { choose, n, onlyIf, say, type StoryDef } from './story';
 import { strohTrust } from './endings';
+import { chapterAverageA } from './flags';
 import { OP_4_7, OP_4_9 } from './ops/hours';
 export { OP_4_7, OP_4_9 };
 
@@ -265,6 +266,20 @@ export const STORY_4_END: StoryDef = {
       say('kreuzer', 'And will you serve it?'),
       say('stroh', 'I will. Not because she signed it. Because I have watched you for a year, and I still do not know what you are.'),
       say('stroh', 'You will ride in front of me to the city gate, Doctor. Your hands where I can see them.'),
+    ),
+    // NAR-0097: Ilse's side scene, for a Chapter IV averaging A or better.
+    ...onlyIf(
+      (f) => chapterAverageA(4, f),
+      n('On the second night of the march, Ilse sits by the wagon with the company roll open on her knees.'),
+      say('ilse', 'Mauer counts his men. I have started counting ours. The ones we lost, and the ones we did not.'),
+      say('kreuzer', 'And?'),
+      say('ilse', 'The second column is longer. It has been longer since Kessendorf. I did not think it would be.'),
+      say('ilse', 'When I took my vows I thought mercy was a thing you gave. Out here it is a thing you take — from the fever, the mud, the Hours.'),
+      say('kreuzer', 'That sounds like Master Haller.'),
+      say('ilse', 'It is Master Haller. He wrote it in the margin of his last letter, beside a very rude drawing of the Precentor.'),
+      say('ilse', 'Doctor — when we reach the gate, whatever the council does, I am not going back to the convent.'),
+      say('kreuzer', 'Nobody has asked you to.'),
+      say('ilse', 'The Mother Superior will. I wanted to have said it to someone first.'),
     ),
     n('END OF CHAPTER IV — SEXT AND NONE'),
   ],
