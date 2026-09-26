@@ -182,7 +182,7 @@ export function woundArt(g: Gfx, pts: readonly Vec[], halfWidth: number, o: { op
     const cx = a.x + Math.cos(ang) * (lx / 2);
     const cy = a.y + Math.sin(ang) * (lx / 2);
     // The quad is axis-aligned: the art turns inside a square large enough to hold it.
-    const s = lx + halfWidth * 2 + 24;
+    const s = lx + halfWidth * 5 + 40;
     g.ailment(AIL.wound, cx, cy, s, s, { rot: ang, seed: o.seed, alpha: o.alpha, a: [lx, halfWidth, o.open ?? 1, o.claw ? 1 : 0], b: [o.bleed ?? 0, o.beat ?? 0, at, total] });
     at += len;
   }

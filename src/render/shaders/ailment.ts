@@ -730,7 +730,8 @@ vec4 woundStrip(vec2 q) {
   float along = (u_b.w > 0.0 ? u_b.z : 0.0) + q.x + L * 0.5;
   float t = clamp(along / total * 2.0 - 1.0, -1.0, 1.0);
   float prof = sqrt(max(0.0, 1.0 - t * t));
-  float rag = claw * (noise(vec2(along * 0.35, sign(q.y) * 3.0 + u_seed)) - 0.5) * W * 0.9;
+  // Torn (claw) edges: broad irregular tearing with finer fraying on top, each lip its own.
+  float rag = claw * ((noise(vec2(along * 0.11, sign(q.y) * 3.0 + u_seed)) - 0.5) * W * 0.9 + (noise(vec2(along * 0.6, sign(q.y) * 7.0 + u_seed)) - 0.5) * W * 0.3);
   float hw = W * op * prof + rag * prof;
   float ay = abs(q.y);
   float inX = rsmooth(L * 0.5 + 0.5, L * 0.5 - 0.5, abs(q.x));
@@ -782,22 +783,32 @@ vec4 woundStrip(vec2 q) {
   }
   vec3 wc = tc;
   // Fat layer: a thin yellow band at the cut's lip (the strata continue down the walls).
-  float fat = fill(ay - hw - 0.8) * (1.0 - gap) * inX * step(0.05, op) * (1.0 - claw);
+  float fat = fill(ay - hw - 0.8) * (1.0 - gap) * inX * step(0.05, op) * (1.0 - claw) * smoothstep(0.1, 0.4, prof);
   vec3 fc = lit(vec3(0.9, 0.76, 0.42), vec3(0.0, sign(q.y) * 0.5, 0.87), 0.6, 30.0);
-  // Skin lips: raised, pinched and lit on the lamp side.
-  float lipW = 3.5 + W * 0.3;
-  float lip = fill(ay - hw - 0.8 - lipW) * (1.0 - fill(ay - hw - 0.8)) * inX;
-  float lt = clamp((ay - hw - 0.8) / lipW, 0.0, 1.0);
-  vec3 ln = normalize(vec3(0.0, sign(q.y) * (1.0 - 2.0 * lt) * 0.8, 1.0));
-  vec3 lc = lit(vec3(0.62, 0.26, 0.22), ln, 0.18, 25.0);
-  vec4 acc = paint(lc, lip * (0.2 + 0.4 * op) * (1.0 - lt * 0.6));
-  // Soft crease where the pinched lip meets flat skin (an inked line read as a sticker outline).
-  float outer = abs(ay - hw - 0.8 - lipW);
-  acc = over(paint(vec3(0.24, 0.05, 0.04), rsmooth(2.2, 0.0, outer) * inX * step(0.05, op) * 0.3), acc);
+  // Skin lips: the cut edges swell into soft rolls that follow the wound's taper — widest mid-cut,
+  // closing to nothing at the tips — lit on the lamp side, flushed near the cut and feathering out
+  // into the skin (no band of constant width, so no rectangle shows behind the cut).
+  float lipW = (3.0 + W * 0.45) * (0.25 + 0.75 * prof);
+  float lt = clamp((ay - hw - 0.6) / lipW, 0.0, 1.0);
+  float lipIn = (1.0 - fill(ay - hw - 0.6)) * inX * smoothstep(0.0, 0.3, prof);
+  float lipA = lipIn * (1.0 - smoothstep(0.35, 1.0, lt)) * (0.3 + 0.5 * op);
+  float rise = sin(3.14159 * min(1.0, lt * 1.6));
+  vec3 ln = normalize(vec3(0.0, sign(q.y) * cos(3.14159 * min(1.0, lt * 1.6)) * 0.9, 1.0));
+  vec3 flush = mix(vec3(0.72, 0.24, 0.2), vec3(0.8, 0.42, 0.36), lt);
+  // Torn lips are scuffed and raw rather than rolled.
+  flush = mix(flush, vec3(0.6, 0.14, 0.12), claw * (1.0 - lt) * 0.7);
+  vec3 lc = lit(flush, ln, 0.25 + 0.2 * rise, 30.0);
+  vec4 acc = paint(lc, lipA);
   acc = over(paint(fc, fat * 0.75), acc);
   acc = over(paint(wc, gap), acc);
-  acc = over(paint(vec3(0.1, 0.01, 0.02), fill(abs(ay - hw) - 0.7) * inX * step(0.05, op) * 0.85), acc);
-  // Blood running over the lip at the lowest point.
+  // The cut edge itself: a thin dark line where skin turns down into the wound.
+  acc = over(paint(vec3(0.12, 0.01, 0.02), fill(abs(ay - hw) - 0.55) * inX * step(0.05, op) * 0.7 * smoothstep(0.05, 0.25, prof)), acc);
+  // Blade cuts run on a little past their ends as a fine scratch where the knife went in and out.
+  float pre = -along;
+  float post = along - total;
+  float tail = max(step(0.0, pre) * rsmooth(W * 2.2 + 6.0, 0.0, pre), step(0.0, post) * rsmooth(W * 1.6 + 4.0, 0.0, post));
+  float scratch = fill(ay - 0.45 * tail - 0.15) * tail * (1.0 - claw) * op;
+  acc = over(acc, paint(vec3(0.5, 0.08, 0.08), scratch * 0.7));
   return acc;
 }
 
