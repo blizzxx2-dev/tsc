@@ -4,7 +4,7 @@
  * the demo carry-over of flags (CON-0093).
  */
 import { beforeEach, describe, expect, it } from 'vitest';
-import { FULL_CAMPAIGN, nextOpenStep, stepId, stepOpen, type Chapter, type Step } from '../../../src/content/campaign';
+import { disciplineWrites, FULL_CAMPAIGN, nextOpenStep, stepId, stepOpen, type Chapter, type Step } from '../../../src/content/campaign';
 import { CHAPTER_2, STORY_2_4 } from '../../../src/content/chapter2';
 import { STORY_3_1, STORY_3_2, STORY_3_9 } from '../../../src/content/chapter3';
 import { CHAPTER_4, STORY_4_5, STORY_4_8, STORY_4_END } from '../../../src/content/chapter4';
@@ -440,6 +440,10 @@ describe('chapter flag contracts (NAR-0116, NAR-0131, NAR-0145)', () => {
       const actualReads = new Set<string>();
       for (const s of c.steps) {
         if (s.if) for (const r of conditionReads(s.if)) actualReads.add(r);
+        if (s.kind === 'discipline') {
+          for (const k of disciplineWrites(s.discipline, new FlagStore())) actualWrites.add(k);
+          continue;
+        }
         if (s.kind === 'op') {
           const w = OP_FLAG_WRITES[s.op.id];
           if (w) for (const rank of ['XS', 'S', 'A', 'B', 'C'] as const) for (const k of Object.keys(w(rank))) actualWrites.add(k);

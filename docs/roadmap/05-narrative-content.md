@@ -607,12 +607,12 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 - [ ] CON-0230 · Beta · P1 · S · Triage tutorial prompts and balance pass — average bot saves ≥ 60%
 
 ### Diagnosis and inquisition interviews
-- [ ] CON-0231 · Alpha · P1 · M · Interview mode spec — examine patient (click body regions for findings), ask questions from a topic list, present evidence; conclusion chosen from 3–4 diagnoses/verdicts
-- [ ] CON-0232 · Alpha · P1 · L · Implement interview scene — findings, questions, evidence inventory, contradiction detection; data-driven with tests
-- [ ] CON-0233 · Alpha · P1 · M · Interview "The Late-Turned Child" (Ch3, Liesl) — findings decide horn-bud cause; feeds `hornchildCertificate`
-- [ ] CON-0234 · Alpha · P1 · M · Interview "Founders' Guild Inquiry" (Ch3) — diagnose lead colic vs. curse among 3 founders; wrong answer sends the hexfire case to op3-3 unprepared (−vitals)
-- [ ] CON-0235 · Alpha · P0 · L · Interview "The Trial of Doctor Kreuzer" (Ch5) — Kreuzer questioned by the Tribunal; player answers and presents witnesses; outcome tally feeds verdict
-- [ ] CON-0236 · Beta · P1 · S · Interview content QA — every question path reachable; contradiction pairs tested
+- [x] CON-0231 · Alpha · P1 · M · Interview mode spec — examine patient (click body regions for findings), ask questions from a topic list, present evidence; conclusion chosen from 3–4 diagnoses/verdicts
+- [x] CON-0232 · Alpha · P1 · L · Implement interview scene — findings, questions, evidence inventory, contradiction detection; data-driven with tests
+- [x] CON-0233 · Alpha · P1 · M · Interview "The Late-Turned Child" (Ch3, Liesl) — findings decide horn-bud cause; feeds `hornchildCertificate`
+- [x] CON-0234 · Alpha · P1 · M · Interview "Founders' Guild Inquiry" (Ch3) — diagnose lead colic vs. curse among 3 founders; wrong answer sends the hexfire case to op3-3 unprepared (−vitals)
+- [x] CON-0235 · Alpha · P0 · L · Interview "The Trial of Doctor Kreuzer" (Ch5) — Kreuzer questioned by the Tribunal; player answers and presents witnesses; outcome tally feeds verdict
+- [x] CON-0236 · Beta · P1 · S · Interview content QA — every question path reachable; contradiction pairs tested
 
 ### Bone-setting
 - [ ] CON-0237 · Alpha · P1 · M · Bone-setting mode spec — X-ray-free: palpate with lens (bone silhouettes), traction via mouse drag with tension meter, rotate fragments with wheel, splint with thread

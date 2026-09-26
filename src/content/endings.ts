@@ -66,6 +66,8 @@ export function trialEvidence(f: Reader): number {
   if (trust >= 2) e -= 2;
   if (f.get('mauerFate') === 'hale') e -= 1;
   if (f.get('hallerFate') === 'hands') e -= 1;
+  // The cross-examination (CON-0235): each charge the Doctor's witnesses rebutted.
+  e -= Number(f.get('trialRebuttals') ?? 0);
   return e;
 }
 

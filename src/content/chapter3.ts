@@ -7,6 +7,7 @@ import { at, closeIncision } from './chapter1';
 import type { Chapter } from './campaign';
 import { choose, n, onlyIf, say, type StoryDef } from './story';
 import { whisperThought } from './whisper';
+import { INTERVIEW_FOUNDERS, INTERVIEW_LIESL } from './interviews';
 import { byBand, chapterAverageA, flags, licenceKept } from './flags';
 import { OP_3_10, OP_3_11 } from './ops/hours';
 export { OP_3_10, OP_3_11 };
@@ -45,7 +46,15 @@ export const STORY_3_2: StoryDef = {
   backdrop: 'hospice',
   lines: [
     say('stroh', 'Well? You have examined her. Put it in writing. Born, or turned.'),
-    n('The buds are new. Anyone with a surgeon’s eye could see it: the bone around them is barely a year old.'),
+    // CON-0233: what the examination found — or what the Doctor let himself see.
+    ...onlyIf(
+      { not: { flag: 'hornchildFinding', is: 'natural' } },
+      n('The buds are new. Anyone with a surgeon’s eye could see it: the bone around them is barely a year old.'),
+    ),
+    ...onlyIf(
+      { flag: 'hornchildFinding', is: 'natural' },
+      n('The mother’s word and the marks say born. Something in the bone says otherwise; the Doctor did not look closely enough to be sure.'),
+    ),
     // The certificate (NAR-0119): a kind lie or a true sentence. Writes `hornchildCertificate` for Chapters IV–V.
     choose('narrator', 'Liesl’s mother has not breathed since the question. The certificate waits for a signature.', [
       { id: 'natural', text: 'She was born with them. A natural growth. I will cut them back so they don’t press on the skull.', set: { hornchildCertificate: 'natural' } },
@@ -359,6 +368,10 @@ export const OP_3_3: OperationDef = {
   tools: ALL,
   ranks: { S: 5350, A: 4280, B: 3210 },
   litany: true,
+  // CON-0234: a wrong verdict at the inquiry sends her in untreated for the lead — weaker.
+  get vitals() {
+    return flags.get('foundersVerdict') === 'curse' ? 75 : undefined;
+  },
   seed: 33,
   phases: [
     {
@@ -542,15 +555,22 @@ export const CHAPTER_3: Chapter = {
   numeral: 'III',
   title: 'Prime and Terce',
   // NAR-0116: reads the demo's choice and Litany count; writes the certificate, Stroh's tooth (op3-9) and Haller's fate (op3-11).
-  flags: { reads: ['cantorMercy', 'litanySeenCount', 'hornchildCertificate', 'guildMarks', 'guildOps'], writes: ['hornchildCertificate', 'strohTooth', 'strohToothFine', 'hallerFate'] },
+  flags: {
+    reads: ['cantorMercy', 'litanySeenCount', 'hornchildCertificate', 'guildMarks', 'guildOps', 'hornchildFinding', 'foundersVerdict'],
+    writes: ['hornchildCertificate', 'strohTooth', 'strohToothFine', 'hallerFate', 'hornchildFinding', 'foundersVerdict'],
+  },
   steps: [
     { kind: 'story', story: STORY_3_1 },
+    // CON-0233: the examination Stroh waits on — born, or turned?
+    { kind: 'discipline', discipline: { id: 'iv3-liesl', title: INTERVIEW_LIESL.title, place: INTERVIEW_LIESL.place, backdrop: 'hospice', mode: 'interview', interview: INTERVIEW_LIESL } },
     { kind: 'story', story: STORY_3_2 },
     { kind: 'op', op: OP_3_1 },
     { kind: 'story', story: STORY_3_3 },
     { kind: 'op', op: OP_3_2 },
     { kind: 'op', op: OP_3_4 },
     { kind: 'story', story: STORY_3_4 },
+    // CON-0234: the Founders' Guild asks for an opinion in writing before Ute Brandt reaches the table.
+    { kind: 'discipline', discipline: { id: 'iv3-founders', title: INTERVIEW_FOUNDERS.title, place: INTERVIEW_FOUNDERS.place, backdrop: 'guildhall', mode: 'interview', interview: INTERVIEW_FOUNDERS } },
     { kind: 'op', op: OP_3_3 },
     { kind: 'story', story: STORY_3_5 },
     { kind: 'op', op: OP_3_5 },

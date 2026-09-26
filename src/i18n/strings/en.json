@@ -1115,5 +1115,10 @@
   "ui.credits.section_textures": "Textures",
   "ui.credits.section_cast": "Dramatis Personae",
   "ui.credits.cast_line": "{name} — {title}",
-  "ui.theatre.daybook": "Day-book: {note}"
+  "ui.theatre.daybook": "Day-book: {note}",
+  "ui.interview.topics": "Ask",
+  "ui.interview.present_to": "Present it against…",
+  "ui.interview.progress": "Found {n} of {needed}",
+  "ui.interview.conclude": "Conclude",
+  "ui.interview.result": "{rank} — {found} findings, {contradictions} contradictions"
 }

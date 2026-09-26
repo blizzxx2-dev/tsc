@@ -2,6 +2,7 @@ import { JOURNAL_STORY } from './journal';
 import { EPILOGUE_STORY } from './epilogue';
 import { ENDING_EXILE, ENDING_PARDON, ENDING_PYRE, endingIs, hostIs, strohTrust, trialVerdict, verdictIs } from './endings';
 import { whisperBand, whisperScore, whisperThought, type WhisperBand } from './whisper';
+import { trialInterview } from './interviews';
 import { byBand, chapterAverageA, flags } from './flags';
 import { Embedded, Incision, Laceration, Rot } from '../surgery/entities';
 import { TinctureSite, Vessel } from '../surgery/ailments/kilnrows';
@@ -594,12 +595,26 @@ export const CHAPTER_5: Chapter = {
   title: 'Vespers and Compline',
   // NAR-0145/0158: the finale reads every prior flag; the ending is derived from them (src/content/endings.ts).
   flags: {
-    reads: ['cantorMercy', 'litanySeenCount', 'hornchildCertificate', 'strohTooth', 'strohToothFine', 'hallerFate', 'thirstChoice', 'mauerFate', 'deadManVerdict', 'trialAnswer'],
-    writes: ['trialAnswer'],
+    reads: ['cantorMercy', 'litanySeenCount', 'hornchildCertificate', 'strohTooth', 'strohToothFine', 'hallerFate', 'thirstChoice', 'mauerFate', 'deadManVerdict', 'trialAnswer', 'trialRebuttals'],
+    writes: ['trialAnswer', 'trialRebuttals'],
   },
   steps: [
     { kind: 'story', story: STORY_5_1 },
     { kind: 'story', story: STORY_5_2 },
+    // CON-0235: the cross-examination; each rebuttal comes off the prosecution's case.
+    {
+      kind: 'discipline',
+      discipline: {
+        id: 'iv5-trial',
+        title: 'The Trial of Doctor Kreuzer',
+        place: 'The Tribunal Court — cross-examination',
+        backdrop: 'chapel',
+        mode: 'interview',
+        interview: trialInterview,
+        after: (_r, session) => ({ trialRebuttals: session.exposed.length }),
+        writes: ['trialRebuttals'],
+      },
+    },
     { kind: 'story', story: STORY_5_3 },
     { kind: 'story', story: STORY_5_4 },
     { kind: 'op', op: OP_5_5 },

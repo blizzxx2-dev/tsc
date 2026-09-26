@@ -9104,5 +9104,40 @@
     "size": 17,
     "maxPx": 780,
     "context": "Operating Theatre footer: the day-book (case note) outcome for the hovered operation. {note} is a full sentence."
+  },
+  "ui.interview.topics": {
+    "scene": "interview",
+    "font": "body",
+    "size": 17,
+    "maxPx": 380,
+    "context": "Interview: heading over the list of questions."
+  },
+  "ui.interview.present_to": {
+    "scene": "interview",
+    "font": "body",
+    "size": 17,
+    "maxPx": 380,
+    "context": "Interview: heading while a piece of evidence is picked, waiting for the statement to present it against."
+  },
+  "ui.interview.progress": {
+    "scene": "interview",
+    "font": "body",
+    "size": 17,
+    "maxPx": 380,
+    "context": "Interview notebook heading: findings and contradictions so far, of those needed to conclude."
+  },
+  "ui.interview.conclude": {
+    "scene": "interview",
+    "font": "body",
+    "size": 17,
+    "maxPx": 380,
+    "context": "Interview: button to draw a conclusion."
+  },
+  "ui.interview.result": {
+    "scene": "interview",
+    "font": "body",
+    "size": 17,
+    "maxPx": 380,
+    "context": "Interview result line: rank seal letter, then counts."
   }
 }

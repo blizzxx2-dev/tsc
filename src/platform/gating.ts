@@ -19,7 +19,8 @@ export function gateChapters<T>(chapters: readonly T[], info: EditionInfo = EDIT
 
 /** Chapter index (0-based) encoded in an engine id (`op2-3`, `s1-end`) or stable id (`ch2.op3`), or null. */
 export function chapterOfId(id: string): number | null {
-  const m = /^(?:op|s)(\d+)-|^ch(\d+)\./.exec(id);
+  // Discipline steps (CON-0247): iv interview, fo forensic, tr triage, bs bone-setting.
+  const m = /^(?:op|s|iv|fo|tr|bs)(\d+)-|^ch(\d+)\./.exec(id);
   if (!m) return null;
   return Number(m[1] ?? m[2]) - 1;
 }

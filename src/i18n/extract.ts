@@ -55,7 +55,7 @@ export function contentEntries(): ContentEntry[] {
           if (line.as) out.push({ id: `${id}.as`, text: line.as, scope: 'names', chapter: ch.id, context: `Speaker name shown for ${id}.` });
           out.push(...choiceEntries(s, i, ch.id));
         });
-      } else {
+      } else if (step.kind === 'op') {
         const op = step.op;
         out.push({ id: `${op.id}.title`, text: op.title, scope: 'ops', chapter: ch.id, context: 'Operation title (briefing, HUD banner, results, theatre list).' });
         out.push({ id: `${op.id}.patient`, text: op.patient, scope: 'ops', chapter: ch.id, context: 'Patient line on the chart and HUD.' });

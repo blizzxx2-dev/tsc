@@ -173,7 +173,11 @@ export class DebugOverlay {
           ...CAMPAIGN.flatMap((ch, ci) => [
             this.cmd(`Chapter ${ch.numeral} — start`, `chapter ${ci + 1} 0`),
             ...ch.steps.flatMap((s) =>
-              s.kind === 'op' ? [this.cmd(`  ${s.op.id} ${s.op.title}`, `op ${s.op.id}`)] : [this.cmd(`  story ${s.story.id}`, `story ${s.story.id}`)],
+              s.kind === 'op'
+                ? [this.cmd(`  ${s.op.id} ${s.op.title}`, `op ${s.op.id}`)]
+                : s.kind === 'discipline'
+                  ? []
+                  : [this.cmd(`  story ${s.story.id}`, `story ${s.story.id}`)],
             ),
           ]),
           this.cmd('Demo end', 'demoend'),

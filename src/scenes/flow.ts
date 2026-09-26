@@ -24,6 +24,8 @@ import { aftermathFor, failureFor } from '../content/narrative';
 import { CreditsScene } from './credits';
 import { POST_CREDITS } from '../content/endings';
 import { IS_DEMO } from '../platform/build';
+import { InterviewScene } from './interview';
+import { interviewOf, type DisciplineStepDef } from '../content/campaign';
 
 export const save: SaveData = load();
 // Campaign flags live on the profile (CON-0008): New Game replaces the profile, so bind through a getter.
@@ -142,6 +144,7 @@ export function playStep(game: Game, chapter: number, step: number, loaded = fal
     playStep(game, chapter, step + 1);
   };
   if (s.kind === 'story') game.go(new StoryScene(resolveStory(s.story, lastOutcome()), next));
+  else if (s.kind === 'discipline') playDiscipline(game, s.discipline, next);
   else playOperation(game, s.op, next, () => game.go(new TitleScene()), true);
 }
 
@@ -161,3 +164,18 @@ function syncChapterBundles(game: Game, chapter: number, step: number): void {
     if (m && Number(m[1]) - 1 < chapter) a.unloadBundle(held);
   }
 }
+
+/** A discipline step (CON-0247): the interview, then its flags and its seal in the ledger. */
+export function playDiscipline(game: Game, d: DisciplineStepDef, onDone: () => void): void {
+  const def = interviewOf(d, flags);
+  game.go(
+    new InterviewScene(def, d.backdrop, (result, session) => {
+      flags.setAll(result.flags);
+      if (d.after) flags.setAll(d.after(result, session));
+      recordBest(save, d.id, result.rank, result.score);
+      store(save);
+      onDone();
+    }),
+  );
+}
+

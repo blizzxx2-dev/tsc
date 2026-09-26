@@ -27,7 +27,7 @@ function walkAll(rank: Rank): CodexProgress {
   FULL_CAMPAIGN.forEach((ch, i) => {
     for (const s of ch.steps) {
       if (s.kind === 'story') p.stories.push(s.story.id);
-      else p.won[s.op.id] = rank;
+      else if (s.kind === 'op') p.won[s.op.id] = rank;
     }
     p.chapters.push(i + 1);
   });
@@ -41,7 +41,7 @@ function walk(rank: Rank): CodexProgress[] {
   [CHAPTER_1, CHAPTER_2].forEach((ch, i) => {
     for (const s of ch.steps) {
       if (s.kind === 'story') p.stories.push(s.story.id);
-      else p.won[s.op.id] = rank;
+      else if (s.kind === 'op') p.won[s.op.id] = rank;
       out.push(structuredClone(p));
     }
     p.chapters.push(i + 1);

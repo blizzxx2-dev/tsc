@@ -5,9 +5,10 @@ import { CONTENT_ID_TABLES, CURRENT_CONTENT_IDS, importDemoProfile, indexCampaig
 import { readProfile } from '../src/core/save/codec';
 import { gatingViolations } from '../src/platform/gating';
 import { EDITIONS } from '../src/platform/editions';
+import { stepId } from '../src/content/campaign';
 
 const fx = (n: string) => readFileSync(`tests/fixtures/saves/${n}`, 'utf8');
-const liveSteps = () => CAMPAIGN.map((c) => c.steps.map((s) => (s.kind === 'op' ? s.op.id : s.story.id)));
+const liveSteps = () => CAMPAIGN.map((c) => c.steps.map(stepId));
 const BUILD = 'full-test';
 
 describe('demo → full carry-over contract', () => {

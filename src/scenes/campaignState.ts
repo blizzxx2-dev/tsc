@@ -100,7 +100,7 @@ export function chapterLabel(pos: CampaignPosition): string {
 export function stepLabel(pos: CampaignPosition): string {
   const step = CAMPAIGN[pos.chapter]?.steps[pos.step];
   if (!step) return t('ui.slots.campaign_done');
-  return step.kind === 'op' ? step.op.title : t('ui.slots.story_step', { place: step.story.place });
+  return step.kind === 'op' ? step.op.title : step.kind === 'discipline' ? step.discipline.title : t('ui.slots.story_step', { place: step.story.place });
 }
 
 /** "2h 14m" style play time. */

@@ -38,6 +38,7 @@ import { exportSupportBundle, inputBuffer, InputBufferHook } from './support';
 import { bindings } from '../input/bindings';
 import { presenceFor, type Activity } from './richpresence';
 import { prompt, SaveIndicator, showNotice, showWatermark } from './ui';
+import { stepId } from '../content/campaign';
 
 /** Idle longer than this stops the playtime clock (PLT-0090). */
 export const IDLE_LIMIT_S = 5 * 60;
@@ -260,7 +261,7 @@ async function offerDemoImport(): Promise<void> {
   const demo = readDemoProfile(platform.demoFiles, BUILD.id);
   if (!demo) return;
   if (!(await platform.confirm(IMPORT_DIALOG))) return;
-  const index = indexCampaign(CAMPAIGN.map((c) => c.steps.map((s) => (s.kind === 'op' ? s.op.id : s.story.id))));
+  const index = indexCampaign(CAMPAIGN.map((c) => c.steps.map(stepId)));
   const { profile, report } = importDemoProfile(demo, index, BUILD.id);
   Object.assign(save, profile);
   store(save);
@@ -328,7 +329,7 @@ export function installPlatform(g: Game): void {
   setSlotDescriber((pos) => {
     const ch = CAMPAIGN[pos.chapter];
     const step = ch?.steps[pos.step];
-    return { chapterTitle: ch ? `${ch.numeral}. ${ch.title}` : 'The End of the Demo', patient: step ? (step.kind === 'op' ? step.op.patient : step.story.place) : '' };
+    return { chapterTitle: ch ? `${ch.numeral}. ${ch.title}` : 'The End of the Demo', patient: step ? (step.kind === 'op' ? step.op.patient : step.kind === 'discipline' ? step.discipline.place : step.story.place) : '' };
   });
 
   // The end-of-operation field snapshot (ENG-0122) when there is one, else the in-play capture.

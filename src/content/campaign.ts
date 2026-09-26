@@ -2,7 +2,9 @@ import type { OperationDef } from '../surgery/operation';
 import { CHAPTER_1 } from './chapter1';
 import { CHAPTER_2 } from './chapter2';
 import { LATER_CHAPTERS } from './later';
-import type { StoryDef } from './story';
+import type { Backdrop, StoryDef } from './story';
+import type { InterviewDef, InterviewResult, InterviewSession } from '../surgery/interview';
+import type { FlagRecord } from '../core/save/schema';
 import { evalCondition, type FlagCondition, type FlagReader } from './flags';
 import { gateChapters } from '../platform/gating';
 import { EDITION } from '../platform/build';
@@ -13,7 +15,34 @@ import { EDITION } from '../platform/build';
  * otherwise. Steps keep their index in the chapter either way, so save positions and the
  * carry-over content-id table are unaffected; a linear chapter is simply one with no `if`s.
  */
-export type Step = ({ kind: 'story'; story: StoryDef } | { kind: 'op'; op: OperationDef }) & { if?: FlagCondition };
+export type Step = ({ kind: 'story'; story: StoryDef } | { kind: 'op'; op: OperationDef } | { kind: 'discipline'; discipline: DisciplineStepDef }) & { if?: FlagCondition };
+
+/**
+ * A step in one of the other disciplines (CON-0247): an interview (CON-0231) — and, as they land,
+ * forensics, triage and bone-setting. The def may be built from the flags when the step starts.
+ */
+export interface DisciplineStepDef {
+  id: string;
+  title: string;
+  place: string;
+  backdrop: Backdrop;
+  mode: 'interview';
+  interview: InterviewDef | ((f: FlagReader) => InterviewDef);
+  /** Flags to write from the finished session, beyond the conclusion's own. */
+  after?: (result: InterviewResult, session: InterviewSession) => FlagRecord;
+  /** The flags `after` writes (for the flag audit). */
+  writes?: readonly string[];
+}
+
+/** Every flag a discipline step can write: its conclusions' and its `after`'s. */
+export function disciplineWrites(d: DisciplineStepDef, f: FlagReader): string[] {
+  const keys = new Set<string>(d.writes ?? []);
+  for (const c of interviewOf(d, f).conclusions) for (const k of Object.keys(c.flags ?? {})) keys.add(k);
+  return [...keys];
+}
+
+/** The interview a discipline step plays, resolved against the flags. */
+export const interviewOf = (d: DisciplineStepDef, f: FlagReader): InterviewDef => (typeof d.interview === 'function' ? d.interview(f) : d.interview);
 
 /** A chapter's flag contract (NAR-0116, NAR-0131, NAR-0145): audited by tests/unit/content/flags.test.ts. */
 export interface ChapterFlags {
@@ -31,7 +60,7 @@ export interface Chapter {
   flags?: ChapterFlags;
 }
 
-export const stepId = (s: Step): string => (s.kind === 'op' ? s.op.id : s.story.id);
+export const stepId = (s: Step): string => (s.kind === 'op' ? s.op.id : s.kind === 'discipline' ? s.discipline.id : s.story.id);
 
 /** Whether a step is on this player's path. */
 export const stepOpen = (s: Step, f: FlagReader): boolean => !s.if || evalCondition(s.if, f);
