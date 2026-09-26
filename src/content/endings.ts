@@ -14,7 +14,7 @@
  * The Perfect End is the failure state: the finale lost, the Office completes, the city sleeps.
  */
 import type { FlagReader } from './flags';
-import { n, say, type StoryDef } from './story';
+import { n, onlyIf, say, type StoryDef } from './story';
 import { whisperBand, whisperScore, type WhisperBand } from './whisper';
 
 /** Kreuzer's journal page for the Perfect End (NAR-0094; the won endings' pages are in journal.ts). */
@@ -42,9 +42,50 @@ export function strohTrust(f: Reader): number {
   if (f.get('strohToothFine')) t += 1;
   // The dead man's verdict (NAR-0136): siding with the Tribunal's reading of von Salm.
   if (f.get('deadManVerdict') === 'dead') t += 1;
+  // At the trial (NAR-0147): owning the Litany under oath.
+  if (f.get('trialAnswer') === 'confess') t += 1;
   t -= Math.floor(Number(f.get('litanySeenCount') ?? 0) / 2);
   return t;
 }
+
+/**
+ * The prosecution's case at the trial (NAR-0147), net of the defence: every false certificate and
+ * witnessed Litany entered as evidence, weighed against who is left to speak for the Doctor.
+ */
+export function trialEvidence(f: Reader): number {
+  const seen = Number(f.get('litanySeenCount') ?? 0);
+  const trust = strohTrust(f);
+  let e = Math.min(seen, 3);
+  const cert = f.get('hornchildCertificate');
+  if (cert === 'natural') e += 2;
+  // A true certificate cost a mother her child: she speaks for the prosecution.
+  if (cert === 'turned') e += 1;
+  // A denial the witnesses contradict is perjury; one nobody can contradict stands.
+  if (f.get('trialAnswer') === 'deny') e += seen > 0 ? 1 : -1;
+  if (trust <= 0) e += 2;
+  if (trust >= 2) e -= 2;
+  if (f.get('mauerFate') === 'hale') e -= 1;
+  if (f.get('hallerFate') === 'hands') e -= 1;
+  return e;
+}
+
+/** How the Doctor leaves the Tribunal court (NAR-0148). */
+export type TrialVerdict = 'acquitted' | 'rescued' | 'tunnelled';
+
+/**
+ * Acquittal needs the Inquisitor standing for the defence and a thin case — and so always leads to the
+ * pardon. A conviction is broken open by Mauer's Watch if the captain is hale, else by Orsa's tunnel.
+ */
+export function trialVerdict(f: Reader): TrialVerdict {
+  if (strohTrust(f) >= 2 && trialEvidence(f) <= 1) return 'acquitted';
+  return f.get('mauerFate') === 'hale' ? 'rescued' : 'tunnelled';
+}
+
+/** A line condition on the trial's outcome. */
+export const verdictIs =
+  (v: TrialVerdict) =>
+  (f: FlagReader): boolean =>
+    trialVerdict(f) === v;
 
 /** The inputs the ending reads, for the matrix test and the docs. */
 export interface EndingInputs {
@@ -89,7 +130,8 @@ export const ENDING_PARDON: StoryDef = {
     n('Dawn comes up on Kessendorf, and the city wakes: which is to say it complains, and coughs, and goes to work.'),
     n('Aurel Vennholt lives, in a Tribunal cell, and asks each morning for news of the patients. He has not sung since.'),
     say('stroh', 'The council has withdrawn the warrant. The Widow Reiss has left the city, in a carriage without a crest.'),
-    say('kreuzer', 'And the verdict? I was to burn at the east gate this morning. I had rather got used to the idea.'),
+    ...onlyIf((f) => trialVerdict(f) !== 'acquitted', say('kreuzer', 'And the verdict? I was to burn at the east gate this morning. I had rather got used to the idea.')),
+    ...onlyIf(verdictIs('acquitted'), say('kreuzer', 'And the council’s writ? I was to sit in that cell until the Widow’s appeal. I had rather got used to the damp.')),
     say('stroh', 'Void. The court sat under a charter renewed by a woman who has since fled the city with the Choir’s ledgers.'),
     say('stroh', 'I have written to the Tribunal that the matter of the Doctor’s hands is closed. I did not say how I closed it.'),
     say('kreuzer', 'You kept a ledger of every candle I put out.'),
@@ -100,7 +142,8 @@ export const ENDING_PARDON: StoryDef = {
     say('patient', 'Also, the tunnel. You may keep the tunnel. Every city should have one.', 'Orsa Flintvein'),
     say('haller', 'I read your letter. Unsang it, you say. Well. I only ever taught you to sing it. The rest was your own.'),
     say('haller', 'The Guild has restored your licence, by the way. Voss voted against. I have never enjoyed a vote so much.'),
-    n('At the east gate, the pyre they built for him is taken apart plank by plank and carried off for firewood before noon.'),
+    ...onlyIf((f) => trialVerdict(f) !== 'acquitted', n('At the east gate, the pyre they built for him is taken apart plank by plank and carried off for firewood before noon.')),
+    ...onlyIf(verdictIs('acquitted'), n('At the east gate, the stakes the council had ordered cut for a pyre are sold back to the timber yard at a loss.')),
     say('ilse', 'The Mother Superior writes. She wants me back at the convent, out of trouble.'),
     say('kreuzer', 'And?'),
     say('ilse', 'I wrote that I have never once been out of trouble, and do not intend to start. Doctor — you have a patient.'),

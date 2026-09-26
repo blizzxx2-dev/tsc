@@ -225,8 +225,8 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### Scenes (first draft)
 - [x] NAR-0146 · Alpha · P0 · M · s5-1 Arrest — Kreuzer taken from the hospice mid-shift; Ilse keeps working the ward alone
-- [ ] NAR-0147 · Alpha · P0 · L · s5-2 The trial — fair-trial rule; each false certificate or witnessed Litany is entered as evidence; interview-mode questioning (see CON disciplines); witnesses: Mauer, Orsa, Haller (letter), Liesl's mother
-- [ ] NAR-0148 · Alpha · P1 · M · s5-3 Verdict — outcome from evidence tally and Stroh's stance; acquittal, conviction with escape (Orsa's tunnel), or conviction with Mauer's rescue
+- [x] NAR-0147 · Alpha · P0 · L · s5-2 The trial — fair-trial rule; each false certificate or witnessed Litany is entered as evidence; interview-mode questioning (see CON disciplines); witnesses: Mauer, Orsa, Haller (letter), Liesl's mother
+- [x] NAR-0148 · Alpha · P1 · M · s5-3 Verdict — outcome from evidence tally and Stroh's stance; acquittal, conviction with escape (Orsa's tunnel), or conviction with Mauer's rescue
 - [x] NAR-0149 · Alpha · P1 · M · s5-4 Hollow Night — the streets empty, charms hung, the Choir sings openly; hymn lyrics for Vespers (original)
 - [x] NAR-0150 · Alpha · P1 · S · s5-5 Choir-throat — a chorister of the cathedral hums the hymn; field op on the street
 - [x] NAR-0151 · Alpha · P1 · S · s5-6 The mouth beneath — a cyst that talks and threatens to tell Stroh Kreuzer's secret

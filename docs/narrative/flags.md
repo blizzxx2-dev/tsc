@@ -35,6 +35,8 @@ Code: `src/content/flags.ts` (`flags.get / set / has / truthy / count`), conditi
 | `mauerFate` | `'hale' \| 'maimed'` | winning op4-7 by rank: C → `maimed`, else `hale` (NAR-0105) | Ch5 (ending matrix) |
 | `deadManVerdict` | `'entranced' \| 'dead'` | s4-5 choice (NAR-0136): restart von Salm's heart, or certify him dead for the Tribunal | op4-5 step (closed on `'dead'`), Stroh's trust |
 | `choice.s4-5` | `'entranced' \| 'dead'` | s4-5 pick record | tools, tests |
+| `trialAnswer` | `'confess' \| 'deny'` | s5-2 choice (NAR-0147): owning the Litany under oath, or denying it | s5-2 (the prosecutor's reply), Stroh's trust (+1 on confess), the trial evidence and verdict (s5-3, the pardon ending) |
+| `choice.s5-2` | `'confess' \| 'deny'` | s5-2 pick record | tools, tests |
 | `choice.s4-6` | `'salve' \| 'brand'` | s4-6 pick record | tools, tests |
 
 Derived, not stored (src/content/whisper.ts, src/content/endings.ts):
@@ -54,3 +56,13 @@ and the ending are derived (above), never stored.
 The demo profile's `flags` object is copied as is into the fresh full-game profile (`importDemoProfile`); the report
 lists the carried keys. Together with `best` (per-op best rank/score mapped through the content-id table) this is
 the whole carry-over: `cantorMercy`, `choice.s2-4`, `litanySeenCount`, per-op best rank.
+
+## The trial (NAR-0147, NAR-0148)
+
+`trialEvidence` (`src/content/endings.ts`): min(`litanySeenCount`, 3); certificate `'natural'` +2, `'turned'` +1
+(Liesl's mother testifies for the prosecution); denying under oath +1 if anyone saw the Litany, −1 if nobody did;
+Stroh's trust ≤ 0 +2 (he enters his ledger), ≥ 2 −2 (he testifies for the defence); `mauerFate` `'hale'` −1;
+`hallerFate` `'hands'` −1. `trialVerdict`: **acquitted** when trust ≥ 2 and evidence ≤ 1 (always the pardon
+ending; the council holds him under the court anyway, and Stroh lets Orsa's tunnel take him); otherwise
+convicted and **rescued** by Mauer's Watch if the captain is hale, else **tunnelled** out by Orsa.
+

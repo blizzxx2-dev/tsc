@@ -1,6 +1,6 @@
 import { JOURNAL_STORY } from './journal';
 import { EPILOGUE_STORY } from './epilogue';
-import { ENDING_EXILE, ENDING_PARDON, ENDING_PYRE, endingIs } from './endings';
+import { ENDING_EXILE, ENDING_PARDON, ENDING_PYRE, endingIs, strohTrust, trialVerdict, verdictIs } from './endings';
 import { whisperThought } from './whisper';
 import { Embedded, Incision, Laceration, Rot } from '../surgery/entities';
 import { TinctureSite, Vessel } from '../surgery/ailments/kilnrows';
@@ -14,7 +14,7 @@ import { TallowClot, VespersMalison } from '../surgery/bosses/vespers';
 import type { Operation, OperationDef } from '../surgery/operation';
 import { at, closeIncision } from './chapter1';
 import type { Chapter } from './campaign';
-import { n, say, type StoryDef } from './story';
+import { choose, n, onlyIf, say, type StoryDef } from './story';
 
 const ALL = ['lancet', 'tongs', 'leech', 'thread', 'salve', 'tincture', 'brand', 'lens'] as const;
 
@@ -45,16 +45,91 @@ export const STORY_5_2: StoryDef = {
   id: 's5-2',
   place: 'The Tribunal Court — the trial of Doctor Kreuzer',
   backdrop: 'chapel',
+  // NAR-0147: the evidence is what the player did. Every false certificate and witnessed Litany is entered;
+  // the witnesses are whoever the campaign left standing; Stroh's stance follows his trust.
   lines: [
     n('The court sits in the old Tribunal hall. The council insists on a fair trial, which means the Widow Reiss chose the judges.'),
-    say('patient', 'Evidence the first: a certificate. “A natural growth.” The child’s bone was a year old. The Doctor knew it.', 'The Prosecutor'),
-    say('patient', 'Evidence the second: at the muster, for eight heartbeats, every candle in the tent stood still. Witnessed.', 'The Prosecutor'),
-    say('mauer', 'I witnessed it. I witnessed him save my standard-bearer in the same eight heartbeats. Put that in your ledger too.'),
+    say('patient', 'The fair-trial rule: the accused may answer every charge, and call any witness who can walk here. Proceed.', 'The Presiding Judge'),
+    ...onlyIf(
+      { flag: 'hornchildCertificate', is: 'natural' },
+      say('patient', 'Evidence the first: a certificate. “A natural growth.” The child’s bone was a year old. The Doctor knew it.', 'The Prosecutor'),
+    ),
+    ...onlyIf(
+      { flag: 'hornchildCertificate', is: 'turned' },
+      say('patient', 'Evidence the first: a certificate, true in every word. Even the Doctor’s honesty is entered against him today.', 'The Prosecutor'),
+      say('patient', 'You wrote that my Liesl was turned, and they came for her. He is an honest man. I hope he burns for it.', 'Liesl’s mother'),
+    ),
+    ...onlyIf(
+      (f) => Number(f.get('litanySeenCount') ?? 0) >= 3,
+      say('patient', 'Evidence the second: three times and more, witnessed, every candle in a room stood still while he worked.', 'The Prosecutor'),
+    ),
+    ...onlyIf(
+      (f) => {
+        const seen = Number(f.get('litanySeenCount') ?? 0);
+        return seen >= 1 && seen < 3;
+      },
+      say('patient', 'Evidence the second: at the muster, for eight heartbeats, every candle in the tent stood still. Witnessed.', 'The Prosecutor'),
+    ),
+    ...onlyIf(
+      (f) => Number(f.get('litanySeenCount') ?? 0) === 0,
+      say('patient', 'Evidence the second: rumour. No witness saw a candle stand still. The court notes that none was looking.', 'The Prosecutor'),
+    ),
+    // Interview-mode questioning, as far as the story scene carries it (the full mode is CON-0235).
+    say('patient', 'Doctor Kreuzer. Under oath. Have you, at the table, drawn a star in the air and stopped the hour?', 'The Prosecutor'),
+    choose('kreuzer', 'The hall is silent. Stroh has stopped writing. Ilse, in the gallery, has her eyes shut.', [
+      { id: 'confess', text: 'I have. A star, and a prayer I learned in Weissburg. Every time, a patient lived who would not have.', set: { trialAnswer: 'confess' } },
+      { id: 'deny', text: 'I have not. I am a surgeon. I cut, I close, and I pray like any man does, with my mouth shut.', set: { trialAnswer: 'deny' } },
+    ]),
+    ...onlyIf(
+      { all: [{ flag: 'trialAnswer', is: 'deny' }, (f) => Number(f.get('litanySeenCount') ?? 0) > 0] },
+      say('patient', 'Let the record show the accused denies what witnesses swore to. Perjury, then, as well as witchcraft.', 'The Prosecutor'),
+    ),
+    ...onlyIf(
+      { flag: 'trialAnswer', is: 'confess' },
+      say('patient', 'Let the record show the accused confesses it. The court had not expected to be saved the trouble.', 'The Prosecutor'),
+    ),
+    ...onlyIf(
+      { flag: 'mauerFate', is: 'hale' },
+      say('mauer', 'I witnessed the candles. I witnessed him save my standard-bearer in the same eight heartbeats. Put that in your ledger too.'),
+    ),
+    ...onlyIf(
+      { flag: 'mauerFate', is: 'maimed' },
+      say('patient', 'A deposition from Captain Mauer, taken at his bedside: “He sewed me back together. Ask the Hour who unsewed me.”', 'The Clerk'),
+    ),
     say('patient', 'He took a stone out of me that sang, and he didn’t charge me for the tunnel he dug to do it. Witchcraft? Pah.', 'Orsa Flintvein'),
-    say('patient', 'A letter from Master Haller, read into the record: “If the Doctor is a witch, so am I, and I taught him.”', 'The Clerk'),
-    say('patient', 'My Liesl is home, and she sleeps. He lied on a piece of paper to do it. Hang me for thanking him.', 'Liesl’s mother'),
-    say('stroh', 'The Tribunal’s charter in this city lapsed at the new year. Every arrest in its name since is void. Including this one.'),
-    say('patient', 'The council renewed the charter this morning, Inquisitor. The Widow Reiss moved it. Sit down.', 'The Prosecutor'),
+    ...onlyIf(
+      { flag: 'hallerFate', is: 'hands' },
+      say('haller', 'If the Doctor is a witch, so am I, and I taught him. These hands are proof. Look at them. He saved them.'),
+    ),
+    ...onlyIf(
+      { flag: 'hallerFate', is: 'scarred' },
+      say('patient', 'A letter from Master Haller, read into the record: “If the Doctor is a witch, so am I, and I taught him.”', 'The Clerk'),
+    ),
+    ...onlyIf(
+      { flag: 'hallerFate', is: 'lost' },
+      say('patient', 'A letter found in Master Haller’s desk after the fire, written the night before: “If the Doctor is a witch, so was I, and I taught him.”', 'The Clerk'),
+    ),
+    ...onlyIf(
+      { flag: 'hornchildCertificate', is: 'natural' },
+      say('patient', 'My Liesl is home, and she sleeps. He lied on a piece of paper to do it. Hang me for thanking him.', 'Liesl’s mother'),
+    ),
+    ...onlyIf(
+      (f) => strohTrust(f) >= 2,
+      say('stroh', 'I call myself for the defence. I kept a ledger of this man’s candles for a year. Every one went out over a living patient.'),
+      say('stroh', 'The Tribunal’s charter lapsed at the new year. Every arrest in its name since is void. Including this one. Including mine.'),
+      say('patient', 'The council renewed the charter this morning, Inquisitor. The Widow Reiss moved it. Sit down.', 'The Prosecutor'),
+      say('stroh', 'Then I will stand, and the court may renew me too.'),
+    ),
+    ...onlyIf(
+      (f) => strohTrust(f) === 1,
+      say('stroh', 'The Tribunal’s charter in this city lapsed at the new year. Every arrest in its name since is void. Including this one.'),
+      say('patient', 'The council renewed the charter this morning, Inquisitor. The Widow Reiss moved it. Sit down.', 'The Prosecutor'),
+    ),
+    ...onlyIf(
+      (f) => strohTrust(f) <= 0,
+      say('stroh', 'I enter my ledger. Every candle that stood still at this man’s table, with the date and the name of the patient.'),
+      say('stroh', 'I do not know what he is. The court should not burn a man for that. But it should know what I have seen.'),
+    ),
   ],
 };
 
@@ -62,14 +137,45 @@ export const STORY_5_3: StoryDef = {
   id: 's5-3',
   place: 'The Tribunal Court — the verdict',
   backdrop: 'chapel',
+  // NAR-0148: acquittal (a thin case with Stroh for the defence), or a conviction broken by Mauer's Watch
+  // (if the captain is hale) or by Orsa's tunnel. Every route ends under the court for Hollow Night.
   lines: [
-    say('patient', 'The court finds Doctor Kreuzer guilty. He will burn at the east gate on the morning after Hollow Night.', 'The Presiding Judge'),
+    ...onlyIf(
+      verdictIs('acquitted'),
+      say('patient', 'The court finds the case not proven. The accused is free to— the council has a writ, Your Honour.', 'The Presiding Judge'),
+      say('patient', 'The Doctor is held in the council’s cells until the Tribunal’s appeal, after Hollow Night. For his own safety.', 'A council bailiff'),
+      say('stroh', 'His safety. Under the Widow’s court, on Hollow Night. I will be at the door, Doctor.'),
+    ),
+    ...onlyIf(
+      (f) => trialVerdict(f) !== 'acquitted',
+      say('patient', 'The court finds Doctor Kreuzer guilty. He will burn at the east gate on the morning after Hollow Night.', 'The Presiding Judge'),
+    ),
     n('He is taken below, to a cell cut into the rock under the Tribunal court. The rock is very old. The wall is very thin.'),
-    n('At midnight the wall knocks. Twice, then once, then twice: dwarf courtesy.'),
-    say('patient', 'Doctor! I have named this one the Kreuzer Tunnel. It is a very good tunnel. Mind your head.', 'Orsa Flintvein'),
-    say('mauer', 'Thirty-five of mine at the other end, and not one of them saw a thing. Move, Doctor.'),
-    say('kreuzer', 'Captain — you’ll hang for this.'),
-    say('mauer', 'Then I’ll hang with thirty-five witnesses. Hollow Night is tomorrow; the Choir will finish its Office, and you’re the surgeon they fear.'),
+    ...onlyIf(
+      verdictIs('rescued'),
+      n('At midnight the guardroom door opens without a key. The Watch comes in wearing its own colours, and nobody stops it.'),
+      say('mauer', 'Thirty-five of mine, and the gaolers are having a very long supper. Move, Doctor.'),
+      say('kreuzer', 'Captain — you’ll hang for this.'),
+      say('mauer', 'Then I’ll hang with thirty-five witnesses. Hollow Night is tomorrow, and you’re the surgeon the Choir fears.'),
+      n('Behind them, the wall of the cell knocks. Twice, then once, then twice: dwarf courtesy, a minute late.'),
+      say('patient', 'You are out already? I dug a whole tunnel. It is a very good tunnel. Nobody has even looked at it.', 'Orsa Flintvein'),
+      say('mauer', 'Keep it open. The Choir went down under this court. We may want a back door.'),
+    ),
+    ...onlyIf(
+      (f) => trialVerdict(f) !== 'rescued',
+      n('At midnight the wall knocks. Twice, then once, then twice: dwarf courtesy.'),
+      say('patient', 'Doctor! I have named this one the Kreuzer Tunnel. It is a very good tunnel. Mind your head.', 'Orsa Flintvein'),
+    ),
+    ...onlyIf(
+      verdictIs('tunnelled'),
+      say('mauer', 'Thirty-five of mine at the other end, and not one of them saw a thing. Move, Doctor.'),
+      say('kreuzer', 'Captain — you’ll hang for this. And you can barely stand.'),
+      say('mauer', 'Then I’ll hang leaning on a crutch. Hollow Night is tomorrow; the Choir will finish its Office, and you’re the surgeon they fear.'),
+    ),
+    ...onlyIf(
+      verdictIs('acquitted'),
+      say('stroh', 'I said I would be at the door. I did not say which one. Go with the dwarf, Doctor. I will tell the council you were never here.'),
+    ),
   ],
 };
 
@@ -460,7 +566,10 @@ export const CHAPTER_5: Chapter = {
   numeral: 'V',
   title: 'Vespers and Compline',
   // NAR-0145/0158: the finale reads every prior flag; the ending is derived from them (src/content/endings.ts).
-  flags: { reads: ['cantorMercy', 'litanySeenCount', 'hornchildCertificate', 'strohTooth', 'strohToothFine', 'hallerFate', 'thirstChoice', 'mauerFate'], writes: [] },
+  flags: {
+    reads: ['cantorMercy', 'litanySeenCount', 'hornchildCertificate', 'strohTooth', 'strohToothFine', 'hallerFate', 'thirstChoice', 'mauerFate', 'deadManVerdict', 'trialAnswer'],
+    writes: ['trialAnswer'],
+  },
   steps: [
     { kind: 'story', story: STORY_5_1 },
     { kind: 'story', story: STORY_5_2 },
