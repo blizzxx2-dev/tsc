@@ -10,7 +10,7 @@ import type { OperationDef } from './operation';
 export const RANK_TABLE: Record<string, { S: number; A: number; B: number }> = {
   'op1-1': { S: 3960, A: 3170, B: 2380 },
   'op1-2': { S: 4390, A: 3510, B: 2630 },
-  'op1-3': { S: 5260, A: 4210, B: 3160 },
+  'op1-3': { S: 5530, A: 4420, B: 3320 },
   'op1-4': { S: 5810, A: 4650, B: 3490 },
   'op1-5': { S: 4100, A: 3280, B: 2460 },
   'op2-1': { S: 4920, A: 3940, B: 2950 },
