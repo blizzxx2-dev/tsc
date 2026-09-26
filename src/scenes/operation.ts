@@ -55,7 +55,7 @@ import { highContrast, palette } from '../ui/theme';
 import { giltNumerals } from '../ui/ornaments';
 import { RATING_INK, starReliquary, vialArt } from '../art/kit';
 import { cursorTarget, cursorTint, drawTongsJaws, vialLevel } from '../art/hud';
-import { CAST } from '../content/characters';
+import { CAST, type CharacterId } from '../content/characters';
 import { ASSISTANT_NAME } from '../content/characters';
 import { vec3 } from '../render/color';
 import { settings } from '../core/settings';
@@ -1669,17 +1669,19 @@ export class OperationScene implements Scene {
     g.plate(mx - 32, my - 32, 64, 64, { radius: 32, top: hex('#1e2a24'), bottom: hex('#0c1210'), border: hex(INK.gilt, 0.9), borderW: 1.5, bevel: 0.5, shadow: [0.5, 8, 2] });
     const talking = this.op.calloutT * 60 < line.length;
     g.pushClip({ x: mx - 30, y: my - 30, w: 60, h: 60 });
+    // Whoever calls the phases (CON-0190): Sister Ilse, or Orsa while Ilse is on the table.
+    const aide = CAST[(this.op.def.assistant ?? 'ilse') as CharacterId] ?? CAST.ilse;
     g.portrait(mx - 36, my - 40, 72, 92, {
       style: 1,
-      rim: vec3(CAST.ilse.color),
-      cloth: vec3(CAST.ilse.cloth ?? '#3e454e'),
-      skin: vec3(CAST.ilse.skin ?? '#d8b098'),
+      rim: vec3(aide.color),
+      cloth: vec3(aide.cloth ?? '#3e454e'),
+      skin: vec3(aide.skin ?? '#d8b098'),
       active: 1,
       seed: 3,
       talk: talking ? 0.5 + 0.5 * Math.sin(t * 16) : 0,
     });
     g.popClip();
-    caps(g, ASSISTANT_NAME, r.x + 94, r.y + 26, 11, hex(INK.gold));
+    caps(g, this.op.def.assistant ? aide.name : ASSISTANT_NAME, r.x + 94, r.y + 26, 11, hex(INK.gold));
     // Keyed callouts are translated with the patient's grammatical gender for ICU select (LOC-0014).
     const shown = text.slice(0, Math.floor(this.op.calloutT * 60 * settings.textSpeed));
     g.textBlock(shown, r.x + 94, r.y + 34 + size * 0.8, textW, { size, color: hex(INK.text), shadow: hex('#000000', 0.8), soft: true }, 1.3);

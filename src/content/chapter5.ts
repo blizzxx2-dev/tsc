@@ -514,21 +514,23 @@ export const OP_5_7: OperationDef = {
   ranks: { S: 9370, A: 7500, B: 5620 },
   litany: true,
   seed: 57,
+  // CON-0190: Ilse is still recovering; Orsa calls the phases.
+  assistant: 'orsa',
   phases: [
     {
-      callout: ['Orsa: Prime’s quill — names! Strike them out, newest ink first.'],
+      callout: ['Prime’s quill — names! Strike them out, newest ink first.'],
       spawn: (op: Operation) => [new PrimeMalison(at(0, 20), op, { ...PRIME_DEFAULT, hp: GAUNTLET_HP })],
     },
     {
-      callout: ['Orsa: Fire now — Terce! Salve, never the brand!'],
+      callout: ['Fire now — Terce! Salve, never the brand!'],
       spawn: (op: Operation) => [new TerceMalison(op, { ...TERCE_DEFAULT, hp: GAUNTLET_HP })],
     },
     {
-      callout: ['Orsa: And a burrower — None — for his heart. Lens!'],
+      callout: ['And a burrower — None — for his heart. Lens!'],
       spawn: (op: Operation) => [new NoneMalison(op, { ...NONE_DEFAULT, hp: GAUNTLET_HP })],
     },
     {
-      callout: ['Orsa: That’s the last of them in him. Patch him up.'],
+      callout: ['That’s the last of them in him. Patch him up.'],
       spawn: () => [new Laceration(at(-60, 70), 0.5, 50, 0.5), new Embedded(at(90, -40), 'shard', 1.1, false)],
     },
   ],

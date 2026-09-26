@@ -547,7 +547,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 ### op5-6 "The Hour of Vespers" (Sister Ilse) — boss
 - [x] CON-0188 · Alpha · P0 · M · Vespers design spec — wick-filaments turn blood to tallow; field dims over time; keep 4 lamp nodes lit with brand; curse hides in shadow (only visible within lamp radius); drain tallow clots
 - [x] CON-0189 · Alpha · P0 · L · Implement VespersMalison — LampNode lighting mask and shadow-hide rule (tests)
-- [ ] CON-0190 · Alpha · P1 · S · Assistant swap — Haller (letter barks) or Orsa voices callouts since Ilse is the patient; data-driven assistant per op
+- [x] CON-0190 · Alpha · P1 · S · Assistant swap — Haller (letter barks) or Orsa voices callouts since Ilse is the patient; data-driven assistant per op
 - [x] CON-0191 · Alpha · P1 · S · Author `op5-6` data file — callouts, boss-fail tips, thresholds, checklist pass
 
 ### op5-7 "The Precentor's Remnants" (the Burgomaster's guard) — gauntlet

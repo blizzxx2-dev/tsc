@@ -126,6 +126,8 @@ export interface OperationDef {
    * move on a beat — the drain between beats lands all at once. Ends when `op.endSlowPulse()` is called.
    */
   slowPulse?: number;
+  /** Who calls the phases (a cast id; CON-0190) — Sister Ilse unless she is on the table. */
+  assistant?: string;
   /** Stages inside a multi-stage Hour a retry may resume at (e.g. Compline's [2, 3]; CON-0200). */
   bossCheckpoints?: readonly number[];
   /** Tincture colours this operation supplies besides red. */

@@ -156,7 +156,7 @@ export const OP_5_6 = defineOp({
   id: 'op5-6',
   title: 'The Hour of Vespers',
   patient: 'Sister Ilse, of the Merciful Order',
-  diagnosis: 'Wick-filaments through the vessels, blood turning to tallow; the ward’s lamps are dying with her. Callouts: Orsa.',
+  diagnosis: 'Wick-filaments through the vessels, blood turning to tallow; the ward’s lamps are dying with her.',
   organ: 'flesh',
   timeLimit: 420,
   baseDrain: 0.05,
@@ -164,16 +164,18 @@ export const OP_5_6 = defineOp({
   ranks: { S: 8400, A: 6720, B: 5040 },
   litany: true,
   seed: 56,
+  // CON-0190: Ilse is the patient; Orsa calls the phases.
+  assistant: 'orsa',
   tips: { time: 'The lamps went out before the wicks did. Relight a lamp with the brand first — you can’t cut a wick you can’t see.' },
   phases: [
     {
       objective: 'Keep the lamps lit',
-      callout: ['Orsa: Lamps! Keep them burning — brand on a lamp relights it. The wicks only show in the light.', 'Orsa: Cut the wicks across with the lancet, soften the tallow, draw it off.'],
+      callout: ['Lamps! Keep them burning — brand on a lamp relights it. The wicks only show in the light.', 'Cut the wicks across with the lancet, soften the tallow, draw it off.'],
       spawn: [{ e: 'malison-vespers', at: [0, 0] }],
     },
     {
       objective: 'Tidy her up',
-      callout: ['Orsa: It’s gone out of her! Tidy her up, Doctor — she’ll want to do it herself otherwise.'],
+      callout: ['It’s gone out of her! Tidy her up, Doctor — she’ll want to do it herself otherwise.'],
       spawn: [
         { e: 'laceration', at: [-90, 60], angle: 0.4, len: 50, bleed: 0.5 },
         { e: 'rot', at: [120, -40], r: 30, spread: 0.3 },
@@ -194,18 +196,19 @@ export const OP_5_8 = defineOp({
   ranks: { S: 5610, A: 4490, B: 3370 },
   litany: true,
   seed: 58,
+  assistant: 'orsa',
   tips: { time: 'The Silence outlasted us. Beat each echo quickly, break every node to win the Litany back, then lancet and brand together.' },
   // A retry resumes at the stolen Litany or the Great Silence once they are reached.
   bossCheckpoints: [2, 3],
   phases: [
     {
       objective: 'Break the Great Silence',
-      callout: ['Orsa: It’s wearing the old Hours like masks. Beat each one as it comes.'],
+      callout: ['It’s wearing the old Hours like masks. Beat each one as it comes.'],
       spawn: [{ e: 'malison-compline', at: [0, 0] }],
     },
     {
       objective: 'Mend him',
-      callout: ['Orsa: Quiet’s broken. He’s breathing! Mend him.'],
+      callout: ['Quiet’s broken. He’s breathing! Mend him.'],
       spawn: [
         { e: 'laceration', at: [-110, 60], angle: 0.3, len: 56, bleed: 0.5 },
         { e: 'rot', at: [110, -30], r: 30, spread: 0.3 },
