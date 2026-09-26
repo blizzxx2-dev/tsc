@@ -51,31 +51,53 @@ export function drapePanels(a: Vec, b: Vec, o: DrapeLook = {}): Vec[][] {
 export function drawDrape(g: Gfx, a: Vec, b: Vec, o: DrapeLook = {}): void {
   const m = DRAPES[o.material ?? 'linen'];
   for (const q of drapePanels(a, b, o)) {
-    // Cloth: a shadow under the edge, the material, then folds running along the drape.
+    // Along the drape (u, hem edge q0→q1) and across it (v, from the hem out to q3).
+    const at = (u: number, v: number): Vec => {
+      const s = { x: q[0].x + (q[1].x - q[0].x) * u, y: q[0].y + (q[1].y - q[0].y) * u };
+      const e = { x: q[3].x + (q[2].x - q[3].x) * u, y: q[3].y + (q[2].y - q[3].y) * u };
+      return { x: s.x + (e.x - s.x) * v, y: s.y + (e.y - s.y) * v };
+    };
+    const hx = q[0].x - q[3].x;
+    const hy = q[0].y - q[3].y;
+    const hl = Math.hypot(hx, hy) || 1;
+    const out = { x: hx / hl, y: hy / hl };
+    // The drape's soft shadow falls onto the open strip beside its hem, and under its outer edge.
+    for (let k = 1; k <= 4; k++) {
+      const d = k * 2.5;
+      g.line({ x: q[0].x + out.x * d, y: q[0].y + out.y * d }, { x: q[1].x + out.x * d, y: q[1].y + out.y * d }, 3, hex('#000000', 0.16 * (1 - k / 5)));
+    }
     g.poly(q.map((p) => ({ x: p.x + 3, y: p.y + 5 })), hex('#000000', 0.25));
     g.poly(q, hex(m.cloth), hex(m.centre));
-    for (let k = 1; k < 4; k++) {
-      const t = k / 4;
-      const s = { x: q[0].x + (q[3].x - q[0].x) * t, y: q[0].y + (q[3].y - q[0].y) * t };
-      const e = { x: q[1].x + (q[2].x - q[1].x) * t, y: q[1].y + (q[2].y - q[1].y) * t };
-      g.line(s, e, 1.4, hex(m.fold, 0.5));
-      if (m.sheen > 0) g.line({ x: s.x + 2, y: s.y + 2 }, { x: e.x + 2, y: e.y + 2 }, 1, hex('#ffffff', m.sheen * 0.5));
-    }
-    // Coarse cloth shows its weave: short cross-threads down the drape.
-    if (m.weave > 0) {
-      const n = Math.round(24 * m.weave);
-      for (let k = 1; k < n; k++) {
-        const t = k / n;
-        const s = { x: q[0].x + (q[1].x - q[0].x) * t, y: q[0].y + (q[1].y - q[0].y) * t };
-        const e = { x: q[3].x + (q[2].x - q[3].x) * t, y: q[3].y + (q[2].y - q[3].y) * t };
-        g.line(s, e, 0.8, hex(m.fold, 0.22));
+    // Folds: soft wavering creases running along the drape, a lit crest beside a shaded trough,
+    // fading out toward the ends where the cloth lies flat.
+    const seg = 14;
+    for (let k = 0; k < 4; k++) {
+      const v0 = 0.18 + k * 0.21;
+      const crest: Vec[] = [];
+      const trough: Vec[] = [];
+      for (let i = 0; i <= seg; i++) {
+        const u = i / seg;
+        const v = v0 + Math.sin(u * 5.1 + k * 1.7) * 0.035;
+        crest.push(at(u, v));
+        trough.push(at(u, v + 0.045));
       }
+      const fade = [0.35, 0.55, 0.5, 0.3][k];
+      g.polyline(trough, 3.2, hex(m.fold, 0.38 * fade + 0.1));
+      g.polyline(crest, 2, hex(m.sheen > 0 ? '#ffffff' : m.centre, (m.sheen > 0 ? m.sheen : 0.5) * fade + 0.1));
     }
-    // A darkened hem along the strip, and towel clamps at its two ends.
+    // Coarse cloth shows its weave: fine cross-threads down the drape.
+    if (m.weave > 0) {
+      const n = Math.round(40 * m.weave);
+      for (let k = 1; k < n; k++) g.line(at(k / n, 0.02), at(k / n, 0.98), 0.6, hex(m.fold, 0.12));
+    }
+    // A turned hem along the strip, and towel clamps at its two ends.
     g.line(q[0], q[1], 5, hex(m.hem, 0.85));
+    g.line(at(0, 0.035), at(1, 0.035), 1, hex(m.centre, 0.5));
     for (const c of [q[0], q[1]]) {
+      g.circle(c.x + 1.5, c.y + 2, 5.5, hex('#000000', 0.3));
       g.circle(c.x, c.y, 5, hex('#9aa0a6'));
-      g.circle(c.x, c.y, 2, hex('#3a3c40'));
+      g.circle(c.x - 1.2, c.y - 1.2, 2.2, hex('#dfe4ea', 0.7));
+      g.circle(c.x, c.y, 1.6, hex('#3a3c40'));
     }
   }
 }

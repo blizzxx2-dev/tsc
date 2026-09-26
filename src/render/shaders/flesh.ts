@@ -241,13 +241,29 @@ void main() {
     col = mix(col, vec3(0.9, 0.7, 0.75), smoothstep(0.2, 0.45, c) * 0.25);
     col = mix(col, vec3(0.15, 0.12, 0.14), step(0.985, noise(uv * 30.0)) * 0.6);
   } else if (u_kind == 3) {
-    // Gut: loops with a travelling peristaltic wave, mesenteric fat and serosa sheen.
-    vec2 w = q + vec2(fbm(uv * 0.7), fbm(uv * 0.7 + 5.0)) * 0.45;
-    float loops = sin(w.x * 14.0 + sin(w.y * 3.0) * 2.0);
-    float wave = 0.5 + 0.5 * sin(w.x * 6.0 - u_time * 1.8);
-    c = loops;
-    col *= 0.72 + 0.22 * loops + 0.08 * wave;
-    col = mix(col, vec3(0.92, 0.82, 0.5), smoothstep(0.75, 0.95, fbm(uv * 1.1 + 3.0)) * 0.55);
+    // Gut: coiled loops of bowel as the contour bands of a smooth field. Bands keep a near-even width
+    // and meander or close on themselves like coils; each is shaded as a tube across its width (lit
+    // on the lamp-facing flank), with dark crevices between loops holding yellow mesenteric fat,
+    // fine vessels crossing the loops, and a peristaltic swell travelling along them.
+    float ge = 0.012;
+    vec2 gq = q * 1.3 + 3.0;
+    float h0 = fbm(gq) + 0.3 * noise(q * 3.0);
+    float hx = fbm(gq + vec2(ge * 1.3, 0.0)) + 0.3 * noise((q + vec2(ge, 0.0)) * 3.0);
+    float hy = fbm(gq + vec2(0.0, ge * 1.3)) + 0.3 * noise((q + vec2(0.0, ge)) * 3.0);
+    vec2 hg = vec2(hx - h0, hy - h0) / ge;
+    vec2 across = hg / max(length(hg), 1e-3);
+    float band = h0 * 8.0;
+    float bv = fract(band);
+    float prof = sin(3.14159 * bv);
+    vec2 toL = normalize(u_light - px + vec2(1e-3));
+    float flank = cos(3.14159 * bv) * dot(across, toL);
+    c = prof;
+    float wave = 0.5 + 0.5 * sin(band * 0.7 + dot(q, vec2(-across.y, across.x)) * 12.0 - u_time * 1.8);
+    col *= (0.5 + 0.5 * prof + 0.05 * wave) * (1.0 + 0.3 * flank);
+    float crevice = rsmooth(0.12, 0.0, min(bv, 1.0 - bv));
+    col = mix(col, vec3(0.9, 0.78, 0.46) * 0.75, crevice * smoothstep(0.35, 0.65, fbm(uv * 1.3 + 3.0)) * 0.55);
+    float gv = pow(1.0 - abs(noise(vec2(dot(q, vec2(-across.y, across.x)) * 30.0, band * 0.5)) * 2.0 - 1.0), 14.0);
+    col = mix(col, vec3(0.5, 0.1, 0.18), gv * prof * 0.3);
   } else if (u_kind == 4) {
     // Liver: glossy capsule over hexagonal lobules.
     c = cells(uv * 1.6);
@@ -261,11 +277,20 @@ void main() {
     col *= 0.6 + 0.45 * smoothstep(0.1, 0.8, ridge);
     col = mix(col, vec3(0.85, 0.8, 0.82), 0.12 + 0.05 * sin(u_time * 1.1));
   } else if (u_kind == 6) {
-    // Bone: cortical grain with cancellous pits and a thin periosteum film.
+    // Bone: ivory cortex with fine lamellar grain running lengthwise, a thin periosteum film
+    // flushed with blood in patches and threaded with its vessels, and small nutrient pits.
     c = fbm(vec2(uv.x * 1.2, uv.y * 6.0));
-    col = mix(col, vec3(0.86, 0.82, 0.7), 0.6) * (0.78 + 0.3 * c);
-    col *= 1.0 - (1.0 - smoothstep(0.0, 0.12, cells(uv * 9.0))) * 0.25;
-    col = mix(col, vec3(0.8, 0.45, 0.4), 0.12);
+    col = mix(col, vec3(0.86, 0.82, 0.7), 0.6) * (0.8 + 0.25 * c);
+    float lam = noise(vec2(uv.x * 0.9, uv.y * 38.0 + noise(uv * 1.5) * 6.0));
+    col *= 0.96 + 0.06 * smoothstep(0.3, 0.8, lam);
+    col *= 1.0 - (1.0 - smoothstep(0.0, 0.12, cells(uv * 9.0))) * 0.18;
+    float peri = smoothstep(0.45, 0.75, fbm(uv * 0.8 + 21.0));
+    col = mix(col, vec3(0.78, 0.44, 0.38), 0.08 + 0.2 * peri);
+    float pv = pow(1.0 - abs(fbm(vec2(uv.x * 1.4, uv.y * 0.6) + 40.0) * 2.0 - 1.0), 18.0);
+    col = mix(col, vec3(0.62, 0.2, 0.2), pv * (0.1 + 0.2 * peri));
+    vec2 fp = floor(uv * 5.0);
+    float foramen = rsmooth(0.07, 0.02, length(fract(uv * 5.0) - 0.5 - (vec2(hash(fp), hash(fp + 3.3)) - 0.5) * 0.6)) * step(0.86, hash(fp + 7.0));
+    col = mix(col, vec3(0.22, 0.1, 0.08), foramen * 0.7);
   } else if (u_kind == 7) {
     // Muscle (ENG-0093): striated fibres along u_fiber, bundled into fascicles with pale
     // perimysium between them, and a silky sheen that runs along the grain.
@@ -302,7 +327,10 @@ void main() {
     float vessel = pow(1.0 - abs(fbm(w * 1.2) * 2.0 - 1.0), 18.0);
     c = fbm(uv * 1.5 + u_pulse * 0.3);
     col *= 0.8 + 0.25 * c;
-    col = mix(col, vec3(0.95, 0.85, 0.55), smoothstep(0.62, 0.8, fbm(uv * 0.9 + 11.0)) * 0.45);
+    // Epicardial fat lies along the coronary grooves, lobulated, thickest where they gather.
+    float groove = pow(1.0 - abs(fbm(w * 1.2) * 2.0 - 1.0), 4.0);
+    float fatH = groove * smoothstep(0.35, 0.7, fbm(uv * 0.9 + 11.0)) * (0.8 + 0.35 * noise(uv * 7.0));
+    col = mix(col, vec3(0.95, 0.84, 0.55), clamp(fatH, 0.0, 1.0) * 0.55);
     col = mix(col, vec3(0.35, 0.02, 0.1), vessel * 0.7);
     col *= 0.9 + 0.1 * u_pulse;
   }
