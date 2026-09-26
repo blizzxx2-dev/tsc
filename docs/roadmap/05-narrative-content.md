@@ -381,7 +381,7 @@ believes the completed Office will "still" all suffering: Compline is "a quiet n
 
 ### Demo retry and replay content
 - [x] CON-0085 · Demo · P1 · S · Chapter-select for demo — replay any cleared op; best rank shown per op
-- [ ] CON-0086 · Demo · P1 · S · Seed variants — each demo op defines 3 seeds; replays rotate seeds; all 30 seed/op pairs pass softlock and determinism tests
+- [x] CON-0086 · Demo · P1 · S · Seed variants — each demo op defines 3 seeds; replays rotate seeds; all 30 seed/op pairs pass softlock and determinism tests _(`seeds` on each demo def (the first its own seed; the schema checks it). The save counts clears per op and `seedFor` steps on one per clear; a retry after a loss keeps its seed. Recordings carry the seed the run used and replays honour it. tests/unit/content/seedVariants.test.ts, tests/sim/seed-variants.test.ts)_
 - [x] CON-0087 · Demo · P2 · S · Rank-goal hints on op select — "S rank: finish with no MISS and 60 s spare"; derived from thresholds
 - [x] CON-0088 · Demo · P1 · S · Op failure analytics events — op id, phase, cause of loss; emitted for playtest builds to target polish
 

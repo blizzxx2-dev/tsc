@@ -25,6 +25,7 @@ export function runRecording(def: OperationDef, rec: Recording): Operation {
     def,
     () => (ended = true),
     () => (ended = true),
+    { seed: rec.seed },
   );
   settings.timerAssist = saved;
   const game: Game = { input, audio: { play: () => undefined } as unknown as Game['audio'], gfx: null as unknown as Gfx, go: () => undefined };
@@ -39,6 +40,6 @@ export function runRecording(def: OperationDef, rec: Recording): Operation {
 }
 
 /** Record a scripted frame stream into a Recording (tests and tooling). */
-export function makeRecording(def: OperationDef, frames: Recording['frames'], prefs: Bindings['prefs'], timerAssist = 1): Recording {
-  return { format: 'suture-and-steel/input-recording', version: 1, opId: def.id, seed: def.seed ?? 1, timerAssist, prefs, frames };
+export function makeRecording(def: OperationDef, frames: Recording['frames'], prefs: Bindings['prefs'], timerAssist = 1, seed = def.seed ?? 1): Recording {
+  return { format: 'suture-and-steel/input-recording', version: 1, opId: def.id, seed, timerAssist, prefs, frames };
 }

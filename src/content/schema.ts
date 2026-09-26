@@ -497,6 +497,8 @@ export function validateOp(data: OperationData): string[] {
   const errs: string[] = [];
   const id = data.id;
   if (!data.phases.length) errs.push(`${id}: no phases`);
+  // CON-0086: three seed variants, the first the op's own seed, no repeats.
+  if (data.seeds && (data.seeds.length !== 3 || data.seeds[0] !== data.seed || new Set(data.seeds).size !== 3)) errs.push(`${id}: seeds must be three distinct values starting with seed ${data.seed}`);
   let incision = false;
   data.phases.forEach((ph, i) => {
     const where = `${id}.p${i}`;

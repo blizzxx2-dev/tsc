@@ -26,6 +26,8 @@ export const OP_2_1 = defineOp({
   ranks: { S: 4920, A: 3940, B: 2950 },
   litany: true,
   seed: 21,
+  // CON-0086: replays rotate through these, one step per clear.
+  seeds: [21, 2107, 2119],
   phases: [
     {
       objective: 'Draw out the venom',
@@ -77,6 +79,8 @@ export const OP_2_2 = defineOp({
   ranks: { S: 6010, A: 4810, B: 3610 },
   litany: true,
   seed: 22,
+  // CON-0086: replays rotate through these, one step per clear.
+  seeds: [22, 2207, 2219],
   phases: [
     {
       objective: 'Pull the splinters',
@@ -129,6 +133,8 @@ export const OP_2_3 = defineOp({
   ranks: { S: 8230, A: 6580, B: 4940 },
   litany: true,
   seed: 23,
+  // CON-0086: replays rotate through these, one step per clear.
+  seeds: [23, 2307, 2319],
   phases: [
     {
       objective: 'Cut away the silk',
@@ -188,6 +194,8 @@ export const OP_2_4 = defineOp({
   ranks: { S: 7000, A: 5600, B: 4200 },
   litany: true,
   seed: 24,
+  // CON-0086: replays rotate through these, one step per clear.
+  seeds: [24, 2407, 2419],
   phases: [
     {
       objective: 'Counter the poison',
@@ -257,6 +265,8 @@ export const OP_2_5 = defineOp({
   ranks: { S: 7600, A: 6100, B: 4550 },
   litany: true,
   seed: 25,
+  // CON-0086: replays rotate through these, one step per clear.
+  seeds: [25, 2507, 2519],
   phases: [
     {
       objective: 'Open the incision',

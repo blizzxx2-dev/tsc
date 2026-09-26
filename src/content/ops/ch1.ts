@@ -18,6 +18,8 @@ export const OP_1_1 = defineOp({
   ranks: { S: 3950, A: 3150, B: 2350 },
   litany: false,
   seed: 11,
+  // CON-0086: replays rotate through these, one step per clear.
+  seeds: [11, 1107, 1119],
   phases: [
     {
       objective: 'Stitch the deep cuts',
@@ -60,6 +62,8 @@ export const OP_1_2 = defineOp({
   ranks: { S: 4450, A: 3550, B: 2650 },
   litany: false,
   seed: 12,
+  // CON-0086: replays rotate through these, one step per clear.
+  seeds: [12, 1207, 1219],
   phases: [
     {
       objective: 'Free the barbed arrow',
@@ -93,6 +97,8 @@ export const OP_1_3 = defineOp({
   ranks: { S: 4750, A: 3800, B: 2850 },
   litany: false,
   seed: 13,
+  // CON-0086: replays rotate through these, one step per clear.
+  seeds: [13, 1307, 1319],
   phases: [
     {
       objective: 'Steady his pulse',
@@ -147,6 +153,8 @@ export const OP_1_4 = defineOp({
   ranks: { S: 5250, A: 4200, B: 3150 },
   litany: false,
   seed: 14,
+  // CON-0086: replays rotate through these, one step per clear.
+  seeds: [14, 1407, 1419],
   phases: [
     {
       objective: 'Lance the buboes',
@@ -195,6 +203,8 @@ export const OP_1_5 = defineOp({
   ranks: { S: 6950, A: 5550, B: 4150 },
   litany: true,
   seed: 15,
+  // CON-0086: replays rotate through these, one step per clear.
+  seeds: [15, 1507, 1519],
   phases: [
     {
       objective: 'Break the sigils',

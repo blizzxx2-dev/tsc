@@ -13,6 +13,13 @@ import { TUTORIALS } from './tutorial';
  */
 export const progress: Progress = loadProgress();
 
+/** The seed a story run of `def` plays on: its seed variants in turn, one step per clear (CON-0086). */
+export function seedFor(def: OperationDef, p: Progress = progress): number {
+  const seeds = def.seeds;
+  if (!seeds?.length) return def.seed ?? 1;
+  return seeds[(p.clears?.[def.id] ?? 0) % seeds.length];
+}
+
 /** Options for starting an operation from the player's save (difficulty, assists, kit, hints, tutorial). */
 export function operationOptions(def: OperationDef, extra: OperationOptions = {}): OperationOptions {
   const rites = unlockedLitanies(progress.chaptersCleared + 1);
@@ -25,6 +32,7 @@ export function operationOptions(def: OperationDef, extra: OperationOptions = {}
     hintsSeen: [...progress.hintsSeen],
     tutorial: !!TUTORIALS[def.id] && !progress.tutorialSkip && !progress.best[def.id],
     attempt: (progress.fails[def.id] ?? 0) + 1,
+    ...(def.seeds?.length ? { seed: seedFor(def, progress) } : {}),
     ...extra,
   };
 }

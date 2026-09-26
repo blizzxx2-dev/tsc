@@ -95,6 +95,7 @@ export class ReplayPlayerScene implements Scene {
       this.def,
       () => undefined,
       () => undefined,
+      { seed: this.rec.seed },
     );
     this.inner.enter();
   }

@@ -130,6 +130,11 @@ export interface OperationDef {
   /** Someone watching from the edge of the field (CON-0048): a character id, drawn as a dim bust. */
   observer?: string;
   /**
+   * Seed variants (CON-0086): the first is `seed`; each clear of the op moves a replay on to the
+   * next (src/surgery/session.ts). Retries after a loss keep the seed that was lost on.
+   */
+  seeds?: readonly number[];
+  /**
    * Limited supplies (CON-0140): thread (stitches), salve (seconds laid) and tincture (doses) this op
    * carries. Running out is a soft fail: the work goes on, each use past empty costs 40 end bonus.
    */
@@ -385,6 +390,8 @@ export class Operation {
   flags = new Set<string>();
   /** Story flags decided during play (thrallKept, …). */
   storyFlags = new Set<string>();
+  /** The seed this run plays on (a replay needs it; CON-0086 rotates it). */
+  readonly seed: number;
   /** Screen shake intensity, decays over time. */
   shake = 0;
   /** Lasting blood stains and scars left on the flesh. */
@@ -512,7 +519,8 @@ export class Operation {
     readonly def: OperationDef,
     readonly opts: OperationOptions = {},
   ) {
-    this.rng = new Rng(opts.seed ?? def.seed ?? 1);
+    this.seed = opts.seed ?? def.seed ?? 1;
+    this.rng = new Rng(this.seed);
     this.slowPulseEvery = def.slowPulse ?? 0;
     this.difficulty = opts.difficulty ?? 'surgeon';
     this.assists = { ...NO_ASSISTS, ...(opts.challenge ? {} : opts.assists), ...(opts.practice ? { noFail: true } : {}) };
@@ -536,7 +544,7 @@ export class Operation {
     this.maxVitals = Math.round(this.tuning.vitals.max * (def.constitution === 'frail' ? 0.8 : 1));
     this.vitalsCap = this.maxVitals;
     // Cosmetic draws replay with the run (ENG-0252).
-    seedFx(opts.seed ?? def.seed ?? 1);
+    seedFx(this.seed);
     this.vitals = Math.min(this.maxVitals, def.vitals ?? this.maxVitals);
     if (def.second && (def.regions?.length ?? 0) >= 2) this.vitals2 = this.minVitals2 = Math.min(this.maxVitals, def.second.vitals ?? this.maxVitals);
     this.shownVitals = this.vitals;

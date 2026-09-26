@@ -264,7 +264,7 @@ class Main implements Game {
       }
       if (scene instanceof OperationScene && scene !== this.recording) {
         this.recording = scene;
-        this.recorder.begin(scene.op.def.id, scene.op.def.seed ?? 1, settings.timerAssist, bindings.prefs);
+        this.recorder.begin(scene.op.def.id, scene.op.seed, settings.timerAssist, bindings.prefs);
       }
     }
     this.scenes.go(scene);

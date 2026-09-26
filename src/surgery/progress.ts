@@ -68,6 +68,8 @@ export interface Progress {
   feePaid: Record<string, number>;
   upgrades: UpgradeId[];
   fails: Record<string, number>;
+  /** Story clears per op (CON-0086: each moves the op's replays on to its next seed). */
+  clears?: Record<string, number>;
   /** Every operation ever lost on this save, in order (Prime writes those patients' names, BOS-0055). */
   lost?: string[];
   hintsSeen: string[];
@@ -142,6 +144,10 @@ export function recordRun(p: Progress, r: RunResult): { newBest: boolean; fee: n
     return { newBest: false, fee: 0 };
   }
   p.fails[r.opId] = 0;
+  if (!r.challenge) {
+    p.clears ??= {};
+    p.clears[r.opId] = (p.clears[r.opId] ?? 0) + 1;
+  }
   if (r.challenge) {
     const prev = p.xBest[r.challenge];
     const better = !prev || RANK_ORDER.indexOf(r.rank) > RANK_ORDER.indexOf(prev.rank) || (prev.rank === r.rank && r.score > prev.score);
