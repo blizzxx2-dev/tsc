@@ -38,6 +38,7 @@ export const AIL = {
   spool: 23,
   dish: 24,
   hour: 25,
+  flake: 26,
 } as const;
 
 export type MissileKind = 'arrow' | 'barbed' | 'bolt' | 'bolt-leather';
@@ -62,6 +63,12 @@ export function missileArt(g: Gfx, pos: Vec, angle: number, len: number, entry: 
     a: [len, along(pos, entry, angle), o.wobble ?? 0, MISSILE_KIND[o.kind]],
     b: [o.nicks ?? 0, o.torn ? 1 : 0, o.snapped ? 1 : 0, 0],
   });
+}
+
+/** A curling flake of burnt eschar (the tongs lift it off a fire burn), turned by `rot`. */
+export function escharFlakeArt(g: Gfx, pos: Vec, radius: number, rot: number, seed = 0): void {
+  const s = radius * 3.2 + 10;
+  g.ailment(AIL.flake, pos.x, pos.y, s, s, { rot, seed, a: [radius, 0, 0, 0] });
 }
 
 /** A lead ball: `radius` 5/7/9 px for the three calibres; `flattened` where it struck bone; `sunk` into the wound. */

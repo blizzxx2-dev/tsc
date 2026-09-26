@@ -34,6 +34,7 @@
  * 23 boss thread spool (HUD)       (a.x thread left 0..1, a.y hurt flash, a.z unwinding spin)
  * 24 extraction dish               (a.x radius px, a.w 0 pewter kidney dish, 1 round lead dish)
  * 25 Malison silhouette            (a.x Hour 0 Matins … 7 Compline; col = the Hour's secondary colour)
+ * 26 eschar flake                 (a.x radius px; rot = the flake's turn)
  *
  * Colour filters and gore levels are applied by the callers through `u_col` / `u_alpha`.
  */
@@ -302,16 +303,29 @@ float glassShape(vec2 q, float s, float L) {
 
 vec4 glass(vec2 q) {
   float L = u_a.x, line = u_a.y;
-  float d = glassShape(q, floor(u_a.w + 0.5), L);
+  float shape = floor(u_a.w + 0.5);
+  float d = glassShape(q, shape, L);
   float a = fill(d) * skinMask(q.x, line);
-  // Bottle-green body you can see the flesh through, a refraction-bright rim and a sliding glint.
-  vec3 body = vec3(0.55, 0.72, 0.62) * 0.55;
-  float rim = rsmooth(2.2, 0.0, -d);
+  // Old bottle glass: a green body that darkens what lies under it, thick edges that go dark on the
+  // side away from the lamp and bright where they face it, one internal fracture plane, a glint.
+  vec2 gd = vec2(glassShape(q + vec2(1.0, 0.0), shape, L) - d, glassShape(q + vec2(0.0, 1.0), shape, L) - d);
+  vec2 en = gd / max(length(gd), 1e-3);
+  float edgeBand = rsmooth(3.0, 0.0, -d);
+  float faceLamp = dot(en, normalize(LL.xy + vec2(1e-4)));
+  vec3 body = vec3(0.2, 0.34, 0.27);
+  // A fracture plane across the shard splits it into a lighter and a darker face.
+  float plane = q.y - q.x * (0.35 + 0.3 * hash(vec2(u_seed, 2.0))) + (hash(vec2(u_seed, 5.0)) - 0.5) * L * 0.2;
+  body *= plane > 0.0 ? 1.25 : 0.8;
+  vec3 c = mix(body, faceLamp > 0.0 ? vec3(0.9, 1.0, 0.95) : vec3(0.05, 0.09, 0.07), edgeBand * (0.35 + 0.55 * abs(faceLamp)));
+  c += vec3(0.7, 0.85, 0.8) * rsmooth(0.9, 0.0, abs(plane)) * 0.35 * step(d, -1.5);
   float glint = rsmooth(2.0, 0.0, abs(q.x * 0.6 + q.y - 6.0 * sin(u_time * 0.8 + u_seed))) * step(d, 0.0);
-  vec3 c = body + vec3(0.85, 1.0, 0.95) * rim * 0.9 + vec3(1.0) * glint * 0.8;
-  float alpha = a * (0.35 + 0.6 * rim + 0.4 * glint);
+  c += vec3(1.0) * glint * 0.7;
+  float alpha = a * (0.55 + 0.35 * edgeBand + 0.3 * glint);
   c = bloodWet(c, q.x, line);
-  return vec4(c * alpha, alpha);
+  // Contact shadow on the flesh, cast away from the lamp.
+  vec2 so = -LL.xy / max(LL.z, 0.3) * 3.0;
+  float sh = fill(glassShape(q - so, shape, L)) * skinMask(q.x - so.x, line) * 0.3 * (1.0 - a);
+  return vec4(c * alpha, alpha) + vec4(0.0, 0.0, 0.0, sh);
 }
 
 vec4 hexstone(vec2 q) {
@@ -370,14 +384,15 @@ vec4 fireBurn(vec2 q) {
   float cs = R * 0.34;
   float cd = cellD(q / cs, id);
   float bR = 0.36 + 0.14 * hash(id);
-  float bl = step(0.3, hash(id + 2.0)) * smoothstep(0.3, 0.55, sev) * rsmooth(1.0, 0.75, r) * step(0.4 * smoothstep(0.66, 1.0, sev), r);
-  float blister = rsmooth(bR, bR - 0.08, cd) * bl;
-  vec3 bn = domeN(cellOff, bR);
-  vec3 bc = lit(mix(vec3(0.96, 0.88, 0.66), vec3(0.9, 0.6, 0.5), 0.35 * cd / bR), bn, 1.3, 70.0);
+  float bl = step(0.55, hash(id + 2.0)) * smoothstep(0.3, 0.55, sev) * rsmooth(1.0, 0.75, r) * step(0.4 * smoothstep(0.66, 1.0, sev), r);
+  float blister = rsmooth(bR, bR - 0.08, cd + (noise(cellOff * 5.0 + id * 3.0) - 0.5) * 0.14) * bl;
+  // Blisters are shallow sacs of clear fluid: flat, the raw bed showing through, one sharp glint.
+  vec3 bn = normalize(domeN(cellOff, bR) * vec3(0.45, 0.45, 1.0));
+  vec3 bc = lit(mix(vec3(0.95, 0.8, 0.62), vec3(0.85, 0.45, 0.38), 0.5 + 0.4 * cd / bR), bn, 1.1, 90.0);
   // Some blisters have burst and weep: a collapsed skin flap over a wet red base.
   float wept = step(0.72, hash(id + 5.0));
   bc = mix(bc, lit(vec3(0.75, 0.25, 0.2), bn, 1.4, 70.0), wept * 0.75);
-  acc = over(paint(bc, blister * 0.95), acc);
+  acc = over(paint(bc, blister * 0.7), acc);
   // Char: cracked black eschar with ember fissures in the core (from severity 0.66).
   float dragon = u_a.w;
   float charR = dragon > 0.0 ? 0.88 : smoothstep(0.55, 1.0, sev) * 0.65;
@@ -385,8 +400,8 @@ vec4 fireBurn(vec2 q) {
   float crack = rsmooth(0.07, 0.0, voroEdge(q * 0.09 + u_seed));
   float ember = crack * (0.6 + 0.4 * sin(u_time * 3.0 + q.x * 0.1)) * (1.0 - cool);
   vec3 cc = lit(vec3(0.07, 0.05, 0.04) * (0.8 + 0.4 * noise(q * 0.3)), bumpN(q * 0.08, 3.0), 0.25, 12.0);
-  cc = mix(cc, mix(vec3(0.15, 0.1, 0.08), vec3(1.0, 0.35, 0.06), 1.0 - cool), crack * 0.8);
-  cc += vec3(1.0, 0.45, 0.1) * ember * 0.5;
+  cc = mix(cc, mix(vec3(0.12, 0.08, 0.06), vec3(0.6, 0.18, 0.05), 1.0 - cool), crack * 0.5);
+  cc += vec3(1.0, 0.45, 0.1) * ember * 0.18;
   // Dragon-breath (ENG-0263): the fissures run molten — HDR emissive above 1.0 so bloom takes it —
   // breathing slowly and dimming as the bed cools.
   if (dragon > 0.0) {
@@ -461,33 +476,54 @@ vec4 hexfireEdge(vec2 q) {
 vec4 bubo(vec2 q) {
   float R = u_a.x, ripe = u_a.y, burst = u_a.z, drained = u_a.w;
   float r = length(q);
-  float d = r - R;
-  vec3 n = domeN(q, R * (1.0 - drained * 0.5));
-  // Deflated: the skin collapses into wrinkles around an open crater.
-  float wr = sin(r * 0.9 + atan(q.y, q.x) * 3.0) * drained;
-  n = normalize(n + vec3(normalize(q + 0.001) * wr * 0.4, 0.0));
-  vec3 skin = mix(vec3(0.72, 0.28, 0.24), vec3(0.95, 0.8, 0.5), rsmooth(R * (0.35 + 0.25 * ripe), 0.0, r) * (1.0 - drained));
+  float ang = atan(q.y, q.x);
+  // A swelling that rises out of the flesh, not a ball set on it: a smooth mound whose flanks run
+  // out into the surrounding tissue, lopsided a little per bubo, pointing to a head as it ripens.
+  float lob = 1.0 + 0.1 * sin(ang * 2.0 + u_seed * 3.0) + 0.06 * sin(ang * 3.0 + u_seed);
+  float rr = r / (R * lob);
+  float hMound = exp(-rr * rr * 1.5) * (1.0 - drained * 0.65);
+  float hHead = exp(-rr * rr * 9.0) * 0.35 * ripe * (1.0 - drained);
+  float slope = (hMound * 3.0 + hHead * 9.0) * rr / (R * lob);
+  vec2 dir = q / max(r, 0.001);
+  // Deflated: the skin slumps into wrinkles around the open crater.
+  float wr = sin(r * 0.9 + ang * 3.0) * drained * rsmooth(1.3, 0.3, rr);
+  vec3 n = normalize(vec3(dir * (slope * R * 0.5 + wr * 0.4), 1.0));
+  // Colour: inflamed flesh at the flanks, a dusky congested crown, the ripe head cream-yellow.
+  vec3 skin = mix(vec3(0.9, 0.45, 0.38), vec3(0.86, 0.32, 0.34), smoothstep(0.2, 0.75, hMound) * (0.5 + 0.5 * ripe));
+  float head = rsmooth(0.34 + 0.2 * ripe, 0.08, rr) * ripe * (1.0 - drained);
+  skin = mix(skin, vec3(1.0, 0.9, 0.6), head * 0.85);
   // Pus shadow (ENG-0102): the pus pools low under the taut skin, a murky yellow-grey crescent.
-  float pool = rsmooth(R * 0.7, R * 0.15, length(q - vec2(0.0, R * 0.3))) * step(r, R) * ripe * (1.0 - drained);
-  skin = mix(skin, vec3(0.5, 0.42, 0.2), pool * 0.4);
-  // Taut veins crawl across the swelling as it ripens.
-  float vein = pow(1.0 - abs(fbm(q * 0.12 + u_seed) * 2.0 - 1.0), 12.0) * ripe * (1.0 - drained);
-  skin = mix(skin, vec3(0.4, 0.05, 0.12), vein * 0.8);
-  // Tension shine: a hard lamp highlight that tightens as it ripens.
-  vec3 c = lit(skin, n, 0.4 + 1.2 * ripe * (1.0 - drained), mix(20.0, 90.0, ripe));
-  vec4 acc = paint(c, fill(d));
+  float pool = rsmooth(0.75, 0.15, length(q / (R * lob) - vec2(0.0, 0.3))) * ripe * (1.0 - drained) * (1.0 - head);
+  skin = mix(skin, vec3(0.75, 0.62, 0.34), pool * 0.3);
+  // Taut veins crawl across the swelling as it ripens, fading out into the flanks.
+  float vein = pow(1.0 - abs(fbm(q * 0.12 + u_seed) * 2.0 - 1.0), 16.0) * ripe * (1.0 - drained) * smoothstep(0.1, 0.5, hMound) * (1.0 - head);
+  skin = mix(skin, vec3(0.42, 0.08, 0.16), vein * 0.6);
+  // Tension shine: the stretched skin glazes over and the highlight tightens as it ripens.
+  // Shaded relative to the flat flesh around it (which the flesh shader lights), so the mound only
+  // brightens toward the lamp and dims away from it instead of sinking into the lamp's low angle.
+  float rel = dot(n, LL) - LL.z;
+  vec3 hv = normalize(LL + vec3(0.0, 0.0, 1.0));
+  float gloss = (0.15 + 0.45 * ripe) * (1.0 - drained * 0.7) * smoothstep(0.05, 0.4, hMound);
+  vec3 c = skin * clamp(0.92 + 1.1 * rel, 0.45, 1.3) + vec3(1.0, 0.93, 0.82) * pow(max(dot(n, hv), 0.0), mix(30.0, 110.0, ripe)) * gloss;
+  // Self-shadow: the lamp-away flank falls into shade where it meets the flat.
+  float away = max(0.0, -dot(dir, normalize(LL.xy + vec2(1e-4))));
+  c *= 1.0 - 0.3 * away * smoothstep(0.5, 1.1, rr) * rsmooth(1.7, 1.1, rr) * (1.0 - drained);
+  // Opacity follows the swelling: full over the mound, feathering into the flesh around it.
+  float a = rsmooth(1.55, 0.7, rr);
+  vec4 acc = paint(c, a);
   // Burst flipbook (6 frames): the crown splits in a star, pus wells and runs.
   if (burst > 0.0) {
     float bf = floor(burst * 5.99) / 5.0;
-    float a = atan(q.y, q.x);
-    float star = r - R * 0.6 * bf * (0.55 + 0.45 * abs(sin(a * 2.5 + u_seed)));
+    float star = r - R * 0.6 * bf * (0.55 + 0.45 * abs(sin(ang * 2.5 + u_seed)));
     vec3 pus = lit(vec3(0.85, 0.78, 0.35), domeN(q, R * 0.6), 1.0, 50.0);
     acc = over(paint(mix(vec3(0.2, 0.03, 0.03), pus, smoothstep(0.2, 0.8, bf)), fill(star) * (1.0 - drained)), acc);
   }
-  if (drained > 0.0) acc = over(paint(vec3(0.18, 0.02, 0.03), fill(r - R * 0.22) * drained), acc);
-  // Inflamed areola around the base.
-  float areola = rsmooth(R * 1.6, R * 0.9, r) * step(R, r) * 0.5 * (1.0 - drained * 0.6);
-  return over(acc, paint(vec3(0.7, 0.12, 0.1), areola));
+  if (drained > 0.0) {
+    // The emptied crater: a dark wet hole with a raw red rim.
+    acc = over(paint(vec3(0.5, 0.08, 0.08), rsmooth(R * 0.34, R * 0.2, r) * drained), acc);
+    acc = over(paint(vec3(0.16, 0.02, 0.03), fill(r - R * 0.2) * drained), acc);
+  }
+  return acc;
 }
 
 vec4 rot(vec2 q) {
@@ -870,6 +906,37 @@ vec4 silk(vec2 q) {
 }
 
 
+
+// ---------------------------------------------------------------- eschar flake
+
+vec4 escharFlake(vec2 q) {
+  float R = u_a.x;
+  // A curling scab of burnt skin: an irregular leathery plate, cracked into scales, its dried rim
+  // lifting off the raw bed on one side (where the tongs will catch it).
+  vec2 e = q / vec2(R * 1.25, R);
+  float ang = atan(e.y, e.x);
+  float edgeR = 1.0 + (noise(vec2(ang * 1.6 + u_seed * 5.0, u_seed)) - 0.5) * 0.45 + (noise(vec2(ang * 5.0, u_seed + 3.0)) - 0.5) * 0.12;
+  float rr = length(e) / edgeR;
+  float body = rsmooth(1.0, 0.94, rr);
+  // The lifted lip: highest along one side, curling up and catching the lamp.
+  vec2 liftDir = vec2(cos(u_seed * 2.3), sin(u_seed * 2.3));
+  float lift = smoothstep(0.55, 1.0, rr) * smoothstep(-0.1, 0.9, dot(normalize(e + 1e-4), liftDir));
+  // Drop shadow under the plate, deepest below the lifted side.
+  vec2 so = -LL.xy / max(LL.z, 0.3) * (2.0 + 4.0 * lift);
+  float sh = rsmooth(1.05, 0.8, length((q - so) / vec2(R * 1.25, R)) / edgeR) * 0.55;
+  // Cracked leather: scales separated by fine dry fissures.
+  float crack = rsmooth(0.06, 0.0, voroEdge(q * 0.16 + u_seed * 7.0));
+  vec3 base = mix(vec3(0.09, 0.05, 0.035), vec3(0.2, 0.1, 0.06), noise(q * 0.25 + u_seed));
+  base = mix(base, vec3(0.32, 0.12, 0.07), smoothstep(0.7, 1.0, rr) * 0.6);
+  base = mix(base, vec3(0.03, 0.02, 0.015), crack * 0.8);
+  vec3 n = normalize(vec3(normalize(e + 1e-4) * lift * 1.4, 1.0) + (bumpN(q * 0.2 + u_seed, 1.6) - vec3(0.0, 0.0, 1.0)));
+  vec3 c = lit(base, n, 0.35 + 0.4 * lift, 24.0);
+  // Where the rim has lifted, its raw underside shows red.
+  float under = smoothstep(0.8, 1.0, rr) * lift * (1.0 - body * 0.4);
+  c = mix(c, vec3(0.55, 0.14, 0.1), under * 0.5);
+  return over(paint(c, body), paint(vec3(0.0), sh * (1.0 - body)));
+}
+
 // ---------------------------------------------------------------- the Malison's thread
 
 /** A point on one of the three thread-knot curves (t in 0..2π), in units of the knot radius. */
@@ -1113,6 +1180,7 @@ void main() {
   else if (u_mode == 22) r = threadKnot(q);
   else if (u_mode == 23) r = spool(q);
   else if (u_mode == 24) r = dish(q);
+  else if (u_mode == 26) r = escharFlake(q);
   else r = hourSilhouette(q);
   // Nothing may touch the quad's border, so no rectangle edge ever shows.
   vec2 e = abs(v_uv - 0.5);

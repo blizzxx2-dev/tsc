@@ -10,7 +10,7 @@ import { drawBlotch, flinchCurl, presentation, shaftTwitch } from '../presentati
 import { hex, rgba } from '../color';
 import type { Operation } from '../../surgery/operation';
 import { DEFAULT_TUNING } from '../../surgery/tuning';
-import { acidBurnArt, buboArt, fangArt, fireBurnArt, glassArt, grubArt, hexfireEdgeArt, hexstoneArt, missileArt, powderArt, rotArt, shotArt, venomArt, woundArt } from '../../art/ailmentArt';
+import { acidBurnArt, buboArt, escharFlakeArt, fangArt, fireBurnArt, glassArt, grubArt, hexfireEdgeArt, hexstoneArt, missileArt, powderArt, rotArt, shotArt, venomArt, woundArt } from '../../art/ailmentArt';
 import { Incision, BloodPool, Laceration, Embedded, ROOT_LEN, hexagon, Wadding, Burn, Bubo, Rot, Venom, pointAlong, Grub, Sigil, SearedWord } from '../../surgery/entities';
 
 // ============================================================ layer helpers
@@ -227,16 +227,20 @@ drawer(Embedded, {
         break;
       }
       case 'shard': {
-        const tail = { x: x - ca * e.spec.len, y: y - sa * e.spec.len };
-        g.poly(
-          [
-            { x, y },
-            { x: tail.x - sa * 7, y: tail.y + ca * 7 },
-            { x: tail.x - ca * 6, y: tail.y - sa * 6 },
-            { x: tail.x + sa * 7, y: tail.y - ca * 7 },
-          ],
-          hex('#8a8f96'),
-        );
+        // A splinter of seam-stone: a faceted wedge split along its ridge, the lamp-side face lit,
+        // the other in shade, a glint along the ridge and a contact shadow on the flesh.
+        const L = e.spec.len;
+        const tip = { x, y };
+        const mid = { x: x - ca * L * 0.6, y: y - sa * L * 0.6 };
+        const butt = { x: x - ca * (L + 3), y: y - sa * (L + 3) };
+        const left = { x: mid.x - sa * 7, y: mid.y + ca * 7 };
+        const right = { x: mid.x + sa * 7, y: mid.y - ca * 7 };
+        const lampLeft = -sa * -0.5 + ca * -0.85 > 0;
+        g.poly([tip, left, butt, right].map((p) => ({ x: p.x + 3, y: p.y + 4 })), hex('#000000', 0.32));
+        g.poly([tip, left, butt], hex(lampLeft ? '#6a6e76' : '#23252a'), hex(lampLeft ? '#8a8f98' : '#15161a'));
+        g.poly([tip, butt, right], hex(lampLeft ? '#23252a' : '#6a6e76'), hex(lampLeft ? '#15161a' : '#8a8f98'));
+        g.line(tip, butt, 1.2, hex('#c8d0da', 0.55));
+        g.polyline([tip, left, butt, right, tip], 1, hex('#0a0a0c', 0.7));
         break;
       }
     }
@@ -278,14 +282,9 @@ drawer(Burn, {
       hexfireEdgeArt(g, e.pos, e.radiusNow, e.smoulder >= 0 ? 0.5 + 0.5 * Math.abs(Math.sin(op.elapsed * 6)) : heat, e.id);
       g.creature(2, x, y - e.radiusNow * 0.3, e.radiusNow * 3, { seed: e.id, intensity: heat * 0.6, blend: 'add' });
     } else if (e.source === 'acid') g.glow(x, y, e.radiusNow * 1.1, hex(e.acidLive ? '#b8e040' : '#708040', 0.08 + (e.acidLive ? 0.04 * Math.sin(op.elapsed * 6) : 0)));
-    else if (e.flakes.length) g.glow(x, y, e.radius * 0.9, hex('#ff5a1a', 0.1 + 0.05 * Math.sin(op.elapsed * 5 + e.id)));
+    else if (e.flakes.length) g.glow(x, y, e.radius * 0.9, hex('#ff5a1a', 0.04 + 0.025 * Math.sin(op.elapsed * 5 + e.id)));
     if (e.charCore) g.circleGrad(x, y, e.radius * 0.45, hex('#050302', 0.85), hex('#1a0e08', 0.2));
-    for (const f of e.flakes) {
-      const rot = (f.x * 0.37 + f.y * 0.11) % 3;
-      g.ellipse(f.x + 1.5, f.y + 2, 12, 9, rot, hex('#000000', 0.5));
-      g.ellipse(f.x, f.y, 12, 9, rot, hex('#2a1c16'), hex('#0e0806'));
-      g.ellipse(f.x - 3, f.y - 3, 4, 2, rot, hex('#6a5040', 0.6));
-    }
+    for (const f of e.flakes) escharFlakeArt(g, f, 10, (f.x * 0.37 + f.y * 0.11) % 3, Math.round(f.x * 7 + f.y * 13) % 97);
     if (e.ember) {
       g.glow(e.ember.x, e.ember.y, 18, hex('#c060ff', 0.5 + 0.3 * Math.sin(op.elapsed * 9))); // curse-violet: hexfire is Malison-born
       g.circle(e.ember.x, e.ember.y, 4, hex('#f0c0ff'));

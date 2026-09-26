@@ -289,11 +289,26 @@ void main() {
     col = mix(col, vec3(0.35, 0.02, 0.1), vessel * 0.7);
     col *= 0.9 + 0.1 * u_pulse;
   }
-  else { c = cells(uv * 2.2); col *= 0.96 + 0.04 * smoothstep(0.0, 0.18, c); }
+  else {
+    c = cells(uv * 2.2);
+    col *= 0.96 + 0.04 * smoothstep(0.0, 0.18, c);
+    // Fascia: a faint connective-tissue grain, pale strands laid mostly one way under a wet film.
+    vec2 fdir = normalize(u_fiber + vec2(1e-4, 0.0));
+    vec2 fq3 = vec2(dot(q, fdir), dot(q, vec2(-fdir.y, fdir.x))) * 4.0;
+    float strand = noise(vec2(fq3.x * 1.3, fq3.y * 22.0 + noise(fq3 * 1.7) * 4.0));
+    col = mix(col, col * vec3(1.1, 1.04, 1.04) + vec3(0.03, 0.02, 0.02), smoothstep(0.6, 0.85, strand) * 0.3);
+  }
 
-  // Veins: ridged noise.
-  float v = 1.0 - abs(fbm(uv * 0.7 + 10.0) * 2.0 - 1.0);
-  v = pow(v, 14.0);
+  // Veins: a sparse branching network under a translucent surface — crisp trunks with a blurred
+  // halo where they run deeper, fine capillaries between, and whole patches where none show.
+  vec2 vw = uv * 0.6 + (vec2(noise(uv * 0.4 + 3.0), noise(uv * 0.4 + 8.0)) - 0.5) * 1.1 + 10.0;
+  float ridgeV = 1.0 - abs(fbm(vw) * 2.0 - 1.0);
+  float trunk = smoothstep(0.935, 0.985, ridgeV);
+  float halo = smoothstep(0.82, 0.96, ridgeV) * 0.4;
+  float capR = 1.0 - abs(noise(uv * 2.4 + 30.0) * 2.0 - 1.0);
+  float cap = smoothstep(0.93, 0.985, capR) * 0.3;
+  float patchV = smoothstep(0.3, 0.7, noise(uv * 0.35 + 50.0));
+  float v = max(max(trunk, halo), cap) * (0.3 + 0.7 * patchV);
   // Skin hides its veins (ENG-0093): only a faint tracery shows through.
   col = mix(col, u_vein, v * u_veinAmt * (u_kind == 8 ? 0.3 : 0.55));
 
@@ -418,7 +433,7 @@ void main() {
   vec2 gi = floor(gp), gf = fract(gp);
   vec2 gc = vec2(hash(gi + 3.1), hash(gi + 8.7)) * 0.6 + 0.2;
   float gd = length(gf - gc);
-  float glint = (1.0 - smoothstep(0.0, 0.06, gd)) * step(0.55, hash(gi + 1.3));
+  float glint = (1.0 - smoothstep(0.0, 0.06, gd)) * step(0.8, hash(gi + 1.3));
   float glintFoot = 1.0 - smoothstep(0.02, 0.12, fwidth(uv.x * 7.0));
   col += vec3(1.0, 0.96, 0.92) * glint * spec * wet * 0.5 * glintFoot;
 
